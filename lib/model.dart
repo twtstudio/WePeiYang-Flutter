@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 class MyColors {
   static final deepBlue = Color.fromRGBO(53, 59, 84, 1.0); //no.1
-  static final darkGrey = Color.fromRGBO(105, 109, 126, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
+  static final darkGrey =
+      Color.fromRGBO(105, 109, 126, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
   static final darkGrey2 = Color.fromRGBO(116, 119, 138, 1.0); //no.2
   static final brightBlue = Color.fromRGBO(103, 110, 150, 1.0); //no.3
   static final dust = Color.fromRGBO(230, 230, 230, 1.0); //no.4
@@ -50,6 +53,29 @@ class GPABean {
   GPABean(this.gpaList, this.weighted, this.grade);
 }
 
+class CommonBody<T> {
+  int error_code;
+  String message;
+  T data;
+
+  CommonBody.fromJson(String data) {
+    Map<String, String> tmp = json.decode(data);
+    // error_code = tmp['error_code'];
+  }
+
+}
+
+class Token {
+  String token;
+
+  Token(this.token);
+
+  Token.fromJson(String data) {
+    Map<String, String> tmp = json.decode(data);
+    token = tmp['token'];
+  }
+}
+
 class GlobalModel {
   GlobalModel._();
 
@@ -58,8 +84,8 @@ class GlobalModel {
 
   static GlobalModel _instance;
 
-  static GlobalModel getInstance(){
-    if(_instance == null) _instance = GlobalModel._();
+  static GlobalModel getInstance() {
+    if (_instance == null) _instance = GlobalModel._();
     return _instance;
   }
 }

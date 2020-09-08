@@ -7,6 +7,7 @@ import 'package:wei_pei_yang_demo/model.dart';
 import 'package:wei_pei_yang_demo/home.dart';
 import 'package:wei_pei_yang_demo/more.dart';
 import 'package:wei_pei_yang_demo/user.dart';
+import 'package:wei_pei_yang_demo/net_page.dart';
 
 void main() {
   runApp(WeiPeiYangApp());
@@ -28,7 +29,8 @@ class WeiPeiYangApp extends StatelessWidget {
     return MaterialApp(
       title: 'WeiPeiYangDemo',
       routes: <String, WidgetBuilder>{
-        '/login': (ctx) => LoginWidget(),
+        // '/login': (ctx) => LoginWidget(),
+        '/login': (ctx) => CPage(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
         '/bicycle': (ctx) => LoginWidget(),
