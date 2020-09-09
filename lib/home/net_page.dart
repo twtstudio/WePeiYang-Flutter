@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/dio_server.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/network/dio_server.dart';
 import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/model.dart';
 
@@ -10,14 +10,16 @@ class CPage extends StatefulWidget {
 }
 
 class CPageState extends State<CPage> {
-  String _token = "";
+  String _text = "aaaaaaaaa";
 
   void _login() async {
-    Dio dio = await DioService().getDio();
+    Dio dio = await DioService().create();
     var response = await dio.get("v1/auth/token/get",
         queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"});
+    var a = CommonBody.fromJson(response.data.toString());
     setState(() {
-      _token = response.data.toString();
+      // _token = response.data.toString();
+      _text = Token.fromJson(a.data).token;
     });
   }
 
@@ -35,7 +37,7 @@ class CPageState extends State<CPage> {
                 _login();
               },
             ),
-            Text(_token.toString())
+            Text(_text)
           ],
         ),
       ),

@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
 class MyColors {
   static final deepBlue = Color.fromRGBO(53, 59, 84, 1.0); //no.1
@@ -53,16 +51,17 @@ class GPABean {
   GPABean(this.gpaList, this.weighted, this.grade);
 }
 
-class CommonBody<T> {
+class CommonBody {
   int error_code;
   String message;
-  T data;
+  String data;
 
   CommonBody.fromJson(String data) {
     Map<String, String> tmp = json.decode(data);
-    // error_code = tmp['error_code'];
+    error_code = tmp['error_code'] as int;
+    message = tmp['message'];
+    data = tmp['data'];
   }
-
 }
 
 class Token {

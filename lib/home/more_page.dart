@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/model.dart';
-import 'package:wei_pei_yang_demo/home.dart';
 
 class MorePage extends StatefulWidget {
   @override
@@ -48,4 +47,33 @@ class _MorePageState extends State<MorePage> {
   List<Widget> getMoreCards(List<CardBean> cards) {
     return cards.map((e) => generateCard(context,e)).toList();
   }
+}
+
+Widget generateCard(BuildContext context, CardBean bean) {
+  return GestureDetector(
+    onTap: () => Navigator.pushNamed(context, bean.route),
+    child: Card(
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      child: Column(
+        children: <Widget>[
+          Padding(
+            child: Icon(
+              bean.icon,
+              color: Colors.grey,
+              size: 30.0,
+            ),
+            padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 5.0),
+          ),
+          Center(
+            child: Text(bean.label,
+                style: TextStyle(
+                    color: MyColors.darkGrey,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold)),
+          )
+        ],
+      ),
+    ),
+  );
 }
