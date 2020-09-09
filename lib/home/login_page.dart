@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
+import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -10,6 +12,21 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   var emailEdit = false;
   var pwEdit = false;
+  String email = "";
+  String password = "";
+
+  _login() async {
+    var dio = await DioService().create();
+    await dio.getCall("v1/auth/token/get",
+        queryParameters: {"twtuname": email, "twtpasswd": password},
+        onSuccess: (commonBody) {
+      var token = Token.fromJson(commonBody.data).token;
+      print("token！！！！！！！！！！！！！！！！！！！！！！！！!\n$token");
+      Navigator.pushReplacementNamed(context, '/home');
+    }, onFailure: (e) {
+      //TODO
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +62,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             size: emailEdit ? 18.0 : 0.0))),
                 onChanged: (input) => setState(() {
                   emailEdit = input.isNotEmpty;
+                  email = input;
                 }),
               ),
             ),
@@ -62,6 +80,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     )),
                 onChanged: (input) => setState(() {
                   pwEdit = input.isNotEmpty;
+                  password = input;
                 }),
               ),
             ),
@@ -81,7 +100,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 width: 400.0,
                 padding: EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0.0),
                 child: RaisedButton(
-                  onPressed: login,
+                  onPressed: _login,
                   color: MyColors.deepBlue,
                   child: Text('login', style: TextStyle(color: Colors.white)),
                   elevation: 5.0,
@@ -114,9 +133,5 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       ),
     );
-  }
-
-  login() {
-    Navigator.pushReplacementNamed(context, '/home');
   }
 }

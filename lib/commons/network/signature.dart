@@ -8,9 +8,10 @@ import 'dio_server.dart';
 class SignatureInterceptor extends InterceptorsWrapper {
   @override
   Future onRequest(RequestOptions options) {
+    Map<String,String> map = _getTimeStampAndSign(options);
     var queryMap = {
-      "t": _getTimeStamp(),
-      "sign": _generateSign(options),
+      "t": map.keys.elementAt(0),
+      "sign": map.values.elementAt(0),
       "app_key": DioService.APP_KEY
     };
     //TODO
@@ -22,23 +23,22 @@ class SignatureInterceptor extends InterceptorsWrapper {
     return super.onRequest(options);
   }
 
-  String _getTimeStamp() => DateTime.now().millisecondsSinceEpoch.toString();
-
-  String _generateSign(RequestOptions options) {
+  Map<String, String> _getTimeStampAndSign(RequestOptions options) {
     StringBuffer buffer = StringBuffer();
-    //TODO 太丑力
     var oq = options.queryParameters;
     for (var i = oq.length - 1; i >= 0; i--) {
       buffer.write(oq.keys.elementAt(i));
       buffer.write(oq.values.elementAt(i));
     }
-    String unEncode = DioService.APP_KEY + "t" + _getTimeStamp() +
-        buffer.toString() +
-        DioService.APP_SECRET;
+    String timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+    String unEncode =
+        "${DioService.APP_KEY}t$timeStamp${buffer.toString()}${DioService.APP_SECRET}";
     List<dynamic> bytes = utf8.encode(unEncode);
-    return _formatBytesAsHexString(sha1
-        .convert(bytes)
-        .bytes).toString().toUpperCase();
+    return {
+      timeStamp: _formatBytesAsHexString(sha1.convert(bytes).bytes)
+          .toString()
+          .toUpperCase()
+    };
   }
 }
 

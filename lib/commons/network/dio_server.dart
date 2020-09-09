@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
+import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart' show PackageInfo;
+import 'package:wei_pei_yang_demo/commons/network/error_interceptor.dart';
 import 'package:wei_pei_yang_demo/home/home_model.dart';
-
 import 'signature.dart';
 
 var _dio = Dio();
@@ -22,6 +23,7 @@ class DioService {
     var brand = androidInfo.brand;
     var product = androidInfo.product;
     var sdkInt = androidInfo.version.sdkInt;
+    //TODO version seems to be null
     var version = PackageInfo().version;
     final String userAgent =
         "WePeiYang/$version ($brand $product; Android $sdkInt)";
@@ -36,41 +38,59 @@ class DioService {
     _dio = Dio()
       ..options = _options
       ..interceptors.add(SignatureInterceptor())
+      ..interceptors.add(ErrorInterceptor())
       ..interceptors.add(LogInterceptor(requestBody: false));
     return _dio;
   }
 }
 
+typedef OnSuccess = void Function(CommonBody body);
+typedef OnFailure = void Function(DioError e);
+
 extension CommonBodyMethod on Dio {
-  Future<CommonBody> getCall(
+  Future<void> getCall(
     String path, {
+    @required OnSuccess onSuccess,
+    OnFailure onFailure,
     Map<String, dynamic> queryParameters,
     Options options,
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
   }) async {
-    var response = await get(path,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress);
-    return CommonBody.fromJson(response.data);
+    try {
+      var response = await get(path,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress);
+      onSuccess(CommonBody.fromJson(response.data));
+    } on DioError catch (e) {
+      print("DioServiceLog: \"${e.type}\" error happened");
+      if (onFailure != null) onFailure(e);
+    }
   }
 
-  Future<CommonBody> postCall(
+  Future<void> postCall(
     String path, {
+    @required OnSuccess onSuccess,
+    OnFailure onFailure,
     data,
     Map<String, dynamic> queryParameters,
     Options options,
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
   }) async {
-    var response = await post(path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress);
-    return CommonBody.fromJson(response.data);
+    try {
+      var response = await post(path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress);
+      onSuccess(CommonBody.fromJson(response.data));
+    } on DioError catch (e) {
+      print("DioServiceLog: \"${e.type}\" error happened");
+      if (onFailure != null) onFailure(e);
+    }
   }
 }
