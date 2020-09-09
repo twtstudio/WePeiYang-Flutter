@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'home_model.dart';
+import 'model/home_model.dart';
 import 'net_page.dart';
 import 'wpy/wpy_page.dart';
 

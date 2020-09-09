@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
-import 'home/home_model.dart';
+import 'home/model/home_model.dart';
 import 'home/home_page.dart';
 import 'home/more_page.dart';
 import 'home/user_page.dart';

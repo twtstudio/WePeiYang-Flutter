@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../home_model.dart';
+import '../model/home_model.dart';
 import '../more_page.dart';
 import 'gpa_curve.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
