@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'dart:typed_data' show Uint8List; //for hex method
 import 'package:crypto/crypto.dart' show sha1; //for sha-1 encoding
+import 'dart:typed_data' show Uint8List; //for hex method
 import 'dart:convert' show utf8; //for utf8.encode method
+
 import 'dio_server.dart';
 
 class SignatureInterceptor extends InterceptorsWrapper {

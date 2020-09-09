@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
-import 'package:dio/dio.dart';
-import 'package:wei_pei_yang_demo/model.dart';
+import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
+import 'home_model.dart';
 
 class CPage extends StatefulWidget {
   @override
@@ -12,13 +13,11 @@ class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
   void _login() async {
-    Dio dio = await DioService().create();
-    var response = await dio.get("v1/auth/token/get",
-        queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"});
-    var a = CommonBody.fromJson(response.data.toString());
+    var dio = await DioService().create();
+    var commonBody = await dio.getCall("v1/auth/token/get",
+            queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"});
     setState(() {
-      // _token = response.data.toString();
-      _text = Token.fromJson(a.data).token;
+      _text = Token.fromJson(commonBody.data).token;
     });
   }
 

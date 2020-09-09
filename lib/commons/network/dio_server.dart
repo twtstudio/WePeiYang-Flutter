@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
 import 'package:package_info/package_info.dart' show PackageInfo;
+import 'package:wei_pei_yang_demo/home/home_model.dart';
+
 import 'signature.dart';
 
 var _dio = Dio();
@@ -36,5 +38,39 @@ class DioService {
       ..interceptors.add(SignatureInterceptor())
       ..interceptors.add(LogInterceptor(requestBody: false));
     return _dio;
+  }
+}
+
+extension CommonBodyMethod on Dio {
+  Future<CommonBody> getCall(
+    String path, {
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    var response = await get(path,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress);
+    return CommonBody.fromJson(response.data);
+  }
+
+  Future<CommonBody> postCall(
+    String path, {
+    data,
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    var response = await post(path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress);
+    return CommonBody.fromJson(response.data);
   }
 }

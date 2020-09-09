@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class CardBean {
@@ -35,24 +34,12 @@ class GPABean {
 class CommonBody {
   int error_code;
   String message;
-  String data;
+  Map data;
 
-  CommonBody.fromJson(String data) {
-    Map<String, String> tmp = json.decode(data);
-    error_code = tmp['error_code'] as int;
-    message = tmp['message'];
-    data = tmp['data'];
-  }
-}
-
-class Token {
-  String token;
-
-  Token(this.token);
-
-  Token.fromJson(String data) {
-    Map<String, String> tmp = json.decode(data);
-    token = tmp['token'];
+  CommonBody.fromJson(dynamic jsonData) {
+    error_code = jsonData['error_code'];
+    message = jsonData['message'];
+    data = jsonData['data'];
   }
 }
 

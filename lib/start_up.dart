@@ -3,11 +3,10 @@ import 'package:flutter/services.dart';
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
-import 'model.dart';
+import 'home/home_model.dart';
 import 'home/home_page.dart';
 import 'home/more_page.dart';
 import 'home/user_page.dart';
-import 'home/net_page.dart';
 import 'home/login_page.dart';
 
 void main() {
@@ -31,7 +30,6 @@ class WeiPeiYangApp extends StatelessWidget {
       title: 'WeiPeiYangDemo',
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginWidget(),
-        // '/login': (ctx) => CPage(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
         '/bicycle': (ctx) => LoginWidget(),

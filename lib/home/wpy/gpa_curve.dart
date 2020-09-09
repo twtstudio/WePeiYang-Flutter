@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:wei_pei_yang_demo/model.dart';
+
+import '../home_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
 ///构建wpy_page中的gpa曲线部分
