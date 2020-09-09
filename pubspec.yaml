@@ -30,6 +30,7 @@ dependencies:
   dio: 3.0.10
   device_info : ^0.2.0
   package_info: ^0.3.2+1
+  crypto: ^2.1.4
 
 dev_dependencies:
   flutter_test:
