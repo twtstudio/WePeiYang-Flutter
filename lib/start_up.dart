@@ -30,8 +30,8 @@ class WeiPeiYangApp extends StatelessWidget {
     return MaterialApp(
       title: 'WeiPeiYangDemo',
       routes: <String, WidgetBuilder>{
-        // '/login': (ctx) => LoginWidget(),
-        '/login': (ctx) => CPage(),
+        '/login': (ctx) => LoginWidget(),
+        // '/login': (ctx) => CPage(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
         '/bicycle': (ctx) => LoginWidget(),

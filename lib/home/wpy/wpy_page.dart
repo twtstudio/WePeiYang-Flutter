@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:wei_pei_yang_demo/model.dart';
-import 'more_page.dart';
+import '../more_page.dart';
 import 'gpa_curve.dart';
+import 'package:wei_pei_yang_demo/commons/color.dart';
 
 class WPYPage extends StatefulWidget {
   @override
@@ -51,7 +52,7 @@ class WPYPageState extends State<WPYPage> {
             padding: const EdgeInsets.only(top: 30.0),
             sliver: SliverPersistentHeader(
                 delegate:
-                _WPYHeader(date: '${now.year}.${now.month}.${now.day}'),
+                    _WPYHeader(date: '${now.year}.${now.month}.${now.day}'),
                 pinned: true),
           ),
           SliverToBoxAdapter(
@@ -189,9 +190,9 @@ class WPYPageState extends State<WPYPage> {
                                       color: MyColors.colorList[(i + 3) % 5],
                                       borderRadius: BorderRadius.only(
                                           topLeft:
-                                          Radius.elliptical(60.0, 120.0),
+                                              Radius.elliptical(60.0, 120.0),
                                           bottomLeft:
-                                          Radius.elliptical(60.0, 120.0))),
+                                              Radius.elliptical(60.0, 120.0))),
                                   width: 6.0),
                               Expanded(
                                 child: Padding(
@@ -247,9 +248,9 @@ class WPYPageState extends State<WPYPage> {
           ),
           SliverToBoxAdapter(
               child: GPACurve(
-                gpaBean: GPABean([77.512, 92.155, 65.326, 84.682], 89.869, 3.869),
-                width: GlobalModel.getInstance().screenWidth,
-              )),
+            gpaBean: GPABean([77.512, 92.155, 65.326, 84.682], 89.869, 3.869),
+            width: GlobalModel.getInstance().screenWidth,
+          )),
           SliverToBoxAdapter(
             child: Container(
               height: 180.0,
@@ -345,7 +346,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: ClipOval(
                   child:
-                  Image(image: AssetImage('assets/images/user_image.jpg'))),
+                      Image(image: AssetImage('assets/images/user_image.jpg'))),
             ),
           )
         ],

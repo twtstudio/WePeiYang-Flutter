@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/model.dart';
+import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'net_page.dart';
-import 'wpy_page.dart';
+import 'wpy/wpy_page.dart';
+
 
 class HomePage extends StatefulWidget {
   @override

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/network/dio_server.dart';
+import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/model.dart';
-
 
 class CPage extends StatefulWidget {
   @override
