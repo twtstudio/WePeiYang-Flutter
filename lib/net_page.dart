@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/dio_server.dart';
+import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 import 'package:dio/dio.dart';
-import 'package:wei_pei_yang_demo/model.dart';
 
 class CPage extends StatefulWidget {
   @override
@@ -9,14 +8,16 @@ class CPage extends StatefulWidget {
 }
 
 class CPageState extends State<CPage> {
-  var commonBody = null;
+  String string = "here is no info";
 
   void _login() async {
-    Dio dio = await DioService().getDio();
-    var response = await dio.get("v1/auth/token/get",
-        queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"});
-    setState(() {
-      commonBody = CommonBody.fromJson(response.data.toString());
+    Dio dio = await DioService().create();
+    await dio.getCall("v1/auth/token/get",
+        queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"},
+        onSuccess: (commonBody) {
+      setState(() {
+        string = commonBody.data.toString();
+      });
     });
   }
 
@@ -34,7 +35,7 @@ class CPageState extends State<CPage> {
                 _login();
               },
             ),
-            Text(commonBody.toString())
+            Text(string)
           ],
         ),
       ),

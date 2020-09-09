@@ -3,8 +3,8 @@ import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
 import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart' show PackageInfo;
-import 'package:wei_pei_yang_demo/commons/network/error_interceptor.dart';
-import 'package:wei_pei_yang_demo/home/home_model.dart';
+import 'error_interceptor.dart';
+import 'network_model.dart';
 import 'signature.dart';
 
 var _dio = Dio();

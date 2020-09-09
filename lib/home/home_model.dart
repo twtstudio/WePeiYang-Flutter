@@ -31,18 +31,6 @@ class GPABean {
   GPABean(this.gpaList, this.weighted, this.grade);
 }
 
-class CommonBody {
-  int error_code;
-  String message;
-  Map data;
-
-  CommonBody.fromJson(dynamic jsonData) {
-    error_code = jsonData['error_code'];
-    message = jsonData['message'];
-    data = jsonData['data'];
-  }
-}
-
 class GlobalModel {
   GlobalModel._();
 
