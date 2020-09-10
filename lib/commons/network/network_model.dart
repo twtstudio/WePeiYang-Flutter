@@ -1,15 +1,12 @@
-import 'dart:convert';
-
-class CommonBody<T> {
+class CommonBody {
   int error_code;
   String message;
-  T data;
+  Map data;
 
-  CommonBody.fromJson(String data) {
-    Map<String, String> tmp = json.decode(data);
-    error_code = tmp['error_code'] as int;
-    message = tmp['message'];
-    data = tmp['data'];
+  CommonBody.fromJson(dynamic jsonData) {
+    error_code = jsonData['error_code'];
+    message = jsonData['message'];
+    data = jsonData['data'];
   }
 }
 

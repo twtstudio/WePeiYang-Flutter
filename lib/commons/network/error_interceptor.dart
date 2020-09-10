@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 
@@ -21,7 +20,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
   @override
   Future onError(DioError err) {
     var code = err.type == DioErrorType.RESPONSE
-        ? json.decode(err.response.data)['error_code']
+        ? err.response.data['error_code']
         : -1;
     var request = err.response.request;
     //TODO security here
