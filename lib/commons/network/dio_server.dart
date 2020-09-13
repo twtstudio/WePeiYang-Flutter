@@ -1,23 +1,33 @@
 import 'package:dio/dio.dart';
 import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' show required;
 import 'package:package_info/package_info.dart' show PackageInfo;
+import 'package:wei_pei_yang_demo/commons/preferences/shared_pref.dart';
 import 'error_interceptor.dart';
 import 'network_model.dart';
 import 'signature.dart';
 
+/// Singleton Pattern
 var _dio = Dio();
 
-class DioService {
+class DioService with SharedPref{
   static const TRUSTED_HOST = "open.twt.edu.cn";
   static const BASE_URL = "https://$TRUSTED_HOST/api/";
 
   static const APP_KEY = "9GTdynvrCm1EKKFfVmTC";
   static const APP_SECRET = "1aVhfAYBFUfqrdlcT621d9d6OzahMI";
 
-  static String defaultToken = "";
-
+  /// to create a [Dio] object
+  /// usage:
+  /// ```dart
+  /// await dio.getCall("v1/auth/token/get",
+  ///         queryParameters: {"twtuname": email, "twtpasswd": password},
+  ///         onSuccess: (commonBody) {
+  ///       var token = Token.fromJson(commonBody.data).token;
+  ///       Navigator.pushReplacementNamed(context, '/home');
+  ///     });
+  /// ```
   Future<Dio> create() async {
     AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
     var brand = androidInfo.brand;
@@ -27,13 +37,16 @@ class DioService {
     var version = PackageInfo().version;
     final String userAgent =
         "WePeiYang/$version ($brand $product; Android $sdkInt)";
+
+    /// 配置网络请求参数
+    /// 需加上两个header [User-Agent] 和 [Authorization]
     final BaseOptions _options = BaseOptions(
         baseUrl: BASE_URL,
         connectTimeout: 20000,
         receiveTimeout: 20000,
         headers: {
           "User-Agent": userAgent,
-          "Authorization": "Bearer{$defaultToken}",
+          "Authorization": "Bearer{$token}",
         });
     _dio = Dio()
       ..options = _options
@@ -47,6 +60,7 @@ class DioService {
 typedef OnSuccess = void Function(CommonBody body);
 typedef OnFailure = void Function(DioError e);
 
+/// 封装dio中的[get]和[post]函数
 extension CommonBodyMethod on Dio {
   Future<void> getCall(
     String path, {

@@ -5,6 +5,7 @@ import 'dart:convert' show utf8; //for utf8.encode method
 
 import 'dio_server.dart';
 
+/// 网络请求的拦截器，用于向uri中添加签名
 class SignatureInterceptor extends InterceptorsWrapper {
   @override
   Future onRequest(RequestOptions options) {

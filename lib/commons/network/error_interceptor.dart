@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 
+/// 自定义错误拦截
 class ErrorInterceptor extends InterceptorsWrapper {
   //TODO need CommonContext、CommonPreferences
+  /// token出错或过期时可能需要重新登陆
   _reLogin() async {
     var dio = await DioService().create();
     await dio.getCall("v1/auth/token/get",
         queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"},
         onSuccess: (commonBody) {
-      if (commonBody?.error_code == -1) ;
+      // if (commonBody?.error_code == -1)
       // CommonPreferences.token = Token.fromJson(commonBody.data);
     }, onFailure: (e) {
       // Navigator.pushReplacementNamed(context, '/login');
