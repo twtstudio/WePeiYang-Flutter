@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
-import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
+import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
+import 'package:wei_pei_yang_demo/gpa/network/gpa_service.dart';
 
 class CPage extends StatefulWidget {
   @override
@@ -11,13 +11,12 @@ class CPage extends StatefulWidget {
 class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
-  void _login() async {
-    var dio = await DioService().create();
-    await dio.getCall("v1/auth/token/get",
-        queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"},
-        onSuccess: (commonBody) {
+  _getGpa() {
+    getGPABean(onSuccess: (commonBody) {
+      var gpaBean = GPABean.fromJson(commonBody.data);
+      var stat = gpaBean.stat.toString();
       setState(() {
-        _text = Token.fromJson(commonBody.data).token;
+        _text = stat;
       });
     });
   }
@@ -26,20 +25,20 @@ class CPageState extends State<CPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 300),
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            RaisedButton(
-              child: Text("Test Dio"),
-              onPressed: () {
-                _login();
-              },
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 300),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("Test Dio"),
+                  onPressed: () {
+                    _getGpa();
+                  },
+                ),
+                Container(child: Text(_text), height: 100)
+              ],
             ),
-            Text(_text)
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 }

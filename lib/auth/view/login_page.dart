@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
+import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart' as prefs;
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -16,12 +17,13 @@ class _LoginWidgetState extends State<LoginWidget> {
   String password = "";
 
   _login() async {
-    var dio = await DioService().create();
-    await dio.getCall("v1/auth/token/get",
-        queryParameters: {"twtuname": email, "twtpasswd": password},
-        onSuccess: (commonBody) {
-      var token = Token.fromJson(commonBody.data).token;
-      print("token！！！！！！！！！！！！！！！！！！！！！！！！!\n$token");
+    //TODO 账号密码不能为空
+    if(!emailEdit || !pwEdit)return;
+    getToken(email, password, onSuccess: (commonBody) {
+      prefs.token = Token.fromJson(commonBody.data).token;
+      prefs.username = email;
+      prefs.password = password;
+      print("token！！！！！！！！！！！！！！！！！！！！！！！！!\n${prefs.token}");
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
       //TODO
@@ -33,7 +35,7 @@ class _LoginWidgetState extends State<LoginWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Theme(
-        //取消label文本高亮显示
+        ///取消label文本高亮显示
         data: Theme.of(context).copyWith(
             inputDecorationTheme: InputDecorationTheme(
                 labelStyle: TextStyle(color: Colors.grey))),

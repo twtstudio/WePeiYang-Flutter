@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'model/home_model.dart';
 import 'net_page.dart';
@@ -20,11 +19,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     pages
       ..add(WPYPage())
-      ..add(Center(
-          child: RaisedButton(
-        child: Text("kotlin button"),
-        onPressed: () {},
-      )))
+      ..add(Center(child: RaisedButton(child: Text('test'),onPressed: (){
+        Navigator.pushNamed(context, '/bind');
+      },),))
       ..add(CPage());
   }
 

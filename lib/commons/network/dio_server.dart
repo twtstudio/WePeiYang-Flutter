@@ -3,7 +3,7 @@ import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
 import 'package:flutter/cupertino.dart' show required;
 import 'package:package_info/package_info.dart' show PackageInfo;
-import 'package:wei_pei_yang_demo/commons/preferences/shared_pref.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'error_interceptor.dart';
 import 'network_model.dart';
 import 'signature.dart';
@@ -11,7 +11,7 @@ import 'signature.dart';
 /// Singleton Pattern
 var _dio = Dio();
 
-class DioService with SharedPref{
+class DioService {
   static const TRUSTED_HOST = "open.twt.edu.cn";
   static const BASE_URL = "https://$TRUSTED_HOST/api/";
 
@@ -19,15 +19,28 @@ class DioService with SharedPref{
   static const APP_SECRET = "1aVhfAYBFUfqrdlcT621d9d6OzahMI";
 
   /// to create a [Dio] object
+  ///
   /// usage:
   /// ```dart
-  /// await dio.getCall("v1/auth/token/get",
-  ///         queryParameters: {"twtuname": email, "twtpasswd": password},
-  ///         onSuccess: (commonBody) {
-  ///       var token = Token.fromJson(commonBody.data).token;
-  ///       Navigator.pushReplacementNamed(context, '/home');
-  ///     });
+  ///
+  /// in service page:
+  /// getToken(String name, String pw, {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  ///   var dio = await DioService().create();
+  ///   await dio.getCall("v1/auth/token/get",
+  ///       queryParameters: {"twtuname": name, "twtpasswd": pw},
+  ///       onSuccess: onSuccess,
+  ///       onFailure: onFailure);
+  /// }
+  ///
+  /// in view page:
+  /// _login() async {
+  ///   getToken(email, password, onSuccess: (commonBody) {
+  ///     prefs.token = Token.fromJson(commonBody.data).token;
+  ///     Navigator.pushReplacementNamed(context, '/home');
+  ///   });
+  /// }
   /// ```
+  //TODO 好像单例得不太对，DioService()对象会多次生成
   Future<Dio> create() async {
     AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
     var brand = androidInfo.brand;
