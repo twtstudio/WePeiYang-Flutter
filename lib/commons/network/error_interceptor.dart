@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
+import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
+import 'package:wei_pei_yang_demo/start_up.dart';
+import '../preferences/common_prefs.dart' as prefs;
+import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 
 /// 自定义错误拦截
 class ErrorInterceptor extends InterceptorsWrapper {
-  //TODO need CommonContext、CommonPreferences
   /// token出错或过期时可能需要重新登陆
   _reLogin() async {
-    var dio = await DioService().create();
-    await dio.getCall("v1/auth/token/get",
-        queryParameters: {"twtuname": "3019244334", "twtpasswd": "125418"},
-        onSuccess: (commonBody) {
-      // if (commonBody?.error_code == -1)
-      // CommonPreferences.token = Token.fromJson(commonBody.data);
-    }, onFailure: (e) {
-      // Navigator.pushReplacementNamed(context, '/login');
+    if (prefs.username == "" || prefs.password == "") {
+      Navigator.pushNamedAndRemoveUntil(
+          WeiPeiYangApp.navigatorState.currentContext,
+          '/login',
+          (route) => false);
+      throw DioError(error: "登录失败，请重新登录");
+    }
+    getToken(prefs.username, prefs.password, onSuccess: (commonBody) {
+      prefs.token = Token.fromJson(commonBody.data).token;
     });
     throw DioError(error: "登录失效，正在尝试自动重登");
   }
@@ -25,7 +28,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
         ? err.response.data['error_code']
         : -1;
     var request = err.response.request;
-    //TODO security here
     switch (code) {
       case 10001:
         if (request.headers.containsKey("Authorization")) _reLogin();
@@ -37,6 +39,10 @@ class ErrorInterceptor extends InterceptorsWrapper {
       case 40000:
       case 40011:
         //TODO 办公网相关（到底是40000还是40011啊我吐力）
+        Navigator.pushNamedAndRemoveUntil(
+            WeiPeiYangApp.navigatorState.currentContext,
+            '/bind',
+            (route) => false);
         throw DioError(error: "办公网帐号或密码错误");
         break;
       case 30001:

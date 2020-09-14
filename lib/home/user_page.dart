@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
-class UserPage extends StatefulWidget {
-  @override
-  _UserPageState createState() => _UserPageState();
-}
-
-class _UserPageState extends State<UserPage> {
+class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
       body: Stack(
         children: <Widget>[
-          Container(
-            height: 320.0,
-            color: MyColors.darkGrey,
-          ),
+          Container(height: 320.0, color: MyColors.darkGrey),
           ListView(
             children: <Widget>[
               Container(
@@ -42,8 +34,6 @@ class _UserPageState extends State<UserPage> {
                   )),
               Container(
                 alignment: Alignment.center,
-                //height: 85.0,
-                 //width: 85.0,
                 margin: EdgeInsets.only(bottom: 15.0),
                 child: ClipOval(
                     child: Image.asset(
@@ -151,14 +141,8 @@ class _UserPageState extends State<UserPage> {
                             fontSize: 20.0,
                             color: Color.fromRGBO(99, 101, 115, 1)),
                       ),
-                      Expanded(
-                        child: Container(
-                          height: 80,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                      ),
+                      Expanded(child: Container(height: 80)),
+                      Icon(Icons.arrow_forward_ios),
                     ],
                   ),
                 ),
@@ -181,14 +165,8 @@ class _UserPageState extends State<UserPage> {
                             fontSize: 20.0,
                             color: Color.fromRGBO(99, 101, 115, 1)),
                       ),
-                      Expanded(
-                        child: Container(
-                          height: 80,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                      ),
+                      Expanded(child: Container(height: 80)),
+                      Icon(Icons.arrow_forward_ios),
                     ],
                   ),
                 ),
@@ -206,21 +184,13 @@ class _UserPageState extends State<UserPage> {
                       Icon(
                         Icons.book,
                       ),
-                      Text(
-                        "Library acoount",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            color: Color.fromRGBO(99, 101, 115, 1)),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 80,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                      ),
+                      Text("Library acoount",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Color.fromRGBO(99, 101, 115, 1))),
+                      Expanded(child: Container(height: 80)),
+                      Icon(Icons.arrow_forward_ios)
                     ],
                   ),
                 ),

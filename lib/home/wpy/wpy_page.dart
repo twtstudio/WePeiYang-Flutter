@@ -18,7 +18,7 @@ class WPYPageState extends State<WPYPage> {
   @override
   void initState() {
     super.initState();
-    //TODO 构建响应接口
+    //TODO 接口
     cards.add(CardBean(Icons.directions_bike, 'Bicycle', '/bicycle'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
     cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
@@ -48,6 +48,7 @@ class WPYPageState extends State<WPYPage> {
     return Material(
       child: CustomScrollView(
         slivers: <Widget>[
+          /// 自定义标题栏
           SliverPadding(
             padding: const EdgeInsets.only(top: 30.0),
             sliver: SliverPersistentHeader(
@@ -238,7 +239,7 @@ class WPYPageState extends State<WPYPage> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 15.0),
+              padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 30.0),
               child: Text('GPA Curve',
                   style: TextStyle(
                       fontSize: 17.0,
@@ -246,6 +247,7 @@ class WPYPageState extends State<WPYPage> {
                       fontWeight: FontWeight.w600)),
             ),
           ),
+          /// 自定义GPA曲线
           SliverToBoxAdapter(
               child: GPACurve(
             gpaBean: GPABean([77.512, 92.155, 65.326, 84.682], 89.869, 3.869),
@@ -287,6 +289,7 @@ class WPYPageState extends State<WPYPage> {
     );
   }
 
+  /// 显示“More”的卡片，其余卡片详见[generateCard]
   Widget _getCard(int index) {
     if (index == cards.length) {
       var startColor = Color.fromRGBO(142, 147, 171, 1.0);
@@ -325,7 +328,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white, //比其他区域rgb均高了5,遮挡后方滚动区域
+      color: Colors.white, // 比其他区域rgb均高了5,遮挡后方滚动区域
       alignment: Alignment.center,
       padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
       child: Row(
@@ -335,7 +338,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   fontSize: 25.0,
                   color: MyColors.deepBlue,
                   fontWeight: FontWeight.bold)),
-          Expanded(child: Text('')), //起填充作用
+          Expanded(child: Text('')), // 起填充作用
           Text('BOTillya',
               style: TextStyle(color: MyColors.deepBlue, fontSize: 17.0)),
           GestureDetector(

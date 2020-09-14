@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart' as prefs;
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
+    as prefs;
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   _login() async {
     //TODO 账号密码不能为空
-    if(!emailEdit || !pwEdit)return;
+    if (!emailEdit || !pwEdit) return;
     getToken(email, password, onSuccess: (commonBody) {
       prefs.token = Token.fromJson(commonBody.data).token;
       prefs.username = email;
@@ -104,6 +105,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 child: RaisedButton(
                   onPressed: _login,
                   color: MyColors.deepBlue,
+                  splashColor: MyColors.brightBlue,
                   child: Text('login', style: TextStyle(color: Colors.white)),
                   elevation: 5.0,
                   shape: RoundedRectangleBorder(

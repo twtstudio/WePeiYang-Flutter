@@ -13,6 +13,7 @@ import 'auth/view/login_page.dart';
 
 void main() {
   runApp(WeiPeiYangApp());
+  /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
         systemNavigationBarColor: Color(0xFF000000),
@@ -26,10 +27,14 @@ void main() {
 }
 
 class WeiPeiYangApp extends StatelessWidget {
+  /// 用于全局获取当前context
+  static GlobalKey<NavigatorState> navigatorState = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WeiPeiYangDemo',
+      navigatorKey: navigatorState,
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginWidget(),
         '/bind': (ctx) => TjuBindWidget(),
@@ -58,9 +63,9 @@ class StartUpWidget extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     GlobalModel.getInstance().screenWidth = width;
     GlobalModel.getInstance().screenHeight = height;
+    /// 微北洋启动页，显示5秒钟
     Timer(Duration(seconds: 5), () {
-//      var prefs = await SharedPreferences.getInstance();
-//      if (prefs.getBool('login') ?? false) {}
+    //TODO 登录判断
       Navigator.pushReplacementNamed(context, '/login');
     });
     return ConstrainedBox(

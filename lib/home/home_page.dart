@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  /// bottomNavigationBar对应的分页
   List<Widget> pages = List<Widget>();
   int _currentIndex = 0;
 
@@ -41,7 +42,6 @@ class _HomePageState extends State<HomePage> {
                   width: width,
                   child: RaisedButton(
                       elevation: 0.0,
-                      //去除阴影效果
                       shape: RoundedRectangleBorder(),
                       color: Colors.white,
                       child: Text('WPY',

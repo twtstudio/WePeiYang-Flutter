@@ -3,11 +3,6 @@ import 'package:flutter/material.dart';
 import 'model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
-class MorePage extends StatefulWidget {
-  @override
-  _MorePageState createState() => _MorePageState();
-}
-
 ///传递cards参数（Extract方法）
 class CardArguments {
   final List<CardBean> cards;
@@ -15,7 +10,7 @@ class CardArguments {
   CardArguments(this.cards);
 }
 
-class _MorePageState extends State<MorePage> {
+class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CardArguments args = ModalRoute.of(context).settings.arguments;
@@ -36,9 +31,9 @@ class _MorePageState extends State<MorePage> {
               crossAxisCount: 2,
               crossAxisSpacing: 20.0,
               mainAxisSpacing: 25.0,
-              padding: EdgeInsets.symmetric(horizontal: 50.0,vertical: 10.0),
+              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
               childAspectRatio: 1.5,
-              children: getMoreCards(args.cards),
+              children: getMoreCards(args.cards, context),
             ),
           ),
         ],
@@ -46,9 +41,8 @@ class _MorePageState extends State<MorePage> {
     );
   }
 
-  List<Widget> getMoreCards(List<CardBean> cards) {
-    return cards.map((e) => generateCard(context,e)).toList();
-  }
+  List<Widget> getMoreCards(List<CardBean> cards, BuildContext context) =>
+      cards.map((e) => generateCard(context, e)).toList();
 }
 
 Widget generateCard(BuildContext context, CardBean bean) {
