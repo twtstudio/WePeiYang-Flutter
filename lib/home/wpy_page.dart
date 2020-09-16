@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../model/home_model.dart';
-import '../more_page.dart';
-import 'gpa_curve.dart';
+import 'model/home_model.dart';
+import 'more_page.dart';
+import '../gpa/gpa_curve_detail.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
-class WPYPage extends StatefulWidget {
+class WPYPage extends StatelessWidget {
   @override
-  WPYPageState createState() => WPYPageState();
-}
-
-class WPYPageState extends State<WPYPage> {
-  List<CardBean> cards = [];
-  List<CourseBean> courses = [];
-  List<LibraryBean> libraries = [];
-
-  @override
-  void initState() {
-    super.initState();
-    //TODO 接口
+  Widget build(BuildContext context) {
+    List<CardBean> cards = [];
+    List<CourseBean> courses = [];
+    List<LibraryBean> libraries = [];
     cards.add(CardBean(Icons.directions_bike, 'Bicycle', '/bicycle'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
     cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
@@ -36,10 +28,6 @@ class WPYPageState extends State<WPYPage> {
     libraries.add(LibraryBean('Design Psychology1', '2018-08-08'));
     libraries.add(LibraryBean('User Experience', '2018-07-29'));
     libraries.add(LibraryBean('The visual design', '2018-07-26'));
-  }
-
-  @override
-  Widget build(BuildContext context) {
     var now = DateTime.now();
     var week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     var libraryCount = libraries.length >= 10
@@ -76,7 +64,7 @@ class WPYPageState extends State<WPYPage> {
                         height: 90.0,
                         width: 130.0,
                         padding: EdgeInsets.symmetric(horizontal: 3.0),
-                        child: _getCard(i),
+                        child: _getCard(cards,i,context),
                       ),
                     );
                   }),
@@ -247,12 +235,10 @@ class WPYPageState extends State<WPYPage> {
                       fontWeight: FontWeight.w600)),
             ),
           ),
+
           /// 自定义GPA曲线
-          SliverToBoxAdapter(
-              child: GPACurve(
-            gpaBean: GPABean([77.512, 92.155, 65.326, 84.682], 89.869, 3.869),
-            width: GlobalModel.getInstance().screenWidth,
-          )),
+          SliverToBoxAdapter(child: GPAPreview()),
+
           SliverToBoxAdapter(
             child: Container(
               height: 180.0,
@@ -280,17 +266,13 @@ class WPYPageState extends State<WPYPage> {
               ),
             ),
           ),
-//          SliverFillRemaining(
-//              child: Center(
-//                  child:
-//                      Text('FillRemaining', style: TextStyle(fontSize: 30.0)))),
         ],
       ),
     );
   }
 
   /// 显示“More”的卡片，其余卡片详见[generateCard]
-  Widget _getCard(int index) {
+  Widget _getCard(List<CardBean> cards,int index,BuildContext context) {
     if (index == cards.length) {
       var startColor = Color.fromRGBO(142, 147, 171, 1.0);
       var endColor = Color.fromRGBO(166, 170, 185, 1.0);

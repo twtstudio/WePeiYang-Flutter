@@ -60,3 +60,23 @@ class Evaluate{
   String union_id;
   String course_id;
 }
+
+///test
+
+class GPAStat{
+  double weighted;
+  double gpa;
+  double credits;
+  List<CourseDetail> courses;
+
+  GPAStat(this.weighted, this.gpa, this.credits, this.courses);
+}
+
+class CourseDetail{
+  String name;
+  String type;
+  double credit;
+  double score;
+
+  CourseDetail(this.name, this.type, this.credit, this.score);
+}

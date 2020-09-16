@@ -32,6 +32,7 @@ dependencies:
   device_info : ^0.2.0
   package_info: ^0.3.2+1
   crypto: ^2.1.4
+  provider: ^3.0.0
 
 dev_dependencies:
   flutter_test:

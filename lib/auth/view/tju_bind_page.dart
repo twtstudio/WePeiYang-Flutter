@@ -17,7 +17,6 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   var tjupasswd = "";
 
   _tjuBind() async {
-    //TODO
     if (!nameEdit || !pwEdit) return;
     bindTju(tjuuname, tjupasswd,
         onSuccess: () =>
@@ -25,12 +24,14 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               prefs.tjuuname = tjuuname;
               prefs.tjupasswd = tjupasswd;
               print("bind success！！！！！！！！！！！！！！！！！！！！！！！！！!");
+              Navigator.pop(context);
             }),
         onFailure: (e) {
           //TODO
         });
   }
 
+  //TODO action icon
   @override
   Widget build(BuildContext context) {
     return Scaffold(

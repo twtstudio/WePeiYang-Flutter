@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
-import 'package:wei_pei_yang_demo/gpa/network/gpa_service.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/gpa/gpa_model.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/gpa/gpa_service.dart';
 
 class CPage extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class CPageState extends State<CPage> {
   _getGpa() {
     getGPABean(onSuccess: (commonBody) {
       var gpaBean = GPABean.fromJson(commonBody.data);
-      var stat = gpaBean.stat.toString();
+      var stat = gpaBean.data.toString();
       setState(() {
         _text = stat;
       });
@@ -25,15 +25,19 @@ class CPageState extends State<CPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 300),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
           child: Center(
             child: Column(
               children: <Widget>[
-                RaisedButton(
-                  child: Text("Test Dio"),
-                  onPressed: () {
-                    _getGpa();
-                  },
+                Container(
+                  width: 100,
+                  height: 100,
+                  child: RaisedButton(
+                    child: Text("Test Dio"),
+                    onPressed: () {
+                      _getGpa();
+                    },
+                  ),
                 ),
                 Container(child: Text(_text), height: 100)
               ],

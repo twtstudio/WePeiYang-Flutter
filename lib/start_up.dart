@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
 import 'auth/view/tju_bind_page.dart';
+import 'gpa/gpa_page.dart';
 import 'home/model/home_model.dart';
 import 'home/home_page.dart';
 import 'home/more_page.dart';
@@ -12,7 +15,12 @@ import 'home/user_page.dart';
 import 'auth/view/login_page.dart';
 
 void main() {
-  runApp(WeiPeiYangApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => GPANotifier(),
+      child: WeiPeiYangApp(),
+    )
+  );
   /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
@@ -45,7 +53,7 @@ class WeiPeiYangApp extends StatelessWidget {
         '/learning': (ctx) => LoginWidget(),
         '/library': (ctx) => LoginWidget(),
         '/cards': (ctx) => LoginWidget(),
-        '/gpa': (ctx) => LoginWidget(),
+        '/gpa': (ctx) => GPAPage(),
         '/classroom': (ctx) => LoginWidget(),
         '/coffee': (ctx) => LoginWidget(),
         '/byBus': (ctx) => LoginWidget(),
@@ -63,8 +71,8 @@ class StartUpWidget extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     GlobalModel.getInstance().screenWidth = width;
     GlobalModel.getInstance().screenHeight = height;
-    /// 微北洋启动页，显示5秒钟
-    Timer(Duration(seconds: 5), () {
+    /// 微北洋启动页，显示4秒钟
+    Timer(Duration(seconds: 4), () {
     //TODO 登录判断
       Navigator.pushReplacementNamed(context, '/login');
     });
