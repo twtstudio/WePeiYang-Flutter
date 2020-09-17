@@ -16,10 +16,7 @@ class GPAPage extends StatelessWidget {
         child: Column(
           children: [
             RadarChartWidget(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: GPAStatsWidget(),
-            ),
+            GPAStatsWidget(),
             GPACurve(),
             CourseListWidget()
           ],
@@ -274,46 +271,63 @@ class GPAStatsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     //TODO list为空时
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
+      var weighted = "不";
+      var gpa = "知";
+      var credits = "道";
+      if (gpaNotifier.currentDataWithNotify != null) {
+        weighted = gpaNotifier.currentDataWithNotify[0].toString();
+        gpa = gpaNotifier.currentDataWithNotify[1].toString();
+        credits = gpaNotifier.currentDataWithNotify[2].toString();
+      }
       var textStyle = TextStyle(
           color: Color.fromRGBO(169, 179, 144, 1.0),
           fontWeight: FontWeight.bold,
           fontSize: 15.0);
       var numStyle = TextStyle(
           color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Text('Weighted', style: textStyle),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${gpaNotifier.currentDataWithNotify[0]}',
-                    style: numStyle),
-              )
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Text('GPA', style: textStyle),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${gpaNotifier.currentDataWithNotify[1]}',
-                    style: numStyle),
-              )
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Text('Credits', style: textStyle),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${gpaNotifier.currentDataWithNotify[2]}',
-                    style: numStyle),
-              )
-            ],
-          ),
-        ],
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            GestureDetector(
+              onTap: () => gpaNotifier.typeWithNotify = 0,
+              child: Column(
+                children: <Widget>[
+                  Text('Weighted', style: textStyle),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(weighted, style: numStyle),
+                  )
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () => gpaNotifier.typeWithNotify = 1,
+              child: Column(
+                children: <Widget>[
+                  Text('GPA', style: textStyle),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(gpa, style: numStyle),
+                  )
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () => gpaNotifier.typeWithNotify = 2,
+              child: Column(
+                children: <Widget>[
+                  Text('Credits', style: textStyle),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(credits, style: numStyle),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     });
   }
@@ -357,45 +371,50 @@ class _CourseListState extends State<CourseListWidget> {
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                              child: Icon(Icons.assignment_turned_in,
-                                  color: Color.fromRGBO(178, 184, 153, 1),
-                                  size: 25),
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(courses[i].name,
-                                        style: TextStyle(
-                                            fontSize: 15, color: Colors.white)),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        "${courses[i].classType} / ${courses[i].credit} Credits",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color:
-                                                Color.fromRGBO(178, 184, 153, 1))),
-                                  )
-                                ],
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                                child: Icon(Icons.assignment_turned_in,
+                                    color: Color.fromRGBO(178, 184, 153, 1),
+                                    size: 25),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
-                              child: Text('${courses[i].score.round()}',
-                                  style: TextStyle(
-                                      fontSize: 28,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
-                            )
-                          ],
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(courses[i].name,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.white)),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          "${courses[i].classType} / ${courses[i].credit} Credits",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color.fromRGBO(
+                                                  178, 184, 153, 1))),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Text('${courses[i].score.round()}',
+                                    style: TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold)),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     )),

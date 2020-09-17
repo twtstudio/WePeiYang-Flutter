@@ -82,9 +82,12 @@ class _GPACurveState extends State<GPACurve>
           onTapDown: (TapDownDetails detail) {
             RenderBox renderBox = context.findRenderObject();
             var localOffset = renderBox.globalToLocal(detail.globalPosition);
+            var result = judgeTaped(localOffset, points);
             setState(() {
-              var result = judgeTaped(localOffset, points);
-              if (result != 0) _newTaped = result;
+              if (result != 0) {
+                _newTaped = result;
+                gpaNotifier.indexWithNotify = result - 1;
+              }
             });
           },
           //TODO 滑动监听，出了点问题，总之先砍掉（selected已经删了）
@@ -159,18 +162,15 @@ class _GPACurveState extends State<GPACurve>
     var width = GlobalModel.getInstance().screenWidth;
     var step = width / (list.length + 1);
 
-    /// start和end的设计使曲线呈上升趋势
     /// 求gpa最小值（算上起止）与最值差，使曲线高度符合比例
-    var startStat = list.first * 0.95;
-    var minStat = min(list.reduce(min),startStat);
+    var minStat = list.reduce(min);
     var maxStat = list.reduce(max);
-    var endStat = (list.last * 1.1) > maxStat ? maxStat : list.last * 1.1;
     var gap = maxStat - minStat;
-    points.add(Point(0, 140 - (startStat - minStat) / gap * 120));
-    for (var i = 1; i <= list.length; i++) {
-      points.add(Point(i * step, 140 - (list[i - 1] - minStat) / gap * 120));
+    points.add(Point(0, 140 - (list.first - minStat) / gap * 120));
+    for (var i = 0; i < list.length; i++) {
+      points.add(Point((i + 1) * step, 140 - (list[i] - minStat) / gap * 120));
     }
-    points.add(Point(width, 140 - (endStat - minStat) / gap * 120));
+    points.add(Point(width, 140 - (list.last - minStat) / gap * 120));
   }
 
   /// 判断触碰位置是否在任意圆内, r应大于点的默认半径radius,使圆点易触
@@ -268,9 +268,10 @@ extension Cubic on Path {
       var point2 = list[i + 1];
 
       ///调整bias可以控制曲线起伏程度
-      var bias = (point2.x - point1.x) * 0.3;
-      var cp1 = Point(point1.x + bias, point1.y);
-      var cp2 = Point(point2.x - bias, point2.y);
+      var biasX = (point2.x - point1.x) * 0.3;
+      var biasY = (point1.y == point2.y) ? 2 : 0;
+      var cp1 = Point(point1.x + biasX, point1.y - biasY);
+      var cp2 = Point(point2.x - biasX, point2.y + biasY);
       cubicTo(cp1.x, cp1.y, cp2.x, cp2.y, point2.x, point2.y);
     }
   }
