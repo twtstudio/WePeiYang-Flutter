@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/gpa/gpa_model.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/gpa/gpa_service.dart';
+import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 
 class CPage extends StatefulWidget {
   @override
@@ -11,12 +9,11 @@ class CPage extends StatefulWidget {
 class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
-  _getGpa() {
-    getGPABean(onSuccess: (commonBody) {
-      var gpaBean = GPABean.fromJson(commonBody.data);
-      var stat = gpaBean.data.toString();
+  _getGpa() async{
+    var dio = await DioService().create();
+    await dio.getCall("v1/gpa", onSuccess: (commonBody){
       setState(() {
-        _text = stat;
+        _text = commonBody.data.toString();
       });
     });
   }

@@ -7,6 +7,7 @@ class GPANotifier with ChangeNotifier {
   ///更新gpa总数据时调用（如网络请求）
   set listWithNotify(List<GPAStat> newList) {
     _listWithNotify = newList;
+    _sort();
     notifyListeners();
   }
 
@@ -49,13 +50,49 @@ class GPANotifier with ChangeNotifier {
   }
 
   ///获取当前学年的course detail
-  List<CourseDetail> get coursesWithNotify {
+  List<Course> get coursesWithNotify {
     if (_listWithNotify.length == 0) return List();
     return _listWithNotify[_index].courses;
   }
 
-  void shuffle(){
-    _listWithNotify[_index].courses.shuffle();
+  /// list的排列方式， 0->name 1->score 2->credit
+  int _sortType = 0;
+
+  String get sortType {
+    switch (_sortType) {
+      case 0:
+        return "n a m e";
+      case 1:
+        return "s c o r e";
+      case 2:
+        return "c r e d i t s";
+    }
+    return "n a m e";
+  }
+
+  void _sort() {
+    switch (_sortType) {
+      case 0:
+          _listWithNotify.forEach((element) {
+            element.courses.sort((b,a)=> a.name.compareTo(b.name));
+          });
+          break;
+      case 1:
+        _listWithNotify.forEach((element) {
+          element.courses.sort((b,a)=> a.score.compareTo(b.score));
+        });
+        break;
+      case 2:
+        _listWithNotify.forEach((element) {
+          element.courses.sort((b,a)=> a.credit.compareTo(b.credit));
+        });
+        break;
+    }
     notifyListeners();
+  }
+
+  void reSort(){
+    _sortType = ( _sortType + 1) % 3;
+    _sort();
   }
 }

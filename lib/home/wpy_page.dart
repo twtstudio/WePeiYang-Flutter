@@ -64,7 +64,7 @@ class WPYPage extends StatelessWidget {
                         height: 90.0,
                         width: 130.0,
                         padding: EdgeInsets.symmetric(horizontal: 3.0),
-                        child: _getCard(cards,i,context),
+                        child: _getCard(cards, i, context),
                       ),
                     );
                   }),
@@ -157,72 +157,70 @@ class WPYPage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   itemCount: libraries.length,
-                  itemBuilder: (context, i) {
-                    return GestureDetector(
-                      onTap: () {
+                  itemBuilder: (context, i) => GestureDetector(
+                        onTap: () {
 //                        Navigator.push(context, MaterialPageRoute(builder: (context) => Text('123')));
-                      },
-                      child: Container(
-                        height: 170.0,
-                        width: 150.0,
-                        padding: EdgeInsets.symmetric(horizontal: 7.0),
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 3.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                  margin: EdgeInsets.symmetric(vertical: 2.0),
-                                  decoration: BoxDecoration(
-                                      color: MyColors.colorList[(i + 3) % 5],
-                                      borderRadius: BorderRadius.only(
-                                          topLeft:
-                                              Radius.elliptical(60.0, 120.0),
-                                          bottomLeft:
-                                              Radius.elliptical(60.0, 120.0))),
-                                  width: 6.0),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 11.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 95.0,
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(libraries[i].book,
-                                            style: TextStyle(
-                                                fontSize: 17.0,
+                        },
+                        child: Container(
+                          height: 170.0,
+                          width: 150.0,
+                          padding: EdgeInsets.symmetric(horizontal: 7.0),
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 3.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0)),
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                    margin: EdgeInsets.symmetric(vertical: 2.0),
+                                    decoration: BoxDecoration(
+                                        color: MyColors.colorList[(i + 3) % 5],
+                                        borderRadius: BorderRadius.only(
+                                            topLeft:
+                                                Radius.elliptical(60.0, 120.0),
+                                            bottomLeft: Radius.elliptical(
+                                                60.0, 120.0))),
+                                    width: 6.0),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 11.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          height: 95.0,
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(libraries[i].book,
+                                              style: TextStyle(
+                                                  fontSize: 17.0,
+                                                  color: MyColors.deepBlue,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.only(top: 15.0),
+                                          child: Text('Time:',
+                                              style: TextStyle(
+                                                fontSize: 13.0,
                                                 color: MyColors.deepBlue,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Text('Time:',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: MyColors.deepBlue,
-                                            )),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(libraries[i].time,
-                                            style: TextStyle(
-                                                fontSize: 14.0,
-                                                color: MyColors.deepBlue)),
-                                      )
-                                    ],
+                                              )),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(libraries[i].time,
+                                              style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  color: MyColors.deepBlue)),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      )),
             ),
           ),
           SliverToBoxAdapter(
@@ -272,7 +270,7 @@ class WPYPage extends StatelessWidget {
   }
 
   /// 显示“More”的卡片，其余卡片详见[generateCard]
-  Widget _getCard(List<CardBean> cards,int index,BuildContext context) {
+  Widget _getCard(List<CardBean> cards, int index, BuildContext context) {
     if (index == cards.length) {
       var startColor = Color.fromRGBO(142, 147, 171, 1.0);
       var endColor = Color.fromRGBO(166, 170, 185, 1.0);

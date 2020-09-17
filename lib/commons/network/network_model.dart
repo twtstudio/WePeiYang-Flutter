@@ -1,4 +1,5 @@
 class CommonBody {
+  // ignore: non_constant_identifier_names
   int error_code;
   String message;
   Map data;

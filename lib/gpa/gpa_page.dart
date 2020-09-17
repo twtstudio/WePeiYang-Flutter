@@ -2,13 +2,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_service.dart';
 import 'gpa_model.dart';
 import 'gpa_notifier.dart';
 
 class GPAPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var s = TextStyle(fontSize: 40);
     return Scaffold(
       appBar: GPAppBar(),
       backgroundColor: Color.fromRGBO(127, 139, 89, 1.0),
@@ -21,25 +21,7 @@ class GPAPage extends StatelessWidget {
               child: GPAStatsWidget(),
             ),
             GPACurve(),
-            CourseListWidget(),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
-            Center(child: Text("12345", style: s)),
+            CourseListWidget()
           ],
         ),
       ),
@@ -50,18 +32,18 @@ class GPAPage extends StatelessWidget {
 class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    List<CourseDetail> list1 = [];
+    List<Course> list1 = [];
     List<GPAStat> gpaList = [];
-    list1.add(CourseDetail("高等数学2A", "数学", 6, 93));
-    list1.add(CourseDetail("C/C++程序设计（双语）", "计算机", 3.5, 91));
-    list1.add(CourseDetail("线性代数及其应用", "数学", 3.5, 94));
-    list1.add(CourseDetail("思想道德修养与法律基础", "思想政治理论", 3, 55));
-    list1.add(CourseDetail("大学英语1", "外语", 2, 97));
-    list1.add(CourseDetail("计算机导论", "计算机", 1.5, 76));
-    list1.add(CourseDetail("大学生心理健康", "文化素质教育必修", 1, 60));
-    list1.add(CourseDetail("体育A", "体育", 1, 78));
-    list1.add(CourseDetail("健康教育", "健康教育", 0.5, 86));
-    list1.add(CourseDetail("大学计算机基础1", "计算机", 0, 100));
+    list1.add(Course("高等数学2A", "数学", 6, 93));
+    list1.add(Course("C/C++程序设计（双语）", "计算机", 3.5, 91));
+    list1.add(Course("线性代数及其应用", "数学", 3.5, 94));
+    list1.add(Course("思想道德修养与法律基础", "思想政治理论", 3, 55));
+    list1.add(Course("大学英语1", "外语", 2, 97));
+    list1.add(Course("计算机导论", "计算机", 1.5, 76));
+    list1.add(Course("大学生心理健康", "文化素质教育必修", 1, 60));
+    list1.add(Course("体育A", "体育", 1, 78));
+    list1.add(Course("健康教育", "健康教育", 0.5, 86));
+    list1.add(Course("大学计算机基础1", "计算机", 0, 100));
     gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
     gpaList.add(GPAStat(77.72, 3.060, 25.0, list1));
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
@@ -82,6 +64,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.error_outline, color: Colors.white, size: 25),
               onTap: () {
                 //TODO popup info
+                Provider.of<GPANotifier>(context).listWithNotify = gpaList;
               }),
         ),
         Padding(
@@ -90,7 +73,9 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.loop, color: Colors.white, size: 25),
               onTap: () {
                 //TODO refresh
-                Provider.of<GPANotifier>(context).listWithNotify = gpaList;
+                getGPABean(onSuccess: (list) {
+                  Provider.of<GPANotifier>(context).listWithNotify = list;
+                });
               }),
         ),
       ],
@@ -101,30 +86,40 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class RadarChartWidget extends StatelessWidget {
+class RadarChartWidget extends StatefulWidget {
+  @override
+  _RadarChartState createState() => _RadarChartState();
+}
+
+class _RadarChartState extends State<RadarChartWidget> {
+  List<Course> list = [];
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(
-      builder: (context, gpaNotifier, _) => GestureDetector(
+    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
+      list = gpaNotifier.coursesWithNotify;
+      return GestureDetector(
         onTapDown: (TapDownDetails detail) {
           //TODO tap animation here
-          Provider.of<GPANotifier>(context).shuffle();
+          setState(() {
+            list.shuffle();
+          });
         },
         child: Container(
           height: 350,
           //TODO 少于3个时不显示
           child: CustomPaint(
-            painter: _RadarChartPainter(gpaNotifier.coursesWithNotify),
+            painter: _RadarChartPainter(list),
             size: Size(double.maxFinite, 160),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
 class _RadarChartPainter extends CustomPainter {
-  final List<CourseDetail> courses;
+  final List<Course> courses;
 
   _RadarChartPainter(this.courses);
 
@@ -330,8 +325,83 @@ class CourseListWidget extends StatefulWidget {
 }
 
 class _CourseListState extends State<CourseListWidget> {
+  static final double cardHeight = 90;
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
+      var courses = gpaNotifier.coursesWithNotify;
+      return Column(
+        children: [
+          GestureDetector(
+            onTap: () => gpaNotifier.reSort(),
+            child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                    'O R D E R E D    B Y    ${gpaNotifier.sortType.toUpperCase()}',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Color.fromRGBO(178, 184, 153, 1),
+                        fontWeight: FontWeight.bold))),
+          ),
+          Container(
+            height: cardHeight * courses.length,
+            child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: courses.length,
+                itemBuilder: (context, i) => Container(
+                      height: cardHeight,
+                      padding: EdgeInsets.fromLTRB(30, 3, 30, 3),
+                      child: Card(
+                        color: Color.fromRGBO(136, 148, 102, 1),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                              child: Icon(Icons.assignment_turned_in,
+                                  color: Color.fromRGBO(178, 184, 153, 1),
+                                  size: 25),
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(courses[i].name,
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.white)),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        "${courses[i].classType} / ${courses[i].credit} Credits",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color:
+                                                Color.fromRGBO(178, 184, 153, 1))),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text('${courses[i].score.round()}',
+                                  style: TextStyle(
+                                      fontSize: 28,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                            )
+                          ],
+                        ),
+                      ),
+                    )),
+          )
+        ],
+      );
+    });
   }
 }
