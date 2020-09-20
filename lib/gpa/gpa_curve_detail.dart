@@ -75,6 +75,8 @@ class _GPACurveState extends State<GPACurve>
   static final Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);
   static final Color _popupTextColor = Colors.white;
 
+  static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
+
   /// 上次 / 本次选中的点
   int _lastTaped = 1;
   int _newTaped = 1;
@@ -119,7 +121,7 @@ class _GPACurveState extends State<GPACurve>
                       isPreview: widget.isPreview,
                       points: points,
                       taped: _newTaped),
-                  size: Size(double.maxFinite, 160.0),
+                  size: Size(double.maxFinite, _canvasHeight),
                 ),
 
                 /// Stack顶层
@@ -133,27 +135,27 @@ class _GPACurveState extends State<GPACurve>
                     return Transform.translate(
                       /// 计算两次点击之间的偏移量Offset
                       /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
-                      offset: Offset(lT.x - 40.0 + (nT.x - lT.x) * value,
-                          lT.y - 55.0 + (nT.y - lT.y) * value),
+                      offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                          lT.y - 55 + (nT.y - lT.y) * value),
                       child: Container(
-                        width: 80.0,
-                        height: 70.0,
+                        width: 80,
+                        height: 70,
                         child: Column(
                           children: <Widget>[
                             Container(
-                              width: 80.0,
-                              height: 40.0,
+                              width: 80,
+                              height: 40,
                               child: Card(
                                 color: widget.isPreview
                                     ? _popupCardPreview
                                     : _popupCardColor,
-                                elevation: 1.0,
+                                elevation: 1,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0)),
+                                    borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: Text('${curveData[_newTaped - 1]}',
                                       style: TextStyle(
-                                          fontSize: 16.0,
+                                          fontSize: 16,
                                           color: widget.isPreview
                                               ? _popupTextPreview
                                               : _popupTextColor,
@@ -164,7 +166,7 @@ class _GPACurveState extends State<GPACurve>
                             CustomPaint(
                               painter:
                                   _GPAPopupPainter(isPreview: widget.isPreview),
-                              size: Size(80.0, 30.0),
+                              size: Size(80, 30),
                             )
                           ],
                         ),
@@ -178,23 +180,26 @@ class _GPACurveState extends State<GPACurve>
     });
   }
 
-  //TODO
+  /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
+
   _initPoints(List<Point<double>> points, List<double> list) {
     var width = GlobalModel.getInstance().screenWidth;
     var step = width / (list.length + 1);
+    var h1 = _canvasHeight - 20; // canvas除去上面的空白
+    var h2 = _canvasHeight - 40; // canvas中间区域大小
 
     /// 求gpa最小值（算上起止）与最值差，使曲线高度符合比例
     var minStat = list.reduce(min);
     var maxStat = list.reduce(max);
     var gap = maxStat - minStat;
-    points.add(Point(0, 140 - (list.first - minStat) / gap * 120));
+    points.add(Point(0, h1 - (list.first - minStat) / gap * h2));
     for (var i = 0; i < list.length; i++) {
-      points.add(Point((i + 1) * step, 140 - (list[i] - minStat) / gap * 120));
+      points.add(Point((i + 1) * step, h1 - (list[i] - minStat) / gap * h2));
     }
-    points.add(Point(width, 140 - (list.last - minStat) / gap * 120));
+    points.add(Point(width, h1 - (list.last - minStat) / gap * h2));
   }
 
-  /// 判断触碰位置是否在任意圆内, r应大于点的默认半径radius,使圆点易触
+  /// 判断触碰位置是否在任意圆内, 此处的r大于点的默认半径radius,使圆点易触
   int _judgeTaped(Offset touchOffset, List<Point<double>> points,
       {double r = 15.0}) {
     var sx = touchOffset.dx;
@@ -270,7 +275,7 @@ class _GPACurvePainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// 默认黑点半径为6.0，选中后为9.0
+  /// 默认黑点半径为6.0，选中后为8.0
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
     final Paint paint = Paint()
@@ -279,7 +284,7 @@ class _GPACurvePainter extends CustomPainter {
     for (var i = 1; i < points.length - 1; i++) {
       if (i == selected)
         canvas.drawCircle(
-            Offset(points[i].x, points[i].y), radius + 3.0, paint);
+            Offset(points[i].x, points[i].y), radius + 2.0, paint);
       else
         canvas.drawCircle(Offset(points[i].x, points[i].y), radius, paint);
     }
