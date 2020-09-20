@@ -10,7 +10,7 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[GPACurve(), GPAIntro()],
+      children: <Widget>[GPACurve(isPreview: true), GPAIntro()],
     );
   }
 }
@@ -59,12 +59,22 @@ class GPAIntro extends StatelessWidget {
 /// Stack的底层为静态的[_GPACurvePainter],由cubic曲线和黑点构成
 /// Stack的顶层为动态的[_GPAPopupPainter],用补间动画控制移动
 class GPACurve extends StatefulWidget {
+  final bool isPreview;
+
+  GPACurve({@required this.isPreview});
+
   @override
   _GPACurveState createState() => _GPACurveState();
 }
 
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
+  static final Color _popupCardPreview = Colors.white;
+  static final Color _popupTextPreview = MyColors.deepBlue;
+
+  static final Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);
+  static final Color _popupTextColor = Colors.white;
+
   /// 上次 / 本次选中的点
   int _lastTaped = 1;
   int _newTaped = 1;
@@ -72,6 +82,10 @@ class _GPACurveState extends State<GPACurve>
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
+      if (_lastTaped == _newTaped) {
+        _lastTaped = gpaNotifier.indexWithNotify + 1;
+        _newTaped = _lastTaped;
+      }
       List<Point<double>> points = [];
       List<double> curveData = gpaNotifier.curveDataWithNotify;
       //TODO list为空时
@@ -82,13 +96,11 @@ class _GPACurveState extends State<GPACurve>
           onTapDown: (TapDownDetails detail) {
             RenderBox renderBox = context.findRenderObject();
             var localOffset = renderBox.globalToLocal(detail.globalPosition);
-            var result = judgeTaped(localOffset, points);
-            setState(() {
-              if (result != 0) {
-                _newTaped = result;
-                gpaNotifier.indexWithNotify = result - 1;
-              }
-            });
+            var result = _judgeTaped(localOffset, points);
+            if (result != 0) {
+              setState(() => _newTaped = result);
+              gpaNotifier.indexWithNotify = result - 1;
+            }
           },
           //TODO 滑动监听，出了点问题，总之先砍掉（selected已经删了）
           // onHorizontalDragUpdate: (DragUpdateDetails detail) {
@@ -103,7 +115,10 @@ class _GPACurveState extends State<GPACurve>
               children: <Widget>[
                 /// Stack底层
                 CustomPaint(
-                  painter: _GPACurvePainter(points: points, taped: _newTaped),
+                  painter: _GPACurvePainter(
+                      isPreview: widget.isPreview,
+                      points: points,
+                      taped: _newTaped),
                   size: Size(double.maxFinite, 160.0),
                 ),
 
@@ -117,33 +132,39 @@ class _GPACurveState extends State<GPACurve>
                     var lT = points[_lastTaped], nT = points[_newTaped];
                     return Transform.translate(
                       /// 计算两次点击之间的偏移量Offset
-                      /// 40.0和60.0用来对准黑白圆点的圆心
-                      offset: Offset(lT.x - 50.0 + (nT.x - lT.x) * value,
+                      /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
+                      offset: Offset(lT.x - 40.0 + (nT.x - lT.x) * value,
                           lT.y - 55.0 + (nT.y - lT.y) * value),
                       child: Container(
-                        width: 100.0,
+                        width: 80.0,
                         height: 70.0,
                         child: Column(
                           children: <Widget>[
                             Container(
+                              width: 80.0,
                               height: 40.0,
                               child: Card(
-                                color: Colors.white,
-                                elevation: 3.0,
+                                color: widget.isPreview
+                                    ? _popupCardPreview
+                                    : _popupCardColor,
+                                elevation: 1.0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0)),
                                 child: Center(
                                   child: Text('${curveData[_newTaped - 1]}',
                                       style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: MyColors.deepBlue,
+                                          fontSize: 16.0,
+                                          color: widget.isPreview
+                                              ? _popupTextPreview
+                                              : _popupTextColor,
                                           fontWeight: FontWeight.w900)),
                                 ),
                               ),
                             ),
                             CustomPaint(
-                              painter: _GPAPopupPainter(),
-                              size: Size(100.0, 30.0),
+                              painter:
+                                  _GPAPopupPainter(isPreview: widget.isPreview),
+                              size: Size(80.0, 30.0),
                             )
                           ],
                         ),
@@ -174,7 +195,7 @@ class _GPACurveState extends State<GPACurve>
   }
 
   /// 判断触碰位置是否在任意圆内, r应大于点的默认半径radius,使圆点易触
-  int judgeTaped(Offset touchOffset, List<Point<double>> points,
+  int _judgeTaped(Offset touchOffset, List<Point<double>> points,
       {double r = 15.0}) {
     var sx = touchOffset.dx;
     var sy = touchOffset.dy;
@@ -189,6 +210,16 @@ class _GPACurveState extends State<GPACurve>
 
 /// 绘制GPACurve栈上层的可移动点
 class _GPAPopupPainter extends CustomPainter {
+  final bool isPreview;
+
+  _GPAPopupPainter({@required this.isPreview});
+
+  static final Color _outerPreview = MyColors.deepBlue;
+  static final Color _innerPreview = Colors.white;
+
+  static final Color _outerColor = Colors.white;
+  static final Color _innerColor = Color.fromRGBO(125, 140, 85, 1);
+
   static const outerWidth = 4.0;
   static const innerRadius = 5.0;
   static const outerRadius = 7.0;
@@ -196,10 +227,10 @@ class _GPAPopupPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint innerPaint = Paint()
-      ..color = Colors.white
+      ..color = isPreview ? _innerPreview : _innerColor
       ..style = PaintingStyle.fill;
     final Paint outerPaint = Paint()
-      ..color = MyColors.deepBlue
+      ..color = isPreview ? _outerPreview : _outerColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = outerWidth;
     canvas.drawCircle(size.center(Offset.zero), innerRadius, innerPaint);
@@ -215,14 +246,22 @@ class _GPAPopupPainter extends CustomPainter {
 
 /// 绘制GPACurve栈底层的曲线、黑点
 class _GPACurvePainter extends CustomPainter {
+  final bool isPreview;
   final List<Point<double>> points;
   final int taped;
 
-  const _GPACurvePainter({@required this.points, @required this.taped});
+  const _GPACurvePainter(
+      {@required this.isPreview, @required this.points, @required this.taped});
+
+  static final Color _linePreview = MyColors.dust;
+  static final Color _pointPreview = MyColors.darkGrey2;
+
+  static final Color _lineColor = Color.fromRGBO(136, 147, 100, 1);
+  static final Color _pointColor = Colors.white;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     final Paint paint = Paint()
-      ..color = MyColors.dust
+      ..color = isPreview ? _linePreview : _lineColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0;
     final Path path = Path()
@@ -235,7 +274,7 @@ class _GPACurvePainter extends CustomPainter {
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
     final Paint paint = Paint()
-      ..color = MyColors.darkGrey2
+      ..color = isPreview ? _pointPreview : _pointColor
       ..style = PaintingStyle.fill;
     for (var i = 1; i < points.length - 1; i++) {
       if (i == selected)

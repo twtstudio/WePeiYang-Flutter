@@ -12,14 +12,18 @@ class GPAPage extends StatelessWidget {
     return Scaffold(
       appBar: GPAppBar(),
       backgroundColor: Color.fromRGBO(127, 139, 89, 1.0),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            RadarChartWidget(),
-            GPAStatsWidget(),
-            GPACurve(),
-            CourseListWidget()
-          ],
+      body: Theme(
+        /// 修改scrollView滚动至头/尾时溢出的颜色
+        data: ThemeData(accentColor: Colors.white),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              RadarChartWidget(),
+              GPAStatsWidget(),
+              GPACurve(isPreview: false),
+              CourseListWidget()
+            ],
+          ),
         ),
       ),
     );
@@ -34,15 +38,26 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     list1.add(Course("高等数学2A", "数学", 6, 93));
     list1.add(Course("C/C++程序设计（双语）", "计算机", 3.5, 91));
     list1.add(Course("线性代数及其应用", "数学", 3.5, 94));
-    list1.add(Course("思想道德修养与法律基础", "思想政治理论", 3, 55));
+    list1.add(Course("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55));
     list1.add(Course("大学英语1", "外语", 2, 97));
     list1.add(Course("计算机导论", "计算机", 1.5, 76));
     list1.add(Course("大学生心理健康", "文化素质教育必修", 1, 60));
     list1.add(Course("体育A", "体育", 1, 78));
     list1.add(Course("健康教育", "健康教育", 0.5, 86));
     list1.add(Course("大学计算机基础1", "计算机", 0, 100));
+    List<Course> list2 = [];
+    list2.add(Course("高等数学2A", "数学", 6, 63));
+    list2.add(Course("C/C++程序设计（双语）", "计算机", 3.5, 25));
+    list2.add(Course("线性代数及其应用", "数学", 3.5, 85));
+    list2.add(Course("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15));
+    list2.add(Course("大学英语1", "外语", 2, 57));
+    list2.add(Course("计算机导论", "计算机", 1.5, 86));
+    list2.add(Course("大学生心理健康", "文化素质教育必修", 1, 47));
+    list2.add(Course("体育A", "体育", 1, 23));
+    list2.add(Course("健康教育", "健康教育", 0.5, 47));
+    list2.add(Course("大学计算机基础1", "计算机", 0, 11));
     gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
-    gpaList.add(GPAStat(77.72, 3.060, 25.0, list1));
+    gpaList.add(GPAStat(77.72, 3.060, 25.0, list2));
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
     gpaList.add(GPAStat(89.00, 3.700, 1.0, list1));
     return AppBar(
@@ -216,7 +231,7 @@ class _RadarChartPainter extends CustomPainter {
     for (var i = 0; i < courses.length; i++) {
       var textPainter = TextPainter(
           text: TextSpan(
-              text: courses[i].name,
+              text: _formatText(courses[i].name),
               style: TextStyle(fontSize: 10, color: Colors.white)),
           maxLines: 3,
           textDirection: TextDirection.ltr,
@@ -226,6 +241,23 @@ class _RadarChartPainter extends CustomPainter {
           middlePoints[i].dy - (textPainter.height / 2));
       textPainter.paint(canvas, position);
     }
+  }
+
+  String _formatText(String text) {
+    var len = text.length;
+    if (len >= 5 && len <= 8) {
+      int i = (len / 2).ceil();
+      return text.substring(0, i) + "\n" + text.substring(i, len);
+    } else if (len == 9 || len == 10) {
+      return text.substring(0, 3) +
+          "\n" +
+          text.substring(3, len - 3) +
+          "\n" +
+          text.substring(len - 3, len);
+    } else if (len > 12) {
+      return text.substring(0, 11) + '...';
+    } else
+      return text;
   }
 
   @override
@@ -286,7 +318,7 @@ class GPAStatsWidget extends StatelessWidget {
       var numStyle = TextStyle(
           color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30),
+        padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -371,6 +403,7 @@ class _CourseListState extends State<CourseListWidget> {
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
+                        //TODO 自定义duration https://stackoverflow.com/questions/51115401/changing-speed-of-inkwell
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {},

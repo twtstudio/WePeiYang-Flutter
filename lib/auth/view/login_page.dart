@@ -24,7 +24,6 @@ class _LoginWidgetState extends State<LoginWidget> {
       prefs.token = Token.fromJson(commonBody.data).token;
       prefs.username = email;
       prefs.password = password;
-      print("token！！！！！！！！！！！！！！！！！！！！！！！！!\n${prefs.token}");
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
       //TODO
