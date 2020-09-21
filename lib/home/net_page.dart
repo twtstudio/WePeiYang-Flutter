@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 
+/// 此篇代码纯测试用
 class CPage extends StatefulWidget {
   @override
   CPageState createState() => CPageState();
@@ -10,7 +11,7 @@ class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
   _getGpa() async{
-    var dio = await DioService().create();
+    var dio = await DioService.create();
     await dio.getCall("v1/gpa", onSuccess: (commonBody){
       setState(() {
         _text = commonBody.data.toString();

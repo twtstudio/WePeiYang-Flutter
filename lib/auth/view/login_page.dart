@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
@@ -18,15 +19,29 @@ class _LoginWidgetState extends State<LoginWidget> {
   String password = "";
 
   _login() async {
-    //TODO 账号密码不能为空
-    if (!emailEdit || !pwEdit) return;
+    if (!emailEdit || !pwEdit) {
+      Fluttertoast.showToast(
+          msg: "账号密码不能为空",
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      return;
+    }
     getToken(email, password, onSuccess: (commonBody) {
       prefs.token = Token.fromJson(commonBody.data).token;
       prefs.username = email;
       prefs.password = password;
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
-      // TODO
+      Fluttertoast.showToast(
+          msg: e.error.toString(),
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     });
   }
 
@@ -94,7 +109,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                   'Forget password?',
                   style: TextStyle(fontSize: 12.0, color: Colors.blue),
                 ),
-                onTap: () {},
+                onTap: () {
+                  // TODO 测试用
+                  Navigator.pushNamed(context, '/home');
+                },
               ),
             ),
             Container(

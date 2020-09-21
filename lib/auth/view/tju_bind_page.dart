@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/auth/network/bind_dropout_service.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
@@ -27,11 +28,17 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               Navigator.pop(context);
             }),
         onFailure: (e) {
-          //TODO
+          Fluttertoast.showToast(
+              msg: e.error.toString(),
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
         });
   }
 
-  //TODO action icon
+  //TODO 输入框action icon
   @override
   Widget build(BuildContext context) {
     return Scaffold(

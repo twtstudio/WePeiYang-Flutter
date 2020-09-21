@@ -40,8 +40,7 @@ class DioService {
   ///   });
   /// }
   /// ```
-  //TODO 好像单例得不太对，DioService()对象会多次生成
-  Future<Dio> create() async {
+  static Future<Dio> create() async {
     AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
     var brand = androidInfo.brand;
     var product = androidInfo.product;

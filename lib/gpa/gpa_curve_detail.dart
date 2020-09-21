@@ -72,7 +72,7 @@ class GPACurve extends StatefulWidget {
 
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
-  static final Color _popupCardPreview = Colors.white;
+  static const Color _popupCardPreview = Colors.white;
   static final Color _popupTextPreview = MyColors.deepBlue;
 
   static final Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);

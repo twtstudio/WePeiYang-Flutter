@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart' show required;
 
 bindTju(String tjuuname, String tjupasswd,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = await DioService().create();
+  var dio = await DioService.create();
   try{
     await dio.get("v1/auth/bind/tju",
         queryParameters: {"tjuuname": tjuuname, "tjupasswd": tjupasswd});

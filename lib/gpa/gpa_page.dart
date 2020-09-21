@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart' show GPACurve;
 import 'package:wei_pei_yang_demo/gpa/gpa_service.dart';
 import 'gpa_model.dart';
 import 'gpa_notifier.dart';
@@ -85,9 +86,15 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
               onTap: () {
-                //TODO failure
                 getGPABean(onSuccess: (list) {
                   Provider.of<GPANotifier>(context).listWithNotify = list;
+                }, onFailure: (e) {
+                  Fluttertoast.showToast(
+                      msg: "刷新gpa数据失败",
+                      textColor: Colors.white,
+                      backgroundColor: Colors.red,
+                      timeInSecForIosWeb: 1,
+                      fontSize: 16);
                 });
               }),
         ),
@@ -131,17 +138,44 @@ class _RadarChartState extends State<RadarChartWidget> {
         },
         child: Opacity(
           opacity: isTaped ? 0.2 : 1,
-          child: Container(
-            height: 350,
-            //TODO 少于3个时不显示
-            child: CustomPaint(
-              painter: _RadarChartPainter(list),
-              size: Size(double.maxFinite, 160),
-            ),
-          ),
+          child: _judgeListLength(list),
         ),
       );
     });
+  }
+
+  Widget _judgeListLength(List<Course> list) {
+    if (list.length < 3)
+      return Container(
+        height: 300,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
+                child: Icon(Icons.assessment,
+                    size: 150, color: Color.fromRGBO(172, 179, 146, 1)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Text(
+                    "Radar & rose chart is not available with semesters of less than three courses.",
+                    style: TextStyle(
+                        color: Color.fromRGBO(178, 184, 153, 1), fontSize: 13)),
+              )
+            ],
+          ),
+        ),
+      );
+    else
+      return Container(
+        height: 350,
+        child: CustomPaint(
+          painter: _RadarChartPainter(list),
+          size: Size(double.maxFinite, 160),
+        ),
+      );
   }
 }
 
@@ -314,6 +348,14 @@ class _RadarChartPainter extends CustomPainter {
 
 /// 其实代码很像gpa_curve_detail.dart中的GPAIntro,只不过没法复用555
 class GPAStatsWidget extends StatelessWidget {
+  static const textStyle = TextStyle(
+      color: Color.fromRGBO(169, 179, 144, 1.0),
+      fontWeight: FontWeight.bold,
+      fontSize: 13.0);
+
+  static const numStyle = TextStyle(
+      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
@@ -325,12 +367,6 @@ class GPAStatsWidget extends StatelessWidget {
         gpa = gpaNotifier.currentDataWithNotify[1].toString();
         credits = gpaNotifier.currentDataWithNotify[2].toString();
       }
-      var textStyle = TextStyle(
-          color: Color.fromRGBO(169, 179, 144, 1.0),
-          fontWeight: FontWeight.bold,
-          fontSize: 13.0);
-      var numStyle = TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0);
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
         child: Row(

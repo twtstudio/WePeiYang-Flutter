@@ -36,13 +36,16 @@ void main() {
 
 class WeiPeiYangApp extends StatelessWidget {
   /// 用于全局获取当前context
-  static GlobalKey<NavigatorState> navigatorState = GlobalKey();
+  static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WeiPeiYangDemo',
       navigatorKey: navigatorState,
+      theme: ThemeData(
+        // fontFamily: 'Montserrat'
+      ),
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginWidget(),
         '/bind': (ctx) => TjuBindWidget(),
@@ -67,12 +70,12 @@ class WeiPeiYangApp extends StatelessWidget {
 class StartUpWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     GlobalModel.getInstance().screenWidth = width;
     GlobalModel.getInstance().screenHeight = height;
-    /// 微北洋启动页，显示4秒钟
-    Timer(Duration(seconds: 4), () {
+    /// 微北洋启动页，显示3秒钟
+    Timer(Duration(seconds: 3), () {
     //TODO 登录判断
       Navigator.pushReplacementNamed(context, '/login');
     });
