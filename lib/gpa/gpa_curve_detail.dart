@@ -18,7 +18,6 @@ class GPAPreview extends StatelessWidget {
 class GPAIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //TODO list为空时
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
       var textStyle = TextStyle(
           color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15.0);
@@ -26,6 +25,12 @@ class GPAIntro extends StatelessWidget {
           color: MyColors.deepBlue,
           fontWeight: FontWeight.bold,
           fontSize: 25.0);
+      var weighted = "未";
+      var grade = "知";
+      if (gpaNotifier.currentDataWithNotify != null) {
+        weighted = gpaNotifier.currentDataWithNotify[0].toString();
+        grade = gpaNotifier.currentDataWithNotify[1].toString();
+      }
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -34,8 +39,7 @@ class GPAIntro extends StatelessWidget {
               Text('Total Weighted', style: textStyle),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${gpaNotifier.currentDataWithNotify[0]}',
-                    style: numStyle),
+                child: Text(weighted, style: numStyle),
               )
             ],
           ),
@@ -44,8 +48,7 @@ class GPAIntro extends StatelessWidget {
               Text('Total Grade', style: textStyle),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text('${gpaNotifier.currentDataWithNotify[1]}',
-                    style: numStyle),
+                child: Text(grade, style: numStyle),
               )
             ],
           ),
@@ -84,17 +87,18 @@ class _GPACurveState extends State<GPACurve>
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
+      if (gpaNotifier.currentDataWithNotify == null)
+        return Container(height: 20);
       if (_lastTaped == _newTaped) {
         _lastTaped = gpaNotifier.indexWithNotify + 1;
         _newTaped = _lastTaped;
       }
       List<Point<double>> points = [];
       List<double> curveData = gpaNotifier.curveDataWithNotify;
-      //TODO list为空时
       _initPoints(points, curveData);
       return GestureDetector(
 
-          /// 点击监听
+        /// 点击监听
           onTapDown: (TapDownDetails detail) {
             RenderBox renderBox = context.findRenderObject();
             var localOffset = renderBox.globalToLocal(detail.globalPosition);
@@ -115,6 +119,7 @@ class _GPACurveState extends State<GPACurve>
           child: Container(
             child: Stack(
               children: <Widget>[
+
                 /// Stack底层
                 CustomPaint(
                   painter: _GPACurvePainter(
@@ -131,8 +136,10 @@ class _GPACurveState extends State<GPACurve>
                       begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
                   onEnd: () => setState(() => _lastTaped = _newTaped),
                   builder: (BuildContext context, value, Widget child) {
-                    var lT = points[_lastTaped], nT = points[_newTaped];
+                    var lT = points[_lastTaped],
+                        nT = points[_newTaped];
                     return Transform.translate(
+
                       /// 计算两次点击之间的偏移量Offset
                       /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
                       offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
@@ -165,7 +172,7 @@ class _GPACurveState extends State<GPACurve>
                             ),
                             CustomPaint(
                               painter:
-                                  _GPAPopupPainter(isPreview: widget.isPreview),
+                              _GPAPopupPainter(isPreview: widget.isPreview),
                               size: Size(80, 30),
                             )
                           ],
@@ -183,7 +190,9 @@ class _GPACurveState extends State<GPACurve>
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
 
   _initPoints(List<Point<double>> points, List<double> list) {
-    var width = GlobalModel.getInstance().screenWidth;
+    var width = GlobalModel
+        .getInstance()
+        .screenWidth;
     var step = width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小

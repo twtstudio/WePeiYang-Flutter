@@ -26,7 +26,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       prefs.password = password;
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
-      //TODO
+      // TODO
     });
   }
 

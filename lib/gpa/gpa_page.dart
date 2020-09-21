@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +85,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
               onTap: () {
-                //TODO refresh
+                //TODO failure
                 getGPABean(onSuccess: (list) {
                   Provider.of<GPANotifier>(context).listWithNotify = list;
                 });
@@ -106,23 +107,37 @@ class RadarChartWidget extends StatefulWidget {
 class _RadarChartState extends State<RadarChartWidget> {
   List<Course> list = [];
 
+  /// isTaped为true时雷达图有透明度
+  bool isTaped = false;
+
+  static Timer timer;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
       list = gpaNotifier.coursesWithNotify;
       return GestureDetector(
         onTapDown: (TapDownDetails detail) {
-          //TODO tap animation here
           setState(() {
+            isTaped = true;
             list.shuffle();
           });
+
+          /// 重复点击雷达图时，timer重新计时
+          if (timer != null && timer.isActive) timer.cancel();
+          timer = Timer(Duration(milliseconds: 300), () {
+            setState(() => isTaped = false);
+          });
         },
-        child: Container(
-          height: 350,
-          //TODO 少于3个时不显示
-          child: CustomPaint(
-            painter: _RadarChartPainter(list),
-            size: Size(double.maxFinite, 160),
+        child: Opacity(
+          opacity: isTaped ? 0.2 : 1,
+          child: Container(
+            height: 350,
+            //TODO 少于3个时不显示
+            child: CustomPaint(
+              painter: _RadarChartPainter(list),
+              size: Size(double.maxFinite, 160),
+            ),
           ),
         ),
       );
@@ -301,7 +316,6 @@ class _RadarChartPainter extends CustomPainter {
 class GPAStatsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //TODO list为空时
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
       var weighted = "不";
       var gpa = "知";
@@ -314,16 +328,21 @@ class GPAStatsWidget extends StatelessWidget {
       var textStyle = TextStyle(
           color: Color.fromRGBO(169, 179, 144, 1.0),
           fontWeight: FontWeight.bold,
-          fontSize: 15.0);
+          fontSize: 13.0);
       var numStyle = TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0);
+          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0);
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            GestureDetector(
+            /// InkResponse provides splashes which can extend outside its bounds
+            InkResponse(
               onTap: () => gpaNotifier.typeWithNotify = 0,
+              radius: 45,
+
+              /// defines a splash that spreads out more aggressively than the default
+              splashFactory: InkRipple.splashFactory,
               child: Column(
                 children: <Widget>[
                   Text('Weighted', style: textStyle),
@@ -334,8 +353,10 @@ class GPAStatsWidget extends StatelessWidget {
                 ],
               ),
             ),
-            GestureDetector(
+            InkResponse(
               onTap: () => gpaNotifier.typeWithNotify = 1,
+              radius: 45,
+              splashFactory: InkRipple.splashFactory,
               child: Column(
                 children: <Widget>[
                   Text('GPA', style: textStyle),
@@ -346,8 +367,10 @@ class GPAStatsWidget extends StatelessWidget {
                 ],
               ),
             ),
-            GestureDetector(
+            InkResponse(
               onTap: () => gpaNotifier.typeWithNotify = 2,
+              radius: 45,
+              splashFactory: InkRipple.splashFactory,
               child: Column(
                 children: <Widget>[
                   Text('Credits', style: textStyle),
@@ -371,7 +394,7 @@ class CourseListWidget extends StatefulWidget {
 }
 
 class _CourseListState extends State<CourseListWidget> {
-  static final double cardHeight = 90;
+  static final double cardHeight = 80;
 
   @override
   Widget build(BuildContext context) {
@@ -397,56 +420,60 @@ class _CourseListState extends State<CourseListWidget> {
                 itemCount: courses.length,
                 itemBuilder: (context, i) => Container(
                       height: cardHeight,
-                      padding: EdgeInsets.fromLTRB(30, 3, 30, 3),
+                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
                       child: Card(
                         color: Color.fromRGBO(136, 148, 102, 1),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        //TODO 自定义duration https://stackoverflow.com/questions/51115401/changing-speed-of-inkwell
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                                child: Icon(Icons.assignment_turned_in,
-                                    color: Color.fromRGBO(178, 184, 153, 1),
-                                    size: 25),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(courses[i].name,
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white)),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "${courses[i].classType} / ${courses[i].credit} Credits",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color.fromRGBO(
-                                                  178, 184, 153, 1))),
-                                    )
-                                  ],
+                        child: Ink(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12)),
+                          child: InkWell(
+                            splashFactory: InkRipple.splashFactory,
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                                  child: Icon(Icons.assignment_turned_in,
+                                      color: Color.fromRGBO(178, 184, 153, 1),
+                                      size: 25),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15),
-                                child: Text('${courses[i].score.round()}',
-                                    style: TextStyle(
-                                        fontSize: 28,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold)),
-                              )
-                            ],
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(courses[i].name,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.white)),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            "${courses[i].classType} / ${courses[i].credit} Credits",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color.fromRGBO(
+                                                    178, 184, 153, 1))),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text('${courses[i].score.round()}',
+                                      style: TextStyle(
+                                          fontSize: 28,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
