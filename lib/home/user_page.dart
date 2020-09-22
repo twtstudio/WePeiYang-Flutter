@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
-    as prefs;
+as prefs;
 
 import '../start_up.dart';
 
@@ -44,11 +44,11 @@ class UserPage extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 15.0),
                   child: ClipOval(
                       child: Image.asset(
-                    'assets/images/user_image.jpg',
-                    fit: BoxFit.cover,
-                    width: 100,
-                    height: 100,
-                  )),
+                        'assets/images/user_image.jpg',
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
+                      )),
                 ),
                 Text('BOTillya',
                     textAlign: TextAlign.center,
@@ -90,7 +90,7 @@ class UserPage extends StatelessWidget {
                         Navigator.pushNamedAndRemoveUntil(
                             WeiPeiYangApp.navigatorState.currentContext,
                             '/login',
-                            (route) => false);
+                                (route) => false);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -121,79 +121,18 @@ class UserPage extends StatelessWidget {
     );
   }
 
+  var iconList = [Icons.event_note, Icons.credit_card, Icons.class_];
+  var textList = ["Portal account", "E-card account", "Library account"];
+  var routeList = ['/gpa', '/gpa', '/gpa'];
+
   Widget _getAccountCard(int index) {
     const textStyle =
-        TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
+    TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
     const hint = Text('Bound',
         style: TextStyle(fontSize: 12.0, color: Colors.grey),
         textAlign: TextAlign.left);
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     // TODO 点击逻辑
-    var list = [
-      Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 22, right: 10),
-            child: Icon(Icons.event_note, color: Colors.grey),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  width: 150, child: Text("Portal account", style: textStyle)),
-              Container(
-                  child: hint,
-                  width: 150,
-                  padding: const EdgeInsets.only(top: 3))
-            ],
-          ),
-          Expanded(child: Text('')),
-          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
-        ],
-      ),
-      Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 22, right: 10),
-            child: Icon(Icons.credit_card, color: Colors.grey),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  width: 150, child: Text("E-card account", style: textStyle)),
-              Container(
-                  child: hint,
-                  width: 150,
-                  padding: const EdgeInsets.only(top: 3))
-            ],
-          ),
-          Expanded(child: Text('')),
-          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
-        ],
-      ),
-      Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 22, right: 10),
-            child: Icon(Icons.class_, color: Colors.grey),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  width: 150, child: Text("Library account", style: textStyle)),
-              Container(
-                  child: hint,
-                  width: 150,
-                  padding: const EdgeInsets.only(top: 3))
-            ],
-          ),
-          Expanded(child: Text('')),
-          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
-        ],
-      )
-    ];
     return Container(
       height: 90,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -201,10 +140,31 @@ class UserPage extends StatelessWidget {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
         child: InkWell(
-          onTap: () {},
-          splashFactory: InkRipple.splashFactory,
-          borderRadius: BorderRadius.circular(9),
-          child: list[index],
+            onTap: () {},
+            splashFactory: InkRipple.splashFactory,
+            borderRadius: BorderRadius.circular(9),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 22, right: 10),
+                  child: Icon(iconList[index], color: Colors.grey),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: 150,
+                        child: Text(textList[index], style: textStyle)),
+                    Container(
+                        child: hint,
+                        width: 150,
+                        padding: const EdgeInsets.only(top: 3))
+                  ],
+                ),
+                Expanded(child: Text('')),
+                Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
+              ],
+            ),
         ),
       ),
     );
@@ -246,7 +206,7 @@ class _NavigationState extends State<NavigationWidget> {
       child: Card(
         elevation: 0,
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: Row(
@@ -262,16 +222,20 @@ class _NavigationState extends State<NavigationWidget> {
     );
   }
 
-  Widget _getStack(int index) => GestureDetector(
-        onTapDown: (_) => setState(() {
-          currentList[index] = true;
-        }),
-        onTapUp: (_) => setState(() {
-          currentList[index] = false;
-        }),
-        onTapCancel: () => setState(() {
-          currentList[index] = false;
-        }),
+  Widget _getStack(int index) =>
+      GestureDetector(
+        onTapDown: (_) =>
+            setState(() {
+              currentList[index] = true;
+            }),
+        onTapUp: (_) =>
+            setState(() {
+              currentList[index] = false;
+            }),
+        onTapCancel: () =>
+            setState(() {
+              currentList[index] = false;
+            }),
         onTap: () {
           Navigator.pushNamed(context, routeList[index]);
         },
