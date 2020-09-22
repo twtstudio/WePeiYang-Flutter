@@ -11,7 +11,7 @@ class WPYPage extends StatelessWidget {
     List<CardBean> cards = [];
     List<CourseBean> courses = [];
     List<LibraryBean> libraries = [];
-    cards.add(CardBean(Icons.directions_bike, 'Bicycle', '/bicycle'));
+    cards.add(CardBean(Icons.event, 'Schedule', '/schedule'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
     cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
     cards.add(CardBean(Icons.call, 'Tel Num', '/telNum'));
@@ -58,7 +58,8 @@ class WPYPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 height: 180.0,
-                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 30.0),
                 child: Card(
                   color: MyColors.myGrey,
                   elevation: 0,
@@ -148,7 +149,7 @@ class SliverCardsWidget extends StatelessWidget {
         height: 90.0,
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             itemCount: cards.length + 1,
             itemBuilder: (context, i) {
               return GestureDetector(
@@ -162,7 +163,7 @@ class SliverCardsWidget extends StatelessWidget {
                 child: Container(
                   height: 90.0,
                   width: 130.0,
-                  padding: EdgeInsets.symmetric(horizontal: 3.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
                   child: _getCard(cards, i, context),
                 ),
               );
@@ -225,7 +226,7 @@ class SliverCoursesWidget extends StatelessWidget {
             height: 180.0,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 itemCount: courses.length,
                 itemBuilder: (context, i) {
                   return GestureDetector(
@@ -235,7 +236,7 @@ class SliverCoursesWidget extends StatelessWidget {
                     child: Container(
                       height: 180.0,
                       width: 150.0,
-                      padding: EdgeInsets.symmetric(horizontal: 7.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 7.0),
                       child: Card(
                         color: MyColors.colorList[i % 5],
                         elevation: 2.0,
@@ -256,7 +257,7 @@ class SliverCoursesWidget extends StatelessWidget {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(top: 5.0),
+                                padding: const EdgeInsets.only(top: 5.0),
                                 child: Text(
                                     courses[i].duration ?? 'Your own time',
                                     style: TextStyle(
@@ -264,7 +265,7 @@ class SliverCoursesWidget extends StatelessWidget {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(top: 15.0),
+                                padding: const EdgeInsets.only(top: 15.0),
                                 child: Text(courses[i].classroom ?? '',
                                     style: TextStyle(
                                         fontSize: 14.0,
@@ -311,7 +312,7 @@ class SliverLibraryWidget extends StatelessWidget {
             height: 170.0,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 itemCount: libraries.length,
                 itemBuilder: (context, i) => GestureDetector(
                       onTap: () {
@@ -320,7 +321,7 @@ class SliverLibraryWidget extends StatelessWidget {
                       child: Container(
                         height: 170.0,
                         width: 150.0,
-                        padding: EdgeInsets.symmetric(horizontal: 7.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
                         child: Card(
                           color: Colors.white,
                           elevation: 3.0,
@@ -354,7 +355,8 @@ class SliverLibraryWidget extends StatelessWidget {
                                       ),
                                       Container(
                                         alignment: Alignment.centerLeft,
-                                        padding: EdgeInsets.only(top: 15.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
                                         child: Text('Time:',
                                             style: TextStyle(
                                               fontSize: 13.0,

@@ -462,54 +462,50 @@ class _CourseListState extends State<CourseListWidget> {
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        child: Ink(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12)),
-                          child: InkWell(
-                            splashFactory: InkRipple.splashFactory,
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {},
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                                  child: Icon(Icons.assignment_turned_in,
-                                      color: Color.fromRGBO(178, 184, 153, 1),
-                                      size: 25),
+                        child: InkWell(
+                          splashFactory: InkRipple.splashFactory,
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                                child: Icon(Icons.assignment_turned_in,
+                                    color: Color.fromRGBO(178, 184, 153, 1),
+                                    size: 25),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(courses[i].name,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.white)),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          "${courses[i].classType} / ${courses[i].credit} Credits",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color.fromRGBO(
+                                                  178, 184, 153, 1))),
+                                    )
+                                  ],
                                 ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(courses[i].name,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white)),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                            "${courses[i].classType} / ${courses[i].credit} Credits",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color.fromRGBO(
-                                                    178, 184, 153, 1))),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: Text('${courses[i].score.round()}',
-                                      style: TextStyle(
-                                          fontSize: 28,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Text('${courses[i].score.round()}',
+                                    style: TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold)),
+                              )
+                            ],
                           ),
                         ),
                       ),

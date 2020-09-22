@@ -8,3 +8,11 @@ var password = "";
 var tjuuname = "";
 
 var tjupasswd = "";
+
+void clearPrefs(){
+  token = "";
+  username = "";
+  password = "";
+  tjuuname = "";
+  tjupasswd = "";
+}

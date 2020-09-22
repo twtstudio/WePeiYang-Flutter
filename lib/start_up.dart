@@ -51,7 +51,7 @@ class WeiPeiYangApp extends StatelessWidget {
         '/bind': (ctx) => TjuBindWidget(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
-        '/bicycle': (ctx) => LoginWidget(),
+        '/schedule': (ctx) => LoginWidget(),
         '/telNum': (ctx) => LoginWidget(),
         '/learning': (ctx) => LoginWidget(),
         '/library': (ctx) => LoginWidget(),

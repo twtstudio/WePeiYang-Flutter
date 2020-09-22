@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
+    as prefs;
+
+import '../start_up.dart';
 
 class UserPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +15,7 @@ class UserPage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 320.0, color: MyColors.darkGrey),
+            Container(height: 380, color: MyColors.darkGrey),
             ListView(
               children: <Widget>[
                 Container(
@@ -29,7 +33,7 @@ class UserPage extends StatelessWidget {
                         ///填充
                         GestureDetector(
                             child: Icon(Icons.settings,
-                                color: Colors.white, size: 30.0),
+                                color: Colors.white, size: 28.0),
 
                             ///TODO: setting page
                             onTap: () => Navigator.pop(context))
@@ -42,8 +46,8 @@ class UserPage extends StatelessWidget {
                       child: Image.asset(
                     'assets/images/user_image.jpg',
                     fit: BoxFit.cover,
-                    width: 110,
-                    height: 110,
+                    width: 100,
+                    height: 100,
                   )),
                 ),
                 Text('BOTillya',
@@ -57,170 +61,53 @@ class UserPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 10.0),
                     child: Text('3019244334',
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: MyColors.deepDust, fontSize: 13.0))),
-                Container(
-                  height: 150.0,
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                  child: Card(
-                    elevation: 1.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Image.asset(
-                                "assets/images/gradicon1.png",
-                                width: 60,
-                                height: 60,
-                              ),
-                              Text(
-                                "GPA",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 19.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(99, 101, 115, 1)),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Image.asset(
-                                "assets/images/gradicon2.png",
-                                width: 60,
-                                height: 60,
-                              ),
-                              Text(
-                                "Library",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 19.0,
-                                    color: Color.fromRGBO(99, 101, 115, 1)),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Image.asset(
-                                "assets/images/gradicon3.png",
-                                width: 60,
-                                height: 60,
-                              ),
-                              Text(
-                                "E-card",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 19.0,
-                                    color: Color.fromRGBO(99, 101, 115, 1)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        style: TextStyle(
+                            color: MyColors.deepDust, fontSize: 13.0))),
+                NavigationWidget(),
+                Column(
+                  children: [
+                    _getAccountCard(0),
+                    _getAccountCard(1),
+                    _getAccountCard(2)
+                  ],
                 ),
                 Container(
-                  height: 80,
-                  margin: EdgeInsets.only(left: 30.0, right: 30.0),
+                  height: 50,
+                  margin: const EdgeInsets.fromLTRB(30, 20, 30, 50),
                   child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(9.0))),
-                    disabledColor: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.calendar_today),
-                        Text(
-                          "Portal acoount",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Color.fromRGBO(99, 101, 115, 1)),
-                        ),
-                        Expanded(child: Container(height: 80)),
-                        Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 80,
-                  margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(9.0))),
-                    color: Colors.white,
-                    disabledColor: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.credit_card),
-                        Text(
-                          "E-card acoount",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Color.fromRGBO(99, 101, 115, 1)),
-                        ),
-                        Expanded(child: Container(height: 80)),
-                        Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 80,
-                  margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(9.0))),
-                    color: Colors.white,
-                    disabledColor: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.book,
-                        ),
-                        Text("Library acoount",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                color: Color.fromRGBO(99, 101, 115, 1))),
-                        Expanded(child: Container(height: 80)),
-                        Icon(Icons.arrow_forward_ios)
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 70,
-                  margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                  alignment: Alignment.center,
-                  //width: 10,
-                  child: FlatButton(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                      disabledColor: Color.fromRGBO(99, 101, 115, 1),
-                      color: Color.fromRGBO(99, 101, 115, 1),
+                          borderRadius: BorderRadius.circular(20)),
+                      color: Color.fromRGBO(85, 89, 106, 1.0),
+                      onPressed: () {
+                        // TODO 其他退出逻辑
+                        Fluttertoast.showToast(
+                            msg: "   退出登录成功   ",
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 18);
+                        prefs.clearPrefs();
+                        Navigator.pushNamedAndRemoveUntil(
+                            WeiPeiYangApp.navigatorState.currentContext,
+                            '/login',
+                            (route) => false);
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Icon(
-                            Icons.arrow_back,
+                            Icons.exit_to_app,
                             color: Colors.white,
+                            size: 20,
                           ),
-                          Text(
-                            "SIGN ME OUT",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                              color: Colors.white,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              "SIGN ME OUT",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ],
@@ -233,4 +120,179 @@ class UserPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _getAccountCard(int index) {
+    const textStyle =
+        TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
+    const hint = Text('Bound',
+        style: TextStyle(fontSize: 12.0, color: Colors.grey),
+        textAlign: TextAlign.left);
+    const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+    // TODO 点击逻辑
+    var list = [
+      Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 22, right: 10),
+            child: Icon(Icons.event_note, color: Colors.grey),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  width: 150, child: Text("Portal account", style: textStyle)),
+              Container(
+                  child: hint,
+                  width: 150,
+                  padding: const EdgeInsets.only(top: 3))
+            ],
+          ),
+          Expanded(child: Text('')),
+          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 22, right: 10),
+            child: Icon(Icons.credit_card, color: Colors.grey),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  width: 150, child: Text("E-card account", style: textStyle)),
+              Container(
+                  child: hint,
+                  width: 150,
+                  padding: const EdgeInsets.only(top: 3))
+            ],
+          ),
+          Expanded(child: Text('')),
+          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 22, right: 10),
+            child: Icon(Icons.class_, color: Colors.grey),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  width: 150, child: Text("Library account", style: textStyle)),
+              Container(
+                  child: hint,
+                  width: 150,
+                  padding: const EdgeInsets.only(top: 3))
+            ],
+          ),
+          Expanded(child: Text('')),
+          Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
+        ],
+      )
+    ];
+    return Container(
+      height: 90,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+        child: InkWell(
+          onTap: () {},
+          splashFactory: InkRipple.splashFactory,
+          borderRadius: BorderRadius.circular(9),
+          child: list[index],
+        ),
+      ),
+    );
+  }
+}
+
+class NavigationWidget extends StatefulWidget {
+  @override
+  _NavigationState createState() => _NavigationState();
+}
+
+class _NavigationState extends State<NavigationWidget> {
+  static const statStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16.0,
+      color: Color.fromRGBO(99, 101, 115, 1));
+
+  static const pressOnMaskColor = Color.fromRGBO(250, 250, 250, 0.5);
+  static const pressOffMaskColor = Color.fromRGBO(250, 250, 250, 0);
+
+  List<bool> currentList = [false, false, false];
+
+  List<String> assetList = [
+    "assets/images/gradicon1.png",
+    "assets/images/gradicon2.png",
+    "assets/images/gradicon3.png"
+  ];
+
+  List<String> textList = ['GPA', 'Library', 'E-card'];
+
+  // TODO route补充
+  List<String> routeList = ['/gpa', '/gpa', '/gpa'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 140.0,
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      child: Card(
+        elevation: 0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _getStack(0),
+              _getStack(1),
+              _getStack(2)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getStack(int index) => GestureDetector(
+        onTapDown: (_) => setState(() {
+          currentList[index] = true;
+        }),
+        onTapUp: (_) => setState(() {
+          currentList[index] = false;
+        }),
+        onTapCancel: () => setState(() {
+          currentList[index] = false;
+        }),
+        onTap: () {
+          Navigator.pushNamed(context, routeList[index]);
+        },
+        child: Stack(children: [
+          Column(
+            children: <Widget>[
+              Image.asset(
+                assetList[index],
+                width: 50,
+                height: 50,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Text(textList[index], style: statStyle),
+              )
+            ],
+          ),
+          Container(
+              height: 100,
+              width: 50,
+              color: currentList[index] ? pressOnMaskColor : pressOffMaskColor)
+        ]),
+      );
 }
