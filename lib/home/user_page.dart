@@ -35,7 +35,7 @@ class UserPage extends StatelessWidget {
                             child: Icon(Icons.settings,
                                 color: Colors.white, size: 28.0),
 
-                            ///TODO: setting page
+                            //TODO: setting page
                             onTap: () => Navigator.pop(context))
                       ],
                     )),
@@ -121,9 +121,9 @@ class UserPage extends StatelessWidget {
     );
   }
 
-  var iconList = [Icons.event_note, Icons.credit_card, Icons.class_];
-  var textList = ["Portal account", "E-card account", "Library account"];
-  var routeList = ['/gpa', '/gpa', '/gpa'];
+  final iconList = [Icons.event_note, Icons.credit_card, Icons.class_];
+  final textList = ["Portal account", "E-card account", "Library account"];
+  final routeList = ['/gpa', '/gpa', '/gpa'];
 
   Widget _getAccountCard(int index) {
     const textStyle =
@@ -182,7 +182,7 @@ class _NavigationState extends State<NavigationWidget> {
       fontSize: 16.0,
       color: Color.fromRGBO(99, 101, 115, 1));
 
-  static const pressOnMaskColor = Color.fromRGBO(250, 250, 250, 0.5);
+  static const pressOnMaskColor = Color.fromRGBO(250, 250, 250, 0.6);
   static const pressOffMaskColor = Color.fromRGBO(250, 250, 250, 0);
 
   List<bool> currentList = [false, false, false];

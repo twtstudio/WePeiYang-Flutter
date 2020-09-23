@@ -1,5 +1,5 @@
 import '../../commons/network/dio_server.dart';
-import 'package:flutter/cupertino.dart' show required;
+import 'package:flutter/material.dart' show required;
 
 bindTju(String tjuuname, String tjupasswd,
     {@required void Function() onSuccess, OnFailure onFailure}) async {

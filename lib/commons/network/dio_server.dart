@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
-import 'package:flutter/cupertino.dart' show required;
+import 'package:flutter/material.dart' show required;
 import 'package:package_info/package_info.dart' show PackageInfo;
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'error_interceptor.dart';

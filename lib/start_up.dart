@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
 import 'auth/view/tju_bind_page.dart';
-import 'gpa/gpa_page.dart';
 import 'home/model/home_model.dart';
 import 'home/home_page.dart';
 import 'home/more_page.dart';
 import 'home/user_page.dart';
 import 'auth/view/login_page.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
+import 'gpa/gpa_page.dart' show GPAPage;
+import 'package:wei_pei_yang_demo/schedule/view/schedule_page.dart'
+    show SchedulePage;
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => GPANotifier(),
-      child: WeiPeiYangApp(),
-    )
-  );
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context)=>GPANotifier()),
+    ChangeNotifierProvider(create: (context)=>ScheduleNotifier()),
+  ], child: WeiPeiYangApp()));
+
   /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
@@ -44,14 +46,14 @@ class WeiPeiYangApp extends StatelessWidget {
       title: 'WeiPeiYangDemo',
       navigatorKey: navigatorState,
       theme: ThemeData(
-        // fontFamily: 'Montserrat'
-      ),
+          // fontFamily: 'Montserrat'
+          ),
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginWidget(),
         '/bind': (ctx) => TjuBindWidget(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
-        '/schedule': (ctx) => LoginWidget(),
+        '/schedule': (ctx) => SchedulePage(),
         '/telNum': (ctx) => LoginWidget(),
         '/learning': (ctx) => LoginWidget(),
         '/library': (ctx) => LoginWidget(),
@@ -74,9 +76,10 @@ class StartUpWidget extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     GlobalModel.getInstance().screenWidth = width;
     GlobalModel.getInstance().screenHeight = height;
+
     /// 微北洋启动页，显示3秒钟
     Timer(Duration(seconds: 3), () {
-    //TODO 登录判断
+      //TODO 登录判断
       Navigator.pushReplacementNamed(context, '/login');
     });
     return ConstrainedBox(

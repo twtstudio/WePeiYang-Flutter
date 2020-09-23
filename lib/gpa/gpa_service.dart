@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' show Colors;
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
-import 'package:flutter/cupertino.dart' show required;
+import 'package:flutter/material.dart' show required;
 import 'package:wei_pei_yang_demo/gpa/gpa_model.dart';
 
 getGPABean(

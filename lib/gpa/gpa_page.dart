@@ -17,15 +17,13 @@ class GPAPage extends StatelessWidget {
       body: Theme(
         /// 修改scrollView滚动至头/尾时溢出的颜色
         data: ThemeData(accentColor: Colors.white),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              RadarChartWidget(),
-              GPAStatsWidget(),
-              GPACurve(isPreview: false),
-              CourseListWidget()
-            ],
-          ),
+        child: ListView(
+          children: [
+            RadarChartWidget(),
+            GPAStatsWidget(),
+            GPACurve(isPreview: false),
+            CourseListWidget()
+          ],
         ),
       ),
     );
@@ -102,6 +100,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  /// 使用标准的appBar高度
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
