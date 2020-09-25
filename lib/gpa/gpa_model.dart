@@ -51,7 +51,7 @@ class TermStat {
 }
 
 /// 省略了部分参数
-class Course {
+class GPACourse {
   // String no;
   String name;
   String classType;
@@ -63,7 +63,7 @@ class Course {
   // int reset;
   // String scoreProp;
 
-  Course.fromJson(dynamic tmp) {
+  GPACourse.fromJson(dynamic tmp) {
     name = tmp['name'];
     classType = tmp['classType'];
     var sc = tmp['score'];
@@ -78,7 +78,7 @@ class Course {
       credit = cr;
   }
 
-  Course(this.name, this.classType, this.credit, this.score);
+  GPACourse(this.name, this.classType, this.credit, this.score);
 }
 
 // class Stat{
@@ -117,13 +117,12 @@ class Course {
 //   String course_id;
 // }
 
-///test
-
+/// gpa页面实际使用的数据类
 class GPAStat {
   double weighted;
   double gpa;
   double credits;
-  List<Course> courses;
+  List<GPACourse> courses;
 
   GPAStat(this.weighted, this.gpa, this.credits, this.courses);
 }

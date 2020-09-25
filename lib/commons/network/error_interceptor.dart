@@ -25,11 +25,14 @@ class ErrorInterceptor extends InterceptorsWrapper {
   @override
   Future onError(DioError err) {
     // TODO 细化、调整错误分类
-    if(err.type == DioErrorType.CONNECT_TIMEOUT)
+    print(err);
+    if(err.type == DioErrorType.CONNECT_TIMEOUT){
       throw DioError(error: "网络连接超时");
+    }
     else if(err.type == DioErrorType.RESPONSE){
-      if(err.response?.statusCode == 500)
+      if(err.response?.statusCode == 500){
         throw DioError(error: "网络连接发生了未知错误");
+      }
       var code = err.response?.data['error_code']?? -1;
       var request = err.response?.request;
       switch (code) {

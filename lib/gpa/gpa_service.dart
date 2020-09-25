@@ -15,9 +15,9 @@ getGPABean(
       gpaData.forEach((element) {
         var term = Term.fromJson(element);
         var ts = TermStat.fromJson(term.stat);
-        List<Course> courses = [];
+        List<GPACourse> courses = [];
         term.data.forEach((element) {
-          courses.add(Course.fromJson(element));
+          courses.add(GPACourse.fromJson(element));
         });
         stats.add(GPAStat(ts.score, ts.gpa, ts.credit, courses));
       });

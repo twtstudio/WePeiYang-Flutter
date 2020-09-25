@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
+import 'package:wei_pei_yang_demo/schedule/service/schedule_service.dart';
 
 /// 此篇代码纯测试用
 class CPage extends StatefulWidget {
@@ -10,12 +10,11 @@ class CPage extends StatefulWidget {
 class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
-  _getGpa() async{
-    var dio = await DioService.create();
-    await dio.getCall("v1/gpa", onSuccess: (commonBody){
-      setState(() {
-        _text = commonBody.data.toString();
-      });
+  _testFun() async{
+    getClassTable(onSuccess: (schedule){
+        setState(() {
+          _text = schedule.toString();
+        });
     });
   }
 
@@ -33,7 +32,7 @@ class CPageState extends State<CPage> {
                   child: RaisedButton(
                     child: Text("Test Dio"),
                     onPressed: () {
-                      _getGpa();
+                      _testFun();
                     },
                   ),
                 ),

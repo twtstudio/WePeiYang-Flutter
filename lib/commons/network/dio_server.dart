@@ -3,7 +3,8 @@ import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
 import 'package:flutter/material.dart' show required;
 import 'package:package_info/package_info.dart' show PackageInfo;
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
+    as prefs;
 import 'error_interceptor.dart';
 import 'network_model.dart';
 import 'signature.dart';
@@ -40,25 +41,32 @@ class DioService {
   ///   });
   /// }
   /// ```
+
+  static var brand;
+  static var product;
+  static var sdkInt;
+  static var version;
+
   static Future<Dio> create() async {
-    AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
-    var brand = androidInfo.brand;
-    var product = androidInfo.product;
-    var sdkInt = androidInfo.version.sdkInt;
+    if (brand == null || product == null || sdkInt == null) {
+      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+      brand = androidInfo.brand;
+      product = androidInfo.product;
+      sdkInt = androidInfo.version.sdkInt;
+    }
     //TODO version seems to be null
-    var version = PackageInfo().version;
-    final String userAgent =
-        "WePeiYang/$version ($brand $product; Android $sdkInt)";
+    version ??= PackageInfo().version;
+    var userAgent = "WePeiYang/$version ($brand $product; Android $sdkInt)";
 
     /// 配置网络请求参数
     /// 需加上两个header [User-Agent] 和 [Authorization]
-    final BaseOptions _options = BaseOptions(
+    BaseOptions _options = BaseOptions(
         baseUrl: BASE_URL,
         connectTimeout: 20000,
         receiveTimeout: 20000,
         headers: {
           "User-Agent": userAgent,
-          "Authorization": "Bearer{$token}",
+          "Authorization": "Bearer{${prefs.token}}",
         });
     _dio = Dio()
       ..options = _options

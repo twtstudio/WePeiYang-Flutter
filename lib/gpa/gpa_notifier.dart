@@ -51,7 +51,7 @@ class GPANotifier with ChangeNotifier {
   }
 
   /// 获取当前学年的course detail
-  List<Course> get coursesWithNotify {
+  List<GPACourse> get coursesWithNotify {
     if (_listWithNotify.length == 0) return List();
     return _listWithNotify[_index].courses;
   }

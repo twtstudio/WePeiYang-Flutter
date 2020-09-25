@@ -33,29 +33,29 @@ class GPAPage extends StatelessWidget {
 class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    List<Course> list1 = [];
+    List<GPACourse> list1 = [];
     List<GPAStat> gpaList = [];
-    list1.add(Course("高等数学2A", "数学", 6, 93));
-    list1.add(Course("C/C++程序设计（双语）", "计算机", 3.5, 91));
-    list1.add(Course("线性代数及其应用", "数学", 3.5, 94));
-    list1.add(Course("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55));
-    list1.add(Course("大学英语1", "外语", 2, 97));
-    list1.add(Course("计算机导论", "计算机", 1.5, 76));
-    list1.add(Course("大学生心理健康", "文化素质教育必修", 1, 60));
-    list1.add(Course("体育A", "体育", 1, 78));
-    list1.add(Course("健康教育", "健康教育", 0.5, 86));
-    list1.add(Course("大学计算机基础1", "计算机", 0, 100));
-    List<Course> list2 = [];
-    list2.add(Course("高等数学2A", "数学", 6, 63));
-    list2.add(Course("C/C++程序设计（双语）", "计算机", 3.5, 25));
-    list2.add(Course("线性代数及其应用", "数学", 3.5, 85));
-    list2.add(Course("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15));
-    list2.add(Course("大学英语1", "外语", 2, 57));
-    list2.add(Course("计算机导论", "计算机", 1.5, 86));
-    list2.add(Course("大学生心理健康", "文化素质教育必修", 1, 47));
-    list2.add(Course("体育A", "体育", 1, 23));
-    list2.add(Course("健康教育", "健康教育", 0.5, 47));
-    list2.add(Course("大学计算机基础1", "计算机", 0, 11));
+    list1.add(GPACourse("高等数学2A", "数学", 6, 93));
+    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 91));
+    list1.add(GPACourse("线性代数及其应用", "数学", 3.5, 94));
+    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55));
+    list1.add(GPACourse("大学英语1", "外语", 2, 97));
+    list1.add(GPACourse("计算机导论", "计算机", 1.5, 76));
+    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 60));
+    list1.add(GPACourse("体育A", "体育", 1, 78));
+    list1.add(GPACourse("健康教育", "健康教育", 0.5, 86));
+    list1.add(GPACourse("大学计算机基础1", "计算机", 0, 100));
+    List<GPACourse> list2 = [];
+    list2.add(GPACourse("高等数学2A", "数学", 6, 63));
+    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 25));
+    list2.add(GPACourse("线性代数及其应用", "数学", 3.5, 85));
+    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15));
+    list2.add(GPACourse("大学英语1", "外语", 2, 57));
+    list2.add(GPACourse("计算机导论", "计算机", 1.5, 86));
+    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 47));
+    list2.add(GPACourse("体育A", "体育", 1, 23));
+    list2.add(GPACourse("健康教育", "健康教育", 0.5, 47));
+    list2.add(GPACourse("大学计算机基础1", "计算机", 0, 11));
     gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
     gpaList.add(GPAStat(77.72, 3.060, 25.0, list2));
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
@@ -111,7 +111,7 @@ class RadarChartWidget extends StatefulWidget {
 }
 
 class _RadarChartState extends State<RadarChartWidget> {
-  List<Course> list = [];
+  List<GPACourse> list = [];
 
   /// isTaped为true时雷达图有透明度
   bool isTaped = false;
@@ -143,7 +143,7 @@ class _RadarChartState extends State<RadarChartWidget> {
     });
   }
 
-  Widget _judgeListLength(List<Course> list) {
+  Widget _judgeListLength(List<GPACourse> list) {
     if (list.length < 3)
       return Container(
         height: 300,
@@ -179,7 +179,7 @@ class _RadarChartState extends State<RadarChartWidget> {
 }
 
 class _RadarChartPainter extends CustomPainter {
-  final List<Course> courses;
+  final List<GPACourse> courses;
 
   _RadarChartPainter(this.courses);
 
