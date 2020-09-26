@@ -101,12 +101,15 @@ class CourseDisplayWidget extends StatelessWidget {
       double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
       double height =
           (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
-      list.add(Positioned(
-          top: top,
-          left: left,
-          height: height,
-          width: cardWidth,
-          child: _judgeChild(height, course)));
+
+      /// 周日的课不显示在课表上
+      if(day != 7)
+        list.add(Positioned(
+            top: top,
+            left: left,
+            height: height,
+            width: cardWidth,
+            child: _judgeChild(height, course)));
     });
     return list;
   }

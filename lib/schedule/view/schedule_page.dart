@@ -54,7 +54,12 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 25),
               onTap: () {
-                //TODO refresh
+                Fluttertoast.showToast(
+                    msg:"刷新数据中……",
+                    textColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    timeInSecForIosWeb: 1,
+                    fontSize: 16);
                 getClassTable(onSuccess: (schedule) {
                   var provider = Provider.of<ScheduleNotifier>(context);
                   provider.termStart = schedule.termStart;

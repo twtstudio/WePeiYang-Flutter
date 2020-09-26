@@ -84,8 +84,20 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
               onTap: () {
+                Fluttertoast.showToast(
+                    msg:"刷新数据中……",
+                    textColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    timeInSecForIosWeb: 1,
+                    fontSize: 16);
                 getGPABean(onSuccess: (list) {
                   Provider.of<GPANotifier>(context).listWithNotify = list;
+                  Fluttertoast.showToast(
+                      msg:"刷新gpa数据成功",
+                      textColor: Colors.white,
+                      backgroundColor: Colors.green,
+                      timeInSecForIosWeb: 1,
+                      fontSize: 16);
                 }, onFailure: (e) {
                   // TODO msg应和e相关
                   Fluttertoast.showToast(
@@ -430,7 +442,7 @@ class CourseListWidget extends StatefulWidget {
 }
 
 class _CourseListState extends State<CourseListWidget> {
-  static final double cardHeight = 80;
+  static final double cardHeight = 82;
 
   @override
   Widget build(BuildContext context) {
@@ -480,7 +492,7 @@ class _CourseListState extends State<CourseListWidget> {
                                   children: [
                                     Container(
                                       alignment: Alignment.centerLeft,
-                                      child: Text(courses[i].name,
+                                      child: Text(_formatText(courses[i].name),
                                           style: TextStyle(
                                               fontSize: 15,
                                               color: Colors.white)),
@@ -498,7 +510,7 @@ class _CourseListState extends State<CourseListWidget> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                padding: EdgeInsets.only(left: 10, right: 15),
                                 child: Text('${courses[i].score.round()}',
                                     style: TextStyle(
                                         fontSize: 28,
@@ -514,5 +526,12 @@ class _CourseListState extends State<CourseListWidget> {
         ],
       );
     });
+  }
+
+  String _formatText(String text) {
+    if (text.length >= 12)
+      return text.substring(0, 11) + "...";
+    else
+      return text;
   }
 }

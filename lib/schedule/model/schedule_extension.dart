@@ -34,8 +34,11 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
       var day = int.parse(course.arrange.day);
       var start = int.parse(course.arrange.start);
       var end = int.parse(course.arrange.end);
-      for (var i = start; i <= end; i++)
-        list[(i / 2).ceil() - 1][day - 1] = true;
+
+      /// 周日的课不显示在课表上
+      if (day != 7)
+        for (var i = start; i <= end; i++)
+          list[(i / 2).ceil() - 1][day - 1] = true;
     }
   });
   return list;
@@ -69,8 +72,7 @@ List<bool> getWeekStatus(int weekCount, Course course) {
 
   /// 利用取模操作判断是否有课
   for (var i = start; i <= end; i++)
-    if (!shouldMod || (i % 2 == remainder))
-      list[i] = true;
+    if (!shouldMod || (i % 2 == remainder)) list[i] = true;
   return list;
 }
 
