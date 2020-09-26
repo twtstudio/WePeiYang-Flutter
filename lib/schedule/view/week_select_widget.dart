@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schecule_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
-/// 用这两个变量绘制点阵图
+/// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;
 const double spacingLength = 4;
 
@@ -14,13 +14,13 @@ class WeekSelectWidget extends StatelessWidget {
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       return Container(
-        height: 90,
+        height: 85,
         child: ListView.builder(
             itemCount: notifier.weekCount,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, i) {
               return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 15, 28, 0),
+                padding: const EdgeInsets.fromLTRB(0, 10, 30, 0),
 
                 // TODO 此处有个小bug，刷新数据后并不重绘
                 /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层

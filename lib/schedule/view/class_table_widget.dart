@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schecule_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/schedule/view/ui_extension.dart';
 import 'schedule_page.dart' show schedulePadding;
 
-class ClassTableWidget extends StatelessWidget {
-  static const double cardStep = 6;
+/// 课程表每个item之间的间距
+const double cardStep = 6;
 
+class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
@@ -15,7 +18,13 @@ class ClassTableWidget extends StatelessWidget {
       var count = notifier.showSevenDay ? 7 : 6;
       var cardWidth = (width - (count - 1) * cardStep) / count;
       return Column(
-        children: [WeekDisplayWidget(cardWidth, notifier, count)],
+        children: [
+          WeekDisplayWidget(cardWidth, notifier, count),
+          Padding(
+            padding: const EdgeInsets.only(top: cardStep),
+            child: CourseDisplayWidget(cardWidth, notifier, count),
+          )
+        ],
       );
     });
   }
@@ -60,27 +69,50 @@ class WeekDisplayWidget extends StatelessWidget {
       );
 }
 
-class CourseDisplayWidget extends StatelessWidget{
+class CourseDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final ScheduleNotifier notifier;
   final int count;
 
   CourseDisplayWidget(this.cardWidth, this.notifier, this.count);
 
+  /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
+  static const double singleCourseHeight = 65;
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: _generatePositioned(),
+    if (notifier.coursesWithNotify.length == 0) return Container();
+    return Container(
+      height: singleCourseHeight * 12 + cardStep * 11,
+      child: Stack(
+        children: _generatePositioned(),
+      ),
     );
   }
 
-  List<Widget> _generatePositioned(){
+  List<Widget> _generatePositioned() {
     List<Positioned> list = [];
-    notifier.coursesWithNotify.forEach((element) {
+    notifier.coursesWithNotify.forEach((course) {
+      int day = int.parse(course.arrange.day);
+      int start = int.parse(course.arrange.start);
+      int end = int.parse(course.arrange.end);
+      double top =
+          (start == 1) ? 0 : (start - 1) * (singleCourseHeight + cardStep);
+      double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
+      double height =
+          (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
       list.add(Positioned(
-
-      ));
+          top: top,
+          left: left,
+          height: height,
+          width: cardWidth,
+          child: _judgeChild(height, course)));
     });
     return list;
   }
+
+  Widget _judgeChild(double height, Course course) =>
+      judgeIsActive(notifier.selectedWeek, notifier.weekCount, course)
+          ? getActiveCourseCard(height, cardWidth, course)
+          : getQuietCourseCard(height, cardWidth, course);
 }

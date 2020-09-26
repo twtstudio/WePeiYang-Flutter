@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/schedule/service/schedule_service.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 
-const double schedulePadding = 25;
+const double schedulePadding = 20;
 
 class SchedulePage extends StatelessWidget {
   @override
@@ -17,14 +17,13 @@ class SchedulePage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: Container(
           color: Colors.white,
-          //TODO 记得改回padding
-          margin: const EdgeInsets.symmetric(horizontal: schedulePadding),
+          padding: const EdgeInsets.symmetric(horizontal: schedulePadding),
           child: ListView(
             children: [
               TitleWidget(),
               WeekSelectWidget(),
               Padding(
-                padding: const EdgeInsets.only(top: 15),
+                padding: const EdgeInsets.only(top: 10),
                 child: ClassTableWidget(),
               )
             ],
@@ -60,7 +59,14 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                   var provider = Provider.of<ScheduleNotifier>(context);
                   provider.termStart = schedule.termStart;
                   provider.coursesWithNotify = schedule.courses;
+                  Fluttertoast.showToast(
+                      msg: "刷新课程表数据成功",
+                      textColor: Colors.white,
+                      backgroundColor: Colors.green,
+                      timeInSecForIosWeb: 1,
+                      fontSize: 16);
                 }, onFailure: (e) {
+                  // TODO msg应和e相关
                   Fluttertoast.showToast(
                       msg: "刷新课程表数据失败",
                       textColor: Colors.white,
@@ -92,7 +98,7 @@ class TitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(
         builder: (context, notifier, _) => Padding(
-              padding: const EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 15),
               child: Row(
                 children: [
                   Text('Schedule',

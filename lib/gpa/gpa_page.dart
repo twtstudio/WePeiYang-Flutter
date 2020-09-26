@@ -87,6 +87,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                 getGPABean(onSuccess: (list) {
                   Provider.of<GPANotifier>(context).listWithNotify = list;
                 }, onFailure: (e) {
+                  // TODO msg应和e相关
                   Fluttertoast.showToast(
                       msg: "刷新gpa数据失败",
                       textColor: Colors.white,

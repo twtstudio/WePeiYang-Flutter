@@ -25,6 +25,13 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               prefs.tjuuname = tjuuname;
               prefs.tjupasswd = tjupasswd;
               print("bind success！！！！！！！！！！！！！！！！！！！！！！！！！!");
+              Fluttertoast.showToast(
+                  msg: "办公网绑定成功",
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
               Navigator.pop(context);
             }),
         onFailure: (e) {

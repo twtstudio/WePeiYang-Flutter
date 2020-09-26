@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'schedule_model.dart';
 
 /// 生成一周内的日期，格式为 “MM/dd”，用0填充空位
@@ -25,12 +24,6 @@ List<String> getWeekDayString(int termStart, int week, int count) {
   return list;
 }
 
-// TODO
-/// 为ActiveCourse生成随机颜色
-Color generateColor() {
-  return Colors.lightGreenAccent;
-}
-
 /// 为每周的点阵图生成bool矩阵
 List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
   List<List<bool>> list = [];
@@ -48,17 +41,17 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
   return list;
 }
 
-/// 判断当前周是否有此课
+/// 检查当前课程在选中周的状态
 bool judgeIsActive(int week, int weekCount, Course course) =>
-    getWeekStatus(weekCount, course)[week] == 1;
+    getWeekStatus(weekCount, course)[week];
 
-/// 该课程在所有周的状态  -1：没课  0：不上课  1：上课
+/// 该课程在所有周的状态
 /// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
-List<int> getWeekStatus(int weekCount, Course course) {
-  List<int> list = [];
+List<bool> getWeekStatus(int weekCount, Course course) {
+  List<bool> list = [];
 
-  /// 先默认所有周都没课（list[0]恒为-1）
-  for (var i = 0; i <= weekCount; i++) list.add(-1);
+  /// 先默认所有周都没课（list[0]恒为false,反正也用不上）
+  for (var i = 0; i <= weekCount; i++) list.add(false);
   var start = int.parse(course.week.start);
   var end = int.parse(course.week.end);
   var remainder = 0;
@@ -74,12 +67,16 @@ List<int> getWeekStatus(int weekCount, Course course) {
       break;
   }
 
-  /// 利用取模操作判断单双周
-  for (var i = start; i <= end; i++) {
-    if (shouldMod && (i % 2 != remainder))
-      list[i] = 0;
-    else
-      list[i] = 1;
-  }
+  /// 利用取模操作判断是否有课
+  for (var i = start; i <= end; i++)
+    if (!shouldMod && (i % 2 == remainder))
+      list[i] = true;
   return list;
 }
+
+/// 去掉字符串中小括号里的内容：  张三（教授） -> 张三
+String removeParentheses(String mode) =>
+    mode.replaceAll(RegExp(r'\((.+?)\)'), '');
+
+String replaceBuildingWord(String mode) =>
+    mode.replaceAll(RegExp('楼'), '-').replaceAll('区', '');

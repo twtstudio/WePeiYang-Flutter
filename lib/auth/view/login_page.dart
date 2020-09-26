@@ -33,6 +33,13 @@ class _LoginWidgetState extends State<LoginWidget> {
       prefs.token = Token.fromJson(commonBody.data).token;
       prefs.username = email;
       prefs.password = password;
+      Fluttertoast.showToast(
+          msg: "登录成功",
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
       Fluttertoast.showToast(
