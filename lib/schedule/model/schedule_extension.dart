@@ -69,7 +69,7 @@ List<bool> getWeekStatus(int weekCount, Course course) {
 
   /// 利用取模操作判断是否有课
   for (var i = start; i <= end; i++)
-    if (!shouldMod && (i % 2 == remainder))
+    if (!shouldMod || (i % 2 == remainder))
       list[i] = true;
   return list;
 }
