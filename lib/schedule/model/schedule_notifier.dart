@@ -35,10 +35,12 @@ class ScheduleNotifier with ChangeNotifier {
   int get selectedWeek => _selectedWeek;
 
   /// 课程表显示 六天/七天
-  bool showSevenDay = false;
+  bool _showSevenDay = false;
+
+  bool get showSevenDay => _showSevenDay;
 
   void changeWeekMode(){
-    showSevenDay = !showSevenDay;
+    _showSevenDay = !_showSevenDay;
     notifyListeners();
   }
 

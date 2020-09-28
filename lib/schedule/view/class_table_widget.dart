@@ -102,8 +102,8 @@ class CourseDisplayWidget extends StatelessWidget {
       double height =
           (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
 
-      /// 周日的课不显示在课表上
-      if(day != 7)
+      /// 判断周日的课是否需要显示在课表上
+      if(notifier.showSevenDay || day != 7)
         list.add(Positioned(
             top: top,
             left: left,

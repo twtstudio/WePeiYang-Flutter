@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/schedule/service/schedule_service.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 
-const double schedulePadding = 20;
+const double schedulePadding = 15;
 
 class SchedulePage extends StatelessWidget {
   @override
@@ -88,6 +88,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                   color: Color.fromRGBO(105, 109, 126, 1), size: 30),
               onTap: () {
                 // TODO 更多功能
+                Provider.of<ScheduleNotifier>(context).changeWeekMode();
               }),
         ),
       ],
