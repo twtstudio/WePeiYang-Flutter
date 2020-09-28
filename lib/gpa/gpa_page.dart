@@ -401,18 +401,21 @@ class GPAStatsWidget extends StatelessWidget {
                 ],
               ),
             ),
-            InkResponse(
-              onTap: () => gpaNotifier.typeWithNotify = 1,
-              radius: 45,
-              splashFactory: InkRipple.splashFactory,
-              child: Column(
-                children: <Widget>[
-                  Text('GPA', style: textStyle),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(gpa, style: numStyle),
-                  )
-                ],
+            Padding(
+              padding: const EdgeInsets.only(right: 6), // 加点padding让gpa尽量居中
+              child: InkResponse(
+                onTap: () => gpaNotifier.typeWithNotify = 1,
+                radius: 45,
+                splashFactory: InkRipple.splashFactory,
+                child: Column(
+                  children: <Widget>[
+                    Text('GPA', style: textStyle),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(gpa, style: numStyle),
+                    )
+                  ],
+                ),
               ),
             ),
             InkResponse(
@@ -454,6 +457,7 @@ class _CourseListState extends State<CourseListWidget> {
             onTap: () => gpaNotifier.reSort(),
             child: Padding(
                 padding: const EdgeInsets.all(10),
+                // TODO litter spacing
                 child: Text(
                     'O R D E R E D    B Y    ${gpaNotifier.sortType.toUpperCase()}',
                     style: TextStyle(

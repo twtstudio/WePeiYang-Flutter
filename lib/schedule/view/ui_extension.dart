@@ -13,7 +13,7 @@ Widget getActiveCourseCard(double height, double width, Course course) {
     height: height,
     width: width,
     child: Material(
-      color: generateColor(),
+      color: generateColor(course),
       borderRadius: BorderRadius.circular(5),
       child: InkWell(
         onTap: () {},
@@ -79,8 +79,15 @@ Widget getQuietCourseCard(double height, double width, Course course) {
   );
 }
 
-// TODO
+// TODO 整个颜色分配算法
 /// 为ActiveCourse生成随机颜色
-Color generateColor() {
-  return Color.fromRGBO(105, 109, 126, 1);
+Color generateColor(Course course) {
+  var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
+  int hashCode = course.courseName.hashCode + now.day;
+  List<Color> colors = [
+    Color.fromRGBO(153, 156, 175, 1),
+    Color.fromRGBO(128, 119, 138, 1),
+    Color.fromRGBO(114, 117, 136, 1)
+  ];
+  return colors[hashCode % colors.length];
 }

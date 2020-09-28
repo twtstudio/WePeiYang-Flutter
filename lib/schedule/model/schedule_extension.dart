@@ -25,7 +25,8 @@ List<String> getWeekDayString(int termStart, int week, int count) {
 }
 
 /// 为每周的点阵图生成bool矩阵
-List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
+List<List<bool>> getBoolMatrix(
+    int week, int weekCount, List<Course> courses, bool showSevenDay) {
   List<List<bool>> list = [];
   for (var i = 0; i < 5; i++)
     list.add([false, false, false, false, false, false]);
@@ -35,8 +36,8 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
       var start = int.parse(course.arrange.start);
       var end = int.parse(course.arrange.end);
 
-      /// 周日的课不显示在课表上
-      if (day != 7)
+      /// 判断周日的课是否需要显示在课表上
+      if (showSevenDay || day != 7)
         for (var i = start; i <= end; i++)
           list[(i / 2).ceil() - 1][day - 1] = true;
     }
