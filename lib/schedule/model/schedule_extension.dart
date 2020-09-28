@@ -81,5 +81,40 @@ List<bool> getWeekStatus(int weekCount, Course course) {
 String removeParentheses(String mode) =>
     mode.replaceAll(RegExp(r'\((.+?)\)'), '');
 
+/// 去掉arrange对象的room属性中的 “楼”、“区” 等字眼
 String replaceBuildingWord(String mode) =>
     mode.replaceAll(RegExp('楼'), '-').replaceAll('区', '');
+
+String getCourseTime(String start, String end) {
+  var startTimes = [
+    '08:30',
+    '09:20',
+    '10:25',
+    '11:15',
+    '13:30',
+    '14:20',
+    '15:25',
+    '16:15',
+    '18:30',
+    '19:20',
+    '20:10',
+    '21:00'
+  ];
+  var endTimes = [
+    '09:15',
+    '10:05',
+    '11:10',
+    '12:00',
+    '14:15',
+    '15:05',
+    '16:10',
+    '17:00',
+    '19:15',
+    '20:05',
+    '20:55',
+    '21:45'
+  ];
+  int s = int.parse(start);
+  int e = int.parse(end);
+  return "${startTimes[s - 1]}-${endTimes[e - 1]}";
+}

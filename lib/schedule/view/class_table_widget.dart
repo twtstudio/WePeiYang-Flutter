@@ -85,12 +85,12 @@ class CourseDisplayWidget extends StatelessWidget {
     return Container(
       height: singleCourseHeight * 12 + cardStep * 11,
       child: Stack(
-        children: _generatePositioned(),
+        children: _generatePositioned(context),
       ),
     );
   }
 
-  List<Widget> _generatePositioned() {
+  List<Widget> _generatePositioned(BuildContext context,) {
     List<Positioned> list = [];
     notifier.coursesWithNotify.forEach((course) {
       int day = int.parse(course.arrange.day);
@@ -109,13 +109,13 @@ class CourseDisplayWidget extends StatelessWidget {
             left: left,
             height: height,
             width: cardWidth,
-            child: _judgeChild(height, course)));
+            child: _judgeChild(context,height, course)));
     });
     return list;
   }
 
-  Widget _judgeChild(double height, Course course) =>
+  Widget _judgeChild(BuildContext context,double height, Course course) =>
       judgeIsActive(notifier.selectedWeek, notifier.weekCount, course)
-          ? getActiveCourseCard(height, cardWidth, course)
+          ? getActiveCourseCard(context,height, cardWidth, course)
           : getQuietCourseCard(height, cardWidth, course);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/schedule_extension.dart';
 import '../model/schedule_model.dart';
+import 'course_dialog.dart';
 
 const TextStyle activeNameStyle =
     TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);
@@ -8,7 +9,7 @@ const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
 // TODO 点击弹出dialog
 /// 返回本周需要上的课（亮色），可在wpy_page复用
-Widget getActiveCourseCard(double height, double width, Course course) {
+Widget getActiveCourseCard(BuildContext context,double height, double width, Course course) {
   return Container(
     height: height,
     width: width,
@@ -16,7 +17,9 @@ Widget getActiveCourseCard(double height, double width, Course course) {
       color: generateColor(course),
       borderRadius: BorderRadius.circular(5),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          showCourseDialog(context, course);
+        },
         borderRadius: BorderRadius.circular(5),
         splashFactory: InkRipple.splashFactory,
         splashColor: Color.fromRGBO(179, 182, 191, 1),

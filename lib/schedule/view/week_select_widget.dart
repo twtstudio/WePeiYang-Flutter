@@ -15,7 +15,8 @@ class WeekSelectWidget extends StatelessWidget {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      log("${notifier.weekCount}  ||  ${notifier.coursesWithNotify}", level: 1000);
+      log("${notifier.weekCount}  ||  ${notifier.coursesWithNotify}",
+          level: 1000);
       return Container(
         height: 85,
         child: ListView.builder(
@@ -32,8 +33,10 @@ class WeekSelectWidget extends StatelessWidget {
                     Column(
                       children: [
                         CustomPaint(
-                          painter: _WeekSelectPainter(getBoolMatrix(i + 1,
-                              notifier.weekCount, notifier.coursesWithNotify,false)),
+                          painter: _WeekSelectPainter(
+                              getBoolMatrix(i + 1, notifier.weekCount,
+                                  notifier.coursesWithNotify, false),
+                              notifier.selectedWeek == i + 1),
                           size: Size(canvasWidth, canvasHeight),
                         ),
                         Padding(
@@ -74,20 +77,12 @@ class WeekSelectWidget extends StatelessWidget {
 
 class _WeekSelectPainter extends CustomPainter {
   final List<List<bool>> list;
+  final bool isSelected;
 
-  _WeekSelectPainter(this.list);
+  _WeekSelectPainter(this.list, this.isSelected);
 
   @override
   void paint(Canvas canvas, Size size) {
-    /// 深色cube，代表该点有课
-    final Paint cubePaint = Paint()
-      ..color = Color.fromRGBO(105, 109, 126, 1)
-      ..style = PaintingStyle.fill;
-
-    /// 浅色cube，代表该点没课
-    final Paint spacePaint = Paint()
-      ..color = Color.fromRGBO(230, 230, 230, 1)
-      ..style = PaintingStyle.fill;
     for (var j = 0; j < list.length; j++) {
       for (var k = 0; k < list[j].length; k++) {
         var centerX = k * (cubeSideLength + spacingLength) + cubeSideLength / 2;
@@ -95,10 +90,25 @@ class _WeekSelectPainter extends CustomPainter {
         Rect rect = Rect.fromCircle(
             center: Offset(centerX, centerY), radius: cubeSideLength / 2);
         RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(2));
-        if (list[j][k])
+        if (isSelected && list[j][k]) {
+          /// 亮色cube，代表本周被选中
+          final Paint selectedPaint = Paint()
+            ..color = Color.fromRGBO(158, 119, 138, 1)
+            ..style = PaintingStyle.fill;
+          canvas.drawRRect(rRect, selectedPaint);
+        } else if (list[j][k]) {
+          /// 深色cube，代表该点有课
+          final Paint cubePaint = Paint()
+            ..color = Color.fromRGBO(105, 109, 126, 1)
+            ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, cubePaint);
-        else
+        } else {
+          /// 浅色cube，代表该点没课
+          final Paint spacePaint = Paint()
+            ..color = Color.fromRGBO(230, 230, 230, 1)
+            ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, spacePaint);
+        }
       }
     }
   }
