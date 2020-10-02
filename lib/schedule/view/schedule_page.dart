@@ -6,16 +6,45 @@ import 'package:wei_pei_yang_demo/schedule/service/schedule_service.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 
+/// schedule页面两边的白边
 const double schedulePadding = 15;
 
 class SchedulePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: ScheduleAppBar(),
-      body: Theme(
-        data: ThemeData(accentColor: Colors.white),
-        child: Container(
+    return RefreshIndicator(
+      displacement: 60,
+      color: Color.fromRGBO(105, 109, 126, 1),
+      onRefresh: () async {
+        Fluttertoast.showToast(
+            msg:"刷新数据中……",
+            textColor: Colors.white,
+            backgroundColor: Colors.blue,
+            timeInSecForIosWeb: 1,
+            fontSize: 16);
+        await getClassTable(onSuccess: (schedule) {
+          var provider = Provider.of<ScheduleNotifier>(context);
+          provider.termStart = schedule.termStart;
+          provider.coursesWithNotify = schedule.courses;
+          Fluttertoast.showToast(
+              msg: "刷新课程表数据成功",
+              textColor: Colors.white,
+              backgroundColor: Colors.green,
+              timeInSecForIosWeb: 1,
+              fontSize: 16);
+        }, onFailure: (e) {
+          // TODO 记得改成 “失败” 文字
+          Fluttertoast.showToast(
+              msg: e.error.toString(),
+              textColor: Colors.white,
+              backgroundColor: Colors.red,
+              timeInSecForIosWeb: 1,
+              fontSize: 16);
+        });
+      },
+      child: Scaffold(
+        appBar: ScheduleAppBar(),
+        body: Container(
           color: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: schedulePadding),
           child: ListView(
