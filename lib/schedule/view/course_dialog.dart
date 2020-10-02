@@ -3,16 +3,11 @@ import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_model.dart';
 import 'package:wei_pei_yang_demo/schedule/view/ui_extension.dart';
 
-void showCourseDialog(BuildContext context, Course course) {
-  showDialog(
+void showCourseDialog(BuildContext context, Course course) => showDialog(
     context: context,
     barrierDismissible: true,
     barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
-    builder: (BuildContext context) {
-      return CourseDialog(course);
-    },
-  );
-}
+    builder: (BuildContext context) => CourseDialog(course));
 
 class CourseDialog extends Dialog {
   final Course course;
@@ -47,33 +42,36 @@ class CourseDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        height: 400,
-        width: 250,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: generateColor(course)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(course.courseName, style: nameStyle),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(course.teacher, style: teacherStyle),
-              ),
-              Expanded(child: Text("")),
-              _getRow1(),
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: _getRow2(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: _getRow3(),
-              )
-            ],
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          height: 400,
+          width: 250,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: generateColor(course)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(course.courseName, style: nameStyle),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(course.teacher, style: teacherStyle),
+                ),
+                Expanded(child: Text("")),
+                _getRow1(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: _getRow2(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: _getRow3(),
+                )
+              ],
+            ),
           ),
         ),
       ),

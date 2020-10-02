@@ -3,8 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/auth/network/bind_dropout_service.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
-    as prefs;
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
 class TjuBindWidget extends StatefulWidget {
   @override
@@ -19,12 +18,10 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
 
   _tjuBind() async {
     if (!nameEdit || !pwEdit) return;
+    var prefs = CommonPreferences.create();
     bindTju(tjuuname, tjupasswd,
         onSuccess: () =>
-            getToken(prefs.username, prefs.password, onSuccess: (useless) {
-              prefs.tjuuname = tjuuname;
-              prefs.tjupasswd = tjupasswd;
-              print("bind success！！！！！！！！！！！！！！！！！！！！！！！！！!");
+            getToken(prefs.username, prefs.password, onSuccess: () {
               Fluttertoast.showToast(
                   msg: "办公网绑定成功",
                   timeInSecForIosWeb: 1,

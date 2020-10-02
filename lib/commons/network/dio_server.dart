@@ -3,15 +3,12 @@ import 'package:device_info/device_info.dart'
     show DeviceInfoPlugin, AndroidDeviceInfo;
 import 'package:flutter/material.dart' show required;
 import 'package:package_info/package_info.dart' show PackageInfo;
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
-    as prefs;
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'error_interceptor.dart';
 import 'network_model.dart';
 import 'signature.dart';
 
-/// Singleton Pattern
-var _dio = Dio();
-
+// TODO 单例的写法可能不太对，可以参考common_prefs
 class DioService {
   static const TRUSTED_HOST = "open.twt.edu.cn";
   static const BASE_URL = "https://$TRUSTED_HOST/api/";
@@ -47,7 +44,7 @@ class DioService {
   static var sdkInt;
   static var version;
 
-  static Future<Dio> create() async {
+  static Future<Dio> create({bool shorted = false}) async {
     if (brand == null || product == null || sdkInt == null) {
       AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
       brand = androidInfo.brand;
@@ -62,13 +59,13 @@ class DioService {
     /// 需加上两个header [User-Agent] 和 [Authorization]
     BaseOptions _options = BaseOptions(
         baseUrl: BASE_URL,
-        connectTimeout: 20000,
-        receiveTimeout: 20000,
+        connectTimeout: shorted ? 3000 : 10000,
+        receiveTimeout: shorted ? 3000 : 10000,
         headers: {
           "User-Agent": userAgent,
-          "Authorization": "Bearer{${prefs.token}}",
+          "Authorization": "Bearer{${CommonPreferences.create().token}}",
         });
-    _dio = Dio()
+    var _dio = Dio()
       ..options = _options
       ..interceptors.add(SignatureInterceptor())
       ..interceptors.add(ErrorInterceptor())

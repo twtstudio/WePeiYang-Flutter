@@ -99,9 +99,9 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                       timeInSecForIosWeb: 1,
                       fontSize: 16);
                 }, onFailure: (e) {
-                  // TODO msg应和e相关
+                  // TODO 记得改成 “失败” 文字
                   Fluttertoast.showToast(
-                      msg: "刷新gpa数据失败",
+                      msg: e.error.toString(),
                       textColor: Colors.white,
                       backgroundColor: Colors.red,
                       timeInSecForIosWeb: 1,

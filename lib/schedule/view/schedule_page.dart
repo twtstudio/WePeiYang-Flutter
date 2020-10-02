@@ -40,16 +40,13 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 5),
-        child: GestureDetector(
-            child: Icon(Icons.arrow_back,
-                color: Color.fromRGBO(105, 109, 126, 1), size: 28),
-            onTap: () => Navigator.pop(context)),
-      ),
+      leading: GestureDetector(
+          child: Icon(Icons.arrow_back,
+              color: Color.fromRGBO(105, 109, 126, 1), size: 28),
+          onTap: () => Navigator.pop(context)),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 18),
+          padding: const EdgeInsets.only(right: 12),
           child: GestureDetector(
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 25),
@@ -71,9 +68,9 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                       timeInSecForIosWeb: 1,
                       fontSize: 16);
                 }, onFailure: (e) {
-                  // TODO msg应和e相关
+                  // TODO 记得改成 “失败” 文字
                   Fluttertoast.showToast(
-                      msg: "刷新课程表数据失败",
+                      msg: e.error.toString(),
                       textColor: Colors.white,
                       backgroundColor: Colors.red,
                       timeInSecForIosWeb: 1,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO 这里迟早得改
 class CardBean {
   IconData icon;
   String label;

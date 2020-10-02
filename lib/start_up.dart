@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'dart:async' show Timer;
@@ -16,11 +17,12 @@ import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 import 'gpa/gpa_page.dart' show GPAPage;
 import 'package:wei_pei_yang_demo/schedule/view/schedule_page.dart'
     show SchedulePage;
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-void main() {
+void main() async {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context)=>GPANotifier()),
-    ChangeNotifierProvider(create: (context)=>ScheduleNotifier()),
+    ChangeNotifierProvider(create: (context) => GPANotifier()),
+    ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
   ], child: WeiPeiYangApp()));
 
   /// 设置沉浸式状态栏
@@ -77,16 +79,36 @@ class StartUpWidget extends StatelessWidget {
     GlobalModel.getInstance().screenWidth = width;
     GlobalModel.getInstance().screenHeight = height;
 
-    /// 微北洋启动页，显示3秒钟
-    Timer(Duration(seconds: 3), () {
-      //TODO 登录判断
-      Navigator.pushReplacementNamed(context, '/login');
-    });
+    _autoLogin(context);
+
     return ConstrainedBox(
       child: Image(
           fit: BoxFit.fill,
           image: AssetImage('assets/images/splash_screen.png')),
       constraints: BoxConstraints.expand(),
     );
+  }
+
+  void _autoLogin(BuildContext context) async {
+    /// 初始化sharedPrefs
+    await CommonPreferences.initPrefs();
+    var prefs = CommonPreferences.create();
+    if (!prefs.isLogin) {
+      /// 既然没登陆过就多看会启动页吧
+      Timer(Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    }
+
+    /// 稍微显示一会启动页，不然它的意义是什么555
+    else
+      Timer(Duration(seconds: 1), () {
+        /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
+        getToken(prefs.username, prefs.password, shorted: true, onSuccess: () {
+          if (context != null) Navigator.pushReplacementNamed(context, '/home');
+        }, onFailure: (_) {
+          Navigator.pushReplacementNamed(context, '/login');
+        });
+      });
   }
 }

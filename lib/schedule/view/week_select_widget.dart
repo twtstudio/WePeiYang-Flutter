@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
@@ -15,8 +13,6 @@ class WeekSelectWidget extends StatelessWidget {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      log("${notifier.weekCount}  ||  ${notifier.coursesWithNotify}",
-          level: 1000);
       return Container(
         height: 85,
         child: ListView.builder(

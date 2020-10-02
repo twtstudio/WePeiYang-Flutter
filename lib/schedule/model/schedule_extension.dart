@@ -36,6 +36,9 @@ List<List<bool>> getBoolMatrix(
       var start = int.parse(course.arrange.start);
       var end = int.parse(course.arrange.end);
 
+      /// 课程占奇数节时忽略一小节（例: 5-7视为5-6），因为点阵图的每个点代表两小节课
+      if ((end - start) % 2 == 0) end--;
+
       /// 判断周日的课是否需要显示在课表上
       if (showSevenDay || day != 7)
         for (var i = start; i <= end; i++)

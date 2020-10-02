@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
-    as prefs;
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -29,10 +26,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       );
       return;
     }
-    getToken(email, password, onSuccess: (commonBody) {
-      prefs.token = Token.fromJson(commonBody.data).token;
-      prefs.username = email;
-      prefs.password = password;
+    getToken(email, password, onSuccess: () {
       Fluttertoast.showToast(
           msg: "登录成功",
           timeInSecForIosWeb: 1,

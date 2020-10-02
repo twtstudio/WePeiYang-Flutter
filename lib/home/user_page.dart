@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart'
-as prefs;
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
 import '../start_up.dart';
 
@@ -86,7 +85,7 @@ class UserPage extends StatelessWidget {
                             backgroundColor: Colors.green,
                             textColor: Colors.white,
                             fontSize: 18);
-                        prefs.clearPrefs();
+                        CommonPreferences.create().clearPrefs();
                         Navigator.pushNamedAndRemoveUntil(
                             WeiPeiYangApp.navigatorState.currentContext,
                             '/login',
