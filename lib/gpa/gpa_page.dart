@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
@@ -13,7 +13,7 @@ class GPAPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GPAppBar(),
-      backgroundColor: Color.fromRGBO(127, 139, 89, 1.0),
+      backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
       body: Theme(
         /// 修改scrollView滚动至头/尾时溢出的颜色
         data: ThemeData(accentColor: Colors.white),
@@ -33,6 +33,7 @@ class GPAPage extends StatelessWidget {
 class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
+    // TODO 回头记得撤了假数据
     List<GPACourse> list1 = [];
     List<GPAStat> gpaList = [];
     list1.add(GPACourse("高等数学2A", "数学", 6, 93));
@@ -61,7 +62,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
     gpaList.add(GPAStat(89.00, 3.700, 1.0, list1));
     return AppBar(
-      backgroundColor: Color.fromRGBO(127, 139, 89, 1.0),
+      backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
       elevation: 0,
       leading: Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -124,40 +125,40 @@ class RadarChartWidget extends StatefulWidget {
 }
 
 class _RadarChartState extends State<RadarChartWidget> {
-  List<GPACourse> list = [];
+  List<GPACourse> _list = [];
 
   /// isTaped为true时雷达图有透明度
-  bool isTaped = false;
+  bool _isTaped = false;
 
-  static Timer timer;
+  static Timer _timer;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      list = gpaNotifier.coursesWithNotify;
+      _list = gpaNotifier.coursesWithNotify;
       return GestureDetector(
-        onTapDown: (TapDownDetails detail) {
+        onTapDown: (_) {
           setState(() {
-            isTaped = true;
-            list.shuffle();
+            _isTaped = true;
+            _list.shuffle();
           });
 
           /// 重复点击雷达图时，timer重新计时
-          if (timer != null && timer.isActive) timer.cancel();
-          timer = Timer(Duration(milliseconds: 300), () {
-            setState(() => isTaped = false);
+          if (_timer != null && _timer.isActive) _timer.cancel();
+          _timer = Timer(Duration(milliseconds: 300), () {
+            setState(() => _isTaped = false);
           });
         },
         child: Opacity(
-          opacity: isTaped ? 0.2 : 1,
-          child: _judgeListLength(list),
+          opacity: _isTaped ? 0.2 : 1,
+          child: _judgeListLength(_list),
         ),
       );
     });
   }
 
-  Widget _judgeListLength(List<GPACourse> list) {
-    if (list.length < 3)
+  Widget _judgeListLength(List<GPACourse> _list) {
+    if (_list.length < 3)
       return Container(
         height: 300,
         child: Padding(
@@ -184,7 +185,7 @@ class _RadarChartState extends State<RadarChartWidget> {
       return Container(
         height: 350,
         child: CustomPaint(
-          painter: _RadarChartPainter(list),
+          painter: _RadarChartPainter(_list),
           size: Size(double.maxFinite, 160),
         ),
       );
@@ -457,11 +458,11 @@ class _CourseListState extends State<CourseListWidget> {
             onTap: () => gpaNotifier.reSort(),
             child: Padding(
                 padding: const EdgeInsets.all(10),
-                // TODO litter spacing
                 child: Text(
-                    'O R D E R E D    B Y    ${gpaNotifier.sortType.toUpperCase()}',
+                    'ORDERED\tBY\t${gpaNotifier.sortType.toUpperCase()}',
                     style: TextStyle(
                         fontSize: 15,
+                        letterSpacing: 4,
                         color: Color.fromRGBO(178, 184, 153, 1),
                         fontWeight: FontWeight.bold))),
           ),

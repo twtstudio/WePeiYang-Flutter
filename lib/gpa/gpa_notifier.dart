@@ -62,15 +62,16 @@ class GPANotifier with ChangeNotifier {
   String get sortType {
     switch (_sortType) {
       case 0:
-        return "n a m e";
+        return "name";
       case 1:
-        return "s c o r e";
+        return "score";
       case 2:
-        return "c r e d i t s";
+        return "credits";
     }
-    return "n a m e";
+    return "name";
   }
 
+  /// 分别按 name、score、credit 排序
   void _sort() {
     switch (_sortType) {
       case 0:
@@ -92,6 +93,7 @@ class GPANotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  /// 更换排列方式
   void reSort(){
     _sortType = ( _sortType + 1) % 3;
     _sort();

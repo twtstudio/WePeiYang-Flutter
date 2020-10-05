@@ -102,7 +102,7 @@ class StartUpWidget extends StatelessWidget {
 
     /// 稍微显示一会启动页，不然它的意义是什么555
     else
-      Timer(Duration(seconds: 1), () {
+      Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
         getToken(prefs.username, prefs.password, shorted: true, onSuccess: () {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');

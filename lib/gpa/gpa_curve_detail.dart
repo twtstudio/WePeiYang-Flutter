@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 import 'dart:math';
 import '../home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -15,16 +14,19 @@ class GPAPreview extends StatelessWidget {
   }
 }
 
+/// wpy_page中显示数值信息
 class GPAIntro extends StatelessWidget {
+  static const textStyle = TextStyle(
+      color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15.0);
+
+  static const numStyle = TextStyle(
+      color: Color.fromRGBO(53, 59, 84, 1.0),
+      fontWeight: FontWeight.bold,
+      fontSize: 25.0);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      var textStyle = TextStyle(
-          color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15.0);
-      var numStyle = TextStyle(
-          color: MyColors.deepBlue,
-          fontWeight: FontWeight.bold,
-          fontSize: 25.0);
       var weighted = "未";
       var grade = "知";
       if (gpaNotifier.currentDataWithNotify != null) {
@@ -62,6 +64,7 @@ class GPAIntro extends StatelessWidget {
 /// Stack的底层为静态的[_GPACurvePainter],由cubic曲线和黑点构成
 /// Stack的顶层为动态的[_GPAPopupPainter],用补间动画控制移动
 class GPACurve extends StatefulWidget {
+  /// 是否在wpy_page中显示（false的话就是在gpa_page中呗）
   final bool isPreview;
 
   GPACurve({@required this.isPreview});
@@ -73,10 +76,10 @@ class GPACurve extends StatefulWidget {
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
   static const Color _popupCardPreview = Colors.white;
-  static final Color _popupTextPreview = MyColors.deepBlue;
+  static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
 
-  static final Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);
-  static final Color _popupTextColor = Colors.white;
+  static const Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);
+  static const Color _popupTextColor = Colors.white;
 
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
 
@@ -98,7 +101,7 @@ class _GPACurveState extends State<GPACurve>
       _initPoints(points, curveData);
       return GestureDetector(
 
-        /// 点击监听
+          /// 点击监听
           onTapDown: (TapDownDetails detail) {
             RenderBox renderBox = context.findRenderObject();
             var localOffset = renderBox.globalToLocal(detail.globalPosition);
@@ -119,7 +122,6 @@ class _GPACurveState extends State<GPACurve>
           child: Container(
             child: Stack(
               children: <Widget>[
-
                 /// Stack底层
                 CustomPaint(
                   painter: _GPACurvePainter(
@@ -136,10 +138,8 @@ class _GPACurveState extends State<GPACurve>
                       begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
                   onEnd: () => setState(() => _lastTaped = _newTaped),
                   builder: (BuildContext context, value, Widget child) {
-                    var lT = points[_lastTaped],
-                        nT = points[_newTaped];
+                    var lT = points[_lastTaped], nT = points[_newTaped];
                     return Transform.translate(
-
                       /// 计算两次点击之间的偏移量Offset
                       /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
                       offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
@@ -172,7 +172,7 @@ class _GPACurveState extends State<GPACurve>
                             ),
                             CustomPaint(
                               painter:
-                              _GPAPopupPainter(isPreview: widget.isPreview),
+                                  _GPAPopupPainter(isPreview: widget.isPreview),
                               size: Size(80, 30),
                             )
                           ],
@@ -190,9 +190,7 @@ class _GPACurveState extends State<GPACurve>
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
 
   _initPoints(List<Point<double>> points, List<double> list) {
-    var width = GlobalModel
-        .getInstance()
-        .screenWidth;
+    var width = GlobalModel.getInstance().screenWidth;
     var step = width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
@@ -228,15 +226,18 @@ class _GPAPopupPainter extends CustomPainter {
 
   _GPAPopupPainter({@required this.isPreview});
 
-  static final Color _outerPreview = MyColors.deepBlue;
-  static final Color _innerPreview = Colors.white;
+  /// 在wpy_page显示的颜色
+  static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1.0);
+  static const Color _innerPreview = Colors.white;
 
-  static final Color _outerColor = Colors.white;
-  static final Color _innerColor = Color.fromRGBO(125, 140, 85, 1);
+  // TODO 多搞几套主题颜色
+  /// 在gpa_page显示的颜色
+  static const Color _outerColor = Colors.white;
+  static const Color _innerColor = Color.fromRGBO(125, 140, 85, 1);
 
-  static const outerWidth = 4.0;
-  static const innerRadius = 5.0;
-  static const outerRadius = 7.0;
+  static const _outerWidth = 4.0;
+  static const _innerRadius = 5.0;
+  static const _outerRadius = 7.0;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -246,9 +247,9 @@ class _GPAPopupPainter extends CustomPainter {
     final Paint outerPaint = Paint()
       ..color = isPreview ? _outerPreview : _outerColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = outerWidth;
-    canvas.drawCircle(size.center(Offset.zero), innerRadius, innerPaint);
-    canvas.drawCircle(size.center(Offset.zero), outerRadius, outerPaint);
+      ..strokeWidth = _outerWidth;
+    canvas.drawCircle(size.center(Offset.zero), _innerRadius, innerPaint);
+    canvas.drawCircle(size.center(Offset.zero), _outerRadius, outerPaint);
   }
 
   @override
@@ -267,11 +268,11 @@ class _GPACurvePainter extends CustomPainter {
   const _GPACurvePainter(
       {@required this.isPreview, @required this.points, @required this.taped});
 
-  static final Color _linePreview = MyColors.dust;
-  static final Color _pointPreview = MyColors.darkGrey2;
+  static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1.0);
+  static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1.0);
 
-  static final Color _lineColor = Color.fromRGBO(136, 147, 100, 1);
-  static final Color _pointColor = Colors.white;
+  static const Color _lineColor = Color.fromRGBO(136, 147, 100, 1);
+  static const Color _pointColor = Colors.white;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     final Paint paint = Paint()
