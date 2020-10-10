@@ -101,7 +101,8 @@ class StartUpWidget extends StatelessWidget {
     }
 
     /// 稍微显示一会启动页，不然它的意义是什么555
-    else
+    else {
+      // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
         getToken(prefs.username, prefs.password, shorted: true, onSuccess: () {
@@ -110,5 +111,6 @@ class StartUpWidget extends StatelessWidget {
           Navigator.pushReplacementNamed(context, '/login');
         });
       });
+    }
   }
 }

@@ -77,7 +77,7 @@ class DioService {
 typedef OnSuccess = void Function(CommonBody body);
 typedef OnFailure = void Function(DioError e);
 
-/// 封装dio中的[get]和[post]函数
+/// 封装dio中的[get]和[post]函数，返回commonBody对象
 extension CommonBodyMethod on Dio {
   Future<void> getCall(
     String path, {

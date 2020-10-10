@@ -1,4 +1,4 @@
-import 'schedule_model.dart';
+import 'school/common_model.dart';
 
 /// 生成一周内的日期，格式为 “MM/dd”，用0填充空位
 /// [termStart] 本学期开始时间的时间戳

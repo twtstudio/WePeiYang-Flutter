@@ -1,5 +1,5 @@
 class GPABean {
-  Map stat; // List<Stat
+  Map stat; // List<Stat>
   List<dynamic> data; // List<Term>
   // String updated_at;
   // String session;
@@ -14,7 +14,7 @@ class GPABean {
 
 class Term {
   String term;
-  List<dynamic> data; // List<Course>
+  List<dynamic> data; // List<GPACourse>
   String name;
   Map stat; // TermStat
 
@@ -118,6 +118,9 @@ class GPACourse {
 // }
 
 /// gpa页面实际使用的数据类
+
+
+
 class GPAStat {
   double weighted;
   double gpa;

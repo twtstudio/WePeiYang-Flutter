@@ -2,13 +2,14 @@ import 'package:flutter/material.dart' show Colors;
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 import 'package:flutter/material.dart' show required;
-import 'package:wei_pei_yang_demo/schedule/model/schedule_model.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
 
 getClassTable(
     {@required void Function(Schedule) onSuccess, OnFailure onFailure}) async {
   var dio = await DioService.create();
   await dio.getCall("v1/classtable", onSuccess: (commonBody) {
     try {
+      // TODO 在CourseBean里面添加convertToCourseList函数
       List<Course> courses = [];
       var classTable = ClassTable.fromJson(commonBody.data);
       classTable.data.forEach((element) {

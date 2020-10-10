@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/schedule_extension.dart';
-import '../model/schedule_model.dart';
+import '../model/school/common_model.dart';
 import 'course_dialog.dart';
 
 const TextStyle activeNameStyle =

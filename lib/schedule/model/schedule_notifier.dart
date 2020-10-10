@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_model.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
 
 class ScheduleNotifier with ChangeNotifier {
   List<Course> _coursesWithNotify = [];

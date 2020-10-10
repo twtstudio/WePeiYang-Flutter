@@ -45,6 +45,9 @@ class CourseBean {
     // college = tmp['college'];
     // ext = tmp['ext'];
   }
+
+  CourseBean(this.classId, this.courseId, this.courseName, this.credit,
+      this.teacher, this.campus, this.week, this.arrange);
 }
 
 class Arrange {
@@ -54,13 +57,15 @@ class Arrange {
   String end; // 第几节结束
   String day; // 周几 （1 -> 周一）
 
-  Arrange.fromJson(dynamic tmp){
+  Arrange.fromJson(dynamic tmp) {
     week = tmp['week'];
     room = tmp['room'];
     start = tmp['start'];
     end = tmp['end'];
     day = tmp['day'];
   }
+
+  Arrange(this.week, this.room, this.start, this.end, this.day);
 }
 
 class Week {
@@ -71,10 +76,12 @@ class Week {
     start = tmp['start'];
     end = tmp['end'];
   }
+
+  Week(this.start, this.end);
 }
 
 /// schedule页面实际使用的数据类
-class Schedule{
+class Schedule {
   int termStart;
   String term;
   List<Course> courses;
@@ -82,16 +89,25 @@ class Schedule{
   Schedule(this.termStart, this.term, this.courses);
 }
 
-class Course{
-  String classId;
-  String courseId;
-  String courseName;
-  String credit;
-  String teacher;
-  String campus;
+class Course {
+  String classId = "";
+  String courseId = "";
+  String courseName = "";
+  String credit = "";
+  String teacher = "";
+  String campus = "";
   Week week;
   Arrange arrange;
 
+  /// 课程类型  0->普通课程  1->蹭课
+  int type;
+
   Course(this.classId, this.courseId, this.courseName, this.credit,
-      this.teacher, this.campus, this.week, this.arrange);
+      this.teacher, this.campus, this.week, this.arrange) {
+    type = 0;
+  }
+
+  Course.audit(this.teacher, this.week, this.courseName, this.arrange) {
+    type = 1;
+  }
 }

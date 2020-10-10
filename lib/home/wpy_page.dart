@@ -46,7 +46,7 @@ class WPYPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 30.0),
-                child: Text('GPA Curve',
+                child: Text('GPA',
                     style: TextStyle(
                         fontSize: 17.0,
                         color: MyColors.deepBlue,

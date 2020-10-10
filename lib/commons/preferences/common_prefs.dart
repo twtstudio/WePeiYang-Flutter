@@ -8,11 +8,13 @@ class CommonPreferences {
   /// 用create函数获取commonPref类单例
   factory CommonPreferences.create() => _instance;
 
+  static SharedPreferences getPref() => _instance._sharedPref;
+
   SharedPreferences _sharedPref;
 
   /// 初始化sharedPrefs，在自动登录时就被调用
   static Future<void> initPrefs() async =>
-    _instance._sharedPref = await SharedPreferences.getInstance();
+      _instance._sharedPref = await SharedPreferences.getInstance();
 
   void clearPrefs() {
     _token = "";
@@ -94,8 +96,7 @@ class CommonPreferences {
   var _tjupasswd = "";
 
   String get tjupasswd {
-    if (_tjupasswd == "")
-      _tjupasswd = _sharedPref.getString('tjupasswd') ?? " ";
+    if (_tjupasswd == "") _tjupasswd = _sharedPref.getString('tjupasswd') ?? "";
     return _tjupasswd;
   }
 
@@ -103,5 +104,66 @@ class CommonPreferences {
     if (_tjupasswd == newTjuPassword) return;
     _sharedPref.setString('tjupasswd', newTjuPassword);
     _tjupasswd = newTjuPassword;
+  }
+
+  /// cookies in sso.tju.edu.cn
+  var tgc = PrefsBean<String>("tgc").value; // TGC
+
+  /// cookies in classes.tju.edu.cn
+  var gSessionId = PrefsBean<String>("gsessionid").value; // GSESSIONID
+
+  var garbled = PrefsBean<String>("garbled").value; // UqZBpD3n3iXPAw1X
+
+  var semesterId = PrefsBean<String>("semester").value; // semester.id
+
+  var ids = PrefsBean<String>("ids").value; // ids
+}
+
+class PrefsBean<T> {
+  PrefsBean(this._key);
+
+  String _key;
+  T _value;
+  bool _init = true;
+
+  T get value {
+    if(_init) {
+      _init = false;
+      return null;
+    }
+    if (_value == null) _value = _getValue(T, _key);
+    return _value;
+  }
+
+  set value(T newValue) {
+    if (_value == newValue) return;
+    _setValue(newValue, _key);
+    _value = newValue;
+  }
+}
+
+dynamic _getValue(Type type, String key) {
+  var pref = CommonPreferences.getPref();
+  return pref?.get(key);
+}
+
+void _setValue<T>(T value, String key) {
+  var pref = CommonPreferences.getPref();
+  if(pref == null) return;
+  switch (T) {
+    case String:
+      pref.setString(key, value as String);
+      break;
+    case bool:
+      pref.setBool(key, value as bool);
+      break;
+    case int:
+      pref.setInt(key, value as int);
+      break;
+    case double:
+      pref.setDouble(key, value as double);
+      break;
+    default:
+      break;
   }
 }
