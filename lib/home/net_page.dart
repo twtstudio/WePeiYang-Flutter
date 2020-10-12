@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 
 /// 此篇代码纯测试用
 class CPage extends StatefulWidget {
@@ -10,8 +9,7 @@ class CPage extends StatefulWidget {
 class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
-  _testFun(BuildContext context) async =>
-      await loginSpider(context, "3019244334", "pingguo2001!");
+  _testFun(BuildContext context) async {}
 
   @override
   Widget build(BuildContext context) {

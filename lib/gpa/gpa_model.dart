@@ -1,131 +1,33 @@
 class GPABean {
-  Map stat; // List<Stat>
-  List<dynamic> data; // List<Term>
-  // String updated_at;
-  // String session;
+  Total total;
+  List<GPAStat> stats;
 
-  GPABean.fromJson(dynamic tmp) {
-    stat = tmp['stat'];
-    data = tmp['data'];
-    // updated_at = tmp['updated_at'];
-    // session = tmp['session'];
-  }
+  GPABean(this.total, this.stats);
 }
 
-class Term {
-  String term;
-  List<dynamic> data; // List<GPACourse>
-  String name;
-  Map stat; // TermStat
+class Total {
+  double weighted; // 总加权
+  double gpa; // 总绩点
+  double credits; // 总学分
 
-  Term.fromJson(dynamic tmp) {
-    term = tmp['term'];
-    data = tmp['data'];
-    name = tmp['name'];
-    stat = tmp['stat'];
-  }
+  Total(this.weighted, this.gpa, this.credits);
 }
-
-class TermStat {
-  double score;
-  double gpa;
-  double credit;
-
-  TermStat.fromJson(dynamic tmp) {
-    var cr = tmp['credit'];
-    if (cr is int)
-      credit = cr.toDouble();
-    else
-      credit = cr;
-    var sc = tmp['score'];
-    if (sc is int)
-      score = sc.toDouble();
-    else
-      score = sc;
-    var gp = tmp['gpa'];
-    if (gp is int)
-      gpa = gp.toDouble();
-    else
-      gpa = gp;
-  }
-}
-
-/// 省略了部分参数
-class GPACourse {
-  // String no;
-  String name;
-  String classType;
-  double score;
-  double credit;
-  // double gpa;
-  // int estimated;
-  // int type;
-  // int reset;
-  // String scoreProp;
-
-  GPACourse.fromJson(dynamic tmp) {
-    name = tmp['name'];
-    classType = tmp['classType'];
-    var sc = tmp['score'];
-    if (sc is int)
-      score = sc.toDouble();
-    else
-      score = sc;
-    var cr = tmp['credit'];
-    if (cr is int)
-      credit = cr.toDouble();
-    else
-      credit = cr;
-  }
-
-  GPACourse(this.name, this.classType, this.credit, this.score);
-}
-
-// class Stat{
-//   List<Year> stat;
-//   Total total;
-// }
-
-// class Course{
-//   String no;
-//   String name;
-//   int type;
-//   double credit;
-//   int reset;
-//   double scroe;
-//   double gpa;
-//   Evaluate evaluate;
-// }
-
-// class Year{
-//   String year;
-//   double score;
-//   double gpa;
-//   double credit;
-// }
-
-// class Total{
-//   double score;
-//   double gpa;
-//   double credit;
-// }
-
-// class Evaluate{
-//   String lesson_id;
-//   String term;
-//   String union_id;
-//   String course_id;
-// }
-
-/// gpa页面实际使用的数据类
-
-
 
 class GPAStat {
-  double weighted;
-  double gpa;
-  double credits;
+  double weighted; // 每学期加权
+  double gpa; // 每学期绩点
+  double credits; // 每学期学分
   List<GPACourse> courses;
 
   GPAStat(this.weighted, this.gpa, this.credits, this.courses);
+}
+
+class GPACourse {
+  String name; // 课程名称
+  String classType; // 课程类别 （必修/选修/...）
+  double score; // 课程成绩
+  double credit; // 课程学分
+  double gpa; // 课程绩点
+
+  GPACourse(this.name, this.classType, this.score, this.credit, this.gpa);
 }

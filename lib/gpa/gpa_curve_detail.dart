@@ -29,9 +29,9 @@ class GPAIntro extends StatelessWidget {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
       var weighted = "未";
       var grade = "知";
-      if (gpaNotifier.currentDataWithNotify != null) {
-        weighted = gpaNotifier.currentDataWithNotify[0].toString();
-        grade = gpaNotifier.currentDataWithNotify[1].toString();
+      if (gpaNotifier.totalWithNotify != null) {
+        weighted = gpaNotifier.totalWithNotify.weighted.toString();
+        grade = gpaNotifier.totalWithNotify.gpa.toString();
       }
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -105,7 +105,7 @@ class _GPACurveState extends State<GPACurve>
           onTapDown: (TapDownDetails detail) {
             RenderBox renderBox = context.findRenderObject();
             var localOffset = renderBox.globalToLocal(detail.globalPosition);
-            var result = _judgeTaped(localOffset, points);
+            var result = _judgeTaped(localOffset, points, r: 50);
             if (result != 0) {
               setState(() => _newTaped = result);
               gpaNotifier.indexWithNotify = result - 1;

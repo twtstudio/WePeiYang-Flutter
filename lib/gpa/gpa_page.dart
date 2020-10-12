@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart' show GPACurve;
-import 'package:wei_pei_yang_demo/gpa/gpa_service.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_spider.dart';
 import 'gpa_model.dart';
 import 'gpa_notifier.dart';
 
@@ -36,27 +36,27 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     // TODO 回头记得撤了假数据
     List<GPACourse> list1 = [];
     List<GPAStat> gpaList = [];
-    list1.add(GPACourse("高等数学2A", "数学", 6, 93));
-    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 91));
-    list1.add(GPACourse("线性代数及其应用", "数学", 3.5, 94));
-    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55));
-    list1.add(GPACourse("大学英语1", "外语", 2, 97));
-    list1.add(GPACourse("计算机导论", "计算机", 1.5, 76));
-    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 60));
-    list1.add(GPACourse("体育A", "体育", 1, 78));
-    list1.add(GPACourse("健康教育", "健康教育", 0.5, 86));
-    list1.add(GPACourse("大学计算机基础1", "计算机", 0, 100));
+    list1.add(GPACourse("高等数学2A", "数学", 6, 93, 4));
+    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 91, 4));
+    list1.add(GPACourse("线性代数及其应用", "数学", 3.5, 94, 4));
+    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55, 0));
+    list1.add(GPACourse("大学英语1", "外语", 2, 97, 4));
+    list1.add(GPACourse("计算机导论", "计算机", 1.5, 76, 2.7));
+    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 60, 2));
+    list1.add(GPACourse("体育A", "体育", 1, 78, 2.8));
+    list1.add(GPACourse("健康教育", "健康教育", 0.5, 86, 3));
+    list1.add(GPACourse("大学计算机基础1", "计算机", 0, 100, 4));
     List<GPACourse> list2 = [];
-    list2.add(GPACourse("高等数学2A", "数学", 6, 63));
-    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 25));
-    list2.add(GPACourse("线性代数及其应用", "数学", 3.5, 85));
-    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15));
-    list2.add(GPACourse("大学英语1", "外语", 2, 57));
-    list2.add(GPACourse("计算机导论", "计算机", 1.5, 86));
-    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 47));
-    list2.add(GPACourse("体育A", "体育", 1, 23));
-    list2.add(GPACourse("健康教育", "健康教育", 0.5, 47));
-    list2.add(GPACourse("大学计算机基础1", "计算机", 0, 11));
+    list2.add(GPACourse("高等数学2A", "数学", 6, 63, 2.2));
+    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 25, 0));
+    list2.add(GPACourse("线性代数及其应用", "数学", 3.5, 85, 2.9));
+    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15, 0));
+    list2.add(GPACourse("大学英语1", "外语", 2, 57, 0));
+    list2.add(GPACourse("计算机导论", "计算机", 1.5, 86, 3));
+    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 47, 0));
+    list2.add(GPACourse("体育A", "体育", 1, 23, 0));
+    list2.add(GPACourse("健康教育", "健康教育", 0.5, 47, 0));
+    list2.add(GPACourse("大学计算机基础1", "计算机", 0, 11, 0));
     gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
     gpaList.add(GPAStat(77.72, 3.060, 25.0, list2));
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
@@ -84,21 +84,23 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
-              onTap: () {
+              onTap: () async {
                 Fluttertoast.showToast(
-                    msg:"刷新数据中……",
+                    msg: "刷新数据中……",
                     textColor: Colors.white,
                     backgroundColor: Colors.blue,
                     timeInSecForIosWeb: 1,
                     fontSize: 16);
-                getGPABean(onSuccess: (list) {
-                  Provider.of<GPANotifier>(context).listWithNotify = list;
+                await getGPABean(onSuccess: (gpaBean) {
                   Fluttertoast.showToast(
-                      msg:"刷新gpa数据成功",
+                      msg: "刷新gpa数据成功",
                       textColor: Colors.white,
                       backgroundColor: Colors.green,
                       timeInSecForIosWeb: 1,
                       fontSize: 16);
+                  Provider.of<GPANotifier>(context)
+                    ..listWithNotify = gpaBean.stats
+                    ..totalWithNotify = gpaBean.total;
                 }, onFailure: (e) {
                   // TODO 记得改成 “失败” 文字
                   Fluttertoast.showToast(

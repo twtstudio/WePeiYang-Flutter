@@ -11,6 +11,15 @@ class GPANotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  Total _totalWithNotify = Total(0, 0, 0);
+
+  Total get totalWithNotify => _totalWithNotify;
+
+  set totalWithNotify(Total total){
+    _totalWithNotify = total;
+    notifyListeners();
+  }
+
   /// 当前显示的学年
   int _index = 0;
 
@@ -75,18 +84,18 @@ class GPANotifier with ChangeNotifier {
   void _sort() {
     switch (_sortType) {
       case 0:
-          _listWithNotify.forEach((element) {
-            element.courses.sort((b,a)=> a.name.compareTo(b.name));
-          });
-          break;
+        _listWithNotify.forEach((element) {
+          element.courses.sort((b, a) => a.name.compareTo(b.name));
+        });
+        break;
       case 1:
         _listWithNotify.forEach((element) {
-          element.courses.sort((b,a)=> a.score.compareTo(b.score));
+          element.courses.sort((b, a) => a.score.compareTo(b.score));
         });
         break;
       case 2:
         _listWithNotify.forEach((element) {
-          element.courses.sort((b,a)=> a.credit.compareTo(b.credit));
+          element.courses.sort((b, a) => a.credit.compareTo(b.credit));
         });
         break;
     }
@@ -94,8 +103,8 @@ class GPANotifier with ChangeNotifier {
   }
 
   /// 更换排列方式
-  void reSort(){
-    _sortType = ( _sortType + 1) % 3;
+  void reSort() {
+    _sortType = (_sortType + 1) % 3;
     _sort();
   }
 }
