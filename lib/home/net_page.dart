@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
 /// 此篇代码纯测试用
 class CPage extends StatefulWidget {
@@ -9,7 +10,10 @@ class CPage extends StatefulWidget {
 class CPageState extends State<CPage> {
   String _text = "aaaaaaaaa";
 
-  _testFun(BuildContext context) async {}
+  _testFun(BuildContext context) async {
+    var pref = CommonPreferences.create();
+    pref.clearPrefs();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -16,95 +16,20 @@ class CommonPreferences {
   static Future<void> initPrefs() async =>
       _instance._sharedPref = await SharedPreferences.getInstance();
 
-  void clearPrefs() {
-    _token = "";
-    _username = "";
-    _password = "";
-    _tjuuname = "";
-    _tjupasswd = "";
-    _sharedPref.clear();
-  }
-
   ///twt相关
 
-  var _isLogin = false;
+  var isLogin = PrefsBean<bool>('login').value;
 
-  bool get isLogin {
-    if (_isLogin == false) _isLogin = _sharedPref.getBool('login') ?? false;
-    return _isLogin;
-  }
+  var token = PrefsBean<String>('token').value;
 
-  set isLogin(bool b) {
-    if (_isLogin == b) return;
-    _sharedPref.setBool('login', b);
-    _isLogin = b;
-  }
+  var username = PrefsBean<String>('username').value;
 
-  var _token = "";
-
-  String get token {
-    if (_token == "") _token = _sharedPref.getString('token') ?? "";
-    return _token;
-  }
-
-  set token(String newToken) {
-    if (_token == newToken) return;
-    _sharedPref.setString('token', newToken);
-    _token = newToken;
-  }
-
-  var _username = "";
-
-  String get username {
-    if (_username == "") _username = _sharedPref.getString('username') ?? "";
-    return _username;
-  }
-
-  set username(String newUsername) {
-    if (_username == newUsername) return;
-    _sharedPref.setString('username', newUsername);
-    _username = newUsername;
-  }
-
-  var _password = "";
-
-  String get password {
-    if (_password == "") _password = _sharedPref.getString('password') ?? "";
-    return _password;
-  }
-
-  set password(String newPassword) {
-    if (_password == newPassword) return;
-    _sharedPref.setString('password', newPassword);
-    _password = newPassword;
-  }
+  var password = PrefsBean<String>('password').value;
 
   ///办公网相关(看着这些绿色波浪线就想犯强迫症，可惜接口就是这么写的)
-  var _tjuuname = "";
+  var tjuuname = PrefsBean<String>('tjuuname').value;
 
-  String get tjuuname {
-    if (_tjuuname == "") _tjuuname = _sharedPref.getString('tjuuname') ?? "";
-    return _tjuuname;
-  }
-
-  set tjuuname(String newTjuName) {
-    if (_tjuuname == newTjuName) return;
-    _sharedPref.setString('tjuuname', newTjuName);
-    _password = newTjuName;
-  }
-
-  var _tjupasswd = "";
-
-  String get tjupasswd {
-    if (_tjupasswd == "") _tjupasswd = _sharedPref.getString('tjupasswd') ?? "";
-    return _tjupasswd;
-  }
-
-  set tjupasswd(String newTjuPassword) {
-    if (_tjupasswd == newTjuPassword) return;
-    _sharedPref.setString('tjupasswd', newTjuPassword);
-    _tjupasswd = newTjuPassword;
-  }
+  var tjupasswd = PrefsBean<String>('tjupasswd').value;
 
   /// cookies in sso.tju.edu.cn
   var tgc = PrefsBean<String>("tgc").value; // TGC
@@ -117,21 +42,41 @@ class CommonPreferences {
   var semesterId = PrefsBean<String>("semester").value; // semester.id
 
   var ids = PrefsBean<String>("ids").value; // ids
+
+  /// 清除程序和本地的缓存
+  void clearPrefs() {
+    isLogin = false;
+    token = "";
+    username = "";
+    password = "";
+    tjuuname = "";
+    tjupasswd = "";
+    tgc = "";
+    gSessionId = "";
+    garbled = "";
+    semesterId = "";
+    ids = "";
+    _sharedPref.clear();
+  }
 }
 
 class PrefsBean<T> {
-  PrefsBean(this._key);
+  PrefsBean(this._key) {
+    _default = _getDefault(T);
+    _value = _default;
+  }
 
   String _key;
   T _value;
+  T _default;
   bool _init = true;
 
   T get value {
-    if(_init) {
+    if (_init) {
       _init = false;
-      return null;
+      return _default;
     }
-    if (_value == null) _value = _getValue(T, _key);
+    if (_value == _default) _value = _getValue(T, _key);
     return _value;
   }
 
@@ -142,14 +87,14 @@ class PrefsBean<T> {
   }
 }
 
-dynamic _getValue(Type type, String key) {
+dynamic _getValue<T>(T, String key) {
   var pref = CommonPreferences.getPref();
-  return pref?.get(key);
+  return pref?.get(key) ?? _getDefault(T);
 }
 
 void _setValue<T>(T value, String key) {
   var pref = CommonPreferences.getPref();
-  if(pref == null) return;
+  if (pref == null) return;
   switch (T) {
     case String:
       pref.setString(key, value as String);
@@ -163,7 +108,46 @@ void _setValue<T>(T value, String key) {
     case double:
       pref.setDouble(key, value as double);
       break;
-    default:
-      break;
   }
 }
+
+dynamic _getDefault<T>(T) {
+  switch (T) {
+    case String:
+      return "";
+    case int:
+      return 0;
+    case double:
+      return 0.0;
+    case bool:
+      return false;
+    default:
+      return null;
+  }
+}
+
+// var _tjuuname = "";
+//
+// String get tjuuname {
+//   if (_tjuuname == "") _tjuuname = _sharedPref.getString('tjuuname') ?? "";
+//   return _tjuuname;
+// }
+//
+// set tjuuname(String newTjuName) {
+//   if (_tjuuname == newTjuName) return;
+//   _sharedPref.setString('tjuuname', newTjuName);
+//   _password = newTjuName;
+// }
+
+// var _tjupasswd = "";
+//
+// String get tjupasswd {
+//   if (_tjupasswd == "") _tjupasswd = _sharedPref.getString('tjupasswd') ?? "";
+//   return _tjupasswd;
+// }
+//
+// set tjupasswd(String newTjuPassword) {
+//   if (_tjupasswd == newTjuPassword) return;
+//   _sharedPref.setString('tjupasswd', newTjuPassword);
+//   _tjupasswd = newTjuPassword;
+// }

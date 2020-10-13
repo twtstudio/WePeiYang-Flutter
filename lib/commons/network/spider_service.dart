@@ -19,8 +19,10 @@ Future<void> getExecAndSession({@required void Function(Map) onSuccess}) async {
 }
 
 /// 进行sso登录
-Future<void> ssoLogin(BuildContext context, String name, String pw,
-    String captcha, Map map) async {
+Future<void> ssoLogin(
+    BuildContext context, String name, String pw, String captcha, Map map,
+    {@required void Function() onSuccess,
+    void Function(DioError) onFailure}) async {
   await fetch("https://sso.tju.edu.cn/cas/login",
       params: {
         "username": name,
@@ -40,12 +42,15 @@ Future<void> ssoLogin(BuildContext context, String name, String pw,
       var pref = CommonPreferences.create();
       pref.tjuuname = name;
       pref.tjupasswd = pw;
-    });
-  });
+      onSuccess();
+    }, onFailure: onFailure);
+  }, onFailure: onFailure);
 }
 
 /// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
-Future<void> getClassesCookies(String tgc, {void Function() onSuccess}) async {
+Future<void> getClassesCookies(String tgc,
+    {@required void Function() onSuccess,
+    void Function(DioError) onFailure}) async {
   await fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
       cookie: tgc, onSuccess: (response) {
     var pref = CommonPreferences.create();
@@ -59,7 +64,7 @@ Future<void> getClassesCookies(String tgc, {void Function() onSuccess}) async {
     });
     pref.ids = getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
     onSuccess();
-  });
+  }, onFailure: onFailure);
 }
 
 Future<void> fetch(String url,
