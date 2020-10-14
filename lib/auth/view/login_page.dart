@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
-
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
@@ -10,20 +9,17 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  var emailEdit = false;
-  var pwEdit = false;
   String email = "";
   String password = "";
 
   _login() async {
-    if (!emailEdit || !pwEdit) {
+    if (email == "" || password == "") {
       Fluttertoast.showToast(
           msg: "账号密码不能为空",
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
       return;
     }
     getToken(email, password, onSuccess: () {
@@ -32,8 +28,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
       Navigator.pushReplacementNamed(context, '/home');
     }, onFailure: (e) {
       Fluttertoast.showToast(
@@ -41,8 +36,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
     });
   }
 
@@ -71,17 +65,16 @@ class _LoginWidgetState extends State<LoginWidget> {
             Padding(
               padding: EdgeInsets.fromLTRB(40.0, 100.0, 40.0, 0.0),
               child: TextField(
+                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                    labelText: 'email',
-                    contentPadding: EdgeInsets.only(top: 5.0),
-                    suffixIcon: Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: Icon(Icons.check_circle,
-                            size: emailEdit ? 18.0 : 0.0))),
-                onChanged: (input) => setState(() {
-                  emailEdit = input.isNotEmpty;
-                  email = input;
-                }),
+                  labelText: 'username',
+                  contentPadding: EdgeInsets.only(top: 5.0),
+                  // suffixIcon: Padding(
+                  //     padding: const EdgeInsets.only(top: 15.0),
+                  //     child: Icon(Icons.check_circle,
+                  //         size: email == "" ? 18.0 : 0.0))
+                ),
+                onChanged: (input) => setState(() => email = input),
               ),
             ),
             Padding(
@@ -89,17 +82,15 @@ class _LoginWidgetState extends State<LoginWidget> {
               child: TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                    labelText: 'password',
-                    contentPadding: EdgeInsets.only(top: 5.0),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child:
-                          Icon(Icons.check_circle, size: pwEdit ? 18.0 : 0.0),
-                    )),
-                onChanged: (input) => setState(() {
-                  pwEdit = input.isNotEmpty;
-                  password = input;
-                }),
+                  labelText: 'password',
+                  contentPadding: EdgeInsets.only(top: 5.0),
+                  // suffixIcon: Padding(
+                  //   padding: const EdgeInsets.only(top: 15.0),
+                  //   child: Icon(Icons.check_circle,
+                  //       size: password == "" ? 18.0 : 0.0),
+                  // )
+                ),
+                onChanged: (input) => setState(() => password = input),
               ),
             ),
             Container(

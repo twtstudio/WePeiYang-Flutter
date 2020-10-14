@@ -18,44 +18,44 @@ class CommonPreferences {
 
   ///twt相关
 
-  var isLogin = PrefsBean<bool>('login').value;
+  var isLogin = PrefsBean<bool>('login');
 
-  var token = PrefsBean<String>('token').value;
+  var token = PrefsBean<String>('token');
 
-  var username = PrefsBean<String>('username').value;
+  var username = PrefsBean<String>('username');
 
-  var password = PrefsBean<String>('password').value;
+  var password = PrefsBean<String>('password');
 
   ///办公网相关(看着这些绿色波浪线就想犯强迫症，可惜接口就是这么写的)
-  var tjuuname = PrefsBean<String>('tjuuname').value;
+  var tjuuname = PrefsBean<String>('tjuuname');
 
-  var tjupasswd = PrefsBean<String>('tjupasswd').value;
+  var tjupasswd = PrefsBean<String>('tjupasswd');
 
   /// cookies in sso.tju.edu.cn
-  var tgc = PrefsBean<String>("tgc").value; // TGC
+  var tgc = PrefsBean<String>("tgc"); // TGC
 
   /// cookies in classes.tju.edu.cn
-  var gSessionId = PrefsBean<String>("gsessionid").value; // GSESSIONID
+  var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
 
-  var garbled = PrefsBean<String>("garbled").value; // UqZBpD3n3iXPAw1X
+  var garbled = PrefsBean<String>("garbled"); // UqZBpD3n3iXPAw1X
 
-  var semesterId = PrefsBean<String>("semester").value; // semester.id
+  var semesterId = PrefsBean<String>("semester"); // semester.id
 
-  var ids = PrefsBean<String>("ids").value; // ids
+  var ids = PrefsBean<String>("ids"); // ids
 
   /// 清除程序和本地的缓存
   void clearPrefs() {
-    isLogin = false;
-    token = "";
-    username = "";
-    password = "";
-    tjuuname = "";
-    tjupasswd = "";
-    tgc = "";
-    gSessionId = "";
-    garbled = "";
-    semesterId = "";
-    ids = "";
+    isLogin.value = false;
+    token.value = "";
+    username.value = "";
+    password.value = "";
+    tjuuname.value = "";
+    tjupasswd.value = "";
+    tgc.value = "";
+    gSessionId.value = "";
+    garbled.value = "";
+    semesterId.value = "";
+    ids.value = "";
     _sharedPref.clear();
   }
 }
@@ -69,13 +69,8 @@ class PrefsBean<T> {
   String _key;
   T _value;
   T _default;
-  bool _init = true;
 
   T get value {
-    if (_init) {
-      _init = false;
-      return _default;
-    }
     if (_value == _default) _value = _getValue(T, _key);
     return _value;
   }
@@ -125,29 +120,3 @@ dynamic _getDefault<T>(T) {
       return null;
   }
 }
-
-// var _tjuuname = "";
-//
-// String get tjuuname {
-//   if (_tjuuname == "") _tjuuname = _sharedPref.getString('tjuuname') ?? "";
-//   return _tjuuname;
-// }
-//
-// set tjuuname(String newTjuName) {
-//   if (_tjuuname == newTjuName) return;
-//   _sharedPref.setString('tjuuname', newTjuName);
-//   _password = newTjuName;
-// }
-
-// var _tjupasswd = "";
-//
-// String get tjupasswd {
-//   if (_tjupasswd == "") _tjupasswd = _sharedPref.getString('tjupasswd') ?? "";
-//   return _tjupasswd;
-// }
-//
-// set tjupasswd(String newTjuPassword) {
-//   if (_tjupasswd == newTjuPassword) return;
-//   _sharedPref.setString('tjupasswd', newTjuPassword);
-//   _tjupasswd = newTjuPassword;
-// }

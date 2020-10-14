@@ -9,14 +9,14 @@ class ErrorInterceptor extends InterceptorsWrapper {
   /// token出错或过期时可能需要重新登陆
   _reLogin() async {
     var prefs = CommonPreferences.create();
-    if (prefs.username == "" || prefs.password == "") {
+    if (prefs.username.value == "" || prefs.password.value == "") {
       Navigator.pushNamedAndRemoveUntil(
           WeiPeiYangApp.navigatorState.currentContext,
           '/login',
           (route) => false);
       throw DioError(error: "登录失败，请重新登录");
     }
-    getToken(prefs.username, prefs.password, onSuccess: () {}, onFailure: (e) {
+    getToken(prefs.username.value, prefs.password.value, onSuccess: () {}, onFailure: (e) {
       throw DioError(error: "登录失败，请重新登录");
     });
     throw DioError(error: "登录失效，正在尝试自动重登");

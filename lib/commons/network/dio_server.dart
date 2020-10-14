@@ -63,7 +63,7 @@ class DioService {
         receiveTimeout: shorted ? 3000 : 10000,
         headers: {
           "User-Agent": userAgent,
-          "Authorization": "Bearer{${CommonPreferences.create().token}}",
+          "Authorization": "Bearer{${CommonPreferences.create().token.value}}",
         });
     var _dio = Dio()
       ..options = _options

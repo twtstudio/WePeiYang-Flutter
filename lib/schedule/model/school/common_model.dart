@@ -50,36 +50,6 @@ class CourseBean {
       this.teacher, this.campus, this.week, this.arrange);
 }
 
-class Arrange {
-  String week; // 单双周、单周、双周
-  String room; // 上课地点
-  String start; // 第几节开始
-  String end; // 第几节结束
-  String day; // 周几 （1 -> 周一）
-
-  Arrange.fromJson(dynamic tmp) {
-    week = tmp['week'];
-    room = tmp['room'];
-    start = tmp['start'];
-    end = tmp['end'];
-    day = tmp['day'];
-  }
-
-  Arrange(this.week, this.room, this.start, this.end, this.day);
-}
-
-class Week {
-  String start;
-  String end;
-
-  Week.fromJson(dynamic tmp) {
-    start = tmp['start'];
-    end = tmp['end'];
-  }
-
-  Week(this.start, this.end);
-}
-
 /// schedule页面实际使用的数据类
 class Schedule {
   int termStart;
@@ -110,4 +80,37 @@ class Course {
   Course.audit(this.teacher, this.week, this.courseName, this.arrange) {
     type = 1;
   }
+}
+
+class Arrange {
+  String week; // 单双周、单周、双周
+  String room; // 上课地点
+  String start; // 第几节开始
+  String end; // 第几节结束
+  String day; // 周几 （1 -> 周一）
+  String courseName; // 课程名称，仅供爬虫时对照用
+
+  Arrange.fromJson(dynamic tmp) {
+    week = tmp['week'];
+    room = tmp['room'];
+    start = tmp['start'];
+    end = tmp['end'];
+    day = tmp['day'];
+  }
+
+  Arrange(this.week, this.room, this.start, this.end, this.day);
+
+  Arrange.spider(this.week, this.start, this.end, this.day, this.courseName);
+}
+
+class Week {
+  String start;
+  String end;
+
+  Week.fromJson(dynamic tmp) {
+    start = tmp['start'];
+    end = tmp['end'];
+  }
+
+  Week(this.start, this.end);
 }

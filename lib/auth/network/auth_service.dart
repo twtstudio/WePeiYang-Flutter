@@ -12,10 +12,10 @@ getToken(String name, String pw,
       queryParameters: {"twtuname": name, "twtpasswd": pw},
       onSuccess: (commonBody) {
     var prefs = CommonPreferences.create();
-    prefs.token = Token.fromJson(commonBody.data).token;
-    prefs.username = name;
-    prefs.password = pw;
-    prefs.isLogin = true;
+    prefs.token.value = Token.fromJson(commonBody.data).token;
+    prefs.username.value = name;
+    prefs.password.value = pw;
+    prefs.isLogin.value = true;
     onSuccess();
   }, onFailure: onFailure);
 }

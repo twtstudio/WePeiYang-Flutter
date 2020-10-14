@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class TjuBindWidget extends StatefulWidget {
   @override
@@ -22,8 +23,8 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   @override
   void initState() {
     var prefs = CommonPreferences.create();
-    tjuuname = prefs.tjuuname;
-    tjupasswd = prefs.tjupasswd;
+    tjuuname = prefs.tjuuname.value;
+    tjupasswd = prefs.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -47,6 +48,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   //TODO 输入框action icon
   @override
   Widget build(BuildContext context) {
+    var width = GlobalModel.getInstance().screenWidth;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -65,12 +67,16 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
             Padding(
               padding: const EdgeInsets.fromLTRB(25, 25, 25, 15),
               child: TextField(
+                keyboardType: TextInputType.visiblePassword,
                 controller: nameController,
                 decoration: InputDecoration(
                     labelText: '输入办公网账号',
                     contentPadding: EdgeInsets.only(top: 5.0)),
                 onChanged: (input) => setState(() => tjuuname = input),
-                onTap: () => nameController.clear(),
+                onTap: () {
+                  nameController?.clear();
+                  nameController = null;
+                },
               ),
             ),
             Padding(
@@ -82,7 +88,10 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                     labelText: '输入办公网密码',
                     contentPadding: EdgeInsets.only(top: 5.0)),
                 onChanged: (input) => setState(() => tjupasswd = input),
-                onTap: () => pwController.clear(),
+                onTap: () {
+                  pwController?.clear();
+                  pwController = null;
+                },
               ),
             ),
             Padding(
@@ -90,8 +99,9 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               child: Row(
                 children: [
                   Container(
-                    width: 200,
+                    width: width / 2 - 25,
                     child: TextField(
+                      keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                           labelText: '输入验证码',
                           contentPadding: EdgeInsets.only(top: 5.0)),
@@ -124,14 +134,15 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                         fontSize: 16.0);
                     return;
                   }
-                  ssoLogin(context, tjuuname, tjupasswd, captcha, params,onSuccess: (){
+                  ssoLogin(context, tjuuname, tjupasswd, captcha, params,
+                      onSuccess: () {
                     Fluttertoast.showToast(
                         msg: "办公网绑定成功",
                         textColor: Colors.white,
                         backgroundColor: Colors.green,
                         timeInSecForIosWeb: 1,
                         fontSize: 16);
-                  },onFailure: (e){
+                  }, onFailure: (e) {
                     Fluttertoast.showToast(
                         msg: e.error.toString(),
                         timeInSecForIosWeb: 1,

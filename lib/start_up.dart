@@ -93,7 +93,7 @@ class StartUpWidget extends StatelessWidget {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
     var prefs = CommonPreferences.create();
-    if (!prefs.isLogin) {
+    if (!prefs.isLogin.value) {
       /// 既然没登陆过就多看会启动页吧
       Timer(Duration(seconds: 3), () {
         Navigator.pushReplacementNamed(context, '/login');
@@ -105,7 +105,7 @@ class StartUpWidget extends StatelessWidget {
       // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
-        getToken(prefs.username, prefs.password, shorted: true, onSuccess: () {
+        getToken(prefs.username.value, prefs.password.value, shorted: true, onSuccess: () {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');
         }, onFailure: (_) {
           Navigator.pushReplacementNamed(context, '/login');

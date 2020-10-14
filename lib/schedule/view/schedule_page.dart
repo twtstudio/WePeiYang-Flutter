@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
 import 'package:wei_pei_yang_demo/schedule/service/common_service.dart';
+import 'package:wei_pei_yang_demo/schedule/service/schedule_spider.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 
@@ -84,32 +85,33 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 25),
-              onTap: () {
+              onTap: () async {
                 Fluttertoast.showToast(
                     msg:"刷新数据中……",
                     textColor: Colors.white,
                     backgroundColor: Colors.blue,
                     timeInSecForIosWeb: 1,
                     fontSize: 16);
-                getClassTable(onSuccess: (schedule) {
-                  var provider = Provider.of<ScheduleNotifier>(context);
-                  provider.termStart = schedule.termStart;
-                  provider.coursesWithNotify = schedule.courses;
-                  Fluttertoast.showToast(
-                      msg: "刷新课程表数据成功",
-                      textColor: Colors.white,
-                      backgroundColor: Colors.green,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 16);
-                }, onFailure: (e) {
-                  // TODO 记得改成 “失败” 文字
-                  Fluttertoast.showToast(
-                      msg: e.error.toString(),
-                      textColor: Colors.white,
-                      backgroundColor: Colors.red,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 16);
-                });
+                await getSchedule(onSuccess: (schedule){});
+                // getClassTable(onSuccess: (schedule) {
+                //   var provider = Provider.of<ScheduleNotifier>(context);
+                //   provider.termStart = schedule.termStart;
+                //   provider.coursesWithNotify = schedule.courses;
+                //   Fluttertoast.showToast(
+                //       msg: "刷新课程表数据成功",
+                //       textColor: Colors.white,
+                //       backgroundColor: Colors.green,
+                //       timeInSecForIosWeb: 1,
+                //       fontSize: 16);
+                // }, onFailure: (e) {
+                //   // TODO 记得改成 “失败” 文字
+                //   Fluttertoast.showToast(
+                //       msg: e.error.toString(),
+                //       textColor: Colors.white,
+                //       backgroundColor: Colors.red,
+                //       timeInSecForIosWeb: 1,
+                //       fontSize: 16);
+                // });
               }),
         ),
         Padding(

@@ -34,14 +34,14 @@ Future<void> ssoLogin(
       cookie: map['session'], onSuccess: (response) async {
     var cookie =
         getRegExpStr(r'TGC=\S+(?=\;)', response.headers.map['set-cookie'][0]);
-    CommonPreferences.create().tgc = cookie;
+    CommonPreferences.create().tgc.value = cookie;
     Navigator.pop(context);
 
     /// 顺便请求一下办公网的cookie,成功后将账号密码存起来
     await getClassesCookies(cookie, onSuccess: () {
       var pref = CommonPreferences.create();
-      pref.tjuuname = name;
-      pref.tjupasswd = pw;
+      pref.tjuuname.value = name;
+      pref.tjupasswd.value = pw;
       onSuccess();
     }, onFailure: onFailure);
   }, onFailure: onFailure);
@@ -56,13 +56,13 @@ Future<void> getClassesCookies(String tgc,
     var pref = CommonPreferences.create();
     response.headers.map['set-cookie'].forEach((string) {
       if (string.contains('GSESSIONID'))
-        pref.gSessionId = getRegExpStr(r'GSESSIONID=\w+\.\w+', string);
+        pref.gSessionId.value = getRegExpStr(r'GSESSIONID=\w+\.\w+', string);
       if (string.contains('semester'))
-        pref.semesterId = getRegExpStr(r'semester\.id=\w+', string);
+        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
       if (string.contains('UqZBpD3n3iXPAw1X'))
-        pref.garbled = getRegExpStr(r'UqZBpD3n3iXPAw1X=\w+', string);
+        pref.garbled.value = getRegExpStr(r'UqZBpD3n3iXPAw1X=\w+', string);
     });
-    pref.ids = getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
+    pref.ids.value = getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
     onSuccess();
   }, onFailure: onFailure);
 }
@@ -72,7 +72,8 @@ Future<void> fetch(String url,
     void Function(DioError) onFailure,
     String cookie,
     List<String> cookieList,
-    Map<String, dynamic> params}) async {
+    Map<String, dynamic> params,
+    bool isPost = false}) async {
   var cookieTmp = cookie ?? "";
   cookieList?.forEach((string) {
     if (cookieTmp != "") cookieTmp += '; ';
@@ -86,7 +87,9 @@ Future<void> fetch(String url,
     ..options = options
     ..interceptors.add(LogInterceptor(requestBody: false));
   try {
-    var response = await dio.get(url, queryParameters: params);
+    var response;
+    if(isPost) response = await dio.post(url, queryParameters: params);
+    else response = await dio.get(url, queryParameters: params);
     onSuccess(response);
   } on DioError catch (e) {
     print("DioServiceLog: \"${e.type}\" error happened!!!");
