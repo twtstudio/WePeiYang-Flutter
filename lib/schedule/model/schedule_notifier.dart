@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
+import 'package:wei_pei_yang_demo/schedule/service/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
   List<Course> _coursesWithNotify = [];
@@ -42,6 +44,36 @@ class ScheduleNotifier with ChangeNotifier {
   void changeWeekMode(){
     _showSevenDay = !_showSevenDay;
     notifyListeners();
+  }
+
+  /// 通过爬虫刷新数据
+  RefreshCallback refreshBySpider (BuildContext context) {
+    return () async {
+      Fluttertoast.showToast(
+          msg: "刷新数据中……",
+          textColor: Colors.white,
+          backgroundColor: Colors.blue,
+          timeInSecForIosWeb: 1,
+          fontSize: 16);
+      await getSchedule(onSuccess: (schedule) {
+        Fluttertoast.showToast(
+            msg: "刷新课程表数据成功",
+            textColor: Colors.white,
+            backgroundColor: Colors.green,
+            timeInSecForIosWeb: 1,
+            fontSize: 16);
+        _termStart = schedule.termStart;
+        _coursesWithNotify = schedule.courses;
+        notifyListeners();
+      }, onFailure: (e) {
+        Fluttertoast.showToast(
+            msg: e.error.toString(),
+            textColor: Colors.white,
+            backgroundColor: Colors.red,
+            timeInSecForIosWeb: 1,
+            fontSize: 16);
+      });
+    };
   }
 
   /// test

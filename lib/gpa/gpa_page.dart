@@ -36,27 +36,27 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     // TODO 回头记得撤了假数据
     List<GPACourse> list1 = [];
     List<GPAStat> gpaList = [];
-    list1.add(GPACourse("高等数学2A", "数学", 6, 93, 4));
-    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 91, 4));
-    list1.add(GPACourse("线性代数及其应用", "数学", 3.5, 94, 4));
-    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 55, 0));
-    list1.add(GPACourse("大学英语1", "外语", 2, 97, 4));
-    list1.add(GPACourse("计算机导论", "计算机", 1.5, 76, 2.7));
-    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 60, 2));
-    list1.add(GPACourse("体育A", "体育", 1, 78, 2.8));
-    list1.add(GPACourse("健康教育", "健康教育", 0.5, 86, 3));
-    list1.add(GPACourse("大学计算机基础1", "计算机", 0, 100, 4));
+    list1.add(GPACourse("高等数学2A", "数学", 93, 6, 4));
+    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 91, 3.5, 4));
+    list1.add(GPACourse("线性代数及其应用", "数学", 94, 3.5, 4));
+    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 55, 3, 0));
+    list1.add(GPACourse("大学英语1", "外语", 97, 2, 4));
+    list1.add(GPACourse("计算机导论", "计算机", 76, 1.5, 2.7));
+    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 60, 1, 2));
+    list1.add(GPACourse("体育A", "体育", 78, 1, 2.8));
+    list1.add(GPACourse("健康教育", "健康教育", 86, 0.5, 3));
+    list1.add(GPACourse("大学计算机基础1", "计算机", 100, 0, 4));
     List<GPACourse> list2 = [];
-    list2.add(GPACourse("高等数学2A", "数学", 6, 63, 2.2));
-    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 3.5, 25, 0));
-    list2.add(GPACourse("线性代数及其应用", "数学", 3.5, 85, 2.9));
-    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 3, 15, 0));
-    list2.add(GPACourse("大学英语1", "外语", 2, 57, 0));
-    list2.add(GPACourse("计算机导论", "计算机", 1.5, 86, 3));
-    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 1, 47, 0));
-    list2.add(GPACourse("体育A", "体育", 1, 23, 0));
-    list2.add(GPACourse("健康教育", "健康教育", 0.5, 47, 0));
-    list2.add(GPACourse("大学计算机基础1", "计算机", 0, 11, 0));
+    list2.add(GPACourse("高等数学2A", "数学", 63, 6, 2.2));
+    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 25, 3.5, 0));
+    list2.add(GPACourse("线性代数及其应用", "数学", 85, 3.5, 2.9));
+    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 15, 3, 0));
+    list2.add(GPACourse("大学英语1", "外语", 57, 2, 0));
+    list2.add(GPACourse("计算机导论", "计算机", 86, 1.5, 3));
+    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 47, 1, 0));
+    list2.add(GPACourse("体育A", "体育", 23, 1, 0));
+    list2.add(GPACourse("健康教育", "健康教育", 47, 0.5, 0));
+    list2.add(GPACourse("大学计算机基础1", "计算机", 11, 0, 0));
     gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
     gpaList.add(GPAStat(77.72, 3.060, 25.0, list2));
     gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
@@ -199,6 +199,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _RadarChartPainter(this.courses);
 
+  double radarChartRatio = 2.15; // 用这个控制雷达图大小,不能低于2
   double centerX;
   double centerY;
   double outer;
@@ -337,7 +338,7 @@ class _RadarChartPainter extends CustomPainter {
   _initPoints(Size size) {
     centerX = size.center(Offset.zero).dx;
     centerY = size.center(Offset.zero).dy;
-    outer = size.height / 2;
+    outer = size.height / radarChartRatio;
     inner = outer * 2 / 3;
     middle = (outer + inner) / 2;
 

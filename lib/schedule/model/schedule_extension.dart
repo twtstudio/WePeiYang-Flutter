@@ -39,6 +39,9 @@ List<List<bool>> getBoolMatrix(
       /// 课程占奇数节时忽略一小节（例: 5-7视为5-6），因为点阵图的每个点代表两小节课
       if ((end - start) % 2 == 0) end--;
 
+      /// 第11~12小节展示不开了，故去除掉
+      if(end > 10) end = 10;
+
       /// 判断周日的课是否需要显示在课表上
       if (showSevenDay || day != 7)
         for (var i = start; i <= end; i++)
@@ -86,7 +89,7 @@ String removeParentheses(String mode) =>
 
 /// 去掉arrange对象的room属性中的 “楼”、“区” 等字眼
 String replaceBuildingWord(String mode) =>
-    mode.replaceAll(RegExp('楼'), '-').replaceAll('区', '');
+    mode.replaceAll('楼', '-').replaceAll('区', '');
 
 String getCourseTime(String start, String end) {
   var startTimes = [
