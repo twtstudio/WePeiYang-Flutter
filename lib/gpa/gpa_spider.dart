@@ -10,7 +10,12 @@ Future<void> getGPABean(
     void Function(DioError) onFailure}) async {
   var pref = CommonPreferences.create();
   var jSessionId = "J" + pref.gSessionId.value.substring(1);
-  var cookieList = [pref.gSessionId.value, jSessionId, pref.garbled.value, pref.semesterId.value];
+  var cookieList = [
+    pref.gSessionId.value,
+    jSessionId,
+    pref.garbled.value,
+    pref.semesterId.value
+  ];
   await fetch(
       "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
       cookieList: cookieList,
@@ -60,12 +65,14 @@ GPABean _data2GPABean(String data) {
 GPACourse _data2GPACourse(List<String> data) {
   List<String> list = [];
   data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
+  print(list);
+
   double score = 0.0;
   switch (list[6]) {
     case 'P':
       score = 100.0;
       break;
-    case '--':
+    case '缓考':
       score = _DELAYED;
       break;
     case 'F':
@@ -84,11 +91,14 @@ GPACourse _data2GPACourse(List<String> data) {
   }
   double credit = 0.0;
   if (score >= 60) credit = double.parse(list[5]);
-  double gpa = double.parse(list[8]);
-  if (score != _DELAYED && score != _IGNORED)
+
+  if (score != _DELAYED && score != _IGNORED) {
+    double gpa = double.parse(list[8]);
     return GPACourse(list[2], list[4], score, credit, gpa);
-  else
+  } else {
     return null;
+  }
+
 }
 
 /// 计算每学期的总加权/绩点/学分
