@@ -98,7 +98,6 @@ cancelAudit(String userNumber, String ids,
 void _onError(dynamic e) {
   Fluttertoast.showToast(
       msg: e.toString(),
-      timeInSecForIosWeb: 1,
       backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0);

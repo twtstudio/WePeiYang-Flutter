@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 import 'model/home_model.dart';
 import 'more_page.dart';
 import '../gpa/gpa_curve_detail.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 
+final hintStyle = const TextStyle(
+    fontSize: 17.0,
+    color: Color.fromRGBO(53, 59, 84, 1.0),
+    fontWeight: FontWeight.bold);
+
 class WPYPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<CardBean> cards = [];
     List<CourseBean> courses = [];
     List<LibraryBean> libraries = [];
-    cards.add(CardBean(Icons.event, 'Schedule', '/schedule'));
-    cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
-    cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
-    cards.add(CardBean(Icons.call, 'Tel Num', '/telNum'));
-    cards.add(CardBean(Icons.clear_all, 'Library', '/library'));
-    cards.add(CardBean(Icons.card_giftcard, 'Cards', '/cards'));
-    cards.add(CardBean(Icons.business, 'Classroom', '/classroom'));
-    cards.add(CardBean(Icons.free_breakfast, 'Coffee', '/coffee'));
-    cards.add(CardBean(Icons.directions_bus, 'By bus', '/byBus'));
     courses.add(CourseBean('SoftWare Engineering', '08:30-10:10', '45-B311'));
     courses.add(CourseBean('Computer Network', '10:20-11:50', '46-A108'));
     courses.add(CourseBean('College Japanese', '13:30-15:00', '47-B228'));
@@ -39,51 +35,22 @@ class WPYPage extends StatelessWidget {
               sliver:
                   SliverPersistentHeader(delegate: _WPYHeader(), pinned: true),
             ),
-            // TODO listview 替换顺序
-            SliverCardsWidget(cards),
+            // TODO listView 替换顺序
+            SliverCardsWidget(GlobalModel.getInstance().cards),
             SliverCoursesWidget(courses),
             SliverLibraryWidget(libraries),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 30.0),
-                child: Text('GPA',
-                    style: TextStyle(
-                        fontSize: 17.0,
-                        color: MyColors.deepBlue,
-                        fontWeight: FontWeight.w600)),
+                child: Consumer<GPANotifier>(builder: (context, notifier, _) {
+                  return Text("${notifier.typeName()} Curve", style: hintStyle);
+                }),
               ),
             ),
 
             /// 自定义GPA曲线
             SliverToBoxAdapter(child: GPAPreview()),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 180.0,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30.0, vertical: 30.0),
-                child: Card(
-                  color: MyColors.myGrey,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)),
-                  child: Center(
-                    child: GestureDetector(
-                      child: Text(
-                        'MORE >>',
-                        style: TextStyle(
-                            fontSize: 25.0,
-                            color: MyColors.darkGrey2,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(context, '/more',
-                            arguments: CardArguments(cards));
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            SliverToBoxAdapter(child: Container(height: 50))
           ],
         ),
       ),
@@ -110,8 +77,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   color: MyColors.deepBlue,
                   fontWeight: FontWeight.bold)),
           Expanded(child: Text('')), // 起填充作用
-          Text('BOTillya',
-              style: TextStyle(color: MyColors.deepBlue, fontSize: 17.0)),
+          Text('BOTillya', style: hintStyle),
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, '/user'),
             child: Container(
@@ -151,54 +117,20 @@ class SliverCardsWidget extends StatelessWidget {
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            itemCount: cards.length + 1,
+            itemCount: cards.length,
             itemBuilder: (context, i) {
               return GestureDetector(
-                onTap: () {
-                  if (i == cards.length) {
-                    Navigator.pushNamed(context, '/more',
-                        arguments: CardArguments(cards));
-                  } else
-                    Navigator.pushNamed(context, cards[i].route);
-                },
+                onTap: () => Navigator.pushNamed(context, cards[i].route),
                 child: Container(
                   height: 90.0,
                   width: 130.0,
                   padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: _getCard(cards, i, context),
+                  child: generateCard(context, cards[i]),
                 ),
               );
             }),
       ),
     );
-  }
-
-  /// 显示“More”的卡片，其余卡片详见[generateCard]
-  Widget _getCard(List<CardBean> cards, int index, BuildContext context) {
-    if (index == cards.length) {
-      const startColor = Color.fromRGBO(142, 147, 171, 1.0);
-      const endColor = Color.fromRGBO(166, 170, 185, 1.0);
-      return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, '/more',
-            arguments: CardArguments(cards)),
-        child: Card(
-            elevation: 0.5,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0)),
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  gradient: LinearGradient(colors: [startColor, endColor])),
-              child: Center(
-                  child: Text('More',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.bold))),
-            )),
-      );
-    } else
-      return generateCard(context, cards[index]);
   }
 }
 
@@ -218,10 +150,7 @@ class SliverCoursesWidget extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 12.0),
             alignment: Alignment.centerLeft,
             child: Text('NO.${now.day} ${week[now.weekday - 1]}',
-                style: TextStyle(
-                    fontSize: 17.0,
-                    color: MyColors.deepBlue,
-                    fontWeight: FontWeight.w600)),
+                style: hintStyle),
           ),
           Container(
             height: 180.0,
@@ -303,11 +232,7 @@ class SliverLibraryWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 15.0),
             alignment: Alignment.centerLeft,
-            child: Text('Library $libraryCount',
-                style: TextStyle(
-                    fontSize: 17.0,
-                    color: MyColors.deepBlue,
-                    fontWeight: FontWeight.w600)),
+            child: Text('Library $libraryCount', style: hintStyle),
           ),
           Container(
             height: 170.0,
@@ -349,10 +274,7 @@ class SliverLibraryWidget extends StatelessWidget {
                                         height: 95.0,
                                         alignment: Alignment.centerLeft,
                                         child: Text(libraries[i].book,
-                                            style: TextStyle(
-                                                fontSize: 17.0,
-                                                color: MyColors.deepBlue,
-                                                fontWeight: FontWeight.bold)),
+                                            style: hintStyle),
                                       ),
                                       Container(
                                         alignment: Alignment.centerLeft,

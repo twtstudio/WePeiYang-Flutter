@@ -1,10 +1,8 @@
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart' show GPACurve;
-import 'package:wei_pei_yang_demo/gpa/gpa_spider.dart';
 import 'gpa_model.dart';
 import 'gpa_notifier.dart';
 
@@ -84,33 +82,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
-              onTap: () async {
-                Fluttertoast.showToast(
-                    msg: "刷新数据中……",
-                    textColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                    timeInSecForIosWeb: 1,
-                    fontSize: 16);
-                await getGPABean(onSuccess: (gpaBean) {
-                  Fluttertoast.showToast(
-                      msg: "刷新gpa数据成功",
-                      textColor: Colors.white,
-                      backgroundColor: Colors.green,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 16);
-                  Provider.of<GPANotifier>(context)
-                    ..listWithNotify = gpaBean.stats
-                    ..totalWithNotify = gpaBean.total;
-                }, onFailure: (e) {
-                  // TODO 记得改成 “失败” 文字
-                  Fluttertoast.showToast(
-                      msg: e.error.toString(),
-                      textColor: Colors.white,
-                      backgroundColor: Colors.red,
-                      timeInSecForIosWeb: 1,
-                      fontSize: 16);
-                });
-              }),
+              onTap: Provider.of<GPANotifier>(context).refreshGPA(context)),
         ),
       ],
     );

@@ -11,7 +11,7 @@ import 'auth/view/tju_bind_page.dart';
 import 'home/model/home_model.dart';
 import 'home/home_page.dart';
 import 'home/more_page.dart';
-import 'home/user_page.dart';
+import 'auth/view/user_page.dart';
 import 'auth/view/login_page.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 import 'gpa/gpa_page.dart' show GPAPage;

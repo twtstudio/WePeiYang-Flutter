@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-import '../start_up.dart';
+import '../../start_up.dart';
 
 class UserPage extends StatelessWidget {
   @override
@@ -81,7 +81,6 @@ class UserPage extends StatelessWidget {
                         // TODO 其他退出逻辑
                         Fluttertoast.showToast(
                             msg: "   退出登录成功   ",
-                            timeInSecForIosWeb: 1,
                             backgroundColor: Colors.green,
                             textColor: Colors.white,
                             fontSize: 18);

@@ -1,60 +1,23 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show required, BuildContext;
+import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import '../../start_up.dart';
 
-/// 登录总流程： 获取session与execution -> 填写captcha -> 进行sso登录
-
-/// 获取包含 session、execution 的 map
-Future<void> getExecAndSession({@required void Function(Map) onSuccess}) async {
-  var map = Map<String, String>();
-  await fetch("https://sso.tju.edu.cn/cas/login", onSuccess: (response) {
-    response.headers.map['set-cookie'].forEach((string) {
-      if (string.contains('SESSION'))
-        map['session'] = getRegExpStr(r'SESSION=\w+', string);
-    });
-    map['execution'] =
-        getRegExpStr(r'(?<=execution" value=")\w+', response.data.toString());
-    onSuccess(map);
-  });
-}
-
-/// 进行sso登录
-Future<void> ssoLogin(
-    BuildContext context, String name, String pw, String captcha, Map map,
-    {@required void Function() onSuccess,
-    void Function(DioError) onFailure}) async {
-  await fetch("https://sso.tju.edu.cn/cas/login",
-      params: {
-        "username": name,
-        "password": pw,
-        "captcha": captcha,
-        "execution": map['execution'],
-        "_eventId": "submit"
-      },
-      cookie: map['session'], onSuccess: (response) async {
-    var cookie =
-        getRegExpStr(r'TGC=\S+(?=\;)', response.headers.map['set-cookie'][0]);
-    CommonPreferences.create().tgc.value = cookie;
-    Navigator.pop(context);
-
-    /// 顺便请求一下办公网的cookie,成功后将账号密码存起来
-    await getClassesCookies(cookie, onSuccess: () {
-      var pref = CommonPreferences.create();
-      pref.tjuuname.value = name;
-      pref.tjupasswd.value = pw;
-      onSuccess();
-    }, onFailure: onFailure);
-  }, onFailure: onFailure);
-}
-
-/// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
-Future<void> getClassesCookies(String tgc,
-    {@required void Function() onSuccess,
-    void Function(DioError) onFailure}) async {
-  await fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
-      cookie: tgc, onSuccess: (response) {
-    var pref = CommonPreferences.create();
-    response.headers.map['set-cookie'].forEach((string) {
+/// 登录总流程： 获取session与execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
+void login(BuildContext context, String name, String pw, String captcha,
+    Map<String, String> map,
+    {void Function() onSuccess, void Function(DioError) onFailure}) {
+  var pref = CommonPreferences.create();
+  ssoLogin(name, pw, captcha, map).then((ssoRsp) {
+    var tgc =
+        getRegExpStr(r'TGC=\S+(?=\;)', ssoRsp.headers.map['set-cookie'][0]);
+    pref.tjuuname.value = name;
+    pref.tjupasswd.value = pw;
+    return getClassesCookies(tgc);
+  }).then((cookieRsp) {
+    cookieRsp.headers.map['set-cookie'].forEach((string) {
       if (string.contains('GSESSIONID'))
         pref.gSessionId.value = getRegExpStr(r'GSESSIONID=\w+\.\w+', string);
       if (string.contains('semester'))
@@ -62,18 +25,65 @@ Future<void> getClassesCookies(String tgc,
       if (string.contains('UqZBpD3n3iXPAw1X'))
         pref.garbled.value = getRegExpStr(r'UqZBpD3n3iXPAw1X=\w+', string);
     });
-    pref.ids.value = getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
+    pref.ids.value =
+        getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
+    return getWeekInfo();
+  }).then((weekRsp) {
+    var matched =
+        getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
+    var notifier = Provider.of<ScheduleNotifier>(
+        WeiPeiYangApp.navigatorState.currentContext);
+    notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
+    notifier.currentWeek =
+        int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
     onSuccess();
-  }, onFailure: onFailure);
+  }).catchError((e) {
+    print("Error happened: $e");
+    onFailure(e);
+  });
 }
 
-Future<void> fetch(String url,
-    {@required void Function(Response) onSuccess,
-    void Function(DioError) onFailure,
-    String cookie,
+/// 获取包含 session、execution 的 map
+void getExecAndSession({@required void Function(Map) onSuccess}) {
+  fetch("https://sso.tju.edu.cn/cas/login").then((response) {
+    var map = Map<String, String>();
+    response.headers.map['set-cookie'].forEach((string) {
+      if (string.contains('SESSION'))
+        map['session'] = getRegExpStr(r'SESSION=\w+', string);
+    });
+    map['execution'] =
+        getRegExpStr(r'(?<=execution" value=")\w+', response.data.toString());
+    onSuccess(map);
+  }).catchError((e) => print("Error happened: $e"));
+}
+
+/// 进行sso登录
+Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
+    fetch("https://sso.tju.edu.cn/cas/login",
+        params: {
+          "username": name,
+          "password": pw,
+          "captcha": captcha,
+          "execution": map['execution'],
+          "_eventId": "submit"
+        },
+        cookie: map['session']);
+
+/// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
+Future<Response> getClassesCookies(String tgc) =>
+    fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
+        cookie: tgc);
+
+/// 获取当前周数、学期总周数
+Future<Response> getWeekInfo() =>
+    fetch("http://classes.tju.edu.cn/eams/homeExt!main.action",
+        cookieList: CommonPreferences.create().getCookies());
+
+Future<Response> fetch(String url,
+    {String cookie,
     List<String> cookieList,
     Map<String, dynamic> params,
-    bool isPost = false}) async {
+    bool isPost = false}) {
   var cookieTmp = cookie ?? "";
   cookieList?.forEach((string) {
     if (cookieTmp != "") cookieTmp += '; ';
@@ -86,15 +96,10 @@ Future<void> fetch(String url,
   var dio = Dio()
     ..options = options
     ..interceptors.add(LogInterceptor(requestBody: false));
-  try {
-    var response;
-    if(isPost) response = await dio.post(url, queryParameters: params);
-    else response = await dio.get(url, queryParameters: params);
-    onSuccess(response);
-  } on DioError catch (e) {
-    print("DioServiceLog: \"${e.type}\" error happened!!!");
-    onFailure(e);
-  }
+  if (isPost)
+    return dio.post(url, queryParameters: params);
+  else
+    return dio.get(url, queryParameters: params);
 }
 
 /// 获取[单个]正则匹配结果，input为待匹配串，form为匹配格式

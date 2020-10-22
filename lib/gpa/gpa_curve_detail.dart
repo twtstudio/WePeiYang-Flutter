@@ -120,6 +120,7 @@ class _GPACurveState extends State<GPACurve>
           //   });
           // },
           child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: Stack(
               children: <Widget>[
                 /// Stack底层

@@ -15,7 +15,7 @@ class SchedulePage extends StatelessWidget {
       displacement: 60,
       color: Color.fromRGBO(105, 109, 126, 1),
       onRefresh:
-          Provider.of<ScheduleNotifier>(context).refreshBySpider(context),
+          Provider.of<ScheduleNotifier>(context).refreshSchedule(context),
       child: Scaffold(
         appBar: ScheduleAppBar(),
         body: Container(
@@ -56,7 +56,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 25),
               onTap: Provider.of<ScheduleNotifier>(context)
-                  .refreshBySpider(context)),
+                  .refreshSchedule(context)),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 18),
@@ -140,9 +140,9 @@ class TitleWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('WEEK ${notifier.selectedWeek}',
+                    child: Text('WEEK ${notifier.currentWeek}',
                         style: TextStyle(
-                            color: Color.fromRGBO(220, 220, 220, 1),
+                            color: Colors.black,
                             fontSize: 15,
                             fontWeight: FontWeight.bold)),
                   )

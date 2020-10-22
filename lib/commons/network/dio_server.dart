@@ -120,7 +120,7 @@ extension CommonBodyMethod on Dio {
           onReceiveProgress: onReceiveProgress);
       onSuccess(CommonBody.fromJson(response.data));
     } on DioError catch (e) {
-      print("DioServiceLog: \"${e.type}\" error happened");
+      print("DioServiceLog: \"${e.type}\" error happened!!!");
       if (onFailure != null) onFailure(e);
     }
   }

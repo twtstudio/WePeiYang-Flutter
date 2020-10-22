@@ -33,15 +33,23 @@ class GPABean {
 }
 
 class GlobalModel {
-  GlobalModel._();
+  GlobalModel._(){
+    cards.add(CardBean(Icons.event, 'Schedule', '/schedule'));
+    cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
+    cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
+    cards.add(CardBean(Icons.call, 'Tel Num', '/telNum'));
+    cards.add(CardBean(Icons.clear_all, 'Library', '/library'));
+    cards.add(CardBean(Icons.card_giftcard, 'Cards', '/cards'));
+    cards.add(CardBean(Icons.business, 'Classroom', '/classroom'));
+    cards.add(CardBean(Icons.free_breakfast, 'Coffee', '/coffee'));
+    cards.add(CardBean(Icons.directions_bus, 'By bus', '/byBus'));
+  }
+
+  static final _instance = GlobalModel._();
+
+  factory GlobalModel.getInstance() => _instance;
 
   double screenWidth;
   double screenHeight;
-
-  static GlobalModel _instance;
-
-  static GlobalModel getInstance() {
-    if (_instance == null) _instance = GlobalModel._();
-    return _instance;
-  }
+  List<CardBean> cards = [];
 }

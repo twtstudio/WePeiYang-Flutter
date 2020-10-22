@@ -16,7 +16,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     if (email == "" || password == "") {
       Fluttertoast.showToast(
           msg: "账号密码不能为空",
-          timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
@@ -25,7 +24,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     getToken(email, password, onSuccess: () {
       Fluttertoast.showToast(
           msg: "登录成功",
-          timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
@@ -33,7 +31,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     }, onFailure: (e) {
       Fluttertoast.showToast(
           msg: e.error.toString(),
-          timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);

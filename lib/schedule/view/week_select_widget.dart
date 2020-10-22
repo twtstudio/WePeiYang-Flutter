@@ -2,27 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/start_up.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;
 const double spacingLength = 4;
 
-class WeekSelectWidget extends StatelessWidget {
+class WeekSelectWidget extends StatefulWidget {
+  @override
+  _WeekSelectWidgetState createState() => _WeekSelectWidgetState();
+}
+
+class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   @override
   Widget build(BuildContext context) {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
+      int current = Provider.of<ScheduleNotifier>(context).currentWeek;
+      if (current == 1) current++;
       return Container(
         height: 85,
         child: ListView.builder(
             itemCount: notifier.weekCount,
             scrollDirection: Axis.horizontal,
+            controller: ScrollController(
+                initialScrollOffset: (current - 2) * (canvasWidth + 30)),
             itemBuilder: (context, i) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 30, 0),
 
-                // TODO 此处有个小bug，刷新数据后并不重绘
                 /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
                 child: Stack(
                   children: [
@@ -68,6 +77,14 @@ class WeekSelectWidget extends StatelessWidget {
             }),
       );
     });
+  }
+
+  /// 每次退出课程表页面，重新设置选中星期为当前星期
+  @override
+  void dispose() {
+    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext)
+        .quietResetWeek();
+    super.dispose();
   }
 }
 

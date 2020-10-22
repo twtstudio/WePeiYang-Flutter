@@ -26,13 +26,16 @@ class CommonPreferences {
 
   var password = PrefsBean<String>('password');
 
-  ///办公网相关(看着这些绿色波浪线就想犯强迫症，可惜接口就是这么写的)
+  ///办公网相关
+
+  var isBindTju = PrefsBean<bool>('bindtju');
+
   var tjuuname = PrefsBean<String>('tjuuname');
 
   var tjupasswd = PrefsBean<String>('tjupasswd');
 
-  /// cookies in sso.tju.edu.cn
-  var tgc = PrefsBean<String>("tgc"); // TGC
+  /// cookies in sso.tju.edu.cn，暂时先不存了
+  // var tgc = PrefsBean<String>("tgc");
 
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
@@ -43,6 +46,11 @@ class CommonPreferences {
 
   var ids = PrefsBean<String>("ids"); // ids
 
+  List<String> getCookies() {
+    var jSessionId = 'J' + gSessionId.value?.substring(1);
+    return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
+  }
+
   /// 清除程序和本地的缓存
   void clearPrefs() {
     isLogin.value = false;
@@ -51,7 +59,7 @@ class CommonPreferences {
     password.value = "";
     tjuuname.value = "";
     tjupasswd.value = "";
-    tgc.value = "";
+    // tgc.value = "";
     gSessionId.value = "";
     garbled.value = "";
     semesterId.value = "";

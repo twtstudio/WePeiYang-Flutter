@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'gpa_model.dart';
+import 'gpa_spider.dart';
 
 class GPANotifier with ChangeNotifier {
   List<GPAStat> _listWithNotify = [];
@@ -15,7 +17,7 @@ class GPANotifier with ChangeNotifier {
 
   Total get totalWithNotify => _totalWithNotify;
 
-  set totalWithNotify(Total total){
+  set totalWithNotify(Total total) {
     _totalWithNotify = total;
     notifyListeners();
   }
@@ -40,6 +42,15 @@ class GPANotifier with ChangeNotifier {
     if (newType == _type) return;
     _type = newType;
     notifyListeners();
+  }
+
+  /// 通过[_type]获取种类名称
+
+  String typeName() {
+    if (_type == 0) return "Weighted";
+    if (_type == 1) return "GPA";
+    if (_type == 2) return "Credit";
+    return "Error";
   }
 
   /// 获取当前学年的weighted、gpa、credits
@@ -106,5 +117,32 @@ class GPANotifier with ChangeNotifier {
   void reSort() {
     _sortType = (_sortType + 1) % 3;
     _sort();
+  }
+
+  GestureTapCallback refreshGPA(BuildContext context) {
+    return () {
+      Fluttertoast.showToast(
+          msg: "刷新数据中……",
+          textColor: Colors.white,
+          backgroundColor: Colors.blue,
+          fontSize: 16);
+      getGPABean(onSuccess: (gpaBean) {
+        Fluttertoast.showToast(
+            msg: "刷新gpa数据成功",
+            textColor: Colors.white,
+            backgroundColor: Colors.green,
+            fontSize: 16);
+        _listWithNotify = gpaBean.stats;
+        _totalWithNotify = gpaBean.total;
+        notifyListeners();
+      }, onFailure: (e) {
+        // TODO 记得改成 “失败” 文字
+        Fluttertoast.showToast(
+            msg: e.error.toString(),
+            textColor: Colors.white,
+            backgroundColor: Colors.red,
+            fontSize: 16);
+      });
+    };
   }
 }

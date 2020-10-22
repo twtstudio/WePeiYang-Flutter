@@ -1,22 +1,18 @@
 import 'package:dio/dio.dart' show DioError;
-import 'package:flutter/material.dart' show required;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
-Future<void> getGPABean(
-    {@required void Function(GPABean) onSuccess,
-    void Function(DioError) onFailure}) async {
-  var pref = CommonPreferences.create();
-  var jSessionId = "J" + pref.gSessionId.value.substring(1);
-  var cookieList = [pref.gSessionId.value, jSessionId, pref.garbled.value, pref.semesterId.value];
-  await fetch(
-      "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-      cookieList: cookieList,
-      onSuccess: (response) =>
-          onSuccess(_data2GPABean(response.data.toString())),
-      onFailure: onFailure);
+void getGPABean(
+    {void Function(GPABean) onSuccess, void Function(DioError) onFailure}) {
+  fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
+          cookieList: CommonPreferences.create().getCookies())
+      .then((response) => onSuccess(_data2GPABean(response.data.toString())))
+      .catchError((e) {
+    print("Error happened: $e");
+    onFailure(e);
+  });
 }
 
 const double _DELAYED = 999.0;

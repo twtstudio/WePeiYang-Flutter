@@ -1,40 +1,30 @@
 import 'package:dio/dio.dart' show DioError;
-import 'package:flutter/material.dart' show required;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
 
 /// 发送请求，获取html中的schedule数据
-Future<void> getSchedule(
-    {@required void Function(Schedule) onSuccess,
-    void Function(DioError) onFailure}) async {
+void getSchedule(
+    {void Function(Schedule) onSuccess, void Function(DioError) onFailure}) {
   var pref = CommonPreferences.create();
-  var jSessionId = "J" + pref.gSessionId.value?.substring(1);
-  var cookieList = [
-    pref.gSessionId.value,
-    jSessionId,
-    pref.garbled.value,
-    pref.semesterId.value
-  ];
-  await fetch(
-      "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-      cookieList: cookieList, onSuccess: (_) async {
-    await fetch(
-        "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
-        cookieList: cookieList,
-        isPost: true,
-        params: {
-          "ignoreHead": "1",
-          "setting.kind": "std",
-          "startWeek": "",
-          "semester.id": getRegExpStr(r'[0-9]*', pref.semesterId.value),
-
-          "ids": pref.ids.value
-        },
-        onSuccess: (response) =>
-            onSuccess(_data2Schedule(response.data.toString())),
-        onFailure: onFailure);
-  }, onFailure: onFailure);
+  fetch("http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
+          cookieList: pref.getCookies())
+      .then((_) => fetch(
+              "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
+              cookieList: pref.getCookies(),
+              isPost: true,
+              params: {
+                "ignoreHead": "1",
+                "setting.kind": "std",
+                "startWeek": "",
+                "semester.id": getRegExpStr(r'[0-9]*', pref.semesterId.value),
+                "ids": pref.ids.value
+              }))
+      .then((response) => onSuccess(_data2Schedule(response.data.toString())))
+      .catchError((e) {
+    print("Error happened: $e");
+    onFailure(e);
+  });
 }
 
 /// 用请求到的html数据生成schedule对象
@@ -112,5 +102,5 @@ Schedule _data2Schedule(String data) {
       }
     });
   });
-  return Schedule(1581868800, "19202", courses);
+  return Schedule(1598803200, "19202", courses);
 }

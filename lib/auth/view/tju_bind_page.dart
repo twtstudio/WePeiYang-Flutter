@@ -19,6 +19,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   TextEditingController pwController;
   Map<String, String> params = Map();
   Widget imageWidget = Container(width: 140, height: 60);
+  int index = 0;
 
   @override
   void initState() {
@@ -31,15 +32,16 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
     getExecAndSession(onSuccess: (map) {
       params = map;
-
-      /// TODO 这里会报错 DioError [DioErrorType.RESPONSE]: Http status error [302]
       setState(() {
-        imageWidget = Image.network(
-            "https://sso.tju.edu.cn/cas/images/kaptcha.jpg",
-            headers: {"Cookie": map['session']},
-            width: 140,
-            height: 80,
-            fit: BoxFit.fill);
+        imageWidget = GestureDetector(
+          onTap: () => setState(() => index++),
+          child: Image.network(
+              "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index}",
+              headers: {"Cookie": map['session']},
+              width: 140,
+              height: 80,
+              fit: BoxFit.fill),
+        );
       });
     });
     super.initState();
@@ -108,6 +110,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                       onChanged: (input) => setState(() => captcha = input),
                     ),
                   ),
+                  // TODO 验证码这里好多bug。。。
                   imageWidget,
                 ],
               ),
@@ -128,28 +131,25 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                       message = "验证码不能为空";
                     Fluttertoast.showToast(
                         msg: message,
-                        timeInSecForIosWeb: 1,
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
                     return;
                   }
-                  ssoLogin(context, tjuuname, tjupasswd, captcha, params,
+                  login(context, tjuuname, tjupasswd, captcha, params,
                       onSuccess: () {
-                    Fluttertoast.showToast(
-                        msg: "办公网绑定成功",
-                        textColor: Colors.white,
-                        backgroundColor: Colors.green,
-                        timeInSecForIosWeb: 1,
-                        fontSize: 16);
-                  }, onFailure: (e) {
-                    Fluttertoast.showToast(
-                        msg: e.error.toString(),
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                  });
+                        Fluttertoast.showToast(
+                            msg: "办公网绑定成功",
+                            textColor: Colors.white,
+                            backgroundColor: Colors.green,
+                            fontSize: 16);
+                        Navigator.pop(context);
+                      },
+                      onFailure: (e) => Fluttertoast.showToast(
+                          msg: e.toString(),
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0));
                   captcha = "";
                 },
                 color: MyColors.deepBlue,

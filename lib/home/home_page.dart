@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
+import 'package:wei_pei_yang_demo/home/more_page.dart';
 import 'model/home_model.dart';
-import 'net_page.dart';
 import 'wpy_page.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,10 +19,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     pages
       ..add(WPYPage())
-      ..add(Center(child: RaisedButton(child: Text('test'),onPressed: (){
-        Navigator.pushNamed(context, '/bind');
-      },),))
-      ..add(CPage());
+      ..add(MorePage())
+      ..add(Center(
+        child: RaisedButton(
+          child: Text('test'),
+          onPressed: () => Navigator.pushNamed(context, '/bind'),
+        ),
+      ));
   }
 
   @override
@@ -54,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                   child: RaisedButton(
                       elevation: 0.0,
                       color: Colors.white,
-                      child: Text('News',
+                      child: Text('More',
                           style:
                               _currentIndex == 1 ? currentStyle : otherStyle),
                       onPressed: () => setState(() => _currentIndex = 1))),
