@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:wei_pei_yang_demo/start_up.dart';
+import 'package:wei_pei_yang_demo/main.dart';
 import '../preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 

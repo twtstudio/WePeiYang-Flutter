@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
+import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
 import 'model/home_model.dart';
 import 'more_page.dart';
 import '../gpa/gpa_curve_detail.dart';
@@ -14,13 +15,7 @@ final hintStyle = const TextStyle(
 class WPYPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<CourseBean> courses = [];
     List<LibraryBean> libraries = [];
-    courses.add(CourseBean('SoftWare Engineering', '08:30-10:10', '45-B311'));
-    courses.add(CourseBean('Computer Network', '10:20-11:50', '46-A108'));
-    courses.add(CourseBean('College Japanese', '13:30-15:00', '47-B228'));
-    courses.add(CourseBean('Free Time', null, null));
-    courses.add(CourseBean('College English', '18:30-20:30', '45-B117'));
     libraries.add(LibraryBean('Design Psychology1', '2018-08-08'));
     libraries.add(LibraryBean('User Experience', '2018-07-29'));
     libraries.add(LibraryBean('The visual design', '2018-07-26'));
@@ -35,20 +30,18 @@ class WPYPage extends StatelessWidget {
               sliver:
                   SliverPersistentHeader(delegate: _WPYHeader(), pinned: true),
             ),
+
+            /// 功能跳转卡片
             // TODO listView 替换顺序
             SliverCardsWidget(GlobalModel.getInstance().cards),
-            SliverCoursesWidget(courses),
-            SliverLibraryWidget(libraries),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 30.0),
-                child: Consumer<GPANotifier>(builder: (context, notifier, _) {
-                  return Text("${notifier.typeName()} Curve", style: hintStyle);
-                }),
-              ),
-            ),
 
-            /// 自定义GPA曲线
+            /// 当天课程
+            SliverCoursesWidget(),
+
+            /// 废弃的library罢了
+            SliverLibraryWidget(libraries),
+
+            /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
             SliverToBoxAdapter(child: Container(height: 50))
           ],
@@ -66,7 +59,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     var now = DateTime.now();
     String date = '${now.year}.${now.month}.${now.day}';
     return Container(
-      color: Colors.white, // 比其他区域rgb均高了5,遮挡后方滚动区域
+      color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.center,
       padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
       child: Row(
@@ -78,16 +71,13 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   fontWeight: FontWeight.bold)),
           Expanded(child: Text('')), // 起填充作用
           Text('BOTillya', style: hintStyle),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/user'),
-            child: Container(
-              height: 40.0,
-              width: 40.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: ClipOval(
-                  child:
-                      Image(image: AssetImage('assets/images/user_image.jpg'))),
-            ),
+          Container(
+            height: 40.0,
+            width: 40.0,
+            margin: EdgeInsets.symmetric(horizontal: 10.0),
+            child: ClipOval(
+                child:
+                    Image(image: AssetImage('assets/images/user_image.jpg'))),
           )
         ],
       ),
@@ -129,88 +119,6 @@ class SliverCardsWidget extends StatelessWidget {
                 ),
               );
             }),
-      ),
-    );
-  }
-}
-
-class SliverCoursesWidget extends StatelessWidget {
-  final List<CourseBean> courses;
-
-  SliverCoursesWidget(this.courses);
-
-  @override
-  Widget build(BuildContext context) {
-    var now = DateTime.now();
-    var week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 12.0),
-            alignment: Alignment.centerLeft,
-            child: Text('NO.${now.day} ${week[now.weekday - 1]}',
-                style: hintStyle),
-          ),
-          Container(
-            height: 180.0,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                itemCount: courses.length,
-                itemBuilder: (context, i) {
-                  return GestureDetector(
-                    onTap: () {
-//                        Navigator.push(context, MaterialPageRoute(builder: (context) => Text('123')));
-                    },
-                    child: Container(
-                      height: 180.0,
-                      width: 150.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                      child: Card(
-                        color: MyColors.colorList[i % 5],
-                        elevation: 2.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                height: 95.0,
-                                alignment: Alignment.centerLeft,
-                                child: Text(courses[i].course,
-                                    style: TextStyle(
-                                        fontSize: 17.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(
-                                    courses[i].duration ?? 'Your own time',
-                                    style: TextStyle(
-                                        fontSize: 13.0, color: Colors.white)),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.only(top: 15.0),
-                                child: Text(courses[i].classroom ?? '',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold)),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-          ),
-        ],
       ),
     );
   }

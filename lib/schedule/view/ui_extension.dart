@@ -17,9 +17,7 @@ Widget getActiveCourseCard(BuildContext context,double height, double width, Cou
       color: generateColor(course),
       borderRadius: BorderRadius.circular(5),
       child: InkWell(
-        onTap: () {
-          showCourseDialog(context, course);
-        },
+        onTap: () => showCourseDialog(context, course),
         borderRadius: BorderRadius.circular(5),
         splashFactory: InkRipple.splashFactory,
         splashColor: Color.fromRGBO(179, 182, 191, 1),

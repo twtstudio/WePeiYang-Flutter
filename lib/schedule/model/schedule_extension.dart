@@ -31,7 +31,7 @@ List<List<bool>> getBoolMatrix(
   for (var i = 0; i < 5; i++)
     list.add([false, false, false, false, false, false]);
   courses.forEach((course) {
-    if (judgeIsActive(week, weekCount, course)) {
+    if (judgeActiveInWeek(week, weekCount, course)) {
       var day = int.parse(course.arrange.day);
       var start = int.parse(course.arrange.start);
       var end = int.parse(course.arrange.end);
@@ -40,7 +40,7 @@ List<List<bool>> getBoolMatrix(
       if ((end - start) % 2 == 0) end--;
 
       /// 第11~12小节展示不开了，故去除掉
-      if(end > 10) end = 10;
+      if (end > 10) end = 10;
 
       /// 判断周日的课是否需要显示在课表上
       if (showSevenDay || day != 7)
@@ -52,8 +52,14 @@ List<List<bool>> getBoolMatrix(
 }
 
 /// 检查当前课程在选中周的状态
-bool judgeIsActive(int week, int weekCount, Course course) =>
+bool judgeActiveInWeek(int week, int weekCount, Course course) =>
     getWeekStatus(weekCount, course)[week];
+
+/// 检查当天课程（day从1开始数）
+bool judgeActiveInDay(int week, int day, int weekCount, Course course) =>
+    int.parse(course.arrange.day) == day
+        ? getWeekStatus(weekCount, course)[week]
+        : false;
 
 /// 该课程在所有周的状态
 /// （list是从下标1开始数的哦，所以list[3]对应的是第三周）

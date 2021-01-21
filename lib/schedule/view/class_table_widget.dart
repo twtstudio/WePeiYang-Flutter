@@ -10,19 +10,20 @@ import 'schedule_page.dart' show schedulePadding;
 /// 课程表每个item之间的间距
 const double cardStep = 6;
 
+/// 这个Widget包括日期栏和下方的具体课程
 class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       var width = GlobalModel.getInstance().screenWidth - schedulePadding * 2;
-      var count = notifier.showSevenDay ? 7 : 6;
-      var cardWidth = (width - (count - 1) * cardStep) / count;
+      var dayCount = notifier.showSevenDay ? 7 : 6;
+      var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Column(
         children: [
-          WeekDisplayWidget(cardWidth, notifier, count),
+          WeekDisplayWidget(cardWidth, notifier, dayCount),
           Padding(
             padding: const EdgeInsets.only(top: cardStep),
-            child: CourseDisplayWidget(cardWidth, notifier, count),
+            child: CourseDisplayWidget(cardWidth, notifier, dayCount),
           )
         ],
       );
@@ -33,14 +34,14 @@ class ClassTableWidget extends StatelessWidget {
 class WeekDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final ScheduleNotifier notifier;
-  final int count;
+  final int dayCount;
 
-  WeekDisplayWidget(this.cardWidth, this.notifier, this.count);
+  WeekDisplayWidget(this.cardWidth, this.notifier, this.dayCount);
 
   @override
   Widget build(BuildContext context) => Row(
         children: _generateCards(cardWidth,
-            getWeekDayString(notifier.termStart, notifier.selectedWeek, count)),
+            getWeekDayString(notifier.termStart, notifier.selectedWeek, dayCount)),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
 
@@ -72,9 +73,9 @@ class WeekDisplayWidget extends StatelessWidget {
 class CourseDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final ScheduleNotifier notifier;
-  final int count;
+  final int dayCount;
 
-  CourseDisplayWidget(this.cardWidth, this.notifier, this.count);
+  CourseDisplayWidget(this.cardWidth, this.notifier, this.dayCount);
 
   /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
   static const double singleCourseHeight = 65;
@@ -90,7 +91,7 @@ class CourseDisplayWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _generatePositioned(BuildContext context,) {
+  List<Widget> _generatePositioned(BuildContext context) {
     List<Positioned> list = [];
     notifier.coursesWithNotify.forEach((course) {
       int day = int.parse(course.arrange.day);
@@ -103,19 +104,19 @@ class CourseDisplayWidget extends StatelessWidget {
           (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
 
       /// 判断周日的课是否需要显示在课表上
-      if(notifier.showSevenDay || day != 7)
+      if (notifier.showSevenDay || day != 7)
         list.add(Positioned(
             top: top,
             left: left,
             height: height,
             width: cardWidth,
-            child: _judgeChild(context,height, course)));
+            child: _judgeChild(context, height, course)));
     });
     return list;
   }
 
-  Widget _judgeChild(BuildContext context,double height, Course course) =>
-      judgeIsActive(notifier.selectedWeek, notifier.weekCount, course)
-          ? getActiveCourseCard(context,height, cardWidth, course)
+  Widget _judgeChild(BuildContext context, double height, Course course) =>
+      judgeActiveInWeek(notifier.selectedWeek, notifier.weekCount, course)
+          ? getActiveCourseCard(context, height, cardWidth, course)
           : getQuietCourseCard(height, cardWidth, course);
 }

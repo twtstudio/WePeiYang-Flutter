@@ -61,6 +61,10 @@ flutter:
     - assets/images/gradicon2.png
     - assets/images/gradicon3.png
     - assets/images/ic_tju_icon.png
+    - assets/images/icon_action.png
+    - assets/images/icon_feedback.png
+    - assets/images/icon_home.png
+    - assets/images/icon_user.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

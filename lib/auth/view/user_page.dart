@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-import '../../start_up.dart';
+import '../../main.dart';
 
 class UserPage extends StatelessWidget {
   @override
@@ -43,11 +43,11 @@ class UserPage extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 15.0),
                   child: ClipOval(
                       child: Image.asset(
-                        'assets/images/user_image.jpg',
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
-                      )),
+                    'assets/images/user_image.jpg',
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 100,
+                  )),
                 ),
                 Text('BOTillya',
                     textAlign: TextAlign.center,
@@ -65,9 +65,9 @@ class UserPage extends StatelessWidget {
                 NavigationWidget(),
                 Column(
                   children: [
-                    _getAccountCard(0),
-                    _getAccountCard(1),
-                    _getAccountCard(2)
+                    _getAccountCard(context, 0),
+                    _getAccountCard(context, 1),
+                    _getAccountCard(context, 2)
                   ],
                 ),
                 Container(
@@ -88,7 +88,7 @@ class UserPage extends StatelessWidget {
                         Navigator.pushNamedAndRemoveUntil(
                             WeiPeiYangApp.navigatorState.currentContext,
                             '/login',
-                                (route) => false);
+                            (route) => false);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -120,12 +120,12 @@ class UserPage extends StatelessWidget {
   }
 
   final iconList = [Icons.event_note, Icons.credit_card, Icons.class_];
-  final textList = ["Portal account", "E-card account", "Library account"];
-  final routeList = ['/gpa', '/gpa', '/gpa'];
+  final textList = ["Tju account", "E-card account", "Library account"];
+  final routeList = ['/bind', '/gpa', '/gpa'];
 
-  Widget _getAccountCard(int index) {
+  Widget _getAccountCard(BuildContext context, int index) {
     const textStyle =
-    TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
+        TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
     const hint = Text('Bound',
         style: TextStyle(fontSize: 12.0, color: Colors.grey),
         textAlign: TextAlign.left);
@@ -138,31 +138,31 @@ class UserPage extends StatelessWidget {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
         child: InkWell(
-            onTap: () {},
-            splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(9),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 22, right: 10),
-                  child: Icon(iconList[index], color: Colors.grey),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        width: 150,
-                        child: Text(textList[index], style: textStyle)),
-                    Container(
-                        child: hint,
-                        width: 150,
-                        padding: const EdgeInsets.only(top: 3))
-                  ],
-                ),
-                Expanded(child: Text('')),
-                Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
-              ],
-            ),
+          onTap: () => Navigator.pushNamed(context, routeList[index]),
+          splashFactory: InkRipple.splashFactory,
+          borderRadius: BorderRadius.circular(9),
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 22, right: 10),
+                child: Icon(iconList[index], color: Colors.grey),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      width: 150,
+                      child: Text(textList[index], style: textStyle)),
+                  Container(
+                      child: hint,
+                      width: 150,
+                      padding: const EdgeInsets.only(top: 3))
+                ],
+              ),
+              Expanded(child: Text('')),
+              Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
+            ],
+          ),
         ),
       ),
     );
@@ -204,36 +204,28 @@ class _NavigationState extends State<NavigationWidget> {
       child: Card(
         elevation: 0,
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _getStack(0),
-              _getStack(1),
-              _getStack(2)
-            ],
+            children: <Widget>[_getStack(0), _getStack(1), _getStack(2)],
           ),
         ),
       ),
     );
   }
 
-  Widget _getStack(int index) =>
-      GestureDetector(
-        onTapDown: (_) =>
-            setState(() {
-              currentList[index] = true;
-            }),
-        onTapUp: (_) =>
-            setState(() {
-              currentList[index] = false;
-            }),
-        onTapCancel: () =>
-            setState(() {
-              currentList[index] = false;
-            }),
+  Widget _getStack(int index) => GestureDetector(
+        onTapDown: (_) => setState(() {
+          currentList[index] = true;
+        }),
+        onTapUp: (_) => setState(() {
+          currentList[index] = false;
+        }),
+        onTapCancel: () => setState(() {
+          currentList[index] = false;
+        }),
         onTap: () {
           Navigator.pushNamed(context, routeList[index]);
         },

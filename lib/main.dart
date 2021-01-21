@@ -71,6 +71,7 @@ class WeiPeiYangApp extends StatelessWidget {
   }
 }
 
+/// 启动页Widget
 class StartUpWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -105,7 +106,8 @@ class StartUpWidget extends StatelessWidget {
       // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
-        getToken(prefs.username.value, prefs.password.value, shorted: true, onSuccess: () {
+        getToken(prefs.username.value, prefs.password.value, shorted: true,
+            onSuccess: () {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');
         }, onFailure: (_) {
           Navigator.pushReplacementNamed(context, '/login');

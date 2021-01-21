@@ -9,15 +9,30 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[GPACurve(isPreview: true), GPAIntro()],
-    );
+        children: <Widget>[CurveText(), GPACurve(isPreview: true), GPAIntro()]);
   }
+}
+
+/// 曲线上面的文字，说明当前曲线的内容
+class CurveText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
+        alignment: Alignment.centerLeft,
+        child: Consumer<GPANotifier>(builder: (context, notifier, _) {
+          return Text("${notifier.typeName()} Curve",
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Color.fromRGBO(53, 59, 84, 1.0),
+                  fontWeight: FontWeight.bold));
+        }),
+      );
 }
 
 /// wpy_page中显示数值信息
 class GPAIntro extends StatelessWidget {
   static const textStyle = TextStyle(
-      color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15.0);
+      color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 13.0);
 
   static const numStyle = TextStyle(
       color: Color.fromRGBO(53, 59, 84, 1.0),
@@ -27,11 +42,13 @@ class GPAIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      var weighted = "未";
+      var weighted = "不";
       var grade = "知";
+      var credit = "道";
       if (gpaNotifier.totalWithNotify != null) {
         weighted = gpaNotifier.totalWithNotify.weighted.toString();
         grade = gpaNotifier.totalWithNotify.gpa.toString();
+        credit = gpaNotifier.totalWithNotify.credits.toString();
       }
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -40,20 +57,26 @@ class GPAIntro extends StatelessWidget {
             children: <Widget>[
               Text('Total Weighted', style: textStyle),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(weighted, style: numStyle),
-              )
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(weighted, style: numStyle))
             ],
           ),
           Column(
             children: <Widget>[
               Text('Total Grade', style: textStyle),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(grade, style: numStyle),
-              )
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(grade, style: numStyle))
             ],
           ),
+          Column(
+            children: <Widget>[
+              Text('Total Credit', style: textStyle),
+              Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(credit, style: numStyle))
+            ],
+          )
         ],
       );
     });

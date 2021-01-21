@@ -13,6 +13,7 @@ void getGPABean(
     print("Error happened: $e");
     onFailure(e);
   });
+
 }
 
 const double _DELAYED = 999.0;

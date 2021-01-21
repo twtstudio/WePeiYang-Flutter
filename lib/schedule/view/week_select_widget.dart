@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/start_up.dart';
+import 'package:wei_pei_yang_demo/main.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;

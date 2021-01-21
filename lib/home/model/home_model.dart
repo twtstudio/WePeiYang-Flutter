@@ -9,14 +9,6 @@ class CardBean {
   CardBean(this.icon, this.label, this.route);
 }
 
-class CourseBean {
-  String course;
-  String duration;
-  String classroom;
-
-  CourseBean(this.course, this.duration, this.classroom);
-}
-
 class LibraryBean {
   String book;
   String time;

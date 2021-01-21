@@ -3,13 +3,14 @@ import 'package:flutter/material.dart' show required, BuildContext;
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import '../../start_up.dart';
+import '../../main.dart';
 
 /// 登录总流程： 获取session与execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 void login(BuildContext context, String name, String pw, String captcha,
     Map<String, String> map,
     {void Function() onSuccess, void Function(DioError) onFailure}) {
   var pref = CommonPreferences.create();
+
   ssoLogin(name, pw, captcha, map).then((ssoRsp) {
     var tgc =
         getRegExpStr(r'TGC=\S+(?=\;)', ssoRsp.headers.map['set-cookie'][0]);

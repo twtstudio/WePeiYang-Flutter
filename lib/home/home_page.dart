@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/auth/view/user_page.dart';
 import 'package:wei_pei_yang_demo/commons/color.dart';
 import 'package:wei_pei_yang_demo/home/more_page.dart';
+import 'package:wei_pei_yang_demo/home/net_page.dart';
 import 'model/home_model.dart';
 import 'wpy_page.dart';
 
@@ -17,15 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    pages
-      ..add(WPYPage())
-      ..add(MorePage())
-      ..add(Center(
-        child: RaisedButton(
-          child: Text('test'),
-          onPressed: () => Navigator.pushNamed(context, '/bind'),
-        ),
-      ));
+    pages..add(WPYPage())..add(MorePage())..add(UserPage())..add(CPage());
   }
 
   @override

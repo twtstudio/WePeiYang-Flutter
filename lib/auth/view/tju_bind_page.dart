@@ -18,7 +18,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   TextEditingController nameController;
   TextEditingController pwController;
   Map<String, String> params = Map();
-  Widget imageWidget = Container(width: 140, height: 60);
+  Widget imageWidget;
   int index = 0;
 
   @override
@@ -30,7 +30,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
-    getExecAndSession(onSuccess: (map) {
+    getExecAndSession(onSuccess: (map) {  
       params = map;
       setState(() {
         imageWidget = GestureDetector(
@@ -38,13 +38,18 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
           child: Image.network(
               "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index}",
               headers: {"Cookie": map['session']},
-              width: 140,
-              height: 80,
               fit: BoxFit.fill),
         );
       });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController?.dispose();
+    pwController?.dispose();
+    super.dispose();
   }
 
   //TODO 输入框action icon
@@ -101,7 +106,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               child: Row(
                 children: [
                   Container(
-                    width: width / 2 - 25,
+                    width: width / 3,
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
@@ -111,7 +116,11 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                     ),
                   ),
                   // TODO 验证码这里好多bug。。。
-                  imageWidget,
+                  Container(
+                      child: imageWidget,
+                      width: 140,
+                      height: 80,
+                      alignment: Alignment.centerRight),
                 ],
               ),
             ),

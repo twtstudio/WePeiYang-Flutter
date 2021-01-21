@@ -44,7 +44,7 @@ Widget generateCard(BuildContext context, CardBean bean) {
             child: Text(bean.label,
                 style: TextStyle(
                     color: MyColors.darkGrey,
-                    fontSize: 17.0,
+                    fontSize: 15.0,
                     fontWeight: FontWeight.bold)),
           )
         ],
