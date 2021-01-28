@@ -15,7 +15,7 @@ class SignatureInterceptor extends InterceptorsWrapper {
       "sign": map.values.elementAt(0),
       "app_key": DioService.APP_KEY
     };
-    //TODO
+    //TODO 其他的请求种类？
     switch (options.method) {
       case "GET":
       case "POST":

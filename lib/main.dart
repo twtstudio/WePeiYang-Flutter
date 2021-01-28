@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/auth/view/login_phone_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/login_pw_page.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
+import 'auth/view/find_pw_page.dart';
 import 'auth/view/tju_bind_page.dart';
 import 'home/model/home_model.dart';
 import 'home/home_page.dart';
@@ -51,7 +54,11 @@ class WeiPeiYangApp extends StatelessWidget {
           // fontFamily: 'Montserrat'
           ),
       routes: <String, WidgetBuilder>{
-        '/login': (ctx) => LoginWidget(),
+        '/login': (ctx) => LoginHomeWidget(),
+        '/login_pw': (ctx) => LoginPwWidget(),
+        '/login_phone': (ctx) => LoginPhoneWidget(),
+        '/find_home': (ctx) => FindPwWidget(),
+        '/find_phone': (ctx) => FindPwByPhoneWidget(),
         '/bind': (ctx) => TjuBindWidget(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
@@ -94,7 +101,9 @@ class StartUpWidget extends StatelessWidget {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
     var prefs = CommonPreferences.create();
-    if (!prefs.isLogin.value) {
+    if (!prefs.isLogin.value ||
+        prefs.account.value == "" ||
+        prefs.password.value == "") {
       /// 既然没登陆过就多看会启动页吧
       Timer(Duration(seconds: 3), () {
         Navigator.pushReplacementNamed(context, '/login');
@@ -106,8 +115,7 @@ class StartUpWidget extends StatelessWidget {
       // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
-        getToken(prefs.username.value, prefs.password.value, shorted: true,
-            onSuccess: () {
+        login(prefs.account.value, prefs.password.value, onSuccess: () {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');
         }, onFailure: (_) {
           Navigator.pushReplacementNamed(context, '/login');

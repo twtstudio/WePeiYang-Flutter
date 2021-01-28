@@ -21,7 +21,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           fontSize: 16.0);
       return;
     }
-    getToken(email, password, onSuccess: () {
+    login(email, password, onSuccess: () {
       Fluttertoast.showToast(
           msg: "登录成功",
           backgroundColor: Colors.green,
@@ -141,6 +141,63 @@ class _LoginWidgetState extends State<LoginWidget> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class LoginHomeWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.fromLTRB(30, 50, 0, 0),
+            child: Text("Hello,\n微北洋4.0",
+                style: TextStyle(
+                    color: Color.fromRGBO(98, 103, 124, 1),
+                    fontSize: 50,
+                    fontWeight: FontWeight.w300)),
+          ),
+          Container(
+            height: 50,
+            width: 200,
+            margin: const EdgeInsets.only(top: 90),
+            child: RaisedButton(
+              onPressed: () => Navigator.pushNamed(context, '/login_pw'),
+              color: MyColors.deepBlue,
+              splashColor: MyColors.brightBlue,
+              child: Text('天外天账号密码登录',
+                  style: TextStyle(color: Colors.white, fontSize: 15)),
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)),
+            ),
+          ),
+          Container(
+            height: 50,
+            width: 200,
+            margin: const EdgeInsets.only(top: 30),
+            child: RaisedButton(
+              onPressed: () => Navigator.pushNamed(context, '/login_phone'),
+              color: MyColors.deepBlue,
+              splashColor: MyColors.brightBlue,
+              child: Text('手机验证码登录',
+                  style: TextStyle(color: Colors.white, fontSize: 15)),
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(100, 20, 90, 0),
+            child: Text("首次登陆微北洋4.0请使用天外天账号密码登录，在登陆后绑定手机号码即可手机验证登录。",
+                style: TextStyle(
+                    fontSize: 11, color: Color.fromRGBO(98, 103, 124, 1))),
+          )
+        ],
       ),
     );
   }

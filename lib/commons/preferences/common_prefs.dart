@@ -22,7 +22,11 @@ class CommonPreferences {
 
   var token = PrefsBean<String>('token');
 
-  var username = PrefsBean<String>('username');
+  var nickname = PrefsBean<String>('nickname');
+
+  var account = PrefsBean<String>('account');
+
+  var phone = PrefsBean<String>('phone');
 
   var password = PrefsBean<String>('password');
 
@@ -55,8 +59,10 @@ class CommonPreferences {
   void clearPrefs() {
     isLogin.value = false;
     token.value = "";
-    username.value = "";
+    nickname.value = "";
+    account.value = "";
     password.value = "";
+    phone.value = "";
     tjuuname.value = "";
     tjupasswd.value = "";
     // tgc.value = "";

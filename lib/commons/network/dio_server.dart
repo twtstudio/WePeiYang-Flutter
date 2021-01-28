@@ -9,6 +9,7 @@ import 'network_model.dart';
 import 'signature.dart';
 
 // TODO 单例的写法可能不太对，可以参考common_prefs
+// TODO 这个是之前使用的Dio，schedule/service/audit_service.dart仍在调用这个，以后会改的
 class DioService {
   static const TRUSTED_HOST = "open.twt.edu.cn";
   static const BASE_URL = "https://$TRUSTED_HOST/api/";

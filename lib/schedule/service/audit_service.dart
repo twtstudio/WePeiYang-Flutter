@@ -13,8 +13,8 @@ getMyAudit(String userNumber,
       queryParameters: {"user_number": userNumber}, onSuccess: (commonBody) {
     try {
       List<AuditCourse> auditCourses = [];
-      commonBody.data.forEach(
-          (key, value) => auditCourses.add(AuditCourse.fromJson(value)));
+      // commonBody.data.forEach(
+      //     (key, value) => auditCourses.add(AuditCourse.fromJson(value)));
       onSuccess(auditCourses);
     } catch (e) {
       _onError(e);
@@ -29,8 +29,8 @@ getPopularAudit(
   await dio.getCall("v1/auditClass/popular", onSuccess: (commonBody) {
     try {
       List<AuditPopular> auditPopulars = [];
-      commonBody.data.forEach(
-          (key, value) => auditPopulars.add(AuditPopular.fromJson(value)));
+      // commonBody.data.forEach(
+      //     (key, value) => auditPopulars.add(AuditPopular.fromJson(value)));
       onSuccess(auditPopulars);
     } catch (e) {
       _onError(e);
@@ -46,8 +46,8 @@ getAuditCollege(int withClass,
       queryParameters: {"with_class": withClass}, onSuccess: (commonBody) {
     try {
       List<AuditCollegeData> list = [];
-      commonBody.data
-          .forEach((key, value) => list.add(AuditCollegeData.fromJson(value)));
+      // commonBody.data
+      //     .forEach((key, value) => list.add(AuditCollegeData.fromJson(value)));
       onSuccess(list);
     } catch (e) {
       _onError(e);
@@ -64,8 +64,8 @@ searchCourse(String courseName, int type,
       onSuccess: (commonBody) {
     try {
       List<AuditSearchCourse> list = [];
-      commonBody.data
-          .forEach((key, value) => list.add(AuditSearchCourse.fromJson(value)));
+      // commonBody.data
+      //     .forEach((key, value) => list.add(AuditSearchCourse.fromJson(value)));
       onSuccess(list);
     } catch (e) {
       _onError(e);

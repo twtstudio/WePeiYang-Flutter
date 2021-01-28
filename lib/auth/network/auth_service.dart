@@ -1,21 +1,81 @@
-import 'package:wei_pei_yang_demo/commons/network/network_model.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import '../../commons/network/dio_server.dart';
+import '../../commons/network/dio_server_new.dart';
 import 'package:flutter/material.dart' show required;
 
-getToken(String name, String pw,
-    {@required void Function() onSuccess,
-    OnFailure onFailure,
-    bool shorted = false}) async {
-  var dio = await DioService.create(shorted: shorted);
-  await dio.getCall("v1/auth/token/get",
-      queryParameters: {"twtuname": name, "twtpasswd": pw},
+/// 注册或完善信息时获取短信验证码
+getCaptchaOnRegister(String phone,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("register/phone/msg",
+      queryParameters: {"phone": phone},
+      onSuccess: (_) => onSuccess(),
+      onFailure: onFailure);
+}
+
+/// 使用手机号登陆时获取短信验证码
+getCaptchaOnLogin(String phone,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("auth/phone/msg",
+      queryParameters: {"phone": phone},
+      onSuccess: (_) => onSuccess(),
+      onFailure: onFailure);
+}
+
+/// 修改密码时获取短信验证码
+getCaptchaOnReset(String phone,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("password/reset/msg",
+      queryParameters: {"phone": phone},
+      onSuccess: (_) => onSuccess(),
+      onFailure: onFailure);
+}
+
+register(String userNumber, String nickname, String phone, String verifyCode,
+    String password, String email, String idNumber,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("register",
+      queryParameters: {
+        "userNumber": userNumber,
+        "nickname": nickname,
+        "phone": phone,
+        "verifyCode": verifyCode,
+        "password": password,
+        "email": email,
+        "idNumber": idNumber
+      },
+      onSuccess: (_) => onSuccess(),
+      onFailure: onFailure);
+}
+
+/// 使用学号/昵称/邮箱登录
+login(String account, String password,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("auth/common",
+      queryParameters: {"account": account, "password": password},
       onSuccess: (commonBody) {
     var prefs = CommonPreferences.create();
-    prefs.token.value = Token.fromJson(commonBody.data).token;
-    prefs.username.value = name;
-    prefs.password.value = pw;
+    prefs.token.value = commonBody.result['token'] ?? "";
+    prefs.account.value = account;
+    prefs.password.value = password;
+    prefs.nickname.value = commonBody.result['nickname'] ?? "";
     prefs.isLogin.value = true;
-    onSuccess();
+  }, onFailure: onFailure);
+}
+
+/// 使用手机号+验证码登录
+loginByCaptcha(String phone, String code,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  var dio = DioService.create();
+  await dio.getCall("auth/phone",
+      queryParameters: {"phone": phone, "code": code}, onSuccess: (commonBody) {
+    var prefs = CommonPreferences.create();
+    prefs.token.value = commonBody.result['token'] ?? "";
+    prefs.phone.value = phone;
+    prefs.nickname.value = commonBody.result['nickname'] ?? "";
+    prefs.isLogin.value = true;
   }, onFailure: onFailure);
 }
