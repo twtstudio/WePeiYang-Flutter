@@ -8,7 +8,7 @@ import 'package:wei_pei_yang_demo/schedule/model/audit/audit_popular_model.dart'
 getMyAudit(String userNumber,
     {@required void Function(List<AuditCourse>) onSuccess,
     OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/audit",
       queryParameters: {"user_number": userNumber}, onSuccess: (commonBody) {
     try {
@@ -25,7 +25,7 @@ getMyAudit(String userNumber,
 getPopularAudit(
     {@required void Function(List<AuditPopular>) onSuccess,
     OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/popular", onSuccess: (commonBody) {
     try {
       List<AuditPopular> auditPopulars = [];
@@ -41,7 +41,7 @@ getPopularAudit(
 getAuditCollege(int withClass,
     {@required void Function(List<AuditCollegeData>) onSuccess,
     OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/college",
       queryParameters: {"with_class": withClass}, onSuccess: (commonBody) {
     try {
@@ -58,7 +58,7 @@ getAuditCollege(int withClass,
 searchCourse(String courseName, int type,
     {@required void Function(List<AuditSearchCourse>) onSuccess,
     OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/search",
       queryParameters: {"name": courseName, "type": type},
       onSuccess: (commonBody) {
@@ -75,7 +75,7 @@ searchCourse(String courseName, int type,
 
 audit(String userNumber, int courseId, String infoIds,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/audit",
       queryParameters: {
         "user_number": userNumber,
@@ -88,7 +88,7 @@ audit(String userNumber, int courseId, String infoIds,
 
 cancelAudit(String userNumber, String ids,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = await DioService.create();
+  var dio = DioService.create();
   await dio.getCall("v1/auditClass/audit",
       queryParameters: {"user_number": userNumber, "ids": ids},
       onSuccess: (_) => onSuccess(),

@@ -63,14 +63,14 @@ class WeiPeiYangApp extends StatelessWidget {
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
         '/schedule': (ctx) => SchedulePage(),
-        '/telNum': (ctx) => LoginWidget(),
-        '/learning': (ctx) => LoginWidget(),
-        '/library': (ctx) => LoginWidget(),
-        '/cards': (ctx) => LoginWidget(),
+        '/telNum': (ctx) => LoginHomeWidget(),
+        '/learning': (ctx) => LoginHomeWidget(),
+        '/library': (ctx) => LoginHomeWidget(),
+        '/cards': (ctx) => LoginHomeWidget(),
         '/gpa': (ctx) => GPAPage(),
-        '/classroom': (ctx) => LoginWidget(),
-        '/coffee': (ctx) => LoginWidget(),
-        '/byBus': (ctx) => LoginWidget(),
+        '/classroom': (ctx) => LoginHomeWidget(),
+        '/coffee': (ctx) => LoginHomeWidget(),
+        '/byBus': (ctx) => LoginHomeWidget(),
         '/more': (ctx) => MorePage(),
       },
       home: StartUpWidget(),
@@ -114,7 +114,7 @@ class StartUpWidget extends StatelessWidget {
     else {
       // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
-        /// 用缓存中的数据自动登录，失败则仍跳转至login页面（shorted的意思是：3秒内登不上就撤）
+        /// 用缓存中的数据自动登录，失败则仍跳转至login页面
         login(prefs.account.value, prefs.password.value, onSuccess: () {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');
         }, onFailure: (_) {

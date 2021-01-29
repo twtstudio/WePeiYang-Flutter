@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 
+import 'find_pw_dialog.dart';
+
 class FindPwWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -48,8 +50,10 @@ class FindPwWidget extends StatelessWidget {
             width: 200,
             margin: const EdgeInsets.only(top: 30),
             child: RaisedButton(
-              // TODO 弹出窗口!!!!!!
-              onPressed: () => Navigator.pushNamed(context, '/login_phone'),
+              onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => FindPwDialog()),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text('账号未绑定手机号',
@@ -76,7 +80,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
   String code = "";
   bool isPress = false;
 
-  _captcha() async {
+  _fetchCaptcha() async {
     if (phone == "") {
       Fluttertoast.showToast(
           msg: "手机号码不能为空",
@@ -94,6 +98,25 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           textColor: Colors.white,
           fontSize: 16.0);
     });
+  }
+
+  _verifyCaptcha() async {
+    if (phone == "") {
+      Fluttertoast.showToast(
+          msg: "手机号码不能为空",
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    } else if (code == "") {
+      Fluttertoast.showToast(
+          msg: "短信验证码不能为空",
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    verifyOnReset(phone, code, onSuccess: () {});
   }
 
   @override
@@ -114,34 +137,11 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("天外天手机验证登录",
+            child: Text("天外天账号密码找回",
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                      labelText: '学号',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => userNumber = input),
-                ),
-              ),
-            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
@@ -191,12 +191,13 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     ),
                   ),
                 ),
+                Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 170,
-                    padding: EdgeInsets.only(left: 20),
+                    width: 140,
+                    margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
-                      onPressed: _captcha,
+                      onPressed: _fetchCaptcha,
                       color: isPress
                           ? Color.fromRGBO(235, 238, 243, 1)
                           : Color.fromRGBO(53, 59, 84, 1.0),
@@ -214,11 +215,18 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
               ],
             ),
           ),
-          Container(
-              height: 40,
-              width: 40,
-              alignment: Alignment.bottomRight,
-              child: Image(image: AssetImage('assets/images/arrow_round.jpg'))),
+          Expanded(child: Text("")),
+          GestureDetector(
+            onTap: () async {
+              // TODO 账号密码找回
+            },
+            child: Container(
+                height: 50,
+                width: 50,
+                margin: const EdgeInsets.fromLTRB(300, 0, 0, 30),
+                child:
+                    Image(image: AssetImage('assets/images/arrow_round.png'))),
+          ),
         ],
       ),
     );

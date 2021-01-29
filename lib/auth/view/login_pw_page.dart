@@ -54,7 +54,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("天外天账号密码登录",
+            child: Text("微北洋4.0",
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
@@ -70,14 +70,16 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: TextField(
                   keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
-                      labelText: '账号为学号',
+                      labelText: '学号/手机号/邮箱号/用户名',
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10))),
+
                   onChanged: (input) => setState(() => account = input),
                 ),
               ),
@@ -101,6 +103,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10))),
+                  obscureText: true,
                   onChanged: (input) => setState(() => password = input),
                 ),
               ),
@@ -111,7 +114,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             padding: EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 80.0),
             child: GestureDetector(
               child: Text('忘记密码',
-                  style: TextStyle(fontSize: 13, color: Colors.blue)),
+                  style: TextStyle(fontSize: 13, color: Colors.blue, decoration: TextDecoration.underline)),
               onTap: () => Navigator.pushNamed(context, '/find_home'),
             ),
           ),
