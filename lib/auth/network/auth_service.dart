@@ -5,8 +5,7 @@ import 'package:flutter/material.dart' show required;
 /// 注册或完善信息时获取短信验证码
 getCaptchaOnRegister(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("register/phone/msg",
+  await DioService().post("register/phone/msg",
       queryParameters: {"phone": phone},
       onSuccess: (_) => onSuccess(),
       onFailure: onFailure);
@@ -15,8 +14,7 @@ getCaptchaOnRegister(String phone,
 /// 使用手机号登陆时获取短信验证码
 getCaptchaOnLogin(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("auth/phone/msg",
+  await DioService().post("auth/phone/msg",
       queryParameters: {"phone": phone},
       onSuccess: (_) => onSuccess(),
       onFailure: onFailure);
@@ -25,8 +23,7 @@ getCaptchaOnLogin(String phone,
 /// 修改密码时获取短信验证码
 getCaptchaOnReset(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("password/reset/msg",
+  await DioService().post("password/reset/msg",
       queryParameters: {"phone": phone},
       onSuccess: (_) => onSuccess(),
       onFailure: onFailure);
@@ -35,8 +32,7 @@ getCaptchaOnReset(String phone,
 /// 修改密码时认证短信验证码
 verifyOnReset(String phone, String code,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("password/reset/verify",
+  await DioService().post("password/reset/verify",
       queryParameters: {"phone": phone, "code": code},
       onSuccess: (_) => onSuccess(),
       onFailure: onFailure);
@@ -45,8 +41,7 @@ verifyOnReset(String phone, String code,
 /// 修改密码
 resetPw(String phone, String password,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("password/reset",
+  await DioService().post("password/reset",
       queryParameters: {"phone": phone, "password": password},
       onSuccess: (_) => onSuccess(),
       onFailure: onFailure);
@@ -56,8 +51,7 @@ resetPw(String phone, String password,
 register(String userNumber, String nickname, String phone, String verifyCode,
     String password, String email, String idNumber,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("register",
+  await DioService().post("register",
       queryParameters: {
         "userNumber": userNumber,
         "nickname": nickname,
@@ -74,8 +68,7 @@ register(String userNumber, String nickname, String phone, String verifyCode,
 /// 使用学号/昵称/邮箱登录
 login(String account, String password,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("auth/common",
+  await DioService().post("auth/common",
       queryParameters: {"account": account, "password": password},
       onSuccess: (result) {
     var prefs = CommonPreferences.create();
@@ -91,8 +84,7 @@ login(String account, String password,
 /// 使用手机号+验证码登录
 loginByCaptcha(String phone, String code,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  var dio = DioService.create();
-  await dio.postCall("auth/phone",
+  await DioService().post("auth/phone",
       queryParameters: {"phone": phone, "code": code}, onSuccess: (result) {
     var prefs = CommonPreferences.create();
     prefs.token.value = result['token'] ?? "";

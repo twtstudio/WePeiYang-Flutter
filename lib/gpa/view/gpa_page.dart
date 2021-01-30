@@ -2,9 +2,9 @@ import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_curve_detail.dart' show GPACurve;
-import 'gpa_model.dart';
-import 'gpa_notifier.dart';
+import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
+import '../model/gpa_model.dart';
+import '../model/gpa_notifier.dart';
 
 class GPAPage extends StatelessWidget {
   @override

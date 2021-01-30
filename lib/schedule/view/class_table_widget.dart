@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/schedule/view/ui_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
 import 'schedule_page.dart' show schedulePadding;
 
 /// 课程表每个item之间的间距

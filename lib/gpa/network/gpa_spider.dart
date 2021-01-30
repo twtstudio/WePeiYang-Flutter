@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart' show DioError;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_model.dart';
+import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
 void getGPABean(

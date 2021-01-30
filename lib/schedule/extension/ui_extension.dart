@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../model/schedule_extension.dart';
-import '../model/school/common_model.dart';
-import 'course_dialog.dart';
+import 'logic_extension.dart';
+import '../model/school/school_model.dart';
+import '../view/course_dialog.dart';
 
 const TextStyle activeNameStyle =
     TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);

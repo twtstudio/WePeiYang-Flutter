@@ -4,6 +4,9 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'network_model.dart';
 import 'dart:convert' show utf8, base64Encode;
 
+typedef OnSuccess = void Function(Map result);
+typedef OnFailure = void Function(DioError e);
+
 class DioService {
   static const TRUSTED_HOST = "api.twt.edu.cn";
   static const BASE_URL = "https://$TRUSTED_HOST/api/";
@@ -27,28 +30,28 @@ class DioService {
       ..interceptors.add(LogInterceptor(requestBody: false));
   }
 
-  static final _instance = DioService._();
+  factory DioService() => _instance;
 
-  static Dio create() => _instance.dio;
+  static final _instance = DioService._();
 
   static Dio _dio;
 
-  Dio get dio => _dio;
-}
-
-typedef OnSuccess = void Function(Map result);
-typedef OnFailure = void Function(DioError e);
-
-/// 封装dio中的[get]和[post]函数，并解析返回的commonBody对象
-extension CommonBodyMethod on Dio {
-  Future<void> getCall(
+  /// 封装dio中的[get]和[post]函数，并解析返回的commonBody对象
+  Future<void> get(
     String path, {
     @required OnSuccess onSuccess,
     OnFailure onFailure,
     Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onReceiveProgress,
   }) async {
     try {
-      var response = await get(path, queryParameters: queryParameters);
+      var response = await _dio.get(path,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress);
       print(response.data.toString() + '\n');
       onSuccess(CommonBody.fromJson(response.data).result);
     } on DioError catch (e) {
@@ -57,14 +60,23 @@ extension CommonBodyMethod on Dio {
     }
   }
 
-  Future<void> postCall(String path,
-      {@required OnSuccess onSuccess,
-      OnFailure onFailure,
-      data,
-      Map<String, dynamic> queryParameters}) async {
+  Future<void> post(
+    String path, {
+    @required OnSuccess onSuccess,
+    OnFailure onFailure,
+    data,
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onReceiveProgress,
+  }) async {
     try {
-      var response =
-          await post(path, data: data, queryParameters: queryParameters);
+      var response = await _dio.post(path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress);
       print(response.data.toString() + '\n');
       onSuccess(CommonBody.fromJson(response.data).result);
     } on DioError catch (e) {

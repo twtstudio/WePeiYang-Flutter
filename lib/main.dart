@@ -12,15 +12,15 @@ import 'dart:io' show Platform;
 import 'auth/view/find_pw_page.dart';
 import 'auth/view/tju_bind_page.dart';
 import 'home/model/home_model.dart';
-import 'home/home_page.dart';
-import 'home/more_page.dart';
+import 'home/view/home_page.dart';
+import 'home/view/more_page.dart';
 import 'auth/view/user_page.dart';
 import 'auth/view/login_page.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
-import 'gpa/gpa_page.dart' show GPAPage;
-import 'package:wei_pei_yang_demo/schedule/view/schedule_page.dart'
+import 'gpa/model/gpa_notifier.dart';
+import 'gpa/view/gpa_page.dart' show GPAPage;
+import 'schedule/view/schedule_page.dart'
     show SchedulePage;
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'commons/preferences/common_prefs.dart';
 
 void main() async {
   runApp(MultiProvider(providers: [

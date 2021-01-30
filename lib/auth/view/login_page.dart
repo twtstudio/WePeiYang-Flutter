@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 class LoginHomeWidget extends StatelessWidget {
   // TODO 简单记一下登录部分可以优化的地方：

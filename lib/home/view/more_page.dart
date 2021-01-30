@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'model/home_model.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
+import '../model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 class MorePage extends StatelessWidget {
   @override

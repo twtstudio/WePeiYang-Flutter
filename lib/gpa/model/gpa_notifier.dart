@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'gpa_model.dart';
-import 'gpa_spider.dart';
+import '../network/gpa_spider.dart';
 
 class GPANotifier with ChangeNotifier {
   List<GPAStat> _listWithNotify = [];
@@ -136,7 +136,6 @@ class GPANotifier with ChangeNotifier {
         _totalWithNotify = gpaBean.total;
         notifyListeners();
       }, onFailure: (e) {
-        // TODO 记得改成 “失败” 文字
         Fluttertoast.showToast(
             msg: e.error.toString(),
             textColor: Colors.white,

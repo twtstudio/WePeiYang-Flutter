@@ -1,4 +1,4 @@
-import '../school/common_model.dart';
+import '../school/school_model.dart';
 
 class AuditCourse {
   String college;

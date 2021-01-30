@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
-import 'model/home_model.dart';
+import '../model/home_model.dart';
 import 'more_page.dart';
-import '../gpa/gpa_curve_detail.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
+import '../../gpa/view/gpa_curve_detail.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17.0,

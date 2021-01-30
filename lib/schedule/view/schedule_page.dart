@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 

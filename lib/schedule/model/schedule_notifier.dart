@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
-import 'package:wei_pei_yang_demo/schedule/service/schedule_spider.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
+import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
   List<Course> _coursesWithNotify = [];

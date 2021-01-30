@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart' show DioError;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 
 /// 发送请求，获取html中的schedule数据
 void getSchedule(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user_page.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/home/more_page.dart';
-import 'package:wei_pei_yang_demo/home/net_page.dart';
-import 'model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/home/view/more_page.dart';
+import 'package:wei_pei_yang_demo/home/view/net_page.dart';
+import '../model/home_model.dart';
 import 'wpy_page.dart';
 
 class HomePage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart';
-import 'package:wei_pei_yang_demo/schedule/view/ui_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
 
 void showCourseDialog(BuildContext context, Course course) => showDialog(
     context: context,

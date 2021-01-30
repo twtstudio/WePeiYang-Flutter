@@ -197,7 +197,17 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     width: 140,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
-                      onPressed: _fetchCaptcha,
+                      onPressed: () async {
+                        getCaptchaOnReset(phone, onSuccess: () {
+                          setState(() => isPress = true);
+                        }, onFailure: (e) {
+                          Fluttertoast.showToast(
+                              msg: e.error.toString(),
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        });
+                      },
                       color: isPress
                           ? Color.fromRGBO(235, 238, 243, 1)
                           : Color.fromRGBO(53, 59, 84, 1.0),

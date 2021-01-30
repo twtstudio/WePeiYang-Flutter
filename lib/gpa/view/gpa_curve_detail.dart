@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_notifier.dart';
+import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'dart:math';
-import '../home/model/home_model.dart';
+import '../../home/model/home_model.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {

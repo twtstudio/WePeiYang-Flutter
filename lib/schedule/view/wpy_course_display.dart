@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/color.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_extension.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/common_model.dart'
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart'
     show Course;
 
 class SliverCoursesWidget extends StatelessWidget {
