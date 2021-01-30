@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart' show Colors;
-import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
 import 'package:flutter/material.dart' show required;
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/audit/audit_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/audit/audit_popular_model.dart';
 
@@ -90,9 +89,5 @@ cancelAudit(String userNumber, String ids,
 }
 
 void _onError(dynamic e) {
-  Fluttertoast.showToast(
-      msg: e.toString(),
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0);
+  ToastProvider.error(e.toString());
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
+import 'package:wei_pei_yang_demo/commons/network/error_interceptor.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'network_model.dart';
 import 'dart:convert' show utf8, base64Encode;
@@ -20,13 +21,13 @@ class DioService {
         baseUrl: BASE_URL,
         connectTimeout: 10000,
         receiveTimeout: 10000,
-        headers: {
-          "DOMAIN": DOMAIN,
-          "ticket": ticket,
-          "Authorization": "Bearer{${CommonPreferences.create().token.value}}",
-        });
+        headers: {"DOMAIN": DOMAIN, "ticket": ticket});
     _dio = Dio()
       ..options = options
+      ..interceptors.add(InterceptorsWrapper(onRequest: (Options options) {
+        options.headers['token'] = CommonPreferences.create().token.value;
+      }))
+      ..interceptors.add(ErrorInterceptor())
       ..interceptors.add(LogInterceptor(requestBody: false));
   }
 
@@ -52,7 +53,6 @@ class DioService {
           options: options,
           cancelToken: cancelToken,
           onReceiveProgress: onReceiveProgress);
-      print(response.data.toString() + '\n');
       onSuccess(CommonBody.fromJson(response.data).result);
     } on DioError catch (e) {
       print("DioServiceLog: \"${e.error}\" error happened!!!\n");
@@ -68,6 +68,7 @@ class DioService {
     Map<String, dynamic> queryParameters,
     Options options,
     CancelToken cancelToken,
+    ProgressCallback onSendProgress,
     ProgressCallback onReceiveProgress,
   }) async {
     try {
@@ -76,8 +77,34 @@ class DioService {
           queryParameters: queryParameters,
           options: options,
           cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress);
-      print(response.data.toString() + '\n');
+      onSuccess(CommonBody.fromJson(response.data).result);
+    } on DioError catch (e) {
+      print("DioServiceLog: \"${e.error}\" error happened!!!\n");
+      if (onFailure != null) onFailure(e);
+    }
+  }
+
+  Future<void> put(
+    String path, {
+    @required OnSuccess onSuccess,
+    OnFailure onFailure,
+    data,
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onSendProgress,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    try {
+      var response = await _dio.put(path,
+          data: data,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress);
       onSuccess(CommonBody.fromJson(response.data).result);
     } on DioError catch (e) {
       print("DioServiceLog: \"${e.error}\" error happened!!!\n");

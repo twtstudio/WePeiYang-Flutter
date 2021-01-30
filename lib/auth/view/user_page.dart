@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 import '../../main.dart';
 
@@ -79,11 +79,7 @@ class UserPage extends StatelessWidget {
                       color: Color.fromRGBO(85, 89, 106, 1.0),
                       onPressed: () {
                         // TODO 其他退出逻辑
-                        Fluttertoast.showToast(
-                            msg: "   退出登录成功   ",
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 18);
+                        ToastProvider.success("退出登录成功");
                         CommonPreferences.create().clearPrefs();
                         Navigator.pushNamedAndRemoveUntil(
                             WeiPeiYangApp.navigatorState.currentContext,

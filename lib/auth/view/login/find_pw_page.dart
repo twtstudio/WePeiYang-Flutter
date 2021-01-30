@@ -1,68 +1,108 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'find_pw_dialog.dart';
 
-class LoginPhoneWidget extends StatefulWidget {
+class FindPwWidget extends StatelessWidget {
   @override
-  _LoginPhoneWidgetState createState() => _LoginPhoneWidgetState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: GestureDetector(
+                child: Icon(Icons.arrow_back,
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                onTap: () => Navigator.pop(context)),
+          )),
+      body: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(top: 120),
+            child: Text("天外天账号密码找回",
+                style: TextStyle(
+                    color: Color.fromRGBO(98, 103, 123, 1),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16)),
+          ),
+          Container(
+            height: 50,
+            width: 200,
+            margin: const EdgeInsets.only(top: 25),
+            child: RaisedButton(
+              onPressed: () => Navigator.pushNamed(context, '/find_phone'),
+              color: Color.fromRGBO(53, 59, 84, 1.0),
+              splashColor: Color.fromRGBO(103, 110, 150, 1.0),
+              child: Text('账号已绑定手机号',
+                  style: TextStyle(color: Colors.white, fontSize: 15)),
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)),
+            ),
+          ),
+          Container(
+            height: 50,
+            width: 200,
+            margin: const EdgeInsets.only(top: 30),
+            child: RaisedButton(
+              onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => FindPwDialog()),
+              color: Color.fromRGBO(53, 59, 84, 1.0),
+              splashColor: Color.fromRGBO(103, 110, 150, 1.0),
+              child: Text('账号未绑定手机号',
+                  style: TextStyle(color: Colors.white, fontSize: 15)),
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)),
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
 
-class _LoginPhoneWidgetState extends State<LoginPhoneWidget> {
+class FindPwByPhoneWidget extends StatefulWidget {
+  @override
+  _FindPwByPhoneWidgetState createState() => _FindPwByPhoneWidgetState();
+}
+
+class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
   String phone = "";
   String code = "";
   bool isPress = false;
 
-  _captcha() async {
+  _fetchCaptcha() async {
     if (phone == "") {
-      Fluttertoast.showToast(
-          msg: "手机号码不能为空",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      ToastProvider.error("手机号码不能为空");
       return;
     }
-    getCaptchaOnLogin(phone, onSuccess: () {
-      setState(() => isPress = true);
-    }, onFailure: (e) {
-      Fluttertoast.showToast(
-          msg: e.error.toString(),
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    });
+    getCaptchaOnReset(phone,
+        onSuccess: () {
+          setState(() => isPress = true);
+        },
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  _login() async {
+  _verifyCaptcha() async {
+    setState(() => isPress = false);
     if (phone == "") {
-      Fluttertoast.showToast(
-          msg: "手机号码不能为空",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      ToastProvider.error("手机号码不能为空");
       return;
     } else if (code == "") {
-      Fluttertoast.showToast(
-          msg: "短信验证码不能为空",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      ToastProvider.error("短信验证码不能为空");
       return;
     }
-    setState(() => isPress = false);
-    loginByCaptcha(phone, code, onSuccess: () {
-      Fluttertoast.showToast(
-          msg: "登录成功",
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      Navigator.pushReplacementNamed(context, '/home');
-    }, onFailure: (e) {
-      Fluttertoast.showToast(
-          msg: e.error.toString(),
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    });
+    Navigator.pushNamed(context, '/reset', arguments: phone);
+    // verifyOnReset(phone, code,
+    //     onSuccess: () => Navigator.pushNamed(context, '/reset', arguments: phone),
+    //     onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   @override
@@ -83,7 +123,7 @@ class _LoginPhoneWidgetState extends State<LoginPhoneWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("天外天手机验证登录",
+            child: Text("天外天账号密码找回",
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
@@ -100,7 +140,7 @@ class _LoginPhoneWidgetState extends State<LoginPhoneWidget> {
                 child: TextField(
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
-                      labelText: '手机号码',
+                      labelText: '手机号',
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
@@ -137,12 +177,13 @@ class _LoginPhoneWidgetState extends State<LoginPhoneWidget> {
                     ),
                   ),
                 ),
+                Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 170,
-                    padding: EdgeInsets.only(left: 20),
+                    width: 140,
+                    margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
-                      onPressed: _captcha,
+                      onPressed: _fetchCaptcha,
                       color: isPress
                           ? Color.fromRGBO(235, 238, 243, 1)
                           : Color.fromRGBO(53, 59, 84, 1.0),
@@ -160,20 +201,16 @@ class _LoginPhoneWidgetState extends State<LoginPhoneWidget> {
               ],
             ),
           ),
-          Container(
-              height: 55,
-              width: 400,
-              margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
-              child: RaisedButton(
-                onPressed: _login,
-                color: Color.fromRGBO(53, 59, 84, 1),
-                splashColor: Color.fromRGBO(103, 110, 150, 1),
-                child: Text('登录',
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-              )),
+          Expanded(child: Text("")),
+          GestureDetector(
+            onTap: _verifyCaptcha,
+            child: Container(
+                height: 50,
+                width: 50,
+                margin: const EdgeInsets.fromLTRB(300, 0, 0, 30),
+                child:
+                    Image(image: AssetImage('assets/images/arrow_round.png'))),
+          ),
         ],
       ),
     );

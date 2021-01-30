@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'gpa_model.dart';
 import '../network/gpa_spider.dart';
 
@@ -121,27 +121,15 @@ class GPANotifier with ChangeNotifier {
 
   GestureTapCallback refreshGPA(BuildContext context) {
     return () {
-      Fluttertoast.showToast(
-          msg: "刷新数据中……",
-          textColor: Colors.white,
-          backgroundColor: Colors.blue,
-          fontSize: 16);
-      getGPABean(onSuccess: (gpaBean) {
-        Fluttertoast.showToast(
-            msg: "刷新gpa数据成功",
-            textColor: Colors.white,
-            backgroundColor: Colors.green,
-            fontSize: 16);
-        _listWithNotify = gpaBean.stats;
-        _totalWithNotify = gpaBean.total;
-        notifyListeners();
-      }, onFailure: (e) {
-        Fluttertoast.showToast(
-            msg: e.error.toString(),
-            textColor: Colors.white,
-            backgroundColor: Colors.red,
-            fontSize: 16);
-      });
+      ToastProvider.running("刷新数据中……");
+      getGPABean(
+          onSuccess: (gpaBean) {
+            ToastProvider.success("刷新gpa数据成功");
+            _listWithNotify = gpaBean.stats;
+            _totalWithNotify = gpaBean.total;
+            notifyListeners();
+          },
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
     };
   }
 }

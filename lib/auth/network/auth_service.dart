@@ -67,7 +67,7 @@ register(String userNumber, String nickname, String phone, String verifyCode,
 
 /// 使用学号/昵称/邮箱登录
 login(String account, String password,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   await DioService().post("auth/common",
       queryParameters: {"account": account, "password": password},
       onSuccess: (result) {
@@ -77,20 +77,19 @@ login(String account, String password,
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";
     prefs.isLogin.value = true;
-    onSuccess();
+    onSuccess(result);
   }, onFailure: onFailure);
 }
 
-/// 使用手机号+验证码登录
-loginByCaptcha(String phone, String code,
+/// 补全信息（手机号和邮箱）
+addInfo(String telephone, String verifyCode, String email,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("auth/phone",
-      queryParameters: {"phone": phone, "code": code}, onSuccess: (result) {
-    var prefs = CommonPreferences.create();
-    prefs.token.value = result['token'] ?? "";
-    prefs.phone.value = phone;
-    prefs.nickname.value = result['nickname'] ?? "";
-    prefs.isLogin.value = true;
-    onSuccess();
-  }, onFailure: onFailure);
+  await DioService().put("user/single",
+      queryParameters: {
+        "telephone": telephone,
+        "verifyCode": verifyCode,
+        "email": email
+      },
+      onSuccess: (_) => onSuccess(),
+      onFailure: onFailure);
 }

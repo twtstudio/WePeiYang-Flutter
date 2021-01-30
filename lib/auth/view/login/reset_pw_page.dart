@@ -1,40 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
-class LoginPwWidget extends StatefulWidget {
+class ResetPwWidget extends StatefulWidget {
   @override
-  _LoginPwWidgetState createState() => _LoginPwWidgetState();
+  _ResetPwWidgetState createState() => _ResetPwWidgetState();
 }
 
-class _LoginPwWidgetState extends State<LoginPwWidget> {
-  String account = "";
-  String password = "";
+class _ResetPwWidgetState extends State<ResetPwWidget> {
+  String password1 = "";
+  String password2 = "";
 
-  _login() async {
-    if (account == "" || password == "") {
-      Fluttertoast.showToast(
-          msg: "账号密码不能为空",
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+  _reset() async {
+    if (password1 == "") {
+      ToastProvider.error("密码不能为空");
+      return;
+    } else if (password2 == "") {
+      ToastProvider.error("请再次输入密码");
+      return;
+    } else if (password1 != password2) {
+      ToastProvider.error("两次输入密码不一致");
       return;
     }
-    login(account, password, onSuccess: () {
-      Fluttertoast.showToast(
-          msg: "登录成功",
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      Navigator.pushReplacementNamed(context, '/home');
-    }, onFailure: (e) {
-      Fluttertoast.showToast(
-          msg: e.error.toString(),
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    });
+    String phone = ModalRoute.of(context).settings.arguments;
+    resetPw(phone, password1,
+        onSuccess: () => Navigator.pushNamed(context, '/reset_done'),
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
+
+  FocusNode _pwInput1 = FocusNode();
+  FocusNode _pwInput2 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +49,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("微北洋4.0",
+            child: Text("天外天账号密码找回",
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
@@ -71,16 +66,21 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 child: TextField(
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.next,
+                  focusNode: _pwInput1,
                   decoration: InputDecoration(
-                      labelText: '学号/手机号/邮箱号/用户名',
+                      labelText: '请输入新密码',
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10))),
-
-                  onChanged: (input) => setState(() => account = input),
+                  obscureText: true,
+                  onChanged: (input) => setState(() => password1 = input),
+                  onEditingComplete: () {
+                    _pwInput1.unfocus();
+                    FocusScope.of(context).requestFocus(_pwInput2);
+                  },
                 ),
               ),
             ),
@@ -95,8 +95,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: TextField(
                   keyboardType: TextInputType.visiblePassword,
+                  focusNode: _pwInput2,
                   decoration: InputDecoration(
-                      labelText: '密码',
+                      labelText: '再次输入密码',
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
@@ -104,34 +105,21 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10))),
                   obscureText: true,
-                  onChanged: (input) => setState(() => password = input),
+                  onChanged: (input) => setState(() => password2 = input),
                 ),
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 80.0),
-            child: GestureDetector(
-              child: Text('忘记密码',
-                  style: TextStyle(fontSize: 13, color: Colors.blue, decoration: TextDecoration.underline)),
-              onTap: () => Navigator.pushNamed(context, '/find_home'),
-            ),
+          Expanded(child: Text("")),
+          GestureDetector(
+            onTap: _reset,
+            child: Container(
+                height: 50,
+                width: 50,
+                margin: const EdgeInsets.fromLTRB(300, 0, 0, 30),
+                child:
+                    Image(image: AssetImage('assets/images/arrow_round.png'))),
           ),
-          Container(
-              height: 50.0,
-              width: 400.0,
-              padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-              child: RaisedButton(
-                onPressed: _login,
-                color: Color.fromRGBO(53, 59, 84, 1.0),
-                splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                child: Text('登录',
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-              )),
         ],
       ),
     );

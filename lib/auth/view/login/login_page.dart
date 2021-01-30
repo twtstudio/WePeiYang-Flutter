@@ -43,7 +43,7 @@ class LoginHomeWidget extends StatelessWidget {
                 width: 100,
                 margin: const EdgeInsets.only(left: 50),
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/login_phone'),
+                  onPressed: () => Navigator.pushNamed(context, '/register'),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('注册',

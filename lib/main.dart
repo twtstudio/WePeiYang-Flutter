@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/auth/view/login_phone_page.dart';
-import 'package:wei_pei_yang_demo/auth/view/login_pw_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/login_pw_page.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/reset_pw_page.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
-import 'auth/view/find_pw_page.dart';
+import 'auth/view/login/find_pw_page.dart';
+import 'auth/view/login/reset_done_page.dart';
 import 'auth/view/tju_bind_page.dart';
 import 'home/model/home_model.dart';
 import 'home/view/home_page.dart';
 import 'home/view/more_page.dart';
 import 'auth/view/user_page.dart';
-import 'auth/view/login_page.dart';
+import 'auth/view/login/login_page.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'gpa/view/gpa_page.dart' show GPAPage;
-import 'schedule/view/schedule_page.dart'
-    show SchedulePage;
+import 'schedule/view/schedule_page.dart' show SchedulePage;
 import 'commons/preferences/common_prefs.dart';
 
 void main() async {
@@ -56,9 +57,11 @@ class WeiPeiYangApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginHomeWidget(),
         '/login_pw': (ctx) => LoginPwWidget(),
-        '/login_phone': (ctx) => LoginPhoneWidget(),
+        '/add_info': (ctx) => AddInfoWidget(),
         '/find_home': (ctx) => FindPwWidget(),
         '/find_phone': (ctx) => FindPwByPhoneWidget(),
+        '/reset': (ctx) => ResetPwWidget(),
+        '/reset_done': (ctx) => ResetDoneWidget(),
         '/bind': (ctx) => TjuBindWidget(),
         '/home': (ctx) => HomePage(),
         '/user': (ctx) => UserPage(),
@@ -115,7 +118,7 @@ class StartUpWidget extends StatelessWidget {
       // TODO 为啥会请求两次呢 迷
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面
-        login(prefs.account.value, prefs.password.value, onSuccess: () {
+        login(prefs.account.value, prefs.password.value, onSuccess: (_) {
           if (context != null) Navigator.pushReplacementNamed(context, '/home');
         }, onFailure: (_) {
           Navigator.pushReplacementNamed(context, '/login');

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class TjuBindWidget extends StatefulWidget {
@@ -30,7 +30,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
-    getExecAndSession(onSuccess: (map) {  
+    getExecAndSession(onSuccess: (map) {
       params = map;
       setState(() {
         imageWidget = GestureDetector(
@@ -138,27 +138,16 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                       message = "密码不能为空";
                     else
                       message = "验证码不能为空";
-                    Fluttertoast.showToast(
-                        msg: message,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                    ToastProvider.error(message);
                     return;
                   }
                   login(context, tjuuname, tjupasswd, captcha, params,
                       onSuccess: () {
-                        Fluttertoast.showToast(
-                            msg: "办公网绑定成功",
-                            textColor: Colors.white,
-                            backgroundColor: Colors.green,
-                            fontSize: 16);
+                        ToastProvider.success("办公网绑定成功");
                         Navigator.pop(context);
                       },
-                      onFailure: (e) => Fluttertoast.showToast(
-                          msg: e.toString(),
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0));
+                      onFailure: (e) =>
+                          ToastProvider.error(e.error.toString()));
                   captcha = "";
                 },
                 color: MyColors.deepBlue,

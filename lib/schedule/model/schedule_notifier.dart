@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast;
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
@@ -73,27 +73,15 @@ class ScheduleNotifier with ChangeNotifier {
   /// 通过爬虫刷新数据
   RefreshCallback refreshSchedule(BuildContext context) {
     return () async {
-      Fluttertoast.showToast(
-          msg: "刷新数据中……",
-          textColor: Colors.white,
-          backgroundColor: Colors.blue,
-          fontSize: 16);
-      getSchedule(onSuccess: (schedule) {
-        Fluttertoast.showToast(
-            msg: "刷新课程表数据成功",
-            textColor: Colors.white,
-            backgroundColor: Colors.green,
-            fontSize: 16);
-        _termStart = schedule.termStart;
-        _coursesWithNotify = schedule.courses;
-        notifyListeners(); // 通知各widget进行更新
-      }, onFailure: (e) {
-        Fluttertoast.showToast(
-            msg: e.error.toString(),
-            textColor: Colors.white,
-            backgroundColor: Colors.red,
-            fontSize: 16);
-      });
+      ToastProvider.running("刷新数据中……");
+      getSchedule(
+          onSuccess: (schedule) {
+            ToastProvider.success("刷新课程表数据成功");
+            _termStart = schedule.termStart;
+            _coursesWithNotify = schedule.courses;
+            notifyListeners(); // 通知各widget进行更新
+          },
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
     };
   }
 }
