@@ -26,15 +26,15 @@ class GPABean {
 
 class GlobalModel {
   GlobalModel._(){
-    cards.add(CardBean(Icons.event, 'Schedule', '/schedule'));
+    cards.add(CardBean(Icons.event, '课程表', '/schedule'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
-    cards.add(CardBean(Icons.import_contacts, 'Learning', '/learning'));
-    cards.add(CardBean(Icons.call, 'Tel Num', '/telNum'));
-    cards.add(CardBean(Icons.clear_all, 'Library', '/library'));
-    cards.add(CardBean(Icons.card_giftcard, 'Cards', '/cards'));
-    cards.add(CardBean(Icons.business, 'Classroom', '/classroom'));
-    cards.add(CardBean(Icons.free_breakfast, 'Coffee', '/coffee'));
-    cards.add(CardBean(Icons.directions_bus, 'By bus', '/byBus'));
+    cards.add(CardBean(Icons.call, '黄页', '/telNum'));
+    cards.add(CardBean(Icons.clear_all, '图书馆', '/library'));
+    cards.add(CardBean(Icons.business, '自习室', '/classroom'));
+    cards.add(CardBean(Icons.import_contacts, '凑数的1', '/learning'));
+    cards.add(CardBean(Icons.card_giftcard, '凑数的2', '/cards'));
+    cards.add(CardBean(Icons.free_breakfast, '凑数的3', '/coffee'));
+    cards.add(CardBean(Icons.directions_bus, '凑数的4', '/byBus'));
   }
 
   static final _instance = GlobalModel._();
@@ -43,5 +43,8 @@ class GlobalModel {
 
   double screenWidth;
   double screenHeight;
+  int captchaIndex = 0;
   List<CardBean> cards = [];
+
+  void increase() => captchaIndex++;
 }

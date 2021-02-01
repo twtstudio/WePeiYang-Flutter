@@ -57,56 +57,52 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _pwInput1,
-                  decoration: InputDecoration(
-                      labelText: '请输入新密码',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  obscureText: true,
-                  onChanged: (input) => setState(() => password1 = input),
-                  onEditingComplete: () {
-                    _pwInput1.unfocus();
-                    FocusScope.of(context).requestFocus(_pwInput2);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _pwInput1,
+                decoration: InputDecoration(
+                    hintText: '请输入新密码',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                obscureText: true,
+                onChanged: (input) => setState(() => password1 = input),
+                onEditingComplete: () {
+                  _pwInput1.unfocus();
+                  FocusScope.of(context).requestFocus(_pwInput2);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  focusNode: _pwInput2,
-                  decoration: InputDecoration(
-                      labelText: '再次输入密码',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  obscureText: true,
-                  onChanged: (input) => setState(() => password2 = input),
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                keyboardType: TextInputType.visiblePassword,
+                focusNode: _pwInput2,
+                decoration: InputDecoration(
+                    hintText: '再次输入密码',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                obscureText: true,
+                onChanged: (input) => setState(() => password2 = input),
               ),
             ),
           ),

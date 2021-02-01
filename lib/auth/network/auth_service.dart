@@ -1,3 +1,4 @@
+import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import '../../commons/network/dio_server.dart';
 import 'package:flutter/material.dart' show required;
@@ -5,37 +6,57 @@ import 'package:flutter/material.dart' show required;
 /// 注册或完善信息时获取短信验证码
 getCaptchaOnRegister(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("register/phone/msg",
-      queryParameters: {"phone": phone},
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+  await DioService().originPost("register/phone/msg",
+      queryParameters: {"phone": phone}, onSuccess: (response) {
+    var cookie = response.headers.map['set-cookie'];
+    if (cookie != null) {
+      CommonPreferences.create().captchaCookie.value =
+          getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    }
+    onSuccess();
+  }, onFailure: onFailure);
 }
 
 /// 使用手机号登陆时获取短信验证码
 getCaptchaOnLogin(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("auth/phone/msg",
-      queryParameters: {"phone": phone},
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+  await DioService().originPost("auth/phone/msg",
+      queryParameters: {"phone": phone}, onSuccess: (response) {
+    var cookie = response.headers.map['set-cookie'];
+    if (cookie != null) {
+      CommonPreferences.create().captchaCookie.value =
+          getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    }
+    onSuccess();
+  }, onFailure: onFailure);
 }
 
 /// 修改密码时获取短信验证码
 getCaptchaOnReset(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("password/reset/msg",
-      queryParameters: {"phone": phone},
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+  await DioService().originPost("password/reset/msg",
+      queryParameters: {"phone": phone}, onSuccess: (response) {
+    var cookie = response.headers.map['set-cookie'];
+    if (cookie != null) {
+      CommonPreferences.create().captchaCookie.value =
+          getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    }
+    onSuccess();
+  }, onFailure: onFailure);
 }
 
 /// 修改密码时认证短信验证码
 verifyOnReset(String phone, String code,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("password/reset/verify",
-      queryParameters: {"phone": phone, "code": code},
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+  await DioService().originPost("password/reset/verify",
+      queryParameters: {"phone": phone, "code": code}, onSuccess: (response) {
+    var cookie = response.headers.map['set-cookie'];
+    if (cookie != null) {
+      CommonPreferences.create().captchaCookie.value =
+          getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    }
+    onSuccess();
+  }, onFailure: onFailure);
 }
 
 /// 修改密码

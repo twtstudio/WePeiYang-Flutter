@@ -39,6 +39,8 @@ class SliverCoursesWidget extends StatelessWidget {
           notifier.currentWeek, today, notifier.weekCount, course)) {
         todayCourses.add(course);
       }
+      // TODO 测试用,记得删哦--below
+      if(todayCourses.length < 5) todayCourses.add(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(
@@ -65,7 +67,7 @@ class SliverCoursesWidget extends StatelessWidget {
             itemBuilder: (context, i) {
               return GestureDetector(
                 onTap: () {
-//                        Navigator.push(context, MaterialPageRoute(builder: (context) => Text('123')));
+                  // TODO 这里点击有啥效果捏
                 },
                 child: Container(
                   height: 180.0,
@@ -77,7 +79,7 @@ class SliverCoursesWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
                         children: <Widget>[
                           Container(

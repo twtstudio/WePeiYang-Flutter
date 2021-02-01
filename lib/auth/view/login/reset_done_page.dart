@@ -36,7 +36,7 @@ class ResetDoneWidget extends StatelessWidget {
                   context, '/login', (route) => false),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-              child: Text('获取验证码',
+              child: Text('前往登录',
                   style: TextStyle(color: Colors.white, fontSize: 16)),
               elevation: 5.0,
               shape: RoundedRectangleBorder(

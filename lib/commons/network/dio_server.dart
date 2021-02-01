@@ -25,7 +25,9 @@ class DioService {
     _dio = Dio()
       ..options = options
       ..interceptors.add(InterceptorsWrapper(onRequest: (Options options) {
-        options.headers['token'] = CommonPreferences.create().token.value;
+        var pref = CommonPreferences.create();
+        options.headers['token'] = pref.token.value;
+        options.headers['Cookie'] = pref.captchaCookie.value;
       }))
       ..interceptors.add(ErrorInterceptor())
       ..interceptors.add(LogInterceptor(requestBody: false));
@@ -106,6 +108,22 @@ class DioService {
           onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress);
       onSuccess(CommonBody.fromJson(response.data).result);
+    } on DioError catch (e) {
+      print("DioServiceLog: \"${e.error}\" error happened!!!\n");
+      if (onFailure != null) onFailure(e);
+    }
+  }
+
+  /// 直接返回response对象而不做解析的post方法
+  Future<void> originPost(
+    String path, {
+    @required void Function(Response) onSuccess,
+    OnFailure onFailure,
+    Map<String, dynamic> queryParameters,
+  }) async {
+    try {
+      var response = await _dio.post(path, queryParameters: queryParameters);
+      onSuccess(response);
     } on DioError catch (e) {
       print("DioServiceLog: \"${e.error}\" error happened!!!\n");
       if (onFailure != null) onFailure(e);

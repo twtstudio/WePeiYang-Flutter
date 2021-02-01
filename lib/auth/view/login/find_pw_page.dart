@@ -132,24 +132,22 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                      labelText: '手机号',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => phone = input),
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                keyboardType: TextInputType.visiblePassword,
+                decoration: InputDecoration(
+                    hintText: '手机号',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => phone = input),
               ),
             ),
           ),
@@ -157,25 +155,23 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
             child: Row(
               children: [
-                Theme(
-                  data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: 100,
-                      maxWidth: 150,
-                    ),
-                    child: TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: InputDecoration(
-                          labelText: '短信验证码',
-                          filled: true,
-                          fillColor: Color.fromRGBO(235, 238, 243, 1),
-                          isCollapsed: true,
-                          contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      onChanged: (input) => setState(() => code = input),
-                    ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 100,
+                    maxWidth: 150,
+                  ),
+                  child: TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                        hintText: '短信验证码',
+                        filled: true,
+                        fillColor: Color.fromRGBO(235, 238, 243, 1),
+                        isCollapsed: true,
+                        contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none)),
+                    onChanged: (input) => setState(() => code = input),
                   ),
                 ),
                 Expanded(child: Text("")),

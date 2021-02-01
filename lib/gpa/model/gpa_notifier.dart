@@ -119,12 +119,12 @@ class GPANotifier with ChangeNotifier {
     _sort();
   }
 
-  GestureTapCallback refreshGPA(BuildContext context) {
+  GestureTapCallback refreshGPA({bool hint = true}) {
     return () {
-      ToastProvider.running("刷新数据中……");
+      if(hint) ToastProvider.running("刷新数据中……");
       getGPABean(
           onSuccess: (gpaBean) {
-            ToastProvider.success("刷新gpa数据成功");
+            if(hint) ToastProvider.success("刷新gpa数据成功");
             _listWithNotify = gpaBean.stats;
             _totalWithNotify = gpaBean.total;
             notifyListeners();

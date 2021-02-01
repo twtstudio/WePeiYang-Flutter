@@ -69,13 +69,16 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   fontWeight: FontWeight.bold)),
           Expanded(child: Text('')), // 起填充作用
           Text('BOTillya', style: hintStyle),
-          Container(
-            height: 40.0,
-            width: 40.0,
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: ClipOval(
-                child:
-                    Image(image: AssetImage('assets/images/user_image.jpg'))),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/user'),
+            child: Container(
+              height: 40.0,
+              width: 40.0,
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: ClipOval(
+                  child:
+                      Image(image: AssetImage('assets/images/user_image.jpg'))),
+            ),
           )
         ],
       ),

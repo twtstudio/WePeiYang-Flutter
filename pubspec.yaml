@@ -63,6 +63,7 @@ flutter:
     - assets/images/icon_home.png
     - assets/images/icon_user.png
     - assets/images/arrow_round.png
+    - assets/images/arrow_round_back.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

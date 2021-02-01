@@ -28,7 +28,7 @@ Widget generateCard(BuildContext context, CardBean bean) {
   return GestureDetector(
     onTap: () => Navigator.pushNamed(context, bean.route),
     child: Card(
-      elevation: 0.5,
+      elevation: 0.3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Column(
         children: <Widget>[

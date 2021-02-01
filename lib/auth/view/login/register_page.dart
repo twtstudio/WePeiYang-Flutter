@@ -40,9 +40,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     else if (code == "")
       ToastProvider.error("短信验证码不能为空");
     else {
+      _userNumFocus.unfocus();
+      _idNumFocus.unfocus();
+      _emailFocus.unfocus();
+      _phoneFocus.unfocus();
+      _codeFocus.unfocus();
       Map arg = ModalRoute.of(context).settings.arguments ??
           {'nickname': "", 'password': ""};
-      Navigator.pushReplacementNamed(context, '/register2', arguments: {
+      Navigator.pushNamed(context, '/register2', arguments: {
         'userNum': userNum,
         'idNum': idNum,
         'email': email,
@@ -54,36 +59,37 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     }
   }
 
-  TextEditingController _userNumCrl;
-  TextEditingController _idNumCrl;
-  TextEditingController _emailCrl;
-  TextEditingController _phoneCrl;
-  TextEditingController _codeCrl;
+  // TextEditingController _userNumCrl;
+  // TextEditingController _idNumCrl;
+  // TextEditingController _emailCrl;
+  // TextEditingController _phoneCrl;
+  // TextEditingController _codeCrl;
 
   FocusNode _userNumFocus = FocusNode();
   FocusNode _idNumFocus = FocusNode();
   FocusNode _emailFocus = FocusNode();
   FocusNode _phoneFocus = FocusNode();
+  FocusNode _codeFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    Map arg = ModalRoute.of(context).settings.arguments;
-    if (arg != null) {
-      userNum = arg['userNum'];
-      idNum = arg['idNum'];
-      email = arg['email'];
-      phone = arg['phone'];
-      code = arg['code'];
-      _userNumCrl =
-          TextEditingController.fromValue(TextEditingValue(text: userNum));
-      _idNumCrl =
-          TextEditingController.fromValue(TextEditingValue(text: idNum));
-      _emailCrl =
-          TextEditingController.fromValue(TextEditingValue(text: email));
-      _phoneCrl =
-          TextEditingController.fromValue(TextEditingValue(text: phone));
-      _codeCrl = TextEditingController.fromValue(TextEditingValue(text: code));
-    }
+    // Map arg = ModalRoute.of(context).settings.arguments;
+    // if (arg != null) {
+    //   userNum = arg['userNum'];
+    //   idNum = arg['idNum'];
+    //   email = arg['email'];
+    //   phone = arg['phone'];
+    //   code = arg['code'];
+    //   _userNumCrl =
+    //       TextEditingController.fromValue(TextEditingValue(text: userNum));
+    //   _idNumCrl =
+    //       TextEditingController.fromValue(TextEditingValue(text: idNum));
+    //   _emailCrl =
+    //       TextEditingController.fromValue(TextEditingValue(text: email));
+    //   _phoneCrl =
+    //       TextEditingController.fromValue(TextEditingValue(text: phone));
+    //   _codeCrl = TextEditingController.fromValue(TextEditingValue(text: code));
+    // }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -108,116 +114,108 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _userNumCrl,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _userNumFocus,
-                  decoration: InputDecoration(
-                      labelText: '学号',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => userNum = input),
-                  onEditingComplete: () {
-                    _userNumFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_idNumFocus);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _userNumCrl,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _userNumFocus,
+                decoration: InputDecoration(
+                    hintText: '学号',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => userNum = input),
+                onEditingComplete: () {
+                  _userNumFocus.unfocus();
+                  FocusScope.of(context).requestFocus(_idNumFocus);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _idNumCrl,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _idNumFocus,
-                  decoration: InputDecoration(
-                      labelText: '身份证号',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => idNum = input),
-                  onEditingComplete: () {
-                    _idNumFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_emailFocus);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _idNumCrl,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _idNumFocus,
+                decoration: InputDecoration(
+                    hintText: '身份证号',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => idNum = input),
+                onEditingComplete: () {
+                  _idNumFocus.unfocus();
+                  FocusScope.of(context).requestFocus(_emailFocus);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _emailCrl,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _emailFocus,
-                  decoration: InputDecoration(
-                      labelText: 'E-mail',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => email = input),
-                  onEditingComplete: () {
-                    _emailFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_phoneFocus);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _emailCrl,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _emailFocus,
+                decoration: InputDecoration(
+                    hintText: 'E-mail',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => email = input),
+                onEditingComplete: () {
+                  _emailFocus.unfocus();
+                  FocusScope.of(context).requestFocus(_phoneFocus);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _phoneCrl,
-                  keyboardType: TextInputType.visiblePassword,
-                  focusNode: _phoneFocus,
-                  decoration: InputDecoration(
-                      labelText: '手机号码',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => phone = input),
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _phoneCrl,
+                keyboardType: TextInputType.visiblePassword,
+                focusNode: _phoneFocus,
+                decoration: InputDecoration(
+                    hintText: '手机号码',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => phone = input),
               ),
             ),
           ),
@@ -225,26 +223,25 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
             child: Row(
               children: [
-                Theme(
-                  data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: 100,
-                      maxWidth: 150,
-                    ),
-                    child: TextField(
-                      controller: _codeCrl,
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: InputDecoration(
-                          labelText: '短信验证码',
-                          filled: true,
-                          fillColor: Color.fromRGBO(235, 238, 243, 1),
-                          isCollapsed: true,
-                          contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      onChanged: (input) => setState(() => code = input),
-                    ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 100,
+                    maxWidth: 150,
+                  ),
+                  child: TextField(
+                    // controller: _codeCrl,
+                    keyboardType: TextInputType.visiblePassword,
+                    focusNode: _codeFocus,
+                    decoration: InputDecoration(
+                        hintText: '短信验证码',
+                        filled: true,
+                        fillColor: Color.fromRGBO(235, 238, 243, 1),
+                        isCollapsed: true,
+                        contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none)),
+                    onChanged: (input) => setState(() => code = input),
                   ),
                 ),
                 Expanded(child: Text("")),
@@ -298,10 +295,11 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   String password2 = "";
 
   _back() async {
-    Map arg = ModalRoute.of(context).settings.arguments;
-    arg['nickname'] = nickname;
-    arg['password'] = password1;
-    Navigator.pushReplacementNamed(context, '/register1', arguments: arg);
+    // Map arg = ModalRoute.of(context).settings.arguments;
+    // arg['nickname'] = nickname;
+    // arg['password'] = password1;
+    // Navigator.pushReplacementNamed(context, '/register1', arguments: arg);
+    Navigator.pop(context);
   }
 
   _submit() async {
@@ -326,9 +324,9 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
     }
   }
 
-  TextEditingController _nameCrl;
-  TextEditingController _pw1Crl;
-  TextEditingController _pw2Crl;
+  // TextEditingController _nameCrl;
+  // TextEditingController _pw1Crl;
+  // TextEditingController _pw2Crl;
 
   FocusNode _nameFocus = FocusNode();
   FocusNode _pw1Focus = FocusNode();
@@ -336,18 +334,18 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
 
   @override
   Widget build(BuildContext context) {
-    Map arg = ModalRoute.of(context).settings.arguments;
-    if (arg != null) {
-      nickname = arg['nickname'];
-      password1 = arg['password'];
-      password2 = arg['password'];
-      _nameCrl =
-          TextEditingController.fromValue(TextEditingValue(text: nickname));
-      _pw1Crl =
-          TextEditingController.fromValue(TextEditingValue(text: password1));
-      _pw2Crl =
-          TextEditingController.fromValue(TextEditingValue(text: password2));
-    }
+    // Map arg = ModalRoute.of(context).settings.arguments;
+    // if (arg != null) {
+    //   nickname = arg['nickname'];
+    //   password1 = arg['password'];
+    //   password2 = arg['password'];
+    //   _nameCrl =
+    //       TextEditingController.fromValue(TextEditingValue(text: nickname));
+    //   _pw1Crl =
+    //       TextEditingController.fromValue(TextEditingValue(text: password1));
+    //   _pw2Crl =
+    //       TextEditingController.fromValue(TextEditingValue(text: password2));
+    // }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -372,88 +370,82 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _nameCrl,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _nameFocus,
-                  decoration: InputDecoration(
-                      labelText: '用户名',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => nickname = input),
-                  onEditingComplete: () {
-                    _nameFocus.unfocus();
-                    FocusScope.of(context).requestFocus(_pw1Focus);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _nameCrl,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _nameFocus,
+                decoration: InputDecoration(
+                    hintText: '用户名',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => nickname = input),
+                onEditingComplete: () {
+                  _nameFocus.unfocus();
+                  FocusScope.of(context).requestFocus(_pw1Focus);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _pw1Crl,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _pw1Focus,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      labelText: '请输入新密码',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => password1 = input),
-                  onEditingComplete: () {
-                    _pw1Focus.unfocus();
-                    FocusScope.of(context).requestFocus(_pw2Focus);
-                  },
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _pw1Crl,
+                keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
+                focusNode: _pw1Focus,
+                obscureText: true,
+                decoration: InputDecoration(
+                    hintText: '请输入新密码',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => password1 = input),
+                onEditingComplete: () {
+                  _pw1Focus.unfocus();
+                  FocusScope.of(context).requestFocus(_pw2Focus);
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Theme(
-              data: ThemeData(hintColor: Color.fromRGBO(98, 103, 123, 1)),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 100,
-                ),
-                child: TextField(
-                  controller: _pw2Crl,
-                  keyboardType: TextInputType.visiblePassword,
-                  focusNode: _pw2Focus,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      labelText: '再次输入密码',
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onChanged: (input) => setState(() => password2 = input),
-                ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: TextField(
+                // controller: _pw2Crl,
+                keyboardType: TextInputType.visiblePassword,
+                focusNode: _pw2Focus,
+                obscureText: true,
+                decoration: InputDecoration(
+                    hintText: '再次输入密码',
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => password2 = input),
               ),
             ),
           ),
@@ -467,9 +459,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 child: GestureDetector(
                   onTap: _back,
                   child:
-                      Image(image: AssetImage('assets/images/arrow_round.png')),
+                      Image(image: AssetImage('assets/images/arrow_round_back.png')),
                 ),
               ),
+              Expanded(child: Text("")),
               Container(
                 height: 50,
                 alignment: Alignment.bottomRight,

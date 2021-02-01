@@ -71,12 +71,12 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule(BuildContext context) {
+  RefreshCallback refreshSchedule({bool hint = true}) {
     return () async {
-      ToastProvider.running("刷新数据中……");
+      if(hint) ToastProvider.running("刷新数据中……");
       getSchedule(
           onSuccess: (schedule) {
-            ToastProvider.success("刷新课程表数据成功");
+            if(hint) ToastProvider.success("刷新课程表数据成功");
             _termStart = schedule.termStart;
             _coursesWithNotify = schedule.courses;
             notifyListeners(); // 通知各widget进行更新

@@ -30,6 +30,8 @@ class CommonPreferences {
 
   var password = PrefsBean<String>('password');
 
+  var captchaCookie = PrefsBean<String>('Cookie');
+
   ///办公网相关
 
   var isBindTju = PrefsBean<bool>('bindtju');
@@ -63,6 +65,7 @@ class CommonPreferences {
     account.value = "";
     password.value = "";
     phone.value = "";
+    captchaCookie.value = "";
     tjuuname.value = "";
     tjupasswd.value = "";
     // tgc.value = "";

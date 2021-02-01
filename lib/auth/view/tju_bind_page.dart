@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/main.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 class TjuBindWidget extends StatefulWidget {
   @override
@@ -19,7 +23,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   TextEditingController pwController;
   Map<String, String> params = Map();
   Widget imageWidget;
-  int index = 0;
+  int index;
 
   @override
   void initState() {
@@ -30,13 +34,19 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
+    index = GlobalModel().captchaIndex;
+    GlobalModel().increase();
     getExecAndSession(onSuccess: (map) {
       params = map;
       setState(() {
         imageWidget = GestureDetector(
-          onTap: () => setState(() => index++),
+          // TODO 点击图片刷新index
+          onTap: () {
+            setState(() => index++);
+            GlobalModel().increase();
+          },
           child: Image.network(
-              "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index}",
+              "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
               headers: {"Cookie": map['session']},
               fit: BoxFit.fill),
         );
@@ -52,7 +62,9 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
     super.dispose();
   }
 
-  //TODO 输入框action icon
+  FocusNode _nameFocus = FocusNode();
+  FocusNode _pwFocus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     var width = GlobalModel().screenWidth;
@@ -75,7 +87,9 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               padding: const EdgeInsets.fromLTRB(25, 25, 25, 15),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
                 controller: nameController,
+                focusNode: _nameFocus,
                 decoration: InputDecoration(
                     labelText: '输入办公网账号',
                     contentPadding: EdgeInsets.only(top: 5.0)),
@@ -84,6 +98,10 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                   nameController?.clear();
                   nameController = null;
                 },
+                onEditingComplete: () {
+                  _nameFocus.unfocus();
+                  FocusScope.of(context).requestFocus(_pwFocus);
+                },
               ),
             ),
             Padding(
@@ -91,6 +109,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
               child: TextField(
                 obscureText: true,
                 controller: pwController,
+                focusNode: _pwFocus,
                 decoration: InputDecoration(
                     labelText: '输入办公网密码',
                     contentPadding: EdgeInsets.only(top: 5.0)),
@@ -115,7 +134,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                       onChanged: (input) => setState(() => captcha = input),
                     ),
                   ),
-                  // TODO 验证码这里好多bug。。。
+                  Expanded(child: Text("")),
                   Container(
                       child: imageWidget,
                       width: 140,
@@ -144,11 +163,16 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
                   login(context, tjuuname, tjupasswd, captcha, params,
                       onSuccess: () {
                         ToastProvider.success("办公网绑定成功");
+                        Provider.of<GPANotifier>(context)
+                            .refreshGPA(hint: false)
+                            .call();
+                        Provider.of<ScheduleNotifier>(context)
+                            .refreshSchedule(hint: false)
+                            .call();
                         Navigator.pop(context);
                       },
                       onFailure: (e) =>
                           ToastProvider.error(e.error.toString()));
-                  captcha = "";
                 },
                 color: MyColors.deepBlue,
                 child: Text('绑定', style: TextStyle(color: Colors.white)),

@@ -15,7 +15,7 @@ class SchedulePage extends StatelessWidget {
       displacement: 60,
       color: Color.fromRGBO(105, 109, 126, 1),
       onRefresh:
-          Provider.of<ScheduleNotifier>(context).refreshSchedule(context),
+          Provider.of<ScheduleNotifier>(context).refreshSchedule(),
       child: Scaffold(
         appBar: ScheduleAppBar(),
         body: Container(
@@ -56,7 +56,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 25),
               onTap: Provider.of<ScheduleNotifier>(context)
-                  .refreshSchedule(context)),
+                  .refreshSchedule()),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 18),
