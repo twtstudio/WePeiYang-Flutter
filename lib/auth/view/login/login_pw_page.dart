@@ -40,10 +40,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -112,7 +112,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 80.0),
+            padding: EdgeInsets.fromLTRB(40, 25, 40, 80),
             child: GestureDetector(
               child: Text('忘记密码',
                   style: TextStyle(

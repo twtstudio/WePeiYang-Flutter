@@ -27,13 +27,13 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
 
   _submit() async {
     setState(() => isPress = false);
-    if (email == "") {
+    if (email == "")
       ToastProvider.error("E-mail不能为空");
-    } else if (phone == "") {
+    else if (phone == "")
       ToastProvider.error("手机号码不能为空");
-    } else if (code == "") {
+    else if (code == "")
       ToastProvider.error("短信验证码不能为空");
-    } else {
+    else {
       addInfo(phone, code, email,
           onSuccess: () {
             ToastProvider.success("登录成功");
@@ -58,7 +58,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -133,7 +133,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxHeight: 100,
-                      maxWidth: 180,
+                      maxWidth: 150,
                     ),
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
@@ -152,7 +152,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 140,
+                    width: 120,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
                       onPressed: _fetchCaptcha,

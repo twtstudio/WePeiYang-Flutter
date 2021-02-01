@@ -20,7 +20,7 @@ class LoginHomeWidget extends StatelessWidget {
                     fontSize: 50,
                     fontWeight: FontWeight.w300)),
           ),
-          Container(height: 90),
+          Expanded(child: Text(""), flex: 1),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -43,7 +43,7 @@ class LoginHomeWidget extends StatelessWidget {
                 width: 100,
                 margin: const EdgeInsets.only(left: 50),
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/register'),
+                  onPressed: () => Navigator.pushNamed(context, '/register1'),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('注册',
@@ -56,12 +56,13 @@ class LoginHomeWidget extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 30),
+            padding: EdgeInsets.only(top: 30),
             child: Text("首次登陆微北洋4.0请使用天外天账号密码登录，\n在登陆后绑定手机号码即可手机验证登录。",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 12, color: Color.fromRGBO(98, 103, 124, 1))),
-          )
+          ),
+          Expanded(child: Text(""), flex: 2)
         ],
       ),
     );

@@ -15,14 +15,14 @@ class FindPwWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
+          Expanded(child: Text(""), flex: 1),
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 120),
             child: Text("天外天账号密码找回",
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 123, 1),
@@ -61,7 +61,8 @@ class FindPwWidget extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
             ),
-          )
+          ),
+          Expanded(child: Text(""), flex: 2),
         ],
       ),
     );
@@ -116,7 +117,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -161,7 +162,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxHeight: 100,
-                      maxWidth: 180,
+                      maxWidth: 150,
                     ),
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
@@ -180,7 +181,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                 Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 140,
+                    width: 120,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
                       onPressed: _fetchCaptcha,
@@ -202,14 +203,14 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             ),
           ),
           Expanded(child: Text("")),
-          GestureDetector(
-            onTap: _verifyCaptcha,
-            child: Container(
-                height: 50,
-                width: 50,
-                margin: const EdgeInsets.fromLTRB(300, 0, 0, 30),
-                child:
-                    Image(image: AssetImage('assets/images/arrow_round.png'))),
+          Container(
+            height: 50,
+            alignment: Alignment.bottomRight,
+            margin: const EdgeInsets.all(30),
+            child: GestureDetector(
+              onTap: _verifyCaptcha,
+              child: Image(image: AssetImage('assets/images/arrow_round.png')),
+            ),
           ),
         ],
       ),

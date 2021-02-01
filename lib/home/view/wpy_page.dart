@@ -31,7 +31,7 @@ class WPYPage extends StatelessWidget {
 
             /// 功能跳转卡片
             // TODO listView 替换顺序
-            SliverCardsWidget(GlobalModel.getInstance().cards),
+            SliverCardsWidget(GlobalModel().cards),
 
             /// 当天课程
             SliverCoursesWidget(),

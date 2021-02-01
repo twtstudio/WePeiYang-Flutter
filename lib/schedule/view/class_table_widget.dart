@@ -15,7 +15,7 @@ class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      var width = GlobalModel.getInstance().screenWidth - schedulePadding * 2;
+      var width = GlobalModel().screenWidth - schedulePadding * 2;
       var dayCount = notifier.showSevenDay ? 7 : 6;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Column(

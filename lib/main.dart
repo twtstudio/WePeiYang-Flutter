@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/login/register_page.dart';
 import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/login_pw_page.dart';
 import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/reset_pw_page.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
@@ -57,6 +58,8 @@ class WeiPeiYangApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/login': (ctx) => LoginHomeWidget(),
         '/login_pw': (ctx) => LoginPwWidget(),
+        '/register1': (ctx) => RegisterPageOne(),
+        '/register2': (ctx) => RegisterPageTwo(),
         '/add_info': (ctx) => AddInfoWidget(),
         '/find_home': (ctx) => FindPwWidget(),
         '/find_phone': (ctx) => FindPwByPhoneWidget(),
@@ -87,8 +90,8 @@ class StartUpWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    GlobalModel.getInstance().screenWidth = width;
-    GlobalModel.getInstance().screenHeight = height;
+    GlobalModel().screenWidth = width;
+    GlobalModel().screenHeight = height;
 
     _autoLogin(context);
 

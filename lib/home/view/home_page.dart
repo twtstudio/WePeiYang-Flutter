@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = GlobalModel.getInstance().screenWidth / 3;
+    double width = GlobalModel().screenWidth / 3;
     var currentStyle = TextStyle(
         fontSize: 20.0, color: MyColors.deepBlue, fontWeight: FontWeight.w800);
     var otherStyle = TextStyle(

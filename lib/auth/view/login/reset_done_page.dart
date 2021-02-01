@@ -13,7 +13,7 @@ class ResetDoneWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(

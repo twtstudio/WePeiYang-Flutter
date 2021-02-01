@@ -42,7 +42,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 32),
+                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -111,14 +111,14 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             ),
           ),
           Expanded(child: Text("")),
-          GestureDetector(
-            onTap: _reset,
-            child: Container(
-                height: 50,
-                width: 50,
-                margin: const EdgeInsets.fromLTRB(300, 0, 0, 30),
-                child:
-                    Image(image: AssetImage('assets/images/arrow_round.png'))),
+          Container(
+            height: 50,
+            alignment: Alignment.bottomRight,
+            margin: const EdgeInsets.all(30),
+            child: GestureDetector(
+              onTap: _reset,
+              child: Image(image: AssetImage('assets/images/arrow_round.png')),
+            ),
           ),
         ],
       ),

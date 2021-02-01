@@ -55,7 +55,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
   //TODO 输入框action icon
   @override
   Widget build(BuildContext context) {
-    var width = GlobalModel.getInstance().screenWidth;
+    var width = GlobalModel().screenWidth;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(

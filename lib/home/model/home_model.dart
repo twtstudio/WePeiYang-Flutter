@@ -39,7 +39,7 @@ class GlobalModel {
 
   static final _instance = GlobalModel._();
 
-  factory GlobalModel.getInstance() => _instance;
+  factory GlobalModel() => _instance;
 
   double screenWidth;
   double screenHeight;

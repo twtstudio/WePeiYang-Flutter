@@ -214,7 +214,7 @@ class _GPACurveState extends State<GPACurve>
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
 
   _initPoints(List<Point<double>> points, List<double> list) {
-    var width = GlobalModel.getInstance().screenWidth;
+    var width = GlobalModel().screenWidth;
     var step = width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小

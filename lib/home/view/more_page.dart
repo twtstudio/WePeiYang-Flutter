@@ -5,7 +5,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var cards = GlobalModel.getInstance().cards;
+    var cards = GlobalModel().cards;
     return Container(
       padding: const EdgeInsets.only(top: 65),
       child: GridView.count(
