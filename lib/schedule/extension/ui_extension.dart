@@ -7,7 +7,6 @@ const TextStyle activeNameStyle =
     TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);
 const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
-// TODO 点击弹出dialog
 /// 返回本周需要上的课（亮色），可在wpy_page复用
 Widget getActiveCourseCard(BuildContext context,double height, double width, Course course) {
   return Container(
@@ -80,7 +79,6 @@ Widget getQuietCourseCard(double height, double width, Course course) {
   );
 }
 
-// TODO 整个颜色分配算法
 /// 为ActiveCourse生成随机颜色
 Color generateColor(Course course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色

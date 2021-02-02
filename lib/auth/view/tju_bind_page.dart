@@ -27,7 +27,7 @@ class _TjuBindWidgetState extends State<TjuBindWidget> {
 
   @override
   void initState() {
-    var prefs = CommonPreferences.create();
+    var prefs = CommonPreferences();
     tjuuname = prefs.tjuuname.value;
     tjupasswd = prefs.tjupasswd.value;
     nameController =

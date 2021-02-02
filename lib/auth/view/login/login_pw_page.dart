@@ -32,6 +32,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   FocusNode _accountFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
 
+  TextStyle _hintStyle = TextStyle(
+      color: Color.fromRGBO(201, 204, 209, 1),
+      fontSize: 13
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +65,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
@@ -68,6 +73,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 focusNode: _accountFocus,
                 decoration: InputDecoration(
                     hintText: '学号/手机号/邮箱号/用户名',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -84,16 +90,17 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _passwordFocus,
                 decoration: InputDecoration(
                     hintText: '密码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -108,11 +115,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40, 25, 40, 80),
+            padding: EdgeInsets.fromLTRB(40, 15, 40, 60),
             child: GestureDetector(
               child: Text('忘记密码',
                   style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
               onTap: () => Navigator.pushNamed(context, '/find_home'),
@@ -127,7 +134,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 color: Color.fromRGBO(53, 59, 84, 1.0),
                 splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                 child: Text('登录',
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                    style: TextStyle(color: Colors.white, fontSize: 13)),
                 elevation: 5.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0)),

@@ -7,7 +7,7 @@ import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
 void getGPABean(
     {void Function(GPABean) onSuccess, void Function(DioError) onFailure}) {
   fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-          cookieList: CommonPreferences.create().getCookies())
+          cookieList: CommonPreferences().getCookies())
       .then((response) => onSuccess(_data2GPABean(response.data.toString())))
       .catchError((e) {
     print("Error happened: $e");
@@ -57,7 +57,7 @@ GPABean _data2GPABean(String data) {
 GPACourse _data2GPACourse(List<String> data) {
   List<String> list = [];
   data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
-  print(list); //TODO DEBUG
+  print(list);
   double score = 0.0;
   switch (list[6]) {
     case 'P':

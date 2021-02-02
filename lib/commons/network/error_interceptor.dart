@@ -8,7 +8,7 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 class ErrorInterceptor extends InterceptorsWrapper {
   /// token出错或过期时可能需要重新登陆
   _reLogin() async {
-    var prefs = CommonPreferences.create();
+    var prefs = CommonPreferences();
     if (prefs.account.value == "" || prefs.password.value == "") {
       Navigator.pushNamedAndRemoveUntil(
           WeiPeiYangApp.navigatorState.currentContext,

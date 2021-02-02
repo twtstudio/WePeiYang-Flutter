@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -45,7 +46,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
       _emailFocus.unfocus();
       _phoneFocus.unfocus();
       _codeFocus.unfocus();
-      Map arg = ModalRoute.of(context).settings.arguments ??
+      Map arg = ModalRoute
+          .of(context)
+          .settings
+          .arguments ??
           {'nickname': "", 'password': ""};
       Navigator.pushNamed(context, '/register2', arguments: {
         'userNum': userNum,
@@ -71,6 +75,11 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   FocusNode _phoneFocus = FocusNode();
   FocusNode _codeFocus = FocusNode();
 
+  TextStyle _hintStyle = TextStyle(
+      color: Color.fromRGBO(201, 204, 209, 1),
+      fontSize: 13
+  );
+
   @override
   Widget build(BuildContext context) {
     // Map arg = ModalRoute.of(context).settings.arguments;
@@ -90,6 +99,9 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     //       TextEditingController.fromValue(TextEditingValue(text: phone));
     //   _codeCrl = TextEditingController.fromValue(TextEditingValue(text: code));
     // }
+
+    /// 两边的padding各30，中间间隔20
+    double width = GlobalModel().screenWidth - 80;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -116,7 +128,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _userNumCrl,
@@ -125,6 +137,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 focusNode: _userNumFocus,
                 decoration: InputDecoration(
                     hintText: '学号',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -141,10 +154,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _idNumCrl,
@@ -153,6 +166,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 focusNode: _idNumFocus,
                 decoration: InputDecoration(
                     hintText: '身份证号',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -169,10 +183,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _emailCrl,
@@ -181,6 +195,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
                     hintText: 'E-mail',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -197,10 +212,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _phoneCrl,
@@ -208,6 +223,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
                     hintText: '手机号码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -220,13 +236,13 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: Row(
               children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 100,
-                    maxWidth: 150,
+                    maxHeight: 55,
+                    maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
                     // controller: _codeCrl,
@@ -234,6 +250,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     focusNode: _codeFocus,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
+                        hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
@@ -244,10 +261,9 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 120,
+                    width: width / 2 - 20,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
                       onPressed: _fetchCaptcha,
@@ -260,10 +276,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               color: isPress
                                   ? Color.fromRGBO(201, 204, 209, 1)
                                   : Colors.white,
-                              fontSize: 16)),
+                              fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                          borderRadius: BorderRadius.circular(20)),
                     )),
               ],
             ),
@@ -312,9 +328,18 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
     else if (password1 != password2)
       ToastProvider.error("两次输入密码不一致");
     else {
-      Map arg = ModalRoute.of(context).settings.arguments;
-      register(arg['userNum'], nickname, arg['phone'], arg['code'], password1,
-          arg['email'], arg['idNum'],
+      Map arg = ModalRoute
+          .of(context)
+          .settings
+          .arguments;
+      register(
+          arg['userNum'],
+          nickname,
+          arg['phone'],
+          arg['code'],
+          password1,
+          arg['email'],
+          arg['idNum'],
           onSuccess: () {
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
@@ -331,6 +356,11 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   FocusNode _nameFocus = FocusNode();
   FocusNode _pw1Focus = FocusNode();
   FocusNode _pw2Focus = FocusNode();
+
+  TextStyle _hintStyle = TextStyle(
+      color: Color.fromRGBO(201, 204, 209, 1),
+      fontSize: 13
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +402,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _nameCrl,
@@ -381,6 +411,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 focusNode: _nameFocus,
                 decoration: InputDecoration(
                     hintText: '用户名',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -397,10 +428,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _pw1Crl,
@@ -410,6 +441,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 obscureText: true,
                 decoration: InputDecoration(
                     hintText: '请输入新密码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -426,10 +458,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 // controller: _pw2Crl,
@@ -438,6 +470,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 obscureText: true,
                 decoration: InputDecoration(
                     hintText: '再次输入密码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -459,7 +492,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 child: GestureDetector(
                   onTap: _back,
                   child:
-                      Image(image: AssetImage('assets/images/arrow_round_back.png')),
+                  Image(
+                      image: AssetImage('assets/images/arrow_round_back.png')),
                 ),
               ),
               Expanded(child: Text("")),
@@ -470,7 +504,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 child: GestureDetector(
                   onTap: _submit,
                   child:
-                      Image(image: AssetImage('assets/images/arrow_round.png')),
+                  Image(image: AssetImage('assets/images/arrow_round.png')),
                 ),
               ),
             ],

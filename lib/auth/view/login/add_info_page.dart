@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -47,8 +48,12 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
   FocusNode _emailFocus = FocusNode();
   FocusNode _phoneFocus = FocusNode();
 
+  TextStyle _hintStyle =
+      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+
   @override
   Widget build(BuildContext context) {
+    double width = GlobalModel().screenWidth - 80;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -75,7 +80,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
@@ -83,6 +88,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
                     hintText: 'E-mail',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -99,16 +105,17 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
                     hintText: '手机号码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -121,18 +128,19 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: Row(
               children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 100,
-                    maxWidth: 150,
+                    maxHeight: 50,
+                    maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
+                        hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
@@ -143,10 +151,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 120,
+                    width: width / 2 - 20,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
                       onPressed: _fetchCaptcha,
@@ -159,10 +166,10 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                               color: isPress
                                   ? Color.fromRGBO(201, 204, 209, 1)
                                   : Colors.white,
-                              fontSize: 16)),
+                              fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                          borderRadius: BorderRadius.circular(20)),
                     )),
               ],
             ),
@@ -176,7 +183,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 color: Color.fromRGBO(53, 59, 84, 1.0),
                 splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                 child: Text('提交并登录',
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                    style: TextStyle(color: Colors.white, fontSize: 13)),
                 elevation: 5.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0)),

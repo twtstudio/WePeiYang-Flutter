@@ -25,7 +25,7 @@ class DioService {
     _dio = Dio()
       ..options = options
       ..interceptors.add(InterceptorsWrapper(onRequest: (Options options) {
-        var pref = CommonPreferences.create();
+        var pref = CommonPreferences();
         options.headers['token'] = pref.token.value;
         options.headers['Cookie'] = pref.captchaCookie.value;
       }))

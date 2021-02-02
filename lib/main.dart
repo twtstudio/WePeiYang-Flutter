@@ -106,7 +106,7 @@ class StartUpWidget extends StatelessWidget {
   void _autoLogin(BuildContext context) async {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
-    var prefs = CommonPreferences.create();
+    var prefs = CommonPreferences();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||
         prefs.password.value == "") {

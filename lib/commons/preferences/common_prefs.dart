@@ -6,7 +6,7 @@ class CommonPreferences {
   static final _instance = CommonPreferences._();
 
   /// 用create函数获取commonPref类单例
-  factory CommonPreferences.create() => _instance;
+  factory CommonPreferences() => _instance;
 
   static SharedPreferences getPref() => _instance._sharedPref;
 

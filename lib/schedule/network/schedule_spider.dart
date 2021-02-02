@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 /// 发送请求，获取html中的schedule数据
 void getSchedule(
     {void Function(Schedule) onSuccess, void Function(DioError) onFailure}) {
-  var pref = CommonPreferences.create();
+  var pref = CommonPreferences();
   fetch("http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
           cookieList: pref.getCookies())
       .then((_) => fetch(

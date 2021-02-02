@@ -32,7 +32,7 @@ class LoginHomeWidget extends StatelessWidget {
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('登录',
-                      style: TextStyle(color: Colors.white, fontSize: 15)),
+                      style: TextStyle(color: Colors.white, fontSize: 13)),
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
@@ -47,7 +47,7 @@ class LoginHomeWidget extends StatelessWidget {
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('注册',
-                      style: TextStyle(color: Colors.white, fontSize: 15)),
+                      style: TextStyle(color: Colors.white, fontSize: 13)),
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),

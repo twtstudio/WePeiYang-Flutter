@@ -31,6 +31,11 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
   FocusNode _pwInput1 = FocusNode();
   FocusNode _pwInput2 = FocusNode();
 
+  TextStyle _hintStyle = TextStyle(
+      color: Color.fromRGBO(201, 204, 209, 1),
+      fontSize: 13
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +64,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
@@ -67,6 +72,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 focusNode: _pwInput1,
                 decoration: InputDecoration(
                     hintText: '请输入新密码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -84,16 +90,17 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _pwInput2,
                 decoration: InputDecoration(
                     hintText: '再次输入密码',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,

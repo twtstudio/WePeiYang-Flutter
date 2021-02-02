@@ -10,7 +10,7 @@ getCaptchaOnRegister(String phone,
       queryParameters: {"phone": phone}, onSuccess: (response) {
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
-      CommonPreferences.create().captchaCookie.value =
+      CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
@@ -24,7 +24,7 @@ getCaptchaOnLogin(String phone,
       queryParameters: {"phone": phone}, onSuccess: (response) {
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
-      CommonPreferences.create().captchaCookie.value =
+      CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
@@ -38,7 +38,7 @@ getCaptchaOnReset(String phone,
       queryParameters: {"phone": phone}, onSuccess: (response) {
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
-      CommonPreferences.create().captchaCookie.value =
+      CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
@@ -52,7 +52,7 @@ verifyOnReset(String phone, String code,
       queryParameters: {"phone": phone, "code": code}, onSuccess: (response) {
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
-      CommonPreferences.create().captchaCookie.value =
+      CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
@@ -92,7 +92,7 @@ login(String account, String password,
   await DioService().post("auth/common",
       queryParameters: {"account": account, "password": password},
       onSuccess: (result) {
-    var prefs = CommonPreferences.create();
+    var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
     prefs.account.value = account;
     prefs.password.value = password;

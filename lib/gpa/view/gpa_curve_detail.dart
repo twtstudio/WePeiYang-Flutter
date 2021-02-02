@@ -134,14 +134,6 @@ class _GPACurveState extends State<GPACurve>
               gpaNotifier.indexWithNotify = result - 1;
             }
           },
-          //TODO 滑动监听，出了点问题，总之先砍掉（selected已经删了）
-          // onHorizontalDragUpdate: (DragUpdateDetails detail) {
-          //   RenderBox renderBox = context.findRenderObject();
-          //   var localOffset = renderBox.globalToLocal(detail.globalPosition);
-          //   setState(() {
-          //     selected = judgeSelected(localOffset);
-          //   });
-          // },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: Stack(
@@ -254,7 +246,6 @@ class _GPAPopupPainter extends CustomPainter {
   static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1.0);
   static const Color _innerPreview = Colors.white;
 
-  // TODO 多搞几套主题颜色
   /// 在gpa_page显示的颜色
   static const Color _outerColor = Colors.white;
   static const Color _innerColor = Color.fromRGBO(125, 140, 85, 1);

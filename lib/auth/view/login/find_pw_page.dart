@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'find_pw_dialog.dart';
 
 class FindPwWidget extends StatelessWidget {
@@ -32,13 +33,13 @@ class FindPwWidget extends StatelessWidget {
           Container(
             height: 50,
             width: 200,
-            margin: const EdgeInsets.only(top: 25),
+            margin: const EdgeInsets.only(top: 30),
             child: RaisedButton(
               onPressed: () => Navigator.pushNamed(context, '/find_phone'),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text('账号已绑定手机号',
-                  style: TextStyle(color: Colors.white, fontSize: 15)),
+                  style: TextStyle(color: Colors.white, fontSize: 13)),
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -47,7 +48,7 @@ class FindPwWidget extends StatelessWidget {
           Container(
             height: 50,
             width: 200,
-            margin: const EdgeInsets.only(top: 30),
+            margin: const EdgeInsets.only(top: 25),
             child: RaisedButton(
               onPressed: () => showDialog(
                   context: context,
@@ -56,7 +57,7 @@ class FindPwWidget extends StatelessWidget {
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text('账号未绑定手机号',
-                  style: TextStyle(color: Colors.white, fontSize: 15)),
+                  style: TextStyle(color: Colors.white, fontSize: 13)),
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -106,8 +107,14 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     //     onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
+  TextStyle _hintStyle = TextStyle(
+      color: Color.fromRGBO(201, 204, 209, 1),
+      fontSize: 13
+  );
+
   @override
   Widget build(BuildContext context) {
+    double width = GlobalModel().screenWidth - 80;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -134,12 +141,13 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
+                maxHeight: 55,
               ),
               child: TextField(
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                     hintText: '手机号',
+                    hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
@@ -152,18 +160,19 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: Row(
               children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 100,
-                    maxWidth: 150,
+                    maxHeight: 55,
+                    maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
+                        hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
@@ -174,10 +183,9 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Expanded(child: Text("")),
                 Container(
                     height: 55,
-                    width: 120,
+                    width: width / 2 - 20,
                     margin: const EdgeInsets.only(left: 20),
                     child: RaisedButton(
                       onPressed: _fetchCaptcha,
@@ -190,10 +198,10 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                               color: isPress
                                   ? Color.fromRGBO(201, 204, 209, 1)
                                   : Colors.white,
-                              fontSize: 16)),
+                              fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                          borderRadius: BorderRadius.circular(20)),
                     )),
               ],
             ),

@@ -9,7 +9,7 @@ import '../../main.dart';
 void login(BuildContext context, String name, String pw, String captcha,
     Map<String, String> map,
     {void Function() onSuccess, void Function(DioError) onFailure}) {
-  var pref = CommonPreferences.create();
+  var pref = CommonPreferences();
 
   ssoLogin(name, pw, captcha, map).then((ssoRsp) {
     var tgc =
@@ -78,7 +78,7 @@ Future<Response> getClassesCookies(String tgc) =>
 /// 获取当前周数、学期总周数
 Future<Response> getWeekInfo() =>
     fetch("http://classes.tju.edu.cn/eams/homeExt!main.action",
-        cookieList: CommonPreferences.create().getCookies());
+        cookieList: CommonPreferences().getCookies());
 
 Future<Response> fetch(String url,
     {String cookie,

@@ -80,7 +80,7 @@ class UserPage extends StatelessWidget {
                       onPressed: () {
                         // TODO 其他退出逻辑
                         ToastProvider.success("退出登录成功");
-                        CommonPreferences.create().clearPrefs();
+                        CommonPreferences().clearPrefs();
                         Navigator.pushNamedAndRemoveUntil(
                             WeiPeiYangApp.navigatorState.currentContext,
                             '/login',
@@ -126,7 +126,6 @@ class UserPage extends StatelessWidget {
         style: TextStyle(fontSize: 12.0, color: Colors.grey),
         textAlign: TextAlign.left);
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
-    // TODO 点击逻辑
     return Container(
       height: 90,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -189,7 +188,6 @@ class _NavigationState extends State<NavigationWidget> {
 
   List<String> textList = ['GPA', 'Library', 'E-card'];
 
-  // TODO route补充
   List<String> routeList = ['/gpa', '/gpa', '/gpa'];
 
   @override
