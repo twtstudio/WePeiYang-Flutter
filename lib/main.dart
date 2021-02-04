@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/login/login_pw_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/register_page.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/login_pw_page.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/reset_pw_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/login/reset_pw_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/settings/language_setting_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/settings/schedule_setting_page.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'dart:async' show Timer;
@@ -13,6 +15,7 @@ import 'dart:io' show Platform;
 
 import 'auth/view/login/find_pw_page.dart';
 import 'auth/view/login/reset_done_page.dart';
+import 'auth/view/settings/setting_page.dart';
 import 'auth/view/tju_bind_page.dart';
 import 'home/model/home_model.dart';
 import 'home/view/home_page.dart';
@@ -78,6 +81,9 @@ class WeiPeiYangApp extends StatelessWidget {
         '/coffee': (ctx) => LoginHomeWidget(),
         '/byBus': (ctx) => LoginHomeWidget(),
         '/more': (ctx) => MorePage(),
+        '/setting': (ctx) => SettingPage(),
+        '/language_setting': (ctx) => LanguageSettingPage(),
+        '/schedule_setting':(ctx) => ScheduleSettingPage()
       },
       home: StartUpWidget(),
     );
