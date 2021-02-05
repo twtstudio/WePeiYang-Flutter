@@ -35,7 +35,7 @@ class UserPage extends StatelessWidget {
                                 color: Colors.white, size: 28.0),
 
                             //TODO: setting page
-                            onTap: () => Navigator.pop(context))
+                            onTap: () => Navigator.pushNamed(context,'/setting'))
                       ],
                     )),
                 Container(
