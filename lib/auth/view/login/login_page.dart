@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 class LoginHomeWidget extends StatelessWidget {
-  // TODO 简单记一下登录部分可以优化的地方：
-  // TODO 外观、textField输入类型、点击按钮取消focus、键盘类型与next按钮
-  // TODO "获取验证码"按钮的逻辑、Navigator push还是replace、toast样式
 
   @override
   Widget build(BuildContext context) {

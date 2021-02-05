@@ -2,27 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
-import 'package:wei_pei_yang_demo/auth/view/login/register_page.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/login_pw_page.dart';
-import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/login/reset_pw_page.dart';
+import 'package:wei_pei_yang_demo/commons/router_manager.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'gpa/model/gpa_notifier.dart';
+import 'home/model/home_model.dart';
+import 'commons/preferences/common_prefs.dart';
 
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
-
-import 'auth/view/login/find_pw_page.dart';
-import 'auth/view/login/reset_done_page.dart';
-import 'auth/view/tju_bind_page.dart';
-import 'home/model/home_model.dart';
-import 'home/view/home_page.dart';
-import 'home/view/more_page.dart';
-import 'auth/view/user_page.dart';
-import 'auth/view/login/login_page.dart';
-import 'gpa/model/gpa_notifier.dart';
-import 'gpa/view/gpa_page.dart' show GPAPage;
-import 'schedule/view/schedule_page.dart' show SchedulePage;
-import 'commons/preferences/common_prefs.dart';
 
 void main() async {
   runApp(MultiProvider(providers: [
@@ -55,30 +42,7 @@ class WeiPeiYangApp extends StatelessWidget {
       theme: ThemeData(
           // fontFamily: 'Montserrat'
           ),
-      routes: <String, WidgetBuilder>{
-        '/login': (ctx) => LoginHomeWidget(),
-        '/login_pw': (ctx) => LoginPwWidget(),
-        '/register1': (ctx) => RegisterPageOne(),
-        '/register2': (ctx) => RegisterPageTwo(),
-        '/add_info': (ctx) => AddInfoWidget(),
-        '/find_home': (ctx) => FindPwWidget(),
-        '/find_phone': (ctx) => FindPwByPhoneWidget(),
-        '/reset': (ctx) => ResetPwWidget(),
-        '/reset_done': (ctx) => ResetDoneWidget(),
-        '/bind': (ctx) => TjuBindWidget(),
-        '/home': (ctx) => HomePage(),
-        '/user': (ctx) => UserPage(),
-        '/schedule': (ctx) => SchedulePage(),
-        '/telNum': (ctx) => LoginHomeWidget(),
-        '/learning': (ctx) => LoginHomeWidget(),
-        '/library': (ctx) => LoginHomeWidget(),
-        '/cards': (ctx) => LoginHomeWidget(),
-        '/gpa': (ctx) => GPAPage(),
-        '/classroom': (ctx) => LoginHomeWidget(),
-        '/coffee': (ctx) => LoginHomeWidget(),
-        '/byBus': (ctx) => LoginHomeWidget(),
-        '/more': (ctx) => MorePage(),
-      },
+      onGenerateRoute: RouterManager.create,
       home: StartUpWidget(),
     );
   }
