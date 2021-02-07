@@ -84,7 +84,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
-      body: Column(
+      body: ListView(
         children: [
           Container(
             alignment: Alignment.centerLeft,

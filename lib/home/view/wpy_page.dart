@@ -69,7 +69,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           Expanded(child: Text('')), // 起填充作用
           Text('BOTillya', style: hintStyle),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/user'),
+            onTap: () => Navigator.pushNamed(context, '/user_info'),
             child: Container(
               height: 40.0,
               width: 40.0,

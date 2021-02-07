@@ -1,41 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/auth/view/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-
-import '../../main.dart';
 
 class UserPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    const textStyle = TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+        color: Color.fromRGBO(98, 103, 122, 1));
+    const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
       body: Theme(
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 380, color: MyColors.darkGrey),
+            Container(height: 360, color: MyColors.darkGrey),
             ListView(
               children: <Widget>[
                 Container(
-                    margin: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 0),
+                    margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0),
                     height: 50.0,
                     alignment: Alignment.centerLeft,
                     child: Row(
                       children: <Widget>[
-                        GestureDetector(
-                            child: Icon(Icons.arrow_back,
-                                color: Colors.white, size: 30.0),
-                            onTap: () => Navigator.pop(context)),
                         Expanded(child: Text('')),
-
-                        ///填充
                         GestureDetector(
                             child: Icon(Icons.settings,
                                 color: Colors.white, size: 28.0),
-
-                            //TODO: setting page
-                            onTap: () => Navigator.pushNamed(context,'/setting'))
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/setting'))
                       ],
                     )),
                 Container(
@@ -63,50 +59,69 @@ class UserPage extends StatelessWidget {
                         style: TextStyle(
                             color: MyColors.deepDust, fontSize: 13.0))),
                 NavigationWidget(),
-                Column(
-                  children: [
-                    _getAccountCard(context, 0),
-                    _getAccountCard(context, 1),
-                    _getAccountCard(context, 2)
-                  ],
+                Container(
+                  height: 90,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9)),
+                    child: InkWell(
+                      onTap: () {
+                        // TODO 关于twt页面
+                      },
+                      splashFactory: InkRipple.splashFactory,
+                      borderRadius: BorderRadius.circular(9),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 20,
+                            margin: const EdgeInsets.only(left: 20, right: 10),
+                            child: Image.asset('assets/images/twt.png',
+                                color: Colors.grey),
+                          ),
+                          Container(
+                              width: 150,
+                              child: Text('关于天外天', style: textStyle)),
+                          Expanded(child: Text('')),
+                          Padding(
+                              padding: const EdgeInsets.only(right: 22),
+                              child: arrow)
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 Container(
-                  height: 50,
-                  margin: const EdgeInsets.fromLTRB(30, 20, 30, 50),
-                  child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromRGBO(85, 89, 106, 1.0),
-                      onPressed: () {
-                        // TODO 其他退出逻辑
-                        ToastProvider.success("退出登录成功");
-                        CommonPreferences().clearPrefs();
-                        Navigator.pushNamedAndRemoveUntil(
-                            WeiPeiYangApp.navigatorState.currentContext,
-                            '/login',
-                            (route) => false);
-                      },
+                  height: 90,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9)),
+                    child: InkWell(
+                      onTap: () => showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) => LogoutDialog()),
+                      splashFactory: InkRipple.splashFactory,
+                      borderRadius: BorderRadius.circular(9),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Icon(
-                            Icons.exit_to_app,
-                            color: Colors.white,
-                            size: 20,
+                          Container(
+                            width: 20,
+                            margin: const EdgeInsets.only(left: 20, right: 10),
+                            child: Image.asset('assets/images/logout.png',
+                                color: Colors.grey),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              "SIGN ME OUT",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                          Container(
+                              width: 150, child: Text('登出', style: textStyle)),
+                          Expanded(child: Text('')),
                         ],
-                      )),
-                ),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ],
@@ -114,82 +129,15 @@ class UserPage extends StatelessWidget {
       ),
     );
   }
-
-  final iconList = [Icons.event_note, Icons.credit_card, Icons.class_];
-  final textList = ["Tju account", "E-card account", "Library account"];
-  final routeList = ['/bind', '/gpa', '/gpa'];
-
-  Widget _getAccountCard(BuildContext context, int index) {
-    const textStyle =
-        TextStyle(fontSize: 18.0, color: Color.fromRGBO(99, 101, 115, 1));
-    const hint = Text('Bound',
-        style: TextStyle(fontSize: 12.0, color: Colors.grey),
-        textAlign: TextAlign.left);
-    const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
-    return Container(
-      height: 90,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
-        child: InkWell(
-          onTap: () => Navigator.pushNamed(context, routeList[index]),
-          splashFactory: InkRipple.splashFactory,
-          borderRadius: BorderRadius.circular(9),
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 22, right: 10),
-                child: Icon(iconList[index], color: Colors.grey),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      width: 150,
-                      child: Text(textList[index], style: textStyle)),
-                  Container(
-                      child: hint,
-                      width: 150,
-                      padding: const EdgeInsets.only(top: 3))
-                ],
-              ),
-              Expanded(child: Text('')),
-              Padding(padding: const EdgeInsets.only(right: 22), child: arrow)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
+// TODO 以后可能会在里面加小游戏？
 class NavigationWidget extends StatefulWidget {
   @override
   _NavigationState createState() => _NavigationState();
 }
 
 class _NavigationState extends State<NavigationWidget> {
-  static const statStyle = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16.0,
-      color: Color.fromRGBO(99, 101, 115, 1));
-
-  static const pressOnMaskColor = Color.fromRGBO(250, 250, 250, 0.6);
-  static const pressOffMaskColor = Color.fromRGBO(250, 250, 250, 0);
-
-  List<bool> currentList = [false, false, false];
-
-  List<String> assetList = [
-    "assets/images/gradicon1.png",
-    "assets/images/gradicon2.png",
-    "assets/images/gradicon3.png"
-  ];
-
-  List<String> textList = ['GPA', 'Library', 'E-card'];
-
-  List<String> routeList = ['/gpa', '/gpa', '/gpa'];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -199,48 +147,7 @@ class _NavigationState extends State<NavigationWidget> {
         elevation: 0,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[_getStack(0), _getStack(1), _getStack(2)],
-          ),
-        ),
       ),
     );
   }
-
-  Widget _getStack(int index) => GestureDetector(
-        onTapDown: (_) => setState(() {
-          currentList[index] = true;
-        }),
-        onTapUp: (_) => setState(() {
-          currentList[index] = false;
-        }),
-        onTapCancel: () => setState(() {
-          currentList[index] = false;
-        }),
-        onTap: () {
-          Navigator.pushNamed(context, routeList[index]);
-        },
-        child: Stack(children: [
-          Column(
-            children: <Widget>[
-              Image.asset(
-                assetList[index],
-                width: 50,
-                height: 50,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Text(textList[index], style: statStyle),
-              )
-            ],
-          ),
-          Container(
-              height: 100,
-              width: 50,
-              color: currentList[index] ? pressOnMaskColor : pressOffMaskColor)
-        ]),
-      );
 }

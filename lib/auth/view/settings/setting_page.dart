@@ -18,6 +18,8 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    /// 防止初次打开应用时，缓存中的值为0
+    if (pref.dayNumber.value == 0) pref.dayNumber.value = 7;
     const titleTextStyle = TextStyle(
         fontSize: 14,
         color: Color.fromRGBO(177, 180, 186, 1),
@@ -101,7 +103,11 @@ class _SettingPageState extends State<SettingPage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, '/language_setting'),
+                onTap: () =>
+                    Navigator.pushNamed(context, '/color_setting').then((_) {
+                  /// 使用pop返回此页面时进行rebuild
+                  widget._state.setState(() {});
+                }),
                 splashFactory: InkRipple.splashFactory,
                 borderRadius: BorderRadius.circular(9),
                 child: Row(

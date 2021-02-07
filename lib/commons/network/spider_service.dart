@@ -37,6 +37,7 @@ void login(BuildContext context, String name, String pw, String captcha,
     notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
     notifier.currentWeek =
         int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
+    pref.isBindTju.value = true;
     onSuccess();
   }).catchError((e) {
     print("Error happened: $e");

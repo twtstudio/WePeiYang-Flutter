@@ -55,7 +55,7 @@ class CommonPreferences {
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
   }
 
-  /// 清除程序和本地的缓存
+  /// 重置用户的缓存
   void clearPrefs() {
     isLogin.value = false;
     token.value = "";
@@ -64,6 +64,7 @@ class CommonPreferences {
     password.value = "";
     phone.value = "";
     captchaCookie.value = "";
+    isBindTju.value = false;
     tjuuname.value = "";
     tjupasswd.value = "";
     // tgc.value = "";
@@ -71,12 +72,12 @@ class CommonPreferences {
     garbled.value = "";
     semesterId.value = "";
     ids.value = "";
-    hideGPA.value = false;
-    nightMode.value = false;
-    otherWeekSchedule.value = false;
-    remindBeforeStart.value = false;
-    remindBefore.value = false;
-    _sharedPref.clear();
+    // hideGPA.value = false;
+    // nightMode.value = false;
+    // otherWeekSchedule.value = false;
+    // remindBeforeStart.value = false;
+    // remindBefore.value = false;
+    // _sharedPref.clear();
   }
 }
 

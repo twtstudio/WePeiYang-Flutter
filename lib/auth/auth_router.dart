@@ -6,11 +6,13 @@ import 'package:wei_pei_yang_demo/auth/view/login/login_pw_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/register_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/reset_done_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/reset_pw_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/settings/color_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/language_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/schedule_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/tju_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/user_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/uset_info_page.dart';
 
 class AuthRouter {
   /// 登录部分
@@ -32,6 +34,8 @@ class AuthRouter {
   static String setting = '/setting';
   static String languageSetting = '/language_setting';
   static String scheduleSetting = '/schedule_setting';
+  static String colorSetting = '/color_setting';
+  static String userInfo = '/user_info';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
@@ -47,6 +51,8 @@ class AuthRouter {
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
-    scheduleSetting: (_) => ScheduleSettingPage()
+    scheduleSetting: (_) => ScheduleSettingPage(),
+    colorSetting: (_) => ColorSettingPage(),
+    userInfo: (_) => UserInfoPage(),
   };
 }

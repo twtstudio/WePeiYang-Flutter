@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'logic_extension.dart';
 import '../model/school/school_model.dart';
 import '../view/course_dialog.dart';
@@ -8,7 +9,8 @@ const TextStyle activeNameStyle =
 const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
-Widget getActiveCourseCard(BuildContext context,double height, double width, Course course) {
+Widget getActiveCourseCard(
+    BuildContext context, double height, double width, Course course) {
   return Container(
     height: height,
     width: width,
@@ -47,36 +49,35 @@ const Color quietBackColor = Color.fromRGBO(236, 238, 237, 1);
 const Color quiteFrontColor = Color.fromRGBO(205, 206, 210, 1);
 
 const TextStyle quietNameStyle = TextStyle(
-    color: quiteFrontColor,
-    fontSize: 10,
-    fontWeight: FontWeight.bold);
-const TextStyle quietHintStyle =
-    TextStyle(color: quiteFrontColor, fontSize: 8);
+    color: quiteFrontColor, fontSize: 10, fontWeight: FontWeight.bold);
+const TextStyle quietHintStyle = TextStyle(color: quiteFrontColor, fontSize: 8);
 
 /// 返回本周无需上的课（灰色）
 Widget getQuietCourseCard(double height, double width, Course course) {
-  return Container(
-    height: height,
-    width: width,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5), color: quietBackColor),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: Column(
-        children: [
-          Expanded(child: Text("")),
-          Icon(Icons.lock,color: quiteFrontColor,size: 15),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(course.courseName,
-                style: quietNameStyle, textAlign: TextAlign.center),
+  return (CommonPreferences().otherWeekSchedule.value)
+      ? Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5), color: quietBackColor),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Column(
+              children: [
+                Expanded(child: Text("")),
+                Icon(Icons.lock, color: quiteFrontColor, size: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(course.courseName,
+                      style: quietNameStyle, textAlign: TextAlign.center),
+                ),
+                Text("非本周", style: quietHintStyle, textAlign: TextAlign.center),
+                Expanded(child: Text(""))
+              ],
+            ),
           ),
-          Text("非本周", style: quietHintStyle, textAlign: TextAlign.center),
-          Expanded(child: Text(""))
-        ],
-      ),
-    ),
-  );
+        )
+      : Container();
 }
 
 /// 为ActiveCourse生成随机颜色
