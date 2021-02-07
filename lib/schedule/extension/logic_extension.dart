@@ -61,6 +61,14 @@ bool judgeActiveInDay(int week, int day, int weekCount, Course course) =>
         ? getWeekStatus(weekCount, course)[week]
         : false;
 
+/// 检查明天课程（用于夜猫子模式）
+bool judgeActiveTomorrow(int week, int day, int weekCount, Course course) {
+  int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
+  return (int.parse(course.arrange.day) == ((day + 1) % 7))
+      ? getWeekStatus(weekCount, course)[week + offset]
+      : false;
+}
+
 /// 该课程在所有周的状态
 /// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
 List<bool> getWeekStatus(int weekCount, Course course) {

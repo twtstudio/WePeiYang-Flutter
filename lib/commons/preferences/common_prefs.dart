@@ -19,25 +19,17 @@ class CommonPreferences {
   ///twt相关
 
   var isLogin = PrefsBean<bool>('login');
-
   var token = PrefsBean<String>('token');
-
   var nickname = PrefsBean<String>('nickname');
-
   var account = PrefsBean<String>('account');
-
   var phone = PrefsBean<String>('phone');
-
   var password = PrefsBean<String>('password');
-
   var captchaCookie = PrefsBean<String>('Cookie');
 
   ///办公网相关
 
   var isBindTju = PrefsBean<bool>('bindtju');
-
   var tjuuname = PrefsBean<String>('tjuuname');
-
   var tjupasswd = PrefsBean<String>('tjupasswd');
 
   /// cookies in sso.tju.edu.cn，暂时先不存了
@@ -45,12 +37,18 @@ class CommonPreferences {
 
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
-
   var garbled = PrefsBean<String>("garbled"); // UqZBpD3n3iXPAw1X
-
   var semesterId = PrefsBean<String>("semester"); // semester.id
-
   var ids = PrefsBean<String>("ids"); // ids
+
+  /// 设置页面
+  var language = PrefsBean<String>("language"); // 系统语言
+  var dayNumber = PrefsBean<int>("dayNumber"); // 每周显示天数
+  var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
+  var nightMode = PrefsBean<bool>("nightMode"); // 开启夜猫子模式
+  var otherWeekSchedule = PrefsBean<bool>("otherWeekSchedule"); // 课表显示非本周课程
+  var remindBeforeStart = PrefsBean<bool>("remindBeforeStart"); // 开课前提醒
+  var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
 
   List<String> getCookies() {
     var jSessionId = 'J' + gSessionId.value?.substring(1);
@@ -73,6 +71,11 @@ class CommonPreferences {
     garbled.value = "";
     semesterId.value = "";
     ids.value = "";
+    hideGPA.value = false;
+    nightMode.value = false;
+    otherWeekSchedule.value = false;
+    remindBeforeStart.value = false;
+    remindBefore.value = false;
     _sharedPref.clear();
   }
 }

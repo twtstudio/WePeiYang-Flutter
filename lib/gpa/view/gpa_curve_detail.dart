@@ -8,29 +8,42 @@ import '../../home/model/home_model.dart';
 class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: <Widget>[CurveText(), GPACurve(isPreview: true), GPAIntro()]);
+    return Consumer<GPANotifier>(builder: (context, notifier, _) {
+      if (notifier.hideGPA)
+        return Container();
+      else
+        return Column(children: <Widget>[
+          CurveText(notifier),
+          GPACurve(notifier, isPreview: true),
+          GPAIntro(notifier)
+        ]);
+    });
   }
 }
 
 /// 曲线上面的文字，说明当前曲线的内容
 class CurveText extends StatelessWidget {
+  final GPANotifier notifier;
+
+  CurveText(this.notifier);
+
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
-        alignment: Alignment.centerLeft,
-        child: Consumer<GPANotifier>(builder: (context, notifier, _) {
-          return Text("${notifier.typeName()} Curve",
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Color.fromRGBO(53, 59, 84, 1.0),
-                  fontWeight: FontWeight.bold));
-        }),
-      );
+      padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
+      alignment: Alignment.centerLeft,
+      child: Text("${notifier.typeName()} Curve",
+          style: TextStyle(
+              fontSize: 17.0,
+              color: Color.fromRGBO(53, 59, 84, 1.0),
+              fontWeight: FontWeight.bold)));
 }
 
 /// wpy_page中显示数值信息
 class GPAIntro extends StatelessWidget {
+  final GPANotifier notifier;
+
+  GPAIntro(this.notifier);
+
   static const textStyle = TextStyle(
       color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 13.0);
 
@@ -41,45 +54,43 @@ class GPAIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      var weighted = "不";
-      var grade = "知";
-      var credit = "道";
-      if (gpaNotifier.totalWithNotify != null) {
-        weighted = gpaNotifier.totalWithNotify.weighted.toString();
-        grade = gpaNotifier.totalWithNotify.gpa.toString();
-        credit = gpaNotifier.totalWithNotify.credits.toString();
-      }
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Text('Total Weighted', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(weighted, style: numStyle))
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Text('Total Grade', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(grade, style: numStyle))
-            ],
-          ),
-          Column(
-            children: <Widget>[
-              Text('Total Credit', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(credit, style: numStyle))
-            ],
-          )
-        ],
-      );
-    });
+    var weighted = "不";
+    var grade = "知";
+    var credit = "道";
+    if (notifier.totalWithNotify != null) {
+      weighted = notifier.totalWithNotify.weighted.toString();
+      grade = notifier.totalWithNotify.gpa.toString();
+      credit = notifier.totalWithNotify.credits.toString();
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Text('Total Weighted', style: textStyle),
+            Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(weighted, style: numStyle))
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Text('Total Grade', style: textStyle),
+            Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(grade, style: numStyle))
+          ],
+        ),
+        Column(
+          children: <Widget>[
+            Text('Total Credit', style: textStyle),
+            Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(credit, style: numStyle))
+          ],
+        )
+      ],
+    );
   }
 }
 
@@ -87,10 +98,12 @@ class GPAIntro extends StatelessWidget {
 /// Stack的底层为静态的[_GPACurvePainter],由cubic曲线和黑点构成
 /// Stack的顶层为动态的[_GPAPopupPainter],用补间动画控制移动
 class GPACurve extends StatefulWidget {
+  final GPANotifier notifier;
+
   /// 是否在wpy_page中显示（false的话就是在gpa_page中呗）
   final bool isPreview;
 
-  GPACurve({@required this.isPreview});
+  GPACurve(this.notifier, {@required this.isPreview});
 
   @override
   _GPACurveState createState() => _GPACurveState();
@@ -112,95 +125,93 @@ class _GPACurveState extends State<GPACurve>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      if (gpaNotifier.currentDataWithNotify == null)
-        return Container(height: 20);
-      if (_lastTaped == _newTaped) {
-        _lastTaped = gpaNotifier.indexWithNotify + 1;
-        _newTaped = _lastTaped;
-      }
-      List<Point<double>> points = [];
-      List<double> curveData = gpaNotifier.curveDataWithNotify;
-      _initPoints(points, curveData);
-      return GestureDetector(
+    if (widget.notifier.currentDataWithNotify == null)
+      return Container(height: 20);
+    if (_lastTaped == _newTaped) {
+      _lastTaped = widget.notifier.indexWithNotify + 1;
+      _newTaped = _lastTaped;
+    }
+    List<Point<double>> points = [];
+    List<double> curveData = widget.notifier.curveDataWithNotify;
+    _initPoints(points, curveData);
+    return GestureDetector(
 
-          /// 点击监听
-          onTapDown: (TapDownDetails detail) {
-            RenderBox renderBox = context.findRenderObject();
-            var localOffset = renderBox.globalToLocal(detail.globalPosition);
-            var result = _judgeTaped(localOffset, points, r: 50);
-            if (result != 0) {
-              setState(() => _newTaped = result);
-              gpaNotifier.indexWithNotify = result - 1;
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Stack(
-              children: <Widget>[
-                /// Stack底层
-                CustomPaint(
-                  painter: _GPACurvePainter(
-                      isPreview: widget.isPreview,
-                      points: points,
-                      taped: _newTaped),
-                  size: Size(double.maxFinite, _canvasHeight),
-                ),
+        /// 点击监听
+        onTapDown: (TapDownDetails detail) {
+          RenderBox renderBox = context.findRenderObject();
+          var localOffset = renderBox.globalToLocal(detail.globalPosition);
+          var result = _judgeTaped(localOffset, points, r: 50);
+          if (result != 0) {
+            setState(() => _newTaped = result);
+            widget.notifier.indexWithNotify = result - 1;
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Stack(
+            children: <Widget>[
+              /// Stack底层
+              CustomPaint(
+                painter: _GPACurvePainter(
+                    isPreview: widget.isPreview,
+                    points: points,
+                    taped: _newTaped),
+                size: Size(double.maxFinite, _canvasHeight),
+              ),
 
-                /// Stack顶层
-                TweenAnimationBuilder(
-                  duration: Duration(milliseconds: 300),
-                  tween: Tween(
-                      begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
-                  onEnd: () => setState(() => _lastTaped = _newTaped),
-                  builder: (BuildContext context, value, Widget child) {
-                    var lT = points[_lastTaped], nT = points[_newTaped];
-                    return Transform.translate(
-                      /// 计算两次点击之间的偏移量Offset
-                      /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
-                      offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                          lT.y - 55 + (nT.y - lT.y) * value),
-                      child: Container(
-                        width: 80,
-                        height: 70,
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              width: 80,
-                              height: 40,
-                              child: Card(
-                                color: widget.isPreview
-                                    ? _popupCardPreview
-                                    : _popupCardColor,
-                                elevation: 1,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Center(
-                                  child: Text('${curveData[_newTaped - 1]}',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: widget.isPreview
-                                              ? _popupTextPreview
-                                              : _popupTextColor,
-                                          fontWeight: FontWeight.w900)),
-                                ),
+              /// Stack顶层
+              TweenAnimationBuilder(
+                duration: Duration(milliseconds: 300),
+                tween: Tween(
+                    begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
+                onEnd: () => setState(() => _lastTaped = _newTaped),
+                builder: (BuildContext context, value, Widget child) {
+                  var lT = points[_lastTaped], nT = points[_newTaped];
+                  return Transform.translate(
+                    /// 计算两次点击之间的偏移量Offset
+                    /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
+                    offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                        lT.y - 55 + (nT.y - lT.y) * value),
+                    child: Container(
+                      width: 80,
+                      height: 70,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: 80,
+                            height: 40,
+                            child: Card(
+                              color: widget.isPreview
+                                  ? _popupCardPreview
+                                  : _popupCardColor,
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Center(
+                                child: Text('${curveData[_newTaped - 1]}',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: widget.isPreview
+                                            ? _popupTextPreview
+                                            : _popupTextColor,
+                                        fontWeight: FontWeight.w900)),
                               ),
                             ),
-                            CustomPaint(
-                              painter:
-                                  _GPAPopupPainter(isPreview: widget.isPreview),
-                              size: Size(80, 30),
-                            )
-                          ],
-                        ),
+                          ),
+                          CustomPaint(
+                            painter:
+                                _GPAPopupPainter(isPreview: widget.isPreview),
+                            size: Size(80, 30),
+                          )
+                        ],
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ));
-    });
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ));
   }
 
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制

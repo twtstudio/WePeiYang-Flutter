@@ -3,16 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart'
-    show Course;
+import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 
-class SliverCoursesWidget extends StatelessWidget {
+class TodayCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
     var week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return SliverToBoxAdapter(
-      child: Column(
+    return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
+      return Column(
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 12.0),
@@ -23,24 +22,35 @@ class SliverCoursesWidget extends StatelessWidget {
                     color: Color.fromRGBO(53, 59, 84, 1.0),
                     fontWeight: FontWeight.bold)),
           ),
-          Consumer<ScheduleNotifier>(
-              builder: (context, notifier, _) => _getDisplayWidget(notifier))
+          _getDisplayWidget(notifier)
         ],
-      ),
-    );
+      );
+    });
   }
 
   /// 返回首页显示课程的widget
   Widget _getDisplayWidget(ScheduleNotifier notifier) {
     List<Course> todayCourses = [];
-    int today = DateTime.now().weekday - 2;
+    int today = DateTime.now().weekday;
+    bool nightMode = notifier.nightMode;
+    bool flag;
+
+    // TODO 测试用，记得删哦
+    if (nightMode)
+      todayCourses.add(Course("1", "1", "夜猫子模式", "1", "1", "1", Week("1", "1"),
+          Arrange("1", "1", "1", "1", "1")));
+
     notifier.coursesWithNotify.forEach((course) {
-      if (judgeActiveInDay(
-          notifier.currentWeek, today, notifier.weekCount, course)) {
-        todayCourses.add(course);
-      }
-      // TODO 测试用,记得删哦--below
-      if(todayCourses.length < 5) todayCourses.add(course);
+      if (nightMode)
+        flag = judgeActiveTomorrow(
+            notifier.currentWeek, today, notifier.weekCount, course);
+      else
+        flag = judgeActiveInDay(
+            notifier.currentWeek, today, notifier.weekCount, course);
+      if (flag) todayCourses.add(course);
+
+      // TODO 测试用,记得删哦
+      if (todayCourses.length < 5) todayCourses.add(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(

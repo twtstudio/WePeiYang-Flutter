@@ -33,7 +33,7 @@ class WPYPage extends StatelessWidget {
             SliverCardsWidget(GlobalModel().cards),
 
             /// 当天课程
-            SliverCoursesWidget(),
+            SliverToBoxAdapter(child: TodayCoursesWidget()),
 
             /// 废弃的library罢了
             SliverLibraryWidget(libraries),

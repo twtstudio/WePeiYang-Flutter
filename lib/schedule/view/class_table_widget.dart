@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
@@ -16,7 +17,7 @@ class ClassTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       var width = GlobalModel().screenWidth - schedulePadding * 2;
-      var dayCount = notifier.showSevenDay ? 7 : 6;
+      var dayCount = CommonPreferences().dayNumber.value;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Column(
         children: [
@@ -92,6 +93,7 @@ class CourseDisplayWidget extends StatelessWidget {
   }
 
   List<Widget> _generatePositioned(BuildContext context) {
+    int dayNumber = CommonPreferences().dayNumber.value;
     List<Positioned> list = [];
     notifier.coursesWithNotify.forEach((course) {
       int day = int.parse(course.arrange.day);
@@ -104,7 +106,7 @@ class CourseDisplayWidget extends StatelessWidget {
           (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
 
       /// 判断周日的课是否需要显示在课表上
-      if (notifier.showSevenDay || day != 7)
+      if (day <= dayNumber)
         list.add(Positioned(
             top: top,
             left: left,

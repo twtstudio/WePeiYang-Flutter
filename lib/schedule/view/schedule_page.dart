@@ -14,8 +14,7 @@ class SchedulePage extends StatelessWidget {
     return RefreshIndicator(
       displacement: 60,
       color: Color.fromRGBO(105, 109, 126, 1),
-      onRefresh:
-          Provider.of<ScheduleNotifier>(context).refreshSchedule(),
+      onRefresh: Provider.of<ScheduleNotifier>(context).refreshSchedule(),
       child: Scaffold(
         appBar: ScheduleAppBar(),
         body: Container(
@@ -45,33 +44,21 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
       elevation: 0,
       leading: GestureDetector(
           child: Icon(Icons.arrow_back,
-              color: Color.fromRGBO(105, 109, 126, 1), size: 28),
-          onTap: () =>
-              // Navigator.pop(context)
-              test(context)),
+              color: Color.fromRGBO(105, 109, 126, 1), size: 32),
+          onTap: () => Navigator.pop(context)),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(right: 30),
           child: GestureDetector(
               child: Icon(Icons.autorenew,
-                  color: Color.fromRGBO(105, 109, 126, 1), size: 25),
-              onTap: Provider.of<ScheduleNotifier>(context)
-                  .refreshSchedule()),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 18),
-          child: GestureDetector(
-              child: Icon(Icons.add,
-                  color: Color.fromRGBO(105, 109, 126, 1), size: 30),
-              onTap: () {
-                // TODO 更多功能
-                Provider.of<ScheduleNotifier>(context).changeWeekMode();
-              }),
+                  color: Color.fromRGBO(105, 109, 126, 1), size: 28),
+              onTap: Provider.of<ScheduleNotifier>(context).refreshSchedule()),
         ),
       ],
     );
   }
 
+  // TODO 测试用，以后删(不舍得手敲了半天的假数据罢了)
   void test(BuildContext context) {
     List<Course> courses = [];
     courses.add(Course("1230000", "32100", "大学物理2B", "4.0", "冯星辉(讲师)", "北洋园",

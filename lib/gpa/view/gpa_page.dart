@@ -9,22 +9,23 @@ import '../model/gpa_notifier.dart';
 class GPAPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GPAppBar(),
-      backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
-      body: Theme(
-        /// 修改scrollView滚动至头/尾时溢出的颜色
-        data: ThemeData(accentColor: Colors.white),
-        child: ListView(
-          children: [
-            RadarChartWidget(),
-            GPAStatsWidget(),
-            GPACurve(isPreview: false),
-            CourseListWidget()
-          ],
-        ),
-      ),
-    );
+    return Consumer<GPANotifier>(
+        builder: (context, notifier, _) => Scaffold(
+              appBar: GPAppBar(),
+              backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
+              body: Theme(
+                /// 修改scrollView滚动至头/尾时溢出的颜色
+                data: ThemeData(accentColor: Colors.white),
+                child: ListView(
+                  children: [
+                    RadarChartWidget(notifier),
+                    GPAStatsWidget(notifier),
+                    GPACurve(notifier, isPreview: false),
+                    CourseListWidget(notifier)
+                  ],
+                ),
+              ),
+            ));
   }
 }
 
@@ -94,6 +95,10 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class RadarChartWidget extends StatefulWidget {
+  final GPANotifier notifier;
+
+  RadarChartWidget(this.notifier);
+
   @override
   _RadarChartState createState() => _RadarChartState();
 }
@@ -108,27 +113,25 @@ class _RadarChartState extends State<RadarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      _list = gpaNotifier.coursesWithNotify;
-      return GestureDetector(
-        onTapDown: (_) {
-          setState(() {
-            _isTaped = true;
-            _list.shuffle();
-          });
+    _list = widget.notifier.coursesWithNotify;
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() {
+          _isTaped = true;
+          _list.shuffle();
+        });
 
-          /// 重复点击雷达图时，timer重新计时
-          if (_timer != null && _timer.isActive) _timer.cancel();
-          _timer = Timer(Duration(milliseconds: 300), () {
-            setState(() => _isTaped = false);
-          });
-        },
-        child: Opacity(
-          opacity: _isTaped ? 0.2 : 1,
-          child: _judgeListLength(_list),
-        ),
-      );
-    });
+        /// 重复点击雷达图时，timer重新计时
+        if (_timer != null && _timer.isActive) _timer.cancel();
+        _timer = Timer(Duration(milliseconds: 300), () {
+          setState(() => _isTaped = false);
+        });
+      },
+      child: Opacity(
+        opacity: _isTaped ? 0.2 : 1,
+        child: _judgeListLength(_list),
+      ),
+    );
   }
 
   Widget _judgeListLength(List<GPACourse> _list) {
@@ -336,6 +339,10 @@ class _RadarChartPainter extends CustomPainter {
 
 /// 其实代码很像gpa_curve_detail.dart中的GPAIntro,只不过没法复用555
 class GPAStatsWidget extends StatelessWidget {
+  final GPANotifier notifier;
+
+  GPAStatsWidget(this.notifier);
+
   static const textStyle = TextStyle(
       color: Color.fromRGBO(169, 179, 144, 1.0),
       fontWeight: FontWeight.bold,
@@ -346,76 +353,78 @@ class GPAStatsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      var weighted = "不";
-      var gpa = "知";
-      var credits = "道";
-      if (gpaNotifier.currentDataWithNotify != null) {
-        weighted = gpaNotifier.currentDataWithNotify[0].toString();
-        gpa = gpaNotifier.currentDataWithNotify[1].toString();
-        credits = gpaNotifier.currentDataWithNotify[2].toString();
-      }
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            /// InkResponse provides splashes which can extend outside its bounds
-            InkResponse(
-              onTap: () => gpaNotifier.typeWithNotify = 0,
-              radius: 45,
+    var weighted = "不";
+    var gpa = "知";
+    var credits = "道";
+    if (notifier.currentDataWithNotify != null) {
+      weighted = notifier.currentDataWithNotify[0].toString();
+      gpa = notifier.currentDataWithNotify[1].toString();
+      credits = notifier.currentDataWithNotify[2].toString();
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          /// InkResponse provides splashes which can extend outside its bounds
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 0,
+            radius: 45,
 
-              /// defines a splash that spreads out more aggressively than the default
-              splashFactory: InkRipple.splashFactory,
-              child: Column(
-                children: <Widget>[
-                  Text('Weighted', style: textStyle),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(weighted, style: numStyle),
-                  )
-                ],
-              ),
+            /// defines a splash that spreads out more aggressively than the default
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('Weighted', style: textStyle),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(weighted, style: numStyle),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 6), // 加点padding让gpa尽量居中
-              child: InkResponse(
-                onTap: () => gpaNotifier.typeWithNotify = 1,
-                radius: 45,
-                splashFactory: InkRipple.splashFactory,
-                child: Column(
-                  children: <Widget>[
-                    Text('GPA', style: textStyle),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(gpa, style: numStyle),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            InkResponse(
-              onTap: () => gpaNotifier.typeWithNotify = 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 6), // 加点padding让gpa尽量居中
+            child: InkResponse(
+              onTap: () => notifier.typeWithNotify = 1,
               radius: 45,
               splashFactory: InkRipple.splashFactory,
               child: Column(
                 children: <Widget>[
-                  Text('Credits', style: textStyle),
+                  Text('GPA', style: textStyle),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(credits, style: numStyle),
+                    child: Text(gpa, style: numStyle),
                   )
                 ],
               ),
             ),
-          ],
-        ),
-      );
-    });
+          ),
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 2,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('Credits', style: textStyle),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(credits, style: numStyle),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class CourseListWidget extends StatefulWidget {
+  final GPANotifier notifier;
+
+  CourseListWidget(this.notifier);
+
   @override
   _CourseListState createState() => _CourseListState();
 }
@@ -425,87 +434,85 @@ class _CourseListState extends State<CourseListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, gpaNotifier, _) {
-      var courses = gpaNotifier.coursesWithNotify;
-      return Column(
-        children: [
-          GestureDetector(
-            onTap: () => gpaNotifier.reSort(),
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                    'ORDERED\tBY\t${gpaNotifier.sortType.toUpperCase()}',
-                    style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 4,
-                        color: Color.fromRGBO(178, 184, 153, 1),
-                        fontWeight: FontWeight.bold))),
-          ),
-          Container(
-            height: cardHeight * courses.length,
-            child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: courses.length,
-                itemBuilder: (context, i) => Container(
-                      height: cardHeight,
-                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
-                      child: Card(
-                        color: Color.fromRGBO(136, 148, 102, 1),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        child: InkWell(
-                          splashFactory: InkRipple.splashFactory,
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {},
-                          child: Row(
+    var courses = widget.notifier.coursesWithNotify;
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => widget.notifier.reSort(),
+          child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                  'ORDERED\tBY\t${widget.notifier.sortType.toUpperCase()}',
+                  style: TextStyle(
+                      fontSize: 15,
+                      letterSpacing: 4,
+                      color: Color.fromRGBO(178, 184, 153, 1),
+                      fontWeight: FontWeight.bold))),
+        ),
+        Container(
+          height: cardHeight * courses.length,
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: courses.length,
+              itemBuilder: (context, i) => Container(
+                height: cardHeight,
+                padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
+                child: Card(
+                  color: Color.fromRGBO(136, 148, 102, 1),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  child: InkWell(
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {},
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                          child: Icon(Icons.assignment_turned_in,
+                              color: Color.fromRGBO(178, 184, 153, 1),
+                              size: 25),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                                child: Icon(Icons.assignment_turned_in,
-                                    color: Color.fromRGBO(178, 184, 153, 1),
-                                    size: 25),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(_formatText(courses[i].name),
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white)),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "${courses[i].classType} / ${courses[i].credit} Credits",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color.fromRGBO(
-                                                  178, 184, 153, 1))),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10, right: 15),
-                                child: Text('${courses[i].score.round()}',
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(_formatText(courses[i].name),
                                     style: TextStyle(
-                                        fontSize: 28,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold)),
+                                        fontSize: 15,
+                                        color: Colors.white)),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    "${courses[i].classType} / ${courses[i].credit} Credits",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color.fromRGBO(
+                                            178, 184, 153, 1))),
                               )
                             ],
                           ),
                         ),
-                      ),
-                    )),
-          )
-        ],
-      );
-    });
+                        Padding(
+                          padding: EdgeInsets.only(left: 10, right: 15),
+                          child: Text('${courses[i].score.round()}',
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )),
+        )
+      ],
+    );
   }
 
   String _formatText(String text) {

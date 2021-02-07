@@ -1,49 +1,75 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-class ScheduleSettingPage extends StatelessWidget {
+class ScheduleSettingPage extends StatefulWidget {
+  @override
+  _ScheduleSettingPageState createState() => _ScheduleSettingPageState();
+}
 
-  final upNumberList = ["5天","6天","7天"];
-  final downNumberList = ["周一至周五","周一至周六","周一至周日"];
-  Widget _getNumberofDaysCard(BuildContext context, int index){
-    const textStyle =
-    TextStyle(fontSize: 13.0, color: Color.fromRGBO(205, 206, 212, 1));
+class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
+  final upNumberList = ["5天", "6天", "7天"];
+  final downNumberList = ["周一至周五", "周一至周六", "周一至周日"];
+  int _index = CommonPreferences().dayNumber.value - 5;
+
+  Widget _judgeIndex(int index) {
+    if (index != _index)
+      return Container();
+    else
+      return Padding(
+        padding: const EdgeInsets.only(right: 22),
+        child: Icon(
+          Icons.check,
+        ),
+      );
+  }
+
+  BorderRadius _judgeBorder(int index) {
+    if (index == 0)
+      return BorderRadius.vertical(top: Radius.circular(9));
+    else if (index == 1)
+      return BorderRadius.zero;
+    else
+      return BorderRadius.vertical(bottom: Radius.circular(9));
+  }
+
+  Widget _getNumberOfDaysCard(BuildContext context, int index) {
+    const hintTextStyle =
+        TextStyle(fontSize: 13.0, color: Color.fromRGBO(205, 206, 212, 1));
     const mainTextStyle = TextStyle(
       fontSize: 18.0,
       color: Color.fromRGBO(98, 103, 122, 1),
     );
-    return Padding(
-      padding: const EdgeInsets.only(left: 22,top:10),
-      child: Row(
-        children: <Widget>[
-          Column(
-            mainAxisAlignment:
-            MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                  width: 150,
-                  child: Text(upNumberList[index],
-                      style: mainTextStyle)),
-              Container(
-                  width: 150,
-                  child: Text(downNumberList[index],
-                      style: textStyle),
-                  padding:
-                  const EdgeInsets.only(top: 3))
-            ],
-          ),
-          Expanded(child: Text('')),
-          Padding(
-            padding:
-            const EdgeInsets.only(right: 22),
-            child: Icon(
-              Icons.check,
+    return InkWell(
+      onTap: () {
+        setState(() => _index = index);
+        CommonPreferences().dayNumber.value = index + 5;
+      },
+      borderRadius: _judgeBorder(index),
+      splashFactory: InkRipple.splashFactory,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        child: Row(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    width: 150,
+                    child: Text(upNumberList[index], style: mainTextStyle)),
+                Container(
+                    width: 150,
+                    child: Text(downNumberList[index], style: hintTextStyle),
+                    padding: const EdgeInsets.only(top: 3))
+              ],
             ),
-          )
-        ],
+            Expanded(child: Text('')),
+            _judgeIndex(index)
+          ],
+        ),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,58 +81,52 @@ class ScheduleSettingPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 35),
+                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
-      body: Padding(
-          padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text("课程表-每周展示天数",
-                    style: TextStyle(
-                        color: Color.fromRGBO(48, 60, 102, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30)),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                alignment: Alignment.centerLeft,
-                child: Text("课程表页面将会根据选择调整展示的天数。",
-                    style: TextStyle(
-                        color: Color.fromRGBO(98, 103, 124, 1), fontSize: 12)),
-              ),
-              Container(
-                  height: 250,
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9)),
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 22),
-                          child: Column(
-                            children: <Widget>[
-                              _getNumberofDaysCard(context, 0),
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.fromLTRB(0, 10, 23, 10),
-                                height: 1.0,
-                                color: Colors.grey,
-                              ),
-                              _getNumberofDaysCard(context, 1),
-                              Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.fromLTRB(0, 10, 23, 10),
-                                height: 1.0,
-                                color: Colors.grey,
-                              ),
-                              _getNumberofDaysCard(context, 2),
-                            ],
-                          )))),
-            ],
-          )),
+      body: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
+            child: Text("课程表-每周展示天数",
+                style: TextStyle(
+                    color: Color.fromRGBO(48, 60, 102, 1),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28)),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(35, 20, 35, 20),
+            alignment: Alignment.centerLeft,
+            child: Text("课程表页面将会根据选择调整展示的天数。",
+                style: TextStyle(
+                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 12)),
+          ),
+          Container(
+              child: Card(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9)),
+                  child: Column(
+                    children: <Widget>[
+                      _getNumberOfDaysCard(context, 0),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        height: 1.0,
+                        color: Colors.grey,
+                      ),
+                      _getNumberOfDaysCard(context, 1),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        height: 1.0,
+                        color: Colors.grey,
+                      ),
+                      _getNumberOfDaysCard(context, 2),
+                    ],
+                  ))),
+        ],
+      ),
     );
   }
 }

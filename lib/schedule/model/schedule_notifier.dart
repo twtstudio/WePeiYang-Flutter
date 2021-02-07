@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
@@ -49,16 +50,6 @@ class ScheduleNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  /// 课程表显示 六天/七天
-  bool _showSevenDay = false;
-
-  bool get showSevenDay => _showSevenDay;
-
-  void changeWeekMode() {
-    _showSevenDay = !_showSevenDay;
-    notifyListeners();
-  }
-
   /// 一学期一共有多少周……很没存在感的东西
   int _weekCount = 25;
 
@@ -83,5 +74,19 @@ class ScheduleNotifier with ChangeNotifier {
           },
           onFailure: (e) => ToastProvider.error(e.error.toString()));
     };
+  }
+
+  /// 夜猫子模式
+  bool _nightMode = false;
+
+  set nightMode(bool value) {
+    _nightMode = value;
+    notifyListeners();
+  }
+
+  bool get nightMode {
+    /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
+    _nightMode = CommonPreferences().nightMode.value;
+    return _nightMode;
   }
 }
