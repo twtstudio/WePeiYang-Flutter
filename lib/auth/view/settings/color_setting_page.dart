@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 class ColorSettingPage extends StatefulWidget {
   final _state = _ColorSettingPageState();
@@ -47,7 +48,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             alignment: Alignment.centerLeft,
             child: Text("给课表、GPA以及黄页自定义喜欢的颜色。",
                 style: TextStyle(
-                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 12)),
+                    color: Colors.grey, fontSize: 11)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -59,14 +60,19 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             child: Card(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
+              color: Color.fromRGBO(162, 191, 189, 1),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(context, '/language_setting'),
+                  onTap: () {
+                    // TODO
+                    ToastProvider.error('还没做呢，悲');
+                  },
                   splashFactory: InkRipple.splashFactory,
                   borderRadius: BorderRadius.circular(9),
-                  child: Center(child: Text("#A2BFBD"))),
+                  child: Center(
+                      child: Text("#A2BFBD",
+                          style: TextStyle(color: Colors.white)))),
             ),
           ),
           Container(
@@ -82,11 +88,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(
             height: 80,
@@ -96,11 +104,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(
             height: 80,
@@ -110,11 +120,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -129,11 +141,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(
             height: 80,
@@ -143,11 +157,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(
             height: 80,
@@ -157,11 +173,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, '/language_setting'),
+                    onTap: () {
+                      // TODO
+                      ToastProvider.error('还没做呢，悲');
+                    },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("#A2BFBD")))),
+                    child: Center(child: Text("")))),
           ),
           Container(height: 40)
         ],

@@ -11,7 +11,6 @@ class GPANotifier with ChangeNotifier {
   set listWithNotify(List<GPAStat> newList) {
     _listWithNotify = newList;
     _sort();
-    notifyListeners();
   }
 
   Total _totalWithNotify = Total(0, 0, 0);
@@ -146,5 +145,14 @@ class GPANotifier with ChangeNotifier {
     /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
     _hideGPA = CommonPreferences().hideGPA.value;
     return _hideGPA;
+  }
+
+  /// 办公网解绑时清除数据
+  void clear() {
+    _listWithNotify = [];
+    _totalWithNotify = Total(0, 0, 0);
+    _index = 0;
+    _type = 0;
+    _sortType = 0;
   }
 }

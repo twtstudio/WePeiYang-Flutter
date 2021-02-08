@@ -68,6 +68,9 @@ flutter:
     - assets/images/logout.png
     - assets/images/telephone.png
     - assets/images/email.png
+    - assets/images/twt_round.png
+    - assets/images/tju_work.png
+    - assets/images/bind.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

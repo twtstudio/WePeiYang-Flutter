@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 class UserInfoPage extends StatefulWidget {
   final _state = _UserInfoPageState();
@@ -55,6 +56,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     child: InkWell(
                       onTap: () {
                         // TODO 修改头像
+                        ToastProvider.error('还没做呢，悲');
                       },
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
@@ -91,6 +93,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     child: InkWell(
                       onTap: () {
                         // TODO 修改用户名
+                        ToastProvider.error('还没做呢，悲');
                       },
                       borderRadius: BorderRadius.zero,
                       splashFactory: InkRipple.splashFactory,
@@ -105,7 +108,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Expanded(child: Text('')),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Text("张三李四", style: hintTextStyle),
+                              child: Text(pref.nickname.value,
+                                  style: hintTextStyle),
                             ),
                             Padding(
                                 padding: const EdgeInsets.only(right: 11),
@@ -123,7 +127,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () => Navigator.pushNamed(context, '/bind'),
+                      onTap: () => Navigator.pushNamed(context, '/tjuBind')
+                          .then((_) => widget._state.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(bottom: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
@@ -138,7 +143,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Expanded(child: Text('')),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Text("未绑定", style: hintTextStyle),
+                              child: Text(pref.isBindTju.value ? "已绑定" : "未绑定",
+                                  style: hintTextStyle),
                             ),
                             Padding(
                                 padding: const EdgeInsets.only(right: 11),
@@ -160,9 +166,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () {
-                        // TODO 电话绑定
-                      },
+                      onTap: () => Navigator.pushNamed(context, '/phoneBind')
+                          .then((_) => widget._state.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
@@ -183,7 +188,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Expanded(child: Text('')),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Text("未绑定", style: hintTextStyle),
+                              child: Text(
+                                  (pref.phone.value != "") ? "已绑定" : "未绑定",
+                                  style: hintTextStyle),
                             ),
                             Padding(
                                 padding: const EdgeInsets.only(right: 11),
@@ -201,9 +208,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () {
-                        // TODO 邮箱绑定
-                      },
+                      onTap: () => Navigator.pushNamed(context, '/emailBind')
+                          .then((_) => widget._state.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(bottom: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
@@ -224,7 +230,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Expanded(child: Text('')),
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Text("未绑定", style: hintTextStyle),
+                              child: Text(
+                                  (pref.email.value != "") ? "已绑定" : "未绑定",
+                                  style: hintTextStyle),
                             ),
                             Padding(
                                 padding: const EdgeInsets.only(right: 11),

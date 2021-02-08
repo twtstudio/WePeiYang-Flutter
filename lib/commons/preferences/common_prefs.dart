@@ -13,16 +13,25 @@ class CommonPreferences {
   SharedPreferences _sharedPref;
 
   /// 初始化sharedPrefs，在自动登录时就被调用
-  static Future<void> initPrefs() async =>
-      _instance._sharedPref = await SharedPreferences.getInstance();
+  static Future<void> initPrefs() async {
+    _instance._sharedPref = await SharedPreferences.getInstance();
+
+    /// 处理一些比较特殊的缓存默认值
+    if (_instance.dayNumber.value == 0) _instance.dayNumber.value = 7;
+    if (_instance.language.value == "") _instance.language.value = "简体中文";
+    // TODO debug
+    _instance.isBindTju.value = false;
+  }
 
   ///twt相关
 
   var isLogin = PrefsBean<bool>('login');
   var token = PrefsBean<String>('token');
   var nickname = PrefsBean<String>('nickname');
-  var account = PrefsBean<String>('account');
+  var userNumber = PrefsBean<String>('userNumber');
   var phone = PrefsBean<String>('phone');
+  var email = PrefsBean<String>('email');
+  var account = PrefsBean<String>('account');
   var password = PrefsBean<String>('password');
   var captchaCookie = PrefsBean<String>('Cookie');
 
@@ -55,15 +64,27 @@ class CommonPreferences {
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
   }
 
-  /// 重置用户的缓存
+  /// 重置twt用户的缓存
   void clearPrefs() {
     isLogin.value = false;
     token.value = "";
     nickname.value = "";
+    userNumber.value = "";
+    phone.value = "";
+    email.value = "";
     account.value = "";
     password.value = "";
-    phone.value = "";
     captchaCookie.value = "";
+    // hideGPA.value = false;
+    // nightMode.value = false;
+    // otherWeekSchedule.value = false;
+    // remindBeforeStart.value = false;
+    // remindBefore.value = false;
+    // _sharedPref.clear();
+  }
+
+  /// 重置办公网缓存
+  void clearTjuPrefs() {
     isBindTju.value = false;
     tjuuname.value = "";
     tjupasswd.value = "";
@@ -72,12 +93,6 @@ class CommonPreferences {
     garbled.value = "";
     semesterId.value = "";
     ids.value = "";
-    // hideGPA.value = false;
-    // nightMode.value = false;
-    // otherWeekSchedule.value = false;
-    // remindBeforeStart.value = false;
-    // remindBefore.value = false;
-    // _sharedPref.clear();
   }
 }
 

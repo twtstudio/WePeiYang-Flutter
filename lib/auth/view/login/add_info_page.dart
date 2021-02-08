@@ -169,7 +169,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                               fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(30)),
                     )),
               ],
             ),

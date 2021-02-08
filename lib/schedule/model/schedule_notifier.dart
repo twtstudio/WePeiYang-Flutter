@@ -89,4 +89,10 @@ class ScheduleNotifier with ChangeNotifier {
     _nightMode = CommonPreferences().nightMode.value;
     return _nightMode;
   }
+
+  /// 办公网解绑时清除数据
+  void clear() {
+    _coursesWithNotify = [];
+    _selectedWeek = 1;
+  }
 }

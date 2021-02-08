@@ -101,10 +101,9 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
       ToastProvider.error("短信验证码不能为空");
       return;
     }
-    Navigator.pushNamed(context, '/reset', arguments: phone);
-    // verifyOnReset(phone, code,
-    //     onSuccess: () => Navigator.pushNamed(context, '/reset', arguments: phone),
-    //     onFailure: (e) => ToastProvider.error(e.error.toString()));
+    verifyOnReset(phone, code,
+        onSuccess: () => Navigator.pushNamed(context, '/reset', arguments: phone),
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   TextStyle _hintStyle = TextStyle(
@@ -201,7 +200,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                               fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(3)),
                     )),
               ],
             ),

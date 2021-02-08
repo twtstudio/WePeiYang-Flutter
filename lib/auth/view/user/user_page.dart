@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/auth/view/logout_dialog.dart';
+import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 class UserPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
@@ -17,7 +18,7 @@ class UserPage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 360, color: MyColors.darkGrey),
+            Container(height: 350, color: MyColors.darkGrey),
             ListView(
               children: <Widget>[
                 Container(
@@ -37,13 +38,16 @@ class UserPage extends StatelessWidget {
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(bottom: 15.0),
-                  child: ClipOval(
-                      child: Image.asset(
-                    'assets/images/user_image.jpg',
-                    fit: BoxFit.cover,
-                    width: 100,
-                    height: 100,
-                  )),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/user_info'),
+                    child: ClipOval(
+                        child: Image.asset(
+                      'assets/images/user_image.jpg',
+                      fit: BoxFit.cover,
+                      width: 90,
+                      height: 90,
+                    )),
+                  ),
                 ),
                 Text('BOTillya',
                     textAlign: TextAlign.center,
@@ -54,13 +58,13 @@ class UserPage extends StatelessWidget {
                     )),
                 Container(
                     margin: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text('3019244334',
+                    child: Text(CommonPreferences().userNumber.value,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: MyColors.deepDust, fontSize: 13.0))),
                 NavigationWidget(),
                 Container(
-                  height: 90,
+                  height: 80,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,
@@ -69,6 +73,7 @@ class UserPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         // TODO 关于twt页面
+                        ToastProvider.error('还没做呢，悲');
                       },
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(9),
@@ -77,8 +82,7 @@ class UserPage extends StatelessWidget {
                           Container(
                             width: 20,
                             margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset('assets/images/twt.png',
-                                color: Colors.grey),
+                            child: Image.asset('assets/images/twt.png'),
                           ),
                           Container(
                               width: 150,
@@ -93,7 +97,7 @@ class UserPage extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: 90,
+                  height: 80,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,

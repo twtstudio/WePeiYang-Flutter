@@ -2,6 +2,7 @@ import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
@@ -77,6 +78,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               onTap: () {
                 //TODO popup info
                 Provider.of<GPANotifier>(context).listWithNotify = gpaList;
+                ToastProvider.running('显示假数据');
               }),
         ),
         Padding(

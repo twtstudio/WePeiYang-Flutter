@@ -17,10 +17,10 @@ getCaptchaOnRegister(String phone,
   }, onFailure: onFailure);
 }
 
-/// 使用手机号登陆时获取短信验证码
-getCaptchaOnLogin(String phone,
+/// 在用户界面更新信息时获取短信验证码
+getCaptchaOnInfo(String phone,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().originPost("auth/phone/msg",
+  await DioService().originPost("user/phone/msg",
       queryParameters: {"phone": phone}, onSuccess: (response) {
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
@@ -97,6 +97,9 @@ login(String account, String password,
     prefs.account.value = account;
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";
+    prefs.userNumber.value = result['userNumber'] ?? "";
+    prefs.phone.value = result['telephone'] ?? "";
+    prefs.email.value = result['email'] ?? "";
     prefs.isLogin.value = true;
     onSuccess(result);
   }, onFailure: onFailure);
@@ -105,12 +108,34 @@ login(String account, String password,
 /// 补全信息（手机号和邮箱）
 addInfo(String telephone, String verifyCode, String email,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().put("user/single",
-      queryParameters: {
-        "telephone": telephone,
-        "verifyCode": verifyCode,
-        "email": email
-      },
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+  await DioService().put("user/single", queryParameters: {
+    "telephone": telephone,
+    "verifyCode": verifyCode,
+    "email": email
+  }, onSuccess: (_) {
+    var prefs = CommonPreferences();
+    prefs.phone.value = telephone;
+    prefs.email.value = email;
+    onSuccess();
+  }, onFailure: onFailure);
+}
+
+/// 单独修改手机号
+changePhone(String phone, String code,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  await DioService().put("user/single/phone",
+      queryParameters: {'phone': phone, 'code': code}, onSuccess: (_) {
+    CommonPreferences().phone.value = phone;
+    onSuccess();
+  }, onFailure: onFailure);
+}
+
+/// 单独修改邮箱
+changeEmail(String email,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  await DioService().put("user/single/email", queryParameters: {'email': email},
+      onSuccess: (_) {
+    CommonPreferences().email.value = email;
+    onSuccess();
+  }, onFailure: onFailure);
 }

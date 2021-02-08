@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart' show Widget;
+import 'package:wei_pei_yang_demo/auth/view/info/email_bind_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/phone_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/find_pw_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/login_page.dart';
@@ -10,9 +12,9 @@ import 'package:wei_pei_yang_demo/auth/view/settings/color_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/language_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/schedule_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/setting_page.dart';
-import 'package:wei_pei_yang_demo/auth/view/tju_bind_page.dart';
-import 'package:wei_pei_yang_demo/auth/view/user_page.dart';
-import 'package:wei_pei_yang_demo/auth/view/uset_info_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/tju_bind_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/user_info_page.dart';
 
 class AuthRouter {
   /// 登录部分
@@ -26,8 +28,10 @@ class AuthRouter {
   static String reset = '/reset';
   static String resetDone = '/reset_done';
 
-  /// 办公网绑定
-  static String bind = '/bind';
+  /// 个人信息页
+  static String tjuBind = '/tjuBind';
+  static String phoneBind = '/phoneBind';
+  static String emailBind = '/emailBind';
 
   /// 个人页 & 设置页
   static String user = '/user';
@@ -47,7 +51,9 @@ class AuthRouter {
     findPhone: (_) => FindPwByPhoneWidget(),
     reset: (_) => ResetPwWidget(),
     resetDone: (_) => ResetDoneWidget(),
-    bind: (_) => TjuBindWidget(),
+    tjuBind: (_) => TjuBindPage(),
+    phoneBind: (_) => PhoneBindPage(),
+    emailBind: (_) => EmailBindPage(),
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),

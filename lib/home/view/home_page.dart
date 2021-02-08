@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/auth/view/user_page.dart';
+import 'file:///D:/AndroidProject/wei_pei_yang_demo/lib/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/home/view/more_page.dart';
 import '../model/home_model.dart';

@@ -63,12 +63,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     }
   }
 
-  // TextEditingController _userNumCrl;
-  // TextEditingController _idNumCrl;
-  // TextEditingController _emailCrl;
-  // TextEditingController _phoneCrl;
-  // TextEditingController _codeCrl;
-
   FocusNode _userNumFocus = FocusNode();
   FocusNode _idNumFocus = FocusNode();
   FocusNode _emailFocus = FocusNode();
@@ -82,23 +76,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
 
   @override
   Widget build(BuildContext context) {
-    // Map arg = ModalRoute.of(context).settings.arguments;
-    // if (arg != null) {
-    //   userNum = arg['userNum'];
-    //   idNum = arg['idNum'];
-    //   email = arg['email'];
-    //   phone = arg['phone'];
-    //   code = arg['code'];
-    //   _userNumCrl =
-    //       TextEditingController.fromValue(TextEditingValue(text: userNum));
-    //   _idNumCrl =
-    //       TextEditingController.fromValue(TextEditingValue(text: idNum));
-    //   _emailCrl =
-    //       TextEditingController.fromValue(TextEditingValue(text: email));
-    //   _phoneCrl =
-    //       TextEditingController.fromValue(TextEditingValue(text: phone));
-    //   _codeCrl = TextEditingController.fromValue(TextEditingValue(text: code));
-    // }
 
     /// 两边的padding各30，中间间隔20
     double width = GlobalModel().screenWidth - 80;
@@ -279,7 +256,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(30)),
                     )),
               ],
             ),

@@ -18,8 +18,6 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    /// 防止初次打开应用时，缓存中的值为0
-    if (pref.dayNumber.value == 0) pref.dayNumber.value = 7;
     const titleTextStyle = TextStyle(
         fontSize: 14,
         color: Color.fromRGBO(177, 180, 186, 1),
@@ -328,61 +326,60 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
           ),
-          Container(
-              height: 135,
-              child: Card(
-                  margin: EdgeInsets.fromLTRB(20, 5, 20, 30),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9)),
-                  child: Column(
+          Card(
+              margin: EdgeInsets.fromLTRB(20, 5, 20, 30),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              width: 150,
-                              margin: const EdgeInsets.only(left: 15),
-                              child: Text('课前提醒', style: mainTextStyle)),
-                          Expanded(child: Text('')),
-                          Padding(
-                              padding: const EdgeInsets.only(right: 15),
-                              child: Switch(
-                                value: pref.remindBefore.value,
-                                onChanged: (value) {
-                                  setState(
-                                      () => pref.remindBefore.value = value);
-                                },
-                                activeColor: Color.fromRGBO(105, 109, 127, 1),
-                                inactiveThumbColor:
-                                    Color.fromRGBO(205, 206, 212, 1),
-                                activeTrackColor:
-                                    Color.fromRGBO(240, 241, 242, 1),
-                                inactiveTrackColor:
-                                    Color.fromRGBO(240, 241, 242, 1),
-                              ))
-                        ],
-                      ),
                       Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.fromLTRB(15, 5, 15, 10),
-                        height: 1.0,
-                        color: Color.fromRGBO(172, 174, 186, 1),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                              margin: const EdgeInsets.only(left: 15),
-                              child: Text('课前提醒时间', style: mainTextStyle)),
-                          Expanded(child: Text('')),
-                          Container(
-                              margin: const EdgeInsets.only(right: 20),
-                              child: Text('15分钟', style: hintTextStyle)),
-                        ],
-                      ),
+                          width: 150,
+                          margin: const EdgeInsets.only(left: 15),
+                          child: Text('课前提醒', style: mainTextStyle)),
+                      Expanded(child: Text('')),
+                      Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: Switch(
+                            value: pref.remindBefore.value,
+                            onChanged: (value) {
+                              setState(
+                                  () => pref.remindBefore.value = value);
+                            },
+                            activeColor: Color.fromRGBO(105, 109, 127, 1),
+                            inactiveThumbColor:
+                                Color.fromRGBO(205, 206, 212, 1),
+                            activeTrackColor:
+                                Color.fromRGBO(240, 241, 242, 1),
+                            inactiveTrackColor:
+                                Color.fromRGBO(240, 241, 242, 1),
+                          ))
                     ],
-                  ))),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
+                    height: 1.0,
+                    color: Color.fromRGBO(172, 174, 186, 1),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          child: Text('课前提醒时间', style: mainTextStyle)),
+                      Expanded(child: Text('')),
+                      Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          child: Text('15分钟', style: hintTextStyle)),
+                    ],
+                  ),
+                  Container(height: 15)
+                ],
+              )),
         ],
       ),
     );
