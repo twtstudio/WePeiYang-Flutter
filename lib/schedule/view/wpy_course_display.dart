@@ -33,12 +33,14 @@ class TodayCoursesWidget extends StatelessWidget {
     List<Course> todayCourses = [];
     int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
+    if (DateTime.now().hour < 21) nightMode = false;
+    print("now hour: ${DateTime.now().hour} -=-=-=-=-=-=-=-=-=-=-==-=-=-=-=\n");
     bool flag;
 
     // TODO 测试用，记得删哦
-    if (nightMode)
-      todayCourses.add(Course("1", "1", "夜猫子模式", "1", "1", "1", Week("1", "1"),
-          Arrange("1", "1", "1", "1", "1")));
+    // if (nightMode)
+    //   todayCourses.add(Course("1", "1", "夜猫子模式", "1", "1", "1", Week("1", "1"),
+    //       Arrange("1", "1", "1", "1", "1")));
 
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
@@ -50,7 +52,7 @@ class TodayCoursesWidget extends StatelessWidget {
       if (flag) todayCourses.add(course);
 
       // TODO 测试用,记得删哦
-      if (todayCourses.length < 5) todayCourses.add(course);
+      // if (todayCourses.length < 5) todayCourses.add(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(
@@ -76,9 +78,7 @@ class TodayCoursesWidget extends StatelessWidget {
             itemCount: todayCourses.length,
             itemBuilder: (context, i) {
               return GestureDetector(
-                onTap: () {
-                  // TODO 这里点击有啥效果捏
-                },
+                onTap: () => Navigator.pushNamed(context, '/gpa'),
                 child: Container(
                   height: 180.0,
                   width: 150.0,
