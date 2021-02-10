@@ -64,11 +64,6 @@ class ClassroomsDataModel extends ViewStateRefreshListModel {
     var instance = await HiveManager.instance;
     var box = instance.buildingBoxes[_id];
 
-    for (int i = 0; i < 7; i++) {
-      var buildings = Data.getOneDayAvailable(i);
-      await instance.addClassroomsPlan(buildings, i);
-    }
-
     for (var day in Time.week) {
       var b = await box.get(day);
       print(box.keys);

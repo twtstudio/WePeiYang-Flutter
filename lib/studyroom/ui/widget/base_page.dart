@@ -28,7 +28,9 @@ class StudyRoomPage extends StatelessWidget {
                   color: Color(0XFF62677B),
                 ),
                 iconSize: 30,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
               backgroundColor: Colors.transparent,
               actions: [

@@ -39,12 +39,12 @@ class HiveManager {
       await Hive.initFlutter();
       Hive.registerAdapter<Key>(KeyAdapter());
       Hive.registerAdapter<DBState>(DBStateAdapter());
-      _instance.boxesKeys = await Hive.openBox<Key>(boxes);
-      // _instance.boxesKeys.put('1',Key('1'));
       Hive.registerAdapter<Building>(BuildingAdapter());
       Hive.registerAdapter<Area>(AreaAdapter());
       Hive.registerAdapter<Classroom>(ClassroomAdapter());
       Hive.registerAdapter<SearchHistory>(SearchHistoryAdapter());
+      _instance.boxesKeys = await Hive.openBox<Key>(boxes);
+      // _instance.boxesKeys.put('1',Key('1'));
 
       var values = _instance.boxesKeys.values;
       // print(values.runtimeType);
@@ -63,38 +63,37 @@ class HiveManager {
           print('box disappear:' + key);
         }
       }
-      ;
     }
     return _instance;
   }
 
-  void changeDataState(String id, bool state) {
+  Future<void> changeDataState(String id, bool state) {
     boxesKeys.delete(id);
     boxesKeys.put(id, Key(id, DBState(state, DateTime.now().toString())));
   }
 
-  void createBox(Building building) async {
+  Future<void> createBox(Building building) async {
     var bName = building.id;
     if (boxesKeys.values.contains(bName)) {
       print('building exist:' + bName);
     } else {
-      changeDataState(building.id, notReady);
+      await changeDataState(building.id, notReady);
 
       var box = await Hive.openLazyBox<Building>(bName);
       await box.put(baseRoom, building);
       buildingBoxes[bName] = box;
 
-      changeDataState(building.id, ready);
+      await changeDataState(building.id, ready);
       print('box created finish :' + bName);
       print(box.path);
     }
   }
 
-  void createBuildingBoxes(List<Building> buildings) async {
+  Future<void> createBuildingBoxes(List<Building> buildings) async {
     var t1 = DateTime.now().millisecond;
-    buildings.forEach((building) {
-      createBox(building);
-    });
+    for (var building in buildings) {
+      await createBox(building);
+    }
     var t2 = DateTime.now().millisecond;
     print('use time:' + (t2 - t1).toString());
   }
@@ -109,12 +108,12 @@ class HiveManager {
     }
   }
 
-  void clearClassroomPlan() {
-    buildingBoxes.values.forEach((box) async {
+  Future<void> clearClassroomPlan() {
+    for (var box in buildingBoxes.values) {
       Time.week.forEach((day) async {
         await box.delete(day);
       });
-    });
+    }
   }
 
   /// 根据日期先判断时星期几，然后设置那天的教室安排
@@ -128,7 +127,8 @@ class HiveManager {
           await box.delete(key);
         }
         await box.put(key, building);
-        print('put data finished :' + building.toJson().toString());
+        print('!!!!!!!!!!!!!!!!!!!!put data finished :' +
+            building.toJson().toString());
       }
     } else {
       print('box not exist :' + building.id);
@@ -159,10 +159,9 @@ class HiveManager {
   }
 
   Future<void> closeBoxes() async {
-    for (var box in buildingBoxes.values) {
-      await box.close();
-    }
-    await boxesKeys.close();
-    await Hive.close();
+    // await Hive.close();
+    // _instance = null;
+    // boxesKeys = null;
+    // buildingBoxes= {};
   }
 }

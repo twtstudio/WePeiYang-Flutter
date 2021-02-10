@@ -87,6 +87,8 @@ class ClassPlanModel extends ViewStateRefreshListModel {
   Future<List> loadData() async {
     var instance = await HiveManager.instance;
     var box = instance.buildingBoxes[_bId];
+    print('key: '+box.keys.toString());
+    print('name: '+box.name);
     for (var day in Time.week) {
       _plans[day] = ['11', '11', '11', '11', '11', '11'];
       var building = await box.get(day);

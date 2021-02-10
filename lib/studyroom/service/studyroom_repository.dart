@@ -1,5 +1,3 @@
-
-
 import 'data.dart';
 import 'hive_manager.dart';
 
@@ -10,7 +8,13 @@ class StudyRoomRepository {
 
     var buildings = Data.getBuildings();
     var instance = await HiveManager.instance;
-    instance.createBuildingBoxes(buildings);
+    await instance.createBuildingBoxes(buildings);
+    for (int i = 0; i < 7; i++) {
+      var buildings = Data.getOneDayAvailable(i);
+      print(buildings.toString());
+      await instance.addClassroomsPlan(buildings, i);
+    }
+
     return buildings;
   }
 
