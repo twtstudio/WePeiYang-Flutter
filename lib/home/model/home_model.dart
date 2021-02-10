@@ -26,12 +26,13 @@ class GPABean {
 }
 
 class GlobalModel {
-  GlobalModel._(){
+  GlobalModel._() {
     cards.add(CardBean(Icons.event, '课程表', '/schedule'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
+    cards.add(
+        CardBean(Icons.calendar_today_outlined, "自习室", StudyRoomRouter.main));
     cards.add(CardBean(Icons.call, '黄页', '/telNum'));
     cards.add(CardBean(Icons.clear_all, '图书馆', '/library'));
-    cards.add(CardBean(Icons.calendar_today_outlined, "自习室", StudyRoomRouter.main));
     cards.add(CardBean(Icons.import_contacts, '凑数的1', '/learning'));
     cards.add(CardBean(Icons.card_giftcard, '凑数的2', '/cards'));
     cards.add(CardBean(Icons.free_breakfast, '凑数的3', '/coffee'));

@@ -35,8 +35,10 @@ void login(BuildContext context, String name, String pw, String captcha,
     var notifier = Provider.of<ScheduleNotifier>(
         WeiPeiYangApp.navigatorState.currentContext);
     notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
-    notifier.currentWeek =
-        int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
+    // TODO Debug
+    notifier.currentWeek = 12;
+    // notifier.currentWeek =
+    //     int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
     pref.isBindTju.value = true;
     onSuccess();
   }).catchError((e) {
