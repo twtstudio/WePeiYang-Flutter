@@ -7,11 +7,13 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/studyroom/config/studyroom_router.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/building.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/images.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/search_history.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/provider_widget.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/studyroom/ui/page/search/search_delegate.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/home_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
-
 
 class MainPage extends StatefulWidget {
   @override
@@ -25,9 +27,16 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scheduleModel.initSchedule();
     });
+  }
+
+  @override
+  Future<void> dispose() async {
+    super.dispose();
+    var instance = await HiveManager.instance;
+    await instance.closeBoxes();
   }
 
   @override
@@ -88,11 +97,35 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        height: 40,
-        color: Colors.yellow,
-        child: Center(
-          child: Text('搜索框'),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Builder(
+        builder: (_) => InkWell(
+          onTap: () async {
+            var result = await showASearch<SearchHistory>(
+                context: context, delegate: StudyRoomSearchDelegate());
+            // Scaffold.of(context).showSnackBar(SnackBar(content: Text(result.cId)));
+            String title = getTitle(result);
+            print('you tap class:' + result.toJson().toString());
+            Navigator.of(context).pushNamed(
+              StudyRoomRouter.plan,
+              arguments: [result.aId, result.bId, result.cId, title],
+            );
+          },
+          child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                shape: BoxShape.rectangle,
+                color: Color(0xffecedef),
+              ),
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+                child: Row(
+                  children: [
+                    Image(image: AssetImage(Images.search), width: 16)
+                  ],
+                ),
+              )),
         ),
       ),
     );
@@ -109,19 +142,15 @@ class CampusChangeWidget extends StatelessWidget {
     BuildingDataModel model = Provider.of(context);
     return Row(
       children: [
-        Image(
-          image: AssetImage(Images.direction),
-          width: 15,
-        ),
+        Image(image: AssetImage(Images.direction), width: 15),
         TextButton(
           onPressed: () => model.changeCampus(),
           child: Text(
             model.campus,
             style: TextStyle(
-              color: Color(0XFF62677B),
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
+                color: Color(0XFF62677B),
+                fontSize: 17,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -257,7 +286,7 @@ class BuildingGridWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     BuildingDataModel homeModel = Provider.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(5, 30, 5, 10),
+      padding: const EdgeInsets.fromLTRB(5, 40, 5, 10),
       child: Container(
         child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),

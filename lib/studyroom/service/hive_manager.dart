@@ -4,11 +4,12 @@ import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/building.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/key.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/search_history.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
-
 
 const boxes = 'boxesKeys';
 const baseRoom = 'baseClassrooms';
+const searchHistory = 'history';
 
 /// 考虑在每次init HiveManager 的时候就请求数据
 /// 每次直接请求这一周的数据，存在数据库里
@@ -43,13 +44,15 @@ class HiveManager {
       Hive.registerAdapter<Building>(BuildingAdapter());
       Hive.registerAdapter<Area>(AreaAdapter());
       Hive.registerAdapter<Classroom>(ClassroomAdapter());
+      Hive.registerAdapter<SearchHistory>(SearchHistoryAdapter());
+
       var values = _instance.boxesKeys.values;
       // print(values.runtimeType);
       // for(Key k in values){
       //   print(k.runtimeType);
       // }
       print(values);
-      _instance.boxesKeys.values.forEach((k) async {
+      for (var k in _instance.boxesKeys.values) {
         var key = k.key;
         var e = await Hive.boxExists(key);
         if (e) {
@@ -59,7 +62,8 @@ class HiveManager {
         } else {
           print('box disappear:' + key);
         }
-      });
+      }
+      ;
     }
     return _instance;
   }
@@ -142,11 +146,23 @@ class HiveManager {
     }
   }
 
-  void closeBoxes() {
-    buildingBoxes.forEach((_, box) {
-      box.close();
-    });
-    boxesKeys.close();
-    Hive.close();
+  static Future<List<SearchHistory>> getSearchHistory() async {
+    print('get search history');
+    var box = await Hive.openBox<SearchHistory>(searchHistory);
+    print('get search history2');
+    await box.put(1, SearchHistory('44', '101', 'A', '1', '00', '123123'));
+    await box.put(2, SearchHistory('45', '102', '', '2', '13', '123123'));
+    await box.put(3, SearchHistory('35', '101', 'A', '3', '15', '123123'));
+    var history = box.values;
+    print(history.toString());
+    return history.toList();
+  }
+
+  Future<void> closeBoxes() async {
+    for (var box in buildingBoxes.values) {
+      await box.close();
+    }
+    await boxesKeys.close();
+    await Hive.close();
   }
 }

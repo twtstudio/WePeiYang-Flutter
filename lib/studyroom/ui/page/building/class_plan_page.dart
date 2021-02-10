@@ -7,7 +7,6 @@ import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/class_plan_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 
-
 class ClassPlanPage extends StatefulWidget {
   final String aId; // area id
   final String bId; // building id
@@ -33,30 +32,28 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
         });
       },
       builder: (context, model, child) {
-        var plan = model.plan;
         return StudyRoomPage(
           body: Padding(
             padding: const EdgeInsets.all(15),
             child: Builder(builder: (_) {
-              if (model.isBusy) {
+              if (model.isError && model.list.isEmpty) {
                 return Container(
                   child: Center(
-                    child: Text('加载中/加载失败'),
-                  ),
-                );
-              } else {
-                return SmartRefresher(
-                  controller: model.refreshController,
-                  header: ClassicHeader(),
-                  onRefresh: () => model.refresh(),
-                  child: ListView(
-                    children: <Widget>[
-                      PageTitleWidget(title: widget.title),
-                      ClassTableWidget(),
-                    ],
+                    child: Text('加载失败'),
                   ),
                 );
               }
+              return SmartRefresher(
+                controller: model.refreshController,
+                header: ClassicHeader(),
+                onRefresh: () => model.refresh(),
+                child: ListView(
+                  children: <Widget>[
+                    PageTitleWidget(title: widget.title),
+                    if (model.plan?.isNotEmpty ?? false) ClassTableWidget()
+                  ],
+                ),
+              );
             }),
           ),
         );
@@ -184,9 +181,12 @@ class CourseDisplayWidget extends StatelessWidget {
     ClassPlanModel model = Provider.of<ClassPlanModel>(context);
     List<Positioned> list = [];
     var d = 1;
-    Time.week.getRange(0, 6).forEach((day) {
+    for (var wd in Time.week.getRange(0, 6)) {
       var index = 1;
-      model.plan[day].forEach((c) {
+      print(wd);
+      print(model.plan[wd].toString());
+      for (var c in model.plan[wd]) {
+        print(wd);
         int day = d;
         int start = index;
         index = index + c.length;
@@ -231,10 +231,9 @@ class CourseDisplayWidget extends StatelessWidget {
                   ),
                 ),
               )));
-      });
+      }
       d++;
-    });
-
+    }
     return list;
   }
 }

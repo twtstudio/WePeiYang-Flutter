@@ -15,7 +15,7 @@ class Time {
     thursday,
     friday,
     saturday,
-    saturday
+    sunday,
   ];
 
 

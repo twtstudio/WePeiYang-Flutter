@@ -5,12 +5,12 @@ import 'package:wei_pei_yang_demo/studyroom/config/studyroom_router.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/images.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/search_history.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/classroom_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
-
 
 class ClassroomsPage extends StatefulWidget {
   final Area area;
@@ -182,13 +182,18 @@ class FloorWidget extends StatelessWidget {
               } else {
                 title = model.area.building + '教' + aId + '区' + classroom.name;
               }
-              // print('classroom :' + classroom.id + '   current:' + current +
-              //     '   currentPlan:' + currentPlan + '   isIdle:' +
-              //     isIdle.toString());
 
               return InkWell(
                 onTap: () {
-                  print('you tap class:' + title);
+                  print('you tap class:' +
+                      SearchHistory(
+                        model.area.building,
+                        classroom.name,
+                        aId,
+                        bId,
+                        classroom.id,
+                        '123123',
+                      ).toJson().toString());
                   Navigator.of(context).pushNamed(
                     StudyRoomRouter.plan,
                     arguments: [aId, bId, classroom.id, title],

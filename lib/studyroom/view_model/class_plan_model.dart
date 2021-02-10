@@ -110,6 +110,7 @@ class ClassPlanModel extends ViewStateRefreshListModel {
       }
     }
     print(_plans.values.toList());
+    print(_plans.keys.toList());
 
     return _plans.values.toList();
   }
