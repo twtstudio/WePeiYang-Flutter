@@ -105,7 +105,10 @@ const schedulePadding = 25;
 class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width - schedulePadding * 2;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width - schedulePadding * 2;
     var dayCount = false ? 7 : 6;
     var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
     return ListView(
@@ -129,7 +132,8 @@ class WeekDisplayWidget extends StatelessWidget {
   WeekDisplayWidget(this.cardWidth, this.dayCount);
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(BuildContext context) =>
+      Row(
         children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
@@ -143,7 +147,8 @@ class WeekDisplayWidget extends StatelessWidget {
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(double width, String date) => Container(
+  Widget _getCard(double width, String date) =>
+      Container(
         height: 28,
         width: width,
         decoration: BoxDecoration(
@@ -170,22 +175,31 @@ class CourseDisplayWidget extends StatelessWidget {
     var singleCourseHeight = cardWidth * 136 / 96;
     return Container(
       height: singleCourseHeight * 12 + cardStep * 11,
-      child: Stack(
-        children: _generatePositioned(context, singleCourseHeight),
+      child: Consumer<ClassPlanModel>(
+          builder: (_, model, __) {
+            if (model.plan?.isNotEmpty ?? false) {
+              return Stack(
+                children: _generatePositioned(
+                    context, singleCourseHeight, model.plan),
+              );
+            }
+
+            return Container();
+          }
       ),
     );
     // return Container();
   }
 
-  List<Widget> _generatePositioned(BuildContext context, double courseHeight) {
-    ClassPlanModel model = Provider.of<ClassPlanModel>(context);
+  List<Widget> _generatePositioned(BuildContext context, double courseHeight,
+      Map<String, List<String>> plan) {
     List<Positioned> list = [];
     var d = 1;
     for (var wd in Time.week.getRange(0, 6)) {
       var index = 1;
       print(wd);
-      print(model.plan[wd].toString());
-      for (var c in model.plan[wd]) {
+      print(plan[wd].toString());
+      for (var c in plan[wd]) {
         print(wd);
         int day = d;
         int start = index;

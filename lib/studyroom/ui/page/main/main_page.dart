@@ -139,18 +139,19 @@ class CampusChangeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BuildingDataModel model = Provider.of(context);
     return Row(
       children: [
         Image(image: AssetImage(Images.direction), width: 15),
-        TextButton(
-          onPressed: () => model.changeCampus(),
-          child: Text(
-            model.campus,
-            style: TextStyle(
-                color: Color(0XFF62677B),
-                fontSize: 17,
-                fontWeight: FontWeight.bold),
+        Consumer<BuildingDataModel>(
+          builder:(_,model,__) => TextButton(
+            onPressed: () => model.changeCampus(),
+            child: Text(
+              model.campus,
+              style: TextStyle(
+                  color: Color(0XFF62677B),
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ],
@@ -284,52 +285,53 @@ class FavourListCard extends StatelessWidget {
 class BuildingGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    BuildingDataModel homeModel = Provider.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(5, 40, 5, 10),
       child: Container(
-        child: GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            //增加
-            shrinkWrap: true,
-            //增加
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, //每行三列
-            ),
-            itemCount: homeModel.buildings.length,
-            itemBuilder: (context, index) {
-              //如果显示到最后一个并且Icon总数小于200时继续获取数据
-              return InkWell(
-                onTap: () {
-                  var building = homeModel.buildings[index];
-                  building.areas.forEach((area) {
-                    area.building = building.name;
-                  });
-                  Navigator.of(context).pushNamed(StudyRoomRouter.areas,
-                      arguments: Building()
-                        ..id = building.id
-                        ..name = building.name
-                        ..areas = building.areas
-                        ..campus = building.campus);
-                },
-                child: Column(
-                  children: [
-                    Image.asset(Images.building),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                      child: Text(
-                        homeModel.buildings[index].name + "教",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0XFF86868F),
+        child: Consumer<BuildingDataModel>(
+          builder:(_,model,__) => GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              //增加
+              shrinkWrap: true,
+              //增加
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, //每行三列
+              ),
+              itemCount: model.buildings.length,
+              itemBuilder: (context, index) {
+                //如果显示到最后一个并且Icon总数小于200时继续获取数据
+                return InkWell(
+                  onTap: () {
+                    var building = model.buildings[index];
+                    building.areas.forEach((area) {
+                      area.building = building.name;
+                    });
+                    Navigator.of(context).pushNamed(StudyRoomRouter.areas,
+                        arguments: Building()
+                          ..id = building.id
+                          ..name = building.name
+                          ..areas = building.areas
+                          ..campus = building.campus);
+                  },
+                  child: Column(
+                    children: [
+                      Image.asset(Images.building),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                        child: Text(
+                          model.buildings[index].name + "教",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0XFF86868F),
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }),
+                      )
+                    ],
+                  ),
+                );
+              }),
+        ),
       ),
     );
   }

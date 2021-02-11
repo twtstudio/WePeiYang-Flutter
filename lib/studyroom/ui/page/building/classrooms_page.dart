@@ -79,7 +79,6 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
 class _PathTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var area = Provider.of<ClassroomsDataModel>(context).area;
     return Container(
       padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
       child: Row(
@@ -90,16 +89,19 @@ class _PathTitle extends StatelessWidget {
             height: 17,
           ),
           SizedBox(width: 7),
-          Text(
-            area.area_id != null
-                ? area.building + "教学楼" + area.area_id
-                : area.building + "教学楼",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: Color(0xff62677b),
-            ),
-          )
+          Consumer<ClassroomsDataModel>(builder: (_, model, __) {
+            final area = model.area;
+            return Text(
+              area.area_id != null
+                  ? area.building + "教学楼" + area.area_id
+                  : area.building + "教学楼",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Color(0xff62677b),
+              ),
+            );
+          })
         ],
       ),
     );
@@ -122,10 +124,6 @@ class FloorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ClassroomsDataModel model = Provider.of(context);
-    Map<String, Map<String, String>> classPlan = model.classPlan;
-    int currentDay = model.currentDay;
-    Schedule schedule = model.schedule;
     return Column(
       children: [
         Container(
@@ -146,63 +144,69 @@ class FloorWidget extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              // crossAxisSpacing: 13,
-              // mainAxisSpacing: 18,
-              childAspectRatio: 68 / 54,
-            ),
-            itemCount: classrooms.length,
-            itemBuilder: (context, index) {
-              var classroom = classrooms[index];
-              print('classroom: ' + classroom.toJson().toString());
-              var plan = classPlan[classroom.id];
-              String current;
-              String currentPlan;
-              bool isIdle;
-              if (plan != null) {
-                current = Time.week[currentDay - 1];
-                currentPlan = plan[current];
-                if (currentPlan != null) {
-                  isIdle = Time.availableNow(currentPlan, schedule);
+          child: Consumer<ClassroomsDataModel>(builder: (_, model, __) {
+            Map<String, Map<String, String>> classPlan = model.classPlan;
+            int currentDay = model.currentDay;
+            Schedule schedule = model.schedule;
+            return GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                // crossAxisSpacing: 13,
+                // mainAxisSpacing: 18,
+                childAspectRatio: 68 / 54,
+              ),
+              itemCount: classrooms.length,
+              itemBuilder: (context, index) {
+                var classroom = classrooms[index];
+                print('classroom: ' + classroom.toJson().toString());
+                var plan = classPlan[classroom.id];
+                String current;
+                String currentPlan;
+                bool isIdle;
+                if (plan != null) {
+                  current = Time.week[currentDay - 1];
+                  currentPlan = plan[current];
+                  if (currentPlan != null) {
+                    isIdle = Time.availableNow(currentPlan, schedule);
+                  } else {
+                    isIdle = false;
+                  }
                 } else {
+                  current = null;
+                  classPlan = null;
                   isIdle = false;
                 }
-              } else {
-                current = null;
-                classPlan = null;
-                isIdle = false;
-              }
-              String title;
-              if (aId == null) {
-                title = model.area.building + '教' + classroom.name;
-              } else {
-                title = model.area.building + '教' + aId + '区' + classroom.name;
-              }
+                String title;
+                if (aId == null) {
+                  title = model.area.building + '教' + classroom.name;
+                } else {
+                  title =
+                      model.area.building + '教' + aId + '区' + classroom.name;
+                }
 
-              return InkWell(
-                onTap: () {
-                  print('you tap class:' +
-                      SearchHistory(
-                        model.area.building,
-                        classroom.name,
-                        aId,
-                        bId,
-                        classroom.id,
-                        '123123',
-                      ).toJson().toString());
-                  Navigator.of(context).pushNamed(
-                    StudyRoomRouter.plan,
-                    arguments: [aId, bId, classroom.id, title],
-                  );
-                },
-                child: _RoomItem(classroom: classroom, isIdle: isIdle),
-              );
-            },
-          ),
+                return InkWell(
+                  onTap: () {
+                    print('you tap class:' +
+                        SearchHistory(
+                          model.area.building,
+                          classroom.name,
+                          aId,
+                          bId,
+                          classroom.id,
+                          '123123',
+                        ).toJson().toString());
+                    Navigator.of(context).pushNamed(
+                      StudyRoomRouter.plan,
+                      arguments: [aId, bId, classroom.id, title],
+                    );
+                  },
+                  child: _RoomItem(classroom: classroom, isIdle: isIdle),
+                );
+              },
+            );
+          }),
         )
       ],
     );
