@@ -17,8 +17,8 @@ class StudyRoomRouter {
   static final Map<String, Widget Function(Object arguments)> routers = {
     areas: (arguments) {
       var building = arguments as Building;
-      var firstArea = building.areas[0];
-      return firstArea.area_id == null
+      var firstArea = building.areas.values.first;
+      return firstArea.area_id == ''
           ? ClassroomsPage(area: firstArea, id: building.id)
           : AreasPage(building: building);
     },

@@ -16,7 +16,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => GPANotifier()),
     ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider<ScheduleModel>(create: (context) => ScheduleModel())
+    ChangeNotifierProvider(create: (context) => SRTimeModel())
   ], child: WeiPeiYangApp()));
 
   /// 设置沉浸式状态栏

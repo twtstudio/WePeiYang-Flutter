@@ -43,7 +43,7 @@ class SearchHistoryAdapter extends TypeAdapter<SearchHistory> {
   @override
   void write(BinaryWriter writer, SearchHistory obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.bName)
       ..writeByte(1)

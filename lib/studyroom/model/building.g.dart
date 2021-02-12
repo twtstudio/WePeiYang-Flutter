@@ -20,7 +20,7 @@ class BuildingAdapter extends TypeAdapter<Building> {
       id: fields[0] as String,
       name: fields[1] as String,
       campus: fields[2] as String,
-      areas: (fields[3] as List)?.cast<Area>(),
+      areas: (fields[3] as Map)?.cast<String, Area>(),
     );
   }
 

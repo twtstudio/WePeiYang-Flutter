@@ -1,5 +1,3 @@
-
-
 import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
@@ -12,13 +10,15 @@ import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 class ClassroomsDataModel extends ViewStateRefreshListModel {
   ClassroomsDataModel({this.scheduleModel});
 
-  ScheduleModel scheduleModel;
+  SRTimeModel scheduleModel;
   String _id;
+
   int get currentDay => scheduleModel.currentDay;
+
   Schedule get schedule => scheduleModel.schedule;
 
-
   Area _area = Area();
+
   Area get area => _area;
   Map<String, List<Classroom>> _floors = {};
   Map<String, Map<String, String>> _classPlan = {};
@@ -30,10 +30,10 @@ class ClassroomsDataModel extends ViewStateRefreshListModel {
   setBaseData(Area data, String id) {
     _area = data;
     _id = id;
-    _area.classrooms.forEach((c) {
+    for(var c in _area.classrooms.values) {
       var floor = c.name[0];
       var room = Classroom()
-        ..name = _area.area_id == null ? c.name : _area.area_id + c.name
+        ..name = _area.area_id == '' ? c.name : _area.area_id + c.name
         ..capacity = c.capacity
         ..id = c.id;
       if (_floors.containsKey(floor)) {
@@ -53,32 +53,22 @@ class ClassroomsDataModel extends ViewStateRefreshListModel {
       } else {
         _classPlan[c.id] = {};
       }
-    });
+    }
   }
 
   @override
   Future<List> loadData() async {
     var result = await StudyRoomRepository.getWeekClassPlan();
-
-    var t1 = DateTime.now().millisecondsSinceEpoch;
     var instance = await HiveManager.instance;
-    var box = instance.buildingBoxes[_id];
-
     for (var day in Time.week) {
-      var b = await box.get(day);
-      print(box.keys);
-      for (var area in b.areas) {
-        if (area.area_id == _area.area_id) {
-          area.classrooms.forEach((c) {
-            var plan = _classPlan[c.id];
-            plan[day] = c.status;
-            _classPlan[c.id] = plan;
-          });
-        }
+      var building = await instance.getBuildingPlan(bId: _id, day: day);
+      var area = building.areas[_area.area_id];
+      if(area == null) continue;
+      for(var c in area.classrooms.values) {
+        var plan = _classPlan[c.id];
+        plan[day] = c.status ?? '';
+        _classPlan[c.id] = plan;
       }
-      var t2 = DateTime.now().millisecondsSinceEpoch;
-      print(
-          'format $day data finish, use milliseconds :' + (t2 - t1).toString());
     }
 
     return result;

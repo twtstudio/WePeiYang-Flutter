@@ -24,10 +24,13 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<ClassPlanModel>(
-      model: ClassPlanModel(scheduleModel: Provider.of<ScheduleModel>(context)),
+      model: ClassPlanModel(
+          aId: widget.aId,
+          bId: widget.bId,
+          cId: widget.cId,
+          scheduleModel: Provider.of<SRTimeModel>(context)),
       onModelReady: (model) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          model.setRoomPath(widget.aId, widget.bId, widget.cId);
           model.initData();
         });
       },
@@ -105,10 +108,7 @@ const schedulePadding = 25;
 class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width - schedulePadding * 2;
+    var width = MediaQuery.of(context).size.width - schedulePadding * 2;
     var dayCount = false ? 7 : 6;
     var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
     return ListView(
@@ -132,8 +132,7 @@ class WeekDisplayWidget extends StatelessWidget {
   WeekDisplayWidget(this.cardWidth, this.dayCount);
 
   @override
-  Widget build(BuildContext context) =>
-      Row(
+  Widget build(BuildContext context) => Row(
         children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
@@ -147,8 +146,7 @@ class WeekDisplayWidget extends StatelessWidget {
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(double width, String date) =>
-      Container(
+  Widget _getCard(double width, String date) => Container(
         height: 28,
         width: width,
         decoration: BoxDecoration(
@@ -175,18 +173,16 @@ class CourseDisplayWidget extends StatelessWidget {
     var singleCourseHeight = cardWidth * 136 / 96;
     return Container(
       height: singleCourseHeight * 12 + cardStep * 11,
-      child: Consumer<ClassPlanModel>(
-          builder: (_, model, __) {
-            if (model.plan?.isNotEmpty ?? false) {
-              return Stack(
-                children: _generatePositioned(
-                    context, singleCourseHeight, model.plan),
-              );
-            }
+      child: Consumer<ClassPlanModel>(builder: (_, model, __) {
+        if (model.plan?.isNotEmpty ?? false) {
+          return Stack(
+            children:
+                _generatePositioned(context, singleCourseHeight, model.plan),
+          );
+        }
 
-            return Container();
-          }
-      ),
+        return Container();
+      }),
     );
     // return Container();
   }

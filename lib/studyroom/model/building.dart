@@ -12,18 +12,21 @@ class Building {
   @HiveField(2)
   String campus;
   @HiveField(3)
-  List<Area> areas;
+  Map<String, Area> areas;
 
   Building({this.id, this.name, this.campus, this.areas});
 
   static Building fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     Building building = Building();
-    building.id = map['building_id'];
-    building.name = map['building'];
-    building.campus = map['campus_id'];
-    building.areas = List()
+    building.id = map['building_id'] ?? '';
+    building.name = map['building'] ?? '';
+    building.campus = map['campus_id'] ?? '';
+    var list = List()
       ..addAll((map['areas'] as List ?? []).map((e) => Area.fromMap(e)));
+    for (var area in list) {
+      building.areas[area.id ?? ''] = area;
+    }
     return building;
   }
 

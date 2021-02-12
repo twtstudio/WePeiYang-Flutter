@@ -21,7 +21,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  ScheduleModel scheduleModel;
+  SRTimeModel scheduleModel;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    scheduleModel = Provider.of<ScheduleModel>(context);
+    scheduleModel = Provider.of<SRTimeModel>(context);
     return ProviderWidget<BuildingDataModel>(
       model: BuildingDataModel(scheduleModel),
       onModelReady: (homeModel) {
@@ -143,7 +143,7 @@ class CampusChangeWidget extends StatelessWidget {
       children: [
         Image(image: AssetImage(Images.direction), width: 15),
         Consumer<BuildingDataModel>(
-          builder:(_,model,__) => TextButton(
+          builder: (_, model, __) => TextButton(
             onPressed: () => model.changeCampus(),
             child: Text(
               model.campus,
@@ -289,7 +289,7 @@ class BuildingGridWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(5, 40, 5, 10),
       child: Container(
         child: Consumer<BuildingDataModel>(
-          builder:(_,model,__) => GridView.builder(
+          builder: (_, model, __) => GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               //增加
               shrinkWrap: true,
@@ -303,9 +303,10 @@ class BuildingGridWidget extends StatelessWidget {
                 return InkWell(
                   onTap: () {
                     var building = model.buildings[index];
-                    building.areas.forEach((area) {
+                    for (var area in building.areas.values) {
                       area.building = building.name;
-                    });
+                    }
+
                     Navigator.of(context).pushNamed(StudyRoomRouter.areas,
                         arguments: Building()
                           ..id = building.id

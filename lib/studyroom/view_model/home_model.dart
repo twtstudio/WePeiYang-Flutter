@@ -7,7 +7,7 @@ import 'package:wei_pei_yang_demo/studyroom/service/studyroom_repository.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 
 class BuildingDataModel extends ViewStateRefreshListModel {
-  ScheduleModel scheduleModel;
+  SRTimeModel scheduleModel;
   BuildingDataModel(this.scheduleModel);
 
   List<Building> _buildings = List();

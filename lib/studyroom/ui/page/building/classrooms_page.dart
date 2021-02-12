@@ -30,7 +30,7 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   Widget build(BuildContext context) {
     return ProviderWidget<ClassroomsDataModel>(
         model: ClassroomsDataModel(
-            scheduleModel: Provider.of<ScheduleModel>(context)),
+            scheduleModel: Provider.of<SRTimeModel>(context)),
         onModelReady: (model) {
           model.setBaseData(widget.area, widget.id);
           model.initData();

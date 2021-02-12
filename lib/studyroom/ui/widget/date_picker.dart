@@ -84,7 +84,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<ScheduleModel>(context);
+    var model = Provider.of<SRTimeModel>(context);
 
     return Padding(
       padding: EdgeInsets.all(10),
