@@ -1,7 +1,7 @@
 
 
 import 'package:wei_pei_yang_demo/studyroom/model/building.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/view_state_refresh_list_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/service/studyroom_repository.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
@@ -53,10 +53,5 @@ class BuildingDataModel extends ViewStateRefreshListModel {
     });
     print("aaaaa"+allBuildings.toString());
     return result[0];
-  }
-
-  @override
-  onCompleted(List data) {
-    // GlobalFavouriteStateModel.refresh(data);
   }
 }

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/class_plan_model.dart';
+import 'package:wei_pei_yang_demo/studyroom/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 
 class ClassPlanPage extends StatefulWidget {
-  final String aId; // area id
-  final String bId; // building id
-  final String cId; // classroom id
-  final String title;
+  final Classroom room;
 
-  const ClassPlanPage({Key key, this.aId, this.bId, this.cId, this.title})
-      : super(key: key);
+  const ClassPlanPage({Key key, this.room}) : super(key: key);
 
   @override
   _ClassPlanPageState createState() => _ClassPlanPageState();
@@ -25,10 +23,7 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
   Widget build(BuildContext context) {
     return ProviderWidget<ClassPlanModel>(
       model: ClassPlanModel(
-          aId: widget.aId,
-          bId: widget.bId,
-          cId: widget.cId,
-          scheduleModel: Provider.of<SRTimeModel>(context)),
+          room: widget.room, scheduleModel: Provider.of<SRTimeModel>(context)),
       onModelReady: (model) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           model.initData();
@@ -52,7 +47,7 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
                 onRefresh: () => model.refresh(),
                 child: ListView(
                   children: <Widget>[
-                    PageTitleWidget(title: widget.title),
+                    PageTitleWidget(title: widget.room.name, room: widget.room),
                     if (model.plan?.isNotEmpty ?? false) ClassTableWidget()
                   ],
                 ),
@@ -67,31 +62,61 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
 
 class PageTitleWidget extends StatelessWidget {
   final String title;
+  final Classroom room;
 
-  const PageTitleWidget({Key key, this.title}) : super(key: key);
+  const PageTitleWidget({Key key, this.title, this.room}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Color(0xff62677b),
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        Container(
+          // color: Colors.yellow,
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Color(0xff62677b),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Expanded(child: SizedBox()),
-        InkWell(
-          onTap: () {},
-          child: Text(
-            '收藏',
-            style: TextStyle(
-              color: Color(0xff62677b),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
+
+        // article list item 中有收藏按钮的写法
+        Container(
+          // color: Colors.yellow,
+          padding: const EdgeInsets.only(bottom: 7),
+          child: ProviderWidget<FavouriteModel>(
+            model: FavouriteModel(
+                globalFavouriteModel: Provider.of(context, listen: false)),
+            builder: (_, favouriteModel, __) => TextButton(
+              // 去除默认padding
+              style: ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: MaterialStateProperty.all(Size(0, 0)),
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+              ),
+              onPressed: () async {
+                if (!favouriteModel.isBusy) {
+                  addFavourites(context, room: room, model: favouriteModel);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  favouriteModel.globalFavouriteModel.contains(cId: room.id)
+                      ? '取消收藏'
+                      : '收藏',
+                  style: TextStyle(
+                    color: Color(0xff62677b),
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         )
@@ -132,34 +157,30 @@ class WeekDisplayWidget extends StatelessWidget {
   WeekDisplayWidget(this.cardWidth, this.dayCount);
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
+  Widget build(BuildContext context) {
+    return Consumer<ClassPlanModel>(
+      builder: (_, model, __) => Row(
+        // children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
+        children: ['1', '2', '3', '4', '5', '6']
+            .map((day) => Container(
+                  height: 28,
+                  width: cardWidth,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(236, 238, 237, 1),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                    child: Text(day,
+                        style: TextStyle(
+                            color: Color.fromRGBO(200, 200, 200, 1),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ))
+            .toList(),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
-
-  List<Widget> _generateCards(double width, List<String> dates) {
-    List<Widget> list = [];
-    dates.forEach((element) {
-      list.add(_getCard(width, element));
-    });
-    return list;
+      ),
+    );
   }
-
-  /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(double width, String date) => Container(
-        height: 28,
-        width: width,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(236, 238, 237, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: Center(
-          child: Text(date,
-              style: TextStyle(
-                  color: Color.fromRGBO(200, 200, 200, 1),
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold)),
-        ),
-      );
 }
 
 class CourseDisplayWidget extends StatelessWidget {

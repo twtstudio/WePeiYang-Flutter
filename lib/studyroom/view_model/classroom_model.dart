@@ -1,6 +1,6 @@
 import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/view_state_refresh_list_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/service/data.dart';
 import 'package:wei_pei_yang_demo/studyroom/service/hive_manager.dart';
@@ -30,7 +30,7 @@ class ClassroomsDataModel extends ViewStateRefreshListModel {
   setBaseData(Area data, String id) {
     _area = data;
     _id = id;
-    for(var c in _area.classrooms.values) {
+    for (var c in _area.classrooms.values) {
       var floor = c.name[0];
       var room = Classroom()
         ..name = _area.area_id == '' ? c.name : _area.area_id + c.name
@@ -58,7 +58,7 @@ class ClassroomsDataModel extends ViewStateRefreshListModel {
 
   @override
   Future<List> loadData() async {
-    var result = await StudyRoomRepository.getWeekClassPlan();
+    var result = await StudyRoomRepository.getWeekClassPlan(dateTime: scheduleModel.dateTime);
     var instance = await HiveManager.instance;
     for (var day in Time.week) {
       var building = await instance.getBuildingPlan(bId: _id, day: day);

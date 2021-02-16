@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/images.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/search_history.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/classroom_model.dart';
@@ -159,6 +159,7 @@ class FloorWidget extends StatelessWidget {
               ),
               itemCount: classrooms.length,
               itemBuilder: (context, index) {
+                // TODO: 优化逻辑
                 var classroom = classrooms[index];
                 print('classroom: ' + classroom.toJson().toString());
                 var plan = classPlan[classroom.id];
@@ -199,7 +200,8 @@ class FloorWidget extends StatelessWidget {
                         ).toJson().toString());
                     Navigator.of(context).pushNamed(
                       StudyRoomRouter.plan,
-                      arguments: [aId, bId, classroom.id, title],
+                      arguments: Classroom(
+                          id: classroom.id, name: title, bId: bId, aId: aId),
                     );
                   },
                   child: _RoomItem(classroom: classroom, isIdle: isIdle),

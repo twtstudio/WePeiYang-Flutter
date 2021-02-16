@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 
 class SRTimeModel extends ChangeNotifier {
   int _currentDay;
@@ -10,6 +10,7 @@ class SRTimeModel extends ChangeNotifier {
     _currentDay = value;
     notifyListeners();
   }
+
 
   Schedule _schedule;
 
