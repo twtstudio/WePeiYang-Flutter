@@ -36,7 +36,7 @@ class WPYPage extends StatelessWidget {
             SliverToBoxAdapter(child: TodayCoursesWidget()),
 
             /// 废弃的library罢了
-            SliverLibraryWidget(libraries),
+            // SliverLibraryWidget(libraries),
 
             /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
@@ -53,17 +53,15 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    var now = DateTime.now();
-    String date = '${now.year}.${now.month}.${now.day}';
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.center,
       padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
       child: Row(
         children: <Widget>[
-          Text(date,
+          Text("Hello",
               style: TextStyle(
-                  fontSize: 25.0,
+                  fontSize: 35,
                   color: MyColors.deepBlue,
                   fontWeight: FontWeight.bold)),
           Expanded(child: Text('')), // 起填充作用
@@ -113,7 +111,7 @@ class SliverCardsWidget extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, cards[i].route),
                 child: Container(
                   height: 90.0,
-                  width: 130.0,
+                  width: 125.0,
                   padding: const EdgeInsets.symmetric(horizontal: 3.0),
                   child: generateCard(context, cards[i]),
                 ),

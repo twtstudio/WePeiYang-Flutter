@@ -77,7 +77,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.error_outline, color: Colors.white, size: 25),
               onTap: () {
                 //TODO popup info
-                Provider.of<GPANotifier>(context).listWithNotify = gpaList;
+                Provider.of<GPANotifier>(context, listen: false).gpaStatsWithNotify = gpaList;
                 ToastProvider.running('显示假数据');
               }),
         ),
@@ -85,7 +85,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
-              onTap: Provider.of<GPANotifier>(context).refreshGPA()),
+              onTap: Provider.of<GPANotifier>(context, listen: false).refreshGPA()),
         ),
       ],
     );

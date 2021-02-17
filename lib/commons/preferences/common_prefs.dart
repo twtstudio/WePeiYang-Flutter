@@ -15,12 +15,6 @@ class CommonPreferences {
   /// 初始化sharedPrefs，在自动登录时就被调用
   static Future<void> initPrefs() async {
     _instance._sharedPref = await SharedPreferences.getInstance();
-
-    /// 处理一些比较特殊的缓存默认值
-    if (_instance.dayNumber.value == 0) _instance.dayNumber.value = 7;
-    if (_instance.language.value == "") _instance.language.value = "简体中文";
-    // TODO debug
-    _instance.isBindTju.value = false;
   }
 
   ///twt相关
@@ -51,8 +45,8 @@ class CommonPreferences {
   var ids = PrefsBean<String>("ids"); // ids
 
   /// 设置页面
-  var language = PrefsBean<String>("language"); // 系统语言
-  var dayNumber = PrefsBean<int>("dayNumber"); // 每周显示天数
+  var language = PrefsBean<String>("language", "简体中文"); // 系统语言
+  var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
   var nightMode = PrefsBean<bool>("nightMode"); // 开启夜猫子模式
   var otherWeekSchedule = PrefsBean<bool>("otherWeekSchedule"); // 课表显示非本周课程
@@ -97,17 +91,15 @@ class CommonPreferences {
 }
 
 class PrefsBean<T> {
-  PrefsBean(this._key) {
-    _default = _getDefault(T);
-    _value = _default;
+  PrefsBean(this._key, [this._value]) {
+    if (_value == null) _value = _getDefault(T);
   }
 
   String _key;
   T _value;
-  T _default;
 
   T get value {
-    if (_value == _default) _value = _getValue(T, _key);
+    _value = _getValue(T, _key) ?? _value;
     return _value;
   }
 
@@ -120,7 +112,7 @@ class PrefsBean<T> {
 
 dynamic _getValue<T>(T, String key) {
   var pref = CommonPreferences.getPref();
-  return pref?.get(key) ?? _getDefault(T);
+  return pref?.get(key);
 }
 
 void _setValue<T>(T value, String key) {
@@ -139,6 +131,10 @@ void _setValue<T>(T value, String key) {
     case double:
       pref.setDouble(key, value as double);
       break;
+    case List:
+      print("setList!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 $value");
+      pref.setStringList(key, value as List<String>);
+      break;
   }
 }
 
@@ -152,6 +148,8 @@ dynamic _getDefault<T>(T) {
       return 0.0;
     case bool:
       return false;
+    case List:
+      return [];
     default:
       return null;
   }

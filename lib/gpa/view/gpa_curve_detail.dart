@@ -9,7 +9,7 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, notifier, _) {
-      if (notifier.hideGPA)
+      if (notifier.hideGPAWithNotify)
         return Container();
       else
         return Column(children: <Widget>[
@@ -31,7 +31,7 @@ class CurveText extends StatelessWidget {
   Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
       alignment: Alignment.centerLeft,
-      child: Text("${notifier.typeName()} Curve",
+      child: Text("${notifier.typeName()}曲线",
           style: TextStyle(
               fontSize: 17.0,
               color: Color.fromRGBO(53, 59, 84, 1.0),
@@ -57,10 +57,10 @@ class GPAIntro extends StatelessWidget {
     var weighted = "不";
     var grade = "知";
     var credit = "道";
-    if (notifier.totalWithNotify != null) {
-      weighted = notifier.totalWithNotify.weighted.toString();
-      grade = notifier.totalWithNotify.gpa.toString();
-      credit = notifier.totalWithNotify.credits.toString();
+    if (notifier.total != null) {
+      weighted = notifier.total.weighted.toString();
+      grade = notifier.total.gpa.toString();
+      credit = notifier.total.credits.toString();
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -75,7 +75,7 @@ class GPAIntro extends StatelessWidget {
         ),
         Column(
           children: <Widget>[
-            Text('Total Grade', style: textStyle),
+            Text('Total GPA', style: textStyle),
             Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(grade, style: numStyle))
@@ -83,7 +83,7 @@ class GPAIntro extends StatelessWidget {
         ),
         Column(
           children: <Widget>[
-            Text('Total Credit', style: textStyle),
+            Text('Credit Earned', style: textStyle),
             Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(credit, style: numStyle))

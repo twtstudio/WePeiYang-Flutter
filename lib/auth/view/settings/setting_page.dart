@@ -153,7 +153,7 @@ class _SettingPageState extends State<SettingPage> {
                         value: pref.hideGPA.value,
                         onChanged: (value) {
                           setState(() => pref.hideGPA.value = value);
-                          Provider.of<GPANotifier>(context).hideGPA = value;
+                          Provider.of<GPANotifier>(context, listen: false).hideGPAWithNotify = value;
                         },
                         activeColor: Color.fromRGBO(105, 109, 127, 1),
                         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -196,7 +196,7 @@ class _SettingPageState extends State<SettingPage> {
                         value: pref.nightMode.value,
                         onChanged: (value) {
                           setState(() => pref.nightMode.value = value);
-                          Provider.of<ScheduleNotifier>(context).nightMode =
+                          Provider.of<ScheduleNotifier>(context, listen: false).nightMode =
                               value;
                         },
                         activeColor: Color.fromRGBO(105, 109, 127, 1),
@@ -346,14 +346,12 @@ class _SettingPageState extends State<SettingPage> {
                           child: Switch(
                             value: pref.remindBefore.value,
                             onChanged: (value) {
-                              setState(
-                                  () => pref.remindBefore.value = value);
+                              setState(() => pref.remindBefore.value = value);
                             },
                             activeColor: Color.fromRGBO(105, 109, 127, 1),
                             inactiveThumbColor:
                                 Color.fromRGBO(205, 206, 212, 1),
-                            activeTrackColor:
-                                Color.fromRGBO(240, 241, 242, 1),
+                            activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
                             inactiveTrackColor:
                                 Color.fromRGBO(240, 241, 242, 1),
                           ))

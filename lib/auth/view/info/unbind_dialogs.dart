@@ -10,8 +10,8 @@ class TjuUnbindDialog extends Dialog {
     // TODO 其他解绑逻辑
     ToastProvider.success("解除绑定成功");
     CommonPreferences().clearTjuPrefs();
-    Provider.of<GPANotifier>(context).clear();
-    Provider.of<ScheduleNotifier>(context).clear();
+    Provider.of<GPANotifier>(context, listen: false).clear();
+    Provider.of<ScheduleNotifier>(context, listen: false).clear();
     Navigator.pop(context);
   }
 

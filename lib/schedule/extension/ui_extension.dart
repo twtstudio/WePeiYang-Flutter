@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'logic_extension.dart';
 import '../model/school/school_model.dart';
 import '../view/course_dialog.dart';
@@ -84,10 +85,5 @@ Widget getQuietCourseCard(double height, double width, Course course) {
 Color generateColor(Course course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
   int hashCode = course.courseName.hashCode + now.day;
-  List<Color> colors = [
-    Color.fromRGBO(153, 156, 175, 1),
-    Color.fromRGBO(128, 119, 138, 1),
-    Color.fromRGBO(114, 117, 136, 1)
-  ];
-  return colors[hashCode % colors.length];
+  return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
 }

@@ -14,9 +14,10 @@ import 'dart:io' show Platform;
 
 void main() async {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => GPANotifier()),
-    ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider<ScheduleModel>(create: (context) => ScheduleModel())
+    ChangeNotifierProvider<GPANotifier>(create: (context) => GPANotifier()),
+    ChangeNotifierProvider<ScheduleNotifier>(
+        create: (context) => ScheduleNotifier()),
+    ChangeNotifierProvider<ScheduleModel>(create: (context) => ScheduleModel()) 
   ], child: WeiPeiYangApp()));
 
   /// 设置沉浸式状态栏
@@ -88,9 +89,12 @@ class StartUpWidget extends StatelessWidget {
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面
         login(prefs.account.value, prefs.password.value, onSuccess: (_) {
-          if (context != null) Navigator.pushReplacementNamed(context, '/home');
+          if (context != null)
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
         }, onFailure: (_) {
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login', (route) => false);
         });
       });
     }

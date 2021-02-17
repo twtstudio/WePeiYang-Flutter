@@ -19,7 +19,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      int current = Provider.of<ScheduleNotifier>(context).currentWeek;
+      int current = Provider.of<ScheduleNotifier>(context, listen: false).currentWeekWithNotify;
       if (current == 1) current++;
       return Container(
         height: 85,
@@ -41,7 +41,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                           painter: _WeekSelectPainter(
                               getBoolMatrix(i + 1, notifier.weekCount,
                                   notifier.coursesWithNotify, false),
-                              notifier.selectedWeek == i + 1),
+                              notifier.selectedWeekWithNotify == i + 1),
                           size: Size(canvasWidth, canvasHeight),
                         ),
                         Padding(
@@ -66,7 +66,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                           splashColor: Color.fromRGBO(255, 255, 255, 0.85),
                           highlightColor: Colors.transparent,
                           onTap: () {
-                            notifier.selectedWeek = i + 1;
+                            notifier.selectedWeekWithNotify = i + 1;
                           },
                         ),
                       ),
@@ -82,7 +82,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   /// 每次退出课程表页面，重新设置选中星期为当前星期
   @override
   void dispose() {
-    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext)
+    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext, listen: false)
         .quietResetWeek();
     super.dispose();
   }

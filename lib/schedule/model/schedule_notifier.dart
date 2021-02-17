@@ -5,45 +5,39 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
-  List<Course> _coursesWithNotify = [];
+  List<Course> _courses = [];
 
-  /// 更新课表总数据时调用（如网络请求）
+  /// 外部更新课表总数据时调用（如网络请求）
   set coursesWithNotify(List<Course> newList) {
-    _coursesWithNotify = newList;
+    _courses = newList;
     notifyListeners();
   }
 
-  List<Course> get coursesWithNotify => _coursesWithNotify;
+  List<Course> get coursesWithNotify => _courses;
 
   /// 每学期的开始时间
   int _termStart = 1598803200;
-
-  set termStart(int newStart) {
-    if (_termStart == newStart) return;
-    _termStart = newStart;
-    notifyListeners();
-  }
 
   int get termStart => _termStart;
 
   /// 当前显示的星期
   int _selectedWeek = 1;
 
-  set selectedWeek(int newSelected) {
+  set selectedWeekWithNotify(int newSelected) {
     if (_selectedWeek == newSelected) return;
     _selectedWeek = newSelected;
     notifyListeners();
   }
 
-  int get selectedWeek => _selectedWeek;
+  int get selectedWeekWithNotify => _selectedWeek;
 
   void quietResetWeek() => _selectedWeek = _currentWeek;
 
   int _currentWeek = 1;
 
-  int get currentWeek => _currentWeek;
+  int get currentWeekWithNotify => _currentWeek;
 
-  set currentWeek(int newWeek) {
+  set currentWeekWithNotify(int newWeek) {
     if (_currentWeek == newWeek) return;
     _currentWeek = newWeek;
     _selectedWeek = newWeek;
@@ -69,7 +63,7 @@ class ScheduleNotifier with ChangeNotifier {
           onSuccess: (schedule) {
             if(hint) ToastProvider.success("刷新课程表数据成功");
             _termStart = schedule.termStart;
-            _coursesWithNotify = schedule.courses;
+            _courses = schedule.courses;
             notifyListeners(); // 通知各widget进行更新
           },
           onFailure: (e) => ToastProvider.error(e.error.toString()));
@@ -92,7 +86,8 @@ class ScheduleNotifier with ChangeNotifier {
 
   /// 办公网解绑时清除数据
   void clear() {
-    _coursesWithNotify = [];
+    _courses = [];
     _selectedWeek = 1;
+    notifyListeners();
   }
 }
