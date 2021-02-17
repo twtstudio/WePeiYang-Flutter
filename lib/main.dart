@@ -90,9 +90,12 @@ class StartUpWidget extends StatelessWidget {
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面
         login(prefs.account.value, prefs.password.value, onSuccess: (_) {
-          if (context != null) Navigator.pushReplacementNamed(context, '/home');
+          if (context != null)
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
         }, onFailure: (_) {
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login', (route) => false);
         });
       });
     }

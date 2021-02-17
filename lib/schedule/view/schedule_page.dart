@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'class_table_widget.dart';
@@ -14,7 +16,8 @@ class SchedulePage extends StatelessWidget {
     return RefreshIndicator(
       displacement: 60,
       color: Color.fromRGBO(105, 109, 126, 1),
-      onRefresh: Provider.of<ScheduleNotifier>(context).refreshSchedule(),
+      onRefresh: Provider.of<ScheduleNotifier>(context, listen: false)
+          .refreshSchedule(),
       child: Scaffold(
         appBar: ScheduleAppBar(),
         body: Container(
@@ -27,7 +30,8 @@ class SchedulePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: ClassTableWidget(),
-              )
+              ),
+              HoursCounterWidget()
             ],
           ),
         ),
@@ -52,7 +56,8 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.autorenew,
                   color: Color.fromRGBO(105, 109, 126, 1), size: 28),
-              onTap: Provider.of<ScheduleNotifier>(context).refreshSchedule()),
+              onTap: Provider.of<ScheduleNotifier>(context, listen: false)
+                  .refreshSchedule()),
         ),
       ],
     );
@@ -105,7 +110,8 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
         Week("4", "19"), Arrange("单双周", "46楼A114", "5", "6", "3")));
     courses.add(Course("1230000", "32100", "物理实验A", "1.0", "刘云朋(副教授)", "北洋园",
         Week("4", "19"), Arrange("单周", "", "1", "4", "4")));
-    Provider.of<ScheduleNotifier>(context).coursesWithNotify = courses;
+    Provider.of<ScheduleNotifier>(context, listen: false).coursesWithNotify =
+        courses;
   }
 
   @override
@@ -127,7 +133,7 @@ class TitleWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('WEEK ${notifier.currentWeek}',
+                    child: Text('WEEK ${notifier.currentWeekWithNotify}',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
@@ -136,5 +142,51 @@ class TitleWidget extends StatelessWidget {
                 ],
               ),
             ));
+  }
+}
+
+class HoursCounterWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var notifier = Provider.of<ScheduleNotifier>(context);
+    if (notifier.coursesWithNotify.length == 0) return Container();
+    // TODO 计算currentHours
+    int currentHours = 150;
+    // currentHours = getCurrentHours(5, 3, notifier.coursesWithNotify);
+    int totalHours = getTotalHours(notifier.coursesWithNotify);
+    double totalWidth = GlobalModel().screenWidth - 2 * schedulePadding;
+    double leftWidth = totalWidth * currentHours / totalHours;
+    return Column(
+      children: [
+        Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            alignment: Alignment.centerLeft,
+            child: Text("Total Class Hours: $totalHours",
+                style: TextStyle(
+                    color: Color.fromRGBO(205, 206, 211, 1),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold))),
+        Stack(
+          children: [
+            Container(
+              height: 12,
+              width: totalWidth,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Color.fromRGBO(236, 238, 237, 1)),
+            ),
+            Container(
+              height: 12,
+              width: leftWidth,
+              decoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.horizontal(left: Radius.circular(15)),
+                  color: Color.fromRGBO(98, 103, 123, 1)),
+            )
+          ],
+        ),
+        Container(height: 45)
+      ],
+    );
   }
 }

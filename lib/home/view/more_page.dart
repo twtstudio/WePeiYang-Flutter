@@ -38,7 +38,7 @@ Widget generateCard(BuildContext context, CardBean bean) {
               color: Colors.grey,
               size: 30.0,
             ),
-            padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 5.0),
+            padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 3.0),
           ),
           Center(
             child: Text(bean.label,

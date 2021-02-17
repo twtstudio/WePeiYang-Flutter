@@ -8,15 +8,13 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 class TodayCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
-    var week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       return Column(
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 12.0),
             alignment: Alignment.centerLeft,
-            child: Text('NO.${now.day} ${week[now.weekday - 1]}',
+            child: Text('课程表',
                 style: TextStyle(
                     fontSize: 17.0,
                     color: Color.fromRGBO(53, 59, 84, 1.0),
@@ -35,24 +33,20 @@ class TodayCoursesWidget extends StatelessWidget {
     bool nightMode = notifier.nightMode;
     if (DateTime.now().hour < 21) nightMode = false;
     print("now hour: ${DateTime.now().hour} -=-=-=-=-=-=-=-=-=-=-==-=-=-=-=\n");
+    print("nightMode: $nightMode \n");
     bool flag;
-
-    // TODO 测试用，记得删哦
-    // if (nightMode)
-    //   todayCourses.add(Course("1", "1", "夜猫子模式", "1", "1", "1", Week("1", "1"),
-    //       Arrange("1", "1", "1", "1", "1")));
 
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
         flag = judgeActiveTomorrow(
-            notifier.currentWeek, today, notifier.weekCount, course);
+            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
       else
         flag = judgeActiveInDay(
-            notifier.currentWeek, today, notifier.weekCount, course);
+            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
       if (flag) todayCourses.add(course);
 
       // TODO 测试用,记得删哦
-      // if (todayCourses.length < 5) todayCourses.add(course);
+      if (todayCourses.length < 5) todayCourses.add(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(

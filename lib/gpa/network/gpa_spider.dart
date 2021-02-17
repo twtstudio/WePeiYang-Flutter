@@ -57,7 +57,6 @@ GPABean _data2GPABean(String data) {
 GPACourse _data2GPACourse(List<String> data) {
   List<String> list = [];
   data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
-  print(list);
   double score = 0.0;
   switch (list[6]) {
     case 'P':
