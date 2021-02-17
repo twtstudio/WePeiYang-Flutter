@@ -152,6 +152,7 @@ class HoursCounterWidget extends StatelessWidget {
     if (notifier.coursesWithNotify.length == 0) return Container();
     // TODO 计算currentHours
     int currentHours = 150;
+    // currentHours = getCurrentHours(5, 3, notifier.coursesWithNotify);
     int totalHours = getTotalHours(notifier.coursesWithNotify);
     double totalWidth = GlobalModel().screenWidth - 2 * schedulePadding;
     double leftWidth = totalWidth * currentHours / totalHours;

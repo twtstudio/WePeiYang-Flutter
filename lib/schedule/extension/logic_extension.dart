@@ -1,3 +1,4 @@
+import 'dart:math';
 import '../model/school/school_model.dart';
 
 /// 生成一周内的日期，格式为 “MM/dd”，用0填充空位
@@ -97,7 +98,46 @@ List<bool> getWeekStatus(int weekCount, Course course) {
   return list;
 }
 
-/// 计算本学期已修学时
+/// 计算本学期已修学时（week为当前教学周，day从1开始数）
+/// 注：依照此计算方法，只有当天结束时才会更改已修学时
+int getCurrentHours(int week, int day, List<Course> courses) {
+  int totalHour = 0;
+  courses.forEach((course) {
+    int start = int.parse(course.week.start);
+    int end = int.parse(course.week.end);
+
+    /// lastWeek双关，它的值为：最后一周 或 上一周
+    int lastWeek = min<int>(end, week - 1);
+    int weekCount = 0;
+    if (start <= lastWeek) {
+      switch (course.arrange.week) {
+        case "单双周":
+          weekCount = lastWeek - start + 1;
+          break;
+        case "单周":
+          if (start.isEven) start++;
+          if (lastWeek.isOdd) lastWeek++;
+          weekCount = ((lastWeek - start + 1) / 2).round();
+          break;
+        case "双周":
+          if (start.isOdd) start++;
+          if (lastWeek.isEven) lastWeek++;
+          weekCount = ((lastWeek - start + 1) / 2).round();
+          break;
+      }
+    }
+    bool flag = true;
+    if (week > end || week < start) flag = false;
+    if (course.arrange.week == "单周" && week.isEven) flag = false;
+    if (course.arrange.week == "双周" && week.isOdd) flag = false;
+    if (day <= int.parse(course.arrange.day)) flag = false;
+    if (flag) weekCount++;
+    var arrangeStart = int.parse(course.arrange.start);
+    var arrangeEnd = int.parse(course.arrange.end);
+    totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
+  });
+  return totalHour;
+}
 
 /// 计算本学期课程总学时
 int getTotalHours(List<Course> courses) {

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/studyroom/config/net/api.dart';
 
-
 import 'view_state.dart';
 
 export 'view_state.dart';
@@ -49,6 +48,7 @@ class ViewStateModel with ChangeNotifier {
    * 我可以判断这个组件内部处于什么状态来判断外部可以对它进行什么操作。
    * TODO：why not rigorous ?
    */
+
   /// 以下变量是为了代码书写方便,加入的get方法.严格意义上讲,并不严谨
   ///
   /// get
@@ -173,4 +173,9 @@ $e
 $s
 <-----↑↑↑↑↑↑↑↑↑↑-----trace-----↑↑↑↑↑↑↑↑↑↑----->
     ''');
+  Fluttertoast.showToast(
+      msg: e.toString(),
+      backgroundColor: Colors.blue,
+      textColor: Colors.white,
+      fontSize: 15.0);
 }

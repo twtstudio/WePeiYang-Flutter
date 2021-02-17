@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/router_manager.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/studyroom/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
@@ -14,10 +15,10 @@ import 'dart:io' show Platform;
 
 void main() async {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider<GPANotifier>(create: (context) => GPANotifier()),
-    ChangeNotifierProvider<ScheduleNotifier>(
-        create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider<ScheduleModel>(create: (context) => ScheduleModel()) 
+    ChangeNotifierProvider(create: (context) => GPANotifier()),
+    ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
+    ChangeNotifierProvider(create: (context) => SRTimeModel()),
+    ChangeNotifierProvider(create: (context) => SRFavouriteModel())
   ], child: WeiPeiYangApp()));
 
   /// 设置沉浸式状态栏

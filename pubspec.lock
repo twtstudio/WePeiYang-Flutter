@@ -23,7 +23,7 @@ packages:
     source: hosted
     version: "1.6.0"
   async:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: async
       url: "https://pub.flutter-io.cn"
@@ -545,7 +545,7 @@ packages:
       name: source_gen
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.9.10+1"
+    version: "0.9.10+2"
   source_span:
     dependency: transitive
     description:

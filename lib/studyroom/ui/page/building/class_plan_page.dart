@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/class_plan_model.dart';
+import 'package:wei_pei_yang_demo/studyroom/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 
-
 class ClassPlanPage extends StatefulWidget {
-  final String aId; // area id
-  final String bId; // building id
-  final String cId; // classroom id
-  final String title;
+  final Classroom room;
 
-  const ClassPlanPage({Key key, this.aId, this.bId, this.cId, this.title})
-      : super(key: key);
+  const ClassPlanPage({Key key, this.room}) : super(key: key);
 
   @override
   _ClassPlanPageState createState() => _ClassPlanPageState();
@@ -25,38 +22,36 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<ClassPlanModel>(
-      model: ClassPlanModel(scheduleModel: Provider.of<ScheduleModel>(context)),
+      model: ClassPlanModel(
+          room: widget.room, scheduleModel: Provider.of<SRTimeModel>(context)),
       onModelReady: (model) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          model.setRoomPath(widget.aId, widget.bId, widget.cId);
           model.initData();
         });
       },
       builder: (context, model, child) {
-        var plan = model.plan;
         return StudyRoomPage(
           body: Padding(
             padding: const EdgeInsets.all(15),
             child: Builder(builder: (_) {
-              if (model.isBusy) {
+              if (model.isError && model.list.isEmpty) {
                 return Container(
                   child: Center(
-                    child: Text('加载中/加载失败'),
-                  ),
-                );
-              } else {
-                return SmartRefresher(
-                  controller: model.refreshController,
-                  header: ClassicHeader(),
-                  onRefresh: () => model.refresh(),
-                  child: ListView(
-                    children: <Widget>[
-                      PageTitleWidget(title: widget.title),
-                      ClassTableWidget(),
-                    ],
+                    child: Text('加载失败'),
                   ),
                 );
               }
+              return SmartRefresher(
+                controller: model.refreshController,
+                header: ClassicHeader(),
+                onRefresh: () => model.refresh(),
+                child: ListView(
+                  children: <Widget>[
+                    PageTitleWidget(title: widget.room.name, room: widget.room),
+                    if (model.plan?.isNotEmpty ?? false) ClassTableWidget()
+                  ],
+                ),
+              );
             }),
           ),
         );
@@ -67,31 +62,61 @@ class _ClassPlanPageState extends State<ClassPlanPage> {
 
 class PageTitleWidget extends StatelessWidget {
   final String title;
+  final Classroom room;
 
-  const PageTitleWidget({Key key, this.title}) : super(key: key);
+  const PageTitleWidget({Key key, this.title, this.room}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Color(0xff62677b),
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        Container(
+          // color: Colors.yellow,
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Color(0xff62677b),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         Expanded(child: SizedBox()),
-        InkWell(
-          onTap: () {},
-          child: Text(
-            '收藏',
-            style: TextStyle(
-              color: Color(0xff62677b),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
+
+        // article list item 中有收藏按钮的写法
+        Container(
+          // color: Colors.yellow,
+          padding: const EdgeInsets.only(bottom: 7),
+          child: ProviderWidget<FavouriteModel>(
+            model: FavouriteModel(
+                globalFavouriteModel: Provider.of(context, listen: false)),
+            builder: (_, favouriteModel, __) => TextButton(
+              // 去除默认padding
+              style: ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: MaterialStateProperty.all(Size(0, 0)),
+                padding: MaterialStateProperty.all(EdgeInsets.zero),
+              ),
+              onPressed: () async {
+                if (!favouriteModel.isBusy) {
+                  addFavourites(context, room: room, model: favouriteModel);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  favouriteModel.globalFavouriteModel.contains(cId: room.id)
+                      ? '取消收藏'
+                      : '收藏',
+                  style: TextStyle(
+                    color: Color(0xff62677b),
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         )
@@ -132,34 +157,30 @@ class WeekDisplayWidget extends StatelessWidget {
   WeekDisplayWidget(this.cardWidth, this.dayCount);
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
+  Widget build(BuildContext context) {
+    return Consumer<ClassPlanModel>(
+      builder: (_, model, __) => Row(
+        // children: _generateCards(cardWidth, ['1', '2', '3', '4', '5', '6']),
+        children: ['1', '2', '3', '4', '5', '6']
+            .map((day) => Container(
+                  height: 28,
+                  width: cardWidth,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(236, 238, 237, 1),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                    child: Text(day,
+                        style: TextStyle(
+                            color: Color.fromRGBO(200, 200, 200, 1),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ))
+            .toList(),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
-
-  List<Widget> _generateCards(double width, List<String> dates) {
-    List<Widget> list = [];
-    dates.forEach((element) {
-      list.add(_getCard(width, element));
-    });
-    return list;
+      ),
+    );
   }
-
-  /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(double width, String date) => Container(
-        height: 28,
-        width: width,
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(236, 238, 237, 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: Center(
-          child: Text(date,
-              style: TextStyle(
-                  color: Color.fromRGBO(200, 200, 200, 1),
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold)),
-        ),
-      );
 }
 
 class CourseDisplayWidget extends StatelessWidget {
@@ -173,20 +194,30 @@ class CourseDisplayWidget extends StatelessWidget {
     var singleCourseHeight = cardWidth * 136 / 96;
     return Container(
       height: singleCourseHeight * 12 + cardStep * 11,
-      child: Stack(
-        children: _generatePositioned(context, singleCourseHeight),
-      ),
+      child: Consumer<ClassPlanModel>(builder: (_, model, __) {
+        if (model.plan?.isNotEmpty ?? false) {
+          return Stack(
+            children:
+                _generatePositioned(context, singleCourseHeight, model.plan),
+          );
+        }
+
+        return Container();
+      }),
     );
     // return Container();
   }
 
-  List<Widget> _generatePositioned(BuildContext context, double courseHeight) {
-    ClassPlanModel model = Provider.of<ClassPlanModel>(context);
+  List<Widget> _generatePositioned(BuildContext context, double courseHeight,
+      Map<String, List<String>> plan) {
     List<Positioned> list = [];
     var d = 1;
-    Time.week.getRange(0, 6).forEach((day) {
+    for (var wd in Time.week.getRange(0, 6)) {
       var index = 1;
-      model.plan[day].forEach((c) {
+      print(wd);
+      print(plan[wd].toString());
+      for (var c in plan[wd]) {
+        print(wd);
         int day = d;
         int start = index;
         index = index + c.length;
@@ -231,10 +262,9 @@ class CourseDisplayWidget extends StatelessWidget {
                   ),
                 ),
               )));
-      });
+      }
       d++;
-    });
-
+    }
     return list;
   }
 }

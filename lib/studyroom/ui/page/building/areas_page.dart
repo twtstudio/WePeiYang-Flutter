@@ -62,10 +62,10 @@ class _AreasPageState extends State<AreasPage> {
                   mainAxisSpacing: 20,
                   childAspectRatio: 9 / 8,
                 ),
-                itemCount: widget.building.areas.length,
+                itemCount: widget.building.areas.values.length,
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
-                    var area = widget.building.areas[index];
+                    var area = widget.building.areas.values.toList()[index];
                     Navigator.of(context).pushNamed(
                       StudyRoomRouter.classrooms,
                       arguments: [
@@ -85,7 +85,7 @@ class _AreasPageState extends State<AreasPage> {
                     ),
                     child: Center(
                       child: Text(
-                        widget.building.areas[index].area_id + "区",
+                        widget.building.areas.values.toList()[index].area_id + "区",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,

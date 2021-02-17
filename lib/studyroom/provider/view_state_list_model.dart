@@ -21,7 +21,7 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
         list.clear();
         setEmpty();
       } else {
-        onCompleted(data);
+        await onCompleted(data);
         list.clear();
         list.addAll(data);
         setIdle();
@@ -36,5 +36,5 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
   // 加载数据
   Future<List<T>> loadData();
   // 加载完成操作
-  onCompleted(List<T> data) {}
+  onCompleted(List<T> data) async {}
 }

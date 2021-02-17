@@ -21,13 +21,15 @@ class ClassroomAdapter extends TypeAdapter<Classroom> {
       name: fields[1] as String,
       capacity: fields[2] as String,
       status: fields[3] as String,
+      bId: fields[4] as String,
+      aId: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Classroom obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +37,11 @@ class ClassroomAdapter extends TypeAdapter<Classroom> {
       ..writeByte(2)
       ..write(obj.capacity)
       ..writeByte(3)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(4)
+      ..write(obj.bId)
+      ..writeByte(5)
+      ..write(obj.aId);
   }
 
   @override

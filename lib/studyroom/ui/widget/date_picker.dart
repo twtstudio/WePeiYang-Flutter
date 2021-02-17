@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wei_pei_yang_demo/studyroom/model/time.dart';
+import 'package:wei_pei_yang_demo/studyroom/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
 
 class TimeCheckWidget extends StatelessWidget {
@@ -84,7 +84,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<ScheduleModel>(context);
+    var model = Provider.of<SRTimeModel>(context);
 
     return Padding(
       padding: EdgeInsets.all(10),

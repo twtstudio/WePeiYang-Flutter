@@ -19,7 +19,7 @@ class AreaAdapter extends TypeAdapter<Area> {
     return Area()
       ..area_id = fields[0] as String
       ..building = fields[1] as String
-      ..classrooms = (fields[2] as List)?.cast<Classroom>();
+      ..classrooms = (fields[2] as Map)?.cast<String, Classroom>();
   }
 
   @override

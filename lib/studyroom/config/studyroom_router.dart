@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/area.dart';
 import 'package:wei_pei_yang_demo/studyroom/model/building.dart';
+import 'package:wei_pei_yang_demo/studyroom/model/classroom.dart';
 import 'package:wei_pei_yang_demo/studyroom/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/page/building/areas_page.dart';
 import 'package:wei_pei_yang_demo/studyroom/ui/page/building/class_plan_page.dart';
@@ -17,8 +18,8 @@ class StudyRoomRouter {
   static final Map<String, Widget Function(Object arguments)> routers = {
     areas: (arguments) {
       var building = arguments as Building;
-      var firstArea = building.areas[0];
-      return firstArea.area_id == null
+      var firstArea = building.areas.values.first;
+      return firstArea.area_id == ''
           ? ClassroomsPage(area: firstArea, id: building.id)
           : AreasPage(building: building);
     },
@@ -33,12 +34,8 @@ class StudyRoomRouter {
       return MainPage();
     },
     plan: (arguments) {
-      var list = arguments as List;
-      var aId = list[0];
-      var bId = list[1];
-      var cId = list[2];
-      var title = list[3];
-      return ClassPlanPage(aId: aId, bId: bId, cId: cId, title: title);
+      var room = arguments as Classroom;
+      return ClassPlanPage(room: room);
     },
   };
 }

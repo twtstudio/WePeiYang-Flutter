@@ -1,5 +1,4 @@
 class Time {
-
   static const monday = 'Monday';
   static const tuesday = 'Tuesday';
   static const wednesday = 'Wednesday';
@@ -15,9 +14,14 @@ class Time {
     thursday,
     friday,
     saturday,
-    saturday
+    sunday,
   ];
 
+  // TODO: 暂时不知道学习开始时间怎么处理，所以就暂时搞个假的
+  static Future<DateTime> semesterStart() async {
+    var firstDay = DateTime(2021, 2, 5);
+    return firstDay.weekStart;
+  }
 
   static int _daysBetween(DateTime a, DateTime b, [bool ignoreTime = false]) {
     if (ignoreTime) {
@@ -95,4 +99,33 @@ extension ScheduleExtension on Schedule {
         "18:30--20:05",
         "20:25--22:00"
       ][this.index];
+}
+
+extension DateTimeExtension on DateTime {
+  Future<Map<String, int>> getWeekAndDay() async {
+    var map = <String, int>{};
+    var start = await Time.semesterStart();
+    var week = weekConversion(start);
+    var day = weekdayConversion(start);
+    map['week'] = week;
+    map['day'] = day;
+    return map;
+  }
+
+  DateTime get weekStart {
+    var days = -weekday + 1;
+    return add(Duration(days: days));
+  }
+
+  int weekConversion(DateTime start) => difference(start).inDays ~/ 7 + 1;
+
+  int weekdayConversion(DateTime start) => difference(start).inDays % 7 + 1;
+
+  bool get isThisWeek {
+    var begin = DateTime(year).weekStart;
+    return weekConversion(begin) == DateTime.now().weekConversion(begin);
+  }
+
+  List<DateTime> get thisWeek =>
+      Time.week.asMap().keys.map((i) => weekStart.add(Duration(days: i))).toList();
 }
