@@ -69,7 +69,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       /// Click and jump to NewPostPage.
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorUtil.mainColor,
@@ -80,7 +79,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
       ),
       body: CustomScrollView(
         slivers: [
-
           /// Header.
           SliverPadding(
             padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
@@ -121,7 +119,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.person_outlined),
+                        color: ColorUtil.mainColor,
+                        icon: Icon(
+                          Icons.person_outlined,
+                        ),
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -145,8 +146,20 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
               (context, index) {
                 return _postList[index].topImgUrl != '' &&
                         _postList[index].topImgUrl != null
-                    ? PostCard.image(_postList[index])
-                    : PostCard(_postList[index]);
+                    ? PostCard.image(
+                        _postList[index],
+                        onContentPressed: () {
+                          Navigator.pushNamed(context, FeedbackRouter.detail,
+                              arguments: _postList[index]);
+                        },
+                      )
+                    : PostCard(
+                        _postList[index],
+                        onContentPressed: () {
+                          Navigator.pushNamed(context, FeedbackRouter.detail,
+                              arguments: _postList[index]);
+                        },
+                      );
               },
               childCount: _postList.length,
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/feedback/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
@@ -212,8 +213,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     (context, index) {
                       return _postList[index].topImgUrl != '' &&
                               _postList[index].topImgUrl != null
-                          ? PostCard.image(_postList[index])
-                          : PostCard(_postList[index]);
+                          ? PostCard.image(
+                              _postList[index],
+                              onContentPressed: () {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.detail,
+                                    arguments: _postList[index]);
+                              },
+                            )
+                          : PostCard(
+                              _postList[index],
+                              onContentPressed: () {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.detail,
+                                    arguments: _postList[index]);
+                              },
+                            );
                     },
                     childCount: _postList.length,
                   ),
