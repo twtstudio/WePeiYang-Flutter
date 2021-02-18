@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/feedback/view/home/home_page.dart';
 import 'package:wei_pei_yang_demo/home/view/more_page.dart';
+
+import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/view/home_page.dart';
 
 import '../model/home_model.dart';
 import 'wpy_page.dart';

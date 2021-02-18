@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/feedback/model/Post.dart';
+import 'package:wei_pei_yang_demo/feedback/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
@@ -15,7 +16,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   List<Tag> _tagList = List();
   List<Post> _postList = List();
 
-  // Get tags using Dio.
+  /// Get tags using Dio.
   Future _getTags() async {
     try {
       await HttpUtil().get('tag/get/all').then((value) {
@@ -31,7 +32,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     }
   }
 
-  // Get posts using Dio.
+  /// Get posts using Dio.
   // TODO: Loading and pull-to-refresh not implemented yet.
   Future _getPosts(tagId, page) async {
     try {
@@ -68,7 +69,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Click and jump to NewPostPage.
+
+      /// Click and jump to NewPostPage.
       floatingActionButton: FloatingActionButton(
         backgroundColor: ColorUtil.mainColor,
         child: Icon(Icons.add),
@@ -78,7 +80,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
       ),
       body: CustomScrollView(
         slivers: [
-          // Header.
+
+          /// Header.
           SliverPadding(
             padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
             sliver: SliverPersistentHeader(
@@ -119,7 +122,12 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.person_outlined),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            FeedbackRouter.profile,
+                          );
+                        },
                       )
                     ],
                   ),
@@ -130,7 +138,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
               floating: false,
             ),
           ),
-          // The list of posts.
+
+          /// The list of posts.
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

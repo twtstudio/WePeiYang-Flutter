@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/feedback/model/Post.dart';
+import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/spacer.dart';
+import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 
 // ignore: must_be_immutable
 class PostCard extends StatefulWidget {
@@ -14,21 +14,21 @@ class PostCard extends StatefulWidget {
     return _PostCardState(this.post, this.enableTopImg, this.enableImgList);
   }
 
-  // Card without top image and content images.
+  /// Card without top image and content images.
   PostCard(post) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
   }
 
-  // Card with top image.
+  /// Card with top image.
   PostCard.image(post) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
   }
 
-  // Card for DetailPage.
+  /// Card for DetailPage.
   PostCard.detail(post) {
     this.post = post;
     this.enableTopImg = false;

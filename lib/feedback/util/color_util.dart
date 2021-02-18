@@ -8,4 +8,6 @@ class ColorUtil {
   static Color searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
   static Color boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static Color lightTextColor = Color.fromARGB(255, 145, 145, 145);
+  static Color profileNameColor = Color.fromARGB(255, 255, 255, 255);
+  static Color profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
 }
