@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/studyroom/config/studyroom_router.dart';
+import 'package:wei_pei_yang_demo/lounge/config/lounge_router.dart';
 
 // TODO 这里迟早得改
 class CardBean {
@@ -30,7 +30,7 @@ class GlobalModel {
     cards.add(CardBean(Icons.event, '课程表', '/schedule'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
     cards.add(
-        CardBean(Icons.calendar_today_outlined, "自习室", StudyRoomRouter.main));
+        CardBean(Icons.calendar_today_outlined, "自习室", LoungeRouter.main));
     cards.add(CardBean(Icons.call, '黄页', '/telNum'));
     cards.add(CardBean(Icons.clear_all, '图书馆', '/library'));
     cards.add(CardBean(Icons.import_contacts, '凑数的1', '/learning'));

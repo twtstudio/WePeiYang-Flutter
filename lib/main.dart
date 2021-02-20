@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/router_manager.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/studyroom/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 import 'commons/preferences/common_prefs.dart';
@@ -14,12 +15,15 @@ import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
 void main() async {
+  await HiveManager.init();
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => GPANotifier()),
     ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider(create: (context) => SRTimeModel()),
+    ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
     ChangeNotifierProvider(create: (context) => SRFavouriteModel())
   ], child: WeiPeiYangApp()));
+
 
   /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
@@ -74,6 +78,7 @@ class StartUpWidget extends StatelessWidget {
   void _autoLogin(BuildContext context) async {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
+
     var prefs = CommonPreferences();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||
