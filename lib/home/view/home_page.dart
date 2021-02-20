@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/home/view/more_page.dart';
+
+import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/view/home_page.dart';
+
 import '../model/home_model.dart';
 import 'wpy_page.dart';
 
@@ -18,7 +21,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    pages..add(WPYPage())..add(MorePage())..add(MorePage())..add(UserPage());
+    pages
+      ..add(WPYPage())
+      ..add(MorePage())
+      ..add(FeedbackHomePage())
+      ..add(UserPage());
   }
 
   @override
