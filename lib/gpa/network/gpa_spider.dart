@@ -1,19 +1,24 @@
-import 'package:dio/dio.dart' show DioError;
+import 'package:dio/dio.dart' show DioError, DioErrorType;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
 void getGPABean(
-    {void Function(GPABean) onSuccess, void Function(DioError) onFailure}) {
+    {void Function(GPABean) onSuccess, void Function(String) onFailure}) {
   fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
           cookieList: CommonPreferences().getCookies())
       .then((response) => onSuccess(_data2GPABean(response.data.toString())))
       .catchError((e) {
+    print('---------------------------spider error---------------------------');
     print("Error happened: $e");
-    onFailure(e);
+    print('------------------------------------------------------------------');
+    if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
+      CommonPreferences().isBindTju.value = false;
+      onFailure("办公网绑定失效，请重新绑定");
+    }
+    else onFailure("网络连接发生错误");
   });
-
 }
 
 const double _DELAYED = 999.0;
@@ -23,6 +28,11 @@ const double _IGNORED = 999.0;
 GPABean _data2GPABean(String data) {
   /// 匹配总加权/绩点/学分
   var totalData = getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
+
+  /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
+  if (totalData == null)
+    throw DioError(
+        type: DioErrorType.RESPONSE, error: "Http status error [302]");
   List<double> thList = [];
   getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
       .forEach((e) => thList.add(double.parse(e)));

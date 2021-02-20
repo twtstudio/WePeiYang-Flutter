@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
@@ -5,15 +6,15 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
-  List<Course> _courses = [];
+  List<ScheduleCourse> _courses = [];
 
   /// 外部更新课表总数据时调用（如网络请求）
-  set coursesWithNotify(List<Course> newList) {
+  set coursesWithNotify(List<ScheduleCourse> newList) {
     _courses = newList;
     notifyListeners();
   }
 
-  List<Course> get coursesWithNotify => _courses;
+  List<ScheduleCourse> get coursesWithNotify => _courses;
 
   /// 每学期的开始时间
   int _termStart = 1598803200;
@@ -55,21 +56,6 @@ class ScheduleNotifier with ChangeNotifier {
     // _weekCount = newCount;
   }
 
-  /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule({bool hint = true}) {
-    return () async {
-      if(hint) ToastProvider.running("刷新数据中……");
-      getSchedule(
-          onSuccess: (schedule) {
-            if(hint) ToastProvider.success("刷新课程表数据成功");
-            _termStart = schedule.termStart;
-            _courses = schedule.courses;
-            notifyListeners(); // 通知各widget进行更新
-          },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
-    };
-  }
-
   /// 夜猫子模式
   bool _nightMode = false;
 
@@ -82,6 +68,33 @@ class ScheduleNotifier with ChangeNotifier {
     /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
     _nightMode = CommonPreferences().nightMode.value;
     return _nightMode;
+  }
+
+  /// 通过爬虫刷新数据
+  RefreshCallback refreshSchedule({bool hint = true}) {
+    return () async {
+      if (hint) ToastProvider.running("刷新数据中……");
+      getSchedule(
+          onSuccess: (schedule) {
+            if (hint) ToastProvider.success("刷新课程表数据成功");
+            _termStart = schedule.termStart;
+            _courses = schedule.courses;
+            notifyListeners(); // 通知各widget进行更新
+            CommonPreferences().scheduleData.value = json.encode(schedule);
+          },
+          onFailure: (msg) => ToastProvider.error(msg));
+    };
+  }
+
+  /// 从缓存中读课表的数据，进入主页之前调用
+  void readPref() {
+    var pref = CommonPreferences();
+    if (pref.scheduleData.value == '') return;
+    ScheduleBean schedule =
+        ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
+    _courses = schedule.courses;
+    _termStart = schedule.termStart;
+    notifyListeners();
   }
 
   /// 办公网解绑时清除数据

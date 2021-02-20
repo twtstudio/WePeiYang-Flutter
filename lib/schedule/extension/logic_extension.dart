@@ -27,7 +27,7 @@ List<String> getWeekDayString(int termStart, int week, int count) {
 
 /// 为每周的点阵图生成bool矩阵
 List<List<bool>> getBoolMatrix(
-    int week, int weekCount, List<Course> courses, bool showSevenDay) {
+    int week, int weekCount, List<ScheduleCourse> courses, bool showSevenDay) {
   List<List<bool>> list = [];
   for (var i = 0; i < 5; i++)
     list.add([false, false, false, false, false, false]);
@@ -53,17 +53,17 @@ List<List<bool>> getBoolMatrix(
 }
 
 /// 检查当前课程在选中周的状态
-bool judgeActiveInWeek(int week, int weekCount, Course course) =>
+bool judgeActiveInWeek(int week, int weekCount, ScheduleCourse course) =>
     getWeekStatus(weekCount, course)[week];
 
 /// 检查当天课程（day从1开始数）
-bool judgeActiveInDay(int week, int day, int weekCount, Course course) =>
+bool judgeActiveInDay(int week, int day, int weekCount, ScheduleCourse course) =>
     int.parse(course.arrange.day) == day
         ? getWeekStatus(weekCount, course)[week]
         : false;
 
 /// 检查明天课程（用于夜猫子模式）
-bool judgeActiveTomorrow(int week, int day, int weekCount, Course course) {
+bool judgeActiveTomorrow(int week, int day, int weekCount, ScheduleCourse course) {
   int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
   return (int.parse(course.arrange.day) == ((day + 1) % 7))
       ? getWeekStatus(weekCount, course)[week + offset]
@@ -72,7 +72,7 @@ bool judgeActiveTomorrow(int week, int day, int weekCount, Course course) {
 
 /// 该课程在所有周的状态
 /// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
-List<bool> getWeekStatus(int weekCount, Course course) {
+List<bool> getWeekStatus(int weekCount, ScheduleCourse course) {
   List<bool> list = [];
 
   /// 先默认所有周都没课（list[0]恒为false,反正也用不上）
@@ -100,7 +100,7 @@ List<bool> getWeekStatus(int weekCount, Course course) {
 
 /// 计算本学期已修学时（week为当前教学周，day从1开始数）
 /// 注：依照此计算方法，只有当天结束时才会更改已修学时
-int getCurrentHours(int week, int day, List<Course> courses) {
+int getCurrentHours(int week, int day, List<ScheduleCourse> courses) {
   int totalHour = 0;
   courses.forEach((course) {
     int start = int.parse(course.week.start);
@@ -140,7 +140,7 @@ int getCurrentHours(int week, int day, List<Course> courses) {
 }
 
 /// 计算本学期课程总学时
-int getTotalHours(List<Course> courses) {
+int getTotalHours(List<ScheduleCourse> courses) {
   int totalHour = 0;
   courses.forEach((course) {
     int start = int.parse(course.week.start);

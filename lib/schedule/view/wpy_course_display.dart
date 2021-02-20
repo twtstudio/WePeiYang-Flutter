@@ -28,14 +28,11 @@ class TodayCoursesWidget extends StatelessWidget {
 
   /// 返回首页显示课程的widget
   Widget _getDisplayWidget(ScheduleNotifier notifier) {
-    List<Course> todayCourses = [];
+    List<ScheduleCourse> todayCourses = [];
     int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
     if (DateTime.now().hour < 21) nightMode = false;
-    print("now hour: ${DateTime.now().hour} -=-=-=-=-=-=-=-=-=-=-==-=-=-=-=\n");
-    print("nightMode: $nightMode \n");
     bool flag;
-
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
         flag = judgeActiveTomorrow(
@@ -72,7 +69,7 @@ class TodayCoursesWidget extends StatelessWidget {
             itemCount: todayCourses.length,
             itemBuilder: (context, i) {
               return GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/gpa'),
+                onTap: () => Navigator.pushNamed(context, '/schedule'),
                 child: Container(
                   height: 180.0,
                   width: 150.0,

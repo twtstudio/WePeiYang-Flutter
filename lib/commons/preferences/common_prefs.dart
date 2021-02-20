@@ -29,6 +29,13 @@ class CommonPreferences {
   var password = PrefsBean<String>('password');
   var captchaCookie = PrefsBean<String>('Cookie');
 
+  /// 这里说明一下GPA和课程表的逻辑：
+  /// 1. 进入主页时先从缓存中读取数据
+  /// 2. 进入 gpa / 课程表 页面时再尝试用缓存中办公网的cookie爬取最新数据
+  /// GPA & 课程表数据
+  var gpaData = PrefsBean<String>('gpaData');
+  var scheduleData = PrefsBean<String>('scheduleData');
+
   ///办公网相关
 
   var isBindTju = PrefsBean<bool>('bindtju');
@@ -79,6 +86,8 @@ class CommonPreferences {
 
   /// 重置办公网缓存
   void clearTjuPrefs() {
+    gpaData.value = "";
+    scheduleData.value = "";
     isBindTju.value = false;
     tjuuname.value = "";
     tjupasswd.value = "";
@@ -132,7 +141,6 @@ void _setValue<T>(T value, String key) {
       pref.setDouble(key, value as double);
       break;
     case List:
-      print("setList!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 $value");
       pref.setStringList(key, value as List<String>);
       break;
   }

@@ -84,7 +84,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     height: 1.0,
-                    color: Color.fromRGBO(172, 174, 186, 1),
+                    color: Color.fromRGBO(212, 214, 226, 1),
                   ),
                   Container(
                     height: 70,
@@ -120,7 +120,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     height: 1.0,
-                    color: Color.fromRGBO(172, 174, 186, 1),
+                    color: Color.fromRGBO(212, 214, 226, 1),
                   ),
                   Container(
                     height: 70,
@@ -177,8 +177,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Container(
                               width: 20,
                               margin: const EdgeInsets.only(right: 10),
-                              child: Image.asset('assets/images/telephone.png',
-                                  color: Colors.grey),
+                              child: Image.asset('assets/images/telephone.png'),
                             ),
                             Container(
                                 width: 150,
@@ -201,7 +200,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     height: 1.0,
-                    color: Color.fromRGBO(172, 174, 186, 1),
+                    color: Color.fromRGBO(212, 214, 226, 1),
                   ),
                   Container(
                     height: 70,
@@ -219,8 +218,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Container(
                               width: 20,
                               margin: const EdgeInsets.only(right: 10),
-                              child: Image.asset('assets/images/email.png',
-                                  color: Colors.grey),
+                              child: Image.asset('assets/images/email.png'),
                             ),
                             Container(
                                 width: 150,

@@ -113,13 +113,13 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         height: 1.0,
-                        color: Colors.grey,
+                        color: Color.fromRGBO(212, 214, 226, 1),
                       ),
                       _getNumberOfDaysCard(context, 1),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         height: 1.0,
-                        color: Colors.grey,
+                        color: Color.fromRGBO(212, 214, 226, 1),
                       ),
                       _getNumberOfDaysCard(context, 2),
                     ],

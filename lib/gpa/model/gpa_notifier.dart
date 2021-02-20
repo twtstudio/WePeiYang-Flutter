@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
@@ -115,20 +117,6 @@ class GPANotifier with ChangeNotifier {
     _sort();
   }
 
-  GestureTapCallback refreshGPA({bool hint = true}) {
-    return () {
-      if (hint) ToastProvider.running("刷新数据中……");
-      getGPABean(
-          onSuccess: (gpaBean) {
-            if (hint) ToastProvider.success("刷新gpa数据成功");
-            _gpaStats = gpaBean.stats;
-            _total = gpaBean.total;
-            notifyListeners();
-          },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
-    };
-  }
-
   /// notifier中也写一个hideGPA，就可以在从设置页面pop至主页时，令主页的GPAWidget进行rebuild
   bool _hideGPA = false;
 
@@ -141,6 +129,31 @@ class GPANotifier with ChangeNotifier {
     /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
     _hideGPA = CommonPreferences().hideGPA.value;
     return _hideGPA;
+  }
+
+  GestureTapCallback refreshGPA({bool hint = true}) {
+    return () {
+      if (hint) ToastProvider.running("刷新数据中……");
+      getGPABean(
+          onSuccess: (gpaBean) {
+            if (hint) ToastProvider.success("刷新gpa数据成功");
+            _gpaStats = gpaBean.stats;
+            _total = gpaBean.total;
+            notifyListeners();
+            CommonPreferences().gpaData.value = json.encode(gpaBean);
+          },
+          onFailure: (msg) => ToastProvider.error(msg));
+    };
+  }
+
+  /// 从缓存中读课表的数据，进入主页之前调用
+  void readPref() {
+    var pref = CommonPreferences();
+    if (pref.gpaData.value == '') return;
+    GPABean gpaBean = GPABean.fromJson(json.decode(pref.gpaData.value));
+    _gpaStats = gpaBean.stats;
+    _total = gpaBean.total;
+    notifyListeners();
   }
 
   /// 办公网解绑时清除数据

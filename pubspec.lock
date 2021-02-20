@@ -225,7 +225,7 @@ packages:
       name: fluttertoast
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.1.6"
+    version: "7.1.8"
   glob:
     dependency: transitive
     description:
@@ -526,7 +526,7 @@ packages:
       name: shelf_web_socket
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.4"
+    version: "0.2.4+1"
   simple_gesture_detector:
     dependency: transitive
     description:
@@ -545,7 +545,7 @@ packages:
       name: source_gen
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.9.10+2"
+    version: "0.9.10+3"
   source_span:
     dependency: transitive
     description:

@@ -117,7 +117,7 @@ class CourseDisplayWidget extends StatelessWidget {
     return list;
   }
 
-  Widget _judgeChild(BuildContext context, double height, Course course) =>
+  Widget _judgeChild(BuildContext context, double height, ScheduleCourse course) =>
       judgeActiveInWeek(notifier.selectedWeekWithNotify, notifier.weekCount, course)
           ? getActiveCourseCard(context, height, cardWidth, course)
           : getQuietCourseCard(height, cardWidth, course);

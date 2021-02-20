@@ -74,6 +74,10 @@ class StartUpWidget extends StatelessWidget {
   void _autoLogin(BuildContext context) async {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
+
+    /// 读取gpa和课程表的缓存
+    Provider.of<ScheduleNotifier>(context, listen: false).readPref();
+    Provider.of<GPANotifier>(context, listen: false).readPref();
     var prefs = CommonPreferences();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||

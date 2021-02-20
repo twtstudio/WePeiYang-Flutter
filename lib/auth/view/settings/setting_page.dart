@@ -148,7 +148,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   Expanded(child: Text('')),
                   Padding(
-                      padding: const EdgeInsets.only(right: 15),
+                      padding: const EdgeInsets.only(right: 12),
                       child: Switch(
                         value: pref.hideGPA.value,
                         onChanged: (value) {
@@ -191,7 +191,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   Expanded(child: Text('')),
                   Padding(
-                      padding: const EdgeInsets.only(right: 15),
+                      padding: const EdgeInsets.only(right: 12),
                       child: Switch(
                         value: pref.nightMode.value,
                         onChanged: (value) {
@@ -280,7 +280,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   Expanded(child: Text('')),
                   Padding(
-                      padding: const EdgeInsets.only(right: 15),
+                      padding: const EdgeInsets.only(right: 12),
                       child: Switch(
                         value: pref.otherWeekSchedule.value,
                         onChanged: (value) {
@@ -310,7 +310,7 @@ class _SettingPageState extends State<SettingPage> {
                       child: Text('开课前提醒', style: mainTextStyle)),
                   Expanded(child: Text('')),
                   Padding(
-                      padding: const EdgeInsets.only(right: 15),
+                      padding: const EdgeInsets.only(right: 12),
                       child: Switch(
                         value: pref.remindBeforeStart.value,
                         onChanged: (value) {
@@ -342,7 +342,7 @@ class _SettingPageState extends State<SettingPage> {
                           child: Text('课前提醒', style: mainTextStyle)),
                       Expanded(child: Text('')),
                       Padding(
-                          padding: const EdgeInsets.only(right: 15),
+                          padding: const EdgeInsets.only(right: 12),
                           child: Switch(
                             value: pref.remindBefore.value,
                             onChanged: (value) {
@@ -361,7 +361,7 @@ class _SettingPageState extends State<SettingPage> {
                     alignment: Alignment.center,
                     margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
                     height: 1.0,
-                    color: Color.fromRGBO(172, 174, 186, 1),
+                    color: Color.fromRGBO(212, 214, 226, 1),
                   ),
                   Row(
                     children: <Widget>[
@@ -370,7 +370,7 @@ class _SettingPageState extends State<SettingPage> {
                           child: Text('课前提醒时间', style: mainTextStyle)),
                       Expanded(child: Text('')),
                       Container(
-                          margin: const EdgeInsets.only(right: 20),
+                          margin: const EdgeInsets.only(right: 25),
                           child: Text('15分钟', style: hintTextStyle)),
                     ],
                   ),

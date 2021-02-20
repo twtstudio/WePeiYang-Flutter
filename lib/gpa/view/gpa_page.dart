@@ -4,10 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
+import '../../main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
 
 class GPAPage extends StatelessWidget {
+
+  /// 进入gpa页面后自动刷新数据
+  GPAPage() {
+    Provider.of<GPANotifier>(WeiPeiYangApp.navigatorState.currentContext)
+        .refreshGPA(hint: false)
+        .call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(
@@ -77,7 +86,8 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.error_outline, color: Colors.white, size: 25),
               onTap: () {
                 //TODO popup info
-                Provider.of<GPANotifier>(context, listen: false).gpaStatsWithNotify = gpaList;
+                Provider.of<GPANotifier>(context, listen: false)
+                    .gpaStatsWithNotify = gpaList;
                 ToastProvider.running('显示假数据');
               }),
         ),
@@ -85,7 +95,8 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: Colors.white, size: 25),
-              onTap: Provider.of<GPANotifier>(context, listen: false).refreshGPA()),
+              onTap: Provider.of<GPANotifier>(context, listen: false)
+                  .refreshGPA()),
         ),
       ],
     );
@@ -457,61 +468,60 @@ class _CourseListState extends State<CourseListWidget> {
               physics: NeverScrollableScrollPhysics(),
               itemCount: courses.length,
               itemBuilder: (context, i) => Container(
-                height: cardHeight,
-                padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
-                child: Card(
-                  color: Color.fromRGBO(136, 148, 102, 1),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: InkWell(
-                    splashFactory: InkRipple.splashFactory,
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                          child: Icon(Icons.assignment_turned_in,
-                              color: Color.fromRGBO(178, 184, 153, 1),
-                              size: 25),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(_formatText(courses[i].name),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white)),
+                    height: cardHeight,
+                    padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
+                    child: Card(
+                      color: Color.fromRGBO(136, 148, 102, 1),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      child: InkWell(
+                        splashFactory: InkRipple.splashFactory,
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {},
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                              child: Icon(Icons.assignment_turned_in,
+                                  color: Color.fromRGBO(178, 184, 153, 1),
+                                  size: 25),
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(_formatText(courses[i].name),
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.white)),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        "${courses[i].classType} / ${courses[i].credit} Credits",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color.fromRGBO(
+                                                178, 184, 153, 1))),
+                                  )
+                                ],
                               ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    "${courses[i].classType} / ${courses[i].credit} Credits",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color.fromRGBO(
-                                            178, 184, 153, 1))),
-                              )
-                            ],
-                          ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10, right: 15),
+                              child: Text('${courses[i].score.round()}',
+                                  style: TextStyle(
+                                      fontSize: 28,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10, right: 15),
-                          child: Text('${courses[i].score.round()}',
-                              style: TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              )),
+                  )),
         )
       ],
     );

@@ -11,7 +11,7 @@ const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
 Widget getActiveCourseCard(
-    BuildContext context, double height, double width, Course course) {
+    BuildContext context, double height, double width, ScheduleCourse course) {
   return Container(
     height: height,
     width: width,
@@ -54,7 +54,7 @@ const TextStyle quietNameStyle = TextStyle(
 const TextStyle quietHintStyle = TextStyle(color: quiteFrontColor, fontSize: 8);
 
 /// 返回本周无需上的课（灰色）
-Widget getQuietCourseCard(double height, double width, Course course) {
+Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
   return (CommonPreferences().otherWeekSchedule.value)
       ? Container(
           height: height,
@@ -82,7 +82,7 @@ Widget getQuietCourseCard(double height, double width, Course course) {
 }
 
 /// 为ActiveCourse生成随机颜色
-Color generateColor(Course course) {
+Color generateColor(ScheduleCourse course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
   int hashCode = course.courseName.hashCode + now.day;
   return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
