@@ -59,26 +59,6 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/images/splash_screen.png
-    - assets/images/user_image.jpg
-    - assets/images/gradicon1.png
-    - assets/images/gradicon2.png
-    - assets/images/gradicon3.png
-    - assets/images/ic_tju_icon.png
-    - assets/images/icon_action.png
-    - assets/images/icon_feedback.png
-    - assets/images/icon_home.png
-    - assets/images/icon_user.png
-    - assets/images/arrow_round.png
-    - assets/images/arrow_round_back.png
-    - assets/images/twt.png
-    - assets/images/logout.png
-    - assets/images/telephone.png
-    - assets/images/email.png
-    - assets/images/twt_round.png
-    - assets/images/tju_work.png
-    - assets/images/bind.png
-    - assets/images/setting.png
     - assets/images/
     - assets/images/account/
     - assets/images/account/1.5x/
