@@ -1,17 +1,10 @@
 import 'package:hive/hive.dart';
 import 'area.dart';
 
-part "building.g.dart";
-
-@HiveType(typeId: 1)
 class Building {
-  @HiveField(0)
   String id;
-  @HiveField(1)
   String name;
-  @HiveField(2)
   String campus;
-  @HiveField(3)
   Map<String, Area> areas;
 
   Building({this.id, this.name, this.campus, this.areas});
@@ -36,4 +29,47 @@ class Building {
         "campus": campus,
         "areas": areas,
       };
+}
+
+class BuildingAdapter extends TypeAdapter<Building> {
+  @override
+  final int typeId = 1;
+
+  @override
+  Building read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Building(
+      id: fields[0] as String,
+      name: fields[1] as String,
+      campus: fields[2] as String,
+      areas: (fields[3] as Map)?.cast<String, Area>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Building obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.campus)
+      ..writeByte(3)
+      ..write(obj.areas);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is BuildingAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

@@ -11,13 +11,8 @@ class SearchHistory {
   SearchHistory(
       this.bName, this.cName, this.aId, this.bId, this.cId, this.date);
 
-  Map toJson() => {
-    "aId":aId,
-    "bId":bId,
-    "cId":cId,
-    "cName":cName,
-    "bName":bName
-  };
+  Map toJson() =>
+      {"aId": aId, "bId": bId, "cId": cId, "cName": cName, "bName": bName};
 }
 
 class SearchHistoryAdapter extends TypeAdapter<SearchHistory> {

@@ -46,7 +46,7 @@ class ClassroomsPage extends StatelessWidget {
                               shrinkWrap: true,
                               itemCount: floors.length,
                               itemBuilder: (context, index) => FloorWidget(
-                                aId: area.area_id,
+                                aId: area.id,
                                 bId: id,
                                 floor: floors.keys.toList()[index],
                                 classrooms:
@@ -79,8 +79,8 @@ class _PathTitle extends StatelessWidget {
           Consumer<ClassroomsDataModel>(builder: (_, model, __) {
             final area = model.area;
             return Text(
-              area.area_id != null
-                  ? area.building + "教学楼" + area.area_id
+              area.id != null
+                  ? area.building + "教学楼" + area.id
                   : area.building + "教学楼",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -134,7 +134,7 @@ class FloorWidget extends StatelessWidget {
           child: Consumer<ClassroomsDataModel>(builder: (_, model, __) {
             Map<String, Map<String, String>> classPlan = model.classPlan;
             int currentDay = model.currentDay;
-            List<Schedule> schedule = model.schedule;
+            List<ClassTime> schedule = model.classTime;
             return GridView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

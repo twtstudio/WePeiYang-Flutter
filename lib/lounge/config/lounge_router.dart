@@ -17,7 +17,7 @@ class LoungeRouter {
     areas: (arguments) {
       var building = arguments as Building;
       var firstArea = building.areas.values.first;
-      return firstArea.area_id == ''
+      return firstArea.id == ''
           ? ClassroomsPage(area: firstArea, id: building.id)
           : AreasPage(building: building);
     },

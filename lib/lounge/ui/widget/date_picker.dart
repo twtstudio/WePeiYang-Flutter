@@ -55,7 +55,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     with TickerProviderStateMixin {
   CalendarController _calendarController;
   AnimationController _animationController;
-  List<Schedule> currentTime = [];
+  List<ClassTime> currentTime = [];
   SRTimeModel model;
 
   @override
@@ -63,11 +63,11 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     super.initState();
     _calendarController = CalendarController();
     _animationController =
-        AnimationController(duration: Duration(milliseconds: 200))..forward();
+        AnimationController(duration: Duration(milliseconds: 200), vsync: this)..forward();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // print(Time.classOfDay(DateTime.now()).timeRange);
       // updateGroupValue(Time.classOfDay(DateTime.now()));
-      model.schedule.forEach((v) {
+      model.classTime.forEach((v) {
         updateGroupValue(v);
       });
     });
@@ -80,7 +80,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     super.dispose();
   }
 
-  void updateGroupValue(Schedule v) {
+  void updateGroupValue(ClassTime v) {
     setState(() {
       currentTime.contains(v)
           ? currentTime.remove(v)

@@ -121,7 +121,7 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
 
   int get currentDay => scheduleModel.dateTime.weekday;
 
-  List<Schedule> get schedule => scheduleModel.schedule;
+  List<ClassTime> get classTime => scheduleModel.classTime;
 
   List<Classroom> get favourList => favouriteModel.favourList.values.toList();
 

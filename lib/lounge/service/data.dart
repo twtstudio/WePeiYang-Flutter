@@ -10,7 +10,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00 ": Classroom()
               ..id = "00"
@@ -38,7 +38,7 @@ class Data {
               ..capacity = "20",
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {
             "06": Classroom()
               ..id = "06"
@@ -54,7 +54,7 @@ class Data {
               ..capacity = "20",
           },
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {
             "09": Classroom()
               ..id = "09"
@@ -77,7 +77,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "12": Classroom()
               ..id = "12"
@@ -100,7 +100,7 @@ class Data {
       ..campus = "2"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "15": Classroom()
               ..id = "15"
@@ -116,7 +116,7 @@ class Data {
               ..capacity = "35",
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {
             "18": Classroom()
               ..id = "18"
@@ -139,7 +139,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -148,10 +148,10 @@ class Data {
               ..status = "000000000000"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -161,7 +161,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {}
       };
 
@@ -171,10 +171,10 @@ class Data {
       ..campus = "2"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {},
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {}
       };
 
@@ -184,7 +184,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -193,10 +193,10 @@ class Data {
               ..status = "110011001100"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -206,7 +206,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -222,7 +222,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -231,10 +231,10 @@ class Data {
               ..status = "000011001100"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -244,7 +244,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -260,7 +260,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -269,10 +269,10 @@ class Data {
               ..status = "110011001100"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -282,7 +282,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -298,7 +298,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -307,10 +307,10 @@ class Data {
               ..status = "000000001100"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -320,7 +320,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -336,7 +336,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -345,10 +345,10 @@ class Data {
               ..status = "000000000000"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -358,7 +358,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -374,7 +374,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -383,10 +383,10 @@ class Data {
               ..status = "000000000000"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -396,7 +396,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"
@@ -412,7 +412,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "A": Area()
-          ..area_id = "A"
+          ..id = "A"
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
@@ -421,10 +421,10 @@ class Data {
               ..status = "111100000000"
           },
         "B": Area()
-          ..area_id = "B"
+          ..id = "B"
           ..classrooms = {},
         "C": Area()
-          ..area_id = "C"
+          ..id = "C"
           ..classrooms = {},
       };
 
@@ -434,7 +434,7 @@ class Data {
       ..campus = "1"
       ..areas = {
         "": Area()
-          ..area_id = ""
+          ..id = ""
           ..classrooms = {
             "13": Classroom()
               ..id = "13"

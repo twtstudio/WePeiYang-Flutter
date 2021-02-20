@@ -1,20 +1,11 @@
 import 'package:hive/hive.dart';
 
-part 'classroom.g.dart';
-
-@HiveType(typeId: 3)
 class Classroom {
-  @HiveField(0)
   String id;
-  @HiveField(1)
   String name;
-  @HiveField(2)
   String capacity;
-  @HiveField(3)
   String status;
-  @HiveField(4)
   String bId;
-  @HiveField(5)
   String aId;
 
   Classroom(
@@ -40,4 +31,53 @@ class Classroom {
 
   Map toJson() =>
       {"id": id, "name": name, "capacity": capacity, 'bId': bId, 'aId': aId};
+}
+
+class ClassroomAdapter extends TypeAdapter<Classroom> {
+  @override
+  final int typeId = 3;
+
+  @override
+  Classroom read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Classroom(
+      id: fields[0] as String,
+      name: fields[1] as String,
+      capacity: fields[2] as String,
+      status: fields[3] as String,
+      bId: fields[4] as String,
+      aId: fields[5] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Classroom obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.capacity)
+      ..writeByte(3)
+      ..write(obj.status)
+      ..writeByte(4)
+      ..write(obj.bId)
+      ..writeByte(5)
+      ..write(obj.aId);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ClassroomAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

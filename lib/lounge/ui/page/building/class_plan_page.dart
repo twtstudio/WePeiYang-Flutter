@@ -182,9 +182,11 @@ class CourseTabDisplayWidget extends StatelessWidget {
         height: tabHeight * 12 + cardStep * 11,
         child: Stack(
           children: Time.rangeList.asMap().keys.map((step) {
-            var chosen = model.schedule
-                .map((e) => e.index == step)
-                .reduce((v, e) => v || e);
+            var chosen = model.classTime.isNotEmpty
+                ? model.classTime
+                    .map((e) => e.index == step)
+                    .reduce((v, e) => v || e)
+                : false;
             return Positioned(
               top: (stepHeight + cardStep) * step,
               child: Container(

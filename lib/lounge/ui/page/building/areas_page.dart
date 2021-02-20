@@ -64,7 +64,7 @@ class AreasPage extends StatelessWidget {
                       LoungeRouter.classrooms,
                       arguments: [
                         Area()
-                          ..area_id = area.area_id
+                          ..id = area.id
                           ..building = area.building
                           ..classrooms = area.classrooms,
                         building.id
@@ -79,7 +79,7 @@ class AreasPage extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        building.areas.values.toList()[index].area_id +
+                        building.areas.values.toList()[index].id +
                             "区",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,

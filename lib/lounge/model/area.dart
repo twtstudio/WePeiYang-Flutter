@@ -1,22 +1,15 @@
 import 'package:hive/hive.dart';
-
 import 'classroom.dart';
 
-part 'area.g.dart';
-
-@HiveType(typeId: 2)
 class Area {
-  @HiveField(0)
-  String area_id;
-  @HiveField(1)
+  String id;
   String building;
-  @HiveField(2)
   Map<String ,Classroom> classrooms;
 
   static Area fromMap(Map<String,dynamic> map){
     if(map == null) return null;
     Area area = Area();
-    area.area_id = map['area_id'] ?? '';
+    area.id = map['area_id'] ?? '';
     // var list = map['classrooms'];
     var list = List()
        ..addAll((map['classrooms'] as List ?? []).map((e) => Classroom.fromMap(e)));
@@ -27,7 +20,46 @@ class Area {
   }
 
   Map toJson() => {
-    "area_id":area_id,
+    "area_id":id,
     "classrooms":classrooms
   };
+}
+
+class AreaAdapter extends TypeAdapter<Area> {
+  @override
+  final int typeId = 2;
+
+  @override
+  Area read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Area()
+      ..id = fields[0] as String
+      ..building = fields[1] as String
+      ..classrooms = (fields[2] as Map)?.cast<String, Classroom>();
+  }
+
+  @override
+  void write(BinaryWriter writer, Area obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.building)
+      ..writeByte(2)
+      ..write(obj.classrooms);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AreaAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

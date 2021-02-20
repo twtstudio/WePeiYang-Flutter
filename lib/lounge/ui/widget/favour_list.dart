@@ -66,7 +66,7 @@ class FavourListWidget extends StatelessWidget {
                       var current = Time.week[model.currentDay - 1];
                       var currentPlan = plan[current].join();
                       var isIdle =
-                          Time.availableNow(currentPlan, model.schedule);
+                          Time.availableNow(currentPlan, model.classTime);
                       return FavourListCard(
                         room: classroom,
                         available: isIdle,

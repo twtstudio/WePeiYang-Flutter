@@ -20,7 +20,7 @@ class ClassroomsDataModel extends ViewStateListModel {
     for (var c in area.classrooms.values) {
       var floor = c.name[0];
       var room = Classroom()
-        ..name = area.area_id == '' ? c.name : area.area_id + c.name
+        ..name = area.id == '' ? c.name : area.id + c.name
         ..capacity = c.capacity
         ..id = c.id;
       if (floors.containsKey(floor)) {
@@ -51,7 +51,7 @@ class ClassroomsDataModel extends ViewStateListModel {
 
   int get currentDay => scheduleModel.dateTime.weekday;
 
-  List<Schedule> get schedule => scheduleModel.schedule;
+  List<ClassTime> get classTime => scheduleModel.classTime;
 
   @override
   Future<List> loadData() async {
@@ -64,7 +64,7 @@ class ClassroomsDataModel extends ViewStateListModel {
         .forEach((plan) {
       var building = plan.value;
       var day = plan.key;
-      var ab = building.areas[area.area_id];
+      var ab = building.areas[area.id];
       if (ab == null) return;
       for (var c in ab.classrooms.values) {
         _plan[c.id].putIfAbsent(day, () => c.status ?? '');

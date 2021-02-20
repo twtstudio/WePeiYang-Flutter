@@ -57,7 +57,7 @@ class HiveManager {
   static init() async {
     _instance = await initHiveMemoizer.runOnce(() async {
       await Hive.initFlutter();
-      Hive.registerAdapter<LocalEntry>(KeyAdapter());
+      Hive.registerAdapter<LocalEntry>(LocalEntryAdapter());
       Hive.registerAdapter<Building>(BuildingAdapter());
       Hive.registerAdapter<Area>(AreaAdapter());
       Hive.registerAdapter<Classroom>(ClassroomAdapter());

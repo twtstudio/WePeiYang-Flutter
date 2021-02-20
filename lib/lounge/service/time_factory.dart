@@ -42,50 +42,53 @@ class Time {
     return betweenDays ~/ 7 + 1;
   }
 
-  static bool availableNow(String state, List<Schedule> schedules) =>
-      schedules.map((time) {
-        var list = state.split('');
-        if (list[time.id * 2 - 1] == '0' && list[time.id * 2 - 2] == '0') {
-          return true;
-        } else {
-          return false;
-        }
-      }).reduce((v, e) => v && e);
+  static bool availableNow(String state, List<ClassTime> schedules) =>
+      schedules.isNotEmpty
+          ? schedules.map((time) {
+              var list = state.split('');
+              if (list[time.id * 2 - 1] == '0' &&
+                  list[time.id * 2 - 2] == '0') {
+                return true;
+              } else {
+                return false;
+              }
+            }).reduce((v, e) => v && e)
+          : true;
 
-  static Schedule classOfDay(DateTime date) {
+  static ClassTime classOfDay(DateTime date) {
     var h = date.hour;
     // print(date);
     if (h < 10) {
-      return Schedule.am_1;
+      return ClassTime.am_1;
     } else if (h < 12) {
-      return Schedule.am_2;
+      return ClassTime.am_2;
     } else if (h < 15) {
-      return Schedule.pm_1;
+      return ClassTime.pm_1;
     } else if (h < 17) {
-      return Schedule.am_2;
+      return ClassTime.am_2;
     } else if (h < 20) {
-      return Schedule.pm_3;
+      return ClassTime.pm_3;
     } else if (h < 22) {
-      return Schedule.pm_4;
+      return ClassTime.pm_4;
     } else {
       // 晚上十点以后显示第二天早上第一节课
-      return Schedule.am_1;
+      return ClassTime.am_1;
     }
   }
 
-  static List<Schedule> get rangeList => [
-        Schedule.am_1,
-        Schedule.am_2,
-        Schedule.pm_1,
-        Schedule.pm_2,
-        Schedule.pm_3,
-        Schedule.pm_4
+  static List<ClassTime> get rangeList => [
+    ClassTime.am_1,
+    ClassTime.am_2,
+    ClassTime.pm_1,
+    ClassTime.pm_2,
+    ClassTime.pm_3,
+    ClassTime.pm_4
       ];
 }
 
-enum Schedule { am_1, am_2, pm_1, pm_2, pm_3, pm_4 }
+enum ClassTime { am_1, am_2, pm_1, pm_2, pm_3, pm_4 }
 
-extension ScheduleExtension on Schedule {
+extension ScheduleExtension on ClassTime {
   int get id => [1, 2, 3, 4, 5, 6][this.index];
 
   String get timeRange => [

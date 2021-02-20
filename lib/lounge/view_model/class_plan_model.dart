@@ -15,7 +15,7 @@ class ClassPlanModel extends ViewStateListModel {
   final SRTimeModel scheduleModel;
 
   DateTime get dateTime => scheduleModel.dateTime;
-  List<Schedule> get schedule => scheduleModel.schedule;
+  List<ClassTime> get classTime => scheduleModel.classTime;
 
   Map<String, List<String>> _plans = {};
   Map<String, List<String>> get plan => _plans;
