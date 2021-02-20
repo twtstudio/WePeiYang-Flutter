@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
 class MyColors {
   static final deepBlue = Color.fromRGBO(53, 59, 84, 1.0); //no.1
@@ -16,5 +17,31 @@ class MyColors {
     brightBlue,
     dust,
     lessDeepBlue
+  ];
+}
+
+class FavorColors {
+  /// gpa主色调
+  static var _gpaColor = PrefsBean<int>("gpaColor", 0x7F8B59);
+
+  static Color get gpaColor => Color(_gpaColor.value);
+
+  /// 课程表主色调，缓存类型是List<String>哦
+  static var _scheduleColor =
+      PrefsBean<List>("scheduleColor", _scheduleColorDefault);
+
+  static List<Color> get scheduleColor =>
+      _scheduleColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
+
+  /// 调整为默认色调，这里使用fromRGBO可以在ide中显示默认色
+  static setDefault() {
+    _gpaColor.value = Color.fromRGBO(127, 139, 89, 1).value; // #7F8B59
+    _scheduleColor.value = _scheduleColorDefault;
+  }
+
+  static final List _scheduleColorDefault = [
+    Color.fromRGBO(153, 156, 175, 1).value.toString(), // #999CAF
+    Color.fromRGBO(128, 119, 138, 1).value.toString(), // #80778A
+    Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
   ];
 }

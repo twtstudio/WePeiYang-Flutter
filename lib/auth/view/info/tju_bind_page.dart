@@ -83,8 +83,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
     login(context, tjuuname, tjupasswd, captcha, params,
         onSuccess: () {
           ToastProvider.success("办公网绑定成功");
-          Provider.of<GPANotifier>(context).refreshGPA(hint: false).call();
-          Provider.of<ScheduleNotifier>(context)
+          Provider.of<GPANotifier>(context, listen: false).refreshGPA(hint: false).call();
+          Provider.of<ScheduleNotifier>(context, listen: false)
               .refreshSchedule(hint: false)
               .call();
           setState(() {});

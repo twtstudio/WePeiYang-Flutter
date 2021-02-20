@@ -63,8 +63,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     super.initState();
     _calendarController = CalendarController();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200))
-          ..forward();
+        AnimationController(duration: Duration(milliseconds: 200))..forward();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // print(Time.classOfDay(DateTime.now()).timeRange);
       // updateGroupValue(Time.classOfDay(DateTime.now()));

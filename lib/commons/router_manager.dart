@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/feedback/feedback_router.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_router.dart';
 import 'package:wei_pei_yang_demo/home/home_router.dart';
 import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
@@ -15,6 +16,7 @@ class RouterManager {
       _routers.addAll(GPARouter.routers);
       _routers.addAll(ScheduleRouter.routers);
       _routers.addAll(AuthRouter.routers);
+      _routers.addAll(FeedbackRouter.routers);
       _routers.addAll(LoungeRouter.routers);
     }
     return MaterialPageRoute(

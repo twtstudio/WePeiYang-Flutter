@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
@@ -15,6 +16,7 @@ import 'dart:async' show Timer;
 import 'dart:io' show Platform;
 
 void main() async {
+  debugPaintSizeEnabled = false;
   await HiveManager.init();
 
   runApp(MultiProvider(providers: [
@@ -23,7 +25,6 @@ void main() async {
     ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
     ChangeNotifierProvider(create: (context) => SRFavouriteModel())
   ], child: WeiPeiYangApp()));
-
 
   /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
@@ -79,6 +80,9 @@ class StartUpWidget extends StatelessWidget {
     /// 初始化sharedPrefs
     await CommonPreferences.initPrefs();
 
+    /// 读取gpa和课程表的缓存
+    Provider.of<ScheduleNotifier>(context, listen: false).readPref();
+    Provider.of<GPANotifier>(context, listen: false).readPref();
     var prefs = CommonPreferences();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||
@@ -95,9 +99,12 @@ class StartUpWidget extends StatelessWidget {
       Timer(Duration(milliseconds: 500), () {
         /// 用缓存中的数据自动登录，失败则仍跳转至login页面
         login(prefs.account.value, prefs.password.value, onSuccess: (_) {
-          if (context != null) Navigator.pushReplacementNamed(context, '/home');
+          if (context != null)
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
         }, onFailure: (_) {
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/login', (route) => false);
         });
       });
     }

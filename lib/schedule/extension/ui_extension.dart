@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'logic_extension.dart';
 import '../model/school/school_model.dart';
 import '../view/course_dialog.dart';
@@ -10,7 +11,7 @@ const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
 Widget getActiveCourseCard(
-    BuildContext context, double height, double width, Course course) {
+    BuildContext context, double height, double width, ScheduleCourse course) {
   return Container(
     height: height,
     width: width,
@@ -53,7 +54,7 @@ const TextStyle quietNameStyle = TextStyle(
 const TextStyle quietHintStyle = TextStyle(color: quiteFrontColor, fontSize: 8);
 
 /// 返回本周无需上的课（灰色）
-Widget getQuietCourseCard(double height, double width, Course course) {
+Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
   return (CommonPreferences().otherWeekSchedule.value)
       ? Container(
           height: height,
@@ -81,13 +82,8 @@ Widget getQuietCourseCard(double height, double width, Course course) {
 }
 
 /// 为ActiveCourse生成随机颜色
-Color generateColor(Course course) {
+Color generateColor(ScheduleCourse course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
   int hashCode = course.courseName.hashCode + now.day;
-  List<Color> colors = [
-    Color.fromRGBO(153, 156, 175, 1),
-    Color.fromRGBO(128, 119, 138, 1),
-    Color.fromRGBO(114, 117, 136, 1)
-  ];
-  return colors[hashCode % colors.length];
+  return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
 }

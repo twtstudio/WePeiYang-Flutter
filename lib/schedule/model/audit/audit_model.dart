@@ -17,11 +17,11 @@ class AuditCourse {
     infos = tmp['infos'];
   }
 
-  List<Course> convertToCourseList() {
+  List<ScheduleCourse> convertToCourseList() {
     var infoSample = (infos as List<InfoItem>)[0];
     var week =
         Week(infoSample.startWeek.toString(), infoSample.endWeek.toString());
-    List<Course> courseList = [];
+    List<ScheduleCourse> courseList = [];
     (infos as List<InfoItem>).forEach((it) {
       String weekType = "单双周";
       switch (it.weekType) {
@@ -38,7 +38,7 @@ class AuditCourse {
           (it.startTime - 1 + it.courseLength).toString(),
           it.weekDay.toString());
       courseList
-          .add(Course.audit(infoSample.teacher, week, courseName, arrange));
+          .add(ScheduleCourse.audit(infoSample.teacher, week, courseName, arrange));
     });
     return courseList;
   }

@@ -3,6 +3,17 @@ class GPABean {
   List<GPAStat> stats;
 
   GPABean(this.total, this.stats);
+
+  GPABean.fromJson(Map<String, dynamic> map)
+      : total = Total.fromJson(map['total']),
+        stats = List()
+          ..addAll(
+              (map['stats'] as List ?? []).map((e) => GPAStat.fromJson(e)));
+
+  Map<String, dynamic> toJson() => {
+        'total': total.toJson(),
+        'stats': stats.map((e) => e.toJson()).toList(),
+      };
 }
 
 class Total {
@@ -11,6 +22,14 @@ class Total {
   double credits; // 总学分
 
   Total(this.weighted, this.gpa, this.credits);
+
+  Total.fromJson(Map<String, dynamic> map)
+      : weighted = map['weighted'],
+        gpa = map['gpa'],
+        credits = map['credits'];
+
+  Map<String, dynamic> toJson() =>
+      {'weighted': weighted, 'gpa': gpa, 'credits': credits};
 }
 
 class GPAStat {
@@ -20,6 +39,21 @@ class GPAStat {
   List<GPACourse> courses;
 
   GPAStat(this.weighted, this.gpa, this.credits, this.courses);
+
+  GPAStat.fromJson(Map<String, dynamic> map)
+      : weighted = map['weighted'],
+        gpa = map['gpa'],
+        credits = map['credits'],
+        courses = List()
+          ..addAll(
+              (map['courses'] as List ?? []).map((e) => GPACourse.fromJson(e)));
+
+  Map<String, dynamic> toJson() => {
+        'weighted': weighted,
+        'gpa': gpa,
+        'credits': credits,
+        'courses': courses.map((e) => e.toJson()).toList(),
+      };
 }
 
 class GPACourse {
@@ -30,4 +64,19 @@ class GPACourse {
   double gpa; // 课程绩点
 
   GPACourse(this.name, this.classType, this.score, this.credit, this.gpa);
+
+  GPACourse.fromJson(Map<String, dynamic> map)
+      : name = map['name'],
+        classType = map['classType'],
+        score = map['score'],
+        credit = map['credit'],
+        gpa = map['gpa'];
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'classType': classType,
+        'score': score,
+        'credit': credit,
+        'gpa': gpa
+      };
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
@@ -5,45 +6,39 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
-  List<Course> _coursesWithNotify = [];
+  List<ScheduleCourse> _courses = [];
 
-  /// 更新课表总数据时调用（如网络请求）
-  set coursesWithNotify(List<Course> newList) {
-    _coursesWithNotify = newList;
+  /// 外部更新课表总数据时调用（如网络请求）
+  set coursesWithNotify(List<ScheduleCourse> newList) {
+    _courses = newList;
     notifyListeners();
   }
 
-  List<Course> get coursesWithNotify => _coursesWithNotify;
+  List<ScheduleCourse> get coursesWithNotify => _courses;
 
   /// 每学期的开始时间
   int _termStart = 1598803200;
-
-  set termStart(int newStart) {
-    if (_termStart == newStart) return;
-    _termStart = newStart;
-    notifyListeners();
-  }
 
   int get termStart => _termStart;
 
   /// 当前显示的星期
   int _selectedWeek = 1;
 
-  set selectedWeek(int newSelected) {
+  set selectedWeekWithNotify(int newSelected) {
     if (_selectedWeek == newSelected) return;
     _selectedWeek = newSelected;
     notifyListeners();
   }
 
-  int get selectedWeek => _selectedWeek;
+  int get selectedWeekWithNotify => _selectedWeek;
 
   void quietResetWeek() => _selectedWeek = _currentWeek;
 
   int _currentWeek = 1;
 
-  int get currentWeek => _currentWeek;
+  int get currentWeekWithNotify => _currentWeek;
 
-  set currentWeek(int newWeek) {
+  set currentWeekWithNotify(int newWeek) {
     if (_currentWeek == newWeek) return;
     _currentWeek = newWeek;
     _selectedWeek = newWeek;
@@ -61,21 +56,6 @@ class ScheduleNotifier with ChangeNotifier {
     // _weekCount = newCount;
   }
 
-  /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule({bool hint = true}) {
-    return () async {
-      if(hint) ToastProvider.running("刷新数据中……");
-      getSchedule(
-          onSuccess: (schedule) {
-            if(hint) ToastProvider.success("刷新课程表数据成功");
-            _termStart = schedule.termStart;
-            _coursesWithNotify = schedule.courses;
-            notifyListeners(); // 通知各widget进行更新
-          },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
-    };
-  }
-
   /// 夜猫子模式
   bool _nightMode = false;
 
@@ -90,9 +70,37 @@ class ScheduleNotifier with ChangeNotifier {
     return _nightMode;
   }
 
+  /// 通过爬虫刷新数据
+  RefreshCallback refreshSchedule({bool hint = true}) {
+    return () async {
+      if (hint) ToastProvider.running("刷新数据中……");
+      getSchedule(
+          onSuccess: (schedule) {
+            if (hint) ToastProvider.success("刷新课程表数据成功");
+            _termStart = schedule.termStart;
+            _courses = schedule.courses;
+            notifyListeners(); // 通知各widget进行更新
+            CommonPreferences().scheduleData.value = json.encode(schedule);
+          },
+          onFailure: (msg) => ToastProvider.error(msg));
+    };
+  }
+
+  /// 从缓存中读课表的数据，进入主页之前调用
+  void readPref() {
+    var pref = CommonPreferences();
+    if (pref.scheduleData.value == '') return;
+    ScheduleBean schedule =
+        ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
+    _courses = schedule.courses;
+    _termStart = schedule.termStart;
+    notifyListeners();
+  }
+
   /// 办公网解绑时清除数据
   void clear() {
-    _coursesWithNotify = [];
+    _courses = [];
     _selectedWeek = 1;
+    notifyListeners();
   }
 }

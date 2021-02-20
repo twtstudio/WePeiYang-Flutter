@@ -5,7 +5,7 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import '../../main.dart';
 
-/// 登录总流程： 获取session与execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
+/// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 void login(BuildContext context, String name, String pw, String captcha,
     Map<String, String> map,
     {void Function() onSuccess, void Function(DioError) onFailure}) {
@@ -33,10 +33,10 @@ void login(BuildContext context, String name, String pw, String captcha,
     var matched =
         getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
     var notifier = Provider.of<ScheduleNotifier>(
-        WeiPeiYangApp.navigatorState.currentContext);
+        WeiPeiYangApp.navigatorState.currentContext, listen: false);
     notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
     // TODO Debug
-    notifier.currentWeek = 12;
+    notifier.currentWeekWithNotify = 12;
     // notifier.currentWeek =
     //     int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
     pref.isBindTju.value = true;
@@ -108,11 +108,11 @@ Future<Response> fetch(String url,
 
 /// 获取[单个]正则匹配结果，input为待匹配串，form为匹配格式
 String getRegExpStr(String form, String input) =>
-    RegExp(form).firstMatch(input).group(0);
+    RegExp(form).firstMatch(input)?.group(0);
 
 /// 获取[多个]正则匹配结果，input为待匹配串，form为匹配格式
 List<String> getRegExpList(String form, String input) {
   List<String> list = [];
-  RegExp(form).allMatches(input).toList().forEach((e) => list.add(e.group(0)));
+  RegExp(form).allMatches(input).toList().forEach((e) => list.add(e?.group(0)));
   return list;
 }

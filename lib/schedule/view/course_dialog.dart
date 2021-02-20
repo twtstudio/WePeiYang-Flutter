@@ -3,14 +3,14 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
 
-void showCourseDialog(BuildContext context, Course course) => showDialog(
+void showCourseDialog(BuildContext context, ScheduleCourse course) => showDialog(
     context: context,
     barrierDismissible: true,
     barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
     builder: (BuildContext context) => CourseDialog(course));
 
 class CourseDialog extends Dialog {
-  final Course course;
+  final ScheduleCourse course;
 
   CourseDialog(this.course);
 

@@ -42,7 +42,7 @@ class WeekDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
         children: _generateCards(cardWidth,
-            getWeekDayString(notifier.termStart, notifier.selectedWeek, dayCount)),
+            getWeekDayString(notifier.termStart, notifier.selectedWeekWithNotify, dayCount)),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
 
@@ -117,8 +117,8 @@ class CourseDisplayWidget extends StatelessWidget {
     return list;
   }
 
-  Widget _judgeChild(BuildContext context, double height, Course course) =>
-      judgeActiveInWeek(notifier.selectedWeek, notifier.weekCount, course)
+  Widget _judgeChild(BuildContext context, double height, ScheduleCourse course) =>
+      judgeActiveInWeek(notifier.selectedWeekWithNotify, notifier.weekCount, course)
           ? getActiveCourseCard(context, height, cardWidth, course)
           : getQuietCourseCard(height, cardWidth, course);
 }

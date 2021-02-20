@@ -29,10 +29,10 @@ class UserPage extends StatelessWidget {
                       children: <Widget>[
                         Expanded(child: Text('')),
                         GestureDetector(
-                            child: Icon(Icons.settings,
-                                color: Colors.white, size: 28.0),
-                            onTap: () =>
-                                Navigator.pushNamed(context, '/setting'))
+                          onTap: () => Navigator.pushNamed(context, '/setting'),
+                          child: Image.asset('assets/images/setting.png',
+                              width: 24, height: 24),
+                        )
                       ],
                     )),
                 Container(
@@ -49,7 +49,7 @@ class UserPage extends StatelessWidget {
                     )),
                   ),
                 ),
-                Text('BOTillya',
+                Text(CommonPreferences().nickname.value,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -115,8 +115,7 @@ class UserPage extends StatelessWidget {
                           Container(
                             width: 20,
                             margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset('assets/images/logout.png',
-                                color: Colors.grey),
+                            child: Image.asset('assets/images/logout.png'),
                           ),
                           Container(
                               width: 150, child: Text('登出', style: textStyle)),
@@ -148,7 +147,7 @@ class _NavigationState extends State<NavigationWidget> {
       height: 140.0,
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Card(
-        elevation: 0,
+        elevation: 1.8,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       ),
