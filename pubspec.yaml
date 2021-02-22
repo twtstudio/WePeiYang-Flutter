@@ -36,6 +36,9 @@ dependencies:
   hive_generator: ^0.8.2
   path_provider: ^1.6.24
   async: ^2.4.2
+  flutter_localizations:
+    sdk: flutter
+
 
 dev_dependencies:
   flutter_test:
@@ -98,3 +101,5 @@ flutter:
         - asset: assets/fonts/Montserrat/Montserrat-Regular-8.otf
         - asset: assets/fonts/Montserrat/Montserrat-Bold-3.otf
           weight: 700
+flutter_intl:
+  enabled: true

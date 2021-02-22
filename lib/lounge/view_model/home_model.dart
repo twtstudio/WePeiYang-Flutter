@@ -1,3 +1,4 @@
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
@@ -35,5 +36,7 @@ extension CampusExtension on Campus {
 
   String get id => ['1', '2'][this.index];
 
-  String get name => ['卫津路', '北洋园'][this.index];
+  String get name {
+    return [S.current.WJL, S.current.BYY][this.index];
+  }
 }

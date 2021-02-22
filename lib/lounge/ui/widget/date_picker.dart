@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class TimeCheckWidget extends StatelessWidget {
   const TimeCheckWidget({
@@ -10,19 +12,20 @@ class TimeCheckWidget extends StatelessWidget {
   }) : super(key: key);
 
   _modalBottomSheetMenu(BuildContext context) async {
-    await showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
-              child: BottomDatePicker());
-        });
+    await initializeDateFormatting()
+        .then((value) async => await showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(10.0),
+                          topRight: const Radius.circular(10.0))),
+                  child: BottomDatePicker());
+            }));
   }
 
   @override
@@ -63,7 +66,8 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     super.initState();
     _calendarController = CalendarController();
     _animationController =
-        AnimationController(duration: Duration(milliseconds: 200), vsync: this)..forward();
+        AnimationController(duration: Duration(milliseconds: 200), vsync: this)
+          ..forward();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // print(Time.classOfDay(DateTime.now()).timeRange);
       // updateGroupValue(Time.classOfDay(DateTime.now()));
@@ -82,9 +86,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
   void updateGroupValue(ClassTime v) {
     setState(() {
-      currentTime.contains(v)
-          ? currentTime.remove(v)
-          : currentTime.add(v);
+      currentTime.contains(v) ? currentTime.remove(v) : currentTime.add(v);
     });
   }
 
@@ -99,6 +101,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
           shrinkWrap: true,
           children: [
             TableCalendar(
+              locale: Intl.getCurrentLocale(),
               calendarController: _calendarController,
               startingDayOfWeek: StartingDayOfWeek.monday,
               initialCalendarFormat: CalendarFormat.month,
