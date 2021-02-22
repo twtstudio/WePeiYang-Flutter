@@ -18,7 +18,8 @@ class UserPage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 350, color: MyColors.darkGrey),
+            Image.asset('assets/images/user_back.png',
+                height: 350, alignment: Alignment.topCenter, fit: BoxFit.fill),
             ListView(
               children: <Widget>[
                 Container(

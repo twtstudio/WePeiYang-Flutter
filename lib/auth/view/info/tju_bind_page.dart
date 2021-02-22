@@ -278,7 +278,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
@@ -289,56 +288,58 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                margin: const EdgeInsets.fromLTRB(35, 20, 20, 50),
-                child: Text("办公网账号绑定",
-                    style: TextStyle(
-                        color: Color.fromRGBO(48, 60, 102, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28)),
-              ),
-              Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
-                    child: Text(pref.isBindTju.value ? "已绑定" : "未绑定",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.fromLTRB(35, 20, 20, 50),
+                  child: Text("办公网账号绑定",
+                      style: TextStyle(
+                          color: Color.fromRGBO(48, 60, 102, 1),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28)),
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
+                      child: Text(pref.isBindTju.value ? "已绑定" : "未绑定",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
 
-          /// 已绑定/未绑定时三个图标的高度不一样，所以加个container控制一下
-          Container(height: pref.isBindTju.value ? 20 : 1),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  height: 50,
-                  width: 50,
-                  child: Image.asset('assets/images/tju_work.png')),
-              Container(
-                  height: 25,
-                  width: 25,
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Image.asset('assets/images/bind.png')),
-              Container(
-                  height: 50,
-                  width: 50,
-                  child: Image.asset('assets/images/twt_round.png')),
-            ],
-          ),
-          _detail(context)
-        ],
+            /// 已绑定/未绑定时三个图标的高度不一样，所以加个container控制一下
+            Container(height: pref.isBindTju.value ? 20 : 1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    height: 50,
+                    width: 50,
+                    child: Image.asset('assets/images/tju_work.png')),
+                Container(
+                    height: 25,
+                    width: 25,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Image.asset('assets/images/bind.png')),
+                Container(
+                    height: 50,
+                    width: 50,
+                    child: Image.asset('assets/images/twt_round.png')),
+              ],
+            ),
+            _detail(context)
+          ],
+        ),
       ),
     );
   }
