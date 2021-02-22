@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
-import 'package:wei_pei_yang_demo/studyroom/ui/widget/favour_list.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import '../model/home_model.dart';
 import 'more_page.dart';
 import '../../gpa/view/gpa_curve_detail.dart';

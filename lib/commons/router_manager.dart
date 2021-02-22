@@ -4,7 +4,7 @@ import 'package:wei_pei_yang_demo/feedback/feedback_router.dart';
 import 'package:wei_pei_yang_demo/gpa/gpa_router.dart';
 import 'package:wei_pei_yang_demo/home/home_router.dart';
 import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
-import 'package:wei_pei_yang_demo/studyroom/config/studyroom_router.dart';
+import 'package:wei_pei_yang_demo/lounge/config/lounge_router.dart';
 
 class RouterManager {
   static Map<String, Widget Function(Object arguments)> _routers = {};
@@ -16,8 +16,8 @@ class RouterManager {
       _routers.addAll(GPARouter.routers);
       _routers.addAll(ScheduleRouter.routers);
       _routers.addAll(AuthRouter.routers);
-      _routers.addAll(StudyRoomRouter.routers);
       _routers.addAll(FeedbackRouter.routers);
+      _routers.addAll(LoungeRouter.routers);
     }
     return MaterialPageRoute(
         builder: (ctx) => _routers[settings.name](settings.arguments));

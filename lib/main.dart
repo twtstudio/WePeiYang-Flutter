@@ -1,6 +1,3 @@
-import 'dart:async' show Timer;
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -8,19 +5,24 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/router_manager.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/studyroom/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/studyroom/view_model/schedule_model.dart';
-
-import 'commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
+import 'commons/preferences/common_prefs.dart';
+
+import 'dart:async' show Timer;
+import 'dart:io' show Platform;
 
 void main() async {
   debugPaintSizeEnabled = false;
+  await HiveManager.init();
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => GPANotifier()),
     ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider(create: (context) => SRTimeModel()),
+    ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
     ChangeNotifierProvider(create: (context) => SRFavouriteModel())
   ], child: WeiPeiYangApp()));
 
@@ -47,8 +49,8 @@ class WeiPeiYangApp extends StatelessWidget {
       title: 'WeiPeiYangDemo',
       navigatorKey: navigatorState,
       theme: ThemeData(
-        // fontFamily: 'Montserrat'
-      ),
+          // fontFamily: 'Montserrat'
+          ),
       onGenerateRoute: RouterManager.create,
       home: StartUpWidget(),
     );
