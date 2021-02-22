@@ -11,26 +11,21 @@ class StudyRoomPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xfff7f7f8),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(35),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(35),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: AppBar(
+              titleSpacing: 0,
+              leadingWidth: 12,
               brightness: Brightness.light,
               elevation: 0,
-              leading: IconButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Color(0XFF62677B),
-                ),
-                iconSize: 30,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              leading: Icon(
+                Icons.arrow_back,
+                size: 30,
+                color: Color(0XFF62677B),
               ),
               backgroundColor: Colors.transparent,
               actions: [
@@ -38,8 +33,8 @@ class StudyRoomPage extends StatelessWidget {
               ],
             ),
           ),
-          body: body,
         ),
+        body: body,
       ),
     );
   }

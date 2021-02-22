@@ -24,7 +24,10 @@ class SRFavouriteModel extends ChangeNotifier {
     // 这个地方，由于不会有两个app同时登录一个账号，所以，大概不会出现远程数据变动的情况，
     // 那么就只用在初始化 SRFavouriteModel 的时候加载网络数据
     if (init) {
-      var remoteData = await StudyRoomRepository.favouriteList();
+      List<Classroom> remoteData = await StudyRoomRepository.favouriteList();
+      List<String> remoteIds = remoteData.map((e) => e.id).toList();
+
+
 
       // 添加新的收藏到本地
       for (var room in remoteData) {
@@ -36,17 +39,19 @@ class SRFavouriteModel extends ChangeNotifier {
 
       // 从本地删除旧的收藏
       for (var room in localData.values) {
-        if (!remoteData.contains(room.id)) {
+        if (!remoteIds.contains(room.id)) {
           await instance.removeFavourite(cId: room.id);
         }
       }
+
+
     } else {
       _map.clear();
       _map.addAll(localData);
     }
 
     for (var room in _map.values) {
-      _classPlan[room.id] = await instance.getClassPlans(
+      _classPlan[room.id] = await instance.getRoomPlans(
         r: room,
         dateTime: dateTime,
       );
@@ -56,13 +61,13 @@ class SRFavouriteModel extends ChangeNotifier {
   addFavourite({@required Classroom room}) async {
     var instance = HiveManager.instance;
     await instance.addFavourite(room: room);
-    _map[room.id] = room;
+    _map.putIfAbsent(room.id, () => room);
     notifyListeners();
   }
 
   removeFavourite({@required String cId}) async {
     await HiveManager.instance.removeFavourite(cId: cId);
-    _map.remove(cId);
+    _map.removeWhere((key,_) => key == cId);
     notifyListeners();
   }
 
@@ -94,10 +99,10 @@ class FavouriteModel extends ViewStateModel {
       // 那就先做本地处理；
       if (globalFavouriteModel.contains(cId: room.id)) {
         await StudyRoomRepository.unCollect(id: room.id);
-        globalFavouriteModel.removeFavourite(cId: room.id);
+        await globalFavouriteModel.removeFavourite(cId: room.id);
       } else {
         await StudyRoomRepository.collect(id: room.id);
-        globalFavouriteModel.addFavourite(room: room);
+        await globalFavouriteModel.addFavourite(room: room);
       }
       setIdle();
     } catch (e, s) {
@@ -116,8 +121,8 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
     });
   }
 
-  SRTimeModel scheduleModel;
-  SRFavouriteModel favouriteModel;
+  final SRTimeModel scheduleModel;
+  final SRFavouriteModel favouriteModel;
 
   int get currentDay => scheduleModel.dateTime.weekday;
 

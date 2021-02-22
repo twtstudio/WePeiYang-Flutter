@@ -1,6 +1,19 @@
 import 'package:hive/hive.dart';
+import 'area.dart';
+import 'building.dart';
+import 'classroom.dart';
 
-class SearchHistory {
+enum ResultType { room, area, building }
+
+class ResultEntry {
+  final Area area;
+  final Classroom room;
+  final Building building;
+
+  ResultEntry({this.area, this.room, this.building});
+}
+
+class HistoryEntry {
   String bName;
   String cName;
   String aId;
@@ -8,24 +21,24 @@ class SearchHistory {
   String cId;
   String date;
 
-  SearchHistory(
-      this.bName, this.cName, this.aId, this.bId, this.cId, this.date);
+  HistoryEntry(
+      [this.bName, this.cName, this.aId, this.bId, this.cId, this.date]);
 
   Map toJson() =>
       {"aId": aId, "bId": bId, "cId": cId, "cName": cName, "bName": bName};
 }
 
-class SearchHistoryAdapter extends TypeAdapter<SearchHistory> {
+class SearchHistoryAdapter extends TypeAdapter<HistoryEntry> {
   @override
   final int typeId = 6;
 
   @override
-  SearchHistory read(BinaryReader reader) {
+  HistoryEntry read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return SearchHistory(
+    return HistoryEntry(
       fields[0] as String,
       fields[1] as String,
       fields[2] as String,
@@ -36,7 +49,7 @@ class SearchHistoryAdapter extends TypeAdapter<SearchHistory> {
   }
 
   @override
-  void write(BinaryWriter writer, SearchHistory obj) {
+  void write(BinaryWriter writer, HistoryEntry obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -62,12 +75,4 @@ class SearchHistoryAdapter extends TypeAdapter<SearchHistory> {
       other is SearchHistoryAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
-}
-
-String getTitle(SearchHistory h) {
-  if (h.aId == '') {
-    return '${h.bName}楼 ${h.cName}';
-  } else {
-    return '${h.bName}楼 ${h.aId}区 ${h.cName}';
-  }
 }

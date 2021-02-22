@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart' hide SearchDelegate;
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
 
 class SearchSuggestions extends StatelessWidget {
-  final SearchDelegate delegate;
+  final MySearchDelegate delegate;
 
   SearchSuggestions({@required this.delegate});
 
@@ -31,7 +32,7 @@ class SearchSuggestions extends StatelessWidget {
 }
 
 class SearchHistoriesWidget<T> extends StatefulWidget {
-  final SearchDelegate<T> delegate;
+  final MySearchDelegate<T> delegate;
 
   SearchHistoriesWidget({@required this.delegate, key}) : super(key: key);
 
@@ -53,34 +54,32 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              FlatButton(
-                onPressed: null,
-                child: Text(
-                  '历史记录',
-                  // style: Provider.of<TextStyle>(context),
+        Consumer<SearchHistoryModel>(
+          builder: (context, model, child) => Visibility(
+            visible: !model.isBusy && !model.isEmpty,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: null,
+                  child: Text(
+                    '历史记录',
+                    style: TextStyle(
+                        color: Color(0xff62677c),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
                 ),
-              ),
-              Consumer<SearchHistoryModel>(
-                builder: (context, model, child) => Visibility(
-                    visible: !model.isBusy && !model.isEmpty,
-                    child: model.isIdle
-                        ? FlatButton.icon(
-                            textColor: Color(0xff62677b),
-                            onPressed: model.clearHistory,
-                            icon: Icon(Icons.clear),
-                            label: Text('清空'))
-                        : FlatButton.icon(
-                            textColor: Color(0xff62677b),
-                            onPressed: model.initData,
-                            icon: Icon(Icons.refresh),
-                            label: Text('重试'))),
-              ),
-            ],
+                InkWell(
+                  onTap: () async => await model.clearHistory(),
+                  child: Image(
+                    image: AssetImage(Images.crash),
+                    width: 17,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         SearchSuggestionStateWidget<SearchHistoryModel, String>(
@@ -89,7 +88,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
             label: Text(
               item,
               style: TextStyle(
-                fontSize: 8,
+                fontSize: 12,
                 color: Color(0xff62677b),
               ),
             ),

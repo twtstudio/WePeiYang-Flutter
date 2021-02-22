@@ -3,10 +3,11 @@ import 'package:hive/hive.dart';
 class LocalEntry {
 
   String key;
+  String name;
 
   String dateTime;
 
-  LocalEntry(this.key, this.dateTime);
+  LocalEntry(this.key, this.name,this.dateTime);
 }
 
 class LocalEntryAdapter extends TypeAdapter<LocalEntry> {
@@ -22,16 +23,19 @@ class LocalEntryAdapter extends TypeAdapter<LocalEntry> {
     return LocalEntry(
       fields[0] as String,
       fields[1] as String,
+      fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, LocalEntry obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.key)
       ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
       ..write(obj.dateTime);
   }
 

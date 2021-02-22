@@ -1,3 +1,6 @@
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
+import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
+
 class DataFactory {
   static List<String> splitPlan(String plan) {
     // print('plan: ' + plan);
@@ -30,75 +33,111 @@ class DataFactory {
     return result;
   }
 
-
   static Map<String, String> formatQuery(String query) {
-    List<String> querys = [];
+    List<String> queries = [];
 
     var q1 = query.split(RegExp(r'[\u4e00-\u9fa5\s]'));
     for (var q in q1) {
       if (q.contains(RegExp(r'[A-Za-z]'))) {
         var area =
-        RegExp(r'[A-Za-z]').allMatches(q).map((e) => e.group(0)).toList();
-        querys.addAll(area);
+            RegExp(r'[A-Za-z]').allMatches(q).map((e) => e.group(0)).toList();
+        queries.addAll(area);
         var q2 = q.split(RegExp(r'[A-Za-z]'));
         for (var w in q2) {
           if (w.isNotEmpty) {
             if (w.length > 3) {
               var i1 = w.substring(0, 2);
               var i2 = w.substring(2, 5);
-              querys.add(i1);
-              querys.add(i2);
+              queries.add(i1);
+              queries.add(i2);
             } else {
-              querys.add(w);
+              queries.add(w);
             }
           }
         }
       } else if (q.isNotEmpty) {
         if (q.length > 3) {
           var i1 = q.substring(0, 2);
-          var i2 = q.substring(2, 5);
-          querys.add(i1);
-          querys.add(i2);
+          var i2 = q.substring(2, q.length);
+          queries.add(i1);
+          queries.add(i2);
         } else {
-          querys.add(q);
+          queries.add(q);
         }
       }
     }
 
-    Map<String, String> orderedQuerys = {};
+    Map<String, String> orderedQueries = {};
 
-    for (var q in querys) {
+    for (var q in queries) {
       print('q: ' + q + '=' + RegExp(r'^[1-9][0-9]$').hasMatch(q).toString());
       if (RegExp(r'[A-Za-z]').hasMatch(q)) {
-        if (orderedQuerys['aName'] == null) {
-          orderedQuerys['aName'] = q;
+        if (orderedQueries['aName'] == null) {
+          orderedQueries['aName'] = q.toUpperCase();
         } else {
           print('教学楼具体区域不明确');
         }
       }
       if (RegExp(r'^[1-9][0-9]{0,1}$').hasMatch(q)) {
-        if (orderedQuerys['bName'] == null) {
-          orderedQuerys['bName'] = q;
-        } else if (orderedQuerys['bName'] != null && q.length == 1) {
+        if (orderedQueries['bName'] == null) {
+          orderedQueries['bName'] = q;
+        } else if (orderedQueries['bName'] != null &&
+            orderedQueries['cName'] == null) {
           print('教学楼不明确,猜测是教室开头（楼层）');
-          orderedQuerys['cName'] = q;
+          orderedQueries['cName'] = q;
         } else {
           print('教学楼不明确');
         }
       }
       if (RegExp(r'^[1-9][0-9]{2}$').hasMatch(q)) {
-        if (orderedQuerys['cName'] == null) {
-          orderedQuerys['cName'] = q;
+        if (orderedQueries['cName'] == null) {
+          orderedQueries['cName'] = q;
         } else {
           print('具体教室不明确');
         }
       }
     }
 
-    print('querys : ' + querys.toString());
-    print('orderedQuerys : ' + orderedQuerys.toString());
+    print('queries : ' + queries.toString());
+    print('orderedQueries : ' + orderedQueries.toString());
 
-    return orderedQuerys;
+    return orderedQueries;
   }
 
+  static bool roomIsIdle(
+      Map<String, String> plan, List<ClassTime> schedule, int currentDay) {
+    if (plan != null) {
+      String currentPlan;
+      currentPlan = plan[Time.week[currentDay - 1]];
+      if (currentPlan != null) {
+        return Time.availableNow(currentPlan, schedule);
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  static String getTitle(HistoryEntry h) {
+    if (h.aId == '') {
+      return '${h.bName}楼 ${h.cName}';
+    } else {
+      return '${h.bName}楼 ${h.aId}区 ${h.cName}';
+    }
+  }
+
+  static ResultType getResultType(ResultEntry first) {
+    // var bExist = first.building != null ? true : false;
+    var aExist = first.area != null ;
+    var cExist = first.room != null ;
+
+    if(cExist){
+      return ResultType.room;
+    }else if (aExist){
+      return ResultType.area;
+    }else {
+      return ResultType.building;
+    }
+  }
 }

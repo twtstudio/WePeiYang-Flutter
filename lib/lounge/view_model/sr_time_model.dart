@@ -19,7 +19,8 @@ class SRTimeModel extends ChangeNotifier {
       _classTime = schedule ?? _classTime;
       _dateTime = date ?? _dateTime;
     }
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'+_classTime.toString());
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' +
+        _classTime.toString());
     await StudyRoomRepository.setSRData(model: this);
     notifyListeners();
   }

@@ -4,25 +4,25 @@ import 'classroom.dart';
 class Area {
   String id;
   String building;
-  Map<String ,Classroom> classrooms;
+  Map<String, Classroom> classrooms;
 
-  static Area fromMap(Map<String,dynamic> map){
-    if(map == null) return null;
+  Area({this.id = '',this.building,this.classrooms});
+
+  static Area fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
     Area area = Area();
     area.id = map['area_id'] ?? '';
     // var list = map['classrooms'];
     var list = List()
-       ..addAll((map['classrooms'] as List ?? []).map((e) => Classroom.fromMap(e)));
-    for(var room in list){
+      ..addAll((map['classrooms'] as List ?? [])
+          .map((e) => Classroom.fromMap(e, area.id)));
+    for (var room in list) {
       area.classrooms[room.id ?? ''] = room;
     }
     return area;
   }
 
-  Map toJson() => {
-    "area_id":id,
-    "classrooms":classrooms
-  };
+  Map toJson() => {"area_id": id, "classrooms": classrooms};
 }
 
 class AreaAdapter extends TypeAdapter<Area> {
@@ -59,7 +59,7 @@ class AreaAdapter extends TypeAdapter<Area> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AreaAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is AreaAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

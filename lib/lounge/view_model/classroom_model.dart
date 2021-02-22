@@ -10,6 +10,7 @@ class ClassroomsDataModel extends ViewStateListModel {
   ClassroomsDataModel._(
       this.id, this.area, this.scheduleModel, this.classPlan, this.floors) {
     this.scheduleModel.addListener(() {
+      setBusy();
       refresh();
     });
   }

@@ -35,7 +35,7 @@ class TimeCheckWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.date_range_rounded,
-                size: 20,
+                size: 23,
                 color: Color(0XFF62677B),
               ),
             ],

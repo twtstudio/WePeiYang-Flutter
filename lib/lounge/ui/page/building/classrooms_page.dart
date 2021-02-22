@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/lounge/config/lounge_router.dart';
+import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/model/images.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_history.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/classroom_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
@@ -19,51 +21,65 @@ class ClassroomsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<ClassroomsDataModel>(
-        model: ClassroomsDataModel(
-            id, area, Provider.of<SRTimeModel>(context)),
-        onModelReady: (model) {
-          model.initData();
-        },
-        builder: (context, model, child) {
-          Area area = model.area;
-          Map<String, List<Classroom>> floors = model.floors;
-          return StudyRoomPage(
-              body: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Builder(builder: (_) {
-                    if (model.isBusy) {
-                      return Container();
-                    } else {
-                      return ListView(
-                        physics: BouncingScrollPhysics(),
-                        children: [
-                          _PathTitle(),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: floors.length,
-                              itemBuilder: (context, index) => FloorWidget(
-                                aId: area.id,
-                                bId: id,
-                                floor: floors.keys.toList()[index],
-                                classrooms:
-                                floors[floors.keys.toList()[index]],
-                              ),
-                            ),
-                          )
-                        ],
-                      );
-                    }
-                  })));
-        });
+    return StudyRoomPage(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            _PathTitle(area: area),
+            BuildingFloors(area: area, id: id)
+          ],
+        ),
+      ),
+    );
   }
 }
 
+class BuildingFloors extends StatelessWidget {
+  const BuildingFloors({
+    Key key,
+    @required this.area,
+    this.id,
+  }) : super(key: key);
+
+  final Area area;
+  final String id;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderWidget<ClassroomsDataModel>(
+      model: ClassroomsDataModel(
+          id, area, Provider.of<SRTimeModel>(context, listen: false)),
+      onModelReady: (model) {
+        model.initData();
+      },
+      builder: (_, model, __) => ListLoadSteps(
+        model: model,
+        successV: Padding(
+          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: model.floors.length,
+            itemBuilder: (context, index) => FloorWidget(
+              aId: area.id,
+              bId: id,
+              floor: model.floors.keys.toList()[index],
+              classrooms: model.floors[model.floors.keys.toList()[index]],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _PathTitle extends StatelessWidget {
+  final Area area;
+
+  const _PathTitle({Key key, this.area}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,19 +92,16 @@ class _PathTitle extends StatelessWidget {
             height: 17,
           ),
           SizedBox(width: 7),
-          Consumer<ClassroomsDataModel>(builder: (_, model, __) {
-            final area = model.area;
-            return Text(
-              area.id != null
-                  ? area.building + "教学楼" + area.id
-                  : area.building + "教学楼",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Color(0xff62677b),
-              ),
-            );
-          })
+          Text(
+            area.id != null
+                ? area.building + "教学楼" + area.id
+                : area.building + "教学楼",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: Color(0xff62677b),
+            ),
+          )
         ],
       ),
     );
@@ -108,6 +121,41 @@ class FloorWidget extends StatelessWidget {
     this.classrooms,
     Key key,
   }) : super(key: key);
+
+  Widget get _classrooms =>
+      Consumer<ClassroomsDataModel>(builder: (_, model, __) {
+        Map<String, Map<String, String>> classPlan = model.classPlan;
+        int currentDay = model.currentDay;
+        List<ClassTime> classTime = model.classTime;
+        return GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            // crossAxisSpacing: 13,
+            // mainAxisSpacing: 18,
+            childAspectRatio: 68 / 54,
+          ),
+          itemCount: classrooms.length,
+          itemBuilder: (context, index) {
+            Classroom classroom = classrooms[index];
+            bool isIdle = DataFactory.roomIsIdle(
+                classPlan[classroom.id], classTime, currentDay);
+            String title = DataFactory.getTitle(
+                HistoryEntry(model.area.building, classroom.name, aId));
+            return InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  LoungeRouter.plan,
+                  arguments: Classroom(
+                      id: classroom.id, name: title, bId: bId, aId: aId),
+                );
+              },
+              child: _RoomItem(classroom: classroom, isIdle: isIdle),
+            );
+          },
+        );
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -131,71 +179,7 @@ class FloorWidget extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: Consumer<ClassroomsDataModel>(builder: (_, model, __) {
-            Map<String, Map<String, String>> classPlan = model.classPlan;
-            int currentDay = model.currentDay;
-            List<ClassTime> schedule = model.classTime;
-            return GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                // crossAxisSpacing: 13,
-                // mainAxisSpacing: 18,
-                childAspectRatio: 68 / 54,
-              ),
-              itemCount: classrooms.length,
-              itemBuilder: (context, index) {
-                // TODO: 优化逻辑
-                var classroom = classrooms[index];
-                // print('classroom: ' + classroom.toJson().toString());
-                var plan = classPlan[classroom.id];
-                String current;
-                String currentPlan;
-                bool isIdle;
-                if (plan != null) {
-                  current = Time.week[currentDay - 1];
-                  currentPlan = plan[current];
-                  if (currentPlan != null) {
-                    isIdle = Time.availableNow(currentPlan, schedule);
-                  } else {
-                    isIdle = false;
-                  }
-                } else {
-                  current = null;
-                  classPlan = null;
-                  isIdle = false;
-                }
-                String title;
-                if (aId == null) {
-                  title = model.area.building + '教' + classroom.name;
-                } else {
-                  title =
-                      model.area.building + '教' + aId + '区' + classroom.name;
-                }
-
-                return InkWell(
-                  onTap: () {
-                    print('you tap class:' +
-                        SearchHistory(
-                          model.area.building,
-                          classroom.name,
-                          aId,
-                          bId,
-                          classroom.id,
-                          '123123',
-                        ).toJson().toString());
-                    Navigator.of(context).pushNamed(
-                      LoungeRouter.plan,
-                      arguments: Classroom(
-                          id: classroom.id, name: title, bId: bId, aId: aId),
-                    );
-                  },
-                  child: _RoomItem(classroom: classroom, isIdle: isIdle),
-                );
-              },
-            );
-          }),
+          child: _classrooms,
         )
       ],
     );

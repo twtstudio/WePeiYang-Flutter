@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:wei_pei_yang_demo/lounge/config/net/api.dart';
+import 'package:wei_pei_yang_demo/lounge/service/net/api.dart';
 
 import 'view_state.dart';
 
@@ -20,7 +20,7 @@ class ViewStateModel with ChangeNotifier {
   /// 子类可以在构造函数指定需要的页面状态
   /// FooModel():super(viewState:ViewState.busy);
   ViewStateModel({ViewState viewState})
-      : _viewState = viewState ?? ViewState.idle {
+      : _viewState = viewState ?? ViewState.empty {
     debugPrint('ViewStateModel---constructor--->$runtimeType');
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/config/lounge_router.dart';
+import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 
 // TODO 这里迟早得改
 class CardBean {

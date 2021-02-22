@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/class_plan_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
@@ -15,37 +17,17 @@ class ClassPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<ClassPlanModel>(
-      model: ClassPlanModel(
-          room: room, scheduleModel: Provider.of<SRTimeModel>(context)),
-      onModelReady: (model) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          model.initData();
-        });
-      },
-      builder: (context, model, child) {
-        return StudyRoomPage(
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Builder(builder: (_) {
-              if (model.isError && model.list.isEmpty) {
-                return Container(
-                  child: Center(
-                    child: Text('加载失败'),
-                  ),
-                );
-              }
-              return ListView(
-                physics: BouncingScrollPhysics(),
-                children: <Widget>[
-                  PageTitleWidget(title: room.name, room: room),
-                  if (model.plan?.isNotEmpty ?? false) ClassTableWidget()
-                ],
-              );
-            }),
-          ),
-        );
-      },
+    return StudyRoomPage(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: <Widget>[
+            PageTitleWidget(title: room.name, room: room),
+            ClassTableWidget(room: room)
+          ],
+        ),
+      ),
     );
   }
 }
@@ -63,7 +45,7 @@ class PageTitleWidget extends StatelessWidget {
       children: [
         Container(
           // color: Colors.yellow,
-          padding: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.all(10),
           child: Text(
             title,
             style: TextStyle(
@@ -115,46 +97,48 @@ class PageTitleWidget extends StatelessWidget {
   }
 }
 
-/// 课程表每个item之间的间距
 const double cardStep = 6;
-const schedulePadding = 25;
+const schedulePadding = 12;
 const double countTabWidth = 22;
+const double dateTabHeight = 28;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class ClassTableWidget extends StatelessWidget {
+  final Classroom room;
+
+  const ClassTableWidget({Key key, this.room}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width -
-        schedulePadding * 2 -
-        countTabWidth -
-        cardStep;
-    var dayCount = false ? 7 : 6;
-    var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
+    var width = MediaQuery.of(context).size.width - schedulePadding * 2;
+    var dayCount = CommonPreferences().dayNumber.value;
+    var cardWidth = (width - countTabWidth - dayCount * cardStep) / dayCount;
     var tabHeight = cardWidth * 136 / 96;
     return ListView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       children: [
         Container(
-          height: tabHeight * 12 + cardStep * 12 + 28,
+          height: tabHeight * 12 + cardStep * 12 + dateTabHeight,
+          width: width,
           child: Stack(
             children: [
               Positioned(
                 top: 0,
                 left: cardStep + countTabWidth,
                 child: SizedBox(
-                  height: 28,
-                  width: width,
+                  height: dateTabHeight,
+                  width: cardWidth * dayCount + cardStep * (dayCount - 1),
                   child: WeekDisplayWidget(cardWidth, dayCount),
                 ),
               ),
               Positioned(
-                top: cardStep + 28,
+                top: cardStep + dateTabHeight,
                 left: cardStep + countTabWidth,
-                child: CourseDisplayWidget(cardWidth, dayCount),
+                child: CourseDisplayWidget(cardWidth, dayCount, room),
               ),
               Positioned(
-                top: cardStep + 28,
+                top: cardStep + dateTabHeight,
                 left: 0,
                 child: CourseTabDisplayWidget(tabHeight, dayCount),
               )
@@ -176,7 +160,7 @@ class CourseTabDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var stepHeight = tabHeight * 2 + cardStep;
-    return Consumer<ClassPlanModel>(
+    return Consumer<SRTimeModel>(
       builder: (_, model, __) => Container(
         width: countTabWidth,
         height: tabHeight * 12 + cardStep * 11,
@@ -253,12 +237,12 @@ class WeekDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ClassPlanModel>(
+    return Consumer<SRTimeModel>(
       builder: (_, model, __) => Row(
         children: model.dateTime.thisWeek
             .sublist(0, dayCount)
             .map((date) => Container(
-                  height: 28,
+                  height: dateTabHeight,
                   width: cardWidth,
                   decoration: BoxDecoration(
                       color: model.dateTime.isTheSameDay(date)
@@ -287,8 +271,9 @@ class WeekDisplayWidget extends StatelessWidget {
 class CourseDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final int dayCount;
+  final Classroom room;
 
-  CourseDisplayWidget(this.cardWidth, this.dayCount);
+  CourseDisplayWidget(this.cardWidth, this.dayCount, this.room);
 
   @override
   Widget build(BuildContext context) {
@@ -299,25 +284,44 @@ class CourseDisplayWidget extends StatelessWidget {
           schedulePadding * 2 -
           countTabWidth -
           cardStep,
-      child: Consumer<ClassPlanModel>(builder: (_, model, __) {
-        if (model.plan?.isNotEmpty ?? false) {
-          return Stack(
-            children:
-                _generatePositioned(context, singleCourseHeight, model.plan),
-          );
-        }
-
-        return Container();
-      }),
+      child: ProviderWidget<ClassPlanModel>(
+        model: ClassPlanModel(
+            room: room,
+            scheduleModel: Provider.of<SRTimeModel>(context, listen: false)),
+        onModelReady: (model) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            model.initData();
+          });
+        },
+        builder: (_, model, __) => ListLoadSteps(
+          model: model,
+          successV: Builder(
+            builder:(_){
+              if(model.plan.isNotEmpty){
+                return  Stack(
+                  children: _generatePositioned(
+                      context, singleCourseHeight, model.plan, dayCount),
+                );
+              }else {
+                return Container();
+              }
+            },
+          ),
+        ),
+      ),
     );
     // return Container();
   }
 
-  List<Widget> _generatePositioned(BuildContext context, double courseHeight,
-      Map<String, List<String>> plan) {
+  List<Widget> _generatePositioned(
+    BuildContext context,
+    double courseHeight,
+    Map<String, List<String>> plan,
+    int dayCount,
+  ) {
     List<Positioned> list = [];
     var d = 1;
-    for (var wd in Time.week.getRange(0, 6)) {
+    for (var wd in Time.week.getRange(0, dayCount)) {
       var index = 1;
       // print(wd);
       // print(plan[wd].toString());

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 
 const String kSearchHistory = 'kSearchHistory';
@@ -24,15 +25,17 @@ class SearchHistoryModel extends ViewStateListModel<String> {
 }
 
 class SearchResultModel extends ViewStateListModel {
-  final String keyword;
+  final String query;
   final SearchHistoryModel searchHistoryModel;
 
-  SearchResultModel({this.keyword, this.searchHistoryModel});
+  SearchResultModel({this.query, this.searchHistoryModel});
 
   @override
   Future<List> loadData({int pageNum}) async {
-    if (keyword.isEmpty) return [];
-    searchHistoryModel.addHistory(keyword);
-    return [];
+    if (query.isEmpty) return [];
+    searchHistoryModel.addHistory(query);
+    var formatQueries = DataFactory.formatQuery(query);
+    var result = await HiveManager.instance.search(formatQueries).toList();
+    return result;
   }
 }

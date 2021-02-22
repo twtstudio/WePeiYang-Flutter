@@ -1,72 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_history.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_result.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_suggestion.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
 
-Future<T> showASearch<T>({
+Future<T> customShowSearch<T>({
   @required BuildContext context,
-  @required SearchDelegate<T> delegate,
+  @required MySearchDelegate<T> delegate,
   String query = '',
 }) {
   assert(delegate != null);
   assert(context != null);
   delegate.query = query ?? delegate.query;
   delegate._currentBody = _SearchBody.suggestions;
-  return Navigator.of(context).push(_ASearchPageRoute<T>(
+  return Navigator.of(context).push(_MySearchPageRoute<T>(
     delegate: delegate,
   ));
 }
 
-class StudyRoomSearchDelegate extends SearchDelegate<SearchHistory> {
+class SRSearchDelegate extends MySearchDelegate<HistoryEntry> {
   SearchHistoryModel _searchHistoryModel = SearchHistoryModel();
-
-  // @override
-  // ThemeData appBarTheme(BuildContext context) {
-  //   var theme = Theme.of(context);
-  //   return super.appBarTheme(context).copyWith(
-  //       primaryColor: theme.scaffoldBackgroundColor,
-  //       primaryColorBrightness: theme.brightness);
-  // }
 
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
-      IconButton(
-        icon: Icon(Icons.clear),
+      TextButton(
+        style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: MaterialStateProperty.all(Size(0, 0)),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+        ),
         onPressed: () {
-          if (query.isEmpty) {
-            close(context, null);
-          } else {
-            query = '';
-            showSuggestions(context);
-          }
+          query.trim().isNotEmpty ? showResults(context) : close(context, null);
         },
-      )
+        child: Text(
+          query.trim().isNotEmpty ? '搜索' : '取消',
+          style: TextStyle(
+              color: Color(0xff62677c),
+              fontWeight: FontWeight.bold,
+              fontSize: 12),
+        ),
+      ),
     ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
+    return Image(
+      image: AssetImage(Images.search),
+      width: 20,
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    if (query.length > 0) {
+    if (query.trim().length > 0) {
       return SearchResult(
-        keyWord: query,
+        query: query,
+        searchHistoryModel: _searchHistoryModel,
       );
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        close(context, null);
+      });
+      return SizedBox.shrink();
     }
-    return SizedBox.shrink();
   }
 
   @override
@@ -81,8 +81,8 @@ class StudyRoomSearchDelegate extends SearchDelegate<SearchHistory> {
   }
 }
 
-abstract class SearchDelegate<T> {
-  SearchDelegate({
+abstract class MySearchDelegate<T> {
+  MySearchDelegate({
     this.searchFieldLabel,
     this.searchFieldStyle,
     this.keyboardType,
@@ -162,7 +162,7 @@ abstract class SearchDelegate<T> {
     _currentBodyNotifier.value = value;
   }
 
-  _ASearchPageRoute<T> _route;
+  _MySearchPageRoute<T> _route;
 }
 
 enum _SearchBody {
@@ -170,8 +170,8 @@ enum _SearchBody {
   results,
 }
 
-class _ASearchPageRoute<T> extends PageRoute<T> {
-  _ASearchPageRoute({
+class _MySearchPageRoute<T> extends PageRoute<T> {
+  _MySearchPageRoute({
     @required this.delegate,
   }) : assert(delegate != null) {
     assert(
@@ -183,7 +183,7 @@ class _ASearchPageRoute<T> extends PageRoute<T> {
     delegate._route = this;
   }
 
-  final SearchDelegate<T> delegate;
+  final MySearchDelegate<T> delegate;
 
   @override
   Color get barrierColor => null;
@@ -223,7 +223,7 @@ class _ASearchPageRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return _SearchPage<T>(
+    return _MySearchPage<T>(
       delegate: delegate,
       animation: animation,
     );
@@ -238,20 +238,20 @@ class _ASearchPageRoute<T> extends PageRoute<T> {
   }
 }
 
-class _SearchPage<T> extends StatefulWidget {
-  const _SearchPage({
+class _MySearchPage<T> extends StatefulWidget {
+  const _MySearchPage({
     this.delegate,
     this.animation,
   });
 
-  final SearchDelegate<T> delegate;
+  final MySearchDelegate<T> delegate;
   final Animation<double> animation;
 
   @override
-  State<StatefulWidget> createState() => _SearchPageState<T>();
+  State<StatefulWidget> createState() => _MySearchPageState<T>();
 }
 
-class _SearchPageState<T> extends State<_SearchPage<T>> {
+class _MySearchPageState<T> extends State<_MySearchPage<T>> {
   FocusNode focusNode = FocusNode();
 
   @override
@@ -285,7 +285,7 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
   }
 
   @override
-  void didUpdateWidget(_SearchPage<T> oldWidget) {
+  void didUpdateWidget(_MySearchPage<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.delegate != oldWidget.delegate) {
       oldWidget.delegate._queryTextController.removeListener(_onQueryChanged);
@@ -323,8 +323,8 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
     final ThemeData theme = widget.delegate.appBarTheme(context);
     final String searchFieldLabel = widget.delegate.searchFieldLabel ??
         MaterialLocalizations.of(context).searchFieldLabel;
-    final TextStyle searchFieldStyle = widget.delegate.searchFieldStyle ??
-        theme.inputDecorationTheme.hintStyle;
+    // final TextStyle searchFieldStyle = widget.delegate.searchFieldStyle ??
+    //     theme.inputDecorationTheme.hintStyle;
     Widget body;
     switch (widget.delegate._currentBody) {
       case _SearchBody.suggestions:
@@ -359,35 +359,100 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
       namesRoute: true,
       label: routeName,
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: theme.primaryColor,
-          iconTheme: theme.primaryIconTheme,
-          textTheme: theme.primaryTextTheme,
-          brightness: theme.primaryColorBrightness,
-          leading: widget.delegate.buildLeading(context),
-          title: TextField(
-            controller: widget.delegate._queryTextController,
-            focusNode: focusNode,
-            style: theme.textTheme.headline6,
-            textInputAction: widget.delegate.textInputAction,
-            keyboardType: widget.delegate.keyboardType,
-            onSubmitted: (String _) {
-              widget.delegate.showResults(context);
-            },
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: searchFieldLabel,
-              hintStyle: searchFieldStyle,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: Container(
+            color: Colors.transparent,
+            child: SafeArea(
+              top: true,
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(children: [
+                  CustomSingleChildLayout(
+                    delegate: _ToolbarContainerLayout(40),
+                    child: NavigationToolbar(
+                      centerMiddle: false,
+                      middleSpacing: 30,
+                      leading: widget.delegate.buildLeading(context),
+                      middle: TextField(
+                        controller: widget.delegate._queryTextController,
+                        focusNode: focusNode,
+                        style: TextStyle(
+                          color: Color(0xff363c54),
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                        textInputAction: widget.delegate.textInputAction,
+                        keyboardType: widget.delegate.keyboardType,
+                        onSubmitted: (String _) {
+                          widget.delegate.showResults(context);
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '请输入',
+                          hintStyle: TextStyle(
+                            color: Color(0xcc363c54),
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: widget.delegate.buildActions(context),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 0.6,
+                    color: Color(0xff303c66),
+                  )
+                ]),
+              ),
             ),
           ),
-          actions: widget.delegate.buildActions(context),
         ),
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: body,
+        body: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus.unfocus();
+            }
+          },
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: body,
+          ),
         ),
       ),
     );
   }
+}
+
+class _ToolbarContainerLayout extends SingleChildLayoutDelegate {
+  const _ToolbarContainerLayout(this.toolbarHeight);
+
+  final double toolbarHeight;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    return constraints.tighten(height: toolbarHeight);
+  }
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    return Size(constraints.maxWidth, toolbarHeight);
+  }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    return Offset(0.0, size.height - childSize.height);
+  }
+
+  @override
+  bool shouldRelayout(_ToolbarContainerLayout oldDelegate) =>
+      toolbarHeight != oldDelegate.toolbarHeight;
 }

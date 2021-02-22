@@ -14,26 +14,32 @@ class Data {
           ..classrooms = {
             "00 ": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20",
             "01": Classroom()
               ..id = "01"
+              ..aId = "A"
               ..name = "102"
               ..capacity = "15",
             "02": Classroom()
               ..id = "02"
+              ..aId = "A"
               ..name = "103"
               ..capacity = "35",
             "03": Classroom()
               ..id = "03"
+              ..aId = "A"
               ..name = "201"
               ..capacity = "40",
             "04": Classroom()
               ..id = "04"
+              ..aId = "A"
               ..name = "202"
               ..capacity = "30",
             "05": Classroom()
               ..id = "05"
+              ..aId = "A"
               ..name = "301"
               ..capacity = "20",
           },
@@ -42,14 +48,17 @@ class Data {
           ..classrooms = {
             "06": Classroom()
               ..id = "06"
+              ..aId = "B"
               ..name = "105"
               ..capacity = "20",
             "07": Classroom()
               ..id = "07"
+              ..aId = "B"
               ..name = "106"
               ..capacity = "30",
             "08": Classroom()
               ..id = "08"
+              ..aId = "B"
               ..name = "301"
               ..capacity = "20",
           },
@@ -58,14 +67,17 @@ class Data {
           ..classrooms = {
             "09": Classroom()
               ..id = "09"
+              ..aId = "C"
               ..name = "101"
               ..capacity = "20",
             "10": Classroom()
               ..id = "10"
+              ..aId = "C"
               ..name = "201"
               ..capacity = "30",
             "11": Classroom()
               ..id = "11"
+              ..aId = "C"
               ..name = "202"
               ..capacity = "20",
           }
@@ -104,14 +116,17 @@ class Data {
           ..classrooms = {
             "15": Classroom()
               ..id = "15"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20",
             "16": Classroom()
               ..id = "16"
+              ..aId = "A"
               ..name = "102"
               ..capacity = "15",
             "17": Classroom()
               ..id = "17"
+              ..aId = "A"
               ..name = "103"
               ..capacity = "35",
           },
@@ -120,10 +135,12 @@ class Data {
           ..classrooms = {
             "18": Classroom()
               ..id = "18"
+              ..aId = "B"
               ..name = "105"
               ..capacity = "20",
             "19": Classroom()
               ..id = "19"
+              ..aId = "B"
               ..name = "106"
               ..capacity = "30",
           }
@@ -143,6 +160,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "000000000000"
@@ -188,6 +206,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "110011001100"
@@ -227,6 +246,7 @@ class Data {
             "00": Classroom()
               ..id = "00"
               ..name = "101"
+              ..aId = "A"
               ..capacity = "20"
               ..status = "000011001100"
           },
@@ -264,6 +284,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "110011001100"
@@ -302,6 +323,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "000000001100"
@@ -340,6 +362,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "000000000000"
@@ -378,6 +401,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "000000000000"
@@ -416,6 +440,7 @@ class Data {
           ..classrooms = {
             "00": Classroom()
               ..id = "00"
+              ..aId = "A"
               ..name = "101"
               ..capacity = "20"
               ..status = "111100000000"

@@ -42,7 +42,7 @@ class WPYPage extends StatelessWidget {
             /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
             SliverToBoxAdapter(child: Padding(
-              padding: const EdgeInsets.fromLTRB(30,20,0,12),
+              padding: const EdgeInsets.fromLTRB(0,20,0,12),
               child: SRFavourWidget(),
             ))
           ],

@@ -16,13 +16,14 @@ class Classroom {
       this.bId = '',
       this.aId = ''});
 
-  static Classroom fromMap(Map<String, dynamic> map) {
+  static Classroom fromMap(Map<String, dynamic> map,String id) {
     if (map == null) return null;
     Classroom classroom = Classroom();
     classroom.id = map['classroom_id'] ?? '';
     classroom.name = map['classroom'] ?? '';
     classroom.capacity = map['capacity'] ?? '';
     classroom.status = map['status'] ?? '';
+    classroom.aId = id ?? '';
     //TODO: 这个大概使不会有的
     // classroom.bId = map['building'];
     // classroom.aId = map['area'];

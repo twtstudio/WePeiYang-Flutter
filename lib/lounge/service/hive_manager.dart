@@ -6,6 +6,7 @@ import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/model/local_entry.dart';
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/model/temporary.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -94,13 +95,15 @@ class HiveManager {
     @required List<Building> data,
     @required int day,
   }) async {
-    await _temporaryData.put(Time.week[day-1], Buildings(buildings: data));
+    await _temporaryData.put(Time.week[day - 1], Buildings(buildings: data));
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
 
   addFavourite({Classroom room}) async {
+    print(_favourList.keys.toList());
     await _favourList.put(room.id, room);
+    print(_favourList.keys.toList());
   }
 
   removeFavourite({String cId}) async {
@@ -156,7 +159,7 @@ class HiveManager {
       var key = k.key;
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
-        debugPrint('baseBuildingDataFromDisk :' + building.toJson().toString());
+        // debugPrint('baseBuildingDataFromDisk :' + building.toJson().toString());
         yield building;
       } else {
         throw Exception('box not exist : $key');
@@ -205,15 +208,15 @@ class HiveManager {
         await box.delete(key);
       }
       await box.put(key, building);
-      await _setBuildingDataRefreshTime(building.id);
+      await _setBuildingDataRefreshTime(building.id, building.name);
     } else {
       // print('box not exist :' + building.id);
     }
   }
 
   /// 记录最重要的本周数据的获取时间，以判断是否需要刷新数据
-  _setBuildingDataRefreshTime(String id) async =>
-      await _boxesKeys.put(id, LocalEntry(id, DateTime.now().toString()));
+  _setBuildingDataRefreshTime(String id, String name) async =>
+      await _boxesKeys.put(id, LocalEntry(id, name, DateTime.now().toString()));
 
   // TODO: 真的这么写 ???
   clearLocalData() async {
@@ -224,7 +227,7 @@ class HiveManager {
   }
 
   //TODO: 没有做错误处理
-  Future<Map<String, List<String>>> getClassPlans(
+  Future<Map<String, List<String>>> getRoomPlans(
       {@required Classroom r, @required DateTime dateTime}) async {
     Map<String, List<String>> _plans = {};
     var id = r.bId;
@@ -242,20 +245,14 @@ class HiveManager {
     return _plans;
   }
 
-  Stream<MapEntry<String,Building>> getBuildingPlanData({String id, DateTime time}) async* {
-    // print(time);
-    // print(id);
-    // print(time.isThisWeek);
+  Stream<MapEntry<String, Building>> getBuildingPlanData(
+      {String id, DateTime time}) async* {
     if (time.isThisWeek) {
-      // print('?????????????????????????????????');
       if (_buildingBoxes.containsKey(id) && _boxesKeys.keys.contains(id)) {
         var box = _buildingBoxes[id];
         for (var day in Time.week) {
-          // print('?????????????????????????????????');
-          // print('?????????????????????????????????');
           var data = await box.get(day);
           yield MapEntry(day, data);
-          // print(data.toJson());
         }
       } else {
         throw Exception('get data from box error: ' + id);
@@ -266,9 +263,6 @@ class HiveManager {
         var data = _temporaryData.get(day);
         for (var building in data.buildings) {
           if (building.id == id) {
-            // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-            // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-            // print(building.toJson());
             yield MapEntry(day, building);
             break;
           }
@@ -282,10 +276,126 @@ class HiveManager {
     return _searchHistory.values.toList();
   }
 
+  Stream<ResultEntry> search(Map<String, String> formatQueries) async* {
+    // 区域作为辅助查找条件
+    var aName = formatQueries['aName'];
+    var bName = formatQueries['bName'];
+    var cName = formatQueries['cName'];
+
+    List<LocalEntry> rBs = bName != null
+        ? _boxesKeys.values.where((b) => b.name.startsWith(bName)).toList()
+        : [];
+
+    var hasA = aName != null;
+    var hasB = bName != null ? true : rBs.isNotEmpty;
+    var hasC = cName != null;
+    print('formatQueries');
+    print(formatQueries);
+    print('$aName   $bName   $cName   $hasA   $hasB   $hasC');
+
+    if (hasB) {
+      for (var b in rBs) {
+        var building = await _buildingBoxes[b.key].get(baseRoom);
+        if (hasC) {
+          // 教学楼  + 教室   首先找到教学楼， 再找到教室
+          // 如果教室的name format 出来时40 那么可能匹配到多间教室
+          // 44 D 301 应该是可以到 44 A 301
+          for (var area in building.areas.entries) {
+            for (var room in area.value.classrooms.values) {
+              if (room.name.startsWith(cName))
+                yield ResultEntry(
+                    building: building, area: area.value, room: room);
+            }
+          }
+        } else {
+          // 没有教室   找到该教学楼
+          if (hasA) {
+            // 还有区域   找到该区域  按照教学楼 + 区域展示
+            for (var a in building.areas.entries) {
+              if (a.value.id == aName) {
+                yield ResultEntry(building: building, area: a.value);
+                break;
+              }
+            }
+          } else {
+            // 只有教学楼   展示教学楼
+            yield ResultEntry(building: building);
+          }
+        }
+      }
+    } else {
+      if (hasC) {
+        if (hasA) {
+          // 区域 + 教室
+          List<MapEntry<Building, Classroom>> rCs = [];
+          await baseBuildingDataFromDisk.forEach((building) => building
+              .areas.values
+              .where((element) => element.id == aName)
+              .forEach((e) => rCs.addAll(e.classrooms.values
+                  .where((element) => element.name == cName)
+                  .map((e) => MapEntry(building, e)))));
+          for (var r in rCs) {
+            yield ResultEntry(
+              building: r.key,
+              area: Area(id: aName),
+              room: r.value,
+            );
+          }
+        } else {
+          // 只有教室
+          List<MapEntry<Building, Classroom>> rCs = [];
+          await baseBuildingDataFromDisk.forEach((building) => building
+              .areas.values
+              .forEach((e) => rCs.addAll(e.classrooms.values
+                  .where((element) => element.name == cName)
+                  .map((e) => MapEntry(building, e)))));
+          for (var r in rCs) {
+            yield ResultEntry(
+              building: r.key,
+              area: Area(id: r.value.aId),
+              room: r.value,
+            );
+          }
+        }
+      } else {
+        if (hasA) {
+          // 只有区域   找到包含该区域的教学楼  按照教学楼 + 区域展示
+          List<Building> tBs = [];
+          await baseBuildingDataFromDisk.forEach((building) {
+            if (building.areas.values
+                .where((element) => element.id == aName)
+                .isNotEmpty) tBs.add(building);
+          });
+          for (var b in tBs) {
+            yield ResultEntry(
+              building: b,
+              area: b.areas[aName],
+            );
+          }
+        } else {
+          // format 不出来
+        }
+      }
+    }
+  }
+
   clearHistory() async => await _searchHistory.clear();
 
-  addSearchHistory({@required String query}) async =>
-      await _searchHistory.put(DateTime.now().toString(), query);
+  addSearchHistory({@required String query}) async {
+    if (_searchHistory.values.contains(query)) {
+      var key = _searchHistory.values
+          .map((element) {
+            return element == query ? element : '';
+          })
+          .toList()
+          .asMap()
+          .entries
+          .firstWhere((element) => element.value == query)
+          .key;
+      await _searchHistory.deleteAt(key);
+    }
+    await _searchHistory.put(DateTime.now().toString(), query);
+  }
 
   closeBoxes() async {
     await Hive.close();

@@ -53,7 +53,7 @@ class Time {
                 return false;
               }
             }).reduce((v, e) => v && e)
-          : true;
+          : !state.contains('1');
 
   static ClassTime classOfDay(DateTime date) {
     var h = date.hour;
