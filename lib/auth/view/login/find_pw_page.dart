@@ -200,7 +200,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                               fontSize: 13)),
                       elevation: 5.0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3)),
+                          borderRadius: BorderRadius.circular(30)),
                     )),
               ],
             ),

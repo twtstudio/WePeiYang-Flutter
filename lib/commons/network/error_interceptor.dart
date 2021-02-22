@@ -82,8 +82,23 @@ class ErrorInterceptor extends InterceptorsWrapper {
       case 50014:
         throw DioError(error: "手机号已存在");
         break;
+      case 50015:
+        throw DioError(error: "升级失败，目标升级账号信息不存在");
+        break;
       case 50016:
         throw DioError(error: "无此学院");
+        break;
+      case 50019:
+        throw DioError(error: "用户名中含有非法字符");
+        break;
+      case 50020:
+        throw DioError(error: "用户名过长");
+        break;
+      case 50021:
+        throw DioError(error: "该学号所属用户已注册过");
+        break;
+      case 50022:
+        throw DioError(error: "该身份证号未在系统中登记");
         break;
       case 40001:
       case 40003:
@@ -92,7 +107,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
       case 50003:
       case 50004:
       case 50010:
-      case 50015:
         print("请求发生错误，error_code: $code, msg: ${response?.data['msg']}");
         throw DioError(error: "发生未知错误，请重新尝试");
     }

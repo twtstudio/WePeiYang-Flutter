@@ -22,6 +22,7 @@ class AuthRouter {
   static String loginPw = '/login_pw';
   static String register1 = '/register1';
   static String register2 = '/register2';
+  static String register3 = '/register3';
   static String addInfo = '/add_info';
   static String findHome = '/find_home';
   static String findPhone = '/find_phone';
@@ -45,7 +46,15 @@ class AuthRouter {
     login: (_) => LoginHomeWidget(),
     loginPw: (_) => LoginPwWidget(),
     register1: (_) => RegisterPageOne(),
-    register2: (_) => RegisterPageTwo(),
+    register2: (arg) {
+      var map = arg as Map;
+      return RegisterPageTwo(map['userNum'], map['nickname']);
+    },
+    register3: (arg) {
+      var map = arg as Map;
+      return RegisterPageThree(map['userNum'], map['nickname'], map['idNum'],
+          map['email'], map['phone'], map['code']);
+    },
     addInfo: (_) => AddInfoWidget(),
     findHome: (_) => FindPwWidget(),
     findPhone: (_) => FindPwByPhoneWidget(),
