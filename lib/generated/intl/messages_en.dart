@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "BYY" : MessageLookupByLibrary.simpleMessage("bei yang yuan"),
-    "WJL" : MessageLookupByLibrary.simpleMessage("wei jin lu")
+    "WJL" : MessageLookupByLibrary.simpleMessage("wei jin lu"),
+    "autoBySystem" : MessageLookupByLibrary.simpleMessage("Auto"),
+    "language" : MessageLookupByLibrary.simpleMessage("English")
   };
 }

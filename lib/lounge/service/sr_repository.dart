@@ -55,7 +55,7 @@ class StudyRoomRepository {
   static setSRData({@required SRTimeModel model}) async {
     var dateTime = model.dateTime;
     if (dateTime.isThisWeek) {
-      if (HiveManager.instance.shouldUpdateLocalData) {
+      if (HiveManager.instance.shouldUpdateLocalData()) {
         var buildings = await _getBaseBuildingList();
         await HiveManager.instance.clearLocalData();
         await HiveManager.instance.writeBaseDataInDisk(buildings: buildings);

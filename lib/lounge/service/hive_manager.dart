@@ -125,7 +125,7 @@ class HiveManager {
     return _favourList.toMap().cast<String, Classroom>();
   }
 
-  bool get shouldUpdateLocalData => _boxesKeys.isEmpty
+  bool  shouldUpdateLocalData() => _boxesKeys.isEmpty
       ? true
       : !_boxesKeys.values
           .map((e) => DateTime.parse(e.dateTime).isToday)

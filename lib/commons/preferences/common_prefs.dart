@@ -52,7 +52,7 @@ class CommonPreferences {
   var ids = PrefsBean<String>("ids"); // ids
 
   /// 设置页面
-  var language = PrefsBean<String>("language", "简体中文"); // 系统语言
+  var language = PrefsBean<int>("language", 0); // 系统语言
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
   var nightMode = PrefsBean<bool>("nightMode"); // 开启夜猫子模式

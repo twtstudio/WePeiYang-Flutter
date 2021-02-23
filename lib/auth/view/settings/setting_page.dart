@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
@@ -63,7 +64,9 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, '/language_setting').then((_) {
                   /// 使用pop返回此页面时进行rebuild
-                  widget._state.setState(() {});
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    widget._state.setState(() {});
+                  });
                 }),
                 splashFactory: InkRipple.splashFactory,
                 borderRadius: BorderRadius.circular(9),
@@ -79,7 +82,7 @@ class _SettingPageState extends State<SettingPage> {
                         Container(
                             width: 150,
                             margin: const EdgeInsets.only(left: 15, top: 3),
-                            child: Text('${pref.language.value}',
+                            child: Text(S.current.language,
                                 style: hintTextStyle,
                                 textAlign: TextAlign.left))
                       ],

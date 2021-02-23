@@ -38,6 +38,7 @@ dependencies:
   async: ^2.4.2
   flutter_localizations:
     sdk: flutter
+  intl: ^0.16.1
 
 
 dev_dependencies:

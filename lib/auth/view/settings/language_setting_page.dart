@@ -1,24 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-class LanguageSettingPage extends StatefulWidget {
-  @override
-  _LanguageSettingPageState createState() => _LanguageSettingPageState();
-}
-
-class _LanguageSettingPageState extends State<LanguageSettingPage> {
-  String _language = CommonPreferences().language.value;
-
-  Widget _judgeLanguage(String value){
-    if(_language != value)
-      return Container();
-    else
-      return Padding(
-        padding: const EdgeInsets.only(right: 22),
-        child: Icon(
-          Icons.check,
-        ),
-      );
+class LanguageSettingPage extends StatelessWidget {
+  Widget _judgeLanguage(String value) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 22),
+      child: Icon(
+        Icons.check,
+      ),
+    );
   }
 
   @override
@@ -59,84 +51,52 @@ class _LanguageSettingPageState extends State<LanguageSettingPage> {
                 style: TextStyle(
                     color: Color.fromRGBO(98, 103, 124, 1), fontSize: 9)),
           ),
-          Container(
-            height: 80,
-            child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: InkWell(
-                onTap: () {
-                  setState(() => _language = "简体中文");
-                  CommonPreferences().language.value = _language;
-                },
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(9),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          Consumer<LocaleModel>(
+            builder: (_, model, __) => ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: model.localeValueList.length,
+              itemBuilder: (_, index) => Container(
+                height: 80,
+                child: Card(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9)),
+                  child: InkWell(
+                    onTap: () async => await model.switchLocale(index),
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(9),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Row(
                         children: <Widget>[
-                          Container(
-                              width: 150,
-                              child: Text('简体中文', style: mainTextStyle)),
-                          Container(
-                              width: 150,
-                              height: 20,
-                              child: Text((_language == '简体中文') ? '简体中文' : "Simplified Chinese", style: hintTextStyle),
-                              padding: const EdgeInsets.only(top: 3))
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: 150,
+                                  child: Text(LocaleModel.localeName(index),
+                                      style: mainTextStyle)),
+                              Container(
+                                  width: 150,
+                                  height: 20,
+                                  child: Text(LocaleModel.localeName(index),
+                                      style: hintTextStyle),
+                                  padding: const EdgeInsets.only(top: 3))
+                            ],
+                          ),
+                          Expanded(child: Container()),
+                          if (CommonPreferences().language.value == index)
+                            _judgeLanguage(LocaleModel.localeName(index))
                         ],
                       ),
-                      Expanded(child: Text('')),
-                      _judgeLanguage("简体中文")
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Container(
-            height: 80,
-            child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: InkWell(
-                onTap: () {
-                  setState(() => _language = "English");
-                  CommonPreferences().language.value = _language;
-                },
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(9),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              width: 150,
-                              child: Text('English', style: mainTextStyle)),
-                          Container(
-                              width: 150,
-                              height: 20,
-                              child: Text((_language == '简体中文') ? '英文' : 'English', style: hintTextStyle),
-                              padding: const EdgeInsets.only(top: 3))
-                        ],
-                      ),
-                      Expanded(child: Text('')),
-                      _judgeLanguage("English")
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          )
         ],
       ),
     );

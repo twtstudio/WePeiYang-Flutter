@@ -1,36 +1,32 @@
+import 'dart:async' show Timer;
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/router_manager.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+
+import 'commons/preferences/common_prefs.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
-import 'commons/preferences/common_prefs.dart';
-
-import 'dart:async' show Timer;
-import 'dart:io' show Platform;
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
 
 void main() async {
-  debugPaintSizeEnabled = false;
   await HiveManager.init();
-
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => GPANotifier()),
-    ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-    ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
-    ChangeNotifierProvider(create: (context) => SRFavouriteModel())
-  ], child: WeiPeiYangApp()));
-
+  /// 初始化sharedPrefs
+  await CommonPreferences.initPrefs();
+  runApp(WeiPeiYangApp());
   /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
@@ -50,21 +46,46 @@ class WeiPeiYangApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WeiPeiYangDemo',
-      navigatorKey: navigatorState,
-      theme: ThemeData(
-          // fontFamily: 'Montserrat'
-          ),
-      onGenerateRoute: RouterManager.create,
-      localizationsDelegates: [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GPANotifier()),
+        ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
+        ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
+        ChangeNotifierProvider(create: (context) => SRFavouriteModel()),
+        ChangeNotifierProvider(create: (context) => LocaleModel()),
       ],
-      supportedLocales: S.delegate.supportedLocales,
-      home: StartUpWidget(),
+      child: Consumer<LocaleModel>(builder: (context, localModel, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'WeiPeiYangDemo',
+          navigatorKey: navigatorState,
+          theme: ThemeData(
+              // fontFamily: 'Montserrat'
+              ),
+          onGenerateRoute: RouterManager.create,
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          /// TODO: ！！！ 这个先别动它
+          localeListResolutionCallback: (List<Locale> preferredLocales,
+              Iterable<Locale> supportedLocales) {
+            var supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
+            var preferredLanguages = preferredLocales.map((e) => e.languageCode).toList();
+            var availableLanguages = preferredLanguages.where((element) => supportedLanguages.contains(element)).toList();
+            print('supportedLanguages : '+ supportedLanguages.toString());
+            print('preferredLanguages : ' + preferredLanguages.toString());
+            print('availableLanguages : ' + availableLanguages.toString());
+            // ToastProvider.success('preferredLanguages : ' + preferredLanguages.toString());
+            return Locale(availableLanguages.first);
+          },
+          locale: localModel.locale(),
+          home: StartUpWidget(),
+        );
+      }),
     );
   }
 }
@@ -78,20 +99,22 @@ class StartUpWidget extends StatelessWidget {
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
 
-    _autoLogin(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await _autoLogin(context);
+    });
 
-    return ConstrainedBox(
-      child: Image(
-          fit: BoxFit.fill,
-          image: AssetImage('assets/images/splash_screen.png')),
-      constraints: BoxConstraints.expand(),
+    return Container(
+      color: Colors.white,
+      child: ConstrainedBox(
+        child: Image(
+            fit: BoxFit.fill,
+            image: AssetImage('assets/images/splash_screen.png')),
+        constraints: BoxConstraints.expand(),
+      ),
     );
   }
 
-  void _autoLogin(BuildContext context) async {
-    /// 初始化sharedPrefs
-    await CommonPreferences.initPrefs();
-
+  _autoLogin(BuildContext context) async {
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
