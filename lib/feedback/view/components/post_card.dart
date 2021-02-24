@@ -129,7 +129,9 @@ class _PostCardState extends State<PostCard> {
                       child: Column(
                         children: [
                           Text(
-                            '#' + post.tags[0].name,
+                            post.tags.length > 0
+                                ? '#${post.tags[0].name}'
+                                : '#无标签',
                             style: TextStyle(color: ColorUtil.lightTextColor),
                           ),
                           BlankSpace.height(5),

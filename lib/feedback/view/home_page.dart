@@ -135,6 +135,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
+                        print(index);
                         return notifier.homePostList[index].topImgUrl != '' &&
                                 notifier.homePostList[index].topImgUrl != null
                             ? PostCard.image(
@@ -146,29 +147,29 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                           notifier.homePostList[index],
                                           index,
                                           PostOrigin.home));
-                                },
-                                onLikePressed: () {
-                                  print('like!');
-                                  notifier.homePostHitLike(index,
-                                      notifier.homePostList[index].id, 1);
-                                },
-                              )
+                          },
+                          onLikePressed: () {
+                            print('like!');
+                            notifier.homePostHitLike(index,
+                                notifier.homePostList[index].id, 1);
+                          },
+                        )
                             : PostCard(
-                                notifier.homePostList[index],
-                                onContentPressed: () {
-                                  Navigator.pushNamed(
-                                      context, FeedbackRouter.detail,
-                                      arguments: DetailPageArgs(
-                                          notifier.homePostList[index],
-                                          index,
-                                          PostOrigin.home));
-                                },
-                                onLikePressed: () {
-                                  print('like!');
-                                  notifier.homePostHitLike(index,
-                                      notifier.homePostList[index].id, 1);
-                                },
-                              );
+                          notifier.homePostList[index],
+                          onContentPressed: () {
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.detail,
+                                arguments: DetailPageArgs(
+                                    notifier.homePostList[index],
+                                    index,
+                                    PostOrigin.home));
+                          },
+                          onLikePressed: () {
+                            print('like!');
+                            notifier.homePostHitLike(index,
+                                notifier.homePostList[index].id, 1);
+                          },
+                        );
                       },
                       childCount: notifier.homePostList.length,
                     ),

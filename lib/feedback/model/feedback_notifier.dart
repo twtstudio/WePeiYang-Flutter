@@ -80,8 +80,10 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));
         }
+        int i = 0;
         for (Post post in _homePostList) {
-          print('${post.title}\t\t${post.isLiked}');
+          print('${post.title}\t\t$i');
+          i++;
         }
         notifyListeners();
       });
