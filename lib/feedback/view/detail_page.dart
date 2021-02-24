@@ -1,70 +1,202 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
+import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
+
+import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/util/feedback_router.dart';
 
 import 'components/post_card.dart';
 
 class DetailPage extends StatefulWidget {
-  final Post post;
+  final DetailPageArgs args;
 
-  DetailPage(this.post);
+  DetailPage(this.args);
 
   @override
-  _DetailPageState createState() => _DetailPageState(this.post);
+  _DetailPageState createState() =>
+      _DetailPageState(this.args.post, this.args.index, this.args.origin);
+}
+
+enum PostOrigin {
+  home,
+  profile,
+}
+
+class DetailPageArgs {
+  final Post post;
+  final int index;
+  final PostOrigin origin;
+
+  DetailPageArgs(this.post, this.index, this.origin);
 }
 
 class _DetailPageState extends State<DetailPage> {
   final Post post;
+  final int index;
+  final PostOrigin origin;
 
-  _DetailPageState(this.post);
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+
+  _DetailPageState(this.post, this.index, this.origin);
+
+  _onRefresh() async {
+    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    await Provider.of<FeedbackNotifier>(context, listen: false)
+        .getOfficialComments(post.id, '1');
+    await Provider.of<FeedbackNotifier>(context, listen: false)
+        .getComments(post.id, '1');
+    _refreshController.refreshCompleted();
+  }
+
+  @override
+  void initState() {
+    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Color.fromARGB(255, 255, 255, 255),
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: ColorUtil.mainColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: ColorUtil.mainColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '问题详情',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: ColorUtil.boldTextColor,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        primary: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Consumer<FeedbackNotifier>(
+              builder: (context, notifier, widget) {
+                return SmartRefresher(
+                  controller: _refreshController,
+                  header: ClassicHeader(),
+                  enablePullDown: true,
+                  onRefresh: _onRefresh,
+                  enablePullUp: false,
+                  child: CustomScrollView(
+                    shrinkWrap: true,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: PostCard.detail(
+                          post,
+                          onLikePressed: () {
+                            if (origin == PostOrigin.home) {
+                              notifier.homePostHitLike(
+                                  index, notifier.homePostList[index].id, 1);
+                            } else {
+                              notifier.profilePostHitLike(
+                                  index, notifier.profilePostList[index], 1);
+                            }
+                          },
+                        ),
+                      ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return index < notifier.officialCommentList.length
+                                ? CommentCard.official(
+                                    notifier.officialCommentList[index],
+                                    onContentPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        FeedbackRouter.officialComment,
+                                        arguments: OfficialCommentPageArgs(
+                                            notifier.officialCommentList[index],
+                                            post.title,
+                                            index),
+                                      );
+                                    },
+                                    onLikePressed: () {
+                                      notifier.officialCommentHitLike(
+                                          index,
+                                          notifier
+                                              .officialCommentList[index].id,
+                                          1);
+                                    },
+                                  )
+                                : CommentCard(
+                                    notifier.commentList[index -
+                                        notifier.officialCommentList.length],
+                                    onLikePressed: () {
+                                      print('like!');
+                                      notifier.commentHitLike(
+                                          index -
+                                              notifier
+                                                  .officialCommentList.length,
+                                          notifier
+                                              .commentList[index -
+                                                  notifier.officialCommentList
+                                                      .length]
+                                              .id,
+                                          1);
+                                    },
+                                  );
+                          },
+                          childCount: notifier.commentList.length,
+                        ),
+                      )
+                    ],
+                  ),
+                );
               },
             ),
-            title: Text(
-              '问题详情',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: ColorUtil.boldTextColor,
-              ),
-            ),
-            centerTitle: true,
-            floating: true,
-            elevation: 0,
           ),
-          SliverToBoxAdapter(
-            child: PostCard.detail(post),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: AppBar().preferredSize.height,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: '写回答…',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(1080),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: '写回答…',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                              AppBar().preferredSize.height / 2 - 4),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                        fillColor: ColorUtil.searchBarBackgroundColor,
+                        filled: true,
+                        isDense: true,
+                      ),
+                      enabled: true,
+                      minLines: 1,
+                      maxLines: 3,
+                    ),
                   ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                  fillColor: ColorUtil.searchBarBackgroundColor,
-                  filled: true,
                 ),
-                enabled: false,
-              ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {},
+                ),
+              ],
             ),
           ),
         ],

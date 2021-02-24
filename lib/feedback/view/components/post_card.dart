@@ -11,35 +11,45 @@ class PostCard extends StatefulWidget {
   bool enableTopImg;
   bool enableImgList;
   GesturePressedCallback onContentPressed = () {};
+  GesturePressedCallback onLikePressed = () {};
 
   @override
   State createState() {
     return _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-        onContentPressed: this.onContentPressed);
+        onContentPressed: this.onContentPressed, onLikePressed: onLikePressed);
   }
 
   /// Card without top image and content images.
-  PostCard(post, {GesturePressedCallback onContentPressed}) {
+  PostCard(post,
+      {GesturePressedCallback onContentPressed,
+      GesturePressedCallback onLikePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
+    this.onLikePressed = onLikePressed;
   }
 
   /// Card with top image.
-  PostCard.image(post, {GesturePressedCallback onContentPressed}) {
+  PostCard.image(post,
+      {GesturePressedCallback onContentPressed,
+      GesturePressedCallback onLikePressed}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
+    this.onLikePressed = onLikePressed;
   }
 
   /// Card for DetailPage.
-  PostCard.detail(post, {GesturePressedCallback onContentPressed}) {
+  PostCard.detail(post,
+      {GesturePressedCallback onContentPressed,
+      GesturePressedCallback onLikePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
     this.onContentPressed = onContentPressed;
+    this.onLikePressed = onLikePressed;
   }
 }
 
@@ -48,9 +58,10 @@ class _PostCardState extends State<PostCard> {
   final bool enableTopImg;
   final bool enableImgList;
   final GesturePressedCallback onContentPressed;
+  final GesturePressedCallback onLikePressed;
 
   _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-      {this.onContentPressed});
+      {this.onContentPressed, this.onLikePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +74,10 @@ class _PostCardState extends State<PostCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                BlankSpace.height(5),
                 Row(
                   children: [
+                    // Post title.
                     Expanded(
                       child: Text(
                         post.title,
@@ -74,6 +87,7 @@ class _PostCardState extends State<PostCard> {
                           color: ColorUtil.boldTextColor,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
+                          height: 1,
                         ),
                       ),
                     ),
@@ -86,6 +100,7 @@ class _PostCardState extends State<PostCard> {
                   ],
                 ),
                 BlankSpace.height(5),
+                // Avatar and user name when image list enabled.
                 if (enableImgList)
                   Row(
                     children: [
@@ -107,6 +122,7 @@ class _PostCardState extends State<PostCard> {
                     ],
                   ),
                 if (enableImgList) BlankSpace.height(5),
+                // Tag.
                 Row(
                   children: [
                     Expanded(
@@ -119,14 +135,20 @@ class _PostCardState extends State<PostCard> {
                           BlankSpace.height(5),
                           Text(
                             post.content,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            maxLines: enableImgList ? null : 2,
+                            overflow:
+                                enableImgList ? null : TextOverflow.ellipsis,
+                            style: TextStyle(
+                              height: 1,
+                              color: ColorUtil.boldTextColor,
+                            ),
                           ),
                         ],
                         crossAxisAlignment: CrossAxisAlignment.start,
                       ),
                     ),
                     if (enableTopImg) BlankSpace.width(10),
+                    // Thumbnail when top image enabled.
                     if (enableTopImg)
                       Image.network(
                         post.topImgUrl,
@@ -142,6 +164,7 @@ class _PostCardState extends State<PostCard> {
           ),
           if (enableImgList && post.imgUrlList.length != 0)
             BlankSpace.height(10),
+          // Image list.
           if (enableImgList && post.imgUrlList.length != 0)
             ListView.builder(
               itemBuilder: (context, index) =>
@@ -150,23 +173,32 @@ class _PostCardState extends State<PostCard> {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
             ),
-          // TODO: Image list here.
           BlankSpace.height(10),
           Row(
             children: [
+              // Time.
               if (enableImgList)
-                Text(post.createTime.substring(0, 10) +
-                    '  ' +
-                    (post.createTime.substring(11).split('.')[0].startsWith('0')
-                        ? post.createTime
-                            .substring(12)
-                            .split('.')[0]
-                            .substring(0, 4)
-                        : post.createTime
-                            .substring(11)
-                            .split('.')[0]
-                            .substring(0, 5))),
+                Text(
+                  post.createTime.substring(0, 10) +
+                      '  ' +
+                      (post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .startsWith('0')
+                          ? post.createTime
+                              .substring(12)
+                              .split('.')[0]
+                              .substring(0, 4)
+                          : post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .substring(0, 5)),
+                  style: TextStyle(
+                    color: ColorUtil.lightTextColor,
+                  ),
+                ),
               if (enableImgList) Spacer(),
+              // Comment count
               ClipOval(
                 child: InkWell(
                   child: Icon(
@@ -174,7 +206,9 @@ class _PostCardState extends State<PostCard> {
                     size: 16,
                     color: ColorUtil.lightTextColor,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    // TODO: Add onCommentPressed here.
+                  },
                 ),
               ),
               BlankSpace.width(8),
@@ -183,24 +217,33 @@ class _PostCardState extends State<PostCard> {
                 style: TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
               ),
               BlankSpace.width(16),
-              ClipOval(
-                child: InkWell(
-                  child: Icon(
-                    !post.isLiked ? Icons.thumb_up_outlined : Icons.thumb_up,
-                    size: 16,
-                    color:
-                        !post.isLiked ? ColorUtil.lightTextColor : Colors.red,
-                  ),
-                  onTap: () {},
+              // Like count.
+              GestureDetector(
+                child: Row(
+                  children: [
+                    ClipOval(
+                      child: Icon(
+                        !post.isLiked
+                            ? Icons.thumb_up_outlined
+                            : Icons.thumb_up,
+                        size: 16,
+                        color: !post.isLiked
+                            ? ColorUtil.lightTextColor
+                            : Colors.red,
+                      ),
+                    ),
+                    BlankSpace.width(8),
+                    Text(
+                      post.likeCount.toString(),
+                      style: TextStyle(
+                          fontSize: 14, color: ColorUtil.lightTextColor),
+                    ),
+                  ],
                 ),
+                onTap: onLikePressed,
               ),
-              BlankSpace.width(8),
-              Text(
-                post.likeCount.toString(),
-                style: TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
-              ),
-              // TODO: Do not display Spacer and Avatar here when imgList display enabled.
               if (!enableImgList) Spacer(),
+              // Avatar and user name.
               if (!enableImgList)
                 ClipOval(
                   child: Image.asset(

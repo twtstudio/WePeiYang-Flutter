@@ -1,5 +1,6 @@
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,12 +14,16 @@ import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+
 import 'commons/preferences/common_prefs.dart';
+import 'feedback/model/feedback_notifier.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
+/// 2. 添加外部存储读写和摄像头使用权限，[MultiImagePicker]所需
+/// 3. 在资源文件夹添加完成图片选择图标
 
 void main() async =>
     await _initializeApp().then((_) => runApp(WeiPeiYangApp()));
@@ -38,7 +43,7 @@ Future<void> _initializeApp() async {
   }
 }
 
-class WeiPeiYangApp extends StatefulWidget{
+class WeiPeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
 
@@ -47,9 +52,8 @@ class WeiPeiYangApp extends StatefulWidget{
 }
 
 class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
-
   @override
-  void dispose() async{
+  void dispose() async {
     await HiveManager.instance.closeBoxes();
     super.dispose();
   }
@@ -63,6 +67,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
         ChangeNotifierProvider(create: (context) => SRFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
+        ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
@@ -108,22 +113,20 @@ class StartUpWidget extends StatelessWidget {
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await _autoLogin(context);
-    });
+    _autoLogin(context);
 
-    return Container(
-      color: Colors.white,
-      child: ConstrainedBox(
-        child: Image(
-            fit: BoxFit.fill,
-            image: AssetImage('assets/images/splash_screen.png')),
-        constraints: BoxConstraints.expand(),
-      ),
+    return ConstrainedBox(
+      child: Image(
+          fit: BoxFit.fill,
+          image: AssetImage('assets/images/splash_screen.png')),
+      constraints: BoxConstraints.expand(),
     );
   }
 
-  _autoLogin(BuildContext context) async {
+  void _autoLogin(BuildContext context) async {
+    /// 初始化sharedPrefs
+    await CommonPreferences.initPrefs();
+
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
