@@ -22,6 +22,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
   _onRefresh() async {
     currentPage = 1;
+    Provider.of<FeedbackNotifier>(context, listen: false).clearTagList();
     await Provider.of<FeedbackNotifier>(context, listen: false).getTags();
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
     await Provider.of<FeedbackNotifier>(context, listen: false)

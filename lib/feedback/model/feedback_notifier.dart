@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -28,6 +31,11 @@ class FeedbackNotifier with ChangeNotifier {
   List<Comment> get commentList => _commentList;
 
   int get homeTotalPage => _homeTotalPage;
+
+  clearTagList() {
+    _tagList.clear();
+    notifyListeners();
+  }
 
   clearHomePostList() {
     _homePostList.clear();
@@ -304,6 +312,57 @@ class FeedbackNotifier with ChangeNotifier {
           ToastProvider.error('评论失败');
         }
       });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  /// Upload picture.
+  Future uploadImage(Asset data, id, index) async {
+    try {
+      ByteData byteData = await data.getByteData();
+      await HttpUtil()
+          .post(
+        'image/add',
+        FormData.fromMap({
+          'user_id': 1,
+          'newImg': MultipartFile.fromBytes(
+            byteData.buffer.asUint8List(),
+            filename: 'p${id}i$index.jpg',
+            contentType: MediaType("image", "jpg"),
+          ),
+          'question_id': id,
+        }),
+      )
+          .then((value) {
+        return value['data']['url'];
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  /// Send post.
+  Future sendPost(title, content, tagId, userId, List<Asset> imgList) async {
+    try {
+      await HttpUtil()
+          .post(
+        'question/add',
+        FormData.fromMap({
+          'user_id': userId,
+          'name': title,
+          'description': content,
+          'tagList': '[$tagId]',
+          'campus': 0,
+        }),
+      )
+          .then((value) async {
+        for (int index = 0; index < imgList.length; index++) {
+          await uploadImage(
+              imgList[index], value['data']['question_id'], index);
+        }
+        return value['data']['question_id'];
+      }).then((value) => value);
     } catch (e) {
       print(e);
     }

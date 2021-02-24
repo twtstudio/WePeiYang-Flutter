@@ -5,7 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+
+TextEditingController _titleController;
+TextEditingController _bodyController;
+int _currentTagId;
+int _currentTagIndex;
+List<Asset> _resultList = List<Asset>();
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -13,6 +22,8 @@ class NewPostPage extends StatefulWidget {
 }
 
 class _NewPostPageState extends State<NewPostPage> {
+  bool _submitLock = false;
+
   Divider _divider() {
     return const Divider(
       height: 0.6,
@@ -35,7 +46,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   color: Colors.grey[200],
                   blurRadius: 5.0, //阴影模糊程度
                   spreadRadius: 5.0 //阴影扩散程度
-                  )
+              )
             ],
           ),
           child: ListView(
@@ -52,41 +63,54 @@ class _NewPostPageState extends State<NewPostPage> {
               // TODO: 网络请求获取tag没写
               TagView(),
               _divider(),
-              // TODO: 提交没写
-              SubmitButton(),
+              // Submit.
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () async {
+                        if (!_submitLock) {
+                          _submitLock = true;
+                          if (_titleController.text.isNotEmpty &&
+                              _bodyController.text.isNotEmpty &&
+                              _currentTagId != null) {
+                            await Provider.of<FeedbackNotifier>(context,
+                                    listen: false)
+                                .sendPost(
+                              _titleController.text,
+                              _bodyController.text,
+                              _currentTagId,
+                              1,
+                              _resultList,
+                            )
+                                .then((value) {
+                              ToastProvider.success('发布成功');
+                              _submitLock = false;
+                              Navigator.pop(context);
+                            });
+                          } else {
+                            ToastProvider.error('内容和标签不能为空');
+                            _submitLock = false;
+                          }
+                        }
+                      },
+                      child: Text(
+                        '提交',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff303c66),
+                            fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class SubmitButton extends StatefulWidget {
-  @override
-  _SubmitButtonState createState() => _SubmitButtonState();
-}
-
-class _SubmitButtonState extends State<SubmitButton> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              '提交',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff303c66),
-                  fontSize: 16),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -148,9 +172,6 @@ class _TabGridViewState extends State<TabGridView>
   AnimationController _animationController;
   String currentTab;
 
-  // TODO: 网络请求 tabs  还有 部门介绍
-  var list = ['单纯吐槽', '天外天', '教务处', '学工部', '后勤保障处'];
-
   @override
   void initState() {
     super.initState();
@@ -160,9 +181,11 @@ class _TabGridViewState extends State<TabGridView>
     currentTab = widget.tab;
   }
 
-  void updateGroupValue(String v) {
+  void updateGroupValue(String v, tagId, index) {
     setState(() {
       currentTab = v;
+      _currentTagId = tagId;
+      _currentTagIndex = index;
       _animationController.forward(from: 0.0);
     });
   }
@@ -183,7 +206,7 @@ class _TabGridViewState extends State<TabGridView>
         ),
       ));
 
-  ActionChip _tagChip({String text}) => ActionChip(
+  ActionChip _tagChip({String text, tagId, index}) => ActionChip(
         backgroundColor:
             text == currentTab ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
@@ -194,7 +217,7 @@ class _TabGridViewState extends State<TabGridView>
           ),
         ),
         onPressed: () {
-          updateGroupValue(text);
+          updateGroupValue(text, tagId, index);
         },
       );
 
@@ -246,14 +269,40 @@ class _TabGridViewState extends State<TabGridView>
           Wrap(
             alignment: WrapAlignment.start,
             spacing: 10,
-            children: List.generate(list.length, (index) {
-              return list[index] == currentTab
+            children: List.generate(
+                Provider.of<FeedbackNotifier>(context, listen: false)
+                    .tagList
+                    .length, (index) {
+              return Provider.of<FeedbackNotifier>(context, listen: false)
+                          .tagList[index]
+                          .name ==
+                      currentTab
                   ? FadeTransition(
                       opacity: Tween(begin: 0.0, end: 1.0)
                           .animate(_animationController),
-                      child: _tagChip(text: list[index]),
+                      child: _tagChip(
+                        text: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .name,
+                        tagId: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .id,
+                        index: index,
+                      ),
                     )
-                  : _tagChip(text: list[index]);
+                  : _tagChip(
+                      text:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .name,
+                      tagId:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .id,
+                      index: index,
+                    );
             }),
           )
         ],
@@ -268,13 +317,12 @@ class TitleInputField extends StatefulWidget {
 }
 
 class _TitleInputFieldState extends State<TitleInputField> {
-  TextEditingController titleController;
   String titleCounter;
 
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController();
+    _titleController = TextEditingController();
     titleCounter = '0/200';
   }
 
@@ -289,7 +337,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
             Expanded(
               child: TextField(
                 buildCounter: null,
-                controller: titleController,
+                controller: _titleController,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 style: TextStyle(
@@ -301,7 +349,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
                 maxLines: 10,
                 decoration: InputDecoration.collapsed(
                   hintStyle: TextStyle(
-                    color: ColorUtil.lightTextColor,
+                    color: Color(0xffd0d1d6),
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -337,13 +385,12 @@ class BodyInputField extends StatefulWidget {
 }
 
 class _BodyInputFieldState extends State<BodyInputField> {
-  TextEditingController bodyController;
   String bodyCounter;
 
   @override
   void initState() {
     super.initState();
-    bodyController = TextEditingController();
+    _bodyController = TextEditingController();
     bodyCounter = '0/200';
   }
 
@@ -356,7 +403,7 @@ class _BodyInputFieldState extends State<BodyInputField> {
         shrinkWrap: true,
         children: [
           TextField(
-            controller: bodyController,
+            controller: _bodyController,
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.done,
             minLines: 6,
@@ -406,17 +453,14 @@ class ImagesGridView extends StatefulWidget {
 
 class _ImagesGridViewState extends State<ImagesGridView> {
   List<ByteData> images = List<ByteData>();
-  List<Asset> resultList = List<Asset>();
   int maxImage = 4;
 
-  //TODO: 这里选完图片以后的逻辑没搞
-  //TODO: https://sh1d0w.github.io/multi_image_picker/#/gettingstarted 具体见这里
   Future<void> loadAssets() async {
     String error;
 
     try {
-      resultList = await MultiImagePicker.pickImages(
-        selectedAssets: resultList,
+      _resultList = await MultiImagePicker.pickImages(
+        selectedAssets: _resultList,
         enableCamera: true,
         maxImages: maxImage,
         materialOptions: MaterialOptions(
@@ -443,7 +487,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     if (!mounted) return;
 
     images.clear();
-    for (var image in resultList) {
+    for (var image in _resultList) {
       var data = await image.getThumbByteData(300, 300);
       images.add(data);
     }
