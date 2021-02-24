@@ -1,6 +1,5 @@
 import 'dart:async' show Timer;
 import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,6 @@ import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-
 import 'commons/preferences/common_prefs.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
@@ -22,12 +20,12 @@ import 'home/model/home_model.dart';
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
 
-void main() async {
+void main() async =>
+    await _initializeApp().then((_) => runApp(WeiPeiYangApp()));
+
+Future<void> _initializeApp() async {
   await HiveManager.init();
-  /// 初始化sharedPrefs
   await CommonPreferences.initPrefs();
-  runApp(WeiPeiYangApp());
-  /// 设置沉浸式状态栏
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
         systemNavigationBarColor: Color(0xFF000000),
@@ -40,9 +38,21 @@ void main() async {
   }
 }
 
-class WeiPeiYangApp extends StatelessWidget {
+class WeiPeiYangApp extends StatefulWidget{
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
+
+  @override
+  _WeiPeiYangAppState createState() => _WeiPeiYangAppState();
+}
+
+class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
+
+  @override
+  void dispose() async{
+    await HiveManager.instance.closeBoxes();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +68,7 @@ class WeiPeiYangApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
-          navigatorKey: navigatorState,
+          navigatorKey: WeiPeiYangApp.navigatorState,
           theme: ThemeData(
               // fontFamily: 'Montserrat'
               ),
@@ -70,16 +80,15 @@ class WeiPeiYangApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          /// TODO: ！！！ 这个先别动它
           localeListResolutionCallback: (List<Locale> preferredLocales,
               Iterable<Locale> supportedLocales) {
-            var supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
-            var preferredLanguages = preferredLocales.map((e) => e.languageCode).toList();
-            var availableLanguages = preferredLanguages.where((element) => supportedLanguages.contains(element)).toList();
-            print('supportedLanguages : '+ supportedLanguages.toString());
-            print('preferredLanguages : ' + preferredLanguages.toString());
-            print('availableLanguages : ' + availableLanguages.toString());
-            // ToastProvider.success('preferredLanguages : ' + preferredLanguages.toString());
+            var supportedLanguages =
+                supportedLocales.map((e) => e.languageCode).toList();
+            var preferredLanguages =
+                preferredLocales.map((e) => e.languageCode).toList();
+            var availableLanguages = preferredLanguages
+                .where((element) => supportedLanguages.contains(element))
+                .toList();
             return Locale(availableLanguages.first);
           },
           locale: localModel.locale(),

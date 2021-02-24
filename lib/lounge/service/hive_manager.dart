@@ -125,7 +125,7 @@ class HiveManager {
     return _favourList.toMap().cast<String, Classroom>();
   }
 
-  bool  shouldUpdateLocalData() => _boxesKeys.isEmpty
+  bool shouldUpdateLocalData() => _boxesKeys.isEmpty
       ? true
       : !_boxesKeys.values
           .map((e) => DateTime.parse(e.dateTime).isToday)
@@ -399,11 +399,5 @@ class HiveManager {
 
   closeBoxes() async {
     await Hive.close();
-    _instance = null;
-    _boxesKeys = null;
-    _buildingBoxes = {};
-    _favourList = null;
-    _temporaryData = null;
-    _temporaryDateTime = null;
   }
 }
