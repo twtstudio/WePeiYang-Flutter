@@ -283,4 +283,29 @@ class FeedbackNotifier with ChangeNotifier {
       });
     }
   }
+
+  /// Send comment.
+  Future sendComment(content, id, userId, onSuccess) async {
+    try {
+      await HttpUtil()
+          .post(
+        'commit/add/question',
+        FormData.fromMap({
+          'user_id': userId,
+          'question_id': id,
+          'contain': content,
+        }),
+      )
+          .then((value) {
+        if (value['ErrorCode'] == 0) {
+          ToastProvider.success('评论成功');
+          onSuccess();
+        } else {
+          ToastProvider.error('评论失败');
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }

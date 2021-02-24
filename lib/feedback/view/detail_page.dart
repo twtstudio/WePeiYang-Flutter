@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -39,8 +40,11 @@ class _DetailPageState extends State<DetailPage> {
   final int index;
   final PostOrigin origin;
 
+  bool _sendCommentLock = false;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
+  TextEditingController _textEditingController = TextEditingController();
 
   _DetailPageState(this.post, this.index, this.origin);
 
@@ -57,6 +61,13 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -173,6 +184,7 @@ class _DetailPageState extends State<DetailPage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
                     child: TextField(
+                      controller: _textEditingController,
                       decoration: InputDecoration(
                         hintText: '写回答…',
                         border: OutlineInputBorder(
@@ -194,7 +206,26 @@ class _DetailPageState extends State<DetailPage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (!_sendCommentLock) {
+                      _sendCommentLock = true;
+                      if (_textEditingController.text.isNotEmpty) {
+                        Provider.of<FeedbackNotifier>(context, listen: false)
+                            .sendComment(
+                          _textEditingController.text,
+                          post.id,
+                          1,
+                          () {
+                            _textEditingController.text = '';
+                            _onRefresh();
+                          },
+                        );
+                      } else {
+                        ToastProvider.error('评论不能为空');
+                      }
+                      _sendCommentLock = false;
+                    }
+                  },
                 ),
               ],
             ),
