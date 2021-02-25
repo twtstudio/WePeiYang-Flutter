@@ -33,24 +33,24 @@ class _SearchResultPageState extends State<SearchResultPage> {
   int currentPage = 1, totalPage = 1;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
 
   _SearchResultPageState(this.keyword, this.tagId, this.title);
 
-  _onRefresh() async {
+  _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
+    Provider.of<FeedbackNotifier>(context, listen: false)
         .getPosts(tagId, currentPage, keyword: keyword);
     totalPage =
         Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     _refreshController.refreshCompleted();
   }
 
-  _onLoading() async {
+  _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      await Provider.of<FeedbackNotifier>(context, listen: false)
+      Provider.of<FeedbackNotifier>(context, listen: false)
           .getPosts(tagId, currentPage, keyword: keyword);
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
@@ -58,6 +58,17 @@ class _SearchResultPageState extends State<SearchResultPage> {
     } else {
       _refreshController.loadComplete();
     }
+  }
+
+  @override
+  void initState() {
+    currentPage = 1;
+    Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
+    Provider.of<FeedbackNotifier>(context, listen: false)
+        .getPosts(tagId, currentPage, keyword: keyword);
+    totalPage =
+        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+    super.initState();
   }
 
   @override

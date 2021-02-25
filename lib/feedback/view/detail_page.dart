@@ -42,27 +42,29 @@ class _DetailPageState extends State<DetailPage> {
   bool _sendCommentLock = false;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
   TextEditingController _textEditingController = TextEditingController();
 
   _DetailPageState(this.post, this.index, this.origin);
 
-  _onRefresh() async {
+  _onRefresh() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getOfficialComments(post.id, Provider
-        .of<FeedbackNotifier>(context, listen: false)
-        .myUserId);
-    await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getComments(post.id, Provider
-        .of<FeedbackNotifier>(context, listen: false)
-        .myUserId);
+    Provider.of<FeedbackNotifier>(context, listen: false).getOfficialComments(
+        post.id,
+        Provider.of<FeedbackNotifier>(context, listen: false).myUserId);
+    Provider.of<FeedbackNotifier>(context, listen: false).getComments(post.id,
+        Provider.of<FeedbackNotifier>(context, listen: false).myUserId);
     _refreshController.refreshCompleted();
   }
 
   @override
   void initState() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    Provider.of<FeedbackNotifier>(context, listen: false).getOfficialComments(
+        post.id,
+        Provider.of<FeedbackNotifier>(context, listen: false).myUserId);
+    Provider.of<FeedbackNotifier>(context, listen: false).getComments(post.id,
+        Provider.of<FeedbackNotifier>(context, listen: false).myUserId);
     super.initState();
   }
 

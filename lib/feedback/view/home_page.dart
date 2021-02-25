@@ -18,24 +18,24 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   int currentPage = 1, totalPage = 1;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
 
-  _onRefresh() async {
+  _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearTagList();
-    await Provider.of<FeedbackNotifier>(context, listen: false).getTags();
+    Provider.of<FeedbackNotifier>(context, listen: false).getTags();
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
+    Provider.of<FeedbackNotifier>(context, listen: false)
         .getPosts('', currentPage);
     totalPage =
         Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     _refreshController.refreshCompleted();
   }
 
-  _onLoading() async {
+  _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      await Provider.of<FeedbackNotifier>(context, listen: false)
+      Provider.of<FeedbackNotifier>(context, listen: false)
           .getPosts('', currentPage);
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
@@ -48,6 +48,14 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   @override
   void initState() {
     Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
+    currentPage = 1;
+    Provider.of<FeedbackNotifier>(context, listen: false).clearTagList();
+    Provider.of<FeedbackNotifier>(context, listen: false).getTags();
+    Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
+    Provider.of<FeedbackNotifier>(context, listen: false)
+        .getPosts('', currentPage);
+    totalPage =
+        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     super.initState();
   }
 
@@ -115,8 +123,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                         .then((value) async {
                                       if (value == true) {
                                         notifier.clearHomePostList();
-                                        await _refreshController
-                                            .requestRefresh();
+                                        _onRefresh();
                                       }
                                     });
                                   },
