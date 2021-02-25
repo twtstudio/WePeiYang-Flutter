@@ -114,6 +114,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                             ),
                             onTap: () {
                               // TODO: Jump to SearchPage
+                              Navigator.pushNamed(context, 'feedback/search');
                             },
                           ),
                         ),
