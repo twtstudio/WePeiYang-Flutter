@@ -47,6 +47,11 @@ class FeedbackNotifier with ChangeNotifier {
     _commentList.clear();
   }
 
+  updateRating(rating, index) {
+    _officialCommentList[index].rating = rating;
+    notifyListeners();
+  }
+
   /// Get tags.
   Future getTags() async {
     try {
@@ -82,7 +87,7 @@ class FeedbackNotifier with ChangeNotifier {
         }
         int i = 0;
         for (Post post in _homePostList) {
-          print('${post.title}\t\t$i');
+          print('${post.title}\t\t${post.id}');
           i++;
         }
         notifyListeners();
@@ -365,6 +370,31 @@ class FeedbackNotifier with ChangeNotifier {
         }
         return value['data']['question_id'];
       }).then((value) => value);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  /// Rate the official comment.
+  Future rate(rating, id, userId, index) async {
+    try {
+      await HttpUtil()
+          .post(
+        'answer/commit',
+        FormData.fromMap({
+          'user_id': userId,
+          'answer_id': id,
+          'score': rating,
+          'commit': '',
+        }),
+      )
+          .then((value) {
+        if (value['ErrorCode'] == 0) {
+          ToastProvider.success('评价成功');
+        } else {
+          ToastProvider.error('评价失败');
+        }
+      });
     } catch (e) {
       print(e);
     }

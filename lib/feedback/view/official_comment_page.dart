@@ -30,6 +30,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
   final String title;
   final int index;
 
+  bool _ratingLock = false;
+
   _OfficialCommentPageState(this.comment, this.title, this.index);
 
   @override
@@ -71,7 +73,20 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: RatingCard(),
+                child: RatingCard(
+                  onRatingChanged: (rating) async {
+                    if (!_ratingLock) {
+                      _ratingLock = true;
+                      await notifier
+                          .rate(rating * 2, comment.id, 1, index)
+                          .then((value) {
+                        notifier.updateRating(rating * 2, index);
+                      }).whenComplete(() {
+                        _ratingLock = false;
+                      });
+                    }
+                  },
+                ),
               ),
             ],
           );

@@ -3,11 +3,19 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 
 class RatingCard extends StatefulWidget {
+  final void Function(double) onRatingChanged;
+
+  const RatingCard({Key key, this.onRatingChanged}) : super(key: key);
+
   @override
-  _RatingCardState createState() => _RatingCardState();
+  _RatingCardState createState() => _RatingCardState(onRatingChanged);
 }
 
 class _RatingCardState extends State<RatingCard> {
+  final void Function(double) onRatingChanged;
+
+  _RatingCardState(this.onRatingChanged);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +30,7 @@ class _RatingCardState extends State<RatingCard> {
           ),
           Expanded(
             child: RatingBar.builder(
-              onRatingUpdate: (double) {},
+              onRatingUpdate: onRatingChanged,
               allowHalfRating: true,
               itemBuilder: (BuildContext context, int index) {
                 return Icon(
