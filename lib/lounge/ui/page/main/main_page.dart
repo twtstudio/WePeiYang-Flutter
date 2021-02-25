@@ -144,6 +144,7 @@ class BuildingGridWidget extends StatelessWidget {
       child: Container(
         child: Consumer<BuildingDataModel>(
             builder: (_, model, __) => ListLoadSteps(
+                  errorHeight: 80,
                   model: model,
                   successV: _successView(model),
                 )),

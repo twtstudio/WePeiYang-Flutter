@@ -1,4 +1,4 @@
-import 'dart:async' show Timer;
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -27,6 +27,20 @@ import 'home/model/home_model.dart';
 
 void main() async =>
     await _initializeApp().then((_) => runApp(WeiPeiYangApp()));
+
+// 全局捕获异常，还没想好
+//runZoned(
+//       () async => await _initializeApp()
+//           .then((_) => runApp(WeiPeiYangApp()))
+//           .catchError((e) {
+//         print(e);
+//       }),
+//       zoneSpecification: ZoneSpecification(
+//         print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
+//           print(line);
+//         },
+//       ),
+//     );
 
 Future<void> _initializeApp() async {
   await HiveManager.init();
@@ -98,6 +112,16 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           },
           locale: localModel.locale(),
           home: StartUpWidget(),
+          builder: (context, child) => GestureDetector(
+            onTapDown: (TapDownDetails details) {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus.unfocus();
+              }
+            },
+            child: child,
+          ),
         );
       }),
     );

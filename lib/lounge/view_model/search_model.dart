@@ -31,7 +31,9 @@ class SearchResultModel extends ViewStateListModel {
   SearchResultModel({this.query, this.searchHistoryModel});
 
   @override
-  Future<List> loadData({int pageNum}) async {
+  Future<List> loadData() async {
+    await Future.delayed(Duration(seconds: 1));
+
     if (query.isEmpty) return [];
     searchHistoryModel.addHistory(query);
     var formatQueries = DataFactory.formatQuery(query);
