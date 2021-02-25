@@ -1,4 +1,6 @@
-class Tag {
+import 'package:flutter/material.dart';
+
+class Tag with ChangeNotifier {
   int id;
   String name;
   String description;
