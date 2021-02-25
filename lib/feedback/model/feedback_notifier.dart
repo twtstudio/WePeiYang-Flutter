@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -17,6 +18,7 @@ class FeedbackNotifier with ChangeNotifier {
   List<Post> _profilePostList = List();
   List<Comment> _officialCommentList = List();
   List<Comment> _commentList = List();
+  List<String> _searchHistoryList = List();
   int _homeTotalPage = 0;
   bool _hitLikeLock = false;
 
@@ -29,6 +31,18 @@ class FeedbackNotifier with ChangeNotifier {
   List<Comment> get officialCommentList => _officialCommentList;
 
   List<Comment> get commentList => _commentList;
+
+  List<String> get searchHistoryList => _searchHistoryList;
+
+  initSearchHistory() async {
+    final _prefs = await SharedPreferences.getInstance();
+    if (_prefs.getStringList('feedback_search_history') == null) {
+      _prefs.setStringList('feedback_search_history', List());
+      _searchHistoryList = List();
+    } else {
+      _searchHistoryList = _prefs.getStringList('feedback_search_history');
+    }
+  }
 
   int get homeTotalPage => _homeTotalPage;
 
@@ -49,6 +63,23 @@ class FeedbackNotifier with ChangeNotifier {
 
   updateRating(rating, index) {
     _officialCommentList[index].rating = rating;
+    notifyListeners();
+  }
+
+  addSearchHistory(content) async {
+    final _prefs = await SharedPreferences.getInstance();
+    if (_searchHistoryList.contains(content)) {
+      _searchHistoryList.remove(content);
+    }
+    _searchHistoryList.insert(0, content);
+    _prefs.setStringList('feedback_search_history', _searchHistoryList);
+    notifyListeners();
+  }
+
+  clearSearchHistory() async {
+    searchHistoryList.clear();
+    final _prefs = await SharedPreferences.getInstance();
+    _prefs.setStringList('feedback_search_history', List());
     notifyListeners();
   }
 

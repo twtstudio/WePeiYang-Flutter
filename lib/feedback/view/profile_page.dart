@@ -9,10 +9,9 @@ import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 
-
 import 'components/post_card.dart';
 
-/// Almost the same as UserPage
+/// Almost the same as [UserPage].
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -180,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
-                        (context, index) {
+                            (context, index) {
                           return notifier.profilePostList[index].topImgUrl !=
                                       '' &&
                                   notifier.profilePostList[index].topImgUrl !=

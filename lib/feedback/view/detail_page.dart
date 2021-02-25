@@ -5,6 +5,7 @@ import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
 
@@ -123,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                              (context, index) {
                             return index < notifier.officialCommentList.length
                                 ? CommentCard.official(
                                     notifier.officialCommentList[index],
