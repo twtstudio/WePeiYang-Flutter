@@ -124,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
-                              (context, index) {
+                          (context, index) {
                             return index < notifier.officialCommentList.length
                                 ? CommentCard.official(
                                     notifier.officialCommentList[index],
@@ -133,9 +133,11 @@ class _DetailPageState extends State<DetailPage> {
                                         context,
                                         FeedbackRouter.officialComment,
                                         arguments: OfficialCommentPageArgs(
-                                            notifier.officialCommentList[index],
-                                            post.title,
-                                            index),
+                                          notifier.officialCommentList[index],
+                                          post.title,
+                                          index,
+                                          post.isOwner,
+                                        ),
                                       );
                                     },
                                     onLikePressed: () {

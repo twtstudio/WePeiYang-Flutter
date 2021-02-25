@@ -12,8 +12,8 @@ class OfficialCommentPage extends StatefulWidget {
   const OfficialCommentPage(this.args);
 
   @override
-  _OfficialCommentPageState createState() =>
-      _OfficialCommentPageState(args.comment, args.title, args.index);
+  _OfficialCommentPageState createState() => _OfficialCommentPageState(
+      args.comment, args.title, args.index, args.isOwner);
 }
 
 class OfficialCommentPageArgs {
@@ -21,18 +21,20 @@ class OfficialCommentPageArgs {
   final Comment comment;
   final String title;
   final int index;
+  final bool isOwner;
 
-  OfficialCommentPageArgs(this.comment, this.title, this.index);
+  OfficialCommentPageArgs(this.comment, this.title, this.index, this.isOwner);
 }
 
 class _OfficialCommentPageState extends State<OfficialCommentPage> {
   final Comment comment;
   final String title;
   final int index;
+  final bool isOwner;
 
   bool _ratingLock = false;
 
-  _OfficialCommentPageState(this.comment, this.title, this.index);
+  _OfficialCommentPageState(this.comment, this.title, this.index, this.isOwner);
 
   @override
   Widget build(BuildContext context) {
@@ -72,22 +74,23 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                   },
                 ),
               ),
-              SliverToBoxAdapter(
-                child: RatingCard(
-                  onRatingChanged: (rating) async {
-                    if (!_ratingLock) {
-                      _ratingLock = true;
-                      await notifier
-                          .rate(rating * 2, comment.id, 1, index)
-                          .then((value) {
-                        notifier.updateRating(rating * 2, index);
-                      }).whenComplete(() {
-                        _ratingLock = false;
-                      });
-                    }
-                  },
+              if (isOwner)
+                SliverToBoxAdapter(
+                  child: RatingCard(
+                    onRatingChanged: (rating) async {
+                      if (!_ratingLock) {
+                        _ratingLock = true;
+                        await notifier
+                            .rate(rating * 2, comment.id, 1, index)
+                            .then((value) {
+                          notifier.updateRating(rating * 2, index);
+                        }).whenComplete(() {
+                          _ratingLock = false;
+                        });
+                      }
+                    },
+                  ),
                 ),
-              ),
             ],
           );
         },
