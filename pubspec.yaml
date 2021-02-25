@@ -74,6 +74,7 @@ flutter:
     - assets/images/account/2.0x/
     - assets/images/account/3.0x/
     - assets/images/account/4.0x/
+    - assets/images/arrow_up.png
     # Images in feedback module.
     - lib/feedback/assets/img/my_post.png
     - lib/feedback/assets/img/my_favorite.png
