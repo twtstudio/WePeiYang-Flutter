@@ -30,15 +30,21 @@ dependencies:
   dio: 3.0.10
   provider: ^4.3.2+4
   fluttertoast: ^7.1.6
+  pull_to_refresh: 1.6.3
   table_calendar: ^2.3.3
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   hive_generator: ^0.8.2
   path_provider: ^1.6.24
   async: ^2.4.2
+  flutter_widget_from_html: ^0.5.2+1
+  dotted_border: ^1.0.7
+  multi_image_picker: ^4.7.15
+  flutter_rating_bar: ^3.2.0+1
   flutter_localizations:
     sdk: flutter
   intl: ^0.16.1
+  http_parser: ^3.1.4
 
 
 dev_dependencies:
@@ -68,6 +74,7 @@ flutter:
     - assets/images/account/2.0x/
     - assets/images/account/3.0x/
     - assets/images/account/4.0x/
+    - assets/images/arrow_up.png
     # Images in feedback module.
     - lib/feedback/assets/img/my_post.png
     - lib/feedback/assets/img/my_favorite.png
@@ -102,5 +109,3 @@ flutter:
         - asset: assets/fonts/Montserrat/Montserrat-Regular-8.otf
         - asset: assets/fonts/Montserrat/Montserrat-Bold-3.otf
           weight: 700
-flutter_intl:
-  enabled: true

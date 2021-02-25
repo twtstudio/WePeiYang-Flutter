@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/feedback/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
-import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
+import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+
+import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/util/feedback_router.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override
@@ -13,56 +15,39 @@ class FeedbackHomePage extends StatefulWidget {
 }
 
 class _FeedbackHomePageState extends State<FeedbackHomePage> {
-  List<Tag> _tagList = List();
-  List<Post> _postList = List();
+  int currentPage = 1, totalPage = 1;
 
-  /// Get tags using Dio.
-  Future _getTags() async {
-    try {
-      await HttpUtil().get('tag/get/all').then((value) {
-        if (0 != value['data'][0]['children'].length) {
-          _tagList.clear();
-          for (Map<String, dynamic> json in value['data'][0]['children']) {
-            _tagList.add(Tag.fromJson(json));
-          }
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+
+  _onRefresh() async {
+    currentPage = 1;
+    Provider.of<FeedbackNotifier>(context, listen: false).clearTagList();
+    await Provider.of<FeedbackNotifier>(context, listen: false).getTags();
+    Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
+    await Provider.of<FeedbackNotifier>(context, listen: false)
+        .getPosts('', currentPage);
+    totalPage =
+        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+    _refreshController.refreshCompleted();
   }
 
-  /// Get posts using Dio.
-  // TODO: Loading and pull-to-refresh not implemented yet.
-  Future _getPosts(tagId, page) async {
-    try {
-      await HttpUtil().get(
-        'question/search',
-        {
-          'searchString': '',
-          'tagList': '[$tagId]',
-          'limits': '20',
-          'user_id': '3',
-          'page': '$page',
-        },
-      ).then((value) {
-        for (Map<String, dynamic> json in value['data']['data']) {
-          _postList.add(Post.fromJson(json));
-        }
-      });
-    } catch (e) {
-      print(e);
+  _onLoading() async {
+    if (currentPage != totalPage) {
+      currentPage++;
+      await Provider.of<FeedbackNotifier>(context, listen: false)
+          .getPosts('', currentPage);
+      totalPage =
+          Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+      _refreshController.loadComplete();
+    } else {
+      _refreshController.loadComplete();
     }
   }
 
   @override
   void initState() {
-    _getTags().then((_) {
-      setState(() {});
-    });
-    _getPosts('', 1).then((_) {
-      setState(() {});
-    });
+    Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
     super.initState();
   }
 
@@ -74,97 +59,143 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
         backgroundColor: ColorUtil.mainColor,
         child: Icon(Icons.add),
         onPressed: () {
-          // TODO: Jump to NewPostPage.
+          Navigator.pushNamed(context, FeedbackRouter.newPost);
         },
       ),
-      body: CustomScrollView(
-        slivers: [
-          /// Header.
-          SliverPadding(
-            padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
-            sliver: SliverPersistentHeader(
-              delegate: HomeHeaderDelegate(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 0),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(1080),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: '搜索问题',
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
+      body: Padding(
+        padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+        child: Consumer<FeedbackNotifier>(
+          builder: (BuildContext context, notifier, Widget child) {
+            return SmartRefresher(
+              controller: _refreshController,
+              header: ClassicHeader(),
+              enablePullDown: true,
+              onRefresh: _onRefresh,
+              footer: ClassicFooter(),
+              enablePullUp: true,
+              onLoading: _onLoading,
+              child: CustomScrollView(
+                slivers: [
+                  /// Header.
+                  SliverPersistentHeader(
+                    delegate: HomeHeaderDelegate(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 0),
+                                child: InkWell(
                                   borderRadius: BorderRadius.circular(1080),
-                                ),
-                                contentPadding: EdgeInsets.zero,
-                                fillColor: ColorUtil.searchBarBackgroundColor,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: ColorUtil.mainColor,
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      hintText: '搜索问题',
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius:
+                                            BorderRadius.circular(1080),
+                                      ),
+                                      contentPadding: EdgeInsets.zero,
+                                      fillColor:
+                                          ColorUtil.searchBarBackgroundColor,
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                        color: ColorUtil.mainColor,
+                                      ),
+                                    ),
+                                    enabled: false,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                            context, FeedbackRouter.search)
+                                        .then((value) async {
+                                      if (value == true) {
+                                        notifier.clearHomePostList();
+                                        await _refreshController
+                                            .requestRefresh();
+                                      }
+                                    });
+                                  },
                                 ),
                               ),
-                              enabled: false,
                             ),
-                            onTap: () {
-                              // TODO: Jump to SearchPage
-                            },
-                          ),
+                            IconButton(
+                              color: ColorUtil.mainColor,
+                              icon: Icon(
+                                Icons.person_outlined,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  FeedbackRouter.profile,
+                                );
+                              },
+                            )
+                          ],
                         ),
                       ),
-                      IconButton(
-                        color: ColorUtil.mainColor,
-                        icon: Icon(
-                          Icons.person_outlined,
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FeedbackRouter.profile,
-                          );
-                        },
-                      )
-                    ],
+                    ),
+                    pinned: false,
+                    // TODO: Opacity issue here.
+                    floating: false,
                   ),
-                ),
-              ),
-              pinned: false,
-              // TODO: Opacity issue here.
-              floating: false,
-            ),
-          ),
 
-          /// The list of posts.
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return _postList[index].topImgUrl != '' &&
-                        _postList[index].topImgUrl != null
-                    ? PostCard.image(
-                        _postList[index],
-                        onContentPressed: () {
-                          Navigator.pushNamed(context, FeedbackRouter.detail,
-                              arguments: _postList[index]);
-                        },
-                      )
-                    : PostCard(
-                        _postList[index],
-                        onContentPressed: () {
-                          Navigator.pushNamed(context, FeedbackRouter.detail,
-                              arguments: _postList[index]);
-                        },
-                      );
-              },
-              childCount: _postList.length,
-            ),
-          ),
-        ],
+                  /// The list of posts.
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        print(index);
+                        return notifier.homePostList[index].topImgUrl != '' &&
+                                notifier.homePostList[index].topImgUrl != null
+                            ? PostCard.image(
+                                notifier.homePostList[index],
+                                onContentPressed: () {
+                                  Navigator.pushNamed(
+                                      context, FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                          notifier.homePostList[index],
+                                          index,
+                                          PostOrigin.home));
+                                },
+                                onLikePressed: () {
+                                  print('like!');
+                                  notifier.homePostHitLike(
+                                      index,
+                                      notifier.homePostList[index].id,
+                                      notifier.myUserId);
+                                },
+                              )
+                            : PostCard(
+                                notifier.homePostList[index],
+                                onContentPressed: () {
+                                  Navigator.pushNamed(
+                                      context, FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                          notifier.homePostList[index],
+                                          index,
+                                          PostOrigin.home));
+                                },
+                                onLikePressed: () {
+                                  print('like!');
+                                  notifier.homePostHitLike(
+                                      index,
+                                      notifier.homePostList[index].id,
+                                      notifier.myUserId);
+                                },
+                              );
+                      },
+                      childCount: notifier.homePostList.length,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
