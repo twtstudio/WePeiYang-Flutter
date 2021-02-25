@@ -40,6 +40,7 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
       print(e);
     }
   }
+
   @override
   void initState() {
     _getTags().then((_) {
@@ -96,14 +97,14 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
                         ),
                         searchValue != ""
                             ? InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchValue = "";
-                            });
-                            _controller.text = searchValue;
-                          },
-                          child: Icon(Icons.close, size: 14),
-                        )
+                                onTap: () {
+                                  setState(() {
+                                    searchValue = "";
+                                  });
+                                  _controller.text = searchValue;
+                                },
+                                child: Icon(Icons.close, size: 14),
+                              )
                             : Container(),
                         SizedBox(width: 6)
                       ],
@@ -132,28 +133,6 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
   ///搜索结果
   Widget getSearchResultWidget() {
     List<String> results = [];
-    /*
-    List.generate(widget.contents.length, (index) {
-      if (widget.contents[index].contains(searchValue)) {
-        results.add(widget.contents[index]);
-      }
-    });
-     */
-    return SingleChildScrollView(
-      child: Column(
-        children: List.generate(results.length, (index) {
-          return InkWell(
-              onTap: () {
-                _controller.text = results[index];
-              },
-              child: Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(8),
-                child: Text(widget.historyList[index]),
-              ));
-        }),
-      ),
-    );
   }
 
   ///搜索历史
@@ -167,7 +146,7 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
       color: Color.fromRGBO(48, 60, 102, 1),
     );
     const tagTextStyle =
-    TextStyle(fontSize: 12.0, color: Color.fromARGB(1, 98, 103, 124));
+        TextStyle(fontSize: 12.0, color: Color.fromARGB(1, 98, 103, 124));
     return Column(
       children: [
         Container(
@@ -234,7 +213,7 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
         color: Color.fromRGBO(98, 103, 124, 1),
         fontWeight: FontWeight.bold);
     const tagTextStyle =
-    TextStyle(fontSize: 12.0, color: Color.fromRGBO(98, 103, 124, 1));
+        TextStyle(fontSize: 12.0, color: Color.fromRGBO(98, 103, 124, 1));
     return Column(
       children: <Widget>[
         getHistoryWidget(),
@@ -249,31 +228,30 @@ class _DetailSearchPageState extends State<DetailSearchPage> {
         ),
         Container(
           margin: EdgeInsets.only(bottom: 20),
-        child:Scrollbar(child:
-        SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          reverse: false,
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: List.generate(tagList.length, (index) {
-              return InkWell(
-                onTap: () {
-                  //点击标签的逻辑
-                  setState(() {
-                    searchValue = tagList[index] ;
-                  });
-                  _controller.text = searchValue;
-                },
-                child: Chip(
-                  backgroundColor: Color.fromRGBO(238, 238, 238, 1),
-                  label: Text(tagList[index] , style: tagTextStyle),
-                ),
-              );
-            }),
-          ),
-        )
-        ),
+          child: Scrollbar(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: false,
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: List.generate(tagList.length, (index) {
+                return InkWell(
+                  onTap: () {
+                    //点击标签的逻辑
+                    setState(() {
+                      searchValue = tagList[index];
+                    });
+                    _controller.text = searchValue;
+                  },
+                  child: Chip(
+                    backgroundColor: Color.fromRGBO(238, 238, 238, 1),
+                    label: Text(tagList[index], style: tagTextStyle),
+                  ),
+                );
+              }),
+            ),
+          )),
         ),
       ],
     );

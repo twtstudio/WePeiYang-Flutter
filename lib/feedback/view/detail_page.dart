@@ -8,8 +8,6 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
 
-import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/util/feedback_router.dart';
-
 import 'components/post_card.dart';
 
 class DetailPage extends StatefulWidget {
