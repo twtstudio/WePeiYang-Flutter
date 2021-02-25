@@ -70,7 +70,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                   comment,
                   title: title,
                   onLikePressed: () {
-                    notifier.officialCommentHitLike(index, comment.id, 1);
+                    notifier.officialCommentHitLike(
+                        index, comment.id, notifier.myUserId);
                   },
                 ),
               ),
@@ -81,7 +82,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                       if (!_ratingLock) {
                         _ratingLock = true;
                         await notifier
-                            .rate(rating * 2, comment.id, 1, index)
+                            .rate(rating * 2, comment.id, notifier.myUserId,
+                                index)
                             .then((value) {
                           notifier.updateRating(rating * 2, index);
                         }).whenComplete(() {

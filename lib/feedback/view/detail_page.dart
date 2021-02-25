@@ -50,9 +50,13 @@ class _DetailPageState extends State<DetailPage> {
   _onRefresh() async {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
     await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getOfficialComments(post.id, '1');
+        .getOfficialComments(post.id, Provider
+        .of<FeedbackNotifier>(context, listen: false)
+        .myUserId);
     await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getComments(post.id, '1');
+        .getComments(post.id, Provider
+        .of<FeedbackNotifier>(context, listen: false)
+        .myUserId);
     _refreshController.refreshCompleted();
   }
 
@@ -114,10 +118,13 @@ class _DetailPageState extends State<DetailPage> {
                           onLikePressed: () {
                             if (origin == PostOrigin.home) {
                               notifier.homePostHitLike(
-                                  index, notifier.homePostList[index].id, 1);
+                                  index, notifier.homePostList[index].id,
+                                  notifier.myUserId);
                             } else {
                               notifier.profilePostHitLike(
-                                  index, notifier.profilePostList[index], 1);
+                                  index,
+                                  notifier.profilePostList[index],
+                                  notifier.myUserId);
                             }
                           },
                         ),
@@ -142,10 +149,10 @@ class _DetailPageState extends State<DetailPage> {
                                     },
                                     onLikePressed: () {
                                       notifier.officialCommentHitLike(
-                                          index,
-                                          notifier
-                                              .officialCommentList[index].id,
-                                          1);
+                                        index,
+                                        notifier.officialCommentList[index].id,
+                                        notifier.myUserId,
+                                      );
                                     },
                                   )
                                 : CommentCard(
@@ -154,15 +161,15 @@ class _DetailPageState extends State<DetailPage> {
                                     onLikePressed: () {
                                       print('like!');
                                       notifier.commentHitLike(
-                                          index -
-                                              notifier
-                                                  .officialCommentList.length,
-                                          notifier
-                                              .commentList[index -
-                                                  notifier.officialCommentList
-                                                      .length]
-                                              .id,
-                                          1);
+                                        index -
+                                            notifier.officialCommentList.length,
+                                        notifier
+                                            .commentList[index -
+                                                notifier
+                                                    .officialCommentList.length]
+                                            .id,
+                                        notifier.myUserId,
+                                      );
                                     },
                                   );
                           },

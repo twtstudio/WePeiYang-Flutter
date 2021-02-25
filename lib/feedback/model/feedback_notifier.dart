@@ -21,6 +21,7 @@ class FeedbackNotifier with ChangeNotifier {
   List<String> _searchHistoryList = List();
   int _homeTotalPage = 0;
   bool _hitLikeLock = false;
+  int _myUserId;
 
   List<Tag> get tagList => _tagList;
 
@@ -34,6 +35,16 @@ class FeedbackNotifier with ChangeNotifier {
 
   List<String> get searchHistoryList => _searchHistoryList;
 
+  int get homeTotalPage => _homeTotalPage;
+
+  int get myUserId => _myUserId;
+
+  getMyUserId() async {
+    // TODO: Fake user id.
+    _myUserId = 1;
+    notifyListeners();
+  }
+
   initSearchHistory() async {
     final _prefs = await SharedPreferences.getInstance();
     if (_prefs.getStringList('feedback_search_history') == null) {
@@ -43,8 +54,6 @@ class FeedbackNotifier with ChangeNotifier {
       _searchHistoryList = _prefs.getStringList('feedback_search_history');
     }
   }
-
-  int get homeTotalPage => _homeTotalPage;
 
   clearTagList() {
     _tagList.clear();
@@ -108,7 +117,7 @@ class FeedbackNotifier with ChangeNotifier {
           'searchString': keyword ?? '',
           'tagList': '[$tagId]',
           'limits': '20',
-          'user_id': '1',
+          'user_id': _myUserId,
           'page': '$page',
         },
       ).then((value) {
@@ -135,7 +144,7 @@ class FeedbackNotifier with ChangeNotifier {
         'question/get/myQuestion',
         {
           'limits': 0,
-          'user_id': 3,
+          'user_id': _myUserId,
           'page': 1,
         },
       ).then((value) {

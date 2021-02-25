@@ -46,6 +46,12 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   }
 
   @override
+  void initState() {
+    Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       /// Click and jump to NewPostPage.
@@ -157,8 +163,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                 },
                                 onLikePressed: () {
                                   print('like!');
-                                  notifier.homePostHitLike(index,
-                                      notifier.homePostList[index].id, 1);
+                                  notifier.homePostHitLike(
+                                      index,
+                                      notifier.homePostList[index].id,
+                                      notifier.myUserId);
                                 },
                               )
                             : PostCard(
@@ -173,8 +181,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                 },
                                 onLikePressed: () {
                                   print('like!');
-                                  notifier.homePostHitLike(index,
-                                      notifier.homePostList[index].id, 1);
+                                  notifier.homePostHitLike(
+                                      index,
+                                      notifier.homePostList[index].id,
+                                      notifier.myUserId);
                                 },
                               );
                       },

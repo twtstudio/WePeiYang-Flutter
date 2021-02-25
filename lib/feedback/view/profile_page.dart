@@ -18,8 +18,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int userId = 1;
-
   @override
   void initState() {
     Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
@@ -198,8 +196,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                   },
                                   onLikePressed: () {
                                     print('like!');
-                                    notifier.profilePostHitLike(index,
-                                        notifier.profilePostList[index].id, 3);
+                                    notifier.profilePostHitLike(
+                                        index,
+                                        notifier.profilePostList[index].id,
+                                        notifier.myUserId);
                                   },
                                 )
                               : PostCard(
@@ -216,8 +216,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                   },
                                   onLikePressed: () {
                                     print('like!');
-                                    notifier.profilePostHitLike(index,
-                                        notifier.profilePostList[index].id, 3);
+                                    notifier.profilePostHitLike(
+                                        index,
+                                        notifier.profilePostList[index].id,
+                                        notifier.myUserId);
                                   },
                                 );
                         },
