@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 
 TextEditingController _titleController;
 TextEditingController _bodyController;
@@ -224,6 +225,8 @@ class _TabGridViewState extends State<TabGridView>
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(
+          maxHeight: ScreenUtil.screenHeight - ScreenUtil.paddingTop),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -232,7 +235,6 @@ class _TabGridViewState extends State<TabGridView>
       child: ListView(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 25),
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -259,7 +261,16 @@ class _TabGridViewState extends State<TabGridView>
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                currentTab + ': 部门介绍',
+                currentTab +
+                    ': ' +
+                    (Provider.of<FeedbackNotifier>(context, listen: false)
+                                .tagList[_currentTagIndex]
+                                .description !=
+                            null
+                        ? Provider.of<FeedbackNotifier>(context, listen: false)
+                            .tagList[_currentTagIndex]
+                            .description
+                        : '暂无介绍'),
                 style: TextStyle(
                   color: Color(0xff303c66),
                   fontSize: 10,
@@ -274,35 +285,35 @@ class _TabGridViewState extends State<TabGridView>
                     .tagList
                     .length, (index) {
               return Provider.of<FeedbackNotifier>(context, listen: false)
-                          .tagList[index]
-                          .name ==
-                      currentTab
+                  .tagList[index]
+                  .name ==
+                  currentTab
                   ? FadeTransition(
-                      opacity: Tween(begin: 0.0, end: 1.0)
-                          .animate(_animationController),
-                      child: _tagChip(
-                        text: Provider.of<FeedbackNotifier>(context,
-                                listen: false)
-                            .tagList[index]
-                            .name,
-                        tagId: Provider.of<FeedbackNotifier>(context,
-                                listen: false)
-                            .tagList[index]
-                            .id,
-                        index: index,
-                      ),
-                    )
+                opacity: Tween(begin: 0.0, end: 1.0)
+                    .animate(_animationController),
+                child: _tagChip(
+                  text: Provider.of<FeedbackNotifier>(context,
+                      listen: false)
+                      .tagList[index]
+                      .name,
+                  tagId: Provider.of<FeedbackNotifier>(context,
+                      listen: false)
+                      .tagList[index]
+                      .id,
+                  index: index,
+                ),
+              )
                   : _tagChip(
-                      text:
-                          Provider.of<FeedbackNotifier>(context, listen: false)
-                              .tagList[index]
-                              .name,
-                      tagId:
-                          Provider.of<FeedbackNotifier>(context, listen: false)
-                              .tagList[index]
-                              .id,
-                      index: index,
-                    );
+                text:
+                Provider.of<FeedbackNotifier>(context, listen: false)
+                    .tagList[index]
+                    .name,
+                tagId:
+                Provider.of<FeedbackNotifier>(context, listen: false)
+                    .tagList[index]
+                    .id,
+                index: index,
+              );
             }),
           )
         ],
