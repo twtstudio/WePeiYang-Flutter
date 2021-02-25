@@ -134,15 +134,15 @@ class FeedbackNotifier with ChangeNotifier {
       await HttpUtil().get(
         'question/get/myQuestion',
         {
-          'limits': '0',
-          'user_id': '3',
-          'page': '1',
+          'limits': 0,
+          'user_id': 3,
+          'page': 1,
         },
       ).then((value) {
-        print('get!');
         print(json.encode(value));
-        for (Map<String, dynamic> json in value['data']['data']) {
-          _profilePostList.add(Post.fromJson(json));
+        for (Map<String, dynamic> map in value['data']) {
+          print(json.encode(map));
+          _profilePostList.add(Post.fromJson(map));
         }
         notifyListeners();
       });
