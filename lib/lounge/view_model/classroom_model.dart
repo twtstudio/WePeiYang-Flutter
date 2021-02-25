@@ -56,6 +56,9 @@ class ClassroomsDataModel extends ViewStateListModel {
 
   @override
   Future<List> loadData() async {
+    await Future.delayed(Duration(seconds: 1));
+
+
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 

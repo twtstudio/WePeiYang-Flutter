@@ -23,7 +23,7 @@ class BuildingDataModel extends ViewStateListModel {
 
   @override
   Future<List> loadData() async {
-
+    await Future.delayed(Duration(seconds: 1));
     return await HiveManager.instance.baseBuildingDataFromDisk
         .where((building) => building.campus == campus.id)
         .toList();

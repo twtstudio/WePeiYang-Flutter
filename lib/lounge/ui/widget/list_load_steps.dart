@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 
 class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
   final T model;
@@ -9,6 +10,7 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
   final Widget emptyV;
   final Widget successV;
   final Widget defaultV;
+  final double errorHeight;
 
   const ListLoadSteps(
       {Key key,
@@ -17,7 +19,8 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
       this.errorV,
       this.emptyV,
       this.successV,
-      this.defaultV})
+      this.defaultV,
+      this.errorHeight})
       : super(key: key);
 
   @override
@@ -26,9 +29,14 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
 
     if (model.isBusy) {
       body = KeyedSubtree(
-        key: const ValueKey<ViewState>(ViewState.busy),
-        child: busyV ?? Container(),
-      );
+          key: const ValueKey<ViewState>(ViewState.busy),
+          child: busyV ??
+              Container(
+                height: errorHeight ?? 200.0,
+                child: Center(
+                  child: Loading(),
+                ),
+              ));
     } else if (model.isError && model.list.isEmpty) {
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.error),
@@ -48,6 +56,15 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
       body = defaultV ?? Container();
     }
     return AnimatedSwitcher(
+      layoutBuilder: (Widget currentChild, List<Widget> previousChildren){
+        return Stack(
+          children: <Widget>[
+            ...previousChildren,
+            if (currentChild != null) currentChild,
+          ],
+          alignment: Alignment.topCenter,
+        );
+      },
       duration: const Duration(milliseconds: 300),
       child: body,
     );

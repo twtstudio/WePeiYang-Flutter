@@ -25,6 +25,9 @@ class ClassPlanModel extends ViewStateListModel {
 
   @override
   Future<List> loadData() async {
+
+    await Future.delayed(Duration(seconds: 1));
+
     _plans.clear();
     var plan = await HiveManager.instance
         .getRoomPlans(r: room, dateTime: scheduleModel.dateTime);

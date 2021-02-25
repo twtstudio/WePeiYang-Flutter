@@ -12,6 +12,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   String password = "";
 
   _login() async {
+    _passwordFocus.unfocus();
     if (account == "" || password == "") {
       ToastProvider.error("账号密码不能为空");
       return;

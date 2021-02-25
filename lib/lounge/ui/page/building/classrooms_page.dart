@@ -132,8 +132,6 @@ class FloorWidget extends StatelessWidget {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            // crossAxisSpacing: 13,
-            // mainAxisSpacing: 18,
             childAspectRatio: 68 / 54,
           ),
           itemCount: classrooms.length,
