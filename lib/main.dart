@@ -137,7 +137,9 @@ class StartUpWidget extends StatelessWidget {
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
 
-    _autoLogin(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _autoLogin(context);
+    });
 
     return ConstrainedBox(
       child: Image(
