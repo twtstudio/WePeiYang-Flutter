@@ -12,44 +12,51 @@ class PostCard extends StatefulWidget {
   bool enableImgList;
   GesturePressedCallback onContentPressed = () {};
   GesturePressedCallback onLikePressed = () {};
+  GesturePressedCallback onFavoritePressed = () {};
 
   @override
   State createState() {
     return _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-        onContentPressed: this.onContentPressed, onLikePressed: onLikePressed);
+        this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
   }
 
   /// Card without top image and content images.
   PostCard(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 
   /// Card with top image.
   PostCard.image(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 
   /// Card for DetailPage.
   PostCard.detail(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 }
 
@@ -59,9 +66,10 @@ class _PostCardState extends State<PostCard> {
   final bool enableImgList;
   final GesturePressedCallback onContentPressed;
   final GesturePressedCallback onLikePressed;
+  final GesturePressedCallback onFavoritePressed;
 
   _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-      {this.onContentPressed, this.onLikePressed});
+      this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
 
   @override
   Widget build(BuildContext context) {
@@ -256,15 +264,18 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
               if (enableImgList) BlankSpace.width(16),
+              // Favorite.
               if (enableImgList)
                 ClipOval(
                   child: InkWell(
                     child: Icon(
-                      Icons.star_border,
+                      post.isFavorite ? Icons.star : Icons.star_border,
                       size: 16,
-                      color: ColorUtil.lightTextColor,
+                      color: post.isFavorite
+                          ? Colors.amber
+                          : ColorUtil.lightTextColor,
                     ),
-                    onTap: () {},
+                    onTap: onFavoritePressed,
                   ),
                 ),
               if (!enableImgList) BlankSpace.width(5),

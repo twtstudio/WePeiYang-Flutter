@@ -10,8 +10,8 @@ class HttpUtil {
   HttpUtil._internal() {
     if (null == _client) {
       BaseOptions options = BaseOptions(
-        baseUrl: 'https://areas.twt.edu.cn/api/user/',
-        // baseUrl: 'http://47.93.253.240:10805/api/user/',
+        // baseUrl: 'https://areas.twt.edu.cn/api/user/',
+        baseUrl: 'http://47.93.253.240:10805/api/user/',
         receiveTimeout: 8000,
         connectTimeout: 8000,
       );

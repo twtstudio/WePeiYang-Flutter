@@ -126,11 +126,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                         PostOrigin.home));
                               },
                               onLikePressed: () {
-                                print('like!');
                                 notifier.homePostHitLike(
-                                    index,
-                                    notifier.homePostList[index].id,
-                                    notifier.myUserId);
+                                    index, notifier.homePostList[index].id);
                               },
                             )
                           : PostCard(
@@ -144,11 +141,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                         PostOrigin.home));
                               },
                               onLikePressed: () {
-                                print('like!');
                                 notifier.homePostHitLike(
-                                    index,
-                                    notifier.homePostList[index].id,
-                                    notifier.myUserId);
+                                    index, notifier.homePostList[index].id);
                               },
                             );
                     },
