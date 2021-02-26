@@ -6,8 +6,7 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
-
-import 'file:///C:/Users/tranced/Documents/Projects/WePeiYang-Flutter/lib/feedback/util/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override
