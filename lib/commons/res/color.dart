@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
 class MyColors {
-  static final deepBlue = Color.fromRGBO(53, 59, 84, 1.0); //no.1
+  static final deepBlue = Color.fromRGBO(98, 103, 124, 1.0); //no.1
   static final darkGrey =
-      Color.fromRGBO(105, 109, 126, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
+      Color.fromRGBO(206, 207, 212, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
   static final darkGrey2 = Color.fromRGBO(116, 119, 138, 1.0); //no.2
   static final brightBlue = Color.fromRGBO(103, 110, 150, 1.0); //no.3
   static final dust = Color.fromRGBO(230, 230, 230, 1.0); //no.4

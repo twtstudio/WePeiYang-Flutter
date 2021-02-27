@@ -50,7 +50,7 @@ class MainPage extends StatelessWidget {
               ),
               SearchBarWidget(),
               BuildingGridWidget(),
-              SRFavourWidget()
+              SRFavourWidget(title: '我的收藏')
             ],
           ),
         );

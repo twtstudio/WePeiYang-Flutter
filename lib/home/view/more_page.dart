@@ -13,38 +13,39 @@ class MorePage extends StatelessWidget {
         crossAxisSpacing: 20.0,
         mainAxisSpacing: 25.0,
         padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-        childAspectRatio: 1.5,
+        childAspectRatio: 117 / 86,
         children: _getCardsWidget(cards, context),
       ),
     );
   }
 
   List<Widget> _getCardsWidget(List<CardBean> cards, BuildContext context) =>
-      cards.map((e) => generateCard(context, e)).toList();
+      cards
+          .map((e) => generateCard(context, e, textColor: Color(0xff656b80)))
+          .toList();
 }
 
 /// 此方法在wpy_page中有复用
-Widget generateCard(BuildContext context, CardBean bean) {
+Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
   return GestureDetector(
     onTap: () => Navigator.pushNamed(context, bean.route),
     child: Card(
       elevation: 0.3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            child: Icon(
-              bean.icon,
-              color: Colors.grey,
-              size: 30.0,
-            ),
-            padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 3.0),
+          Icon(
+            bean.icon,
+            color: MyColors.darkGrey,
+            size: 25.0,
           ),
+          Container(height: 5),
           Center(
             child: Text(bean.label,
                 style: TextStyle(
-                    color: MyColors.darkGrey,
-                    fontSize: 15.0,
+                    color: textColor ?? MyColors.darkGrey,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.bold)),
           )
         ],

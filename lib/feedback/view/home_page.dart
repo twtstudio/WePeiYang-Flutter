@@ -46,7 +46,9 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
+    });
     super.initState();
   }
 
