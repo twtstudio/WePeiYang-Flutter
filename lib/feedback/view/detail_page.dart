@@ -42,27 +42,26 @@ class _DetailPageState extends State<DetailPage> {
   bool _sendCommentLock = false;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
   TextEditingController _textEditingController = TextEditingController();
 
   _DetailPageState(this.post, this.index, this.origin);
 
-  _onRefresh() async {
+  _onRefresh() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getOfficialComments(post.id, Provider
-        .of<FeedbackNotifier>(context, listen: false)
-        .myUserId);
-    await Provider.of<FeedbackNotifier>(context, listen: false)
-        .getComments(post.id, Provider
-        .of<FeedbackNotifier>(context, listen: false)
-        .myUserId);
+    Provider.of<FeedbackNotifier>(context, listen: false)
+        .getOfficialComments(post.id);
+    Provider.of<FeedbackNotifier>(context, listen: false).getComments(post.id);
     _refreshController.refreshCompleted();
   }
 
   @override
   void initState() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    Provider.of<FeedbackNotifier>(context, listen: false)
+        .getOfficialComments(post.id);
+    Provider.of<FeedbackNotifier>(context, listen: false).getComments(post.id);
+    print(post.id);
     super.initState();
   }
 
@@ -118,13 +117,17 @@ class _DetailPageState extends State<DetailPage> {
                           onLikePressed: () {
                             if (origin == PostOrigin.home) {
                               notifier.homePostHitLike(
-                                  index, notifier.homePostList[index].id,
-                                  notifier.myUserId);
+                                  index, notifier.homePostList[index].id);
                             } else {
                               notifier.profilePostHitLike(
-                                  index,
-                                  notifier.profilePostList[index],
-                                  notifier.myUserId);
+                                  index, notifier.profilePostList[index].id);
+                            }
+                          },
+                          onFavoritePressed: () {
+                            if (origin == PostOrigin.home) {
+                              notifier.homePostHitFavorite(index);
+                            } else {
+                              notifier.profilePostHitFavorite(index);
                             }
                           },
                         ),
@@ -151,7 +154,6 @@ class _DetailPageState extends State<DetailPage> {
                                       notifier.officialCommentHitLike(
                                         index,
                                         notifier.officialCommentList[index].id,
-                                        notifier.myUserId,
                                       );
                                     },
                                   )
@@ -159,7 +161,6 @@ class _DetailPageState extends State<DetailPage> {
                                     notifier.commentList[index -
                                         notifier.officialCommentList.length],
                                     onLikePressed: () {
-                                      print('like!');
                                       notifier.commentHitLike(
                                         index -
                                             notifier.officialCommentList.length,
@@ -168,7 +169,6 @@ class _DetailPageState extends State<DetailPage> {
                                                 notifier
                                                     .officialCommentList.length]
                                             .id,
-                                        notifier.myUserId,
                                       );
                                     },
                                   );
@@ -222,7 +222,6 @@ class _DetailPageState extends State<DetailPage> {
                             .sendComment(
                           _textEditingController.text,
                           post.id,
-                          1,
                           () {
                             _textEditingController.text = '';
                             _onRefresh();

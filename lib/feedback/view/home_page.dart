@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override
@@ -17,24 +17,24 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   int currentPage = 1, totalPage = 1;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
 
-  _onRefresh() async {
+  _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearTagList();
-    await Provider.of<FeedbackNotifier>(context, listen: false).getTags();
+    Provider.of<FeedbackNotifier>(context, listen: false).getTags();
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
+    Provider.of<FeedbackNotifier>(context, listen: false)
         .getPosts('', currentPage);
     totalPage =
         Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     _refreshController.refreshCompleted();
   }
 
-  _onLoading() async {
+  _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      await Provider.of<FeedbackNotifier>(context, listen: false)
+      Provider.of<FeedbackNotifier>(context, listen: false)
           .getPosts('', currentPage);
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
@@ -46,9 +46,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<FeedbackNotifier>(context, listen: false).getMyUserId();
-    });
+    currentPage = 1;
+    Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList();
+    totalPage =
+        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     super.initState();
   }
 
@@ -116,8 +117,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                         .then((value) async {
                                       if (value == true) {
                                         notifier.clearHomePostList();
-                                        await _refreshController
-                                            .requestRefresh();
+                                        _onRefresh();
                                       }
                                     });
                                   },
@@ -163,11 +163,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                           PostOrigin.home));
                                 },
                                 onLikePressed: () {
-                                  print('like!');
                                   notifier.homePostHitLike(
-                                      index,
-                                      notifier.homePostList[index].id,
-                                      notifier.myUserId);
+                                      index, notifier.homePostList[index].id);
                                 },
                               )
                             : PostCard(
@@ -181,11 +178,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                           PostOrigin.home));
                                 },
                                 onLikePressed: () {
-                                  print('like!');
                                   notifier.homePostHitLike(
-                                      index,
-                                      notifier.homePostList[index].id,
-                                      notifier.myUserId);
+                                      index, notifier.homePostList[index].id);
                                 },
                               );
                       },

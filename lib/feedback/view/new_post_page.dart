@@ -83,7 +83,6 @@ class _NewPostPageState extends State<NewPostPage> {
                               _titleController.text,
                               _bodyController.text,
                               _currentTagId,
-                              1,
                               _resultList,
                             )
                                 .then((value) {
