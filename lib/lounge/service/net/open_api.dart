@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 // import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'api.dart';
@@ -31,9 +32,11 @@ class ApiInterceptor extends InterceptorsWrapper {
   }
 
   @override
-  onResponse(Response response) {
-//    debugPrint('---api-response--->resp----->${response.data}');
-    ResponseData respData = ResponseData.fromJson(jsonDecode(response.data));
+  onResponse(Response response) async {
+    final String data = response.data.toString();
+    final bool isCompute =  data.length > 10 * 1024;
+    final Map<dynamic, dynamic> _map = isCompute ? await compute(parseData, data) : parseData(data);
+    ResponseData respData = ResponseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
       return open_http.resolve(response);
@@ -49,6 +52,10 @@ class ApiInterceptor extends InterceptorsWrapper {
       throw NotSuccessException.fromRespData(respData);
     }
   }
+}
+
+Map<dynamic, dynamic> parseData(String data) {
+  return jsonDecode(data);
 }
 
 class ResponseData extends BaseResponseData {

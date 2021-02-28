@@ -6,7 +6,7 @@ class Area {
   String building;
   Map<String, Classroom> classrooms;
 
-  Area({this.id = '',this.building,this.classrooms});
+  Area({this.id = '', this.building, this.classrooms});
 
   static Area fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
@@ -15,7 +15,7 @@ class Area {
     // var list = map['classrooms'];
     var list = List()
       ..addAll((map['classrooms'] as List ?? [])
-          .map((e) => Classroom.fromMap(e, area.id)));
+          .map((e) => Classroom.fromMap(e, aId: area.id)));
     for (var room in list) {
       area.classrooms[room.id ?? ''] = room;
     }

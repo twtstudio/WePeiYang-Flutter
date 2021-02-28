@@ -155,11 +155,11 @@ class HiveManager {
 
   Stream<Building> get baseBuildingDataFromDisk async* {
     // print(_boxesKeys.keys.toList());
+    debugPrint('baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
     for (var k in _boxesKeys.values) {
       var key = k.key;
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
-        // debugPrint('baseBuildingDataFromDisk :' + building.toJson().toString());
         yield building;
       } else {
         throw Exception('box not exist : $key');
@@ -176,6 +176,7 @@ class HiveManager {
 
   _writeInBox(Building building) async {
     var bName = building.id;
+    print(bName);
     if (_boxesKeys.values.contains(bName)) {
       // print('building exist:' + bName);
     } else {
@@ -349,7 +350,9 @@ class HiveManager {
               .forEach((e) => rCs.addAll(e.classrooms.values
                   .where((element) => element.name == cName)
                   .map((e) => MapEntry(building, e)))));
+          print('!!!!!!!!!!@###########%%%%%%%%%%%%2222222222      '+rCs.length.toString());
           for (var r in rCs) {
+            print(r.value.toJson());
             yield ResultEntry(
               building: r.key,
               area: Area(id: r.value.aId),

@@ -30,7 +30,8 @@ class StudyRoomRepository {
   static Future unCollect({String id}) async {}
 
   /// 从网络上获取一周的全部数据
-  static Stream<MapEntry<int,List<Building>>> _getWeekClassPlan({@required DateTime dateTime}) async* {
+  static Stream<MapEntry<int, List<Building>>> _getWeekClassPlan(
+      {@required DateTime dateTime}) async* {
     var week = await dateTime.convertedWeekAndDay;
     for (var weekday in week) {
       // var response =
@@ -43,11 +44,11 @@ class StudyRoomRepository {
       //   response.data.map<Building>((b) => Building.fromMap(b)).toList(),
       //   weekday.day,
       // );
-      print('weekday.day:'+weekday.day.toString());
-      if(dateTime.isThisWeek){
-        yield MapEntry(weekday.day,Data.getOneDayAvailable(weekday.day));
-      }else{
-        yield MapEntry(weekday.day,Data.getOneDayAvailable(weekday.day+7));
+      print('weekday.day:' + weekday.day.toString());
+      if (dateTime.isThisWeek) {
+        yield MapEntry(weekday.day, Data.getOneDayAvailable(weekday.day));
+      } else {
+        yield MapEntry(weekday.day, Data.getOneDayAvailable(weekday.day + 7));
       }
     }
   }
@@ -64,10 +65,11 @@ class StudyRoomRepository {
         });
       }
     } else {
-      if(HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)){
+      if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
         await _getWeekClassPlan(dateTime: dateTime).forEach((plan) async {
-          await HiveManager.instance.setTemporaryData(data: plan.value, day: plan.key);
-          print("not this week : "+dateTime.toString());
+          await HiveManager.instance
+              .setTemporaryData(data: plan.value, day: plan.key);
+          print("not this week : " + dateTime.toString());
         });
       }
     }
