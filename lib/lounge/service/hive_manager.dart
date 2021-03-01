@@ -102,9 +102,9 @@ class HiveManager {
   clearTemporaryData() async => await _temporaryData.clear();
 
   addFavourite({Classroom room}) async {
-    print(_favourList.keys.toList());
+    // print(_favourList.keys.toList());
     await _favourList.put(room.id, room);
-    print(_favourList.keys.toList());
+    // print(_favourList.keys.toList());
   }
 
   removeFavourite({String cId}) async {
@@ -351,7 +351,7 @@ class HiveManager {
                   .where((element) => element.name == cName)
                   .map((e) => MapEntry(building, e)))));
           for (var r in rCs) {
-            print(r.value.toJson());
+            // print(r.value.toJson());
             yield ResultEntry(
               building: r.key,
               area: Area(id: r.value.aId),

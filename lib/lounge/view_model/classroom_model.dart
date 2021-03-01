@@ -28,8 +28,8 @@ class ClassroomsDataModel extends ViewStateListModel {
       } else {
         floors[floor] = [room];
       }
-      print(c.toJson());
-      print(floors);
+      // print(c.toJson());
+      // print(floors);
       if (classPlan.containsKey(c.id)) {
         print('classrooms have same id:' + c.id);
       } else {

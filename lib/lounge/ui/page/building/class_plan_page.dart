@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
@@ -348,7 +350,8 @@ class CourseDisplayWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   shape: BoxShape.rectangle,
-                  color: Color(0xff7a778a),
+                  color:
+                      roomPlanColors[Random().nextInt(roomPlanColors.length)],
                 ),
                 child: Center(
                   child: Column(
@@ -378,3 +381,10 @@ class CourseDisplayWidget extends StatelessWidget {
     return list;
   }
 }
+
+const List<Color> roomPlanColors = [
+  Color(0xff8f92a5),
+  Color(0xff7a778a),
+  Color(0xff727588),
+  Color(0xff8286a1),
+];
