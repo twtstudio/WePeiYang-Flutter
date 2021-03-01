@@ -26,9 +26,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false)
-        .clearProfilePostList();
-    Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false)
+          .clearProfilePostList();
+      Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+    });
     super.initState();
   }
 
@@ -171,7 +173,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                               color: ColorUtil.lightTextColor),
                                         ),
                                         BlankSpace.height(5),
-                                        // TODO: Color should change dynamically.
                                         ClipOval(
                                           child: Container(
                                             width: 5,
@@ -229,14 +230,20 @@ class _ProfilePageState extends State<ProfilePage> {
                             notifier.profilePostList[index],
                             onContentPressed: () {
                               Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.detail,
-                                arguments: DetailPageArgs(
-                                    notifier.profilePostList[index],
-                                    index,
-                                    PostOrigin.profile),
-                              );
-                            },
+                                      context,
+                                      FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                        notifier.profilePostList[index],
+                                        index,
+                                        PostOrigin.profile,
+                                      ),
+                                    ).then((value) async {
+                                      print(value);
+                                      if (value == false) {
+                                        notifier.removeProfilePost(index);
+                                      }
+                                    });
+                                  },
                             onLikePressed: () {
                                     notifier.profilePostHitLike(index,
                                         notifier.profilePostList[index].id);

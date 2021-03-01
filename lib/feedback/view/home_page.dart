@@ -47,9 +47,11 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   @override
   void initState() {
     currentPage = 1;
-    Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList();
-    totalPage =
-        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList();
+      totalPage =
+          Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+    });
     super.initState();
   }
 

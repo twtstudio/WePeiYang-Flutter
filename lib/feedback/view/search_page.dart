@@ -22,8 +22,10 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false).initSearchHistory();
-    _homePostChanged = false;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false).initSearchHistory();
+      _homePostChanged = false;
+    });
     super.initState();
   }
 

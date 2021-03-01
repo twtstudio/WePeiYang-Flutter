@@ -125,6 +125,11 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  removeProfilePost(index) {
+    _profilePostList.removeAt(index);
+    notifyListeners();
+  }
+
   /// Get tags.
   Future getTags() async {
     try {

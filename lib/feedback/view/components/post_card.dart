@@ -111,6 +111,7 @@ class _PostCardState extends State<PostCard> {
                 // Avatar and user name when image list enabled.
                 if (enableImgList)
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ClipOval(
                         child: Image.asset(
@@ -121,11 +122,14 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ),
                       BlankSpace.width(5),
-                      // TODO: Long user name may cause overflow.
-                      Text(
-                        post.userName,
-                        style: TextStyle(
-                            fontSize: 14, color: ColorUtil.lightTextColor),
+                      Expanded(
+                        child: Text(
+                          post.userName,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                              fontSize: 14, color: ColorUtil.lightTextColor),
+                        ),
                       ),
                     ],
                   ),
@@ -216,9 +220,6 @@ class _PostCardState extends State<PostCard> {
                     size: 16,
                     color: ColorUtil.lightTextColor,
                   ),
-                  onTap: () {
-                    // TODO: Add onCommentPressed here.
-                  },
                 ),
               ),
               BlankSpace.width(8),
@@ -283,6 +284,8 @@ class _PostCardState extends State<PostCard> {
               if (!enableImgList)
                 Text(
                   post.userName,
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
                   style:
                       TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
                 ),
