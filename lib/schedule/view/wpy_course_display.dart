@@ -17,7 +17,7 @@ class TodayCoursesWidget extends StatelessWidget {
             child: Text('课程表',
                 style: TextStyle(
                     fontSize: 17.0,
-                    color: Color.fromRGBO(53, 59, 84, 1.0),
+                    color: Color.fromRGBO(100, 103, 122, 1.0),
                     fontWeight: FontWeight.bold)),
           ),
           _getDisplayWidget(notifier)

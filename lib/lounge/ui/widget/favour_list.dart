@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
@@ -7,14 +6,19 @@ import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class SRFavourWidget extends StatelessWidget {
+  final String title;
+
+  const SRFavourWidget({Key key, this.title}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MediaQuery.removePadding(
-      context: context,
+        context: context,
         removeRight: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,9 +26,9 @@ class SRFavourWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Text(
-                '我的收藏',
+                title,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Color(0XFF62677B)),
               ),
@@ -49,48 +53,57 @@ class FavourListWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: ProviderWidget<FavouriteListModel>(
             model: FavouriteListModel(
-              scheduleModel: Provider.of<SRTimeModel>(context,listen: false),
-              favouriteModel: Provider.of<SRFavouriteModel>(context,listen: false),
+              scheduleModel: Provider.of<SRTimeModel>(context, listen: false),
+              favouriteModel:
+                  Provider.of<SRFavouriteModel>(context, listen: false),
             ),
             onModelReady: (model) => model.initData(),
-            builder: (_, model, __) {
-              if (model.isBusy) {
-                // return ViewStateBusyWidget();
-                return Container();
-              } else if (model.isError && model.list.isEmpty) {
-                // return ViewStateErrorWidget(
-                //     error: model.viewStateError, onPressed: model.initData);
-                return Container();
-              } else if (model.isEmpty) {
-                // return ViewStateEmptyWidget(onPressed: model.initData);
-                return Container();
-              } else if (model.isIdle) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: model.favourList.isNotEmpty
-                      ? model.favourList.map((classroom) {
-                    // print('classroom: ' + classroom.toJson().toString());
-                    var plan = model.classPlan[classroom.id];
-                    var current = Time.week[model.currentDay - 1];
-                    var currentPlan = plan[current].join();
-                    var isIdle =
-                    Time.availableNow(currentPlan, model.classTime);
-                    return FavourListCard(
-                      room: classroom,
-                      available: isIdle,
-                    );
-                  }).toList()
-                      : [
-                    Container(
-                      child: Center(
-                        child: Text('莫得数据，速去动动你的小手手'),
+            builder: (_, model, __) => ListLoadSteps(
+                  model: model,
+                  emptyV: Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width - 20,
+                    child: Row(children: [
+                      Expanded(
+                        child: Container(
+                          child: Center(
+                            child: Text('自习室收藏存储在本地'
+                            ,style: TextStyle(
+                                color: Color(0xffcdcdd3),
+                                fontSize: 12
+                              ),),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                );
-              }
-              return Container();
-            }),
+                      Container(
+                        width: 20,
+                      ),
+                    ]),
+                  ),
+                  successV: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: model.favourList.isNotEmpty
+                        ? model.favourList.map((classroom) {
+                            // print('classroom: ' + classroom.toJson().toString());
+                            var plan = model.classPlan[classroom.id];
+                            var current = Time.week[model.currentDay - 1];
+                            var currentPlan = plan[current].join();
+                            var isIdle =
+                                Time.availableNow(currentPlan, model.classTime);
+                            return FavourListCard(
+                              room: classroom,
+                              available: isIdle,
+                            );
+                          }).toList()
+                        : [
+                            Container(
+                              child: Center(
+                                child: Text('莫得数据，速去动动你的小手手'),
+                              ),
+                            )
+                          ],
+                  ),
+                )),
       ),
     );
   }

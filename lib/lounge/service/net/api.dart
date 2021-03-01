@@ -6,19 +6,9 @@ import 'package:dio/dio.dart';
 
 export 'package:dio/dio.dart';
 
-// 必须是顶层函数
-_parseAndDecode(String response) {
-  return jsonDecode(response);
-}
-
-parseJson(String text) {
-  return compute(_parseAndDecode, text);
-}
-
 abstract class BaseHttp extends DioForNative {
   BaseHttp() {
     /// 初始化 加入app通用处理
-    (transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
     interceptors..add(HeaderInterceptor());
     init();
   }

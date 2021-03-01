@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 
 class Classroom {
   String id;
@@ -16,17 +17,21 @@ class Classroom {
       this.bId = '',
       this.aId = ''});
 
-  static Classroom fromMap(Map<String, dynamic> map,String id) {
+  static Classroom fromMap(Map<String, dynamic> map, {String aId,bool newApi = true}) {
     if (map == null) return null;
     Classroom classroom = Classroom();
     classroom.id = map['classroom_id'] ?? '';
-    classroom.name = map['classroom'] ?? '';
     classroom.capacity = map['capacity'] ?? '';
     classroom.status = map['status'] ?? '';
-    classroom.aId = id ?? '';
-    //TODO: 这个大概使不会有的
-    // classroom.bId = map['building'];
-    // classroom.aId = map['area'];
+    if(newApi){
+      classroom.name = map['classroom'] ?? '';
+      classroom.aId = aId ?? '';
+    }else {
+      var format = DataFactory.formatQuery(map['classroom']);
+      classroom.name = format['cName'] ?? '';
+      classroom.aId = format['aName'] ?? '';
+    }
+
     return classroom;
   }
 
