@@ -1,7 +1,6 @@
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
@@ -18,7 +17,7 @@ class ClassroomsDataModel extends ViewStateListModel {
     for (var c in area.classrooms.values) {
       var floor = c.name[0];
       var room = Classroom()
-        ..name = area.id == '' ? c.name : area.id + c.name
+        ..name = area.id == '-1' ? c.name : area.id + c.name
         ..capacity = c.capacity
         ..id = c.id;
       if (floors.containsKey(floor)) {
@@ -53,9 +52,6 @@ class ClassroomsDataModel extends ViewStateListModel {
 
   @override
   Future<List> loadData() async {
-    await Future.delayed(Duration(seconds: 1));
-
-
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 
@@ -74,6 +70,6 @@ class ClassroomsDataModel extends ViewStateListModel {
       classPlan.update(key, (value) => _plan[key]);
     }
 
-    return Data.getOneDayAvailable(scheduleModel.dateTime.weekday);
+    return _plan.keys.toList();
   }
 }

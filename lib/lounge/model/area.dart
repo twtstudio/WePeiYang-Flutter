@@ -16,6 +16,7 @@ class Area {
     List<Classroom> list = List()
       ..addAll((map['classrooms'] as List ?? [])
           .map((e) => Classroom.fromMap(e, aId: area.id)));
+    area.classrooms = {};
     for (var room in list) {
       area.classrooms[room.id ?? ''] = room;
     }

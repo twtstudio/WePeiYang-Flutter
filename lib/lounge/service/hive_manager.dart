@@ -241,6 +241,8 @@ class HiveManager {
       var room = area.classrooms[r.id];
       if (room == null) return;
       _plans[day] = DataFactory.splitPlan(room.status);
+      // print('???????????splitplan');
+      // print( DataFactory.splitPlan(room.status));
     });
     return _plans;
   }
@@ -348,7 +350,6 @@ class HiveManager {
               .forEach((e) => rCs.addAll(e.classrooms.values
                   .where((element) => element.name == cName)
                   .map((e) => MapEntry(building, e)))));
-          print('!!!!!!!!!!@###########%%%%%%%%%%%%2222222222      '+rCs.length.toString());
           for (var r in rCs) {
             print(r.value.toJson());
             yield ResultEntry(

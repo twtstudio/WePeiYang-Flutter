@@ -1,10 +1,9 @@
 import 'package:hive/hive.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 
 class Classroom {
   String id;
   String name;
-  String capacity;
+  int capacity;
   String status;
   String bId;
   String aId;
@@ -17,20 +16,14 @@ class Classroom {
       this.bId = '',
       this.aId = ''});
 
-  static Classroom fromMap(Map<String, dynamic> map, {String aId,bool newApi = true}) {
+  static Classroom fromMap(Map<String, dynamic> map, {String aId}) {
     if (map == null) return null;
     Classroom classroom = Classroom();
     classroom.id = map['classroom_id'] ?? '';
-    classroom.capacity = map['capacity'] ?? '';
+    classroom.capacity = map['capacity'] ?? 0;
     classroom.status = map['status'] ?? '';
-    if(newApi){
-      classroom.name = map['classroom'] ?? '';
-      classroom.aId = aId ?? '';
-    }else {
-      var format = DataFactory.formatQuery(map['classroom']);
-      classroom.name = format['cName'] ?? '';
-      classroom.aId = format['aName'] ?? '';
-    }
+    classroom.name = map['classroom'] ?? '';
+    classroom.aId = aId ?? '';
 
     return classroom;
   }
@@ -52,7 +45,7 @@ class ClassroomAdapter extends TypeAdapter<Classroom> {
     return Classroom(
       id: fields[0] as String,
       name: fields[1] as String,
-      capacity: fields[2] as String,
+      capacity: fields[2] as int,
       status: fields[3] as String,
       bId: fields[4] as String,
       aId: fields[5] as String,

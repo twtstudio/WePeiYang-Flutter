@@ -59,7 +59,7 @@ Map<dynamic, dynamic> parseData(String data) {
 }
 
 class ResponseData extends BaseResponseData {
-  bool get success => -1 == code;
+  bool get success => 0 == code;
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     code = json['error_code'];
