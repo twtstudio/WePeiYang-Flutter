@@ -6,10 +6,7 @@ import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class ClassPlanModel extends ViewStateListModel {
   ClassPlanModel({this.room, this.scheduleModel}) {
-    scheduleModel.addListener(() {
-      setBusy();
-      refresh();
-    });
+    scheduleModel.addListener(refresh);
   }
 
   final Classroom room;

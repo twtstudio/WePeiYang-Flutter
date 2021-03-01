@@ -9,10 +9,7 @@ import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 class ClassroomsDataModel extends ViewStateListModel {
   ClassroomsDataModel._(
       this.id, this.area, this.scheduleModel, this.classPlan, this.floors) {
-    this.scheduleModel.addListener(() {
-      setBusy();
-      refresh();
-    });
+    scheduleModel.addListener(refresh);
   }
 
   factory ClassroomsDataModel(String id, Area area, SRTimeModel srTimeModel) {
@@ -62,7 +59,6 @@ class ClassroomsDataModel extends ViewStateListModel {
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 
-    // TODO: 这个错误怎么判断啊？
     await HiveManager.instance
         .getBuildingPlanData(id: id, time: scheduleModel.dateTime)
         .forEach((plan) {

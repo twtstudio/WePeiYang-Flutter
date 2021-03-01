@@ -15,12 +15,28 @@ import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/home_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  SRTimeModel srTimeModel;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await srTimeModel.setTime(compareToRemoteData: true);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    srTimeModel = Provider.of<SRTimeModel>(context, listen: false);
     return ProviderWidget<BuildingDataModel>(
       model:
-          BuildingDataModel(Provider.of<SRTimeModel>(context, listen: false)),
+          BuildingDataModel(srTimeModel),
       onModelReady: (homeModel) {
         homeModel.initData();
       },

@@ -11,7 +11,11 @@ class SRTimeModel extends ChangeNotifier {
 
   DateTime get dateTime => _dateTime;
 
-  setTime({DateTime date, List<ClassTime> schedule}) async {
+  setTime({
+    DateTime date,
+    List<ClassTime> schedule,
+    bool compareToRemoteData = false,
+  }) async {
     if (_classTime == null && _dateTime == null) {
       _classTime = [Time.classOfDay(DateTime.now())];
       _dateTime = DateTime.now();
@@ -19,9 +23,7 @@ class SRTimeModel extends ChangeNotifier {
       _classTime = schedule ?? _classTime;
       _dateTime = date ?? _dateTime;
     }
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' +
-        _classTime.toString());
-    await StudyRoomRepository.setSRData(model: this);
+    if (compareToRemoteData) await StudyRoomRepository.setSRData(model: this);
     notifyListeners();
   }
 }

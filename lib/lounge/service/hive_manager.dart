@@ -31,6 +31,8 @@ const temporary = 'temporary';
 const notReady = false;
 const ready = true;
 
+
+// TODO: 数据库错误处理没做
 class HiveManager {
   static HiveManager _instance;
 
@@ -39,7 +41,6 @@ class HiveManager {
 
   Box<LocalEntry> _boxesKeys;
 
-  // TODO : 点击非本周日期时提示 null
   /// [_temporaryData] 保存非本周临时数据。
   /// 每次更改[SRTimeModel.dateTime]时，会先判断是不是这周的时间，不是这周的话：
   /// 1. 通过网络请求请求到那一周的数据，
@@ -193,7 +194,6 @@ class HiveManager {
     List<Building> buildings,
     int day,
   ) async {
-    // TODO: 以后看能不能改成流式操作
     for (var building in buildings) {
       await _writeThisWeekData(building, day);
     }
@@ -219,7 +219,6 @@ class HiveManager {
   _setBuildingDataRefreshTime(String id, String name) async =>
       await _boxesKeys.put(id, LocalEntry(id, name, DateTime.now().toString()));
 
-  // TODO: 真的这么写 ???
   clearLocalData() async {
     for (var box in _buildingBoxes.values) {
       await box.clear();
@@ -260,7 +259,6 @@ class HiveManager {
       }
     } else {
       for (var day in Time.week) {
-        // TODO: if invalid index
         var data = _temporaryData.get(day);
         for (var building in data.buildings) {
           if (building.id == id) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -173,7 +174,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
               }),
               onDaySelected: (date, events, holidays) async {
                 _animationController.forward(from: 0.0);
-                await model.setTime(date: date);
+                await model.setTime(date: date, compareToRemoteData: true);
               },
               initialSelectedDay: model.dateTime,
             ),
@@ -190,7 +191,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                     isChecked: currentTime.contains(range),
                     onclick: () async {
                       updateGroupValue(range);
-                      await model.setTime(schedule: currentTime);
+                      await model.setTime(schedule: currentTime, compareToRemoteData: true);
                     },
                   );
                 }).toList(),

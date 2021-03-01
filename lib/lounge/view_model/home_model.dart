@@ -5,9 +5,7 @@ import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class BuildingDataModel extends ViewStateListModel {
   BuildingDataModel(this.scheduleModel) {
-    this.scheduleModel.addListener(() {
-      refresh();
-    });
+    scheduleModel.addListener(refresh);
   }
 
   final SRTimeModel scheduleModel;
