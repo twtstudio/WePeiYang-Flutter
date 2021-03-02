@@ -236,12 +236,13 @@ class _DetailPageState extends State<DetailPage> {
                             () {
                               _textEditingController.text = '';
                               _onRefresh();
+                              _sendCommentLock = false;
                             },
                           );
                         } else {
                           ToastProvider.error('评论不能为空');
+                          _sendCommentLock = false;
                         }
-                        _sendCommentLock = false;
                       }
                     },
                   ),

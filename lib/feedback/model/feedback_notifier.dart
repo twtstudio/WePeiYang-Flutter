@@ -136,7 +136,6 @@ class FeedbackNotifier with ChangeNotifier {
       await HttpUtil().get('tag/get/all', {
         'token': _token,
       }).then((value) {
-        print(json.encode(value));
         if (0 != value['data'][0]['children'].length) {
           for (Map<String, dynamic> json in value['data'][0]['children']) {
             _tagList.add(Tag.fromJson(json));
@@ -162,7 +161,7 @@ class FeedbackNotifier with ChangeNotifier {
           'page': '$page',
         },
       ).then((value) {
-        _homeTotalPage = value['data']['total'];
+        _homeTotalPage = value['data']['last_page'];
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));
         }

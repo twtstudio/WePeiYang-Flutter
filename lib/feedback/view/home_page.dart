@@ -32,14 +32,23 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   }
 
   _onLoading() {
+    print('current: $currentPage');
+    print('total: $totalPage');
     if (currentPage != totalPage) {
       currentPage++;
       Provider.of<FeedbackNotifier>(context, listen: false)
           .getPosts('', currentPage);
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+      print(Provider.of<FeedbackNotifier>(context, listen: false)
+          .homePostList
+          .last
+          .title);
       _refreshController.loadComplete();
     } else {
+      print(Provider.of<FeedbackNotifier>(context, listen: false)
+          .homePostList
+          .last);
       _refreshController.loadComplete();
     }
   }
@@ -76,7 +85,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
               enablePullDown: true,
               onRefresh: _onRefresh,
               footer: ClassicFooter(),
-              enablePullUp: true,
+              enablePullUp: currentPage != totalPage,
               onLoading: _onLoading,
               child: CustomScrollView(
                 slivers: [
