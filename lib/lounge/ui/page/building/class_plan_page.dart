@@ -144,7 +144,8 @@ class ClassTableWidget extends StatelessWidget {
               )
             ],
           ),
-        )
+        ),
+        SizedBox(height: 10)
       ],
     );
   }
@@ -181,13 +182,13 @@ class CourseTabDisplayWidget extends StatelessWidget {
                     CourseTab(
                       tabHeight,
                       chosen,
-                      step * 2,
+                      step * 2 + 1,
                     ),
                     Container(height: cardStep),
                     CourseTab(
                       tabHeight,
                       chosen,
-                      step * 2 + 1,
+                      step * 2 + 2,
                     )
                   ],
                 ),
@@ -296,13 +297,13 @@ class CourseDisplayWidget extends StatelessWidget {
         builder: (_, model, __) => ListLoadSteps(
           model: model,
           successV: Builder(
-            builder:(_){
-              if(model.plan.isNotEmpty){
-                return  Stack(
+            builder: (_) {
+              if (model.plan.isNotEmpty) {
+                return Stack(
                   children: _generatePositioned(
                       context, singleCourseHeight, model.plan, dayCount),
                 );
-              }else {
+              } else {
                 return Container();
               }
             },

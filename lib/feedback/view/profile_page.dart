@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
@@ -17,14 +16,21 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
+enum _CurrentTab {
+  myPosts,
+  myFavorite,
+}
+
 class _ProfilePageState extends State<ProfilePage> {
+  _CurrentTab _currentTab = _CurrentTab.myPosts;
+
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
-    for (Post post in Provider.of<FeedbackNotifier>(context, listen: false)
-        .profilePostList) {
-      print(post.title);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false)
+          .clearProfilePostList();
+      Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+    });
     super.initState();
   }
 
@@ -36,7 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 350, color: ColorUtil.profileBackgroundColor),
+            Container(
+              height: 350,
+              child: Image.asset(
+                'assets/images/user_back.png',
+                fit: BoxFit.cover,
+              ),
+            ),
             Consumer<FeedbackNotifier>(
               builder: (context, notifier, widget) {
                 return CustomScrollView(
@@ -109,6 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               children: [
+                                // My posts tab.
                                 Expanded(
                                   child: InkWell(
                                     child: Column(
@@ -125,20 +138,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                               color: ColorUtil.lightTextColor),
                                         ),
                                         BlankSpace.height(5),
-                                        // TODO: Color should change dynamically.
                                         ClipOval(
                                           child: Container(
                                             width: 5,
                                             height: 5,
-                                            color: ColorUtil.mainColor,
+                                            color: _currentTab ==
+                                                    _CurrentTab.myPosts
+                                                ? ColorUtil.mainColor
+                                                : Colors.white,
                                           ),
                                         )
                                       ],
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                     ),
+                                    onTap: () {
+                                      if (_currentTab ==
+                                          _CurrentTab.myFavorite) {
+                                        notifier.clearProfilePostList();
+                                        _currentTab = _CurrentTab.myPosts;
+                                        notifier.getMyPosts();
+                                      }
+                                    },
                                   ),
                                 ),
+                                // My favorite posts tab.
                                 Expanded(
                                   child: InkWell(
                                     child: Column(
@@ -155,18 +179,27 @@ class _ProfilePageState extends State<ProfilePage> {
                                               color: ColorUtil.lightTextColor),
                                         ),
                                         BlankSpace.height(5),
-                                        // TODO: Color should change dynamically.
                                         ClipOval(
                                           child: Container(
                                             width: 5,
                                             height: 5,
-                                            color: Colors.white,
+                                            color: _currentTab ==
+                                                    _CurrentTab.myFavorite
+                                                ? ColorUtil.mainColor
+                                                : Colors.white,
                                           ),
                                         )
                                       ],
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                     ),
+                                    onTap: () {
+                                      if (_currentTab == _CurrentTab.myPosts) {
+                                        notifier.clearProfilePostList();
+                                        _currentTab = _CurrentTab.myFavorite;
+                                        notifier.getMyFavoritePosts();
+                                      }
+                                    },
                                   ),
                                 ),
                               ],
@@ -195,11 +228,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                   onLikePressed: () {
-                                    print('like!');
-                                    notifier.profilePostHitLike(
-                                        index,
-                                        notifier.profilePostList[index].id,
-                                        notifier.myUserId);
+                                    notifier.profilePostHitLike(index,
+                                        notifier.profilePostList[index].id);
                                   },
                                 )
                               : PostCard(
@@ -209,17 +239,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       FeedbackRouter.detail,
                                       arguments: DetailPageArgs(
-                                          notifier.profilePostList[index],
-                                          index,
-                                          PostOrigin.profile),
-                                    );
+                                        notifier.profilePostList[index],
+                                        index,
+                                        PostOrigin.profile,
+                                      ),
+                                    ).then((value) async {
+                                      print(value);
+                                      if (value == false) {
+                                        notifier.removeProfilePost(index);
+                                      }
+                                    });
                                   },
                                   onLikePressed: () {
-                                    print('like!');
-                                    notifier.profilePostHitLike(
-                                        index,
-                                        notifier.profilePostList[index].id,
-                                        notifier.myUserId);
+                                    notifier.profilePostHitLike(index,
+                                        notifier.profilePostList[index].id);
                                   },
                                 );
                         },

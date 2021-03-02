@@ -33,24 +33,24 @@ class _SearchResultPageState extends State<SearchResultPage> {
   int currentPage = 1, totalPage = 1;
 
   RefreshController _refreshController =
-      RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: false);
 
   _SearchResultPageState(this.keyword, this.tagId, this.title);
 
-  _onRefresh() async {
+  _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    await Provider.of<FeedbackNotifier>(context, listen: false)
+    Provider.of<FeedbackNotifier>(context, listen: false)
         .getPosts(tagId, currentPage, keyword: keyword);
     totalPage =
         Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     _refreshController.refreshCompleted();
   }
 
-  _onLoading() async {
+  _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      await Provider.of<FeedbackNotifier>(context, listen: false)
+      Provider.of<FeedbackNotifier>(context, listen: false)
           .getPosts(tagId, currentPage, keyword: keyword);
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
@@ -61,93 +61,110 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
 
   @override
+  void initState() {
+    currentPage = 1;
+    print(tagId);
+    print('init');
+    Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false)
+          .getPosts(tagId, currentPage, keyword: keyword);
+      totalPage =
+          Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorUtil.mainColor,
+    print('build!!!!!!!!!!!!');
+    print(tagId);
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, true);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorUtil.mainColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
+          title: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: ColorUtil.boldTextColor,
+            ),
+          ),
+          centerTitle: true,
+          elevation: 0,
+          primary: true,
+        ),
+        body: Consumer<FeedbackNotifier>(
+          builder: (BuildContext context, notifier, Widget child) {
+            return SmartRefresher(
+              controller: _refreshController,
+              header: ClassicHeader(),
+              enablePullDown: true,
+              onRefresh: _onRefresh,
+              footer: ClassicFooter(),
+              enablePullUp: true,
+              onLoading: _onLoading,
+              child: CustomScrollView(
+                slivers: [
+                  /// The list of posts.
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        print(notifier.homePostList[index].title);
+                        return notifier.homePostList[index].topImgUrl != '' &&
+                                notifier.homePostList[index].topImgUrl != null
+                            ? PostCard.image(
+                                notifier.homePostList[index],
+                                onContentPressed: () {
+                                  Navigator.pushNamed(
+                                      context, FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                          notifier.homePostList[index],
+                                          index,
+                                          PostOrigin.home));
+                                },
+                                onLikePressed: () {
+                                  notifier.homePostHitLike(
+                                      index, notifier.homePostList[index].id);
+                                },
+                              )
+                            : PostCard(
+                                notifier.homePostList[index],
+                                onContentPressed: () {
+                                  Navigator.pushNamed(
+                                      context, FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                          notifier.homePostList[index],
+                                          index,
+                                          PostOrigin.home));
+                                },
+                                onLikePressed: () {
+                                  notifier.homePostHitLike(
+                                      index, notifier.homePostList[index].id);
+                                },
+                              );
+                      },
+                      childCount: notifier.homePostList.length,
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: ColorUtil.boldTextColor,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        primary: true,
-      ),
-      body: Consumer<FeedbackNotifier>(
-        builder: (BuildContext context, notifier, Widget child) {
-          return SmartRefresher(
-            controller: _refreshController,
-            header: ClassicHeader(),
-            enablePullDown: true,
-            onRefresh: _onRefresh,
-            footer: ClassicFooter(),
-            enablePullUp: true,
-            onLoading: _onLoading,
-            child: CustomScrollView(
-              slivers: [
-                /// The list of posts.
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      print(index);
-                      return notifier.homePostList[index].topImgUrl != '' &&
-                              notifier.homePostList[index].topImgUrl != null
-                          ? PostCard.image(
-                              notifier.homePostList[index],
-                              onContentPressed: () {
-                                Navigator.pushNamed(
-                                    context, FeedbackRouter.detail,
-                                    arguments: DetailPageArgs(
-                                        notifier.homePostList[index],
-                                        index,
-                                        PostOrigin.home));
-                              },
-                              onLikePressed: () {
-                                print('like!');
-                                notifier.homePostHitLike(
-                                    index,
-                                    notifier.homePostList[index].id,
-                                    notifier.myUserId);
-                              },
-                            )
-                          : PostCard(
-                              notifier.homePostList[index],
-                              onContentPressed: () {
-                                Navigator.pushNamed(
-                                    context, FeedbackRouter.detail,
-                                    arguments: DetailPageArgs(
-                                        notifier.homePostList[index],
-                                        index,
-                                        PostOrigin.home));
-                              },
-                              onLikePressed: () {
-                                print('like!');
-                                notifier.homePostHitLike(
-                                    index,
-                                    notifier.homePostList[index].id,
-                                    notifier.myUserId);
-                              },
-                            );
-                    },
-                    childCount: notifier.homePostList.length,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }

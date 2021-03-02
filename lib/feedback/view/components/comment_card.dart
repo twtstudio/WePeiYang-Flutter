@@ -100,12 +100,15 @@ class _CommentCardState extends State<CommentCard> {
                   ),
                 ),
               if (!official) BlankSpace.width(5),
-              // TODO: Long user name may cause overflow.
               if (!official)
-                Text(
-                  comment.userName,
-                  style:
-                      TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
+                Expanded(
+                  child: Text(
+                    comment.userName,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(
+                        fontSize: 14, color: ColorUtil.lightTextColor),
+                  ),
                 ),
               Spacer(),
               Text(

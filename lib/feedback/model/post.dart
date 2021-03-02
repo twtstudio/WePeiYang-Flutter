@@ -18,6 +18,7 @@ class Post with ChangeNotifier {
   String topImgUrl;
   List<TagOfPost> tags;
   bool isLiked;
+  bool isFavorite;
   bool isOwner;
 
   Post(
@@ -29,16 +30,17 @@ class Post with ChangeNotifier {
       this.isSolved,
       this.isCommentForbidden,
       this.likeCount,
-      this.createTime,
-      this.updatedTime,
-      this.userName,
-      this.commentCount,
-      this.imgUrlList,
-      this.thumbImgUrlList,
-      this.topImgUrl,
-      this.tags,
-      this.isLiked,
-      this.isOwner});
+    this.createTime,
+    this.updatedTime,
+    this.userName,
+    this.commentCount,
+    this.imgUrlList,
+    this.thumbImgUrlList,
+    this.topImgUrl,
+    this.tags,
+    this.isLiked,
+    this.isFavorite,
+    this.isOwner});
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -73,6 +75,7 @@ class Post with ChangeNotifier {
       });
     }
     isLiked = json['is_liked'];
+    isFavorite = json['is_favorite'];
     isOwner = json['is_owner'];
   }
 

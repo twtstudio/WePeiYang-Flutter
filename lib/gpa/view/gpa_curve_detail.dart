@@ -34,7 +34,7 @@ class CurveText extends StatelessWidget {
       child: Text("${notifier.typeName()}曲线",
           style: TextStyle(
               fontSize: 17.0,
-              color: Color.fromRGBO(53, 59, 84, 1.0),
+              color: Color.fromRGBO(100, 103, 122, 1.0),
               fontWeight: FontWeight.bold)));
 }
 
@@ -45,10 +45,10 @@ class GPAIntro extends StatelessWidget {
   GPAIntro(this.notifier);
 
   static const textStyle = TextStyle(
-      color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 13.0);
+      color: Color(0xffcdcdd3), fontWeight: FontWeight.bold, fontSize: 13.0);
 
   static const numStyle = TextStyle(
-      color: Color.fromRGBO(53, 59, 84, 1.0),
+      color: Color(0xff686c7e),
       fontWeight: FontWeight.bold,
       fontSize: 25.0);
 

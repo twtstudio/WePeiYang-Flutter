@@ -22,8 +22,10 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false).initSearchHistory();
-    _homePostChanged = false;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false).initSearchHistory();
+      _homePostChanged = false;
+    });
     super.initState();
   }
 
@@ -89,11 +91,14 @@ class _SearchPageState extends State<SearchPage> {
                                     '',
                                     '搜索结果',
                                   ),
-                                );
+                                ).then((_) {
+                                  Navigator.pop(context, _homePostChanged);
+                                });
                               } else {
                                 ToastProvider.error('关键词不能为空');
                               }
                             },
+                            textInputAction: TextInputAction.search,
                           ),
                         ),
                       ),
@@ -145,9 +150,14 @@ class _SearchPageState extends State<SearchPage> {
                   style: titleTextStyle,
                 ),
                 InkWell(
+                  child: Image.asset(
+                    'lib/feedback/assets/img/trash_can.png',
+                    fit: BoxFit.cover,
+                    height: 18,
+                    width: 18,
+                  ),
                   onTap: showClearDialog,
-                  child: Icon(Icons.delete, size: 25),
-                )
+                ),
               ],
             )),
         SingleChildScrollView(
@@ -160,6 +170,8 @@ class _SearchPageState extends State<SearchPage> {
                       onTap: () {
                         _homePostChanged = true;
                         notifier.clearHomePostList();
+                        _controller.text = notifier.searchHistoryList[index];
+                        notifier.addSearchHistory(_controller.text);
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.searchResult,
@@ -168,9 +180,9 @@ class _SearchPageState extends State<SearchPage> {
                             '',
                             '搜索结果',
                           ),
-                        );
-                        _controller.text = notifier.searchHistoryList[index];
-                        notifier.addSearchHistory(_controller.text);
+                        ).then((_) {
+                          Navigator.pop(context, _homePostChanged);
+                        });
                       },
                       child: Container(
                         alignment: Alignment.centerLeft,
@@ -183,11 +195,15 @@ class _SearchPageState extends State<SearchPage> {
                               style: historyTextStyle,
                             ),
                             InkWell(
-                              onTap: () {}, //搜索历史记录,
+                              onTap: () {
+                                _controller.text =
+                                    notifier.searchHistoryList[index];
+                              }, //搜索历史记录,
                               child: Image.asset(
-                                'assets/images/arrow_up.png',
-                                height: 25,
-                                width: 25,
+                                'lib/feedback/assets/img/arrow_nw.png',
+                                fit: BoxFit.cover,
+                                height: 14,
+                                width: 14,
                               ),
                             )
                           ],
@@ -255,7 +271,9 @@ class _SearchPageState extends State<SearchPage> {
                               notifier.tagList[index].id.toString(),
                               '#${notifier.tagList[index].name}',
                             ),
-                          );
+                          ).then((_) {
+                            Navigator.pop(context, _homePostChanged);
+                          });
                         },
                       );
                     }),

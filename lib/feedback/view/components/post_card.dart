@@ -12,44 +12,51 @@ class PostCard extends StatefulWidget {
   bool enableImgList;
   GesturePressedCallback onContentPressed = () {};
   GesturePressedCallback onLikePressed = () {};
+  GesturePressedCallback onFavoritePressed = () {};
 
   @override
   State createState() {
     return _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-        onContentPressed: this.onContentPressed, onLikePressed: onLikePressed);
+        this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
   }
 
   /// Card without top image and content images.
   PostCard(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 
   /// Card with top image.
   PostCard.image(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 
   /// Card for DetailPage.
   PostCard.detail(post,
       {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
+    this.onFavoritePressed = onFavoritePressed;
   }
 }
 
@@ -59,9 +66,10 @@ class _PostCardState extends State<PostCard> {
   final bool enableImgList;
   final GesturePressedCallback onContentPressed;
   final GesturePressedCallback onLikePressed;
+  final GesturePressedCallback onFavoritePressed;
 
   _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-      {this.onContentPressed, this.onLikePressed});
+      this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
 
   @override
   Widget build(BuildContext context) {
@@ -100,28 +108,6 @@ class _PostCardState extends State<PostCard> {
                   ],
                 ),
                 BlankSpace.height(5),
-                // Avatar and user name when image list enabled.
-                if (enableImgList)
-                  Row(
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'assets/images/user_image.jpg',
-                          fit: BoxFit.cover,
-                          width: 20,
-                          height: 20,
-                        ),
-                      ),
-                      BlankSpace.width(5),
-                      // TODO: Long user name may cause overflow.
-                      Text(
-                        post.userName,
-                        style: TextStyle(
-                            fontSize: 14, color: ColorUtil.lightTextColor),
-                      ),
-                    ],
-                  ),
-                if (enableImgList) BlankSpace.height(5),
                 // Tag.
                 Row(
                   children: [
@@ -208,9 +194,6 @@ class _PostCardState extends State<PostCard> {
                     size: 16,
                     color: ColorUtil.lightTextColor,
                   ),
-                  onTap: () {
-                    // TODO: Add onCommentPressed here.
-                  },
                 ),
               ),
               BlankSpace.width(8),
@@ -245,35 +228,40 @@ class _PostCardState extends State<PostCard> {
                 onTap: onLikePressed,
               ),
               if (!enableImgList) Spacer(),
-              // Avatar and user name.
-              if (!enableImgList)
-                ClipOval(
-                  child: Image.asset(
-                    'assets/images/user_image.jpg',
-                    fit: BoxFit.cover,
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
               if (enableImgList) BlankSpace.width(16),
+              // Favorite.
               if (enableImgList)
                 ClipOval(
                   child: InkWell(
                     child: Icon(
-                      Icons.star_border,
+                      post.isFavorite ? Icons.star : Icons.star_border,
                       size: 16,
-                      color: ColorUtil.lightTextColor,
+                      color: post.isFavorite
+                          ? Colors.amber
+                          : ColorUtil.lightTextColor,
                     ),
-                    onTap: () {},
+                    onTap: onFavoritePressed,
                   ),
                 ),
-              if (!enableImgList) BlankSpace.width(5),
-              // TODO: Long user name may cause overflow.
               if (!enableImgList)
                 Text(
-                  post.userName,
-                  style:
-                      TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
+                  post.createTime.substring(0, 10) +
+                      '  ' +
+                      (post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .startsWith('0')
+                          ? post.createTime
+                              .substring(12)
+                              .split('.')[0]
+                              .substring(0, 4)
+                          : post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .substring(0, 5)),
+                  style: TextStyle(
+                    color: ColorUtil.lightTextColor,
+                  ),
                 ),
             ],
           ),

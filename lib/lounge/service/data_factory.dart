@@ -1,3 +1,5 @@
+import 'package:wei_pei_yang_demo/lounge/model/area.dart';
+import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
@@ -70,7 +72,7 @@ class DataFactory {
     Map<String, String> orderedQueries = {};
 
     for (var q in queries) {
-      print('q: ' + q + '=' + RegExp(r'^[1-9][0-9]$').hasMatch(q).toString());
+      // print('q: ' + q + '=' + RegExp(r'^[1-9][0-9]$').hasMatch(q).toString());
       if (RegExp(r'[A-Za-z]').hasMatch(q)) {
         if (orderedQueries['aName'] == null) {
           orderedQueries['aName'] = q.toUpperCase();
@@ -98,8 +100,8 @@ class DataFactory {
       }
     }
 
-    print('queries : ' + queries.toString());
-    print('orderedQueries : ' + orderedQueries.toString());
+    // print('queries : ' + queries.toString());
+    // print('orderedQueries : ' + orderedQueries.toString());
 
     return orderedQueries;
   }
@@ -129,15 +131,54 @@ class DataFactory {
 
   static ResultType getResultType(ResultEntry first) {
     // var bExist = first.building != null ? true : false;
-    var aExist = first.area != null ;
-    var cExist = first.room != null ;
+    var aExist = first.area != null;
+    var cExist = first.room != null;
 
-    if(cExist){
+    if (cExist) {
       return ResultType.room;
-    }else if (aExist){
+    } else if (aExist) {
       return ResultType.area;
-    }else {
+    } else {
       return ResultType.building;
     }
+  }
+
+  static List<Building> formatBuildings(dynamic data) {
+    List<Building> remoteBuildingList =
+        data.map<Building>((b) => Building.fromMap(b, newApi: false)).toList();
+    print('111111111111111111!!!!!!!!!!!!!!!!!! ${remoteBuildingList.length}');
+    Map<String, List<Building>> reworkedBuildings = {};
+    List<Building> resultBuildingList = remoteBuildingList
+        .map((b) {
+          var format = DataFactory.formatQuery(b.name);
+          var building = Building(
+              id: b.id,
+              name: format['bName'],
+              campus: b.campus,
+              areas: b.areas);
+          if (!format.containsKey('aName') && !format.containsKey('cName')) {
+            return building;
+          } else if (format.containsKey('aName') &&
+              !format.containsKey('cName')) {
+            if (!reworkedBuildings.containsKey(format['bName']))
+              reworkedBuildings[format['bName']] = [];
+            reworkedBuildings[format['bName']].add(building);
+          }
+        })
+        .where((e) => e != null)
+        .toList();
+    reworkedBuildings.forEach((key, value) {
+      Map<String, Area> areas = {};
+      value.forEach((b) {
+        areas.addAll(b.areas);
+      });
+      resultBuildingList.add(Building(
+          id: value.first.id,
+          name: value.first.name,
+          campus: value.first.campus,
+          areas: areas));
+    });
+    resultBuildingList.sort((a, b) => a.name.compareTo(b.name));
+    return resultBuildingList;
   }
 }

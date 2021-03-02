@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -21,7 +22,8 @@ class FeedbackNotifier with ChangeNotifier {
   List<String> _searchHistoryList = List();
   int _homeTotalPage = 0;
   bool _hitLikeLock = false;
-  int _myUserId;
+  bool _hitFavoriteLock = false;
+  String _token;
 
   List<Tag> get tagList => _tagList;
 
@@ -37,11 +39,26 @@ class FeedbackNotifier with ChangeNotifier {
 
   int get homeTotalPage => _homeTotalPage;
 
-  int get myUserId => _myUserId;
+  String get token => _token;
 
-  getMyUserId() async {
-    // TODO: Fake user id.
-    _myUserId = 1;
+  Future getToken() async {
+    final _prefs = await SharedPreferences.getInstance();
+    if (_prefs.getString('feedback_token') == null) {
+      await HttpUtil()
+          .post(
+        'login',
+        FormData.fromMap({
+          'username': CommonPreferences().account.value,
+          'password': CommonPreferences().password.value,
+        }),
+      )
+          .then((value) {
+        _prefs.setString('feedback_token', value['data']['token']);
+        _token = value['data']['token'];
+      });
+    } else {
+      _token = _prefs.getString('feedback_token');
+    }
     notifyListeners();
   }
 
@@ -53,6 +70,7 @@ class FeedbackNotifier with ChangeNotifier {
     } else {
       _searchHistoryList = _prefs.getStringList('feedback_search_history');
     }
+    notifyListeners();
   }
 
   clearTagList() {
@@ -65,6 +83,11 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  clearProfilePostList() {
+    _profilePostList.clear();
+    notifyListeners();
+  }
+
   clearCommentList() {
     _officialCommentList.clear();
     _commentList.clear();
@@ -73,6 +96,16 @@ class FeedbackNotifier with ChangeNotifier {
   updateRating(rating, index) {
     _officialCommentList[index].rating = rating;
     notifyListeners();
+  }
+
+  initHomePostList() async {
+    await getToken().then((_) {
+      clearTagList();
+      return getTags();
+    }).then((_) {
+      clearHomePostList();
+      return getPosts('', '1');
+    });
   }
 
   addSearchHistory(content) async {
@@ -92,10 +125,17 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  removeProfilePost(index) {
+    _profilePostList.removeAt(index);
+    notifyListeners();
+  }
+
   /// Get tags.
   Future getTags() async {
     try {
-      await HttpUtil().get('tag/get/all').then((value) {
+      await HttpUtil().get('tag/get/all', {
+        'token': _token,
+      }).then((value) {
         if (0 != value['data'][0]['children'].length) {
           for (Map<String, dynamic> json in value['data'][0]['children']) {
             _tagList.add(Tag.fromJson(json));
@@ -117,18 +157,14 @@ class FeedbackNotifier with ChangeNotifier {
           'searchString': keyword ?? '',
           'tagList': '[$tagId]',
           'limits': '20',
-          'user_id': _myUserId,
+          'token': _token,
           'page': '$page',
         },
       ).then((value) {
-        _homeTotalPage = value['data']['total'];
+        print(json.encode(value));
+        _homeTotalPage = value['data']['last_page'];
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));
-        }
-        int i = 0;
-        for (Post post in _homePostList) {
-          print('${post.title}\t\t${post.id}');
-          i++;
         }
         notifyListeners();
       });
@@ -144,13 +180,30 @@ class FeedbackNotifier with ChangeNotifier {
         'question/get/myQuestion',
         {
           'limits': 0,
-          'user_id': _myUserId,
+          'token': _token,
           'page': 1,
         },
       ).then((value) {
-        print(json.encode(value));
         for (Map<String, dynamic> map in value['data']) {
-          print(json.encode(map));
+          _profilePostList.add(Post.fromJson(map));
+        }
+        notifyListeners();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  /// Get my favorite posts.
+  Future getMyFavoritePosts() async {
+    try {
+      await HttpUtil().get(
+        'favorite/get/all',
+        {
+          'token': _token,
+        },
+      ).then((value) {
+        for (Map<String, dynamic> map in value['data']) {
           _profilePostList.add(Post.fromJson(map));
         }
         notifyListeners();
@@ -161,13 +214,13 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Get official comments.
-  Future getOfficialComments(id, userId) async {
+  Future getOfficialComments(id) async {
     try {
       await HttpUtil().get(
         'question/get/answer',
         {
           'question_id': '$id',
-          'user_id': '$userId',
+          'token': _token,
         },
       ).then((value) {
         for (Map<String, dynamic> comment in value['data']) {
@@ -181,13 +234,13 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Get user comments.
-  Future getComments(id, userId) async {
+  Future getComments(id) async {
     try {
       await HttpUtil().get(
         'question/get/commit',
         {
           'question_id': '$id',
-          'user_id': '$userId',
+          'token': _token,
         },
       ).then((value) {
         print('success!');
@@ -202,7 +255,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Like or dislike the post.
-  Future homePostHitLike(index, id, userId) async {
+  Future homePostHitLike(index, id) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       try {
@@ -211,7 +264,7 @@ class FeedbackNotifier with ChangeNotifier {
           _homePostList[index].isLiked ? 'question/dislike' : 'question/like',
           FormData.fromMap({
             'id': '$id',
-            'user_id': '$userId',
+            'token': _token,
           }),
         )
             .then(
@@ -238,8 +291,45 @@ class FeedbackNotifier with ChangeNotifier {
     }
   }
 
+  /// Add or remove the post from my favorite posts.
+  Future homePostHitFavorite(index) async {
+    if (!_hitFavoriteLock) {
+      _hitFavoriteLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          _homePostList[index].isFavorite
+              ? 'question/unfavorite'
+              : 'question/favorite',
+          FormData.fromMap({
+            'question_id': _homePostList[index].id,
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
+              if (_homePostList[index].isFavorite) {
+                _homePostList[index].isFavorite = false;
+              } else {
+                _homePostList[index].isFavorite = true;
+              }
+              notifyListeners();
+            } else {
+              ToastProvider.error('收藏失败');
+              print(json.encode(value));
+            }
+            _hitFavoriteLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   /// Like or dislike the post.
-  Future profilePostHitLike(index, id, userId) async {
+  Future profilePostHitLike(index, id) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       try {
@@ -250,12 +340,11 @@ class FeedbackNotifier with ChangeNotifier {
               : 'question/like',
           FormData.fromMap({
             'id': '$id',
-            'user_id': '$userId',
+            'token': _token,
           }),
         )
             .then(
           (value) {
-            print('like!');
             if (value['ErrorCode'] == 0) {
               if (_profilePostList[index].isLiked) {
                 _profilePostList[index].likeCount--;
@@ -277,8 +366,44 @@ class FeedbackNotifier with ChangeNotifier {
     }
   }
 
+  /// Add or remove the post from my favorite posts.
+  Future profilePostHitFavorite(index) async {
+    if (!_hitFavoriteLock) {
+      _hitFavoriteLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          _profilePostList[index].isFavorite
+              ? 'question/unfavorite'
+              : 'question/favorite',
+          FormData.fromMap({
+            'question_id': _profilePostList[index].id,
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
+              if (_profilePostList[index].isFavorite) {
+                _profilePostList[index].isFavorite = false;
+              } else {
+                _profilePostList[index].isFavorite = true;
+              }
+              notifyListeners();
+            } else {
+              ToastProvider.error('收藏失败');
+            }
+            _hitFavoriteLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   /// Like or dislike the comment.
-  Future commentHitLike(index, id, userId) async {
+  Future commentHitLike(index, id) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       await HttpUtil()
@@ -286,11 +411,10 @@ class FeedbackNotifier with ChangeNotifier {
         _commentList[index].isLiked ? 'commit/dislike' : 'commit/like',
         FormData.fromMap({
           'id': '$id',
-          'user_id': '$userId',
+          'token': _token,
         }),
       )
           .then((value) {
-        print('like!');
         if (value['ErrorCode'] == 0) {
           if (_commentList[index].isLiked) {
             _commentList[index].likeCount--;
@@ -309,7 +433,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Like or dislike the comment.
-  Future officialCommentHitLike(index, id, userId) async {
+  Future officialCommentHitLike(index, id) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       await HttpUtil()
@@ -317,11 +441,10 @@ class FeedbackNotifier with ChangeNotifier {
         _officialCommentList[index].isLiked ? 'answer/dislike' : 'answer/like',
         FormData.fromMap({
           'id': '$id',
-          'user_id': '$userId',
+          'token': _token,
         }),
       )
           .then((value) {
-        print('like!');
         if (value['ErrorCode'] == 0) {
           if (_officialCommentList[index].isLiked) {
             _officialCommentList[index].likeCount--;
@@ -340,13 +463,13 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Send comment.
-  Future sendComment(content, id, userId, onSuccess) async {
+  Future sendComment(content, id, onSuccess) async {
     try {
       await HttpUtil()
           .post(
         'commit/add/question',
         FormData.fromMap({
-          'user_id': userId,
+          'token': _token,
           'question_id': id,
           'contain': content,
         }),
@@ -372,7 +495,7 @@ class FeedbackNotifier with ChangeNotifier {
           .post(
         'image/add',
         FormData.fromMap({
-          'user_id': 1,
+          'token': _token,
           'newImg': MultipartFile.fromBytes(
             byteData.buffer.asUint8List(),
             filename: 'p${id}i$index.jpg',
@@ -390,13 +513,13 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Send post.
-  Future sendPost(title, content, tagId, userId, List<Asset> imgList) async {
+  Future sendPost(title, content, tagId, List<Asset> imgList) async {
     try {
       await HttpUtil()
           .post(
         'question/add',
         FormData.fromMap({
-          'user_id': userId,
+          'token': _token,
           'name': title,
           'description': content,
           'tagList': '[$tagId]',
@@ -416,13 +539,13 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Rate the official comment.
-  Future rate(rating, id, userId, index) async {
+  Future rate(rating, id, index) async {
     try {
       await HttpUtil()
           .post(
         'answer/commit',
         FormData.fromMap({
-          'user_id': userId,
+          'token': _token,
           'answer_id': id,
           'score': rating,
           'commit': '',
