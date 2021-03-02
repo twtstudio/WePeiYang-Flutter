@@ -44,6 +44,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
     GlobalModel().increase();
     getExecAndSession(onSuccess: (map) {
       params = map;
+      // TODO initState中的setState
       setState(() {
         imageWidget = GestureDetector(
           // TODO 点击图片刷新index

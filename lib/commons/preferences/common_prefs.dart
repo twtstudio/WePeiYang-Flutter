@@ -59,6 +59,7 @@ class CommonPreferences {
   var otherWeekSchedule = PrefsBean<bool>("otherWeekSchedule"); // 课表显示非本周课程
   var remindBeforeStart = PrefsBean<bool>("remindBeforeStart"); // 开课前提醒
   var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
+  var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
 
   List<String> getCookies() {
     var jSessionId = 'J' + gSessionId.value?.substring(1);

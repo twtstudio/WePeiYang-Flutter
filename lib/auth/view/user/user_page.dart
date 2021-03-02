@@ -3,6 +3,7 @@ import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 
 class UserPage extends StatelessWidget {
   @override
@@ -74,7 +75,8 @@ class UserPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         // TODO 关于twt页面
-                        ToastProvider.error('还没做呢，悲');
+                        // ToastProvider.error('还没做呢，悲');
+                        NotifyProvider.setNotification("哈哈哈要上课了");
                       },
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(9),
