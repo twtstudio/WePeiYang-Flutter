@@ -30,7 +30,9 @@ class _ProviderWidgetState<T extends ChangeNotifier>
   @override
   void initState() {
     model = widget.model;
-    widget.onModelReady?.call(model);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onModelReady?.call(model);
+    });
     super.initState();
   }
 

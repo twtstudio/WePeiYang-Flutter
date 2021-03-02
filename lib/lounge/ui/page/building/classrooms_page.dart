@@ -51,9 +51,7 @@ class BuildingFloors extends StatelessWidget {
     return ProviderWidget<ClassroomsDataModel>(
       model: ClassroomsDataModel(
           id, area, Provider.of<SRTimeModel>(context, listen: false)),
-      onModelReady: (model) {
-        model.initData();
-      },
+      onModelReady: (model) => model.initData(),
       builder: (_, model, __) => ListLoadSteps(
         model: model,
         successV: Padding(
@@ -93,9 +91,9 @@ class _PathTitle extends StatelessWidget {
           ),
           SizedBox(width: 7),
           Text(
-            area.id != null
-                ? area.building + "教学楼" + area.id
-                : area.building + "教学楼",
+            area.id != '-1'
+                ? area.building + '教学楼' + area.id + '区'
+                : area.building + '教学楼',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
@@ -215,7 +213,9 @@ class _RoomItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                classroom.name,
+                classroom.aId == '-1'
+                    ? classroom.name
+                    : classroom.aId + classroom.name,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xff62677b),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
@@ -6,27 +7,34 @@ import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class ClassroomsDataModel extends ViewStateListModel {
-  ClassroomsDataModel._(
-      this.id, this.area, this.scheduleModel, this.classPlan, this.floors) {
+  ClassroomsDataModel(this.id, this.area, this.scheduleModel) {
     scheduleModel.addListener(refresh);
   }
 
-  factory ClassroomsDataModel(String id, Area area, SRTimeModel srTimeModel) {
-    final Map<String, Map<String, String>> classPlan = {};
-    final Map<String, List<Classroom>> floors = {};
+  final SRTimeModel scheduleModel;
+  final Area area;
+  final String id;
+  final Map<String, Map<String, String>> classPlan = {};
+  final Map<String, List<Classroom>> floors = {};
+
+  int get currentDay => scheduleModel.dateTime.weekday;
+
+  List<ClassTime> get classTime => scheduleModel.classTime;
+
+  @override
+  initData() {
+    setBusy();
+    Map<String, List<Classroom>> f = {};
     for (var c in area.classrooms.values) {
       var floor = c.name[0];
-      var room = Classroom()
-        ..name = area.id == '-1' ? c.name : area.id + c.name
-        ..capacity = c.capacity
-        ..id = c.id;
-      if (floors.containsKey(floor)) {
+      var room = c..aId = area.id;
+      if (f.containsKey(floor)) {
         var list = List<Classroom>()
-          ..addAll(floors[floor])
+          ..addAll(f[floor])
           ..add(room);
-        floors[floor] = list;
+        f[floor] = list;
       } else {
-        floors[floor] = [room];
+        f[floor] = [room];
       }
       // print(c.toJson());
       // print(floors);
@@ -36,22 +44,13 @@ class ClassroomsDataModel extends ViewStateListModel {
         classPlan[c.id] = {};
       }
     }
-    return ClassroomsDataModel._(id, area, srTimeModel, classPlan, floors);
+    floors.addAll(f.sortByFloor);
+    super.initData();
   }
-
-  final SRTimeModel scheduleModel;
-  final Area area;
-
-  final String id;
-  final Map<String, Map<String, String>> classPlan;
-  final Map<String, List<Classroom>> floors;
-
-  int get currentDay => scheduleModel.dateTime.weekday;
-
-  List<ClassTime> get classTime => scheduleModel.classTime;
 
   @override
   Future<List> loadData() async {
+    if (!kReleaseMode) await Future.delayed(Duration(seconds: 2));
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 
@@ -71,5 +70,17 @@ class ClassroomsDataModel extends ViewStateListModel {
     }
 
     return _plan.keys.toList();
+  }
+}
+
+extension MapExtension on Map {
+  Map<String, List<Classroom>> get sortByFloor {
+    List<String> list = keys.toList();
+    list.sort((a, b) => a.compareTo(b));
+    return Map.fromEntries(list.map((e) {
+      List<Classroom> cList = this[e];
+      cList.sort((a, b) => a.name.compareTo(b.name));
+      return MapEntry(e, cList);
+    }));
   }
 }

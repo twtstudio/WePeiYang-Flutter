@@ -5,15 +5,15 @@ import 'view_state_model.dart';
 /// 基于
 abstract class ViewStateListModel<T> extends ViewStateModel {
   /// 页面数据
-  List<T> list = [];
+  final List<T> list = [];
 
   /// 第一次进入页面loading skeleton
   initData() async {
-    await refresh(init: true);
+    await refresh();
   }
 
   // 下拉刷新
-  refresh({bool init = false}) async {
+  refresh() async {
     try {
       setBusy();
       List<T> data = await loadData();
@@ -27,7 +27,7 @@ abstract class ViewStateListModel<T> extends ViewStateModel {
         setIdle();
       }
     } catch (e, s) {
-      if (init) list.clear();
+      list.clear();
       setError(e, s);
     }
   }

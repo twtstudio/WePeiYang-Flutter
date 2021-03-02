@@ -78,6 +78,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
+        // TODO: 这里有bug，可能导致收藏列表崩溃
         ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
         ChangeNotifierProvider(create: (context) => SRFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),

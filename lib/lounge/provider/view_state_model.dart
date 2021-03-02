@@ -52,7 +52,7 @@ class ViewStateModel with ChangeNotifier {
   }
 
   void setBusy() {
-    viewState = ViewState.busy;
+    if (viewState != ViewState.busy) viewState = ViewState.busy;
   }
 
   void setEmpty() {

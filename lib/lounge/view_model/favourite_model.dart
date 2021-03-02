@@ -21,7 +21,7 @@ class SRFavouriteModel extends ChangeNotifier {
     var localData = await instance.getFavourList();
 
     if (init) {
-      List<Classroom> remoteData = await StudyRoomRepository.favouriteList();
+      List<Classroom> remoteData = await StudyRoomRepository.favouriteList;
       List<String> remoteIds = remoteData.map((e) => e.id).toList();
 
       // 添加新的收藏到本地

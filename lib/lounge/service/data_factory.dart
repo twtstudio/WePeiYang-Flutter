@@ -141,10 +141,10 @@ class DataFactory {
   }
 
   static String getTitle(HistoryEntry h) {
-    if (h.aId == '') {
-      return '${h.bName} ${h.cName}';
+    if (h.aId == '-1') {
+      return '${h.bName}教 ${h.cName}';
     } else {
-      return '${h.bName} ${h.aId}区 ${h.cName}';
+      return '${h.bName}教 ${h.aId}区 ${h.cName}';
     }
   }
 

@@ -35,11 +35,8 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     srTimeModel = Provider.of<SRTimeModel>(context, listen: false);
     return ProviderWidget<BuildingDataModel>(
-      model:
-          BuildingDataModel(srTimeModel),
-      onModelReady: (homeModel) {
-        homeModel.initData();
-      },
+      model: BuildingDataModel(srTimeModel),
+      onModelReady: (homeModel) => homeModel.setBusy(),
       builder: (_, model, __) {
         return StudyRoomPage(
           body: ListView(
