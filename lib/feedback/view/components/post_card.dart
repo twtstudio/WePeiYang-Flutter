@@ -108,32 +108,6 @@ class _PostCardState extends State<PostCard> {
                   ],
                 ),
                 BlankSpace.height(5),
-                // Avatar and user name when image list enabled.
-                if (enableImgList)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ClipOval(
-                        child: Image.asset(
-                          'assets/images/user_image.jpg',
-                          fit: BoxFit.cover,
-                          width: 20,
-                          height: 20,
-                        ),
-                      ),
-                      BlankSpace.width(5),
-                      Expanded(
-                        child: Text(
-                          post.userName,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                              fontSize: 14, color: ColorUtil.lightTextColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                if (enableImgList) BlankSpace.height(5),
                 // Tag.
                 Row(
                   children: [
@@ -254,16 +228,6 @@ class _PostCardState extends State<PostCard> {
                 onTap: onLikePressed,
               ),
               if (!enableImgList) Spacer(),
-              // Avatar and user name.
-              if (!enableImgList)
-                ClipOval(
-                  child: Image.asset(
-                    'assets/images/user_image.jpg',
-                    fit: BoxFit.cover,
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
               if (enableImgList) BlankSpace.width(16),
               // Favorite.
               if (enableImgList)
@@ -279,15 +243,25 @@ class _PostCardState extends State<PostCard> {
                     onTap: onFavoritePressed,
                   ),
                 ),
-              if (!enableImgList) BlankSpace.width(5),
-              // TODO: Long user name may cause overflow.
               if (!enableImgList)
                 Text(
-                  post.userName,
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                  style:
-                      TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
+                  post.createTime.substring(0, 10) +
+                      '  ' +
+                      (post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .startsWith('0')
+                          ? post.createTime
+                              .substring(12)
+                              .split('.')[0]
+                              .substring(0, 4)
+                          : post.createTime
+                              .substring(11)
+                              .split('.')[0]
+                              .substring(0, 5)),
+                  style: TextStyle(
+                    color: ColorUtil.lightTextColor,
+                  ),
                 ),
             ],
           ),

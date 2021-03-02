@@ -137,9 +137,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                             ),
                             IconButton(
                               color: ColorUtil.mainColor,
-                              icon: Icon(
-                                Icons.person_outlined,
-                              ),
+                              icon: Image.asset(
+                                  'lib/feedback/assets/img/profile.png'),
                               onPressed: () {
                                 Navigator.pushNamed(
                                   context,

@@ -161,6 +161,7 @@ class FeedbackNotifier with ChangeNotifier {
           'page': '$page',
         },
       ).then((value) {
+        print(json.encode(value));
         _homeTotalPage = value['data']['last_page'];
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));

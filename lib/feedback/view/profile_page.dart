@@ -42,7 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 350, color: ColorUtil.profileBackgroundColor),
+            Container(
+              height: 350,
+              child: Image.asset(
+                'assets/images/user_back.png',
+                fit: BoxFit.cover,
+              ),
+            ),
             Consumer<FeedbackNotifier>(
               builder: (context, notifier, widget) {
                 return CustomScrollView(
@@ -75,11 +81,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.pushNamed(context, '/user_info'),
                           child: ClipOval(
                               child: Image.asset(
-                                'assets/images/user_image.jpg',
-                                fit: BoxFit.cover,
-                                width: 90,
-                                height: 90,
-                              )),
+                            'assets/images/user_image.jpg',
+                            fit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                          )),
                         ),
                       ),
                     ),
@@ -216,20 +222,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       FeedbackRouter.detail,
                                       arguments: DetailPageArgs(
-                                    notifier.profilePostList[index],
-                                    index,
-                                    PostOrigin.profile),
-                              );
-                            },
-                            onLikePressed: () {
+                                          notifier.profilePostList[index],
+                                          index,
+                                          PostOrigin.profile),
+                                    );
+                                  },
+                                  onLikePressed: () {
                                     notifier.profilePostHitLike(index,
                                         notifier.profilePostList[index].id);
                                   },
-                          )
+                                )
                               : PostCard(
-                            notifier.profilePostList[index],
-                            onContentPressed: () {
-                              Navigator.pushNamed(
+                                  notifier.profilePostList[index],
+                                  onContentPressed: () {
+                                    Navigator.pushNamed(
                                       context,
                                       FeedbackRouter.detail,
                                       arguments: DetailPageArgs(
@@ -244,11 +250,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       }
                                     });
                                   },
-                            onLikePressed: () {
+                                  onLikePressed: () {
                                     notifier.profilePostHitLike(index,
                                         notifier.profilePostList[index].id);
                                   },
-                          );
+                                );
                         },
                         childCount: notifier.profilePostList.length,
                       ),
