@@ -1,5 +1,5 @@
-import 'package:wei_pei_yang_demo/lounge/provider/view_state.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
+import 'package:wei_pei_yang_demo/lounge/model/building.dart';
+import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
@@ -23,33 +23,21 @@ class BuildingDataModel extends ViewStateListModel {
 
   @override
   refresh() async {
-    // TODO: implement refresh
-    try {
-      setBusy();
-      List data = await loadData();
-      if (scheduleModel.state == ViewState.error) {
-        list.clear();
-        setError(Exception('refreshDataError'), null);
-      } else if (data.isEmpty) {
-        list.clear();
-        setEmpty();
-      } else {
-        await onCompleted(data);
-        list.clear();
-        list.addAll(data);
-        setIdle();
-      }
-    } catch (e, s) {
-      list.clear();
-      setError(e, s);
+    setBusy();
+    if (scheduleModel.state == ViewState.error) {
+      setError(Exception('refresh data error when change date'), null);
+    } else if (scheduleModel.state == ViewState.idle) {
+      super.refresh();
     }
   }
 
   @override
   Future<List> loadData() async {
-    await Future.delayed(Duration(seconds: 1));
-    return await HiveManager.instance.baseBuildingDataFromDisk
+    List<Building> list = await HiveManager.instance.baseBuildingDataFromDisk
         .where((building) => building.campus == campus.id)
         .toList();
+    list.sort((a, b) => a.name.compareTo(b.name));
+    print(list.map((e) => e.name).toList());
+    return list;
   }
 }

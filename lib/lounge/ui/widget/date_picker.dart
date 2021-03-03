@@ -174,7 +174,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
               }),
               onDaySelected: (date, events, holidays) async {
                 _animationController.forward(from: 0.0);
-                await model.setTime(date: date, compareToRemoteData: true);
+                await model.setTime(date: date);
               },
               initialSelectedDay: model.dateTime,
             ),
@@ -191,7 +191,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                     isChecked: currentTime.contains(range),
                     onclick: () async {
                       updateGroupValue(range);
-                      await model.setTime(schedule: currentTime, compareToRemoteData: true);
+                      await model.setTime(schedule: currentTime);
                     },
                   );
                 }).toList(),

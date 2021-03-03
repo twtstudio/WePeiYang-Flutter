@@ -14,13 +14,14 @@ class StudyRoomRepository {
         '????????????????????????????????? getBaseBuildingList !!!!!!!!!!!!!!!!!!!!!!'
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    var response = await open_http.get('getBuildingList');
+    var response = await server.get('getBuildingList');
 
     List<Building> buildings =
         response.data.map<Building>((b) => Building.fromMap(b)).toList();
     return buildings.where((b) => b.roomCount != 0).toList();
   }
 
+  //TODO: 后端没给搜藏接口
   static Future<List<Classroom>> get favouriteList async {
     // 这里应该是访问服务器数据，然后在SRFavouriteModel的refresh中对比数据
     var instance = HiveManager.instance;
@@ -46,8 +47,7 @@ class StudyRoomRepository {
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week - 10}/${weekday.day}';
       debugPrint('??????????????????' + 'getDayData/$requestDate');
-      var response = await open_http
-          .get('getDayData/$requestDate');
+      var response = await server.get('getDayData/$requestDate');
       try {
         List<Building> buildings =
             response.data.map<Building>((b) => Building.fromMap(b)).toList();
@@ -56,7 +56,7 @@ class StudyRoomRepository {
           buildings.where((b) => b.roomCount != 0).toList(),
         );
       } catch (e) {
-        throw (Exception('$requestDate:数据解析错误'));
+        throw Exception('$requestDate:数据解析错误');
       }
     }
   }
@@ -64,33 +64,49 @@ class StudyRoomRepository {
   static setSRData({@required SRTimeModel model}) async {
     var dateTime = model.dateTime;
     if (dateTime.isThisWeek) {
-      if (HiveManager.instance.shouldUpdateLocalData()) {
+      if (HiveManager.instance.shouldUpdateLocalData) {
+        ToastProvider.running('加载数据需要一点时间');
         await _getBaseBuildingList.then((value) async {
           await HiveManager.instance.clearLocalData();
           await HiveManager.instance.writeBaseDataInDisk(buildings: value);
-          await _getWeekClassPlan(dateTime: dateTime).forEach((plan) async {
-            HiveManager.instance.writeThisWeekDataInDisk(plan.value, plan.key);
-          }).then((_) => ToastProvider.success('教室安排加载成功'), onError: (e) {
-            // TODO: 这个地方有问题，如果新的数据中间出了问题，那么现在就是新老数据混杂，
-            // TODO：感觉应该在数据库中做一个缓存，不是临时数据，是写入数据库的缓存。
-            ToastProvider.error(e.toString().split(':')[1].trim());
-          });
+          await _getWeekClassPlan(dateTime: dateTime)
+              .toList()
+              .then((plans) async {
+                await Future.forEach<MapEntry<int, List<Building>>>(
+                    plans,
+                    (plan) => HiveManager.instance.writeThisWeekDataInDisk(
+                        plan.value, plan.key)).then((_) {
+                  HiveManager.instance.checkBaseDataIsAllInDisk();
+                });
+                ToastProvider.success('教室安排加载成功');
+              }, onError: (e) {
+                ToastProvider.error(e.toString().split(':')[1].trim());
+                throw e;
+              });
         }, onError: (e) {
           ToastProvider.error('基础数据解析错误');
-          throw(e);
+          throw e;
         });
       }
     } else {
       if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
-        await _getWeekClassPlan(dateTime: dateTime).forEach((plan) async {
-          await HiveManager.instance
-              .setTemporaryData(data: plan.value, day: plan.key);
-          // debugPrint("not this week : " + dateTime.toString());
-        }).then((_) => ToastProvider.success('教室安排加载成功'), onError: (e) {
-          // TODO: 这地方也是，同上
-          ToastProvider.error(e.toString().split(':')[1].trim());
-          throw(e);
-        });
+        ToastProvider.running('加载数据需要一点时间');
+        await HiveManager.instance.setTemporaryDataStart();
+        await _getWeekClassPlan(dateTime: dateTime)
+            .toList()
+            .then((plans) async {
+              await Future.forEach<MapEntry<int, List<Building>>>(
+                  plans,
+                  (plan) => HiveManager.instance.setTemporaryData(
+                      data: plan.value, day: plan.key)).then((_) {
+                HiveManager.instance.setTemporaryDataFinish();
+              });
+              ToastProvider.success('教室安排加载成功');
+            }, onError: ( e) {
+              // TODO: 这地方也是，同上
+              ToastProvider.error(e.toString().split(':')[1].trim());
+              throw e;
+            });
       }
     }
   }

@@ -1,6 +1,4 @@
-import 'view_state_model.dart';
-
-// refresh左边的向下箭头点不了
+part of 'view_state_model.dart';
 
 /// 基于
 abstract class ViewStateListModel<T> extends ViewStateModel {

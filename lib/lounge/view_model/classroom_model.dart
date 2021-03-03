@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
+import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
@@ -49,8 +48,18 @@ class ClassroomsDataModel extends ViewStateListModel {
   }
 
   @override
+  refresh() async {
+    setBusy();
+    if (scheduleModel.state == ViewState.error) {
+      setError(Exception('refresh data error when change date'), null);
+    } else if (scheduleModel.state == ViewState.idle) {
+      super.refresh();
+    }
+  }
+
+  @override
   Future<List> loadData() async {
-    if (!kReleaseMode) await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 

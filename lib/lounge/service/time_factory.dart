@@ -145,8 +145,8 @@ extension DateTimeExtension on DateTime {
       .map((i) => weekStart.add(Duration(days: i)))
       .toList();
 
-  // bool isTheSameWeek(DateTime dateTime) =>
-  //     weekStart.difference(dateTime.weekStart).inDays == 0;
+  bool isTheSameWeek(DateTime dateTime) =>
+      weekStart.difference(dateTime.weekStart).inDays == 0;
 
   bool isTheSameDay(DateTime dateTime) =>
       _dayStart.difference(dateTime._dayStart).inDays == 0;

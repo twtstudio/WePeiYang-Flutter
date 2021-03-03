@@ -25,8 +25,21 @@ import 'home/model/home_model.dart';
 /// 2. 添加外部存储读写和摄像头使用权限，[MultiImagePicker]所需
 /// 3. 在资源文件夹添加完成图片选择图标
 
-void main() async =>
-    await _initializeApp().then((_) => runApp(WeiPeiYangApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CommonPreferences.initPrefs();
+  runApp(WeiPeiYangApp());
+  if (Platform.isAndroid) {
+    var dark = SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0xFF000000),
+        systemNavigationBarDividerColor: null,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light);
+    SystemChrome.setSystemUIOverlayStyle(dark);
+  }
+}
 
 // 全局捕获异常，还没想好
 //runZoned(
@@ -41,21 +54,6 @@ void main() async =>
 //         },
 //       ),
 //     );
-
-Future<void> _initializeApp() async {
-  await HiveManager.init();
-  await CommonPreferences.initPrefs();
-  if (Platform.isAndroid) {
-    var dark = SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0xFF000000),
-        systemNavigationBarDividerColor: null,
-        statusBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light);
-    SystemChrome.setSystemUIOverlayStyle(dark);
-  }
-}
 
 class WeiPeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
@@ -79,7 +77,8 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => GPANotifier()),
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         // TODO: 这里有bug，可能导致收藏列表崩溃
-        ChangeNotifierProvider(create: (context) => SRTimeModel()..setTime()),
+        ChangeNotifierProvider(
+            create: (context) => SRTimeModel()..setTime(init: true)),
         ChangeNotifierProvider(create: (context) => SRFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
@@ -130,7 +129,21 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 }
 
 /// 启动页Widget
-class StartUpWidget extends StatelessWidget {
+class StartUpWidget extends StatefulWidget {
+  @override
+  _StartUpWidgetState createState() => _StartUpWidgetState();
+}
+
+class _StartUpWidgetState extends State<StartUpWidget> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await HiveManager.init();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -152,8 +165,6 @@ class StartUpWidget extends StatelessWidget {
   }
 
   void _autoLogin(BuildContext context) async {
-    /// 初始化sharedPrefs
-    await CommonPreferences.initPrefs();
 
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();

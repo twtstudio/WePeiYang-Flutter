@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await srTimeModel.setTime(compareToRemoteData: true);
+      await srTimeModel.setTime();
     });
   }
 

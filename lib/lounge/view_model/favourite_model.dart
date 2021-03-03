@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/sr_repository.dart';
@@ -107,7 +106,7 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
     scheduleModel.addListener(refresh);
     favouriteModel.addListener(refresh);
     if (favouriteModel.favourList.isNotEmpty)
-      scheduleModel.setTime(compareToRemoteData: true);
+      scheduleModel.setTime();
   }
 
   final SRTimeModel scheduleModel;

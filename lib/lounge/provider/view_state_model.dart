@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/lounge/service/net/api.dart';
 
-import 'view_state.dart';
-
-export 'view_state.dart';
+part 'view_state.dart';
+part 'view_state_list_model.dart';
 
 class ViewStateModel with ChangeNotifier {
   /// 防止页面销毁后,异步任务才完成,导致报错
