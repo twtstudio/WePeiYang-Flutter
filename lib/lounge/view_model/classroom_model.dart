@@ -3,22 +3,22 @@ import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
 class ClassroomsDataModel extends ViewStateListModel {
-  ClassroomsDataModel(this.id, this.area, this.scheduleModel) {
-    scheduleModel.addListener(refresh);
+  ClassroomsDataModel(this.id, this.area, this.timeModel) {
+    timeModel.addListener(refresh);
   }
 
-  final SRTimeModel scheduleModel;
+  final LoungeTimeModel timeModel;
   final Area area;
   final String id;
   final Map<String, Map<String, String>> classPlan = {};
   final Map<String, List<Classroom>> floors = {};
 
-  int get currentDay => scheduleModel.dateTime.weekday;
+  int get currentDay => timeModel.dateTime.weekday;
 
-  List<ClassTime> get classTime => scheduleModel.classTime;
+  List<ClassTime> get classTime => timeModel.classTime;
 
   @override
   initData() {
@@ -50,9 +50,9 @@ class ClassroomsDataModel extends ViewStateListModel {
   @override
   refresh() async {
     setBusy();
-    if (scheduleModel.state == ViewState.error) {
+    if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
-    } else if (scheduleModel.state == ViewState.idle) {
+    } else if (timeModel.state == ViewState.idle) {
       super.refresh();
     }
   }
@@ -64,7 +64,7 @@ class ClassroomsDataModel extends ViewStateListModel {
         .map((key, value) => MapEntry(key, Map<String, String>()));
 
     await HiveManager.instance
-        .getBuildingPlanData(id: id, time: scheduleModel.dateTime)
+        .getBuildingPlanData(id: id, time: timeModel.dateTime)
         .forEach((plan) {
       var building = plan.value;
       var day = plan.key;

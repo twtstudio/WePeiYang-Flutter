@@ -2,15 +2,14 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
+import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/model/local_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/model/temporary.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 /// key of [HiveManager._boxesKeys]
 const boxes = 'boxesKeys';
@@ -37,7 +36,7 @@ class HiveManager {
   Box<LocalEntry> _boxesKeys;
 
   /// [_temporaryData] 保存非本周临时数据。
-  /// 每次更改[SRTimeModel.dateTime]时，会先判断是不是这周的时间，不是这周的话：
+  /// 每次更改[LoungeTimeModel.dateTime]时，会先判断是不是这周的时间，不是这周的话：
   /// 1. 通过网络请求请求到那一周的数据，
   /// 2. 在[_temporaryData]中，临时保存这一周的数据[setTemporaryData]，
   /// 3. 在绘制UI时为避免多次网络请求重复加载，会调用[getTemporaryData],
@@ -103,7 +102,6 @@ class HiveManager {
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
-
 
   addFavourite({Classroom room}) async {
     // print(_favourList.keys.toList());
@@ -403,6 +401,13 @@ class HiveManager {
       await _searchHistory.deleteAt(key);
     }
     await _searchHistory.put(DateTime.now().toString(), query);
+  }
+
+  /// 删除自习室的所有数据
+  clearLoungeDataInDisk() {
+    clearLocalData();
+    clearTemporaryData();
+    clearHistory();
   }
 
   closeBoxes() async {

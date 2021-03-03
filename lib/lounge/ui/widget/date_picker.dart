@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
 class TimeCheckWidget extends StatelessWidget {
   const TimeCheckWidget({
@@ -60,7 +59,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
   CalendarController _calendarController;
   AnimationController _animationController;
   List<ClassTime> currentTime = [];
-  SRTimeModel model;
+  LoungeTimeModel model;
 
   @override
   void initState() {
@@ -93,7 +92,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
   @override
   Widget build(BuildContext context) {
-    model = Provider.of<SRTimeModel>(context);
+    model = Provider.of<LoungeTimeModel>(context);
 
     return Padding(
       padding: EdgeInsets.all(10),

@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 class Loading extends StatefulWidget {
   final Color dotOneColor;

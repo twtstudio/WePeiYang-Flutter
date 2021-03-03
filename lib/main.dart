@@ -12,7 +12,7 @@ import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'commons/preferences/common_prefs.dart';
@@ -78,8 +78,8 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         // TODO: 这里有bug，可能导致收藏列表崩溃
         ChangeNotifierProvider(
-            create: (context) => SRTimeModel()..setTime(init: true)),
-        ChangeNotifierProvider(create: (context) => SRFavouriteModel()),
+            create: (context) => LoungeTimeModel()..setTime(init: true)),
+        ChangeNotifierProvider(create: (context) => RoomFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
       ],

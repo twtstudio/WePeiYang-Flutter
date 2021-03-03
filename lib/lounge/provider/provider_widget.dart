@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+export 'package:provider/provider.dart';
+
 /// Provider封装类
 ///
 /// 方便数据初始化

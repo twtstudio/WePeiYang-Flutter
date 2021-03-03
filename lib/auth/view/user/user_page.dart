@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 
 class UserPage extends StatelessWidget {

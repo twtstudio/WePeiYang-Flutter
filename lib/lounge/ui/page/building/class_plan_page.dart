@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
@@ -10,7 +9,7 @@ import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/class_plan_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
 class ClassPlanPage extends StatelessWidget {
   final Classroom room;
@@ -163,7 +162,7 @@ class CourseTabDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var stepHeight = tabHeight * 2 + cardStep;
-    return Consumer<SRTimeModel>(
+    return Consumer<LoungeTimeModel>(
       builder: (_, model, __) => Container(
         width: countTabWidth,
         height: tabHeight * 12 + cardStep * 11,
@@ -240,7 +239,7 @@ class WeekDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SRTimeModel>(
+    return Consumer<LoungeTimeModel>(
       builder: (_, model, __) => Row(
         children: model.dateTime.thisWeek
             .sublist(0, dayCount)
@@ -290,7 +289,7 @@ class CourseDisplayWidget extends StatelessWidget {
       child: ProviderWidget<ClassPlanModel>(
         model: ClassPlanModel(
             room: room,
-            scheduleModel: Provider.of<SRTimeModel>(context, listen: false)),
+            timeModel: Provider.of<LoungeTimeModel>(context, listen: false)),
         onModelReady: (model) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             model.initData();

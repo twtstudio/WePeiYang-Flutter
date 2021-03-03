@@ -3,17 +3,18 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/building_grid_view.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/home_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
+
 
 class MainPage extends StatefulWidget {
   @override
@@ -21,21 +22,21 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  SRTimeModel srTimeModel;
+  LoungeTimeModel timeModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await srTimeModel.setTime();
+      await timeModel.setTime();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    srTimeModel = Provider.of<SRTimeModel>(context, listen: false);
+    timeModel = Provider.of<LoungeTimeModel>(context, listen: false);
     return ProviderWidget<BuildingDataModel>(
-      model: BuildingDataModel(srTimeModel),
+      model: BuildingDataModel(timeModel),
       onModelReady: (homeModel) => homeModel.setBusy(),
       builder: (_, model, __) {
         return StudyRoomPage(
@@ -63,7 +64,7 @@ class _MainPageState extends State<MainPage> {
               ),
               SearchBarWidget(),
               BuildingGridWidget(),
-              SRFavourWidget(title: '我的收藏')
+              LoungeFavourWidget(title: '我的收藏')
             ],
           ),
         );

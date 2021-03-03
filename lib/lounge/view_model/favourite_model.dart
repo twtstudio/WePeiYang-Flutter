@@ -3,10 +3,10 @@ import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/service/sr_repository.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
-class SRFavouriteModel extends ChangeNotifier {
+class RoomFavouriteModel extends ChangeNotifier {
   static final Map<String, Classroom> _map = Map();
 
   Map<String, Classroom> get favourList => _map;
@@ -20,7 +20,7 @@ class SRFavouriteModel extends ChangeNotifier {
     var localData = await instance.getFavourList();
 
     if (init) {
-      List<Classroom> remoteData = await StudyRoomRepository.favouriteList;
+      List<Classroom> remoteData = await LoungeRepository.favouriteList;
       List<String> remoteIds = remoteData.map((e) => e.id).toList();
 
       // 添加新的收藏到本地
@@ -80,7 +80,7 @@ class SRFavouriteModel extends ChangeNotifier {
 
 /// 收藏/取消收藏
 class FavouriteModel extends ViewStateModel {
-  SRFavouriteModel globalFavouriteModel;
+  RoomFavouriteModel globalFavouriteModel;
 
   FavouriteModel({@required this.globalFavouriteModel});
 
@@ -88,10 +88,10 @@ class FavouriteModel extends ViewStateModel {
     setBusy();
     try {
       if (globalFavouriteModel.contains(cId: room.id)) {
-        await StudyRoomRepository.unCollect(id: room.id);
+        await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
       } else {
-        await StudyRoomRepository.collect(id: room.id);
+        await LoungeRepository.collect(id: room.id);
         await globalFavouriteModel.addFavourite(room: room);
       }
       setIdle();
@@ -102,19 +102,19 @@ class FavouriteModel extends ViewStateModel {
 }
 
 class FavouriteListModel extends ViewStateListModel<Classroom> {
-  FavouriteListModel({this.scheduleModel, this.favouriteModel}) {
-    scheduleModel.addListener(refresh);
+  FavouriteListModel({this.timeModel, this.favouriteModel}) {
+    timeModel.addListener(refresh);
     favouriteModel.addListener(refresh);
     if (favouriteModel.favourList.isNotEmpty)
-      scheduleModel.setTime();
+      timeModel.setTime();
   }
 
-  final SRTimeModel scheduleModel;
-  final SRFavouriteModel favouriteModel;
+  final LoungeTimeModel timeModel;
+  final RoomFavouriteModel favouriteModel;
 
-  int get currentDay => scheduleModel.dateTime.weekday;
+  int get currentDay => timeModel.dateTime.weekday;
 
-  List<ClassTime> get classTime => scheduleModel.classTime;
+  List<ClassTime> get classTime => timeModel.classTime;
 
   List<Classroom> get favourList => favouriteModel.favourList.values.toList();
 
@@ -124,7 +124,7 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
   @override
   Future<List<Classroom>> loadData() async {
     await favouriteModel.refreshData(
-        init: true, dateTime: scheduleModel.dateTime);
+        init: true, dateTime: timeModel.dateTime);
     var list = favouriteModel.favourList.values.toList();
     return list;
   }

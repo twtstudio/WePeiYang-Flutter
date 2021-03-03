@@ -3,15 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
+import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/classroom_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 
 class ClassroomsPage extends StatelessWidget {
   final Area area;
@@ -50,7 +50,7 @@ class BuildingFloors extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderWidget<ClassroomsDataModel>(
       model: ClassroomsDataModel(
-          id, area, Provider.of<SRTimeModel>(context, listen: false)),
+          id, area, Provider.of<LoungeTimeModel>(context, listen: false)),
       onModelReady: (model) => model.initData(),
       builder: (_, model, __) => ListLoadSteps(
         model: model,
