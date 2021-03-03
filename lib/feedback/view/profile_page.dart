@@ -26,9 +26,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    Provider.of<FeedbackNotifier>(context, listen: false)
-        .clearProfilePostList();
-    Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<FeedbackNotifier>(context, listen: false)
+          .clearProfilePostList();
+      Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+    });
     super.initState();
   }
 
@@ -40,7 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Container(height: 350, color: ColorUtil.profileBackgroundColor),
+            Container(
+              height: 350,
+              child: Image.asset(
+                'assets/images/user_back.png',
+                fit: BoxFit.cover,
+              ),
+            ),
             Consumer<FeedbackNotifier>(
               builder: (context, notifier, widget) {
                 return CustomScrollView(
@@ -73,11 +81,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.pushNamed(context, '/user_info'),
                           child: ClipOval(
                               child: Image.asset(
-                                'assets/images/user_image.jpg',
-                                fit: BoxFit.cover,
-                                width: 90,
-                                height: 90,
-                              )),
+                            'assets/images/user_image.jpg',
+                            fit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                          )),
                         ),
                       ),
                     ),
@@ -171,7 +179,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                               color: ColorUtil.lightTextColor),
                                         ),
                                         BlankSpace.height(5),
-                                        // TODO: Color should change dynamically.
                                         ClipOval(
                                           child: Container(
                                             width: 5,
@@ -215,33 +222,39 @@ class _ProfilePageState extends State<ProfilePage> {
                                       context,
                                       FeedbackRouter.detail,
                                       arguments: DetailPageArgs(
-                                    notifier.profilePostList[index],
-                                    index,
-                                    PostOrigin.profile),
-                              );
-                            },
-                            onLikePressed: () {
+                                          notifier.profilePostList[index],
+                                          index,
+                                          PostOrigin.profile),
+                                    );
+                                  },
+                                  onLikePressed: () {
                                     notifier.profilePostHitLike(index,
                                         notifier.profilePostList[index].id);
                                   },
-                          )
+                                )
                               : PostCard(
-                            notifier.profilePostList[index],
-                            onContentPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.detail,
-                                arguments: DetailPageArgs(
-                                    notifier.profilePostList[index],
-                                    index,
-                                    PostOrigin.profile),
-                              );
-                            },
-                            onLikePressed: () {
+                                  notifier.profilePostList[index],
+                                  onContentPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                        notifier.profilePostList[index],
+                                        index,
+                                        PostOrigin.profile,
+                                      ),
+                                    ).then((value) async {
+                                      print(value);
+                                      if (value == false) {
+                                        notifier.removeProfilePost(index);
+                                      }
+                                    });
+                                  },
+                                  onLikePressed: () {
                                     notifier.profilePostHitLike(index,
                                         notifier.profilePostList[index].id);
                                   },
-                          );
+                                );
                         },
                         childCount: notifier.profilePostList.length,
                       ),

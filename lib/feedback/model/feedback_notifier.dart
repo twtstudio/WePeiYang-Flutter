@@ -125,13 +125,17 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  removeProfilePost(index) {
+    _profilePostList.removeAt(index);
+    notifyListeners();
+  }
+
   /// Get tags.
   Future getTags() async {
     try {
       await HttpUtil().get('tag/get/all', {
         'token': _token,
       }).then((value) {
-        print(json.encode(value));
         if (0 != value['data'][0]['children'].length) {
           for (Map<String, dynamic> json in value['data'][0]['children']) {
             _tagList.add(Tag.fromJson(json));
@@ -157,7 +161,8 @@ class FeedbackNotifier with ChangeNotifier {
           'page': '$page',
         },
       ).then((value) {
-        _homeTotalPage = value['data']['total'];
+        print(json.encode(value));
+        _homeTotalPage = value['data']['last_page'];
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));
         }
