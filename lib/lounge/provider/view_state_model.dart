@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/lounge/service/net/api.dart';
 
-import 'view_state.dart';
-
-export 'view_state.dart';
+part 'view_state.dart';
+part 'view_state_list_model.dart';
 
 class ViewStateModel with ChangeNotifier {
   /// 防止页面销毁后,异步任务才完成,导致报错
@@ -24,10 +23,6 @@ class ViewStateModel with ChangeNotifier {
     debugPrint('ViewStateModel---constructor--->$runtimeType');
   }
 
-  // runtimeType
-  // 获取当前对象的数据类型
-  // 参考: https://stackoverflow.com/questions/61146446/runtimetype-check-of-generic-list-object-in-dart
-
   /// ViewState
   ViewState get viewState => _viewState;
 
@@ -42,15 +37,6 @@ class ViewStateModel with ChangeNotifier {
 
   ViewStateError get viewStateError => _viewStateError;
 
-  /**
-   * 为什么不严谨啊，不太懂，但我觉得这样不挺好的吗，这些都是这个组件的状态，
-   * 我可以判断这个组件内部处于什么状态来判断外部可以对它进行什么操作。
-   * TODO：why not rigorous ?
-   */
-
-  /// 以下变量是为了代码书写方便,加入的get方法.严格意义上讲,并不严谨
-  ///
-  /// get
   bool get isBusy => viewState == ViewState.busy;
 
   bool get isIdle => viewState == ViewState.idle;
@@ -65,7 +51,7 @@ class ViewStateModel with ChangeNotifier {
   }
 
   void setBusy() {
-    viewState = ViewState.busy;
+    if (viewState != ViewState.busy) viewState = ViewState.busy;
   }
 
   void setEmpty() {
@@ -122,10 +108,10 @@ class ViewStateModel with ChangeNotifier {
   void onError(ViewStateError viewStateError) {}
 
   /// 显示错误消息
-  showErrorMessage(context, {String message}) {
+  showErrorMessage({String message}) {
     if (viewStateError != null || message != null) {
       if (viewStateError.isNetworkTimeOut) {
-        message ??= "S.of(context).viewStateMessageNetworkError";
+        message ??= "";
       } else {
         message ??= viewStateError.message;
       }

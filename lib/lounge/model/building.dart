@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'area.dart';
 
 class Building {
@@ -7,40 +6,26 @@ class Building {
   String name;
   String campus;
   Map<String, Area> areas;
+  int roomCount;
 
   Building({this.id, this.name, this.campus, this.areas});
 
-  static Building fromMap(Map<String, dynamic> map, {bool newApi = true}) {
+  static Building fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     Building building = Building();
     building.id = map['building_id'] ?? '';
-    building.name = map['building'] ?? '';
+    building.name =
+        RegExp(r'^[0-9]{2}').firstMatch(map['building'] ?? '').group(0);
     building.campus = map['campus_id'] ?? '';
-    if (newApi) {
-      var list = List()
-        ..addAll((map['areas'] as List ?? []).map((e) => Area.fromMap(e)));
-      for (var area in list) {
-        building.areas[area.id ?? ''] = area;
-      }
-      return building;
-    } else {
-      List<Classroom> list = List()
-        ..addAll((map['classrooms'] as List ?? []).map((e) {
-          return Classroom.fromMap(e, newApi: false);
-        }));
-      var as = list.map((e) => e.aId).toSet().toList();
-      as.sort();
-      building.areas = {};
-      for (var a in as) {
-        Map<String, Classroom> cs = {};
-        cs.addEntries(list
-            .where((element) => element.aId == a)
-            .map((e) => MapEntry(e.id, e)));
-        building.areas[a] = Area(id: a, classrooms: cs);
-      }
-
-      return building;
+    List<Area> list = List()
+      ..addAll((map['areas'] as List ?? []).map((e) => Area.fromMap(e)));
+    building.roomCount = 0;
+    building.areas = {};
+    for (var area in list) {
+      building.areas[area.id ?? ''] = area;
+      building.roomCount += area.classrooms?.length ?? 0;
     }
+    return building;
   }
 
   Map toJson() => {

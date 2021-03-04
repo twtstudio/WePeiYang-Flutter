@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
+import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
 

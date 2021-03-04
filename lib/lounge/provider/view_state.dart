@@ -1,4 +1,6 @@
 
+part of 'view_state_model.dart';
+
 /// 页面状态类型
 enum ViewState {
   idle,

@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 
-const List<Color> colors = [
+const List<Color> areaColors = [
   Color(0xff363c54),
   Color(0xff74788a),
   Color(0xff676f96)
@@ -75,7 +75,7 @@ class AreasPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       shape: BoxShape.rectangle,
-                      color: colors[Random().nextInt(colors.length)],
+                      color: areaColors[Random().nextInt(areaColors.length)],
                     ),
                     child: Center(
                       child: Text(

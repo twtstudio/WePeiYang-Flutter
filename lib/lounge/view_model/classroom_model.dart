@@ -1,68 +1,68 @@
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data.dart';
+import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class ClassroomsDataModel extends ViewStateListModel {
-  ClassroomsDataModel._(
-      this.id, this.area, this.scheduleModel, this.classPlan, this.floors) {
-    this.scheduleModel.addListener(() {
-      setBusy();
-      refresh();
-    });
-  }
-
-  factory ClassroomsDataModel(String id, Area area, SRTimeModel srTimeModel) {
-    final Map<String, Map<String, String>> classPlan = {};
-    final Map<String, List<Classroom>> floors = {};
-    for (var c in area.classrooms.values) {
-      var floor = c.name[0];
-      var room = Classroom()
-        ..name = area.id == '' ? c.name : area.id + c.name
-        ..capacity = c.capacity
-        ..id = c.id;
-      if (floors.containsKey(floor)) {
-        var list = List<Classroom>()
-          ..addAll(floors[floor])
-          ..add(room);
-        floors[floor] = list;
-      } else {
-        floors[floor] = [room];
-      }
-      print(c.toJson());
-      print(floors);
-      if (classPlan.containsKey(c.id)) {
-        print('classrooms have same id:' + c.id);
-      } else {
-        classPlan[c.id] = {};
-      }
-    }
-    return ClassroomsDataModel._(id, area, srTimeModel, classPlan, floors);
+  ClassroomsDataModel(this.id, this.area, this.scheduleModel) {
+    scheduleModel.addListener(refresh);
   }
 
   final SRTimeModel scheduleModel;
   final Area area;
-
   final String id;
-  final Map<String, Map<String, String>> classPlan;
-  final Map<String, List<Classroom>> floors;
+  final Map<String, Map<String, String>> classPlan = {};
+  final Map<String, List<Classroom>> floors = {};
 
   int get currentDay => scheduleModel.dateTime.weekday;
 
   List<ClassTime> get classTime => scheduleModel.classTime;
 
   @override
+  initData() {
+    setBusy();
+    Map<String, List<Classroom>> f = {};
+    for (var c in area.classrooms.values) {
+      var floor = c.name[0];
+      var room = c..aId = area.id;
+      if (f.containsKey(floor)) {
+        var list = List<Classroom>()
+          ..addAll(f[floor])
+          ..add(room);
+        f[floor] = list;
+      } else {
+        f[floor] = [room];
+      }
+      // print(c.toJson());
+      // print(floors);
+      if (classPlan.containsKey(c.id)) {
+        print('classrooms have same id:' + c.id);
+      } else {
+        classPlan[c.id] = {};
+      }
+    }
+    floors.addAll(f.sortByFloor);
+    super.initData();
+  }
+
+  @override
+  refresh() async {
+    setBusy();
+    if (scheduleModel.state == ViewState.error) {
+      setError(Exception('refresh data error when change date'), null);
+    } else if (scheduleModel.state == ViewState.idle) {
+      super.refresh();
+    }
+  }
+
+  @override
   Future<List> loadData() async {
     await Future.delayed(Duration(seconds: 1));
-
-
     Map<String, Map<String, String>> _plan = Map.from(classPlan)
         .map((key, value) => MapEntry(key, Map<String, String>()));
 
-    // TODO: 这个错误怎么判断啊？
     await HiveManager.instance
         .getBuildingPlanData(id: id, time: scheduleModel.dateTime)
         .forEach((plan) {
@@ -78,6 +78,18 @@ class ClassroomsDataModel extends ViewStateListModel {
       classPlan.update(key, (value) => _plan[key]);
     }
 
-    return Data.getOneDayAvailable(scheduleModel.dateTime.weekday);
+    return _plan.keys.toList();
+  }
+}
+
+extension MapExtension on Map {
+  Map<String, List<Classroom>> get sortByFloor {
+    List<String> list = keys.toList();
+    list.sort((a, b) => a.compareTo(b));
+    return Map.fromEntries(list.map((e) {
+      List<Classroom> cList = this[e];
+      cList.sort((a, b) => a.name.compareTo(b.name));
+      return MapEntry(e, cList);
+    }));
   }
 }

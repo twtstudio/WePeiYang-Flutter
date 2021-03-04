@@ -10,7 +10,6 @@ import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/model/temporary.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/date_picker.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 /// key of [HiveManager._boxesKeys]
@@ -28,9 +27,7 @@ const favourList = 'favourList';
 /// key of [HiveManager._temporaryData]
 const temporary = 'temporary';
 
-const notReady = false;
-const ready = true;
-
+// TODO: 数据库错误处理正在做！！！！！！！！！！！！！！！！！！！！！
 class HiveManager {
   static HiveManager _instance;
 
@@ -39,7 +36,6 @@ class HiveManager {
 
   Box<LocalEntry> _boxesKeys;
 
-  // TODO : 点击非本周日期时提示 null
   /// [_temporaryData] 保存非本周临时数据。
   /// 每次更改[SRTimeModel.dateTime]时，会先判断是不是这周的时间，不是这周的话：
   /// 1. 通过网络请求请求到那一周的数据，
@@ -53,7 +49,7 @@ class HiveManager {
 
   Box<String> _searchHistory;
 
-  Map<String, LazyBox<Building>> _buildingBoxes = {};
+  final Map<String, LazyBox<Building>> _buildingBoxes = {};
 
   static init() async {
     _instance = await initHiveMemoizer.runOnce(() async {
@@ -98,12 +94,21 @@ class HiveManager {
     await _temporaryData.put(Time.week[day - 1], Buildings(buildings: data));
   }
 
+  setTemporaryDataStart() async {
+    await _temporaryData.delete(temporary);
+  }
+
+  setTemporaryDataFinish() async {
+    await _temporaryData.put(temporary, null);
+  }
+
   clearTemporaryData() async => await _temporaryData.clear();
 
+
   addFavourite({Classroom room}) async {
-    print(_favourList.keys.toList());
+    // print(_favourList.keys.toList());
     await _favourList.put(room.id, room);
-    print(_favourList.keys.toList());
+    // print(_favourList.keys.toList());
   }
 
   removeFavourite({String cId}) async {
@@ -125,27 +130,20 @@ class HiveManager {
     return _favourList.toMap().cast<String, Classroom>();
   }
 
-  bool shouldUpdateLocalData() => _boxesKeys.isEmpty
+  bool get shouldUpdateLocalData => _boxesKeys.isEmpty
       ? true
       : !_boxesKeys.values
-          .map((e) => DateTime.parse(e.dateTime).isToday)
+          .map((e) =>
+              e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday)
           .reduce((v, e) => v && e);
 
-  /// 判断是否需要更新临时数据的原因是：不是每一次打开[BottomDatePicker]，都需要加载数据，
-  /// 比如说，如果打开之前，和关闭之后，在同一天，就不用网络请求数据。
-  /// 在同一天的情况：
-  ///   1. 打开了[BottomDatePicker],没有做什么操作就退出去了
-  ///   2. 更改了日期，但是最后改了回来
-  ///   3. 还在同一天，但是更改了选择的课程时间
-  /// 为什么不在同一天就刷新数据的原因：
-  ///   1. 可以通过这样来刷新
-  ///   2.
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
     if (_temporaryDateTime == null) {
       _temporaryDateTime = dateTime;
       return true;
     } else {
-      if (_temporaryDateTime.isTheSameDay(dateTime)) {
+      if (_temporaryDateTime.isTheSameWeek(dateTime) &&
+          _temporaryData.containsKey(temporary)) {
         return false;
       } else {
         return true;
@@ -155,9 +153,9 @@ class HiveManager {
 
   Stream<Building> get baseBuildingDataFromDisk async* {
     // print(_boxesKeys.keys.toList());
-    debugPrint('baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
-    for (var k in _boxesKeys.values) {
-      var key = k.key;
+    debugPrint(
+        'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
+    for (var key in _boxesKeys.keys) {
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
         yield building;
@@ -185,6 +183,7 @@ class HiveManager {
       _buildingBoxes[bName] = box;
       // print('box created finish :' + bName);
       // print(box.path);
+      await _boxesKeys.put(building.id, null);
     }
   }
 
@@ -193,8 +192,9 @@ class HiveManager {
     List<Building> buildings,
     int day,
   ) async {
-    // TODO: 以后看能不能改成流式操作
+    print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     for (var building in buildings) {
+      print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       await _writeThisWeekData(building, day);
     }
   }
@@ -219,12 +219,17 @@ class HiveManager {
   _setBuildingDataRefreshTime(String id, String name) async =>
       await _boxesKeys.put(id, LocalEntry(id, name, DateTime.now().toString()));
 
-  // TODO: 真的这么写 ???
   clearLocalData() async {
     for (var box in _buildingBoxes.values) {
       await box.clear();
     }
     await _boxesKeys.clear();
+  }
+
+  checkBaseDataIsAllInDisk() async {
+    if (shouldUpdateLocalData) {
+      throw Exception('我也不知道为什么更新的数据不是今天的');
+    }
   }
 
   //TODO: 没有做错误处理
@@ -242,6 +247,8 @@ class HiveManager {
       var room = area.classrooms[r.id];
       if (room == null) return;
       _plans[day] = DataFactory.splitPlan(room.status);
+      // print('???????????splitplan');
+      // print( DataFactory.splitPlan(room.status));
     });
     return _plans;
   }
@@ -260,7 +267,6 @@ class HiveManager {
       }
     } else {
       for (var day in Time.week) {
-        // TODO: if invalid index
         var data = _temporaryData.get(day);
         for (var building in data.buildings) {
           if (building.id == id) {
@@ -350,9 +356,8 @@ class HiveManager {
               .forEach((e) => rCs.addAll(e.classrooms.values
                   .where((element) => element.name == cName)
                   .map((e) => MapEntry(building, e)))));
-          print('!!!!!!!!!!@###########%%%%%%%%%%%%2222222222      '+rCs.length.toString());
           for (var r in rCs) {
-            print(r.value.toJson());
+            // print(r.value.toJson());
             yield ResultEntry(
               building: r.key,
               area: Area(id: r.value.aId),

@@ -1,5 +1,3 @@
-import 'package:wei_pei_yang_demo/lounge/model/area.dart';
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
@@ -20,19 +18,40 @@ class DataFactory {
     // print(result2);
     int length = (result1.length + result2.length - 1) ~/ 2 * 2;
 
-    List<String> result = [];
+    List<String> preResult = [];
     for (var i = 0; i < length; i++) {
       switch (i % 2) {
         case 1:
-          if (result2[(i + 1) ~/ 2] != '') result.add(result2[(i + 1) ~/ 2]);
+          if (result2[(i + 1) ~/ 2] != '') preResult.add(result2[(i + 1) ~/ 2]);
           break;
         case 0:
-          result.add(result1[i ~/ 2]);
+          preResult.add(result1[i ~/ 2]);
           break;
       }
     }
-    // print(result);
+    List<String> result = [];
+    preResult.forEach((r) {
+      if (r.startsWith('1')) {
+        result.addAll(splitBusyRange(r));
+      } else {
+        result.add(r);
+      }
+    });
     return result;
+  }
+
+  static List<String> splitBusyRange(String s) {
+    List<String> busyRange = [];
+    var index = 0;
+    if (s.length > 3) {
+      do {
+        var str = s.substring(index, index + 2);
+        busyRange.add(str);
+        index += 2;
+      } while (index < s.length - 3);
+    }
+    busyRange.add(s.substring(index, s.length));
+    return busyRange;
   }
 
   static Map<String, String> formatQuery(String query) {
@@ -122,10 +141,10 @@ class DataFactory {
   }
 
   static String getTitle(HistoryEntry h) {
-    if (h.aId == '') {
-      return '${h.bName}楼 ${h.cName}';
+    if (h.aId == '-1') {
+      return '${h.bName}教 ${h.cName}';
     } else {
-      return '${h.bName}楼 ${h.aId}区 ${h.cName}';
+      return '${h.bName}教 ${h.aId}区 ${h.cName}';
     }
   }
 
@@ -141,44 +160,5 @@ class DataFactory {
     } else {
       return ResultType.building;
     }
-  }
-
-  static List<Building> formatBuildings(dynamic data) {
-    List<Building> remoteBuildingList =
-        data.map<Building>((b) => Building.fromMap(b, newApi: false)).toList();
-    print('111111111111111111!!!!!!!!!!!!!!!!!! ${remoteBuildingList.length}');
-    Map<String, List<Building>> reworkedBuildings = {};
-    List<Building> resultBuildingList = remoteBuildingList
-        .map((b) {
-          var format = DataFactory.formatQuery(b.name);
-          var building = Building(
-              id: b.id,
-              name: format['bName'],
-              campus: b.campus,
-              areas: b.areas);
-          if (!format.containsKey('aName') && !format.containsKey('cName')) {
-            return building;
-          } else if (format.containsKey('aName') &&
-              !format.containsKey('cName')) {
-            if (!reworkedBuildings.containsKey(format['bName']))
-              reworkedBuildings[format['bName']] = [];
-            reworkedBuildings[format['bName']].add(building);
-          }
-        })
-        .where((e) => e != null)
-        .toList();
-    reworkedBuildings.forEach((key, value) {
-      Map<String, Area> areas = {};
-      value.forEach((b) {
-        areas.addAll(b.areas);
-      });
-      resultBuildingList.add(Building(
-          id: value.first.id,
-          name: value.first.name,
-          campus: value.first.campus,
-          areas: areas));
-    });
-    resultBuildingList.sort((a, b) => a.name.compareTo(b.name));
-    return resultBuildingList;
   }
 }

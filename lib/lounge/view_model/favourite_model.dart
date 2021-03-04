@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_list_model.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/sr_repository.dart';
@@ -20,14 +19,9 @@ class SRFavouriteModel extends ChangeNotifier {
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
 
-    //TODO: 什么时候加载远程数据
-    // 这个地方，由于不会有两个app同时登录一个账号，所以，大概不会出现远程数据变动的情况，
-    // 那么就只用在初始化 SRFavouriteModel 的时候加载网络数据
     if (init) {
-      List<Classroom> remoteData = await StudyRoomRepository.favouriteList();
+      List<Classroom> remoteData = await StudyRoomRepository.favouriteList;
       List<String> remoteIds = remoteData.map((e) => e.id).toList();
-
-
 
       // 添加新的收藏到本地
       for (var room in remoteData) {
@@ -43,8 +37,6 @@ class SRFavouriteModel extends ChangeNotifier {
           await instance.removeFavourite(cId: room.id);
         }
       }
-
-
     } else {
       _map.clear();
       _map.addAll(localData);
@@ -67,7 +59,7 @@ class SRFavouriteModel extends ChangeNotifier {
 
   removeFavourite({@required String cId}) async {
     await HiveManager.instance.removeFavourite(cId: cId);
-    _map.removeWhere((key,_) => key == cId);
+    _map.removeWhere((key, _) => key == cId);
     notifyListeners();
   }
 
@@ -95,8 +87,6 @@ class FavouriteModel extends ViewStateModel {
   collect({@required Classroom room}) async {
     setBusy();
     try {
-      // TODO: 忽然发现一个问题，没有上传收藏数据的接口 QAQ
-      // 那就先做本地处理；
       if (globalFavouriteModel.contains(cId: room.id)) {
         await StudyRoomRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
@@ -113,12 +103,10 @@ class FavouriteModel extends ViewStateModel {
 
 class FavouriteListModel extends ViewStateListModel<Classroom> {
   FavouriteListModel({this.scheduleModel, this.favouriteModel}) {
-    this.scheduleModel.addListener(() {
-      this.refresh();
-    });
-    this.favouriteModel.addListener(() {
-      this.refresh();
-    });
+    scheduleModel.addListener(refresh);
+    favouriteModel.addListener(refresh);
+    if (favouriteModel.favourList.isNotEmpty)
+      scheduleModel.setTime();
   }
 
   final SRTimeModel scheduleModel;
@@ -132,14 +120,6 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
 
   Map<String, Map<String, List<String>>> get classPlan =>
       favouriteModel.classPlan;
-
-  // @override
-  // void onError(ViewStateError viewStateError) {
-  //   super.onError(viewStateError);
-  //   if (viewStateError.isUnauthorized) {
-  //     loginModel.logout();
-  //   }
-  // }
 
   @override
   Future<List<Classroom>> loadData() async {
@@ -157,23 +137,7 @@ addFavourites(BuildContext context,
     bool playAnim: true}) async {
   await model.collect(room: room);
   if (model.isError) {
-    if (model.viewStateError.isUnauthorized) {
-      // TODO: token会过期，这个之后来写，还得问问崔神咋搞
-      // if (await DialogHelper.showLoginDialog(context)) {
-      //   var success = await Navigator.pushNamed(context, RouteName.login);
-      //   if (success ?? false) {
-      //     //登录后,判断是否已经收藏
-      //     if (!Provider.of<UserModel>(context, listen: false)
-      //         .user
-      //         .collectIds
-      //         .contains(article.id)) {
-      //       addFavourites(context, article: article, model: model, tag: tag);
-      //     }
-      //   }
-      // }
-    } else {
-      model.showErrorMessage(context);
-    }
+    model.showErrorMessage();
   } else {
     if (playAnim) {
       // TODO: 这竟然是flare动画，有机会再搞

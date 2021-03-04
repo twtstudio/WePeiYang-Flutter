@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'api.dart';
 // import '../storage_manager.dart';
 
-final Http open_http = Http();
+final Http server = Http();
 
 class Http extends BaseHttp {
   @override
@@ -39,7 +39,7 @@ class ApiInterceptor extends InterceptorsWrapper {
     ResponseData respData = ResponseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return open_http.resolve(response);
+      return server.resolve(response);
     } else {
       /// TODO: 不知道开放接口会返回什么错误信息
       // if (respData.code == 2) {
@@ -59,7 +59,7 @@ Map<dynamic, dynamic> parseData(String data) {
 }
 
 class ResponseData extends BaseResponseData {
-  bool get success => -1 == code;
+  bool get success => 0 == code;
 
   ResponseData.fromJson(Map<String, dynamic> json) {
     code = json['error_code'];
