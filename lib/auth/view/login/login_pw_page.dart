@@ -17,7 +17,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       ToastProvider.error("账号密码不能为空");
       return;
     }
-    login(account, password,
+    await login(account, password,
         onSuccess: (result) {
           if (result['telephone'] == null || result['email'] == null) {
             Navigator.pushNamed(context, '/add_info');
@@ -33,10 +33,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   FocusNode _accountFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
 
-  TextStyle _hintStyle = TextStyle(
-      color: Color.fromRGBO(201, 204, 209, 1),
-      fontSize: 13
-  );
+  TextStyle _hintStyle =
+      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {

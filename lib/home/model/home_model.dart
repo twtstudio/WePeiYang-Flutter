@@ -1,28 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 
-// TODO 这里迟早得改
 class CardBean {
   IconData icon;
   String label;
   String route;
 
   CardBean(this.icon, this.label, this.route);
-}
-
-class LibraryBean {
-  String book;
-  String time;
-
-  LibraryBean(this.book, this.time);
-}
-
-class GPABean {
-  List<double> gpaList;
-  double weighted;
-  double grade;
-
-  GPABean(this.gpaList, this.weighted, this.grade);
 }
 
 class GlobalModel {

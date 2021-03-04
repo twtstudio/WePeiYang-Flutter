@@ -2,6 +2,7 @@ import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
 import '../../main.dart';
@@ -17,12 +18,14 @@ class GPAPage extends StatelessWidget {
         .call();
   }
 
+  final Color _baseColor = FavorColors.gpaColor;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(
         builder: (context, notifier, _) => Scaffold(
-              appBar: GPAppBar(),
-              backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
+              appBar: GPAppBar(_baseColor),
+              backgroundColor: _baseColor,
               body: Theme(
                 /// 修改scrollView滚动至头/尾时溢出的颜色
                 data: ThemeData(accentColor: Colors.white),
@@ -40,38 +43,14 @@ class GPAPage extends StatelessWidget {
 }
 
 class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Color _baseColor;
+
+  GPAppBar(this._baseColor);
+
   @override
   Widget build(BuildContext context) {
-    // TODO 回头记得撤了假数据
-    List<GPACourse> list1 = [];
-    List<GPAStat> gpaList = [];
-    list1.add(GPACourse("高等数学2A", "数学", 93, 6, 4));
-    list1.add(GPACourse("C/C++程序设计（双语）", "计算机", 91, 3.5, 4));
-    list1.add(GPACourse("线性代数及其应用", "数学", 94, 3.5, 4));
-    list1.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 55, 3, 0));
-    list1.add(GPACourse("大学英语1", "外语", 97, 2, 4));
-    list1.add(GPACourse("计算机导论", "计算机", 76, 1.5, 2.7));
-    list1.add(GPACourse("大学生心理健康", "文化素质教育必修", 60, 1, 2));
-    list1.add(GPACourse("体育A", "体育", 78, 1, 2.8));
-    list1.add(GPACourse("健康教育", "健康教育", 86, 0.5, 3));
-    list1.add(GPACourse("大学计算机基础1", "计算机", 100, 0, 4));
-    List<GPACourse> list2 = [];
-    list2.add(GPACourse("高等数学2A", "数学", 63, 6, 2.2));
-    list2.add(GPACourse("C/C++程序设计（双语）", "计算机", 25, 3.5, 0));
-    list2.add(GPACourse("线性代数及其应用", "数学", 85, 3.5, 2.9));
-    list2.add(GPACourse("思想道德修养与法律基础哈哈哈", "思想政治理论", 15, 3, 0));
-    list2.add(GPACourse("大学英语1", "外语", 57, 2, 0));
-    list2.add(GPACourse("计算机导论", "计算机", 86, 1.5, 3));
-    list2.add(GPACourse("大学生心理健康", "文化素质教育必修", 47, 1, 0));
-    list2.add(GPACourse("体育A", "体育", 23, 1, 0));
-    list2.add(GPACourse("健康教育", "健康教育", 47, 0.5, 0));
-    list2.add(GPACourse("大学计算机基础1", "计算机", 11, 0, 0));
-    gpaList.add(GPAStat(84.88, 3.484, 22.0, list1));
-    gpaList.add(GPAStat(77.72, 3.060, 25.0, list2));
-    gpaList.add(GPAStat(85.86, 3.466, 29.5, list1));
-    gpaList.add(GPAStat(89.00, 3.700, 1.0, list1));
     return AppBar(
-      backgroundColor: const Color.fromRGBO(127, 139, 89, 1.0),
+      backgroundColor: _baseColor,
       elevation: 0,
       leading: Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -86,9 +65,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(Icons.error_outline, color: Colors.white, size: 25),
               onTap: () {
                 //TODO popup info
-                Provider.of<GPANotifier>(context, listen: false)
-                    .gpaStatsWithNotify = gpaList;
-                ToastProvider.running('显示假数据');
+                ToastProvider.error("悲，还没做呢");
               }),
         ),
         Padding(
@@ -357,7 +334,7 @@ class GPAStatsWidget extends StatelessWidget {
   GPAStatsWidget(this.notifier);
 
   static const textStyle = TextStyle(
-      color: Color.fromRGBO(169, 179, 144, 1.0),
+      color: Color.fromRGBO(169, 179, 144, 1),
       fontWeight: FontWeight.bold,
       fontSize: 13.0);
 

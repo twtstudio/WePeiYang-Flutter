@@ -142,15 +142,22 @@ changeEmail(String email,
 
 /// 检测学号和用户名是否重复
 checkInfo1(String userNumber, String username,
-    {@required OnSuccess onSuccess, OnFailure onFailure}) async{
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   await DioService().get("register/checking/$userNumber/$username",
       onSuccess: onSuccess, onFailure: onFailure);
 }
 
 /// 检测身份证、邮箱、手机号是否重复（其实手机号不用查重，获取验证码时已经查重过了）
 checkInfo2(String idNumber, String email, String phone,
-    {@required OnSuccess onSuccess, OnFailure onFailure}) async{
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   await DioService().post("register/checking",
       queryParameters: {'idNumber': idNumber, 'email': email, 'phone': phone},
-      onSuccess: onSuccess, onFailure: onFailure);
+      onSuccess: onSuccess,
+      onFailure: onFailure);
+}
+
+/// 获得当前学期信息，仅在用户手动登录后被调用
+getSemesterInfo({@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  await DioService()
+      .get("semester", onSuccess: onSuccess, onFailure: onFailure);
 }

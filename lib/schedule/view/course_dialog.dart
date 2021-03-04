@@ -140,7 +140,7 @@ class CourseDialog extends Dialog {
                 Text('WEEKS', style: hintNameStyle),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
-                  child: Text("${course.arrange.start}-${course.arrange.end}",
+                  child: Text("${course.week.start}-${course.week.end}",
                       style: hintValueStyle),
                 )
               ],

@@ -27,8 +27,7 @@ class FavorColors {
   static Color get gpaColor => Color(_gpaColor.value);
 
   /// 课程表主色调，缓存类型是List<String>哦
-  static var _scheduleColor =
-      PrefsBean<List>("scheduleColor", _scheduleColorDefault);
+  static var _scheduleColor = PrefsBean<List>("scheduleColor", _blueRelated);
 
   static List<Color> get scheduleColor =>
       _scheduleColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
@@ -36,12 +35,39 @@ class FavorColors {
   /// 调整为默认色调，这里使用fromRGBO可以在ide中显示默认色
   static setDefault() {
     _gpaColor.value = Color.fromRGBO(127, 139, 89, 1).value; // #7F8B59
-    _scheduleColor.value = _scheduleColorDefault;
+    setBlueRelatedSchedule();
   }
 
-  static final List _scheduleColorDefault = [
-    Color.fromRGBO(153, 156, 175, 1).value.toString(), // #999CAF
-    Color.fromRGBO(128, 119, 138, 1).value.toString(), // #80778A
+  /// 这个是默认颜色哦
+  static setBlueRelatedSchedule() => _scheduleColor.value = _blueRelated;
+
+  static setGreenRelatedSchedule() => _scheduleColor.value = _greenRelated;
+
+  static setBrownRelatedSchedule() => _scheduleColor.value = _brownRelated;
+
+  static final List _blueRelated = [
+    Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
+    Color.fromRGBO(122, 119, 138, 1).value.toString(), // #7A778A
+    Color.fromRGBO(142, 122, 150, 1).value.toString(), // #8E7A96
+    Color.fromRGBO(130, 134, 161, 1).value.toString(), // #8286A1
+  ];
+
+  static final List _greenRelated = [
+    Color.fromRGBO(127, 148, 105, 1).value.toString(),
+    Color.fromRGBO(188, 200, 178, 1).value.toString(),
+    Color.fromRGBO(100, 109, 90, 1).value.toString(),
+    Color.fromRGBO(173, 180, 147, 1).value.toString(),
+    Color.fromRGBO(83, 89, 78, 1).value.toString(),
+    Color.fromRGBO(165, 180, 149, 1).value.toString(),
+  ];
+
+  static final List _brownRelated = [
+    Color.fromRGBO(196, 148, 125, 1).value.toString(),
+    Color.fromRGBO(212, 188, 162, 1).value.toString(),
+    Color.fromRGBO(128, 95, 78, 1).value.toString(),
+    Color.fromRGBO(201, 169, 148, 1).value.toString(),
+    Color.fromRGBO(102, 88, 82, 1).value.toString(),
+    Color.fromRGBO(159, 136, 118, 1).value.toString(),
   ];
 }

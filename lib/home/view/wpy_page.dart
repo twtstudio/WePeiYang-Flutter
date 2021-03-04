@@ -14,10 +14,6 @@ final hintStyle = const TextStyle(
 class WPYPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<LibraryBean> libraries = [];
-    libraries.add(LibraryBean('Design Psychology1', '2018-08-08'));
-    libraries.add(LibraryBean('User Experience', '2018-07-29'));
-    libraries.add(LibraryBean('The visual design', '2018-07-26'));
     return Material(
       child: Theme(
         data: ThemeData(accentColor: Colors.white),
@@ -35,9 +31,6 @@ class WPYPage extends StatelessWidget {
 
             /// 当天课程
             SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-            /// 废弃的library罢了
-            // SliverLibraryWidget(libraries),
 
             /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
@@ -121,99 +114,6 @@ class SliverCardsWidget extends StatelessWidget {
                 ),
               );
             }),
-      ),
-    );
-  }
-}
-
-class SliverLibraryWidget extends StatelessWidget {
-  final List<LibraryBean> libraries;
-
-  SliverLibraryWidget(this.libraries);
-
-  @override
-  Widget build(BuildContext context) {
-    var libraryCount = libraries.length >= 10
-        ? libraries.length.toString()
-        : '0${libraries.length}';
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 15.0),
-            alignment: Alignment.centerLeft,
-            child: Text('Library $libraryCount', style: hintStyle),
-          ),
-          Container(
-            height: 170.0,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                itemCount: libraries.length,
-                itemBuilder: (context, i) => GestureDetector(
-                      onTap: () {
-//                        Navigator.push(context, MaterialPageRoute(builder: (context) => Text('123')));
-                      },
-                      child: Container(
-                        height: 170.0,
-                        width: 150.0,
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 3.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                  margin: EdgeInsets.symmetric(vertical: 2.0),
-                                  decoration: BoxDecoration(
-                                      color: MyColors.colorList[(i + 3) % 5],
-                                      borderRadius: BorderRadius.only(
-                                          topLeft:
-                                              Radius.elliptical(60.0, 120.0),
-                                          bottomLeft:
-                                              Radius.elliptical(60.0, 120.0))),
-                                  width: 6.0),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 11.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 95.0,
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(libraries[i].book,
-                                            style: hintStyle),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        padding:
-                                            const EdgeInsets.only(top: 15.0),
-                                        child: Text('Time:',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: MyColors.deepBlue,
-                                            )),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(libraries[i].time,
-                                            style: TextStyle(
-                                                fontSize: 14.0,
-                                                color: MyColors.deepBlue)),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )),
-          )
-        ],
       ),
     );
   }
