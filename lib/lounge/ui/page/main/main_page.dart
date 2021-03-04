@@ -14,7 +14,7 @@ import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/home_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
-
+import 'package:wei_pei_yang_demo/commons/update/update.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -29,7 +29,15 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await timeModel.setTime();
+      checkUpdate();
     });
+  }
+
+  String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
+
+  void checkUpdate() {
+    UpdateManager.init();
+    UpdateManager.checkUpdate(context, url);
   }
 
   @override
