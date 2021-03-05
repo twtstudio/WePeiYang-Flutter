@@ -60,12 +60,10 @@ class HiveManager {
       Hive.registerAdapter<Buildings>(BuildingsAdapter());
       _instance = HiveManager();
       _instance._temporaryData = await Hive.openBox<Buildings>(temporary);
-
       _instance._boxesKeys = await Hive.openBox<LocalEntry>(boxes);
       _instance._favourList = await Hive.openBox<Classroom>(favourList);
       // print('_favourList init finish');
-      for (var k in _instance._boxesKeys.values) {
-        var key = k.key;
+      for (var key in _instance._boxesKeys.keys) {
         var e = await Hive.boxExists(key);
         if (e) {
           _instance._buildingBoxes[key] = await Hive.openLazyBox<Building>(key);

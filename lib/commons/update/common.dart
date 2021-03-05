@@ -29,10 +29,16 @@ class CommonUtils {
   }
 
   ///根据更新信息获取apk安装文件
-  static Future<File> getApkFileByUpdateEntity(Version version) async {
+  static Future<File> getApkFileWithTemporaryName(Version version) async {
+    String path = await getApkPath(true, version);
+    return File(path);
+  }
+
+  static Future<String> getApkPath(bool temporary,Version version) async {
     String appName = getApkNameByDownloadUrl(version.path);
     String dirPath = await getDownloadDirPath();
-    return File("$dirPath/${version.version}/$appName");
+    String endName = temporary == true ? '.temporary' : '';
+    return "$dirPath/${version.version}/$appName$endName";
   }
 
   ///根据下载地址获取文件名

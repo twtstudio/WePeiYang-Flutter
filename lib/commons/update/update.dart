@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/update/app_cache_manager.dart';
 import 'package:wei_pei_yang_demo/commons/update/common.dart';
 import 'package:wei_pei_yang_demo/commons/update/http.dart';
 import 'package:wei_pei_yang_demo/commons/update/update_parser.dart';
 import 'package:wei_pei_yang_demo/commons/update/update_prompter.dart';
-
 
 /// 版本更新管理
 class UpdateManager {
@@ -14,14 +14,17 @@ class UpdateManager {
   }
 
   static void checkUpdate(BuildContext context, String url) {
+    searchLocalCache();
+    delAllTemporaryFile();
+    searchLocalCache();
     HttpUtils.get(url).then((response) {
-      UpdateParser.parseJson(response.toString()).then((value) => {
-            UpdatePrompter(
-                updateEntity: value,
-                onInstall: (String filePath) {
-                  CommonUtils.installAPP(filePath);
-                }).show(context)
-          });
+      UpdateParser.parseJson(response.toString())?.then((value) {
+        UpdatePrompter(
+            updateEntity: value,
+            onInstall: (String filePath) {
+              CommonUtils.installAPP(filePath);
+            }).show(context);
+      });
     }).catchError((onError) {
       // ToastProvider.error(onError.toString());
       throw onError;
