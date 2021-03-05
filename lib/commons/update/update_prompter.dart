@@ -75,7 +75,7 @@ class UpdatePrompter {
         _dialog.update(_progress);
       }
     }).then((value) async {
-      var path = await CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
+      var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
       _apkFile.rename(path);
       doInstall();
     }).catchError((value) {

@@ -78,7 +78,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         // TODO: 这里有bug，可能导致收藏列表崩溃
         ChangeNotifierProvider(
-            create: (context) => LoungeTimeModel()..setTime(init: true)),
+            create: (context) =>
+            LoungeTimeModel()
+              ..setTime(init: true)),
         ChangeNotifierProvider(create: (context) => RoomFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
@@ -89,8 +91,8 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
           theme: ThemeData(
-              // fontFamily: 'Montserrat'
-              ),
+            // fontFamily: 'Montserrat'
+          ),
           onGenerateRoute: RouterManager.create,
           localizationsDelegates: [
             S.delegate,
@@ -102,9 +104,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           localeListResolutionCallback: (List<Locale> preferredLocales,
               Iterable<Locale> supportedLocales) {
             var supportedLanguages =
-                supportedLocales.map((e) => e.languageCode).toList();
+            supportedLocales.map((e) => e.languageCode).toList();
             var preferredLanguages =
-                preferredLocales.map((e) => e.languageCode).toList();
+            preferredLocales.map((e) => e.languageCode).toList();
             var availableLanguages = preferredLanguages
                 .where((element) => supportedLanguages.contains(element))
                 .toList();
@@ -112,16 +114,17 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           },
           locale: localModel.locale(),
           home: StartUpWidget(),
-          builder: (context, child) => GestureDetector(
-            onTapDown: (TapDownDetails details) {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus &&
-                  currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus.unfocus();
-              }
-            },
-            child: child,
-          ),
+          builder: (context, child) =>
+              GestureDetector(
+                onTapDown: (TapDownDetails details) {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus.unfocus();
+                  }
+                },
+                child: child,
+              ),
         );
       }),
     );
@@ -137,7 +140,6 @@ class StartUpWidget extends StatefulWidget {
 class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await HiveManager.init();
@@ -146,8 +148,14 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    var height = MediaQuery
+        .of(context)
+        .size
+        .height;
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
 
