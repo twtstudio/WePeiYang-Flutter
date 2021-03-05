@@ -22,6 +22,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
       int current = Provider.of<ScheduleNotifier>(context, listen: false).currentWeekWithNotify;
       if (current == 1) current++;
       return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         height: 85,
         child: ListView.builder(
             itemCount: notifier.weekCount,

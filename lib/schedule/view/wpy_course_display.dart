@@ -12,11 +12,11 @@ class TodayCoursesWidget extends StatelessWidget {
       return Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 12.0),
+            padding: const EdgeInsets.fromLTRB(25.0, 20.0, 0.0, 12.0),
             alignment: Alignment.centerLeft,
             child: Text('课程表',
                 style: TextStyle(
-                    fontSize: 17.0,
+                    fontSize: 16,
                     color: Color.fromRGBO(100, 103, 122, 1.0),
                     fontWeight: FontWeight.bold)),
           ),
@@ -31,7 +31,7 @@ class TodayCoursesWidget extends StatelessWidget {
     List<ScheduleCourse> todayCourses = [];
     int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
-    if (DateTime.now().hour < 21) nightMode = false;
+    if (DateTime.now().hour < 22) nightMode = false;
     bool flag;
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
@@ -40,7 +40,7 @@ class TodayCoursesWidget extends StatelessWidget {
       else
         flag = judgeActiveInDay(
             notifier.currentWeekWithNotify, today, notifier.weekCount, course);
-      if (flag) todayCourses.add(course);
+      if (flag) todayCourses.tryMerge(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(
@@ -117,5 +117,17 @@ class TodayCoursesWidget extends StatelessWidget {
               );
             }),
       );
+  }
+}
+
+/// 尝试在添加今日课程时合并相同课程
+extension TryMerge on List<ScheduleCourse> {
+  void tryMerge(ScheduleCourse course) {
+    if (isEmpty)
+      add(course);
+    else if (last.courseName == course.courseName)
+      last.arrange.end = course.arrange.end;
+    else
+      add(course);
   }
 }

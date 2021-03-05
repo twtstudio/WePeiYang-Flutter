@@ -9,10 +9,8 @@ import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 class SettingPage extends StatefulWidget {
-  final _state = _SettingPageState();
-
   @override
-  _SettingPageState createState() => _state;
+  _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
@@ -72,9 +70,7 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, '/language_setting').then((_) {
                   /// 使用pop返回此页面时进行rebuild
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    widget._state.setState(() {});
-                  });
+                  this.setState(() {});
                 }),
                 splashFactory: InkRipple.splashFactory,
                 borderRadius: BorderRadius.circular(9),
@@ -114,7 +110,7 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, '/color_setting').then((_) {
                   /// 使用pop返回此页面时进行rebuild
-                  widget._state.setState(() {});
+                  this.setState(() {});
                 }),
                 splashFactory: InkRipple.splashFactory,
                 borderRadius: BorderRadius.circular(9),
@@ -235,7 +231,7 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () =>
                     Navigator.pushNamed(context, '/schedule_setting').then((_) {
                   /// 使用pop返回此页面时进行rebuild
-                  widget._state.setState(() {});
+                  this.setState(() {});
                 }),
                 splashFactory: InkRipple.splashFactory,
                 borderRadius: BorderRadius.circular(9),

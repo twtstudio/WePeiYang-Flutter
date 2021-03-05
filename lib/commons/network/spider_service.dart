@@ -33,7 +33,8 @@ void login(BuildContext context, String name, String pw, String captcha,
     var matched =
         getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
     var notifier = Provider.of<ScheduleNotifier>(
-        WeiPeiYangApp.navigatorState.currentContext, listen: false);
+        WeiPeiYangApp.navigatorState.currentContext,
+        listen: false);
     notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
     notifier.currentWeekWithNotify =
         int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
@@ -46,8 +47,8 @@ void login(BuildContext context, String name, String pw, String captcha,
 }
 
 /// 获取包含 session、execution 的 map
-void getExecAndSession({@required void Function(Map) onSuccess}) {
-  fetch("https://sso.tju.edu.cn/cas/login").then((response) {
+getExecAndSession({@required void Function(Map) onSuccess}) async {
+  await fetch("https://sso.tju.edu.cn/cas/login").then((response) {
     var map = Map<String, String>();
     response.headers.map['set-cookie'].forEach((string) {
       if (string.contains('SESSION'))

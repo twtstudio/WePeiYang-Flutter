@@ -21,31 +21,38 @@ class MyColors {
 }
 
 class FavorColors {
-  /// gpa主色调
-  static var _gpaColor = PrefsBean<int>("gpaColor", 0x7F8B59);
+  /// gpa主色调，缓存类型是List<String>哦
+  static var _gpaColor = PrefsBean<List>(
+      "gpaColor", [Color.fromRGBO(127, 139, 89, 1).value.toString()]);
 
-  static Color get gpaColor => Color(_gpaColor.value);
+  static List<Color> get gpaColor =>
+      _gpaColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
   /// 课程表主色调，缓存类型是List<String>哦
-  static var _scheduleColor = PrefsBean<List>("scheduleColor", _blueRelated);
+  static var _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
 
   static List<Color> get scheduleColor =>
       _scheduleColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
   /// 调整为默认色调，这里使用fromRGBO可以在ide中显示默认色
   static setDefault() {
-    _gpaColor.value = Color.fromRGBO(127, 139, 89, 1).value; // #7F8B59
+    setGreenRelatedGPA();
     setBlueRelatedSchedule();
   }
 
-  /// 这个是默认颜色哦
-  static setBlueRelatedSchedule() => _scheduleColor.value = _blueRelated;
+  /// 这个是GPA默认颜色哦
+  static setGreenRelatedGPA() => _gpaColor.value = [
+        Color.fromRGBO(127, 139, 89, 1).value.toString()
+      ]; // #7F8B59
 
-  static setGreenRelatedSchedule() => _scheduleColor.value = _greenRelated;
+  /// 这个是课程表默认颜色哦
+  static setBlueRelatedSchedule() => _scheduleColor.value = _blueSchedule;
 
-  static setBrownRelatedSchedule() => _scheduleColor.value = _brownRelated;
+  static setGreenRelatedSchedule() => _scheduleColor.value = _greenSchedule;
 
-  static final List _blueRelated = [
+  static setBrownRelatedSchedule() => _scheduleColor.value = _brownSchedule;
+
+  static final List<String> _blueSchedule = [
     Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
     Color.fromRGBO(122, 119, 138, 1).value.toString(), // #7A778A
@@ -53,7 +60,7 @@ class FavorColors {
     Color.fromRGBO(130, 134, 161, 1).value.toString(), // #8286A1
   ];
 
-  static final List _greenRelated = [
+  static final List<String> _greenSchedule = [
     Color.fromRGBO(127, 148, 105, 1).value.toString(),
     Color.fromRGBO(188, 200, 178, 1).value.toString(),
     Color.fromRGBO(100, 109, 90, 1).value.toString(),
@@ -62,7 +69,7 @@ class FavorColors {
     Color.fromRGBO(165, 180, 149, 1).value.toString(),
   ];
 
-  static final List _brownRelated = [
+  static final List<String> _brownSchedule = [
     Color.fromRGBO(196, 148, 125, 1).value.toString(),
     Color.fromRGBO(212, 188, 162, 1).value.toString(),
     Color.fromRGBO(128, 95, 78, 1).value.toString(),

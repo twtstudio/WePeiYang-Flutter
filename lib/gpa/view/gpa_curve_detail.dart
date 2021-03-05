@@ -29,11 +29,11 @@ class CurveText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
+      padding: const EdgeInsets.fromLTRB(25.0, 25.0, 0.0, 20.0),
       alignment: Alignment.centerLeft,
       child: Text("${notifier.typeName()}曲线",
           style: TextStyle(
-              fontSize: 17.0,
+              fontSize: 16.0,
               color: Color.fromRGBO(100, 103, 122, 1.0),
               fontWeight: FontWeight.bold)));
 }

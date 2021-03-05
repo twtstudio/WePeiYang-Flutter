@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
-class MorePage extends StatelessWidget {
+class DrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cards = GlobalModel().cards;

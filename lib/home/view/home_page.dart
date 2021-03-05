@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
-import 'package:wei_pei_yang_demo/home/view/more_page.dart';
+import 'package:wei_pei_yang_demo/home/view/drawer_page.dart';
 import '../model/home_model.dart';
 import 'wpy_page.dart';
 
@@ -21,8 +21,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     pages
       ..add(WPYPage())
-      ..add(MorePage())
       ..add(FeedbackHomePage())
+      ..add(DrawerPage())
       ..add(UserPage());
   }
 
@@ -51,10 +51,10 @@ class _HomePageState extends State<HomePage> {
                           width: 25,
                           height: 25,
                           child: Image(
-                              image: AssetImage('assets/images/icon_home.png'),
-                              color: _currentIndex == 0
-                                  ? MyColors.deepBlue
-                                  : MyColors.deepDust),
+                              image: _currentIndex == 0
+                                  ? AssetImage(
+                                      'assets/images/icon_home_active.png')
+                                  : AssetImage('assets/images/icon_home.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
@@ -80,15 +80,15 @@ class _HomePageState extends State<HomePage> {
                           width: 25,
                           height: 25,
                           child: Image(
-                              image:
-                                  AssetImage('assets/images/icon_action.png'),
-                              color: _currentIndex == 1
-                                  ? MyColors.deepBlue
-                                  : MyColors.deepDust),
+                              image: _currentIndex == 1
+                                  ? AssetImage(
+                                      'assets/images/icon_feedback_active.png')
+                                  : AssetImage(
+                                      'assets/images/icon_feedback.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
-                          child: Text('抽屉',
+                          child: Text('校务',
                               style: _currentIndex == 1
                                   ? currentStyle
                                   : otherStyle),
@@ -110,15 +110,15 @@ class _HomePageState extends State<HomePage> {
                           width: 25,
                           height: 25,
                           child: Image(
-                              image:
-                                  AssetImage('assets/images/icon_feedback.png'),
-                              color: _currentIndex == 2
-                                  ? MyColors.deepBlue
-                                  : MyColors.deepDust),
+                              image: _currentIndex == 2
+                                  ? AssetImage(
+                                      'assets/images/icon_action_active.png')
+                                  : AssetImage(
+                                      'assets/images/icon_action.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
-                          child: Text('校务',
+                          child: Text('抽屉',
                               style: _currentIndex == 2
                                   ? currentStyle
                                   : otherStyle),
@@ -140,10 +140,10 @@ class _HomePageState extends State<HomePage> {
                           width: 25,
                           height: 25,
                           child: Image(
-                              image: AssetImage('assets/images/icon_user.png'),
-                              color: _currentIndex == 3
-                                  ? MyColors.deepBlue
-                                  : MyColors.deepDust),
+                              image: _currentIndex == 3
+                                  ? AssetImage(
+                                      'assets/images/icon_user_active.png')
+                                  : AssetImage('assets/images/icon_user.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),

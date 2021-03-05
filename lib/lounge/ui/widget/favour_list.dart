@@ -24,11 +24,11 @@ class SRFavourWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.symmetric(horizontal: 25),
               child: Text(
                 title,
                 style: TextStyle(
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Color(0XFF62677B)),
               ),
@@ -67,11 +67,11 @@ class FavourListWidget extends StatelessWidget {
                       Expanded(
                         child: Container(
                           child: Center(
-                            child: Text('自习室收藏存储在本地'
-                            ,style: TextStyle(
-                                color: Color(0xffcdcdd3),
-                                fontSize: 12
-                              ),),
+                            child: Text(
+                              '自习室收藏存储在本地',
+                              style: TextStyle(
+                                  color: Color(0xffcdcdd3), fontSize: 12),
+                            ),
                           ),
                         ),
                       ),

@@ -4,10 +4,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 class ColorSettingPage extends StatefulWidget {
-  final _state = _ColorSettingPageState();
-
   @override
-  _ColorSettingPageState createState() => _state;
+  _ColorSettingPageState createState() => _ColorSettingPageState();
 }
 
 class _ColorSettingPageState extends State<ColorSettingPage> {

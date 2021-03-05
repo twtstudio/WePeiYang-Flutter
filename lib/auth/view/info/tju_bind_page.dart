@@ -10,10 +10,8 @@ import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 class TjuBindPage extends StatefulWidget {
-  final _state = _TjuBindPageState();
-
   @override
-  _TjuBindPageState createState() => _state;
+  _TjuBindPageState createState() => _TjuBindPageState();
 }
 
 class _TjuBindPageState extends State<TjuBindPage> {
@@ -24,9 +22,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   TextEditingController nameController;
   TextEditingController pwController;
-  Map<String, String> params = Map();
-  Widget imageWidget;
-  int index;
+  CaptchaWidget captchaWidget = CaptchaWidget();
 
   @override
   void initState() {
@@ -40,25 +36,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
-    index = GlobalModel().captchaIndex;
-    GlobalModel().increase();
-    getExecAndSession(onSuccess: (map) {
-      params = map;
-      // TODO initState中的setState
-      setState(() {
-        imageWidget = GestureDetector(
-          // TODO 点击图片刷新index
-          onTap: () {
-            setState(() => index++);
-            GlobalModel().increase();
-          },
-          child: Image.network(
-              "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-              headers: {"Cookie": map['session']},
-              fit: BoxFit.fill),
-        );
-      });
-    });
     super.initState();
   }
 
@@ -81,10 +58,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error(message);
       return;
     }
-    login(context, tjuuname, tjupasswd, captcha, params,
+    login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
           ToastProvider.success("办公网绑定成功");
-          Provider.of<GPANotifier>(context, listen: false).refreshGPA(hint: false).call();
+          Provider.of<GPANotifier>(context, listen: false)
+              .refreshGPA(hint: false)
+              .call();
           Provider.of<ScheduleNotifier>(context, listen: false)
               .refreshSchedule(hint: false)
               .call();
@@ -119,27 +98,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     context: context,
                     barrierDismissible: true,
                     builder: (BuildContext context) => TjuUnbindDialog())
-                .then((_) => widget._state.setState(() {
-                      if (pref.isBindTju.value == false) {
-                        GlobalModel().increase();
-                        getExecAndSession(onSuccess: (map) {
-                          params = map;
-                          setState(() {
-                            imageWidget = GestureDetector(
-                              // TODO 点击图片刷新index
-                              onTap: () {
-                                setState(() => index++);
-                                GlobalModel().increase();
-                              },
-                              child: Image.network(
-                                  "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                                  headers: {"Cookie": map['session']},
-                                  fit: BoxFit.fill),
-                            );
-                          });
-                        });
-                      }
-                    })),
+                .then((_) => this.setState(() {})),
             color: Color.fromRGBO(79, 88, 107, 1),
             splashColor: MyColors.brightBlue,
             child: Text('解除绑定',
@@ -169,7 +128,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
               maxHeight: 55,
             ),
             child: TextField(
-              keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.next,
               controller: nameController,
               focusNode: _accountFocus,
@@ -249,12 +207,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 ),
               ),
               Container(
-                height: 55,
-                width: 120,
-                margin: const EdgeInsets.only(left: 20),
-                alignment: Alignment.centerRight,
-                child: imageWidget,
-              )
+                  height: 55,
+                  width: 120,
+                  margin: const EdgeInsets.only(left: 20),
+                  alignment: Alignment.centerRight,
+                  child: captchaWidget)
             ],
           ),
         ),
@@ -343,5 +300,49 @@ class _TjuBindPageState extends State<TjuBindPage> {
         ),
       ),
     );
+  }
+}
+
+class CaptchaWidget extends StatefulWidget {
+  final Map<String, String> params = Map();
+
+  @override
+  _CaptchaWidgetState createState() => _CaptchaWidgetState();
+}
+
+class _CaptchaWidgetState extends State<CaptchaWidget> {
+  Widget _imageWidget;
+  int index;
+
+  @override
+  void initState() {
+    index = GlobalModel().captchaIndex;
+    GlobalModel().increase();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: getExecAndSession(onSuccess: (map) async {
+          widget.params.clear();
+          widget.params.addAll(map);
+          _imageWidget = InkWell(
+            onTap: () {
+              print("我点击了嗷 $index");
+              setState(() => index++);
+              GlobalModel().increase();
+            },
+            child: Image.network(
+                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
+                key: ValueKey(index),
+                headers: {"Cookie": map['session']},
+                fit: BoxFit.fill),
+          );
+        }),
+        builder: (context, snapshot) =>
+            (snapshot.connectionState == ConnectionState.done)
+                ? _imageWidget
+                : Container());
   }
 }

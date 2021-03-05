@@ -18,7 +18,7 @@ class GPAPage extends StatelessWidget {
         .call();
   }
 
-  final Color _baseColor = FavorColors.gpaColor;
+  final Color _baseColor = FavorColors.gpaColor.first;
 
   @override
   Widget build(BuildContext context) {

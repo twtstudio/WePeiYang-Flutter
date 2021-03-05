@@ -157,9 +157,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
     return Container(
       color: Colors.white,
-      child: Image(
-          fit: BoxFit.fill,
-          image: AssetImage('assets/images/splash_screen.png')),
+      child: Center(
+        child: Image(
+            fit: BoxFit.contain,
+            image: AssetImage('assets/images/splash_screen.png')),
+      ),
       constraints: BoxConstraints.expand(),
     );
   }
