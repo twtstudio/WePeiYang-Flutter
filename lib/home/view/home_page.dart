@@ -54,7 +54,8 @@ class _HomePageState extends State<HomePage> {
                               image: _currentIndex == 0
                                   ? AssetImage(
                                       'assets/images/icon_home_active.png')
-                                  : AssetImage('assets/images/icon_home.png')),
+                                  : AssetImage(
+                                      'assets/images/icon_home.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
@@ -143,7 +144,8 @@ class _HomePageState extends State<HomePage> {
                               image: _currentIndex == 3
                                   ? AssetImage(
                                       'assets/images/icon_user_active.png')
-                                  : AssetImage('assets/images/icon_user.png')),
+                                  : AssetImage(
+                                      'assets/images/icon_user.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),

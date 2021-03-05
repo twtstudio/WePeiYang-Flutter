@@ -6,6 +6,7 @@ import 'drawer_page.dart';
 import '../../gpa/view/gpa_curve_detail.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
+import 'package:flutter/services.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -13,8 +14,10 @@ final hintStyle = const TextStyle(
     fontWeight: FontWeight.bold);
 
 class WPYPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Material(
       child: Theme(
         data: ThemeData(accentColor: Colors.white),

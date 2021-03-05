@@ -6,6 +6,7 @@ class ResetDoneWidget extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+          brightness: Brightness.light,
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
           leading: Padding(

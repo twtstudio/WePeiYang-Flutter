@@ -59,6 +59,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
+          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(

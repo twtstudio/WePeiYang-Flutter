@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:flutter/services.dart';
 
 class DrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cards = GlobalModel().cards;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Container(
       padding: const EdgeInsets.only(top: 65),
       child: GridView.count(

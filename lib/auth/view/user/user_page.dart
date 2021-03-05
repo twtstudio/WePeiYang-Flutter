@@ -3,10 +3,12 @@ import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:flutter/services.dart';
 
 class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     const textStyle = TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,

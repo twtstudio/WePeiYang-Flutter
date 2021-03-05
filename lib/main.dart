@@ -28,17 +28,18 @@ import 'home/model/home_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CommonPreferences.initPrefs();
+  runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0xFF000000),
-        systemNavigationBarDividerColor: null,
-        statusBarColor: Colors.transparent, //
-        systemNavigationBarIconBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light);
+        // systemNavigationBarColor: Color(0xFF000000),
+        // systemNavigationBarDividerColor: null,
+        statusBarColor: Colors.transparent,
+        // systemNavigationBarIconBrightness: Brightness.light,
+        // statusBarIconBrightness: Brightness.dark,
+        // statusBarBrightness: Brightness.light
+        );
     SystemChrome.setSystemUIOverlayStyle(dark);
   }
-  runApp(WeiPeiYangApp());
 }
 
 // 全局捕获异常，还没想好
@@ -78,9 +79,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         // TODO: 这里有bug，可能导致收藏列表崩溃
         ChangeNotifierProvider(
-            create: (context) =>
-            LoungeTimeModel()
-              ..setTime(init: true)),
+            create: (context) => LoungeTimeModel()..setTime(init: true)),
         ChangeNotifierProvider(create: (context) => RoomFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
@@ -90,9 +89,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
-          theme: ThemeData(
-            // fontFamily: 'Montserrat'
-          ),
+          theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
           localizationsDelegates: [
             S.delegate,
@@ -104,9 +101,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           localeListResolutionCallback: (List<Locale> preferredLocales,
               Iterable<Locale> supportedLocales) {
             var supportedLanguages =
-            supportedLocales.map((e) => e.languageCode).toList();
+                supportedLocales.map((e) => e.languageCode).toList();
             var preferredLanguages =
-            preferredLocales.map((e) => e.languageCode).toList();
+                preferredLocales.map((e) => e.languageCode).toList();
             var availableLanguages = preferredLanguages
                 .where((element) => supportedLanguages.contains(element))
                 .toList();
@@ -114,17 +111,16 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           },
           locale: localModel.locale(),
           home: StartUpWidget(),
-          builder: (context, child) =>
-              GestureDetector(
-                onTapDown: (TapDownDetails details) {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus &&
-                      currentFocus.focusedChild != null) {
-                    FocusManager.instance.primaryFocus.unfocus();
-                  }
-                },
-                child: child,
-              ),
+          builder: (context, child) => GestureDetector(
+            onTapDown: (TapDownDetails details) {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus.unfocus();
+              }
+            },
+            child: child,
+          ),
         );
       }),
     );
@@ -141,28 +137,18 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await HiveManager.init();
+      _autoLogin(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoLogin(context);
-    });
-
     return Container(
       color: Colors.white,
       child: Center(
@@ -174,8 +160,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     );
   }
 
-  void _autoLogin(BuildContext context) async {
-
+  void _autoLogin(BuildContext context) {
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
@@ -184,25 +169,19 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         prefs.account.value == "" ||
         prefs.password.value == "") {
       /// 既然没登陆过就多看会启动页吧
-      Timer(Duration(seconds: 3), () {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    }
-
-    /// 稍微显示一会启动页，不然它的意义是什么555
-    else {
-      // TODO 为啥会请求两次呢 迷
-      Timer(Duration(milliseconds: 500), () {
-        /// 用缓存中的数据自动登录，失败则仍跳转至login页面
-        login(prefs.account.value, prefs.password.value, onSuccess: (_) {
-          if (context != null)
+      Future.delayed(Duration(seconds: 3))
+          .then((_) => Navigator.pushReplacementNamed(context, '/login'));
+    } else {
+      /// 稍微显示一会启动页，不然它的意义是什么555
+      /// 用缓存中的数据自动登录，失败则仍跳转至login页面
+      Future.delayed(Duration(milliseconds: 500)).then((_) =>
+          login(prefs.account.value, prefs.password.value, onSuccess: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
-        }, onFailure: (_) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/login', (route) => false);
-        });
-      });
+          }, onFailure: (_) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login', (route) => false);
+          }));
     }
   }
 }

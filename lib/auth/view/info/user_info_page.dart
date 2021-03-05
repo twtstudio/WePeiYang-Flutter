@@ -29,6 +29,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
           elevation: 0,
+          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(

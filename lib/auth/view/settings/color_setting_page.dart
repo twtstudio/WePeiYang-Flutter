@@ -20,6 +20,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
+          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(

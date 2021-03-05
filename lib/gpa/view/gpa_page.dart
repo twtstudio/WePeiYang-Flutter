@@ -8,14 +8,25 @@ import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
 import '../../main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
+import 'package:flutter/services.dart';
 
-class GPAPage extends StatelessWidget {
+class GPAPage extends StatefulWidget {
+  @override
+  _GPAPageState createState() => _GPAPageState();
+}
 
+class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
-  GPAPage() {
+  _GPAPageState() {
     Provider.of<GPANotifier>(WeiPeiYangApp.navigatorState.currentContext)
         .refreshGPA(hint: false)
         .call();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    super.dispose();
   }
 
   final Color _baseColor = FavorColors.gpaColor.first;

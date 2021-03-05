@@ -46,6 +46,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
+      brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
           child: Icon(Icons.arrow_back,

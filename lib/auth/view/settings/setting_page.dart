@@ -43,6 +43,7 @@ class _SettingPageState extends State<SettingPage> {
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
           elevation: 0,
+          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
