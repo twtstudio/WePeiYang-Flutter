@@ -1,20 +1,20 @@
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 
 class ClassPlanModel extends ViewStateListModel {
-  ClassPlanModel({this.room, this.scheduleModel}) {
-    scheduleModel.addListener(refresh);
+  ClassPlanModel({this.room, this.timeModel}) {
+    timeModel.addListener(refresh);
   }
 
   final Classroom room;
-  final SRTimeModel scheduleModel;
+  final LoungeTimeModel timeModel;
 
-  DateTime get dateTime => scheduleModel.dateTime;
+  DateTime get dateTime => timeModel.dateTime;
 
-  List<ClassTime> get classTime => scheduleModel.classTime;
+  List<ClassTime> get classTime => timeModel.classTime;
 
   final Map<String, List<String>> _plans = {};
 
@@ -23,9 +23,9 @@ class ClassPlanModel extends ViewStateListModel {
   @override
   refresh() async {
     setBusy();
-    if (scheduleModel.state == ViewState.error) {
+    if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
-    } else if (scheduleModel.state == ViewState.idle) {
+    } else if (timeModel.state == ViewState.idle) {
       super.refresh();
     }
   }
@@ -37,7 +37,7 @@ class ClassPlanModel extends ViewStateListModel {
 
     _plans.clear();
     var plan = await HiveManager.instance
-        .getRoomPlans(r: room, dateTime: scheduleModel.dateTime);
+        .getRoomPlans(r: room, dateTime: timeModel.dateTime);
     _plans.addAll(plan);
     return _plans.values.toList();
   }

@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
@@ -11,8 +10,8 @@ import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/building_grid_view.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
 
 class SearchResult extends StatelessWidget {
   final String query;
@@ -66,7 +65,7 @@ class ResultRoomsListView extends StatelessWidget {
 
   const ResultRoomsListView({Key key, this.list}) : super(key: key);
 
-  Widget _room(ResultEntry entry, SRTimeModel model) {
+  Widget _room(ResultEntry entry, LoungeTimeModel model) {
     var b = entry.building?.name ?? '';
     var a = entry.area?.id ?? '';
     var c = entry.room?.name ?? '';
@@ -140,7 +139,7 @@ class ResultRoomsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SRTimeModel>(
+    return Consumer<LoungeTimeModel>(
       builder:(_,model,__)=> ListView.builder(
           physics: BouncingScrollPhysics(),
           itemCount: list.length,

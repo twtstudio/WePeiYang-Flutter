@@ -1,32 +1,32 @@
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
 class BuildingDataModel extends ViewStateListModel {
-  BuildingDataModel(this.scheduleModel) {
-    scheduleModel.addListener(() {
+  BuildingDataModel(this.timeModel) {
+    timeModel.addListener(() {
       refresh();
     });
   }
 
-  final SRTimeModel scheduleModel;
+  final LoungeTimeModel timeModel;
 
-  DateTime get dateTime => scheduleModel.dateTime;
+  DateTime get dateTime => timeModel.dateTime;
 
-  Campus get campus => scheduleModel.campus;
+  Campus get campus => timeModel.campus;
 
   changeCampus() {
-    scheduleModel.changeCampus();
+    timeModel.changeCampus();
     refresh();
   }
 
   @override
   refresh() async {
     setBusy();
-    if (scheduleModel.state == ViewState.error) {
+    if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
-    } else if (scheduleModel.state == ViewState.idle) {
+    } else if (timeModel.state == ViewState.idle) {
       super.refresh();
     }
   }

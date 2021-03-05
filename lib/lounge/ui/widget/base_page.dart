@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'date_picker.dart';
 
 class StudyRoomPage extends StatelessWidget {

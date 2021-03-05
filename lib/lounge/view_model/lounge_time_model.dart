@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/sr_repository.dart';
+import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
-class SRTimeModel extends ChangeNotifier {
+class LoungeTimeModel extends ChangeNotifier {
   List<ClassTime> _classTime;
 
   List<ClassTime> get classTime => _classTime;
@@ -39,7 +39,7 @@ class SRTimeModel extends ChangeNotifier {
       _state = ViewState.busy;
       notifyListeners();
       try {
-        await StudyRoomRepository.setSRData(model: this);
+        await LoungeRepository.setLoungeData(model: this);
         _state = ViewState.idle;
       } catch (_) {
         _state = ViewState.error;

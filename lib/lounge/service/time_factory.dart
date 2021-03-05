@@ -19,7 +19,7 @@ class Time {
 
   // TODO: 暂时不知道学习开始时间怎么处理，所以就暂时搞个假的
   static Future<DateTime> semesterStart() async {
-    var firstDay = DateTime(2020, 8, 31);
+    var firstDay = DateTime(2021, 3, 1);
     return firstDay.weekStart;
   }
 

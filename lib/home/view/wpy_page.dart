@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import '../model/home_model.dart';
 import 'drawer_page.dart';
 import '../../gpa/view/gpa_curve_detail.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -13,7 +13,6 @@ final hintStyle = const TextStyle(
     fontWeight: FontWeight.bold);
 
 class WPYPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -36,10 +35,11 @@ class WPYPage extends StatelessWidget {
 
             /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
+
             SliverToBoxAdapter(
                 child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: SRFavourWidget(title: '自习室'),
+              child: LoungeFavourWidget(title: '自习室'),
             ))
           ],
         ),

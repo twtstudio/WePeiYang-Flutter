@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/sr_time_model.dart';
+import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'list_load_steps.dart';
 
-class SRFavourWidget extends StatelessWidget {
+class LoungeFavourWidget extends StatelessWidget {
   final String title;
 
-  const SRFavourWidget({Key key, this.title}) : super(key: key);
+  const LoungeFavourWidget({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +53,9 @@ class FavourListWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: ProviderWidget<FavouriteListModel>(
             model: FavouriteListModel(
-              scheduleModel: Provider.of<SRTimeModel>(context, listen: false),
+              timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
               favouriteModel:
-                  Provider.of<SRFavouriteModel>(context, listen: false),
+                  Provider.of<RoomFavouriteModel>(context, listen: false),
             ),
             onModelReady: (model) => model.initData(),
             builder: (_, model, __) => ListLoadSteps(
