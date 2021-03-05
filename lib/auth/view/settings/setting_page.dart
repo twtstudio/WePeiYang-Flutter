@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
@@ -14,21 +16,27 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  static const titleTextStyle = TextStyle(
+      fontSize: 14,
+      color: Color.fromRGBO(177, 180, 186, 1),
+      fontWeight: FontWeight.bold);
+  static const mainTextStyle = TextStyle(
+      fontSize: 15,
+      color: Color.fromRGBO(98, 103, 122, 1),
+      fontWeight: FontWeight.bold);
+  static const hintTextStyle =
+      TextStyle(fontSize: 10.5, color: Color.fromRGBO(205, 206, 212, 1));
+  static const arrow =
+      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+
   var pref = CommonPreferences();
+
+  int _pickerHour = (CommonPreferences().remindTime.value / 3600).round();
+  int _pickerMinute =
+      ((CommonPreferences().remindTime.value % 3600) / 60).round();
 
   @override
   Widget build(BuildContext context) {
-    const titleTextStyle = TextStyle(
-        fontSize: 14,
-        color: Color.fromRGBO(177, 180, 186, 1),
-        fontWeight: FontWeight.bold);
-    const mainTextStyle = TextStyle(
-        fontSize: 15,
-        color: Color.fromRGBO(98, 103, 122, 1),
-        fontWeight: FontWeight.bold);
-    const hintTextStyle =
-        TextStyle(fontSize: 10.5, color: Color.fromRGBO(205, 206, 212, 1));
-    const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Scaffold(
       appBar: AppBar(
           title: Text('设置',
@@ -156,7 +164,8 @@ class _SettingPageState extends State<SettingPage> {
                         value: pref.hideGPA.value,
                         onChanged: (value) {
                           setState(() => pref.hideGPA.value = value);
-                          Provider.of<GPANotifier>(context, listen: false).hideGPAWithNotify = value;
+                          Provider.of<GPANotifier>(context, listen: false)
+                              .hideGPAWithNotify = value;
                         },
                         activeColor: Color.fromRGBO(105, 109, 127, 1),
                         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -199,8 +208,8 @@ class _SettingPageState extends State<SettingPage> {
                         value: pref.nightMode.value,
                         onChanged: (value) {
                           setState(() => pref.nightMode.value = value);
-                          Provider.of<ScheduleNotifier>(context, listen: false).nightMode =
-                              value;
+                          Provider.of<ScheduleNotifier>(context, listen: false)
+                              .nightMode = value;
                         },
                         activeColor: Color.fromRGBO(105, 109, 127, 1),
                         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -298,36 +307,6 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
           ),
-          Container(
-            height: 80,
-            child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      width: 150,
-                      margin: const EdgeInsets.only(left: 15),
-                      child: Text('开课前提醒', style: mainTextStyle)),
-                  Expanded(child: Text('')),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Switch(
-                        value: pref.remindBeforeStart.value,
-                        onChanged: (value) {
-                          setState(() => pref.remindBeforeStart.value = value);
-                        },
-                        activeColor: Color.fromRGBO(105, 109, 127, 1),
-                        inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                        activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                        inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      ))
-                ],
-              ),
-            ),
-          ),
           Card(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 30),
               elevation: 0,
@@ -349,6 +328,12 @@ class _SettingPageState extends State<SettingPage> {
                           child: Switch(
                             value: pref.remindBefore.value,
                             onChanged: (value) {
+                              if (pref.remindBefore.value != value) {
+                                if (value)
+                                  NotifyProvider.startNotification();
+                                else
+                                  NotifyProvider.stopNotification();
+                              }
                               setState(() => pref.remindBefore.value = value);
                             },
                             activeColor: Color.fromRGBO(105, 109, 127, 1),
@@ -360,28 +345,68 @@ class _SettingPageState extends State<SettingPage> {
                           ))
                     ],
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
-                    height: 1.0,
-                    color: Color.fromRGBO(212, 214, 226, 1),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          child: Text('课前提醒时间', style: mainTextStyle)),
-                      Expanded(child: Text('')),
-                      Container(
-                          margin: const EdgeInsets.only(right: 25),
-                          child: Text('15分钟', style: hintTextStyle)),
-                    ],
-                  ),
-                  Container(height: 15)
+                  _setTimeWidget()
                 ],
               )),
         ],
       ),
     );
   }
+
+  Widget _setTimeWidget() {
+    if (pref.remindBefore.value)
+      return Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
+            height: 1.0,
+            color: Color.fromRGBO(212, 214, 226, 1),
+          ),
+          GestureDetector(
+            onTap: () => _showTimePicker(),
+            child: Row(
+              children: <Widget>[
+                Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    child: Text('课前提醒时间', style: mainTextStyle)),
+                Expanded(child: Text('')),
+                Container(
+                    margin:
+                        EdgeInsets.only(right: (_pickerHour == 0) ? 25 : 15),
+                    child: Text(
+                        (_pickerHour == 0)
+                            ? "$_pickerMinute分钟"
+                            : "$_pickerHour小时$_pickerMinute分钟",
+                        style: hintTextStyle)),
+              ],
+            ),
+          ),
+          Container(height: 15)
+        ],
+      );
+    else
+      return Container();
+  }
+
+  _showTimePicker() async {
+    var picker = await showTimePicker(
+        context: context, initialTime: TimeOfDay(hour: 0, minute: 0));
+    setState(() {
+      _pickerHour = picker.hour;
+      _pickerMinute = picker.minute;
+    });
+    pref.remindTime.value = _pickerHour * 3600 + _pickerMinute * 60;
+    NotifyProvider.setNotificationData();
+  }
+// await showModalBottomSheet(
+//     backgroundColor: Colors.transparent,
+//     context: context,
+//     isScrollControlled: true,
+//     builder: (ctx) => CupertinoTimerPicker(
+//         onTimerDurationChanged: (duration) {
+//           _time = duration.inSeconds;
+//         },
+//         mode: CupertinoTimerPickerMode.hm));
+// }
 }

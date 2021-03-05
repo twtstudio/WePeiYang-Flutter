@@ -4,8 +4,9 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 
 /// 发送请求，获取html中的schedule数据
-void getSchedule(
-    {void Function(ScheduleBean) onSuccess, void Function(String) onFailure}) {
+void getScheduleCourses(
+    {void Function(List<ScheduleCourse>) onSuccess,
+    void Function(String) onFailure}) {
   var pref = CommonPreferences();
   fetch("http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
           cookieList: pref.getCookies())
@@ -20,21 +21,23 @@ void getSchedule(
                 "semester.id": getRegExpStr(r'[0-9]*', pref.semesterId.value),
                 "ids": pref.ids.value
               }))
-      .then((response) => onSuccess(_data2Schedule(response.data.toString())))
+      .then((response) =>
+          onSuccess(_data2ScheduleCourses(response.data.toString())))
       .catchError((e) {
     print('---------------------------spider error---------------------------');
     print("Error happened: $e");
     print('------------------------------------------------------------------');
-    if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
+    if (e.runtimeType == DioError &&
+        (e as DioError).type == DioErrorType.RESPONSE) {
       CommonPreferences().isBindTju.value = false;
       onFailure("办公网绑定失效，请重新绑定");
-    }
-    else onFailure("网络连接发生错误");
+    } else
+      onFailure("网络连接发生错误");
   });
 }
 
 /// 用请求到的html数据生成schedule对象
-ScheduleBean _data2Schedule(String data) {
+List<ScheduleCourse> _data2ScheduleCourses(String data) {
   /// 先整理出所有的arrange对象
   List<Arrange> arrangeList = [];
   List<String> arrangeDataList =
@@ -103,10 +106,10 @@ ScheduleBean _data2Schedule(String data) {
       if (arrange.courseName == mainName) {
         arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
         roomIndex += 2; // step为2用来跳过roomList匹配到的 “<br/>”
-        courses.add(ScheduleCourse(classId, courseId, courseName, credit, teacher,
-            campus, week, arrange));
+        courses.add(ScheduleCourse(classId, courseId, courseName, credit,
+            teacher, campus, week, arrange));
       }
     });
   });
-  return ScheduleBean(1598803200, "19202", courses);
+  return courses;
 }

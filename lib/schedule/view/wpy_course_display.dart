@@ -41,9 +41,6 @@ class TodayCoursesWidget extends StatelessWidget {
         flag = judgeActiveInDay(
             notifier.currentWeekWithNotify, today, notifier.weekCount, course);
       if (flag) todayCourses.add(course);
-
-      // TODO 测试用,记得删哦
-      if (todayCourses.length < 5) todayCourses.add(course);
     });
     if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
       return Container(

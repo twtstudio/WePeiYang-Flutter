@@ -8,6 +8,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
+import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
@@ -15,16 +16,26 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor, notifyChannel).setMethodCallHandler { call, result ->
-            if (call.method.equals("notify")) {
-                stopAlarmService()
-                call.argument<List<Map<String, Any>>>("list")?.let { addData(this@MainActivity, it) }
-                result.success("success")
-            } else result.error("-1", "cannot find method", null)
+            when (call.method) {
+                "setData" -> {
+                    stopAlarmService()
+                    call.argument<List<Map<String, Any>>>("list")?.let { setData(this@MainActivity, it) }
+                    startAlarmService()
+                    result.success("success")
+                }
+                "setStatus" -> {
+                    call.argument<Boolean>("bool")?.let {
+                        if (it) startAlarmService()
+                        else stopAlarmService()
+                    }
+                }
+                else -> result.error("-1", "cannot find method", null)
+            }
         }
         super.configureFlutterEngine(flutterEngine)
     }
 
-    private fun addData(context: Context?, data: List<Map<String, Any>>) {
+    private fun setData(context: Context?, data: List<Map<String, Any>>) {
         object : Thread() {
             override fun run() {
                 val scheduleSQL = ScheduleDatabase(context, "Schedule.db", null, 1)
@@ -33,7 +44,7 @@ class MainActivity : FlutterActivity() {
                 db.delete("Schedule_data", null, null)
                 with(ContentValues()) {
                     data.forEach {
-                        this.put("time", it["time"] as Long)
+                        this.put("time", it["time"] as Int)
                         this.put("name", it["name"] as String)
                         db.insert("Schedule_data", null, this)
                         this.clear()
