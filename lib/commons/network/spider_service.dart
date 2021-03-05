@@ -61,7 +61,8 @@ getExecAndSession({@required void Function(Map) onSuccess}) async {
 }
 
 /// 进行sso登录
-Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
+Future<Response> ssoLogin(
+        String name, String pw, String captcha, Map map) async =>
     fetch("https://sso.tju.edu.cn/cas/login",
         params: {
           "username": name,
@@ -73,12 +74,12 @@ Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
         cookie: map['session']);
 
 /// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
-Future<Response> getClassesCookies(String tgc) =>
+Future<Response> getClassesCookies(String tgc) async =>
     fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
         cookie: tgc);
 
 /// 获取当前周数、学期总周数
-Future<Response> getWeekInfo() =>
+Future<Response> getWeekInfo() async =>
     fetch("http://classes.tju.edu.cn/eams/homeExt!main.action",
         cookieList: CommonPreferences().getCookies());
 
@@ -86,7 +87,7 @@ Future<Response> fetch(String url,
     {String cookie,
     List<String> cookieList,
     Map<String, dynamic> params,
-    bool isPost = false}) {
+    bool isPost = false}) async {
   var cookieTmp = cookie ?? "";
   cookieList?.forEach((string) {
     if (cookieTmp != "") cookieTmp += '; ';

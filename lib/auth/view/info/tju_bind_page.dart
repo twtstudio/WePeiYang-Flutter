@@ -129,6 +129,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
             child: TextField(
               textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.visiblePassword,
               controller: nameController,
               focusNode: _accountFocus,
               decoration: InputDecoration(
@@ -329,7 +330,6 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
           widget.params.addAll(map);
           _imageWidget = InkWell(
             onTap: () {
-              print("我点击了嗷 $index");
               setState(() => index++);
               GlobalModel().increase();
             },
@@ -341,7 +341,8 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
           );
         }),
         builder: (context, snapshot) =>
-            (snapshot.connectionState == ConnectionState.done)
+            (snapshot.connectionState == ConnectionState.done &&
+                    !snapshot.hasError)
                 ? _imageWidget
                 : Container());
   }

@@ -42,18 +42,7 @@ class UserPage extends StatelessWidget {
                   child: GestureDetector(
                       onTap: () => Navigator.pushNamed(context, '/user_info'),
                       child: Icon(Icons.account_circle_rounded,
-                          size: 90, color: Colors.white)
-                      // TODO: 用户头像
-                      // ClipOval(
-                      //     child: Image.asset(
-                      //   CommonPreferences().isLogin.value
-                      //       ? 'assets/images/user_image.png'
-                      //       : 'assets/images/default_user_icon.png',
-                      //   fit: BoxFit.cover,
-                      //   width: 90,
-                      //   height: 90,
-                      // )),
-                      ),
+                          size: 90, color: Colors.white)),
                 ),
                 Text(CommonPreferences().nickname.value,
                     textAlign: TextAlign.center,
@@ -121,8 +110,7 @@ class UserPage extends StatelessWidget {
                           Container(
                             width: 20,
                             margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset('assets/images/logout.png',
-                                height: 19),
+                            child: Image.asset('assets/images/logout.png'),
                           ),
                           Container(
                               width: 150, child: Text('登出', style: textStyle)),

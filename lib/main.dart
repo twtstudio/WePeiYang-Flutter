@@ -28,17 +28,17 @@ import 'home/model/home_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CommonPreferences.initPrefs();
-  runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
     var dark = SystemUiOverlayStyle(
         systemNavigationBarColor: Color(0xFF000000),
         systemNavigationBarDividerColor: null,
-        statusBarColor: Colors.transparent,
+        statusBarColor: Colors.transparent, //
         systemNavigationBarIconBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light);
     SystemChrome.setSystemUIOverlayStyle(dark);
   }
+  runApp(WeiPeiYangApp());
 }
 
 // 全局捕获异常，还没想好
