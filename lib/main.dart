@@ -30,15 +30,9 @@ void main() async {
   await CommonPreferences.initPrefs();
   runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
-    var dark = SystemUiOverlayStyle(
-        // systemNavigationBarColor: Color(0xFF000000),
-        // systemNavigationBarDividerColor: null,
-        statusBarColor: Colors.transparent,
-        // systemNavigationBarIconBrightness: Brightness.light,
-        // statusBarIconBrightness: Brightness.dark,
-        // statusBarBrightness: Brightness.light
-        );
-    SystemChrome.setSystemUIOverlayStyle(dark);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
   }
 }
 
@@ -89,7 +83,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
-          theme: ThemeData(fontFamily: 'Montserrat'),
+          // theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
           localizationsDelegates: [
             S.delegate,
