@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 class ColorSettingPage extends StatefulWidget {
   @override
@@ -10,6 +10,18 @@ class ColorSettingPage extends StatefulWidget {
 
 class _ColorSettingPageState extends State<ColorSettingPage> {
   var pref = CommonPreferences();
+
+  /// 获取显示16位颜色值的文本
+  /// @param [target] 此文本对应的gpa/schedule配色种类
+  /// @param [index] index: 0 -> gpa, 1 -> schedule
+  static Text getText(String text, Color color, String target, int index) {
+    String suffix = "";
+    if (index == 0 && FavorColors.gpaType.value == target) suffix = "(已选)";
+    if (index == 1 && FavorColors.scheduleType.value == target) suffix = "(已选)";
+    return Text(text + suffix,
+        style:
+            TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.bold));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +57,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             margin: EdgeInsets.fromLTRB(35, 20, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text("给课表、GPA以及黄页自定义喜欢的颜色。",
-                style: TextStyle(
-                    color: Colors.grey, fontSize: 11)),
+                style: TextStyle(color: Colors.grey, fontSize: 11)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -54,77 +65,80 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             child: Text('GPA', style: titleTextStyle),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
-              color: Color.fromRGBO(162, 191, 189, 1),
+              color: Color.fromRGBO(127, 139, 89, 1),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                   onTap: () {
-                    // TODO
-                    ToastProvider.error('还没做呢，悲');
+                    FavorColors.setGreenRelatedGPA();
+                    setState(() {});
                   },
                   splashFactory: InkRipple.splashFactory,
                   borderRadius: BorderRadius.circular(9),
                   child: Center(
-                      child: Text("#A2BFBD",
-                          style: TextStyle(color: Colors.white)))),
+                      child: getText("#7f8b59", Colors.white, 'green', 0))),
             ),
           ),
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
-            alignment: Alignment.centerLeft,
-            child: Text('黄页', style: titleTextStyle),
-          ),
-          Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(238, 237, 237, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setLightRelatedGPA();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child: getText("#9d7b83",
+                            Color.fromRGBO(157, 123, 131, 1), 'light', 0)))),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(173, 141, 146, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setPinkRelatedGPA();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child: getText("#ad8d92",
+                            Color.fromRGBO(247, 247, 248, 1), 'pink', 0)))),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(71, 83, 95, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setBlueRelatedGPA();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child: getText("#47535f",
+                            Color.fromRGBO(206, 198, 185, 1), 'blue', 0)))),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -132,52 +146,61 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             child: Text('课表', style: titleTextStyle),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(113, 118, 137, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setBlueRelatedSchedule();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child:
+                            getText("blue ashes", Colors.white, 'blue', 1)))),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(83, 89, 78, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setGreenRelatedSchedule();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child:
+                            getText("sap green", Colors.white, 'green', 1)))),
           ),
           Container(
-            height: 80,
+            height: 75,
             child: Card(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
+                color: Color.fromRGBO(196, 148, 125, 1),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
-                      // TODO
-                      ToastProvider.error('还没做呢，悲');
+                      FavorColors.setBrownRelatedSchedule();
+                      setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
-                    child: Center(child: Text("")))),
+                    child: Center(
+                        child: getText(
+                            "earth yellow", Colors.white, 'brown', 1)))),
           ),
           Container(height: 40)
         ],

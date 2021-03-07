@@ -85,9 +85,9 @@ class TitleWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('WEEK ${notifier.currentWeekWithNotify}',
+                    child: Text('today: WEEK ${notifier.currentWeekWithNotify}',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Color.fromRGBO(205, 206, 211, 1),
                             fontSize: 15,
                             fontWeight: FontWeight.bold)),
                   )
