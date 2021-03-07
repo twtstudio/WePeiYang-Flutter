@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/main.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;
@@ -19,7 +20,8 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      int current = Provider.of<ScheduleNotifier>(context, listen: false).currentWeekWithNotify;
+      int current = Provider.of<ScheduleNotifier>(context, listen: false)
+          .currentWeekWithNotify;
       if (current == 1) current++;
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -39,17 +41,21 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                     Column(
                       children: [
                         CustomPaint(
-                          painter: _WeekSelectPainter(
-                              getBoolMatrix(i + 1, notifier.weekCount,
-                                  notifier.coursesWithNotify, false),
-                              notifier.selectedWeekWithNotify == i + 1),
+                          painter: _WeekSelectPainter(getBoolMatrix(
+                              i + 1,
+                              notifier.weekCount,
+                              notifier.coursesWithNotify,
+                              false)),
                           size: Size(canvasWidth, canvasHeight),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: Text('WEEK ${i + 1}',
                               style: TextStyle(
-                                  color: Color.fromRGBO(200, 200, 200, 1),
+                                  color:
+                                      (notifier.selectedWeekWithNotify == i + 1)
+                                          ? Colors.black
+                                          : Color.fromRGBO(200, 200, 200, 1),
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold)),
                         )
@@ -83,7 +89,8 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   /// 每次退出课程表页面，重新设置选中星期为当前星期
   @override
   void dispose() {
-    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext, listen: false)
+    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext,
+            listen: false)
         .quietResetWeek();
     super.dispose();
   }
@@ -91,9 +98,8 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
 
 class _WeekSelectPainter extends CustomPainter {
   final List<List<bool>> list;
-  final bool isSelected;
 
-  _WeekSelectPainter(this.list, this.isSelected);
+  _WeekSelectPainter(this.list);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -104,16 +110,10 @@ class _WeekSelectPainter extends CustomPainter {
         Rect rect = Rect.fromCircle(
             center: Offset(centerX, centerY), radius: cubeSideLength / 2);
         RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(2));
-        if (isSelected && list[j][k]) {
-          /// 亮色cube，代表本周被选中
-          final Paint selectedPaint = Paint()
-            ..color = Color.fromRGBO(158, 119, 138, 1)
-            ..style = PaintingStyle.fill;
-          canvas.drawRRect(rRect, selectedPaint);
-        } else if (list[j][k]) {
+        if (list[j][k]) {
           /// 深色cube，代表该点有课
           final Paint cubePaint = Paint()
-            ..color = Color.fromRGBO(105, 109, 126, 1)
+            ..color = FavorColors.scheduleColor.first
             ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, cubePaint);
         } else {

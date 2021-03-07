@@ -6,6 +6,7 @@ import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import '../../main.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 class SchedulePage extends StatelessWidget {
   /// 进入课程表页面后自动刷新数据
@@ -17,23 +18,25 @@ class SchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var titleColor = FavorColors.scheduleTitleColor();
     return RefreshIndicator(
       displacement: 60,
-      color: Color.fromRGBO(105, 109, 126, 1),
+      color: titleColor,
       onRefresh: Provider.of<ScheduleNotifier>(context, listen: false)
           .refreshSchedule(),
       child: Scaffold(
-        appBar: ScheduleAppBar(),
+        appBar: ScheduleAppBar(titleColor),
         backgroundColor: Colors.white,
         body: ListView(
+          physics: BouncingScrollPhysics(),
           children: [
-            TitleWidget(),
+            TitleWidget(titleColor),
             WeekSelectWidget(),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: ClassTableWidget(),
             ),
-            HoursCounterWidget()
+            HoursCounterWidget(titleColor)
           ],
         ),
       ),
@@ -42,6 +45,10 @@ class SchedulePage extends StatelessWidget {
 }
 
 class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
+  final Color titleColor;
+
+  ScheduleAppBar(this.titleColor);
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -49,16 +56,13 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
       brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
-          child: Icon(Icons.arrow_back,
-              color: Color.fromRGBO(105, 109, 126, 1), size: 32),
+          child: Icon(Icons.arrow_back, color: titleColor, size: 32),
           onTap: () => Navigator.pop(context)),
-
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
-              child: Icon(Icons.autorenew,
-                  color: Color.fromRGBO(105, 109, 126, 1), size: 28),
+              child: Icon(Icons.autorenew, color: titleColor, size: 28),
               onTap: Provider.of<ScheduleNotifier>(context, listen: false)
                   .refreshSchedule()),
         ),
@@ -71,6 +75,10 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
 }
 
 class TitleWidget extends StatelessWidget {
+  final Color titleColor;
+
+  TitleWidget(this.titleColor);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(
@@ -80,7 +88,7 @@ class TitleWidget extends StatelessWidget {
                 children: [
                   Text('Schedule',
                       style: TextStyle(
-                          color: Color.fromRGBO(105, 109, 126, 1),
+                          color: titleColor,
                           fontSize: 35,
                           fontWeight: FontWeight.bold)),
                   Padding(
@@ -98,6 +106,10 @@ class TitleWidget extends StatelessWidget {
 }
 
 class HoursCounterWidget extends StatelessWidget {
+  final Color titleColor;
+
+  HoursCounterWidget(this.titleColor);
+
   @override
   Widget build(BuildContext context) {
     var notifier = Provider.of<ScheduleNotifier>(context);
@@ -134,7 +146,7 @@ class HoursCounterWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.horizontal(left: Radius.circular(15)),
-                    color: Color.fromRGBO(98, 103, 123, 1)),
+                    color: titleColor),
               )
             ],
           ),

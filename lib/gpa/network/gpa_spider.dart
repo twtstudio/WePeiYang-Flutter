@@ -8,17 +8,17 @@ void getGPABean(
     {void Function(GPABean) onSuccess, void Function(String) onFailure}) {
   fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
           cookieList: CommonPreferences().getCookies())
-      .then((response) => onSuccess(_data2GPABean(response.data.toString())))
-      .catchError((e) {
-    print('---------------------------spider error---------------------------');
-    print("Error happened: $e");
-    print('------------------------------------------------------------------');
-    if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
-      CommonPreferences().isBindTju.value = false;
-      onFailure("办公网绑定失效，请重新绑定");
-    }
-    else onFailure("网络连接发生错误");
-  });
+      .then((response) => onSuccess(_data2GPABean(response.data.toString())));
+      // .catchError((e) {
+    // print('---------------------------spider error---------------------------');
+    // print("Error happened: $e");
+    // print('------------------------------------------------------------------');
+    // if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
+    //   CommonPreferences().isBindTju.value = false;
+    //   onFailure("办公网绑定失效，请重新绑定");
+    // }
+    // else onFailure("网络连接发生错误");
+  // });
 }
 
 const double _DELAYED = 999.0;
