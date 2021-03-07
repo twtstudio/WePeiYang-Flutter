@@ -362,11 +362,11 @@ class _TitleInputFieldState extends State<TitleInputField> {
                   hintText: '输入标题',
                 ),
                 onChanged: (text) {
-                  titleCounter = '${text.characters.length}/200';
+                  titleCounter = '${text.characters.length}/20';
                   setState(() {});
                 },
                 inputFormatters: [
-                  _CustomizedLengthTextInputFormatter(200),
+                  _CustomizedLengthTextInputFormatter(20),
                 ],
               ),
             ),
