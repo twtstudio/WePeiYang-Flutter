@@ -23,9 +23,9 @@ void getScheduleCourses(
               }))
       .then((response) =>
           onSuccess(_data2ScheduleCourses(response.data.toString())))
-      .catchError((e) {
+      .catchError((e, stacktrace) {
     print('---------------------------spider error---------------------------');
-    print("Error happened: $e");
+    print("Error happened: $e\n stacktrace: $stacktrace");
     print('------------------------------------------------------------------');
     if (e.runtimeType == DioError &&
         (e as DioError).type == DioErrorType.RESPONSE) {

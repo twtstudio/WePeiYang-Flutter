@@ -42,8 +42,7 @@ class FeedbackNotifier with ChangeNotifier {
   String get token => _token;
 
   Future getToken() async {
-    final _prefs = await SharedPreferences.getInstance();
-    if (_prefs.getString('feedback_token') == null) {
+    try {
       await HttpUtil()
           .post(
         'login',
@@ -53,13 +52,12 @@ class FeedbackNotifier with ChangeNotifier {
         }),
       )
           .then((value) {
-        _prefs.setString('feedback_token', value['data']['token']);
         _token = value['data']['token'];
       });
-    } else {
-      _token = _prefs.getString('feedback_token');
+      notifyListeners();
+    } catch (e) {
+      print(e);
     }
-    notifyListeners();
   }
 
   initSearchHistory() async {
@@ -98,13 +96,13 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  initHomePostList() async {
+  initHomePostList(onSuccess) async {
+    clearHomePostList();
     await getToken().then((_) {
       clearTagList();
       return getTags();
     }).then((_) {
-      clearHomePostList();
-      return getPosts('', '1');
+      return getPosts('', '1', onSuccess: onSuccess);
     });
   }
 
@@ -149,7 +147,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Get posts.
-  Future getPosts(tagId, page, {keyword}) async {
+  Future getPosts(tagId, page, {keyword, onSuccess, onError}) async {
     try {
       await HttpUtil().get(
         'question/search',
@@ -166,10 +164,16 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> json in value['data']['data']) {
           _homePostList.add(Post.fromJson(json));
         }
+        if (onSuccess != null) {
+          onSuccess();
+        }
         notifyListeners();
+      }).catchError((e, stacktrace) {
+        print(e + stacktrace);
+        onError();
       });
-    } catch (e) {
-      print(e);
+    } catch (e, stacktrace) {
+      print(e + stacktrace);
     }
   }
 
@@ -226,7 +230,6 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> comment in value['data']) {
           _officialCommentList.add(Comment.fromJson(comment));
         }
-        notifyListeners();
       });
     } catch (e) {
       print(e);
@@ -247,11 +250,27 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> comment in value['data']) {
           _commentList.add(Comment.fromJson(comment));
         }
-        notifyListeners();
       });
     } catch (e) {
       print(e);
     }
+  }
+
+  /// Get all types of comment.
+  Future getAllComments(id, onSuccess) async {
+    await getOfficialComments(id)
+        .then((value) => getComments(id))
+        .then((value) {
+      onSuccess();
+      notifyListeners();
+    });
+  }
+
+  /// Initialize DetailPage.
+  Future initDetailPage(id, onSuccess) async {
+    await getOfficialComments(id).then((_) => getComments(id)).then((_) {
+      onSuccess();
+    });
   }
 
   /// Like or dislike the post.
@@ -268,7 +287,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-          (value) {
+              (value) {
             if (value['ErrorCode'] == 0) {
               if (_homePostList[index].isLiked) {
                 _homePostList[index].likeCount--;
@@ -307,7 +326,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-          (value) {
+              (value) {
             if (value['ErrorCode'] == 0) {
               if (_homePostList[index].isFavorite) {
                 _homePostList[index].isFavorite = false;
@@ -344,7 +363,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-          (value) {
+              (value) {
             if (value['ErrorCode'] == 0) {
               if (_profilePostList[index].isLiked) {
                 _profilePostList[index].likeCount--;
@@ -382,7 +401,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-          (value) {
+              (value) {
             if (value['ErrorCode'] == 0) {
               if (_profilePostList[index].isFavorite) {
                 _profilePostList[index].isFavorite = false;
@@ -557,6 +576,29 @@ class FeedbackNotifier with ChangeNotifier {
         } else {
           ToastProvider.error('评价失败');
         }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  /// Long press to delete post.
+  Future deletePost(index, onComplete) async {
+    try {
+      await HttpUtil()
+          .post(
+              'question/delete',
+              FormData.fromMap(
+                  {'token': _token, 'question_id': _profilePostList[index].id}))
+          .then((value) {
+        print('///////////delete////////' + json.encode(value));
+        if (value['ErrorCode'] == 0) {
+          removeProfilePost(index);
+        } else {
+          ToastProvider.error('删除问题失败');
+        }
+      }).then((value) {
+        onComplete();
       });
     } catch (e) {
       print(e);

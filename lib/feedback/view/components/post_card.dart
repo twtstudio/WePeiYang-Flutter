@@ -13,50 +13,63 @@ class PostCard extends StatefulWidget {
   GesturePressedCallback onContentPressed = () {};
   GesturePressedCallback onLikePressed = () {};
   GesturePressedCallback onFavoritePressed = () {};
+  GesturePressedCallback onContentLongPressed = () {};
 
   @override
   State createState() {
-    return _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-        this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
+    return _PostCardState(
+        this.post,
+        this.enableTopImg,
+        this.enableImgList,
+        this.onContentPressed,
+        this.onLikePressed,
+        this.onFavoritePressed,
+        this.onContentLongPressed);
   }
 
   /// Card without top image and content images.
   PostCard(post,
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed}) {
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
+    this.onContentLongPressed = onContentLongPressed;
   }
 
   /// Card with top image.
   PostCard.image(post,
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed}) {
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
+    this.onContentLongPressed = onContentLongPressed;
   }
 
   /// Card for DetailPage.
   PostCard.detail(post,
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed}) {
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
     this.onContentPressed = onContentPressed;
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
+    this.onContentLongPressed = onContentLongPressed;
   }
 }
 
@@ -67,9 +80,16 @@ class _PostCardState extends State<PostCard> {
   final GesturePressedCallback onContentPressed;
   final GesturePressedCallback onLikePressed;
   final GesturePressedCallback onFavoritePressed;
+  final GesturePressedCallback onContentLongPressed;
 
-  _PostCardState(this.post, this.enableTopImg, this.enableImgList,
-      this.onContentPressed, this.onLikePressed, this.onFavoritePressed);
+  _PostCardState(
+      this.post,
+      this.enableTopImg,
+      this.enableImgList,
+      this.onContentPressed,
+      this.onLikePressed,
+      this.onFavoritePressed,
+      this.onContentLongPressed);
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +169,7 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
             onTap: onContentPressed,
+            onLongPress: onContentLongPressed,
           ),
           if (enableImgList && post.imgUrlList.length != 0)
             BlankSpace.height(10),
