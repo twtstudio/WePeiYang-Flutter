@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
+import 'package:wei_pei_yang_demo/lounge/service/net/login_api.dart';
 import 'package:wei_pei_yang_demo/lounge/service/net/open_api.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
@@ -14,7 +14,7 @@ class LoungeRepository {
         '????????????????????????????????? getBaseBuildingList !!!!!!!!!!!!!!!!!!!!!!'
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    var response = await server.get('getBuildingList');
+    var response = await openApi.get('getBuildingList');
 
     List<Building> buildings =
         response.data.map<Building>((b) => Building.fromMap(b)).toList();
@@ -22,17 +22,29 @@ class LoungeRepository {
   }
 
   //TODO: 后端没给搜藏接口
-  static Future<List<Classroom>> get favouriteList async {
-    // 这里应该是访问服务器数据，然后在SRFavouriteModel的refresh中对比数据
-    var instance = HiveManager.instance;
-    var data = await instance.getFavourList();
-    List<Classroom> list = data.values.toList();
-    return list;
+  static Future<List<String>> get favouriteList async {
+    debugPrint('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
+        '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
+        '%%%%%%%%%%%%%%%%%%%%% getCollections !!!!!!!!!!!!!!!!!!!!!!'
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    var response = await loginApi.get('getCollections');
+    await Future.delayed(Duration(seconds: 1));
+    var pre = Map<String, List<dynamic>>.from(response.data).values;
+    if (pre.length == 0) {
+      return <String>[];
+    } else {
+      List<String> rooms = pre.first.map((e) => e.toString()).toList();
+      print(rooms);
+      return rooms;
+    }
   }
 
-  static Future collect({String id}) async {}
+  static collect({String id}) async => await loginApi
+      .post('addCollection', queryParameters: {'classroom_id': id});
 
-  static Future unCollect({String id}) async {}
+  static unCollect({String id}) async => await loginApi
+      .post('deleteCollection', queryParameters: {'classroom_id': id});
 
   /// 从网络上获取一周的全部数据
   static Stream<MapEntry<int, List<Building>>> _getWeekClassPlan(
@@ -47,7 +59,7 @@ class LoungeRepository {
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week}/${weekday.day}';
       debugPrint('??????????????????' + 'getDayData/$requestDate');
-      var response = await server.get('getDayData/$requestDate');
+      var response = await openApi.get('getDayData/$requestDate');
       try {
         List<Building> buildings =
             response.data.map<Building>((b) => Building.fromMap(b)).toList();

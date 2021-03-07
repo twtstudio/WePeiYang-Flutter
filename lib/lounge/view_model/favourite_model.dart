@@ -20,21 +20,22 @@ class RoomFavouriteModel extends ChangeNotifier {
     var localData = await instance.getFavourList();
 
     if (init) {
-      List<Classroom> remoteData = await LoungeRepository.favouriteList;
-      List<String> remoteIds = remoteData.map((e) => e.id).toList();
+      List<String> remoteIds = await LoungeRepository.favouriteList;
 
       // 添加新的收藏到本地
-      for (var room in remoteData) {
-        if (!localData.containsKey(room.id)) {
-          await instance.addFavourite(room: room);
+      for (var id in remoteIds) {
+        if (!localData.containsKey(id)) {
+          var room = await instance.addFavourite(id: id.toString());
+          _map[id] = room;
+          continue;
         }
-        _map[room.id] = room;
+        _map[id] = localData[id];
       }
 
       // 从本地删除旧的收藏
-      for (var room in localData.values) {
+      for (var room in _map.values) {
         if (!remoteIds.contains(room.id)) {
-          await instance.removeFavourite(cId: room.id);
+          await LoungeRepository.collect(id: room.id);
         }
       }
     } else {
@@ -52,7 +53,7 @@ class RoomFavouriteModel extends ChangeNotifier {
 
   addFavourite({@required Classroom room}) async {
     var instance = HiveManager.instance;
-    await instance.addFavourite(room: room);
+    await instance.addFavourite(clearRoom: room);
     _map.putIfAbsent(room.id, () => room);
     notifyListeners();
   }
@@ -105,8 +106,6 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
   FavouriteListModel({this.timeModel, this.favouriteModel}) {
     timeModel.addListener(refresh);
     favouriteModel.addListener(refresh);
-    if (favouriteModel.favourList.isNotEmpty)
-      timeModel.setTime();
   }
 
   final LoungeTimeModel timeModel;
@@ -122,9 +121,28 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
       favouriteModel.classPlan;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    timeModel.removeListener(refresh);
+    super.dispose();
+  }
+
+  @override
+  refresh() {
+    // TODO: implement refresh
+    if(timeModel.state == ViewState.idle){
+      print('+++++++++++++++++++++++++++++++++++++++++++++++++++');
+      print('refresh');
+      print('+++++++++++++++++++++++++++++++++++++++++++++++++++');
+      super.refresh();
+    }
+  }
+
+  @override
   Future<List<Classroom>> loadData() async {
-    await favouriteModel.refreshData(
-        init: true, dateTime: timeModel.dateTime);
+    await Future.delayed(Duration(seconds: 1));
+    print('????????????????????????');
+    await favouriteModel.refreshData(init: true, dateTime: timeModel.dateTime);
     var list = favouriteModel.favourList.values.toList();
     return list;
   }

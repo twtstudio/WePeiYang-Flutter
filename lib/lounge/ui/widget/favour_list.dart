@@ -12,38 +12,46 @@ import 'list_load_steps.dart';
 
 class LoungeFavourWidget extends StatelessWidget {
   final String title;
+  final bool init;
 
-  const LoungeFavourWidget({Key key, this.title}) : super(key: key);
+  const LoungeFavourWidget({Key key, this.title, this.init = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MediaQuery.removePadding(
-        context: context,
-        removeRight: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                title,
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0XFF62677B)),
-              ),
+      context: context,
+      removeRight: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0XFF62677B)),
             ),
-            FavourListWidget(),
-          ],
-        ));
+          ),
+          FavourListWidget(init: init),
+        ],
+      ),
+    );
   }
 }
 
-class FavourListWidget extends StatelessWidget {
+class FavourListWidget extends StatefulWidget {
+  final bool init;
   const FavourListWidget({
-    Key key,
+    Key key, this.init,
   }) : super(key: key);
 
+  @override
+  _FavourListWidgetState createState() => _FavourListWidgetState();
+}
+
+class _FavourListWidgetState extends State<FavourListWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -51,13 +59,14 @@ class FavourListWidget extends StatelessWidget {
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
+        // TODO: 这个不应该写在这里；会造成多次请求
         child: ProviderWidget<FavouriteListModel>(
             model: FavouriteListModel(
               timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
               favouriteModel:
                   Provider.of<RoomFavouriteModel>(context, listen: false),
             ),
-            onModelReady: (model) => model.initData(),
+            onModelReady: widget.init == true ? (model) => model.initData() : null,
             builder: (_, model, __) => ListLoadSteps(
                   model: model,
                   emptyV: Container(
@@ -67,11 +76,11 @@ class FavourListWidget extends StatelessWidget {
                       Expanded(
                         child: Container(
                           child: Center(
-                            child: Text('自习室收藏存储在本地'
-                            ,style: TextStyle(
-                                color: Color(0xffcdcdd3),
-                                fontSize: 12
-                              ),),
+                            child: Text(
+                              '自习室收藏存储在本地',
+                              style: TextStyle(
+                                  color: Color(0xffcdcdd3), fontSize: 12),
+                            ),
                           ),
                         ),
                       ),

@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await timeModel.setTime();
-      checkUpdate();
+      // checkUpdate();
     });
   }
 
@@ -47,6 +47,8 @@ class _MainPageState extends State<MainPage> {
       model: BuildingDataModel(timeModel),
       onModelReady: (homeModel) => homeModel.setBusy(),
       builder: (_, model, __) {
+        // TODO: 这里会build两次，先记录一下，之后优化
+        print('??????????????????????????????build???????????????????????????');
         return StudyRoomPage(
           body: ListView(
             physics: BouncingScrollPhysics(),
@@ -72,7 +74,7 @@ class _MainPageState extends State<MainPage> {
               ),
               SearchBarWidget(),
               BuildingGridWidget(),
-              LoungeFavourWidget(title: '我的收藏')
+              const LoungeFavourWidget(title: '我的收藏')
             ],
           ),
         );

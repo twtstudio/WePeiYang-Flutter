@@ -36,7 +36,7 @@ class WPYPage extends StatelessWidget {
             SliverToBoxAdapter(child: GPAPreview()),
             SliverToBoxAdapter(child: Padding(
               padding: const EdgeInsets.fromLTRB(0,20,0,12),
-              child: LoungeFavourWidget(title: '自习室'),
+              child: const LoungeFavourWidget(title: '自习室',init: true),
             ))
           ],
         ),
