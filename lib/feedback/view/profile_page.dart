@@ -5,7 +5,6 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 
@@ -159,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  // Buttons of two tabs.
+                  SliverToBoxAdapter(child: BlankSpace.height(5)),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
@@ -457,40 +456,21 @@ class _ProfilePageState extends State<ProfilePage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(
-                child: BlankSpace.height(ScreenUtil.paddingTop),
-              ),
-              SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      color: Colors.white,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
+              SliverAppBar(
+                expandedHeight: AppBar().preferredSize.height,
+                backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
+                title: Text('个人中心'),
+                centerTitle: true,
               ),
               SliverToBoxAdapter(
                 child: BlankSpace.height(23),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(bottom: 15.0),
-                  child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/user_info'),
-                    child: ClipOval(
-                        child: Image.asset(
-                      'assets/images/user_image.jpg',
-                      fit: BoxFit.cover,
-                      width: 90,
-                      height: 90,
-                    )),
-                  ),
-                ),
               ),
               SliverToBoxAdapter(
                 child: Text(CommonPreferences().nickname.value,
