@@ -184,19 +184,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                       notifier.profilePostList[index].id);
                                 },
                                 onContentLongPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) => Container());
                                   if (_currentTab == _CurrentTab.myPosts) {
                                     if (!_deleteLock) {
                                       _deleteLock = true;
                                       // TODO: Pop alert dialog here.
                                       showDialog(
                                           context: context,
-                                          builder: (_) {
+                                          builder: (context) {
                                             return Center(
                                               child: Container(
-                                                height: 120,
+                                                height: 150,
                                                 margin:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 30),
@@ -223,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                       88,
                                                                       107,
                                                                       1),
-                                                              fontSize: 13,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .normal,
@@ -237,20 +234,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                                               .center,
                                                       children: [
                                                         GestureDetector(
-                                                          onTap: () =>
-                                                              Navigator.pop(
-                                                                  context),
-                                                          child: Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .all(10),
-                                                            child: Text("取消",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: ColorUtil
-                                                                      .lightTextColor,
-                                                                )),
-                                                          ),
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text("取消",
+                                                              style: TextStyle(
+                                                                color: ColorUtil
+                                                                    .boldTextColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .none,
+                                                              )),
                                                         ),
                                                         Container(width: 30),
                                                         GestureDetector(
@@ -259,6 +258,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                 index, () {
                                                               _deleteLock =
                                                                   false;
+                                                              setState(() {});
+                                                              Navigator.pop(
+                                                                  context);
                                                             });
                                                           },
                                                           child: Container(
@@ -268,8 +270,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                                             child: Text("确定",
                                                                 style:
                                                                     TextStyle(
-                                                                  color: ColorUtil
-                                                                      .lightTextColor,
+                                                                      color: ColorUtil
+                                                                      .boldTextColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 16,
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .none,
                                                                 )),
                                                           ),
                                                         ),
@@ -279,7 +288,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 ),
                                               ),
                                             );
-                                          });
+                                          }).then((value) {
+                                        _deleteLock = false;
+                                      });
                                     }
                                   }
                                 },
@@ -305,6 +316,119 @@ class _ProfilePageState extends State<ProfilePage> {
                                 onLikePressed: () {
                                   notifier.profilePostHitLike(index,
                                       notifier.profilePostList[index].id);
+                                },
+                                onContentLongPressed: () {
+                                  if (_currentTab == _CurrentTab.myPosts) {
+                                    if (!_deleteLock) {
+                                      _deleteLock = true;
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Center(
+                                              child: Container(
+                                                height: 150,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 30),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: Color.fromRGBO(
+                                                        237, 240, 244, 1)),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10,
+                                                              bottom: 10),
+                                                      child: Text("您确定要删除问题吗？",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      79,
+                                                                      88,
+                                                                      107,
+                                                                      1),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none)),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text(
+                                                            "取消",
+                                                            style: TextStyle(
+                                                              color: ColorUtil
+                                                                  .boldTextColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 18,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(width: 30),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            notifier.deletePost(
+                                                                index, () {
+                                                              _deleteLock =
+                                                                  false;
+                                                              setState(() {});
+                                                              Navigator.pop(
+                                                                  context);
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            child: Text(
+                                                              "确定",
+                                                              style: TextStyle(
+                                                                color: ColorUtil
+                                                                    .boldTextColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .none,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).then((value) {
+                                        _deleteLock = false;
+                                      });
+                                    }
+                                  }
                                 },
                               );
                       },
