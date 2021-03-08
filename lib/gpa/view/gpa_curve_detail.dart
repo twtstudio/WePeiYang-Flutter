@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'dart:math';
 import '../../home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -14,7 +15,9 @@ class GPAPreview extends StatelessWidget {
       else
         return Column(children: <Widget>[
           CurveText(notifier),
-          GPACurve(notifier, isPreview: true),
+          // TODO 以后可以把首页与gpa页面的配色设置成“格式相同”的设计，也就是对应颜色的应用位置相同
+          // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义
+          GPACurve(notifier, FavorColors.gpaColor, isPreview: true),
           GPAIntro(notifier)
         ]);
     });
@@ -29,11 +32,11 @@ class CurveText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      padding: const EdgeInsets.fromLTRB(30.0, 25.0, 0.0, 20.0),
+      padding: const EdgeInsets.fromLTRB(25.0, 25.0, 0.0, 20.0),
       alignment: Alignment.centerLeft,
       child: Text("${notifier.typeName()}曲线",
           style: TextStyle(
-              fontSize: 17.0,
+              fontSize: 16.0,
               color: Color.fromRGBO(100, 103, 122, 1.0),
               fontWeight: FontWeight.bold)));
 }
@@ -48,9 +51,7 @@ class GPAIntro extends StatelessWidget {
       color: Color(0xffcdcdd3), fontWeight: FontWeight.bold, fontSize: 13.0);
 
   static const numStyle = TextStyle(
-      color: Color(0xff686c7e),
-      fontWeight: FontWeight.bold,
-      fontSize: 25.0);
+      color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 25.0);
 
   @override
   Widget build(BuildContext context) {
@@ -99,11 +100,12 @@ class GPAIntro extends StatelessWidget {
 /// Stack的顶层为动态的[_GPAPopupPainter],用补间动画控制移动
 class GPACurve extends StatefulWidget {
   final GPANotifier notifier;
+  final List<Color> gpaColors;
 
   /// 是否在wpy_page中显示（false的话就是在gpa_page中呗）
   final bool isPreview;
 
-  GPACurve(this.notifier, {@required this.isPreview});
+  GPACurve(this.notifier, this.gpaColors, {@required this.isPreview});
 
   @override
   _GPACurveState createState() => _GPACurveState();
@@ -114,8 +116,15 @@ class _GPACurveState extends State<GPACurve>
   static const Color _popupCardPreview = Colors.white;
   static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
 
-  static const Color _popupCardColor = Color.fromRGBO(150, 160, 120, 1);
-  static const Color _popupTextColor = Colors.white;
+  @override
+  void initState() {
+    super.initState();
+    _popupCardColor = widget.gpaColors[3];
+    _popupTextColor = widget.gpaColors[1];
+  }
+
+  static Color _popupCardColor;
+  static Color _popupTextColor;
 
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
 
@@ -152,7 +161,7 @@ class _GPACurveState extends State<GPACurve>
             children: <Widget>[
               /// Stack底层
               CustomPaint(
-                painter: _GPACurvePainter(
+                painter: _GPACurvePainter(widget.gpaColors,
                     isPreview: widget.isPreview,
                     points: points,
                     taped: _newTaped),
@@ -184,7 +193,7 @@ class _GPACurveState extends State<GPACurve>
                               color: widget.isPreview
                                   ? _popupCardPreview
                                   : _popupCardColor,
-                              elevation: 1,
+                              elevation: widget.isPreview ? 1 : 0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
                               child: Center(
@@ -199,8 +208,8 @@ class _GPACurveState extends State<GPACurve>
                             ),
                           ),
                           CustomPaint(
-                            painter:
-                                _GPAPopupPainter(isPreview: widget.isPreview),
+                            painter: _GPAPopupPainter(widget.gpaColors,
+                                isPreview: widget.isPreview),
                             size: Size(80, 30),
                           )
                         ],
@@ -249,17 +258,21 @@ class _GPACurveState extends State<GPACurve>
 
 /// 绘制GPACurve栈上层的可移动点
 class _GPAPopupPainter extends CustomPainter {
+  final List<Color> gpaColors;
   final bool isPreview;
 
-  _GPAPopupPainter({@required this.isPreview});
+  _GPAPopupPainter(this.gpaColors, {@required this.isPreview}) {
+    _outerColor = gpaColors[1];
+    _innerColor = gpaColors[0];
+  }
 
   /// 在wpy_page显示的颜色
   static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1.0);
   static const Color _innerPreview = Colors.white;
 
   /// 在gpa_page显示的颜色
-  static const Color _outerColor = Colors.white;
-  static const Color _innerColor = Color.fromRGBO(125, 140, 85, 1);
+  static Color _outerColor;
+  static Color _innerColor;
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
@@ -287,18 +300,22 @@ class _GPAPopupPainter extends CustomPainter {
 
 /// 绘制GPACurve栈底层的曲线、黑点
 class _GPACurvePainter extends CustomPainter {
+  final List<Color> gpaColors;
   final bool isPreview;
   final List<Point<double>> points;
   final int taped;
 
-  const _GPACurvePainter(
-      {@required this.isPreview, @required this.points, @required this.taped});
+  _GPACurvePainter(this.gpaColors,
+      {@required this.isPreview, @required this.points, @required this.taped}) {
+    _lineColor = gpaColors[3];
+    _pointColor = gpaColors[1];
+  }
 
   static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1.0);
   static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1.0);
 
-  static const Color _lineColor = Color.fromRGBO(136, 147, 100, 1);
-  static const Color _pointColor = Colors.white;
+  static Color _lineColor;
+  static Color _pointColor;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     final Paint paint = Paint()

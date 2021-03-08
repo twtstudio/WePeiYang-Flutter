@@ -6,10 +6,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 class EmailBindPage extends StatefulWidget {
-  final _state = _EmailBindPageState();
-
   @override
-  _EmailBindPageState createState() => _state;
+  _EmailBindPageState createState() => _EmailBindPageState();
 }
 
 class _EmailBindPageState extends State<EmailBindPage> {
@@ -52,7 +50,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     context: context,
                     barrierDismissible: true,
                     builder: (BuildContext context) => EmailUnbindDialog())
-                .then((_) => widget._state.setState(() {})),
+                .then((_) => this.setState(() {})),
             color: Color.fromRGBO(79, 88, 107, 1),
             splashColor: MyColors.brightBlue,
             child: Text('解除绑定',
@@ -112,6 +110,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
+          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(

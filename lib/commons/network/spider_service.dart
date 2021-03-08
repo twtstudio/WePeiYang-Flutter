@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required, BuildContext;
-import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import '../../main.dart';
+// import 'package:provider/provider.dart';
+// import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+// import '../../main.dart';
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 void login(BuildContext context, String name, String pw, String captcha,
@@ -28,17 +28,20 @@ void login(BuildContext context, String name, String pw, String captcha,
     });
     pref.ids.value =
         getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
-    return getWeekInfo();
-  }).then((weekRsp) {
-    var matched =
-        getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
-    var notifier = Provider.of<ScheduleNotifier>(
-        WeiPeiYangApp.navigatorState.currentContext, listen: false);
-    notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
-    notifier.currentWeekWithNotify =
-        int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
     pref.isBindTju.value = true;
     onSuccess();
+    // return getWeekInfo();
+    // }).then((weekRsp) {
+    //   var matched =
+    //       getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
+    //   var notifier = Provider.of<ScheduleNotifier>(
+    //       WeiPeiYangApp.navigatorState.currentContext,
+    //       listen: false);
+    //   notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
+    //   notifier.currentWeekWithNotify =
+    //       int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
+    //   pref.isBindTju.value = true;
+    //   onSuccess();
   }).catchError((e) {
     print("Error happened: $e");
     onFailure(e);
@@ -46,8 +49,8 @@ void login(BuildContext context, String name, String pw, String captcha,
 }
 
 /// 获取包含 session、execution 的 map
-void getExecAndSession({@required void Function(Map) onSuccess}) {
-  fetch("https://sso.tju.edu.cn/cas/login").then((response) {
+getExecAndSession({@required void Function(Map) onSuccess}) async {
+  await fetch("https://sso.tju.edu.cn/cas/login").then((response) {
     var map = Map<String, String>();
     response.headers.map['set-cookie'].forEach((string) {
       if (string.contains('SESSION'))
@@ -60,7 +63,8 @@ void getExecAndSession({@required void Function(Map) onSuccess}) {
 }
 
 /// 进行sso登录
-Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
+Future<Response> ssoLogin(
+        String name, String pw, String captcha, Map map) async =>
     fetch("https://sso.tju.edu.cn/cas/login",
         params: {
           "username": name,
@@ -72,12 +76,12 @@ Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
         cookie: map['session']);
 
 /// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
-Future<Response> getClassesCookies(String tgc) =>
+Future<Response> getClassesCookies(String tgc) async =>
     fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
         cookie: tgc);
 
 /// 获取当前周数、学期总周数
-Future<Response> getWeekInfo() =>
+Future<Response> getWeekInfo() async =>
     fetch("http://classes.tju.edu.cn/eams/homeExt!main.action",
         cookieList: CommonPreferences().getCookies());
 
@@ -85,7 +89,7 @@ Future<Response> fetch(String url,
     {String cookie,
     List<String> cookieList,
     Map<String, dynamic> params,
-    bool isPost = false}) {
+    bool isPost = false}) async {
   var cookieTmp = cookie ?? "";
   cookieList?.forEach((string) {
     if (cookieTmp != "") cookieTmp += '; ';

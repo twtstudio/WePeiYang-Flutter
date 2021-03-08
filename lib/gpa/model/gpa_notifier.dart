@@ -134,15 +134,15 @@ class GPANotifier with ChangeNotifier {
   GestureTapCallback refreshGPA({bool hint = true}) {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
-      getGPABean(
-          onSuccess: (gpaBean) {
-            if (hint) ToastProvider.success("刷新gpa数据成功");
-            _gpaStats = gpaBean.stats;
-            _total = gpaBean.total;
-            notifyListeners();
-            CommonPreferences().gpaData.value = json.encode(gpaBean);
-          },
-          onFailure: (msg) => ToastProvider.error(msg));
+      getGPABean(onSuccess: (gpaBean) {
+        if (hint) ToastProvider.success("刷新gpa数据成功");
+        _gpaStats = gpaBean.stats;
+        _total = gpaBean.total;
+        notifyListeners();
+        CommonPreferences().gpaData.value = json.encode(gpaBean);
+      }, onFailure: (msg) {
+        if (hint) ToastProvider.error(msg);
+      });
     };
   }
 

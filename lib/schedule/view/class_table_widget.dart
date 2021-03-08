@@ -6,7 +6,6 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
-import 'schedule_page.dart' show schedulePadding;
 
 /// 课程表每个item之间的间距
 const double cardStep = 6;
@@ -16,7 +15,7 @@ class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      var width = GlobalModel().screenWidth - schedulePadding * 2;
+      var width = GlobalModel().screenWidth - 15 * 2;
       var dayCount = CommonPreferences().dayNumber.value;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Column(

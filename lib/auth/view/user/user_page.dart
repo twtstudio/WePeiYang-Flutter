@@ -3,10 +3,12 @@ import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:flutter/services.dart';
 
 class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     const textStyle = TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
@@ -40,15 +42,9 @@ class UserPage extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(bottom: 15.0),
                   child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/user_info'),
-                    child: ClipOval(
-                        child: Image.asset(
-                      'assets/images/user_image.jpg',
-                      fit: BoxFit.cover,
-                      width: 90,
-                      height: 90,
-                    )),
-                  ),
+                      onTap: () => Navigator.pushNamed(context, '/user_info'),
+                      child: Icon(Icons.account_circle_rounded,
+                          size: 90, color: Colors.white)),
                 ),
                 Text(CommonPreferences().nickname.value,
                     textAlign: TextAlign.center,

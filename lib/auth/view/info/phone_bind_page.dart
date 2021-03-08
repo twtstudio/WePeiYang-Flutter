@@ -7,10 +7,8 @@ import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class PhoneBindPage extends StatefulWidget {
-  final _state = _PhoneBindPageState();
-
   @override
-  _PhoneBindPageState createState() => _state;
+  _PhoneBindPageState createState() => _PhoneBindPageState();
 }
 
 class _PhoneBindPageState extends State<PhoneBindPage> {
@@ -71,7 +69,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) => PhoneUnbindDialog())
-                .then((_) => widget._state.setState(() {
+                .then((_) => this.setState(() {
             })),
             color: Color.fromRGBO(79, 88, 107, 1),
             splashColor: MyColors.brightBlue,
@@ -179,6 +177,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
+          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 5),
             child: GestureDetector(

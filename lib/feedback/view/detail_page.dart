@@ -8,6 +8,7 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 
 import 'components/post_card.dart';
 
@@ -19,6 +20,12 @@ class DetailPage extends StatefulWidget {
   @override
   _DetailPageState createState() =>
       _DetailPageState(this.args.post, this.args.index, this.args.origin);
+}
+
+enum DetailPageStatus {
+  loading,
+  idle,
+  error,
 }
 
 enum PostOrigin {
@@ -41,6 +48,8 @@ class _DetailPageState extends State<DetailPage> {
   final PostOrigin origin;
 
   bool _sendCommentLock = false;
+  String _commentLengthIndicator;
+  DetailPageStatus status;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -50,20 +59,29 @@ class _DetailPageState extends State<DetailPage> {
 
   _onRefresh() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-    Provider.of<FeedbackNotifier>(context, listen: false)
-        .getOfficialComments(post.id);
-    Provider.of<FeedbackNotifier>(context, listen: false).getComments(post.id);
+    Provider.of<FeedbackNotifier>(context, listen: false).getAllComments(
+      post.id,
+      () {
+        status = DetailPageStatus.idle;
+        setState(() {});
+      },
+    );
     _refreshController.refreshCompleted();
   }
 
   @override
   void initState() {
+    status = DetailPageStatus.loading;
+    _commentLengthIndicator = '0/200';
+    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .getOfficialComments(post.id);
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .getComments(post.id);
+      Provider.of<FeedbackNotifier>(context, listen: false).initDetailPage(
+        post.id,
+        () {
+          status = DetailPageStatus.idle;
+          setState(() {});
+        },
+      );
     });
     super.initState();
   }
@@ -107,92 +125,104 @@ class _DetailPageState extends State<DetailPage> {
         ),
         body: Column(
           children: [
-            Expanded(
-              child: Consumer<FeedbackNotifier>(
-                builder: (context, notifier, widget) {
-                  return SmartRefresher(
-                    controller: _refreshController,
-                    header: ClassicHeader(),
-                    enablePullDown: true,
-                    onRefresh: _onRefresh,
-                    enablePullUp: false,
-                    child: CustomScrollView(
-                      shrinkWrap: true,
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: PostCard.detail(
-                            post,
-                            onLikePressed: () {
-                              if (origin == PostOrigin.home) {
-                                notifier.homePostHitLike(
-                                    index, notifier.homePostList[index].id);
-                              } else {
-                                notifier.profilePostHitLike(
-                                    index, notifier.profilePostList[index].id);
-                              }
-                            },
-                            // TODO: Add PostOrigin.favorite.
-                            onFavoritePressed: () {
-                              if (origin == PostOrigin.home) {
-                                notifier.homePostHitFavorite(index);
-                              } else {
-                                notifier.profilePostHitFavorite(index);
-                              }
-                            },
-                          ),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return index < notifier.officialCommentList.length
-                                  ? CommentCard.official(
-                                      notifier.officialCommentList[index],
-                                      onContentPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          FeedbackRouter.officialComment,
-                                          arguments: OfficialCommentPageArgs(
-                                            notifier.officialCommentList[index],
-                                            post.title,
-                                            index,
-                                            post.isOwner,
-                                          ),
-                                        );
-                                      },
-                                      onLikePressed: () {
-                                        notifier.officialCommentHitLike(
-                                          index,
-                                          notifier
-                                              .officialCommentList[index].id,
-                                        );
-                                      },
-                                    )
-                                  : CommentCard(
-                                      notifier.commentList[index -
-                                          notifier.officialCommentList.length],
-                                      onLikePressed: () {
-                                        notifier.commentHitLike(
-                                          index -
-                                              notifier
-                                                  .officialCommentList.length,
-                                          notifier
-                                              .commentList[index -
-                                                  notifier.officialCommentList
-                                                      .length]
-                                              .id,
-                                        );
-                                      },
-                                    );
-                            },
-                            childCount: notifier.commentList.length,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
+            if (status == DetailPageStatus.loading)
+              // TODO: Insert animation here.
+              Expanded(
+                child: Center(
+                  child: Loading(),
+                ),
               ),
-            ),
+            if (status == DetailPageStatus.idle)
+              Expanded(
+                child: Consumer<FeedbackNotifier>(
+                  builder: (context, notifier, widget) {
+                    return SmartRefresher(
+                      physics: BouncingScrollPhysics(),
+                      controller: _refreshController,
+                      header: ClassicHeader(),
+                      enablePullDown: true,
+                      onRefresh: _onRefresh,
+                      enablePullUp: false,
+                      child: CustomScrollView(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: PostCard.detail(
+                              post,
+                              onLikePressed: () {
+                                if (origin == PostOrigin.home) {
+                                  notifier.homePostHitLike(
+                                      index, notifier.homePostList[index].id);
+                                } else {
+                                  notifier.profilePostHitLike(index,
+                                      notifier.profilePostList[index].id);
+                                }
+                              },
+                              onFavoritePressed: () {
+                                if (origin == PostOrigin.home) {
+                                  notifier.homePostHitFavorite(index);
+                                } else {
+                                  notifier.profilePostHitFavorite(index);
+                                }
+                              },
+                            ),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return index <
+                                        notifier.officialCommentList.length
+                                    ? CommentCard.official(
+                                        notifier.officialCommentList[index],
+                                        onContentPressed: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            FeedbackRouter.officialComment,
+                                            arguments: OfficialCommentPageArgs(
+                                              notifier
+                                                  .officialCommentList[index],
+                                              post.title,
+                                              index,
+                                              post.isOwner,
+                                            ),
+                                          );
+                                        },
+                                        onLikePressed: () {
+                                          notifier.officialCommentHitLike(
+                                            index,
+                                            notifier
+                                                .officialCommentList[index].id,
+                                          );
+                                        },
+                                      )
+                                    : CommentCard(
+                                        notifier.commentList[index -
+                                            notifier
+                                                .officialCommentList.length],
+                                        onLikePressed: () {
+                                          notifier.commentHitLike(
+                                            index -
+                                                notifier
+                                                    .officialCommentList.length,
+                                            notifier
+                                                .commentList[index -
+                                                    notifier.officialCommentList
+                                                        .length]
+                                                .id,
+                                          );
+                                        },
+                                      );
+                              },
+                              childCount: notifier.commentList.length,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
               child: Row(
@@ -204,8 +234,17 @@ class _DetailPageState extends State<DetailPage> {
                           vertical: 8, horizontal: 0),
                       child: TextField(
                         controller: _textEditingController,
+                        maxLength: 200,
                         decoration: InputDecoration(
-                          hintText: '写回答…',
+                          counterText: '',
+                          hintText: '写评论…',
+                          suffix: Text(
+                            _commentLengthIndicator,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: ColorUtil.lightTextColor,
+                            ),
+                          ),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(
@@ -217,6 +256,12 @@ class _DetailPageState extends State<DetailPage> {
                           filled: true,
                           isDense: true,
                         ),
+                        onChanged: (text) {
+                          // TODO: This leads to repainting of whole detail page.
+                          _commentLengthIndicator =
+                              '${text.characters.length}/200';
+                          setState(() {});
+                        },
                         enabled: true,
                         minLines: 1,
                         maxLines: 3,
@@ -235,6 +280,7 @@ class _DetailPageState extends State<DetailPage> {
                             post.id,
                             () {
                               _textEditingController.text = '';
+                              post.commentCount++;
                               _onRefresh();
                               _sendCommentLock = false;
                             },

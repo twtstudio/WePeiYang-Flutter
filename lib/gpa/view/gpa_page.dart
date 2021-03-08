@@ -3,38 +3,63 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
 import '../../main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
+import 'package:flutter/services.dart';
 
-class GPAPage extends StatelessWidget {
+/// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
+///
+/// 首先，gpa配色[gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
+/// 每套配色均由四种颜色：[背景色]、[颜色一]、[颜色二]、[颜色三]组成（在List中顺序排列，具体名字我懒得取了）
+/// * 背景色：页面背景颜色、曲线上被选中的点的内圆
+///
+/// * 颜色一：AppBar图标、雷达图上的课程名、雷达图成绩区域外沿、曲线上未选中的点、[CourseListWidget]中的
+///          课程名、以及所有的数字（[CourseListWidget]中的[xx Credits]除外）
+///
+/// * 颜色二：[GPAStatsWidget]中的文字、'ORDERED BY'、[CourseListWidget]中的课程类别和小图标
+///
+/// * 颜色三：gpa曲线颜色、曲线上popup框颜色、[CourseListWidget]框颜色
+///
+/// * 注：雷达图的成绩区域填充色、放射线条、绩点区域颜色均固定，设计也没给55555
 
+class GPAPage extends StatefulWidget {
+  final List<Color> gpaColors = FavorColors.gpaColor;
+
+  @override
+  _GPAPageState createState() => _GPAPageState();
+}
+
+class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
-  GPAPage() {
+  _GPAPageState() {
     Provider.of<GPANotifier>(WeiPeiYangApp.navigatorState.currentContext)
         .refreshGPA(hint: false)
         .call();
   }
 
-  final Color _baseColor = FavorColors.gpaColor;
+  @override
+  void dispose() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(
         builder: (context, notifier, _) => Scaffold(
-              appBar: GPAppBar(_baseColor),
-              backgroundColor: _baseColor,
+              appBar: GPAppBar(widget.gpaColors),
+              backgroundColor: widget.gpaColors[0],
               body: Theme(
                 /// 修改scrollView滚动至头/尾时溢出的颜色
                 data: ThemeData(accentColor: Colors.white),
                 child: ListView(
                   children: [
-                    RadarChartWidget(notifier),
-                    GPAStatsWidget(notifier),
-                    GPACurve(notifier, isPreview: false),
-                    CourseListWidget(notifier)
+                    RadarChartWidget(notifier, widget.gpaColors),
+                    GPAStatsWidget(notifier, widget.gpaColors),
+                    GPACurve(notifier, widget.gpaColors, isPreview: false),
+                    CourseListWidget(notifier, widget.gpaColors)
                   ],
                 ),
               ),
@@ -43,35 +68,29 @@ class GPAPage extends StatelessWidget {
 }
 
 class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Color _baseColor;
+  final List<Color> gpaColors;
 
-  GPAppBar(this._baseColor);
+  GPAppBar(this.gpaColors);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: _baseColor,
+      backgroundColor: gpaColors[0],
       elevation: 0,
+      brightness: FavorColors.gpaType.value == 'light'
+          ? Brightness.light
+          : Brightness.dark,
       leading: Padding(
         padding: const EdgeInsets.only(left: 5),
         child: GestureDetector(
-            child: Icon(Icons.arrow_back, color: Colors.white, size: 28),
+            child: Icon(Icons.arrow_back, color: gpaColors[1], size: 28),
             onTap: () => Navigator.pop(context)),
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
-              child: Icon(Icons.error_outline, color: Colors.white, size: 25),
-              onTap: () {
-                //TODO popup info
-                ToastProvider.error("悲，还没做呢");
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 18),
-          child: GestureDetector(
-              child: Icon(Icons.loop, color: Colors.white, size: 25),
+              child: Icon(Icons.loop, color: gpaColors[1], size: 25),
               onTap: Provider.of<GPANotifier>(context, listen: false)
                   .refreshGPA()),
         ),
@@ -86,8 +105,9 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class RadarChartWidget extends StatefulWidget {
   final GPANotifier notifier;
+  final List<Color> gpaColors;
 
-  RadarChartWidget(this.notifier);
+  RadarChartWidget(this.notifier, this.gpaColors);
 
   @override
   _RadarChartState createState() => _RadarChartState();
@@ -135,14 +155,13 @@ class _RadarChartState extends State<RadarChartWidget> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
                 child: Icon(Icons.assessment,
-                    size: 150, color: Color.fromRGBO(172, 179, 146, 1)),
+                    size: 150, color: widget.gpaColors[2]),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
                     "Radar & rose chart is not available with semesters of less than three courses.",
-                    style: TextStyle(
-                        color: Color.fromRGBO(178, 184, 153, 1), fontSize: 13)),
+                    style: TextStyle(color: widget.gpaColors[2], fontSize: 13)),
               )
             ],
           ),
@@ -152,7 +171,7 @@ class _RadarChartState extends State<RadarChartWidget> {
       return Container(
         height: 350,
         child: CustomPaint(
-          painter: _RadarChartPainter(_list),
+          painter: _RadarChartPainter(_list, widget.gpaColors),
           size: Size(double.maxFinite, 160),
         ),
       );
@@ -161,8 +180,9 @@ class _RadarChartState extends State<RadarChartWidget> {
 
 class _RadarChartPainter extends CustomPainter {
   final List<GPACourse> courses;
+  final List<Color> gpaColors;
 
-  _RadarChartPainter(this.courses);
+  _RadarChartPainter(this.courses, this.gpaColors);
 
   double radarChartRatio = 2.15; // 用这个控制雷达图大小,不能低于2
   double centerX;
@@ -183,7 +203,7 @@ class _RadarChartPainter extends CustomPainter {
       if (element.credit > maxCredit) maxCredit = element.credit;
     });
     final Paint creditPaint = Paint()
-      ..color = Color.fromRGBO(135, 147, 99, 1)
+      ..color = Color.fromRGBO(178, 178, 158, 0.2)
       ..style = PaintingStyle.fill;
     final Path creditPath = Path();
     for (var i = 0; i < courses.length; i++) {
@@ -225,7 +245,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawLine(Canvas canvas) {
     final Paint linePaint = Paint()
-      ..color = Color.fromRGBO(165, 176, 133, 1)
+      ..color = Color.fromRGBO(158, 158, 138, 0.45)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     final Path linePath = Path();
@@ -239,7 +259,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawScoreOutLine(Canvas canvas) {
     final Paint outLinePaint = Paint()
-      ..color = Color.fromRGBO(237, 243, 229, 1.0)
+      ..color = gpaColors[1]
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeJoin = StrokeJoin.round;
@@ -262,7 +282,7 @@ class _RadarChartPainter extends CustomPainter {
       var textPainter = TextPainter(
           text: TextSpan(
               text: _formatText(courses[i].name),
-              style: TextStyle(fontSize: 10, color: Colors.white)),
+              style: TextStyle(fontSize: 10, color: gpaColors[1])),
           maxLines: 3,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
@@ -330,16 +350,17 @@ class _RadarChartPainter extends CustomPainter {
 /// 其实代码很像gpa_curve_detail.dart中的GPAIntro,只不过没法复用555
 class GPAStatsWidget extends StatelessWidget {
   final GPANotifier notifier;
+  final List<Color> gpaColors;
 
-  GPAStatsWidget(this.notifier);
+  GPAStatsWidget(this.notifier, this.gpaColors) {
+    textStyle = TextStyle(
+        color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13.0);
+    numStyle = TextStyle(
+        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 22.0);
+  }
 
-  static const textStyle = TextStyle(
-      color: Color.fromRGBO(169, 179, 144, 1),
-      fontWeight: FontWeight.bold,
-      fontSize: 13.0);
-
-  static const numStyle = TextStyle(
-      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22.0);
+  static var textStyle;
+  static var numStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -412,8 +433,9 @@ class GPAStatsWidget extends StatelessWidget {
 
 class CourseListWidget extends StatefulWidget {
   final GPANotifier notifier;
+  final List<Color> gpaColors;
 
-  CourseListWidget(this.notifier);
+  CourseListWidget(this.notifier, this.gpaColors);
 
   @override
   _CourseListState createState() => _CourseListState();
@@ -431,13 +453,22 @@ class _CourseListState extends State<CourseListWidget> {
           onTap: () => widget.notifier.reSort(),
           child: Padding(
               padding: const EdgeInsets.all(10),
-              child: Text(
-                  'ORDERED\tBY\t${widget.notifier.sortType.toUpperCase()}',
-                  style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 4,
-                      color: Color.fromRGBO(178, 184, 153, 1),
-                      fontWeight: FontWeight.bold))),
+              child: RichText(
+                  text: TextSpan(
+                      text: 'ORDERED\tBY\t',
+                      style: TextStyle(
+                          fontSize: 13,
+                          letterSpacing: 4,
+                          color: widget.gpaColors[2]),
+                      children: <TextSpan>[
+                    TextSpan(
+                        text: widget.notifier.sortType.toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 13,
+                            letterSpacing: 4,
+                            color: widget.gpaColors[1],
+                            fontWeight: FontWeight.bold))
+                  ]))),
         ),
         Container(
           height: cardHeight * courses.length,
@@ -448,7 +479,7 @@ class _CourseListState extends State<CourseListWidget> {
                     height: cardHeight,
                     padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
                     child: Card(
-                      color: Color.fromRGBO(136, 148, 102, 1),
+                      color: widget.gpaColors[3],
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
@@ -461,8 +492,7 @@ class _CourseListState extends State<CourseListWidget> {
                             Padding(
                               padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
                               child: Icon(Icons.assignment_turned_in,
-                                  color: Color.fromRGBO(178, 184, 153, 1),
-                                  size: 25),
+                                  color: widget.gpaColors[2], size: 25),
                             ),
                             Expanded(
                               child: Column(
@@ -472,7 +502,8 @@ class _CourseListState extends State<CourseListWidget> {
                                     alignment: Alignment.centerLeft,
                                     child: Text(_formatText(courses[i].name),
                                         style: TextStyle(
-                                            fontSize: 15, color: Colors.white)),
+                                            fontSize: 15,
+                                            color: widget.gpaColors[1])),
                                   ),
                                   Container(
                                     alignment: Alignment.centerLeft,
@@ -480,8 +511,7 @@ class _CourseListState extends State<CourseListWidget> {
                                         "${courses[i].classType} / ${courses[i].credit} Credits",
                                         style: TextStyle(
                                             fontSize: 12,
-                                            color: Color.fromRGBO(
-                                                178, 184, 153, 1))),
+                                            color: widget.gpaColors[2])),
                                   )
                                 ],
                               ),
@@ -491,7 +521,7 @@ class _CourseListState extends State<CourseListWidget> {
                               child: Text('${courses[i].score.round()}',
                                   style: TextStyle(
                                       fontSize: 28,
-                                      color: Colors.white,
+                                      color: widget.gpaColors[1],
                                       fontWeight: FontWeight.bold)),
                             )
                           ],
