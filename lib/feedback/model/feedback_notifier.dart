@@ -583,7 +583,6 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Long press to delete post.
-  /// TODO: Delete post might have some problems.
   Future deletePost(index, onComplete) async {
     try {
       await HttpUtil()
@@ -592,8 +591,6 @@ class FeedbackNotifier with ChangeNotifier {
               FormData.fromMap(
                   {'token': _token, 'question_id': _profilePostList[index].id}))
           .then((value) {
-        // TODO: Fix this plz.
-        print('///////////delete////////' + json.encode(value));
         if (value['ErrorCode'] == 0) {
           ToastProvider.success('删除成功');
           removeProfilePost(index);

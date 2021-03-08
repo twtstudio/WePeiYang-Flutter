@@ -127,69 +127,91 @@ class _SearchResultPageState extends State<SearchResultPage> {
             if (status == SearchPageStatus.loading)
               Expanded(child: Center(child: Loading())),
             if (status == SearchPageStatus.idle)
-              Expanded(
-                child: Consumer<FeedbackNotifier>(
-                  builder: (BuildContext context, notifier, Widget child) {
-                    return SmartRefresher(
-                      controller: _refreshController,
-                      header: ClassicHeader(),
-                      enablePullDown: true,
-                      onRefresh: _onRefresh,
-                      footer: ClassicFooter(),
-                      enablePullUp: true,
-                      onLoading: _onLoading,
-                      child: CustomScrollView(
-                        slivers: [
-                          /// The list of posts.
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                print(notifier.homePostList[index].title);
-                                return notifier.homePostList[index].topImgUrl !=
-                                            '' &&
-                                        notifier.homePostList[index]
-                                                .topImgUrl !=
-                                            null
-                                    ? PostCard.image(
-                                        notifier.homePostList[index],
-                                        onContentPressed: () {
-                                          Navigator.pushNamed(
-                                              context, FeedbackRouter.detail,
-                                              arguments: DetailPageArgs(
-                                                  notifier.homePostList[index],
-                                                  index,
-                                                  PostOrigin.home));
-                                        },
-                                        onLikePressed: () {
-                                          notifier.homePostHitLike(index,
-                                              notifier.homePostList[index].id);
-                                        },
-                                      )
-                                    : PostCard(
-                                        notifier.homePostList[index],
-                                        onContentPressed: () {
-                                          Navigator.pushNamed(
-                                              context, FeedbackRouter.detail,
-                                              arguments: DetailPageArgs(
-                                                  notifier.homePostList[index],
-                                                  index,
-                                                  PostOrigin.home));
-                                        },
-                                        onLikePressed: () {
-                                          notifier.homePostHitLike(index,
-                                              notifier.homePostList[index].id);
-                                        },
-                                      );
-                              },
-                              childCount: notifier.homePostList.length,
-                            ),
-                          ),
-                        ],
+              if (Provider.of<FeedbackNotifier>(context, listen: false)
+                      .homePostList
+                      .length ==
+                  0)
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      '未检索到相关问题',
+                      style: TextStyle(
+                        color: ColorUtil.lightTextColor,
                       ),
-                    );
-                  },
+                    ),
+                  ),
+                )
+              else
+                Expanded(
+                  child: Consumer<FeedbackNotifier>(
+                    builder: (BuildContext context, notifier, Widget child) {
+                      return SmartRefresher(
+                        controller: _refreshController,
+                        header: ClassicHeader(),
+                        enablePullDown: true,
+                        onRefresh: _onRefresh,
+                        footer: ClassicFooter(),
+                        enablePullUp: true,
+                        onLoading: _onLoading,
+                        child: CustomScrollView(
+                          slivers: [
+                            /// The list of posts.
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  print(notifier.homePostList[index].title);
+                                  return notifier.homePostList[index]
+                                                  .topImgUrl !=
+                                              '' &&
+                                          notifier.homePostList[index]
+                                                  .topImgUrl !=
+                                              null
+                                      ? PostCard.image(
+                                          notifier.homePostList[index],
+                                          onContentPressed: () {
+                                            Navigator.pushNamed(
+                                                context, FeedbackRouter.detail,
+                                                arguments: DetailPageArgs(
+                                                    notifier
+                                                        .homePostList[index],
+                                                    index,
+                                                    PostOrigin.home));
+                                          },
+                                          onLikePressed: () {
+                                            notifier.homePostHitLike(
+                                                index,
+                                                notifier
+                                                    .homePostList[index].id);
+                                          },
+                                        )
+                                      : PostCard(
+                                          notifier.homePostList[index],
+                                          onContentPressed: () {
+                                            Navigator.pushNamed(
+                                                context, FeedbackRouter.detail,
+                                                arguments: DetailPageArgs(
+                                                    notifier
+                                                        .homePostList[index],
+                                                    index,
+                                                    PostOrigin.home));
+                                          },
+                                          onLikePressed: () {
+                                            notifier.homePostHitLike(
+                                                index,
+                                                notifier
+                                                    .homePostList[index].id);
+                                          },
+                                        );
+                                },
+                                childCount: notifier.homePostList.length,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
           ],
         ),
       ),
