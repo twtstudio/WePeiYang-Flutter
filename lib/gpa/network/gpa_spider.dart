@@ -8,17 +8,17 @@ void getGPABean(
     {void Function(GPABean) onSuccess, void Function(String) onFailure}) {
   fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
           cookieList: CommonPreferences().getCookies())
-      .then((response) => onSuccess(_data2GPABean(response.data.toString())));
-      // .catchError((e) {
-    // print('---------------------------spider error---------------------------');
-    // print("Error happened: $e");
-    // print('------------------------------------------------------------------');
-    // if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
-    //   CommonPreferences().isBindTju.value = false;
-    //   onFailure("办公网绑定失效，请重新绑定");
-    // }
-    // else onFailure("网络连接发生错误");
-  // });
+      .then((response) => onSuccess(_data2GPABean(response.data.toString())))
+      .catchError((e, stacktrace) {
+    print('---------------------------spider error---------------------------');
+    print("Error happened: $e\n stacktrace: $stacktrace");
+    print('------------------------------------------------------------------');
+    if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
+      CommonPreferences().isBindTju.value = false;
+      onFailure("办公网绑定失效，请重新绑定");
+    }
+    else onFailure("网络连接发生错误");
+  });
 }
 
 const double _DELAYED = 999.0;
@@ -47,7 +47,8 @@ GPABean _data2GPABean(String data) {
   List<GPAStat> stats = [];
   List<GPACourse> courses = [];
   for (int i = 0; i < courseDataList.length; i++) {
-    var courseData = getRegExpList(r'(?<=\<td[ style="]*?\>)[\s\S]*?(?=\<)',
+    /// 这里特意适配了重修课的红色span，在中括号里面
+    var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',
         courseDataList[i]); // 这里的数据含有转义符
     var term = courseData[0];
     if (currentTermStr == "") currentTermStr = term;
@@ -57,7 +58,7 @@ GPABean _data2GPABean(String data) {
       currentTermStr = term;
     }
     var gpaCourse = _data2GPACourse(courseData);
-    if (gpaCourse != null) courses.add(gpaCourse);
+    if (!courseDataList[i].contains("重修") && gpaCourse != null) courses.add(gpaCourse);
     if (i == courseDataList.length - 1) stats.add(_calculateStat(courses));
   }
   return GPABean(total, stats);
