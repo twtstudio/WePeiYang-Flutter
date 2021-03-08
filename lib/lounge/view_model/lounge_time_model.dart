@@ -30,6 +30,7 @@ class LoungeTimeModel extends ChangeNotifier {
     List<ClassTime> schedule,
     bool init = false,
   }) async {
+    debugPrint('++++++++++++++++ lounge time model change time +++++++++++++++++++');
     _state = ViewState.busy;
     if (_classTime == null && _dateTime == null) {
       _classTime = [Time.classOfDay(DateTime.now())];

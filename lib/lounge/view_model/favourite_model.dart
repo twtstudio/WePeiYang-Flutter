@@ -88,6 +88,7 @@ class FavouriteModel extends ViewStateModel {
   collect({@required Classroom room}) async {
     setBusy();
     try {
+      debugPrint('++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
@@ -103,9 +104,23 @@ class FavouriteModel extends ViewStateModel {
 }
 
 class FavouriteListModel extends ViewStateListModel<Classroom> {
-  FavouriteListModel({this.timeModel, this.favouriteModel}) {
+  FavouriteListModel._({this.timeModel, this.favouriteModel}) {
     timeModel.addListener(refresh);
     favouriteModel.addListener(refresh);
+  }
+
+  static FavouriteListModel _instance;
+
+  factory FavouriteListModel(
+          {LoungeTimeModel timeModel, RoomFavouriteModel favouriteModel}) =>
+      _init(timeModel, favouriteModel);
+
+  static _init(LoungeTimeModel timeModel, RoomFavouriteModel favouriteModel) {
+    if (_instance == null) {
+      _instance = FavouriteListModel._(
+          timeModel: timeModel, favouriteModel: favouriteModel);
+    }
+    return _instance;
   }
 
   final LoungeTimeModel timeModel;
@@ -122,26 +137,23 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     timeModel.removeListener(refresh);
     super.dispose();
   }
 
   @override
   refresh() {
-    // TODO: implement refresh
-    if(timeModel.state == ViewState.idle){
-      print('+++++++++++++++++++++++++++++++++++++++++++++++++++');
-      print('refresh');
-      print('+++++++++++++++++++++++++++++++++++++++++++++++++++');
+    setBusy();
+    if (timeModel.state == ViewState.idle) {
+      debugPrint('++++++++++++++++ favourite list get data +++++++++++++++++++');
       super.refresh();
+    } else if (timeModel.state == ViewState.error){
+      viewState = ViewState.error;
     }
   }
 
   @override
   Future<List<Classroom>> loadData() async {
-    await Future.delayed(Duration(seconds: 1));
-    print('????????????????????????');
     await favouriteModel.refreshData(init: true, dateTime: timeModel.dateTime);
     var list = favouriteModel.favourList.values.toList();
     return list;
@@ -156,17 +168,5 @@ addFavourites(BuildContext context,
   await model.collect(room: room);
   if (model.isError) {
     model.showErrorMessage();
-  } else {
-    if (playAnim) {
-      // TODO: 这竟然是flare动画，有机会再搞
-      ///接口调用成功播放动画
-      // Navigator.push(
-      //     context,
-      //     HeroDialogRoute(
-      //         builder: (_) => FavouriteAnimationWidget(
-      //           tag: tag,
-      //           add: article.collect,
-      //         )));
-    }
   }
 }

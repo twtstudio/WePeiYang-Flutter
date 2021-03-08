@@ -10,9 +10,8 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 import 'commons/preferences/common_prefs.dart';
@@ -76,13 +75,8 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-        // TODO: 这里有bug，可能导致收藏列表崩溃
-        ChangeNotifierProvider(
-            create: (context) =>
-            LoungeTimeModel()
-              ..setTime(init: true)),
-        ChangeNotifierProvider(create: (context) => RoomFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
+        ...loungeProviders,
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
@@ -143,6 +137,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await HiveManager.init();
+      _autoLogin(context);
     });
   }
 
@@ -158,10 +153,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         .height;
     GlobalModel().screenWidth = width;
     GlobalModel().screenHeight = height;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoLogin(context);
-    });
 
     return Container(
       color: Colors.white,

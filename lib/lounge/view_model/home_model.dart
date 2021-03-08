@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
@@ -25,6 +26,7 @@ class BuildingDataModel extends ViewStateListModel {
     if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
     } else if (timeModel.state == ViewState.idle) {
+      debugPrint('++++++++++++++++ home model get data +++++++++++++++++++');
       super.refresh();
     }
   }
