@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/auth/view/login/register_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
@@ -120,8 +121,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
             margin: const EdgeInsets.all(30),
             child: GestureDetector(
               onTap: _toNextPage,
-              child:
-              Image(image: AssetImage('assets/images/arrow_round.png')),
+              child: Image(image: AssetImage('assets/images/arrow_round.png')),
             ),
           ),
         ],
@@ -372,7 +372,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 child: GestureDetector(
                   onTap: _toNextPage,
                   child:
-                  Image(image: AssetImage('assets/images/arrow_round.png')),
+                      Image(image: AssetImage('assets/images/arrow_round.png')),
                 ),
               ),
             ],
@@ -401,6 +401,7 @@ class RegisterPageThree extends StatefulWidget {
 class _RegisterPageThreeState extends State<RegisterPageThree> {
   String password1 = "";
   String password2 = "";
+  bool check = false;
 
   _submit() async {
     if (password1 == "")
@@ -409,6 +410,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       ToastProvider.error("请再次输入密码");
     else if (password1 != password2)
       ToastProvider.error("两次输入密码不一致");
+    else if (!check)
+      ToastProvider.error("请阅读用户须知");
     else {
       register(widget.userNum, widget.nickname, widget.phone, widget.code,
           password1, widget.email, widget.idNum,
@@ -505,6 +508,36 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               ),
             ),
           ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Container(
+                  child: Checkbox(
+                    value: this.check,
+                    activeColor: Color.fromRGBO(98, 103, 123, 1),
+                    onChanged: (bool val) {
+                      // val 是布尔值
+                      this.setState(() {
+                        this.check = !this.check;
+                      });
+                    },
+                  ),
+                ),
+                Text("我已阅读",
+                    style: TextStyle(color: Color.fromRGBO(79, 88, 107, 1))),
+                GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) => RegisterDialog()),
+                  child: Text("微北洋用户须知",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          textBaseline: TextBaseline.alphabetic,
+                          decoration: TextDecoration.underline)),
+                )
+              ])),
           Expanded(child: Text("")),
           Row(
             children: [

@@ -38,12 +38,6 @@ class FavorColors {
 
   static var scheduleType = PrefsBean<String>("scheduleColorType", 'blue');
 
-  /// 调整为默认色调，这里使用fromRGBO可以在ide中显示默认色
-  static setDefault() {
-    setGreenRelatedGPA();
-    setBlueRelatedSchedule();
-  }
-
   /// 这个是GPA默认颜色哦
   static setGreenRelatedGPA() {
     _gpaColor.value = _greenGPA;
@@ -110,9 +104,19 @@ class FavorColors {
     scheduleType.value = 'brown';
   }
 
+  static Color scheduleTitleColor() {
+    var type = scheduleType.value;
+    if (type == 'green')
+      return Color.fromRGBO(115, 124, 105, 1);
+    else if (type == 'brown')
+      return Color.fromRGBO(128, 95, 78, 1);
+    else
+      return Color.fromRGBO(98, 103, 123, 1);
+  }
+
   static final List<String> _blueSchedule = [
-    Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
+    Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
     Color.fromRGBO(122, 119, 138, 1).value.toString(), // #7A778A
     Color.fromRGBO(142, 122, 150, 1).value.toString(), // #8E7A96
     Color.fromRGBO(130, 134, 161, 1).value.toString(), // #8286A1
@@ -128,11 +132,11 @@ class FavorColors {
   ];
 
   static final List<String> _brownSchedule = [
+    Color.fromRGBO(159, 136, 118, 1).value.toString(),
     Color.fromRGBO(196, 148, 125, 1).value.toString(),
     Color.fromRGBO(212, 188, 162, 1).value.toString(),
     Color.fromRGBO(128, 95, 78, 1).value.toString(),
     Color.fromRGBO(201, 169, 148, 1).value.toString(),
     Color.fromRGBO(102, 88, 82, 1).value.toString(),
-    Color.fromRGBO(159, 136, 118, 1).value.toString(),
   ];
 }
