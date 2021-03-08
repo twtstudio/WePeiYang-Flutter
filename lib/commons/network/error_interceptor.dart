@@ -22,18 +22,22 @@ class ErrorInterceptor extends InterceptorsWrapper {
     throw DioError(error: "正在尝试自动重登");
   }
 
+  /// * 办公网输错验证码 / 密码: [DioErrorType.RESPONSE]: Http status error [401]
+  /// * 没刷新验证码: [DioErrorType.DEFAULT]: RedirectException: Redirect limit exceeded
+  /// * 连不上网: [DioErrorType.DEFAULT]: SocketException: Failed host lookup: '[host]'
+  /// *
+
   // TODO 待完善
+
   // @override
-  // Future onError(DioError err) {
+  // Future onError(DioError err) async {
   //   if (err.type == DioErrorType.CONNECT_TIMEOUT) {
-  //     throw DioError(error: "网络连接超时");
+  //     return DioError(error: "网络连接超时");
   //   }
-  //   if (err.type == DioErrorType.RESPONSE) {
-  //     if (err.response?.statusCode == 500) {
-  //       throw DioError(error: "网络连接发生了未知错误");
-  //     }
+  //   if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 500) {
+  //     return DioError(error: "网络连接发生了未知错误");
   //   }
-  //   return null;
+  //   super.onError(err);
   // }
 
   @override

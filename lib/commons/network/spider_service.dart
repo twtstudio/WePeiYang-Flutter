@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required, BuildContext;
-import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import '../../main.dart';
+// import 'package:provider/provider.dart';
+// import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+// import '../../main.dart';
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 void login(BuildContext context, String name, String pw, String captcha,
@@ -28,18 +28,20 @@ void login(BuildContext context, String name, String pw, String captcha,
     });
     pref.ids.value =
         getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
-    return getWeekInfo();
-  }).then((weekRsp) {
-    var matched =
-        getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
-    var notifier = Provider.of<ScheduleNotifier>(
-        WeiPeiYangApp.navigatorState.currentContext,
-        listen: false);
-    notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
-    notifier.currentWeekWithNotify =
-        int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
     pref.isBindTju.value = true;
     onSuccess();
+    // return getWeekInfo();
+    // }).then((weekRsp) {
+    //   var matched =
+    //       getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
+    //   var notifier = Provider.of<ScheduleNotifier>(
+    //       WeiPeiYangApp.navigatorState.currentContext,
+    //       listen: false);
+    //   notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
+    //   notifier.currentWeekWithNotify =
+    //       int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
+    //   pref.isBindTju.value = true;
+    //   onSuccess();
   }).catchError((e) {
     print("Error happened: $e");
     onFailure(e);

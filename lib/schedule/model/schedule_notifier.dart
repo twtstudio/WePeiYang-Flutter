@@ -33,12 +33,16 @@ class ScheduleNotifier with ChangeNotifier {
 
   int get selectedWeekWithNotify => _selectedWeek;
 
-  void quietResetWeek() => _selectedWeek = _currentWeek;
+  void quietResetWeek() => _selectedWeek = currentWeekWithNotify;
 
   int _currentWeek = 1;
 
-  int get currentWeekWithNotify => _currentWeek;
+  /// 手动计算当前周,不从办公网爬了
+  int get currentWeekWithNotify =>
+      ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / 604800)
+          .ceil();
 
+  // TODO 这个先不爬了吧
   set currentWeekWithNotify(int newWeek) {
     if (_currentWeek == newWeek) return;
     _currentWeek = newWeek;
@@ -51,10 +55,10 @@ class ScheduleNotifier with ChangeNotifier {
 
   int get weekCount => _weekCount;
 
-  // TODO 这个先不动了吧
+  // TODO 这个先不爬了吧
   set weekCount(int newCount) {
-    // if (_weekCount == newCount) return;
-    // _weekCount = newCount;
+    if (_weekCount == newCount) return;
+    _weekCount = newCount;
   }
 
   /// 夜猫子模式
@@ -75,16 +79,16 @@ class ScheduleNotifier with ChangeNotifier {
   RefreshCallback refreshSchedule({bool hint = true}) {
     return () async {
       if (hint) ToastProvider.running("刷新数据中……");
-      getScheduleCourses(
-          onSuccess: (courses) {
-            if (hint) ToastProvider.success("刷新课程表数据成功");
-            _courses = courses;
-            notifyListeners(); // 通知各widget进行更新
-            NotifyProvider.setNotificationData(); // 更新课程提醒
-            CommonPreferences().scheduleData.value =
-                json.encode(ScheduleBean(_termStart, "20212", courses));
-          },
-          onFailure: (msg) => ToastProvider.error(msg));
+      getScheduleCourses(onSuccess: (courses) {
+        if (hint) ToastProvider.success("刷新课程表数据成功");
+        _courses = courses;
+        notifyListeners(); // 通知各widget进行更新
+        NotifyProvider.setNotificationData(); // 更新课程提醒
+        CommonPreferences().scheduleData.value =
+            json.encode(ScheduleBean(_termStart, "20212", courses));
+      }, onFailure: (msg) {
+        if (hint) ToastProvider.error(msg);
+      });
     };
   }
 
