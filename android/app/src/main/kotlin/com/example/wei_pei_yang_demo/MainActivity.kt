@@ -2,19 +2,38 @@ package com.example.wei_pei_yang_demo
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.plugin.common.MethodChannel
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
-import org.json.JSONObject
+import android.os.Bundle
+import com.example.umeng_sdk.UmengSdkPlugin
+import com.umeng.analytics.MobclickAgent
 
 class MainActivity : FlutterActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        UmengSdkPlugin.setContext(this)
+        android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
+        android.util.Log.i("UMLog", "onPause@MainActivity")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+        android.util.Log.i("UMLog", "onResume@MainActivity")
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine)
+        super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor, notifyChannel).setMethodCallHandler { call, result ->
             when (call.method) {
                 "setData" -> {

@@ -20,6 +20,8 @@ import 'feedback/model/feedback_notifier.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 
+import 'package:umeng_sdk/umeng_sdk.dart';
+
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
 /// 2. 添加外部存储读写和摄像头使用权限，[MultiImagePicker]所需
@@ -67,6 +69,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 
   @override
   Widget build(BuildContext context) {
+    UmengSdk.onEvent('myevent', {'name': 'jack', 'age': 18, 'male': true});
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),

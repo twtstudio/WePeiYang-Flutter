@@ -51,8 +51,8 @@ dependencies:
   install_plugin: ^2.0.1
   flutter_update_dialog: ^0.0.1
 
-
-
+  umeng_sdk:
+    path: plugins/umeng_sdk
 
 dev_dependencies:
   flutter_test:

@@ -42,6 +42,7 @@ class AuthRouter {
   static String colorSetting = '/color_setting';
   static String userInfo = '/user_info';
 
+  // TODO 记得改回来
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
     loginPw: (_) => LoginPwWidget(),
