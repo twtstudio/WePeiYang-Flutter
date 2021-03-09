@@ -3,18 +3,22 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 
 class RatingCard extends StatefulWidget {
+  final int initialRating;
   final void Function(double) onRatingChanged;
 
-  const RatingCard({Key key, this.onRatingChanged}) : super(key: key);
+  const RatingCard({Key key, this.onRatingChanged, this.initialRating})
+      : super(key: key);
 
   @override
-  _RatingCardState createState() => _RatingCardState(onRatingChanged);
+  _RatingCardState createState() =>
+      _RatingCardState(onRatingChanged, this.initialRating);
 }
 
 class _RatingCardState extends State<RatingCard> {
+  int initialRating = 5;
   final void Function(double) onRatingChanged;
 
-  _RatingCardState(this.onRatingChanged);
+  _RatingCardState(this.onRatingChanged, this.initialRating);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +42,7 @@ class _RatingCardState extends State<RatingCard> {
                   color: ColorUtil.mainColor,
                 );
               },
-              initialRating: 2.5,
+              initialRating: initialRating.toDouble() / 2,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 2),
               glow: false,

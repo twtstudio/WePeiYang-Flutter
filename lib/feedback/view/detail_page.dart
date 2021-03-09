@@ -126,7 +126,6 @@ class _DetailPageState extends State<DetailPage> {
         body: Column(
           children: [
             if (status == DetailPageStatus.loading)
-              // TODO: Insert animation here.
               Expanded(
                 child: Center(
                   child: Loading(),
@@ -171,6 +170,7 @@ class _DetailPageState extends State<DetailPage> {
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
+                                print('bbb');
                                 return index <
                                         notifier.officialCommentList.length
                                     ? CommentCard.official(
@@ -182,28 +182,28 @@ class _DetailPageState extends State<DetailPage> {
                                             arguments: OfficialCommentPageArgs(
                                               notifier
                                                   .officialCommentList[index],
-                                              post.title,
-                                              index,
-                                              post.isOwner,
-                                            ),
-                                          );
-                                        },
-                                        onLikePressed: () {
-                                          notifier.officialCommentHitLike(
-                                            index,
-                                            notifier
-                                                .officialCommentList[index].id,
-                                          );
-                                        },
-                                      )
+                                        post.title,
+                                        index,
+                                        post.isOwner,
+                                      ),
+                                    );
+                                  },
+                                  onLikePressed: () {
+                                    notifier.officialCommentHitLike(
+                                      index,
+                                      notifier
+                                          .officialCommentList[index].id,
+                                    );
+                                  },
+                                )
                                     : CommentCard(
-                                        notifier.commentList[index -
-                                            notifier
-                                                .officialCommentList.length],
-                                        onLikePressed: () {
-                                          notifier.commentHitLike(
-                                            index -
-                                                notifier
+                                  notifier.commentList[index -
+                                      notifier
+                                          .officialCommentList.length],
+                                  onLikePressed: () {
+                                    notifier.commentHitLike(
+                                      index -
+                                          notifier
                                                     .officialCommentList.length,
                                             notifier
                                                 .commentList[index -
@@ -214,7 +214,8 @@ class _DetailPageState extends State<DetailPage> {
                                         },
                                       );
                               },
-                              childCount: notifier.commentList.length,
+                              childCount: notifier.officialCommentList.length +
+                                  notifier.commentList.length,
                             ),
                           )
                         ],

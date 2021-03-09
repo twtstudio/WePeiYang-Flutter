@@ -77,14 +77,22 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
               if (isOwner)
                 SliverToBoxAdapter(
                   child: RatingCard(
+                    initialRating: comment.rating == -1 ? 5 : comment.rating,
                     onRatingChanged: (rating) async {
                       if (!_ratingLock) {
                         _ratingLock = true;
                         await notifier
                             .rate(rating * 2, comment.id, index)
                             .then((value) {
-                          notifier.updateRating(rating * 2, index);
+                          print('now\t' + (rating * 2).toString());
+                          print('data\t' +
+                              Provider.of<FeedbackNotifier>(context,
+                                      listen: false)
+                                  .officialCommentList[0]
+                                  .rating
+                                  .toString());
                         }).whenComplete(() {
+                          notifier.updateRating(rating, index);
                           _ratingLock = false;
                         });
                       }
