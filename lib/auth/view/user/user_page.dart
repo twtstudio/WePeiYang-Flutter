@@ -4,6 +4,7 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:flutter/services.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 class UserPage extends StatelessWidget {
   @override
@@ -32,7 +33,8 @@ class UserPage extends StatelessWidget {
                       children: <Widget>[
                         Expanded(child: Text('')),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/setting'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, AuthRouter.setting),
                           child: Image.asset('assets/images/setting.png',
                               width: 24, height: 24),
                         )
@@ -42,7 +44,8 @@ class UserPage extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(bottom: 15.0),
                   child: GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/user_info'),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.userInfo),
                       child: Icon(Icons.account_circle_rounded,
                           size: 90, color: Colors.white)),
                 ),

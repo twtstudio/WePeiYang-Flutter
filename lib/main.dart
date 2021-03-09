@@ -14,12 +14,15 @@ import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/home/home_router.dart';
 
 import 'commons/preferences/common_prefs.dart';
 import 'feedback/model/feedback_notifier.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 
+import 'commons/util/app_analysis.dart';
 import 'package:umeng_sdk/umeng_sdk.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
@@ -69,7 +72,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 
   @override
   Widget build(BuildContext context) {
-    UmengSdk.onEvent('myevent', {'name': 'jack', 'age': 18, 'male': true});
+    UmengSdk.onProfileSignIn("BOTillya");
+    UmengSdk.onEvent('myevent', {'name': 'twt', 'age': 18, 'male': true});
+    UmengSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -88,6 +93,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           navigatorKey: WeiPeiYangApp.navigatorState,
           // theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
+          navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -166,18 +172,18 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         prefs.account.value == "" ||
         prefs.password.value == "") {
       /// 既然没登陆过就多看会启动页吧
-      Future.delayed(Duration(seconds: 3))
-          .then((_) => Navigator.pushReplacementNamed(context, '/login'));
+      Future.delayed(Duration(seconds: 3)).then(
+          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
       /// 稍微显示一会启动页，不然它的意义是什么555
       /// 用缓存中的数据自动登录，失败则仍跳转至login页面
       Future.delayed(Duration(milliseconds: 500)).then((_) =>
           login(prefs.account.value, prefs.password.value, onSuccess: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, '/login', (route) => false);
+                context, AuthRouter.login, (route) => false);
           }));
     }
   }

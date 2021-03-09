@@ -7,6 +7,7 @@ import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -69,7 +70,7 @@ class _SettingPageState extends State<SettingPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                 onTap: () =>
-                    Navigator.pushNamed(context, '/language_setting').then((_) {
+                    Navigator.pushNamed(context, AuthRouter.languageSetting).then((_) {
                   /// 使用pop返回此页面时进行rebuild
                   this.setState(() {});
                 }),
@@ -109,7 +110,7 @@ class _SettingPageState extends State<SettingPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                 onTap: () =>
-                    Navigator.pushNamed(context, '/color_setting').then((_) {
+                    Navigator.pushNamed(context, AuthRouter.colorSetting).then((_) {
                   /// 使用pop返回此页面时进行rebuild
                   this.setState(() {});
                 }),
@@ -230,7 +231,7 @@ class _SettingPageState extends State<SettingPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                 onTap: () =>
-                    Navigator.pushNamed(context, '/schedule_setting').then((_) {
+                    Navigator.pushNamed(context, AuthRouter.scheduleSetting).then((_) {
                   /// 使用pop返回此页面时进行rebuild
                   this.setState(() {});
                 }),

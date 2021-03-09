@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/home/home_router.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -20,11 +22,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
     await login(account, password,
         onSuccess: (result) {
           if (result['telephone'] == null || result['email'] == null) {
-            Navigator.pushNamed(context, '/add_info');
+            Navigator.pushNamed(context, AuthRouter.addInfo);
           } else {
             ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           }
         },
         onFailure: (e) => ToastProvider.error(e.error.toString()));
@@ -122,7 +124,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
-              onTap: () => Navigator.pushNamed(context, '/find_home'),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
           ),
           Container(

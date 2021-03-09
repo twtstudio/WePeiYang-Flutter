@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 import '../preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 /// 自定义错误拦截
 class ErrorInterceptor extends InterceptorsWrapper {
@@ -12,7 +13,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
     if (prefs.account.value == "" || prefs.password.value == "") {
       Navigator.pushNamedAndRemoveUntil(
           WeiPeiYangApp.navigatorState.currentContext,
-          '/login',
+          AuthRouter.login,
           (route) => false);
       throw DioError(error: "登录失效，请重新登录");
     }
@@ -25,7 +26,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
   /// * 办公网输错验证码 / 密码: [DioErrorType.RESPONSE]: Http status error [401]
   /// * 没刷新验证码: [DioErrorType.DEFAULT]: RedirectException: Redirect limit exceeded
   /// * 连不上网: [DioErrorType.DEFAULT]: SocketException: Failed host lookup: '[host]'
-  /// *
+  /// * More....
 
   // TODO 待完善
 
@@ -55,7 +56,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
         // _reLogin();
         Navigator.pushNamedAndRemoveUntil(
             WeiPeiYangApp.navigatorState.currentContext,
-            '/login',
+            AuthRouter.login,
             (route) => false);
         throw DioError(error: "登录失效，请重新登录");
         break;

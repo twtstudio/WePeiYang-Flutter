@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 class ResetDoneWidget extends StatelessWidget {
   @override
@@ -33,7 +34,7 @@ class ResetDoneWidget extends StatelessWidget {
             margin: const EdgeInsets.only(top: 20),
             child: RaisedButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false),
+                  context, AuthRouter.login, (route) => false),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text('前往登录',

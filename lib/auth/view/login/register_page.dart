@@ -3,6 +3,7 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/register_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
           onSuccess: (_) {
             _userNumFocus.unfocus();
             _nicknameFocus.unfocus();
-            Navigator.pushNamed(context, '/register2', arguments: {
+            Navigator.pushNamed(context, AuthRouter.register2, arguments: {
               'userNum': userNum,
               'nickname': nickname,
             });
@@ -176,7 +177,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
             _emailFocus.unfocus();
             _phoneFocus.unfocus();
             _codeFocus.unfocus();
-            Navigator.pushNamed(context, '/register3', arguments: {
+            Navigator.pushNamed(context, AuthRouter.register3, arguments: {
               'userNum': widget.userNum,
               'nickname': widget.nickname,
               'idNum': idNum,
@@ -418,7 +419,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
           onSuccess: () {
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/login', (route) => false);
+                context, AuthRouter.login, (route) => false);
           },
           onFailure: (e) => ToastProvider.error(e.error.toString()));
     }

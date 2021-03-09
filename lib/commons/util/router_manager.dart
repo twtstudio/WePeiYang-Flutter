@@ -20,6 +20,7 @@ class RouterManager {
       _routers.addAll(LoungeRouter.routers);
     }
     return MaterialPageRoute(
-        builder: (ctx) => _routers[settings.name](settings.arguments));
+        builder: (ctx) => _routers[settings.name](settings.arguments),
+        settings: settings);
   }
 }

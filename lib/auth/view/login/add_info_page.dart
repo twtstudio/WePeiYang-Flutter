@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/home/home_router.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
           onSuccess: () {
             ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           },
           onFailure: (e) => ToastProvider.error(e.error.toString()));
     }

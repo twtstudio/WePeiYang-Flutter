@@ -7,6 +7,7 @@ import '../../gpa/view/gpa_curve_detail.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:flutter/services.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -70,7 +71,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           Expanded(child: Text('')), // 起填充作用
           Text(CommonPreferences().nickname.value, style: hintStyle),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/user_info'),
+            onTap: () => Navigator.pushNamed(context, AuthRouter.userInfo),
             child: Container(
               margin: EdgeInsets.only(left: 7, right: 10),
               child: Icon(Icons.account_circle_rounded,

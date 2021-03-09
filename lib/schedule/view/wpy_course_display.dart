@@ -4,6 +4,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
+import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -66,7 +67,8 @@ class TodayCoursesWidget extends StatelessWidget {
             itemCount: todayCourses.length,
             itemBuilder: (context, i) {
               return GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/schedule'),
+                onTap: () =>
+                    Navigator.pushNamed(context, ScheduleRouter.schedule),
                 child: Container(
                   height: 180.0,
                   width: 150.0,
