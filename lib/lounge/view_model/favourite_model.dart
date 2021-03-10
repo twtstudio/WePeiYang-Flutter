@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -15,12 +16,15 @@ class RoomFavouriteModel extends ChangeNotifier {
 
   Map<String, Map<String, List<String>>> get classPlan => _classPlan;
 
-  refreshData({bool init = false, DateTime dateTime}) async {
+  refreshData({DateTime dateTime}) async {
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
+    await instance.initBuildingName();
+    var connectivityResult = await Connectivity().checkConnectivity();
 
-    if (init) {
+    if (connectivityResult != ConnectivityResult.none) {
       List<String> remoteIds = await LoungeRepository.favouriteList;
+      await LoungeRepository.updateLocalData(DateTime.now());
 
       // 添加新的收藏到本地
       for (var id in remoteIds) {
@@ -88,7 +92,8 @@ class FavouriteModel extends ViewStateModel {
   collect({@required Classroom room}) async {
     setBusy();
     try {
-      debugPrint('++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
+      debugPrint(
+          '++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
@@ -145,16 +150,17 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
   refresh() {
     setBusy();
     if (timeModel.state == ViewState.idle) {
-      debugPrint('++++++++++++++++ favourite list get data +++++++++++++++++++');
+      debugPrint(
+          '++++++++++++++++ favourite list get data +++++++++++++++++++');
       super.refresh();
-    } else if (timeModel.state == ViewState.error){
+    } else if (timeModel.state == ViewState.error) {
       viewState = ViewState.error;
     }
   }
 
   @override
   Future<List<Classroom>> loadData() async {
-    await favouriteModel.refreshData(init: true, dateTime: timeModel.dateTime);
+    await favouriteModel.refreshData(dateTime: timeModel.dateTime);
     var list = favouriteModel.favourList.values.toList();
     return list;
   }
