@@ -7,7 +7,7 @@ class Time {
   static const saturday = 'Saturday';
   static const sunday = 'Sunday';
 
-  static List<String> week = [
+  static const List<String> week = [
     monday,
     tuesday,
     wednesday,

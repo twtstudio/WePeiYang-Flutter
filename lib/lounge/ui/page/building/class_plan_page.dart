@@ -74,7 +74,9 @@ class PageTitleWidget extends StatelessWidget {
               ),
               onPressed: () async {
                 if (!favouriteModel.isBusy) {
-                  addFavourites(context, room: room, model: favouriteModel);
+                  debugPrint('========================== add favourite room ==========================');
+                  debugPrint(room.toJson().toString());
+                  await addFavourites(context, room: room, model: favouriteModel);
                 }
               },
               child: Padding(

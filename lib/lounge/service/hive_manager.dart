@@ -101,10 +101,38 @@ class HiveManager {
 
   clearTemporaryData() async => await _temporaryData.clear();
 
-  addFavourite({Classroom room}) async {
+  Future<Classroom> addFavourite({String id, Classroom clearRoom}) async {
     // print(_favourList.keys.toList());
-    await _favourList.put(room.id, room);
-    // print(_favourList.keys.toList());
+    if (clearRoom == null) {
+      Classroom room;
+      try {
+        room = await findRoomPathById(id: id);
+        await _favourList.put(room.id, room);
+      } on StateError catch (e) {
+        throw e;
+      } catch (e) {
+        throw e;
+      }
+      return room;
+    } else {
+      await _favourList.put(clearRoom.id, clearRoom);
+      return null;
+    }
+  }
+
+  Future<Classroom> findRoomPathById({String id}) async {
+    List<Classroom> rCs = [];
+    await baseBuildingDataFromDisk.forEach(
+      (building) => building.areas.values.forEach(
+        (area) => rCs.addAll(
+          area.classrooms.values
+              .where((room) => room.id == id)
+              .map((room) => room..bId = building.id),
+        ),
+      ),
+    );
+    assert (rCs.length == 1);
+    return rCs.first;
   }
 
   removeFavourite({String cId}) async {
@@ -115,7 +143,7 @@ class HiveManager {
     await Hive.deleteBoxFromDisk(favourList);
     _favourList = await Hive.openBox<Classroom>(favourList);
     for (var room in list) {
-      await addFavourite(room: room);
+      await addFavourite(id: room.id);
     }
   }
 

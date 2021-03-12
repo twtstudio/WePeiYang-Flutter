@@ -20,21 +20,22 @@ class RoomFavouriteModel extends ChangeNotifier {
     var localData = await instance.getFavourList();
 
     if (init) {
-      List<Classroom> remoteData = await LoungeRepository.favouriteList;
-      List<String> remoteIds = remoteData.map((e) => e.id).toList();
+      List<String> remoteIds = await LoungeRepository.favouriteList;
 
       // 添加新的收藏到本地
-      for (var room in remoteData) {
-        if (!localData.containsKey(room.id)) {
-          await instance.addFavourite(room: room);
+      for (var id in remoteIds) {
+        if (!localData.containsKey(id)) {
+          var room = await instance.addFavourite(id: id.toString());
+          _map[id] = room;
+          continue;
         }
-        _map[room.id] = room;
+        _map[id] = localData[id];
       }
 
       // 从本地删除旧的收藏
-      for (var room in localData.values) {
+      for (var room in _map.values) {
         if (!remoteIds.contains(room.id)) {
-          await instance.removeFavourite(cId: room.id);
+          await LoungeRepository.collect(id: room.id);
         }
       }
     } else {
@@ -52,7 +53,7 @@ class RoomFavouriteModel extends ChangeNotifier {
 
   addFavourite({@required Classroom room}) async {
     var instance = HiveManager.instance;
-    await instance.addFavourite(room: room);
+    await instance.addFavourite(clearRoom: room);
     _map.putIfAbsent(room.id, () => room);
     notifyListeners();
   }
@@ -87,6 +88,7 @@ class FavouriteModel extends ViewStateModel {
   collect({@required Classroom room}) async {
     setBusy();
     try {
+      debugPrint('++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
@@ -102,11 +104,23 @@ class FavouriteModel extends ViewStateModel {
 }
 
 class FavouriteListModel extends ViewStateListModel<Classroom> {
-  FavouriteListModel({this.timeModel, this.favouriteModel}) {
+  FavouriteListModel._({this.timeModel, this.favouriteModel}) {
     timeModel.addListener(refresh);
     favouriteModel.addListener(refresh);
-    if (favouriteModel.favourList.isNotEmpty)
-      timeModel.setTime();
+  }
+
+  static FavouriteListModel _instance;
+
+  factory FavouriteListModel(
+          {LoungeTimeModel timeModel, RoomFavouriteModel favouriteModel}) =>
+      _init(timeModel, favouriteModel);
+
+  static _init(LoungeTimeModel timeModel, RoomFavouriteModel favouriteModel) {
+    if (_instance == null) {
+      _instance = FavouriteListModel._(
+          timeModel: timeModel, favouriteModel: favouriteModel);
+    }
+    return _instance;
   }
 
   final LoungeTimeModel timeModel;
@@ -122,9 +136,25 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
       favouriteModel.classPlan;
 
   @override
+  void dispose() {
+    timeModel.removeListener(refresh);
+    super.dispose();
+  }
+
+  @override
+  refresh() {
+    setBusy();
+    if (timeModel.state == ViewState.idle) {
+      debugPrint('++++++++++++++++ favourite list get data +++++++++++++++++++');
+      super.refresh();
+    } else if (timeModel.state == ViewState.error){
+      viewState = ViewState.error;
+    }
+  }
+
+  @override
   Future<List<Classroom>> loadData() async {
-    await favouriteModel.refreshData(
-        init: true, dateTime: timeModel.dateTime);
+    await favouriteModel.refreshData(init: true, dateTime: timeModel.dateTime);
     var list = favouriteModel.favourList.values.toList();
     return list;
   }
@@ -138,17 +168,5 @@ addFavourites(BuildContext context,
   await model.collect(room: room);
   if (model.isError) {
     model.showErrorMessage();
-  } else {
-    if (playAnim) {
-      // TODO: 这竟然是flare动画，有机会再搞
-      ///接口调用成功播放动画
-      // Navigator.push(
-      //     context,
-      //     HeroDialogRoute(
-      //         builder: (_) => FavouriteAnimationWidget(
-      //           tag: tag,
-      //           add: article.collect,
-      //         )));
-    }
   }
 }

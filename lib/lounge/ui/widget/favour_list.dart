@@ -12,98 +12,101 @@ import 'list_load_steps.dart';
 
 class LoungeFavourWidget extends StatelessWidget {
   final String title;
+  final bool init;
 
-  const LoungeFavourWidget({Key key, this.title}) : super(key: key);
+  const LoungeFavourWidget({Key key, this.title, this.init = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MediaQuery.removePadding(
-        context: context,
-        removeRight: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
-              child: Text(
-                title,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0XFF62677B)),
-              ),
+      context: context,
+      removeRight: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0XFF62677B)),
             ),
-            FavourListWidget(),
-          ],
-        ));
+          ),
+          FavourListWidget(init: init),
+        ],
+      ),
+    );
   }
 }
 
-class FavourListWidget extends StatelessWidget {
+class FavourListWidget extends StatefulWidget {
+  final bool init;
+
   const FavourListWidget({
     Key key,
+    this.init,
   }) : super(key: key);
 
   @override
+  _FavourListWidgetState createState() => _FavourListWidgetState();
+}
+
+class _FavourListWidgetState extends State<FavourListWidget> {
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(22, 10, 0, 0),
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        child: ProviderWidget<FavouriteListModel>(
-            model: FavouriteListModel(
-              timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
-              favouriteModel:
-                  Provider.of<RoomFavouriteModel>(context, listen: false),
+    return ProviderWidget<FavouriteListModel>(
+      autoDispose: false,
+      model: FavouriteListModel(
+        timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
+        favouriteModel: Provider.of<RoomFavouriteModel>(context, listen: false),
+      ),
+      onModelReady: widget.init == true ? (model) => model.initData() : null,
+      builder: (_, model, __) => ListLoadSteps(
+        model: model,
+        emptyV: Container(
+          height: 40,
+          child: Container(
+            child: Center(
+              child: Text(
+                '莫得数据，速去动动你的小手手',
+                style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
+              ),
             ),
-            onModelReady: (model) => model.initData(),
-            builder: (_, model, __) => ListLoadSteps(
-                  model: model,
-                  emptyV: Container(
-                    height: 40,
-                    width: MediaQuery.of(context).size.width - 20,
-                    child: Row(children: [
-                      Expanded(
-                        child: Container(
-                          child: Center(
-                            child: Text(
-                              '自习室收藏存储在本地',
-                              style: TextStyle(
-                                  color: Color(0xffcdcdd3), fontSize: 12),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 20,
-                      ),
-                    ]),
-                  ),
-                  successV: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: model.favourList.isNotEmpty
-                        ? model.favourList.map((classroom) {
-                            // print('classroom: ' + classroom.toJson().toString());
-                            var plan = model.classPlan[classroom.id];
-                            var current = Time.week[model.currentDay - 1];
-                            var currentPlan = plan[current].join();
-                            var isIdle =
-                                Time.availableNow(currentPlan, model.classTime);
-                            return FavourListCard(
-                              room: classroom,
-                              available: isIdle,
-                            );
-                          }).toList()
-                        : [
-                            Container(
-                              child: Center(
-                                child: Text('莫得数据，速去动动你的小手手'),
-                              ),
-                            )
-                          ],
-                  ),
-                )),
+          ),
+        ),
+        successV: Padding(
+          padding: EdgeInsets.fromLTRB(22, 10, 0, 0),
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: model.favourList.map(
+                (classroom) {
+                  // print('classroom: ' + classroom.toJson().toString());
+                  var plan = model.classPlan[classroom.id];
+                  if (plan != null) {
+                    debugPrint(
+                        '------------------------- favourite room -------------------------');
+                    debugPrint(classroom.toJson().toString());
+                    var current = Time.week[model.currentDay - 1];
+                    var currentPlan = plan[current].join();
+                    var isIdle =
+                        Time.availableNow(currentPlan, model.classTime);
+                    return FavourListCard(
+                      room: classroom,
+                      available: isIdle,
+                    );
+                  }
+                  return Container();
+                },
+              ).toList(),
+            ),
+          ),
+        ),
       ),
     );
   }
