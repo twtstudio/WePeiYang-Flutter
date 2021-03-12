@@ -4,7 +4,7 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 class MyColors {
   static final deepBlue = Color.fromRGBO(98, 103, 124, 1.0); //no.1
   static final darkGrey =
-      Color.fromRGBO(206, 207, 212, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
+  Color.fromRGBO(206, 207, 212, 1.0); //Card label颜色(小图标下的文字,如Bicycle)
   static final darkGrey2 = Color.fromRGBO(116, 119, 138, 1.0); //no.2
   static final brightBlue = Color.fromRGBO(103, 110, 150, 1.0); //no.3
   static final dust = Color.fromRGBO(230, 230, 230, 1.0); //no.4
@@ -60,32 +60,80 @@ class FavorColors {
   }
 
   static final List<String> _greenGPA = [
-    Color.fromRGBO(127, 139, 89, 1).value.toString(),
-    Color.fromRGBO(255, 255, 255, 1).value.toString(),
-    Color.fromRGBO(179, 183, 155, 1).value.toString(),
-    Color.fromRGBO(136, 148, 102, 1).value.toString(),
+    Color
+        .fromRGBO(127, 139, 89, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(255, 255, 255, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(179, 183, 155, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(136, 148, 102, 1)
+        .value
+        .toString(),
   ];
 
   static final List<String> _blueGPA = [
-    Color.fromRGBO(71, 83, 95, 1).value.toString(),
-    Color.fromRGBO(206, 198, 185, 1).value.toString(),
-    Color.fromRGBO(195, 191, 185, 1).value.toString(),
-    Color.fromRGBO(87, 97, 108, 1).value.toString(),
+    Color
+        .fromRGBO(71, 83, 95, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(206, 198, 185, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(195, 191, 185, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(87, 97, 108, 1)
+        .value
+        .toString(),
   ];
 
   static final List<String> _pinkGPA = [
-    Color.fromRGBO(173, 141, 146, 1).value.toString(),
-    Color.fromRGBO(247, 247, 248, 1).value.toString(),
-    Color.fromRGBO(233, 220, 223, 1).value.toString(),
-    Color.fromRGBO(180, 150, 155, 1).value.toString(),
+    Color
+        .fromRGBO(173, 141, 146, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(247, 247, 248, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(233, 220, 223, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(180, 150, 155, 1)
+        .value
+        .toString(),
   ];
 
   static final List<String> _lightGPA = [
     // 这里本来是238 237 237的，我把red调成了245以更符合设计图（为啥app和web的颜色会有差别呢）
-    Color.fromRGBO(245, 237, 237, 1.0).value.toString(),
-    Color.fromRGBO(157, 123, 131, 1).value.toString(),
-    Color.fromRGBO(184, 162, 167, 1).value.toString(),
-    Color.fromRGBO(227, 222, 222, 1).value.toString(),
+    Color
+        .fromRGBO(245, 237, 237, 1.0)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(157, 123, 131, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(184, 162, 167, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(227, 222, 222, 1)
+        .value
+        .toString(),
   ];
 
   /// 这个是课程表默认颜色哦
@@ -114,29 +162,84 @@ class FavorColors {
       return Color.fromRGBO(98, 103, 123, 1);
   }
 
+  /// 这套配色暴露出来给主页使用
+  static final List<Color> homeSchedule = _blueSchedule.map((e) =>
+      Color(int.parse(e, radix: 10))).toList();
+
   static final List<String> _blueSchedule = [
-    Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
-    Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
-    Color.fromRGBO(122, 119, 138, 1).value.toString(), // #7A778A
-    Color.fromRGBO(142, 122, 150, 1).value.toString(), // #8E7A96
-    Color.fromRGBO(130, 134, 161, 1).value.toString(), // #8286A1
+    Color
+        .fromRGBO(114, 117, 136, 1)
+        .value
+        .toString(), // #727588
+    Color
+        .fromRGBO(143, 146, 165, 1)
+        .value
+        .toString(), // #8F92A5
+    Color
+        .fromRGBO(122, 119, 138, 1)
+        .value
+        .toString(), // #7A778A
+    Color
+        .fromRGBO(142, 122, 150, 1)
+        .value
+        .toString(), // #8E7A96
+    Color
+        .fromRGBO(130, 134, 161, 1)
+        .value
+        .toString(), // #8286A1
   ];
 
   static final List<String> _greenSchedule = [
-    Color.fromRGBO(127, 148, 105, 1).value.toString(),
-    Color.fromRGBO(188, 200, 178, 1).value.toString(),
-    Color.fromRGBO(100, 109, 90, 1).value.toString(),
-    Color.fromRGBO(173, 180, 147, 1).value.toString(),
-    Color.fromRGBO(83, 89, 78, 1).value.toString(),
-    Color.fromRGBO(165, 180, 149, 1).value.toString(),
+    Color
+        .fromRGBO(127, 148, 105, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(188, 200, 178, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(100, 109, 90, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(173, 180, 147, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(83, 89, 78, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(165, 180, 149, 1)
+        .value
+        .toString(),
   ];
 
   static final List<String> _brownSchedule = [
-    Color.fromRGBO(159, 136, 118, 1).value.toString(),
-    Color.fromRGBO(196, 148, 125, 1).value.toString(),
-    Color.fromRGBO(212, 188, 162, 1).value.toString(),
-    Color.fromRGBO(128, 95, 78, 1).value.toString(),
-    Color.fromRGBO(201, 169, 148, 1).value.toString(),
-    Color.fromRGBO(102, 88, 82, 1).value.toString(),
+    Color
+        .fromRGBO(159, 136, 118, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(196, 148, 125, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(212, 188, 162, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(128, 95, 78, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(201, 169, 148, 1)
+        .value
+        .toString(),
+    Color
+        .fromRGBO(102, 88, 82, 1)
+        .value
+        .toString(),
   ];
 }

@@ -140,6 +140,16 @@ changeEmail(String email,
   }, onFailure: onFailure);
 }
 
+/// 单独修改用户名
+changeNickname(String username,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  await DioService().put("user/single/username",
+      queryParameters: {'username': username}, onSuccess: (_) {
+    CommonPreferences().nickname.value = username;
+    onSuccess();
+  }, onFailure: onFailure);
+}
+
 /// 检测学号和用户名是否重复
 checkInfo1(String userNumber, String username,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {

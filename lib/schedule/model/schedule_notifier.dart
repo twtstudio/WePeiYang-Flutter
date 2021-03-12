@@ -7,6 +7,8 @@ import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
+  void notify() => notifyListeners.call();
+
   List<ScheduleCourse> _courses = [];
 
   /// 外部更新课表总数据时调用（如网络请求）

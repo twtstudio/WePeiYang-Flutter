@@ -13,6 +13,7 @@ import 'package:wei_pei_yang_demo/auth/view/settings/language_setting_page.dart'
 import 'package:wei_pei_yang_demo/auth/view/settings/schedule_setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/settings/setting_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/tju_bind_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/reset_nickname_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/user_info_page.dart';
 
@@ -33,6 +34,8 @@ class AuthRouter {
   static String tjuBind = '/tjuBind';
   static String phoneBind = '/phoneBind';
   static String emailBind = '/emailBind';
+  static String resetName = '/resetName';
+  static String userInfo = '/user_info';
 
   /// 个人页 & 设置页
   static String user = '/user';
@@ -40,7 +43,6 @@ class AuthRouter {
   static String languageSetting = '/language_setting';
   static String scheduleSetting = '/schedule_setting';
   static String colorSetting = '/color_setting';
-  static String userInfo = '/user_info';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
@@ -67,11 +69,12 @@ class AuthRouter {
     tjuBind: (_) => TjuBindPage(),
     phoneBind: (_) => PhoneBindPage(),
     emailBind: (_) => EmailBindPage(),
+    resetName: (_) => ResetNicknamePage(),
+    userInfo: (_) => UserInfoPage(),
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     colorSetting: (_) => ColorSettingPage(),
-    userInfo: (_) => UserInfoPage(),
   };
 }
