@@ -13,7 +13,12 @@ final hintStyle = const TextStyle(
     color: Color.fromRGBO(53, 59, 84, 1.0),
     fontWeight: FontWeight.bold);
 
-class WPYPage extends StatelessWidget {
+class WPYPage extends StatefulWidget {
+  @override
+  _WPYPageState createState() => _WPYPageState();
+}
+
+class _WPYPageState extends State<WPYPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -22,19 +27,30 @@ class WPYPage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: CustomScrollView(
           slivers: <Widget>[
-            SliverPersistentHeader(
-              delegate: _WPYHeader(),
-              pinned: true,
+            /// 自定义标题栏
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 30.0),
+              sliver: SliverPersistentHeader(
+                  delegate: _WPYHeader(onChanged: (_) {
+                    setState(() {});
+                  }),
+                  pinned: true),
             ),
+
+            /// 功能跳转卡片
             SliverCardsWidget(GlobalModel().cards),
+
+            /// 当天课程
             SliverToBoxAdapter(child: TodayCoursesWidget()),
+
+            /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
+
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-                child: const LoungeFavourWidget(title: '自习室', init: true),
-              ),
-            )
+                child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+              child: LoungeFavourWidget(title: '自习室'),
+            ))
           ],
         ),
       ),
@@ -44,13 +60,18 @@ class WPYPage extends StatelessWidget {
 
 ///替代appbar使用
 class _WPYHeader extends SliverPersistentHeaderDelegate {
+  /// 让WPYPage进行重绘的回调
+  final ValueChanged<void> onChanged;
+
+  const _WPYHeader({this.onChanged});
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.center,
-      padding: EdgeInsets.fromLTRB(30.0, 30, 10.0, 0.0),
+      padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
       child: Row(
         children: <Widget>[
           Text("Hello",
@@ -61,7 +82,9 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           Expanded(child: Text('')), // 起填充作用
           Text(CommonPreferences().nickname.value, style: hintStyle),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/user_info'),
+            onTap: () => Navigator.pushNamed(context, '/user_info').then((_) {
+              onChanged(null);
+            }),
             child: Container(
               margin: EdgeInsets.only(left: 7, right: 10),
               child: Icon(Icons.account_circle_rounded,
@@ -74,13 +97,13 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 120.0;
+  double get maxExtent => 120;
 
   @override
-  double get minExtent => 80.0;
+  double get minExtent => 65.0;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class SliverCardsWidget extends StatelessWidget {

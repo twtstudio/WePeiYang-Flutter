@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required, BuildContext;
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+
 // import 'package:provider/provider.dart';
 // import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 // import '../../main.dart';
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
+/// 这里出现一个分支：辅修生最后获取classes.tju.edu的cookie的时候，不会返回semester.id和ids
+///                  而是会返回“主修”、“辅修”字样。
 void login(BuildContext context, String name, String pw, String captcha,
     Map<String, String> map,
     {void Function() onSuccess, void Function(DioError) onFailure}) {
@@ -21,13 +24,15 @@ void login(BuildContext context, String name, String pw, String captcha,
     cookieRsp.headers.map['set-cookie'].forEach((string) {
       if (string.contains('GSESSIONID'))
         pref.gSessionId.value = getRegExpStr(r'GSESSIONID=\w+\.\w+', string);
-      if (string.contains('semester'))
-        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
       if (string.contains('UqZBpD3n3iXPAw1X'))
         pref.garbled.value = getRegExpStr(r'UqZBpD3n3iXPAw1X=\w+', string);
+      if (string.contains('semester'))
+        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
     });
-    pref.ids.value =
+    /// 这里如果是null的话则证明学生有辅修
+    var idsValue =
         getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
+    pref.ids.value = (idsValue == null) ? "useless" : idsValue;
     pref.isBindTju.value = true;
     onSuccess();
     // return getWeekInfo();

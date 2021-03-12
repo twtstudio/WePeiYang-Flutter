@@ -40,9 +40,10 @@ class TodayCoursesWidget extends StatelessWidget {
       else
         flag = judgeActiveInDay(
             notifier.currentWeekWithNotify, today, notifier.weekCount, course);
-      if (flag) todayCourses.tryMerge(course);
+      if (flag) todayCourses.add(course);
     });
-    if (todayCourses.length == 0) // 如果今天没有课，就返回文字框
+    if (todayCourses.length == 0) {
+      // 如果今天没有课，就返回文字框
       return Container(
           height: 60,
           margin: const EdgeInsets.symmetric(horizontal: 22),
@@ -57,77 +58,67 @@ class TodayCoursesWidget extends StatelessWidget {
                     fontSize: 15,
                     letterSpacing: 0.5)),
           ));
-    else // 否则返回所有今日课程
-      return Container(
-        height: 180.0,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: todayCourses.length,
-            itemBuilder: (context, i) {
-              return GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/schedule'),
-                child: Container(
-                  height: 180.0,
-                  width: 150.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                  child: Card(
-                    color: MyColors.colorList[i % 5],
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: 95.0,
-                            alignment: Alignment.centerLeft,
-                            child: Text(todayCourses[i].courseName,
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Text(
-                                getCourseTime(todayCourses[i].arrange.start,
-                                    todayCourses[i].arrange.end),
-                                style: TextStyle(
-                                    fontSize: 13.0, color: Colors.white)),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Text(
-                                replaceBuildingWord(
-                                    todayCourses[i].arrange.room),
-                                style: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
-                          )
-                        ],
-                      ),
+    }
+
+    /// 给本日课程排序
+    todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
+    return Container(
+      height: 180.0,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          itemCount: todayCourses.length,
+          itemBuilder: (context, i) {
+            return GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/schedule'),
+              child: Container(
+                height: 180.0,
+                width: 150.0,
+                padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                child: Card(
+                  color: FavorColors.homeSchedule[i % 5],
+                  elevation: 2.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 95.0,
+                          alignment: Alignment.centerLeft,
+                          child: Text(todayCourses[i].courseName,
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                              getCourseTime(todayCourses[i].arrange.start,
+                                  todayCourses[i].arrange.end),
+                              style: TextStyle(
+                                  fontSize: 13.0, color: Colors.white)),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Text(
+                              replaceBuildingWord(todayCourses[i].arrange.room),
+                              style: TextStyle(
+                                  fontSize: 13.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              );
-            }),
-      );
-  }
-}
-
-/// 尝试在添加今日课程时合并相同课程
-extension TryMerge on List<ScheduleCourse> {
-  void tryMerge(ScheduleCourse course) {
-    if (isEmpty)
-      add(course);
-    else if (last.courseName == course.courseName)
-      last.arrange.end = course.arrange.end;
-    else
-      add(course);
+              ),
+            );
+          }),
+    );
   }
 }
