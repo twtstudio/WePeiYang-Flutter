@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
+import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
 import 'package:wei_pei_yang_demo/home/view/drawer_page.dart';
@@ -41,6 +42,9 @@ class _HomePageState extends State<HomePage> {
                 height: 70,
                 width: width,
                 child: RaisedButton(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    highlightElevation: 0,
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(),
                     color: Colors.white,
@@ -48,14 +52,13 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 25,
-                          height: 25,
+                          width: 20,
+                          height: 20,
                           child: Image(
                               image: _currentIndex == 0
                                   ? AssetImage(
                                       'assets/images/icon_home_active.png')
-                                  : AssetImage(
-                                      'assets/images/icon_home.png')),
+                                  : AssetImage('assets/images/icon_home.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
@@ -73,19 +76,24 @@ class _HomePageState extends State<HomePage> {
                 child: RaisedButton(
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    highlightElevation: 0,
                     color: Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 25,
-                          height: 25,
-                          child: Image(
-                              image: _currentIndex == 1
-                                  ? AssetImage(
-                                      'assets/images/icon_feedback_active.png')
-                                  : AssetImage(
-                                      'assets/images/icon_feedback.png')),
+                        FeedbackBadgeWidget(
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            child: Image(
+                                image: _currentIndex == 1
+                                    ? AssetImage(
+                                        'assets/images/icon_feedback_active.png')
+                                    : AssetImage(
+                                        'assets/images/icon_feedback.png')),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
@@ -104,12 +112,15 @@ class _HomePageState extends State<HomePage> {
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(),
                     color: Colors.white,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    highlightElevation: 0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 25,
-                          height: 25,
+                          width: 20,
+                          height: 20,
                           child: Image(
                               image: _currentIndex == 2
                                   ? AssetImage(
@@ -134,18 +145,20 @@ class _HomePageState extends State<HomePage> {
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(),
                     color: Colors.white,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    highlightElevation: 0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 25,
-                          height: 25,
+                          width: 20,
+                          height: 20,
                           child: Image(
                               image: _currentIndex == 3
                                   ? AssetImage(
                                       'assets/images/icon_user_active.png')
-                                  : AssetImage(
-                                      'assets/images/icon_user.png')),
+                                  : AssetImage('assets/images/icon_user.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),

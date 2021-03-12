@@ -13,7 +13,7 @@ class GlobalModel {
   GlobalModel._() {
     cards.add(CardBean(Icons.event, '课程表', '/schedule'));
     cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
-    cards.add(CardBean(Icons.call, '黄页', '/telNum'));
+    // cards.add(CardBean(Icons.call, '黄页', '/telNum'));
     cards
         .add(CardBean(Icons.calendar_today_outlined, "自习室", LoungeRouter.main));
   }
@@ -25,7 +25,7 @@ class GlobalModel {
   double screenWidth;
   double screenHeight;
   int captchaIndex = 0;
-  List<CardBean> cards = [];
+  final List<CardBean> cards = [];
 
   void increase() => captchaIndex++;
 }

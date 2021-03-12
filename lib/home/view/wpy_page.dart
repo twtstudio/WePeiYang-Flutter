@@ -14,7 +14,6 @@ final hintStyle = const TextStyle(
     fontWeight: FontWeight.bold);
 
 class WPYPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -23,27 +22,19 @@ class WPYPage extends StatelessWidget {
         data: ThemeData(accentColor: Colors.white),
         child: CustomScrollView(
           slivers: <Widget>[
-            /// 自定义标题栏
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 30.0),
-              sliver:
-                  SliverPersistentHeader(delegate: _WPYHeader(), pinned: true),
+            SliverPersistentHeader(
+              delegate: _WPYHeader(),
+              pinned: true,
             ),
-
-            /// 功能跳转卡片
             SliverCardsWidget(GlobalModel().cards),
-
-            /// 当天课程
             SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-            /// GPA曲线及信息展示
             SliverToBoxAdapter(child: GPAPreview()),
-
             SliverToBoxAdapter(
-                child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: const LoungeFavourWidget(title: '自习室',init: true),
-            ))
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+                child: const LoungeFavourWidget(title: '自习室', init: true),
+              ),
+            )
           ],
         ),
       ),
@@ -59,7 +50,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.center,
-      padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
+      padding: EdgeInsets.fromLTRB(30.0, 30, 10.0, 0.0),
       child: Row(
         children: <Widget>[
           Text("Hello",
@@ -86,7 +77,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   double get maxExtent => 120.0;
 
   @override
-  double get minExtent => 65.0;
+  double get minExtent => 80.0;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;

@@ -9,13 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/feedback/feedback_providers.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-
 import 'commons/preferences/common_prefs.dart';
-import 'feedback/model/feedback_notifier.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 
@@ -72,7 +71,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ...loungeProviders,
-        ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
+        ...feedbackProviders,
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(

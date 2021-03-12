@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -71,9 +72,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                     child: InkWell(
                                       child: Column(
                                         children: [
-                                          Image.asset(
-                                            'lib/feedback/assets/img/my_post.png',
-                                            height: 30,
+                                          FeedbackBadgeWidget(
+                                            child: Image.asset(
+                                              'lib/feedback/assets/img/my_post.png',
+                                              height: 30,
+                                            ),
                                           ),
                                           BlankSpace.height(5),
                                           Text(
