@@ -42,9 +42,6 @@ class CommonPreferences {
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
 
-  /// cookies in sso.tju.edu.cn，暂时先不存了
-  // var tgc = PrefsBean<String>("tgc");
-
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
   var garbled = PrefsBean<String>("garbled"); // UqZBpD3n3iXPAw1X
@@ -66,7 +63,7 @@ class CommonPreferences {
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
   }
 
-  /// 重置twt用户的缓存
+  /// 清除twt用户的缓存
   void clearPrefs() {
     isLogin.value = false;
     token.value = "";
@@ -77,27 +74,22 @@ class CommonPreferences {
     account.value = "";
     password.value = "";
     captchaCookie.value = "";
-    // hideGPA.value = false;
-    // nightMode.value = false;
-    // otherWeekSchedule.value = false;
-    // remindBeforeStart.value = false;
-    // remindBefore.value = false;
-    // _sharedPref.clear();
   }
 
-  /// 重置办公网缓存
+  /// 清除办公网缓存
   void clearTjuPrefs() {
     gpaData.value = "";
     scheduleData.value = "";
     isBindTju.value = false;
     tjuuname.value = "";
     tjupasswd.value = "";
-    // tgc.value = "";
     gSessionId.value = "";
     garbled.value = "";
     semesterId.value = "";
     ids.value = "";
   }
+
+  /// 清除gpa和课程表的缓存
 }
 
 class PrefsBean<T> {

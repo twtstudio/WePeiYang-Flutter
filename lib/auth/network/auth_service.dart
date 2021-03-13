@@ -94,6 +94,9 @@ login(String account, String password,
       onSuccess: (result) {
     var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
+    if (prefs.account.value != account && prefs.account.value != "") {
+        /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
+    }
     prefs.account.value = account;
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";

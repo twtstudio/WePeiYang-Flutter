@@ -2,10 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required, BuildContext;
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 
-// import 'package:provider/provider.dart';
-// import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-// import '../../main.dart';
-
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 /// 这里出现一个分支：辅修生最后获取classes.tju.edu的cookie的时候，不会返回semester.id和ids
 ///                  而是会返回“主修”、“辅修”字样。
@@ -15,6 +11,7 @@ void login(BuildContext context, String name, String pw, String captcha,
   var pref = CommonPreferences();
 
   ssoLogin(name, pw, captcha, map).then((ssoRsp) {
+    /// 这里的tgc是一个登录后给的cookie，只会使用一次所以不存了
     var tgc =
         getRegExpStr(r'TGC=\S+(?=\;)', ssoRsp.headers.map['set-cookie'][0]);
     pref.tjuuname.value = name;
@@ -29,24 +26,13 @@ void login(BuildContext context, String name, String pw, String captcha,
       if (string.contains('semester'))
         pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
     });
+
     /// 这里如果是null的话则证明学生有辅修
     var idsValue =
         getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
     pref.ids.value = (idsValue == null) ? "useless" : idsValue;
     pref.isBindTju.value = true;
     onSuccess();
-    // return getWeekInfo();
-    // }).then((weekRsp) {
-    //   var matched =
-    //       getRegExpStr(r'(?<=date\-icon)[^]+(?=当前教学周)', weekRsp.data.toString());
-    //   var notifier = Provider.of<ScheduleNotifier>(
-    //       WeiPeiYangApp.navigatorState.currentContext,
-    //       listen: false);
-    //   notifier.weekCount = int.parse(getRegExpStr(r'(?<=i\>\/)[0-9]+', matched));
-    //   notifier.currentWeekWithNotify =
-    //       int.parse(getRegExpStr(r'(?<=\<span\>)[0-9]+', matched));
-    //   pref.isBindTju.value = true;
-    //   onSuccess();
   }).catchError((e) {
     print("Error happened: $e");
     onFailure(e);
@@ -84,11 +70,6 @@ Future<Response> ssoLogin(
 Future<Response> getClassesCookies(String tgc) async =>
     fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
         cookie: tgc);
-
-/// 获取当前周数、学期总周数
-Future<Response> getWeekInfo() async =>
-    fetch("http://classes.tju.edu.cn/eams/homeExt!main.action",
-        cookieList: CommonPreferences().getCookies());
 
 Future<Response> fetch(String url,
     {String cookie,
