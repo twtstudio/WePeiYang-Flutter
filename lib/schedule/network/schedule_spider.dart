@@ -126,12 +126,15 @@ Future<Response> getDetailSchedule(String projectId, String ids) async {
 
 /// 用请求到的html数据生成schedule对象
 List<ScheduleCourse> _data2ScheduleCourses(String data) {
+  // TODO 这里throw什么好呢？
+  // if (!data.contains("课程列表")) throw DioError();
+
   /// 先整理出所有的arrange对象
   List<Arrange> arrangeList = [];
   List<String> arrangeDataList =
       getRegExpStr(r'(?<=var teachers)[^]*?(?=fillTable)', data)
-          .split("var teachers");
-  arrangeDataList.forEach((item) {
+          ?.split("var teachers");
+  arrangeDataList?.forEach((item) {
     var day = (int.parse(getRegExpStr(r'(?<=index =)\w', item)) + 1).toString();
     var startEnd = getRegExpList(r'(?<=unitCount\+)\w*', item);
     var start = (int.parse(startEnd.first) + 1).toString();
@@ -165,11 +168,13 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     }
   });
 
+  /// 下面的[?.]和[return]是本学期没有课程时的空判断
   List<ScheduleCourse> courses = [];
   List<String> trList = getRegExpStr(r'(?<=\<tbody)[^]*?(?=\<\/tbody\>)', data)
-      .split("</tr><tr>");
-  trList.forEach((tr) {
+      ?.split("</tr><tr>");
+  trList?.forEach((tr) {
     List<String> tdList = getRegExpList(r'(?<=\<td\>)[^]*?(?=\<\/td\>)', tr);
+    if (tdList.isEmpty) return;
     var classId = getRegExpStr(r'(?<=\>)[0-9]*', tdList[1]);
     var courseId = tdList[2];
 

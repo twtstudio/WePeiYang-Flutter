@@ -160,7 +160,7 @@ class _RadarChartState extends State<RadarChartWidget> {
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
-                    "Radar & rose chart is not available with semesters of less than three courses.",
+                    "Radar & Rose chart is not available with semesters of less than three courses.",
                     style: TextStyle(color: widget.gpaColors[2], fontSize: 13)),
               )
             ],
