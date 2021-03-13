@@ -8,7 +8,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
-import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
