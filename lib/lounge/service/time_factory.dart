@@ -43,7 +43,7 @@ class Time {
   }
 
   static bool availableNow(String state, List<ClassTime> schedules) =>
-      schedules.isNotEmpty
+      state.isNotEmpty && schedules.isNotEmpty
           ? schedules.map((time) {
               var list = state.split('');
               if (list[time.id * 2 - 1] == '0' &&

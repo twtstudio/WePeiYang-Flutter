@@ -60,32 +60,36 @@ class LoungeRepository {
     }
   }
 
+  static updateLocalData(DateTime dateTime) async {
+    if (HiveManager.instance.shouldUpdateLocalData) {
+      ToastProvider.running('加载数据需要一点时间');
+      await _getBaseBuildingList.then((value) async {
+        await HiveManager.instance.clearLocalData();
+        await HiveManager.instance.writeBaseDataInDisk(buildings: value);
+        await _getWeekClassPlan(dateTime: dateTime).toList().then(
+            (plans) async {
+          await Future.forEach<MapEntry<int, List<Building>>>(
+              plans,
+              (plan) => HiveManager.instance
+                  .writeThisWeekDataInDisk(plan.value, plan.key)).then((_) {
+            HiveManager.instance.checkBaseDataIsAllInDisk();
+          });
+          ToastProvider.success('教室安排加载成功');
+        }, onError: (e) {
+          ToastProvider.error(e.toString().split(':')[1].trim());
+          throw e;
+        });
+      }, onError: (e) {
+        ToastProvider.error('基础数据解析错误');
+        throw e;
+      });
+    }
+  }
+
   static setLoungeData({@required LoungeTimeModel model}) async {
     var dateTime = model.dateTime;
     if (dateTime.isThisWeek) {
-      if (HiveManager.instance.shouldUpdateLocalData) {
-        ToastProvider.running('加载数据需要一点时间');
-        await _getBaseBuildingList.then((value) async {
-          await HiveManager.instance.clearLocalData();
-          await HiveManager.instance.writeBaseDataInDisk(buildings: value);
-          await _getWeekClassPlan(dateTime: dateTime).toList().then(
-              (plans) async {
-            await Future.forEach<MapEntry<int, List<Building>>>(
-                plans,
-                (plan) => HiveManager.instance
-                    .writeThisWeekDataInDisk(plan.value, plan.key)).then((_) {
-              HiveManager.instance.checkBaseDataIsAllInDisk();
-            });
-            ToastProvider.success('教室安排加载成功');
-          }, onError: (e) {
-            ToastProvider.error(e.toString().split(':')[1].trim());
-            throw e;
-          });
-        }, onError: (e) {
-          ToastProvider.error('基础数据解析错误');
-          throw e;
-        });
-      }
+      await updateLocalData(dateTime);
     } else {
       if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
         ToastProvider.running('加载数据需要一点时间');
@@ -96,7 +100,7 @@ class LoungeRepository {
               plans,
               (plan) => HiveManager.instance
                   .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
-            HiveManager.instance.setTemporaryDataFinish();
+            HiveManager.instance.setTemporaryDataFinish(dateTime);
           });
           ToastProvider.success('教室安排加载成功');
         }, onError: (e) {

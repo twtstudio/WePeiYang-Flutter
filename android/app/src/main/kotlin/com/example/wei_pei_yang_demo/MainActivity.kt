@@ -8,10 +8,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
-import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
+    private val feedbackMessageChannel = "com.example.wei_pei_yang_demo/feedback"
+    private var messageCount = 1
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
@@ -28,6 +29,17 @@ class MainActivity : FlutterActivity() {
                         if (it) startAlarmService()
                         else stopAlarmService()
                     }
+                }
+                else -> result.error("-1", "cannot find method", null)
+            }
+        }
+        MethodChannel(flutterEngine.dartExecutor, feedbackMessageChannel).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getFeedbackMessageCount" -> {
+                    result.success(messageCount)
+                }
+                "clearFeedbackMessage" -> {
+                    //clear
                 }
                 else -> result.error("-1", "cannot find method", null)
             }

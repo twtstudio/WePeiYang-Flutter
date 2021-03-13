@@ -48,6 +48,8 @@ dependencies:
   package_info: ^0.4.1
   install_plugin: ^2.0.1
   flutter_update_dialog: ^0.0.1
+  connectivity: 2.0.2
+  badges: ^1.2.0
 
 
 

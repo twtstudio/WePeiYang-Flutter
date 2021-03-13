@@ -26,7 +26,8 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatefulWidget {
   _ListLoadStepsState<T> createState() => _ListLoadStepsState<T>();
 }
 
-class _ListLoadStepsState<T extends ViewStateListModel> extends State<ListLoadSteps<T>> {
+class _ListLoadStepsState<T extends ViewStateListModel>
+    extends State<ListLoadSteps<T>> {
   @override
   Widget build(BuildContext context) {
     Widget body;
@@ -52,15 +53,22 @@ class _ListLoadStepsState<T extends ViewStateListModel> extends State<ListLoadSt
     } else if (widget.model.isError && widget.model.list.isEmpty) {
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.error),
-        child: widget.errorV ?? Container(
-          height: 40,
-          color: Colors.red,
-        ),
+        child: widget.errorV ??
+            Container(
+              height: 80,
+              color: Colors.red,
+              child: Text('error', style: TextStyle(fontSize: 20,color: Colors.white)),
+            ),
       );
     } else if (widget.model.isEmpty) {
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.empty),
-        child: widget.emptyV ?? Container(),
+        child: widget.emptyV ??
+            Container(
+              height: 80,
+              color: Colors.blue,
+              child: Text('empty', style: TextStyle(fontSize: 20,color: Colors.white)),
+            ),
       );
     } else if (widget.model.isIdle && widget.model.list.isNotEmpty) {
       debugPrint('build ????????????????????????????????');
@@ -69,7 +77,11 @@ class _ListLoadStepsState<T extends ViewStateListModel> extends State<ListLoadSt
         child: widget.successV ?? Container(),
       );
     } else {
-      body = widget.defaultV ?? Container();
+      body = widget.defaultV ?? Container(
+        height: 80,
+        color: Colors.black,
+        child: Text('default', style: TextStyle(fontSize: 20,color: Colors.white)),
+      );
     }
     return AnimatedSwitcher(
         layoutBuilder: (Widget currentChild, List<Widget> previousChildren) {
