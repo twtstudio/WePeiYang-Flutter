@@ -93,7 +93,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           navigatorKey: WeiPeiYangApp.navigatorState,
           // theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [AppAnalysis()],
+          // navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
