@@ -194,7 +194,7 @@ class _CommentCardState extends State<CommentCard> {
                       ),
                       allowHalfRating: true,
                       glow: false,
-                      initialRating: comment.rating.toDouble() / 2,
+                      initialRating: (comment.rating.toDouble() / 2),
                       itemCount: 5,
                       itemSize: 16,
                       ignoreGestures: true,

@@ -8,16 +8,13 @@ import 'package:flutter/foundation.dart';
 import 'api.dart';
 // import '../storage_manager.dart';
 
-final Http server = Http();
+final Http openApi = Http();
 
 class Http extends BaseHttp {
   @override
   void init() {
     options.baseUrl = 'https://selfstudy.twt.edu.cn/';
     interceptors..add(ApiInterceptor());
-    // cookie持久化 异步
-    // ..add(CookieManager(
-    //     PersistCookieJar(dir: StorageManager.temporaryDirectory.path)));
   }
 }
 
@@ -39,7 +36,7 @@ class ApiInterceptor extends InterceptorsWrapper {
     ResponseData respData = ResponseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return server.resolve(response);
+      return openApi.resolve(response);
     } else {
       /// TODO: 不知道开放接口会返回什么错误信息
       // if (respData.code == 2) {

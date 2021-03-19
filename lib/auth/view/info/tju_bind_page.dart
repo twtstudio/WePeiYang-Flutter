@@ -22,10 +22,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   TextEditingController nameController;
   TextEditingController pwController;
-  CaptchaWidget captchaWidget = CaptchaWidget();
+  TextEditingController codeController = TextEditingController();
+  GlobalKey<_CaptchaWidgetState> captchaKey = GlobalKey();
+  CaptchaWidget captchaWidget;
 
   @override
   void initState() {
+    captchaWidget = CaptchaWidget(captchaKey);
     if (pref.isBindTju.value) {
       super.initState();
       return;
@@ -43,6 +46,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   void dispose() {
     nameController?.dispose();
     pwController?.dispose();
+    codeController?.dispose();
     super.dispose();
   }
 
@@ -60,16 +64,19 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
-          ToastProvider.success("办公网绑定成功");
-          Provider.of<GPANotifier>(context, listen: false)
-              .refreshGPA(hint: false)
-              .call();
-          Provider.of<ScheduleNotifier>(context, listen: false)
-              .refreshSchedule(hint: false)
-              .call();
-          setState(() {});
-        },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+      ToastProvider.success("办公网绑定成功");
+      Provider.of<GPANotifier>(context, listen: false)
+          .refreshGPA(hint: false)
+          .call();
+      Provider.of<ScheduleNotifier>(context, listen: false)
+          .refreshSchedule(hint: false)
+          .call();
+      setState(() {});
+    }, onFailure: (e) {
+      ToastProvider.error(e.error.toString());
+      captchaKey.currentState.refresh();
+    });
+    codeController.clear();
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -194,6 +201,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 ),
                 child: TextField(
                   keyboardType: TextInputType.visiblePassword,
+                  controller: codeController,
                   decoration: InputDecoration(
                       hintText: '短信验证码',
                       hintStyle: hintStyle,
@@ -308,6 +316,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
 class CaptchaWidget extends StatefulWidget {
   final Map<String, String> params = Map();
 
+  CaptchaWidget(Key key) : super(key: key);
+
   @override
   _CaptchaWidgetState createState() => _CaptchaWidgetState();
 }
@@ -315,6 +325,11 @@ class CaptchaWidget extends StatefulWidget {
 class _CaptchaWidgetState extends State<CaptchaWidget> {
   Widget _imageWidget;
   int index;
+
+  void refresh() {
+    setState(() => index++);
+    GlobalModel().increase();
+  }
 
   @override
   void initState() {
@@ -330,10 +345,7 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
           widget.params.clear();
           widget.params.addAll(map);
           _imageWidget = InkWell(
-            onTap: () {
-              setState(() => index++);
-              GlobalModel().increase();
-            },
+            onTap: refresh,
             child: Image.network(
                 "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
                 key: ValueKey(index),

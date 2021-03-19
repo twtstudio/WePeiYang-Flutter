@@ -26,7 +26,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       appBar: AppBar(
           title: Text('个人信息更改',
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 17,
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
           elevation: 0,
@@ -89,10 +89,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () {
-                        // TODO 修改用户名
-                        ToastProvider.error('还没做呢，悲');
-                      },
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.resetName)
+                              .then((_) => this.setState(() {})),
                       borderRadius: BorderRadius.zero,
                       splashFactory: InkRipple.splashFactory,
                       child: Padding(

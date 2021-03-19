@@ -28,7 +28,7 @@ class GlobalModel {
   double screenWidth;
   double screenHeight;
   int captchaIndex = 0;
-  List<CardBean> cards = [];
+  final List<CardBean> cards = [];
 
   void increase() => captchaIndex++;
 }

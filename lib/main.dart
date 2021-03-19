@@ -9,16 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/feedback/feedback_providers.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
-import 'package:wei_pei_yang_demo/home/home_router.dart';
-
 import 'commons/preferences/common_prefs.dart';
-import 'feedback/model/feedback_notifier.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
 
@@ -40,6 +36,7 @@ void main() async {
     ));
   }
 }
+
 
 // 全局捕获异常，还没想好
 //runZoned(
@@ -74,17 +71,13 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
   Widget build(BuildContext context) {
     UmengSdk.onProfileSignIn("BOTillya");
     UmengSdk.onEvent('myevent', {'name': 'twt', 'age': 18, 'male': true});
-    UmengSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-        // TODO: 这里有bug，可能导致收藏列表崩溃
-        ChangeNotifierProvider(
-            create: (context) => LoungeTimeModel()..setTime(init: true)),
-        ChangeNotifierProvider(create: (context) => RoomFavouriteModel()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
-        ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
+        ...loungeProviders,
+        ...feedbackProviders,
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
@@ -140,6 +133,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
     super.initState();
+    UmengSdk.setPageCollectionModeManual();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await HiveManager.init();
       _autoLogin(context);
@@ -176,14 +170,14 @@ class _StartUpWidgetState extends State<StartUpWidget> {
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
       /// 稍微显示一会启动页，不然它的意义是什么555
-      /// 用缓存中的数据自动登录，失败则仍跳转至login页面
+      /// 用缓存中的数据自动登录，无论失败与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then((_) =>
           login(prefs.account.value, prefs.password.value, onSuccess: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
+                context, HomeRouter.home, (route) => false);
           }));
     }
   }

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -137,14 +136,17 @@ class FloorWidget extends StatelessWidget {
             Classroom classroom = classrooms[index];
             bool isIdle = DataFactory.roomIsIdle(
                 classPlan[classroom.id], classTime, currentDay);
-            String title = DataFactory.getTitle(
-                HistoryEntry(model.area.building, classroom.name, aId));
             return InkWell(
               onTap: () {
                 Navigator.of(context).pushNamed(
                   LoungeRouter.plan,
                   arguments: Classroom(
-                      id: classroom.id, name: title, bId: bId, aId: aId),
+                    id: classroom.id,
+                    name: classroom.name,
+                    bId: bId,
+                    aId: aId,
+                    bName: model.area.building,
+                  ),
                 );
               },
               child: _RoomItem(classroom: classroom, isIdle: isIdle),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
@@ -42,7 +43,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     _refreshController.refreshCompleted();
   }
 
-  // TODO: Add onError handler here.
   _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
@@ -78,7 +78,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('!!!!!!setState!!!!!!');
     return Scaffold(
       /// Click and jump to NewPostPage.
       floatingActionButton: FloatingActionButton(
@@ -150,8 +149,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                           ),
                           IconButton(
                             color: ColorUtil.mainColor,
-                            icon: Image.asset(
-                                'lib/feedback/assets/img/profile.png'),
+                            icon: FeedbackBadgeWidget(
+                              child: Image.asset(
+                                  'lib/feedback/assets/img/profile.png'),
+                            ),
                             onPressed: () {
                               Navigator.pushNamed(
                                 context,
@@ -174,51 +175,60 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
                     /// The list of posts.
                     if (status == FeedbackHomePageStatus.idle)
-                      MediaQuery.removePadding(
-                        removeTop: true,
-                        context: context,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return notifier.homePostList[index].topImgUrl !=
-                                        '' &&
-                                    notifier.homePostList[index].topImgUrl !=
-                                        null
-                                ? PostCard.image(
-                                    notifier.homePostList[index],
-                                    onContentPressed: () {
-                                      Navigator.pushNamed(
-                                          context, FeedbackRouter.detail,
-                                          arguments: DetailPageArgs(
-                                              notifier.homePostList[index],
-                                              index,
-                                              PostOrigin.home));
-                                    },
-                                    onLikePressed: () {
-                                      notifier.homePostHitLike(index,
-                                          notifier.homePostList[index].id);
-                                    },
-                                  )
-                                : PostCard(
-                                    notifier.homePostList[index],
-                                    onContentPressed: () {
-                                      Navigator.pushNamed(
-                                          context, FeedbackRouter.detail,
-                                          arguments: DetailPageArgs(
-                                              notifier.homePostList[index],
-                                              index,
-                                              PostOrigin.home));
-                                    },
-                                    onLikePressed: () {
-                                      notifier.homePostHitLike(index,
-                                          notifier.homePostList[index].id);
-                                    },
-                                  );
-                          },
-                          itemCount: notifier.homePostList.length,
-                        ),
-                      )
+                      if (notifier.homePostList.length == 0)
+                        Container(
+                          padding: EdgeInsets.only(
+                              top: ScreenUtil.screenHeight / 2 -
+                                  ScreenUtil.paddingTop -
+                                  AppBar().preferredSize.height),
+                          child: Text('空空如也...'),
+                        )
+                      else
+                        MediaQuery.removePadding(
+                          removeTop: true,
+                          context: context,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return notifier.homePostList[index].topImgUrl !=
+                                          '' &&
+                                      notifier.homePostList[index].topImgUrl !=
+                                          null
+                                  ? PostCard.image(
+                                      notifier.homePostList[index],
+                                      onContentPressed: () {
+                                        Navigator.pushNamed(
+                                            context, FeedbackRouter.detail,
+                                            arguments: DetailPageArgs(
+                                                notifier.homePostList[index],
+                                                index,
+                                                PostOrigin.home));
+                                      },
+                                      onLikePressed: () {
+                                        notifier.homePostHitLike(index,
+                                            notifier.homePostList[index].id);
+                                      },
+                                    )
+                                  : PostCard(
+                                      notifier.homePostList[index],
+                                      onContentPressed: () {
+                                        Navigator.pushNamed(
+                                            context, FeedbackRouter.detail,
+                                            arguments: DetailPageArgs(
+                                                notifier.homePostList[index],
+                                                index,
+                                                PostOrigin.home));
+                                      },
+                                      onLikePressed: () {
+                                        notifier.homePostHitLike(index,
+                                            notifier.homePostList[index].id);
+                                      },
+                                    );
+                            },
+                            itemCount: notifier.homePostList.length,
+                          ),
+                        )
                   ],
                 ),
               ),

@@ -31,6 +31,12 @@ class SearchResultModel extends ViewStateListModel {
   SearchResultModel({this.query, this.searchHistoryModel});
 
   @override
+  refresh() {
+    debugPrint('++++++++++++++++ search model get data +++++++++++++++++++');
+    super.refresh();
+  }
+
+  @override
   Future<List> loadData() async {
     // await Future.delayed(Duration(seconds: 1));
 

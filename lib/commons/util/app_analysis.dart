@@ -4,8 +4,10 @@ import 'package:umeng_sdk/umeng_sdk.dart';
 class AppAnalysis extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (previousRoute?.settings?.name != null) {
+      UmengSdk.onPageEnd(previousRoute.settings.name);
+    }
     if (route.settings.name != null) {
-      print("push route ${route.settings.name} detected");
       UmengSdk.onPageStart(route.settings.name);
     }
   }
@@ -13,8 +15,10 @@ class AppAnalysis extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (route.settings.name != null) {
-      print("pop route ${route.settings.name} detected");
       UmengSdk.onPageEnd(route.settings.name);
+    }
+    if (previousRoute?.settings?.name != null) {
+      UmengSdk.onPageStart(previousRoute.settings.name);
     }
   }
 }

@@ -42,9 +42,6 @@ class CommonPreferences {
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
 
-  /// cookies in sso.tju.edu.cn，暂时先不存了
-  // var tgc = PrefsBean<String>("tgc");
-
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
   var garbled = PrefsBean<String>("garbled"); // UqZBpD3n3iXPAw1X
@@ -55,7 +52,7 @@ class CommonPreferences {
   var language = PrefsBean<int>("language", 0); // 系统语言
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
-  var nightMode = PrefsBean<bool>("nightMode"); // 开启夜猫子模式
+  var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule = PrefsBean<bool>("otherWeekSchedule"); // 课表显示非本周课程
   var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
   var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
@@ -66,7 +63,7 @@ class CommonPreferences {
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
   }
 
-  /// 重置twt用户的缓存
+  /// 清除twt用户的缓存
   void clearPrefs() {
     isLogin.value = false;
     token.value = "";
@@ -77,27 +74,22 @@ class CommonPreferences {
     account.value = "";
     password.value = "";
     captchaCookie.value = "";
-    // hideGPA.value = false;
-    // nightMode.value = false;
-    // otherWeekSchedule.value = false;
-    // remindBeforeStart.value = false;
-    // remindBefore.value = false;
-    // _sharedPref.clear();
   }
 
-  /// 重置办公网缓存
+  /// 清除办公网缓存
   void clearTjuPrefs() {
     gpaData.value = "";
     scheduleData.value = "";
     isBindTju.value = false;
     tjuuname.value = "";
     tjupasswd.value = "";
-    // tgc.value = "";
     gSessionId.value = "";
     garbled.value = "";
     semesterId.value = "";
     ids.value = "";
   }
+
+  /// 清除gpa和课程表的缓存
 }
 
 class PrefsBean<T> {

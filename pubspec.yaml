@@ -45,11 +45,11 @@ dependencies:
     sdk: flutter
   intl: ^0.16.1
   http_parser: ^3.1.4
-
-
   package_info: ^0.4.1
   install_plugin: ^2.0.1
   flutter_update_dialog: ^0.0.1
+  connectivity: 2.0.2
+  badges: ^1.2.0
 
   umeng_sdk:
     path: plugins/umeng_sdk

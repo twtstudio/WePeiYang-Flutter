@@ -7,7 +7,7 @@ class Time {
   static const saturday = 'Saturday';
   static const sunday = 'Sunday';
 
-  static List<String> week = [
+  static const List<String> week = [
     monday,
     tuesday,
     wednesday,
@@ -43,7 +43,7 @@ class Time {
   }
 
   static bool availableNow(String state, List<ClassTime> schedules) =>
-      schedules.isNotEmpty
+      state.isNotEmpty && schedules.isNotEmpty
           ? schedules.map((time) {
               var list = state.split('');
               if (list[time.id * 2 - 1] == '0' &&

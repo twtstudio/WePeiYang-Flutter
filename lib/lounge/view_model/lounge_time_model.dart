@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
@@ -23,11 +24,15 @@ class LoungeTimeModel extends ChangeNotifier {
 
   ViewState get state => _state;
 
+  String reloadFavouriteList;
+
   setTime({
     DateTime date,
     List<ClassTime> schedule,
     bool init = false,
   }) async {
+    debugPrint('++++++++++++++++ lounge time model change time +++++++++++++++++++');
+    _state = ViewState.busy;
     if (_classTime == null && _dateTime == null) {
       _classTime = [Time.classOfDay(DateTime.now())];
       _dateTime = DateTime.now();
@@ -36,16 +41,23 @@ class LoungeTimeModel extends ChangeNotifier {
       _dateTime = date ?? _dateTime;
     }
     if(!init){
-      _state = ViewState.busy;
-      notifyListeners();
-      try {
-        await LoungeRepository.setLoungeData(model: this);
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if(connectivityResult != ConnectivityResult.none){
+        notifyListeners();
+        try {
+          await LoungeRepository.setLoungeData(model: this);
+          _state = ViewState.idle;
+        } catch (_) {
+          _state = ViewState.error;
+        }
+        notifyListeners();
+      }else {
         _state = ViewState.idle;
-      } catch (_) {
-        _state = ViewState.error;
+        notifyListeners();
       }
-      notifyListeners();
+      return;
     }
+    _state = ViewState.idle;
   }
 }
 

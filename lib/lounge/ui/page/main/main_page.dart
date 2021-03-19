@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await timeModel.setTime();
-      checkUpdate();
+      // checkUpdate();
     });
   }
 
@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
               ),
               SearchBarWidget(),
               BuildingGridWidget(),
-              LoungeFavourWidget(title: '我的收藏')
+              const LoungeFavourWidget(title: '我的收藏')
             ],
           ),
         );
@@ -95,7 +95,11 @@ class SearchBarWidget extends StatelessWidget {
                 context: context, delegate: SRSearchDelegate());
             // Scaffold.of(context).showSnackBar(SnackBar(content: Text(result.cId)));
             if (result != null) {
-              String title = DataFactory.getTitle(result);
+              String title = DataFactory.getRoomTitle(Classroom(
+                name: result.cName,
+                aId: result.aId,
+                bName: result.bName,
+              ));
               print('you tap class:' + result.toJson().toString());
               Navigator.of(context).pushNamed(
                 LoungeRouter.plan,

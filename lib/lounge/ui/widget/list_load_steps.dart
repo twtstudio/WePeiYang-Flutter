@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'loading.dart';
 
-class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
+class ListLoadSteps<T extends ViewStateListModel> extends StatefulWidget {
   final T model;
   final Widget busyV;
   final Widget errorV;
@@ -23,49 +23,77 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatelessWidget {
       : super(key: key);
 
   @override
+  _ListLoadStepsState<T> createState() => _ListLoadStepsState<T>();
+}
+
+class _ListLoadStepsState<T extends ViewStateListModel>
+    extends State<ListLoadSteps<T>> {
+  @override
   Widget build(BuildContext context) {
     Widget body;
 
-    if (model.isBusy) {
+    // TODO: 这地方在 set idle 后 会build两次，暂时不知道原因。
+    if (widget.model.isBusy) {
       body = KeyedSubtree(
-          key: const ValueKey<ViewState>(ViewState.busy),
-          child: busyV ??
-              Container(
-                height: errorHeight ?? 200.0,
-                child: Center(
-                  child: Loading(),
-                ),
-              ));
-    } else if (model.isError && model.list.isEmpty) {
+        key: const ValueKey<ViewState>(ViewState.busy),
+        child: Row(
+          children: [
+            Expanded(
+              child: widget.busyV ??
+                  Container(
+                    height: widget.errorHeight ?? 40,
+                    child: Center(
+                      child: Loading(),
+                    ),
+                  ),
+            ),
+          ],
+        ),
+      );
+    } else if (widget.model.isError && widget.model.list.isEmpty) {
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.error),
-        child: errorV ?? Container(),
+        child: widget.errorV ??
+            Container(
+              height: 80,
+              color: Colors.red,
+              child: Text('error', style: TextStyle(fontSize: 20,color: Colors.white)),
+            ),
       );
-    } else if (model.isEmpty) {
+    } else if (widget.model.isEmpty) {
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.empty),
-        child: emptyV ?? Container(),
+        child: widget.emptyV ??
+            Container(
+              height: 80,
+              color: Colors.blue,
+              child: Text('empty', style: TextStyle(fontSize: 20,color: Colors.white)),
+            ),
       );
-    } else if (model.isIdle && model.list.isNotEmpty) {
+    } else if (widget.model.isIdle && widget.model.list.isNotEmpty) {
+      debugPrint('build ????????????????????????????????');
       body = KeyedSubtree(
         key: const ValueKey<ViewState>(ViewState.idle),
-        child: successV ?? Container(),
+        child: widget.successV ?? Container(),
       );
     } else {
-      body = defaultV ?? Container();
+      body = widget.defaultV ?? Container(
+        height: 80,
+        color: Colors.black,
+        child: Text('default', style: TextStyle(fontSize: 20,color: Colors.white)),
+      );
     }
     return AnimatedSwitcher(
-      layoutBuilder: (Widget currentChild, List<Widget> previousChildren){
-        return Stack(
-          children: <Widget>[
-            ...previousChildren,
-            if (currentChild != null) currentChild,
-          ],
-          alignment: Alignment.topCenter,
-        );
-      },
-      duration: const Duration(milliseconds: 300),
-      child: body,
-    );
+        layoutBuilder: (Widget currentChild, List<Widget> previousChildren) {
+          return Stack(
+            children: <Widget>[
+              ...previousChildren,
+              if (currentChild != null) currentChild,
+            ],
+            alignment: Alignment.topLeft,
+          );
+        },
+        duration: const Duration(milliseconds: 300),
+        child: body);
   }
 }

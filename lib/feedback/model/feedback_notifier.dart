@@ -91,8 +91,8 @@ class FeedbackNotifier with ChangeNotifier {
     _commentList.clear();
   }
 
-  updateRating(rating, index) {
-    _officialCommentList[index].rating = rating;
+  updateRating(double rating, index) {
+    _officialCommentList[index].rating = (rating * 2).toInt();
     notifyListeners();
   }
 
@@ -169,7 +169,7 @@ class FeedbackNotifier with ChangeNotifier {
         }
         notifyListeners();
       }).catchError((e, stacktrace) {
-        print(e + stacktrace);
+        print(e + stacktrace); // TODO: 这里不对啊，加号是什么东西  Class 'NoSuchMethodError' has no instance method '+'.
         onError();
       });
     } catch (e, stacktrace) {
@@ -227,6 +227,7 @@ class FeedbackNotifier with ChangeNotifier {
           'token': _token,
         },
       ).then((value) {
+        print(json.encode(value));
         for (Map<String, dynamic> comment in value['data']) {
           _officialCommentList.add(Comment.fromJson(comment));
         }
@@ -558,19 +559,21 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Rate the official comment.
-  Future rate(rating, id, index) async {
+  Future rate(double rating, id, index) async {
     try {
+      print('rate' + rating.toString());
       await HttpUtil()
           .post(
         'answer/commit',
         FormData.fromMap({
           'token': _token,
           'answer_id': id,
-          'score': rating,
-          'commit': '',
+          'score': rating.toInt(),
+          'commit': '评分',
         }),
       )
           .then((value) {
+        print(json.encode(value));
         if (value['ErrorCode'] == 0) {
           ToastProvider.success('评价成功');
         } else {
@@ -583,7 +586,6 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Long press to delete post.
-  /// TODO: Delete post might have some problems.
   Future deletePost(index, onComplete) async {
     try {
       await HttpUtil()
@@ -592,8 +594,6 @@ class FeedbackNotifier with ChangeNotifier {
               FormData.fromMap(
                   {'token': _token, 'question_id': _profilePostList[index].id}))
           .then((value) {
-        // TODO: Fix this plz.
-        print('///////////delete////////' + json.encode(value));
         if (value['ErrorCode'] == 0) {
           ToastProvider.success('删除成功');
           removeProfilePost(index);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
@@ -24,7 +25,7 @@ class ClassPlanPage extends StatelessWidget {
         child: ListView(
           physics: BouncingScrollPhysics(),
           children: <Widget>[
-            PageTitleWidget(title: room.name, room: room),
+            PageTitleWidget(room: room),
             ClassTableWidget(room: room)
           ],
         ),
@@ -34,10 +35,9 @@ class ClassPlanPage extends StatelessWidget {
 }
 
 class PageTitleWidget extends StatelessWidget {
-  final String title;
   final Classroom room;
 
-  const PageTitleWidget({Key key, this.title, this.room}) : super(key: key);
+  const PageTitleWidget({Key key, this.room}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class PageTitleWidget extends StatelessWidget {
           // color: Colors.yellow,
           padding: const EdgeInsets.all(10),
           child: Text(
-            title,
+            DataFactory.getRoomTitle(room),
             style: TextStyle(
               color: Color(0xff62677b),
               fontSize: 20,
@@ -73,8 +73,15 @@ class PageTitleWidget extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.zero),
               ),
               onPressed: () async {
-                if (!favouriteModel.isBusy) {
-                  addFavourites(context, room: room, model: favouriteModel);
+                debugPrint(favouriteModel.isIdle.toString());
+                if (favouriteModel.isIdle ||
+                    favouriteModel.isEmpty ||
+                    favouriteModel.isError) {
+                  debugPrint(
+                      '========================== add favourite room ==========================');
+                  debugPrint(room.toJson().toString());
+                  await addFavourites(context,
+                      room: room, model: favouriteModel);
                 }
               },
               child: Padding(
