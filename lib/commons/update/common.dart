@@ -12,11 +12,11 @@ class CommonUtils {
     if (kbSize <= 0) {
       return "";
     } else if (kbSize < 1024) {
-      return "${kbSize.toStringAsFixed(1)}KB";
+      return "${kbSize.toStringAsFixed(1)}KiB";
     } else if (kbSize < 1048576) {
-      return "${(kbSize / 1024).toStringAsFixed(1)}MB";
+      return "${(kbSize / 1024).toStringAsFixed(1)}MiB";
     } else {
-      return "${(kbSize / 1048576).toStringAsFixed(1)}GB";
+      return "${(kbSize / 1048576).toStringAsFixed(1)}GiB";
     }
   }
 

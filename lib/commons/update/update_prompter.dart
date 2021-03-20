@@ -62,7 +62,7 @@ class UpdatePrompter {
     return updateContent;
   }
 
-  void onUpdate() {
+  Future<void> onUpdate() async {
     if (Platform.isIOS) {
       doInstall();
       return;

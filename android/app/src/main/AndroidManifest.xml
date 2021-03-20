@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".WBYApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="wei_pei_yang_demo">
         <activity
@@ -46,14 +46,29 @@
         </activity>
 
         <service
-            android:name=".AlarmService"
+            android:name=".alarm.AlarmService"
             android:process=":remote">
         </service>
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".alarm.AlarmReceiver"
             android:process=":remote">
         </receiver>
+
+        <meta-data
+            android:name="PUSH_APPID"
+            android:value="VlevpYsCnW94GOOUPAmWx9" />
+
+        <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
+        <service
+            android:name="com.example.wei_pei_yang_demo.message.WBYIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- 用户自定义服务名 -->
+        <service
+            android:name="com.example.wei_pei_yang_demo.message.WBYPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

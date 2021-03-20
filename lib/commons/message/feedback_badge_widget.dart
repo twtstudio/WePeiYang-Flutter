@@ -1,6 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/message/feedback_message_center.dart';
+import 'package:wei_pei_yang_demo/commons/message/message_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
 class FeedbackBadgeWidget extends StatefulWidget {
@@ -15,15 +15,15 @@ class FeedbackBadgeWidget extends StatefulWidget {
 class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<FeedbackMessageNotifier>(
+    return Consumer<MessageProvider>(
       builder: (__, model, _) {
-        if (model.count == 0) {
+        if (model.feedbackCount == 0) {
           return widget.child;
         } else {
           return Badge(
             padding: EdgeInsets.all(4),
             badgeContent: Text(
-              model.count.toString(),
+              model.feedbackCount.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,
@@ -34,27 +34,5 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
         }
       },
     );
-  }
-}
-
-class FeedbackMessageNotifier extends ChangeNotifier {
-  factory FeedbackMessageNotifier() => _getInstance();
-
-  FeedbackMessageNotifier._internal();
-
-  static FeedbackMessageNotifier _instance;
-
-  static FeedbackMessageNotifier _getInstance() {
-    if (_instance == null) {
-      _instance = FeedbackMessageNotifier._internal();
-    }
-    return _instance;
-  }
-
-  int count = 0;
-
-  refreshFeedbackMessageCount() async {
-    count = await FeedbackMessageCenter.getFeedbackMessageCount();
-    notifyListeners();
   }
 }
