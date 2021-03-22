@@ -92,7 +92,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _verifyCaptcha() async {
@@ -106,7 +106,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     verifyOnReset(phone, code,
         onSuccess: () =>
             Navigator.pushNamed(context, AuthRouter.reset, arguments: phone),
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   TextStyle _hintStyle =
@@ -145,7 +145,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                     hintText: '手机号',
                     hintStyle: _hintStyle,
@@ -170,7 +169,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
                         hintStyle: _hintStyle,

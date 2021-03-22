@@ -20,7 +20,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       return;
     }
     await login(account, password,
-        onSuccess: (result) {
+        onResult: (result) {
           if (result['telephone'] == null || result['email'] == null) {
             Navigator.pushNamed(context, AuthRouter.addInfo);
           } else {
@@ -29,7 +29,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 context, HomeRouter.home, (route) => false);
           }
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -70,7 +70,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _accountFocus,
                 decoration: InputDecoration(

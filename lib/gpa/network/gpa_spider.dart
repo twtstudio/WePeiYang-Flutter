@@ -1,25 +1,23 @@
-import 'package:dio/dio.dart' show DioError, DioErrorType;
+import 'package:dio/dio.dart' show DioError;
+import 'package:flutter/material.dart' show required;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
+    show OnResult, OnFailure;
+import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart'
+    show WpyDioError;
 
 /// 发送请求，获取html中的gpa数据
-void getGPABean(
-    {void Function(GPABean) onSuccess, void Function(String) onFailure}) {
-  fetch("http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-          cookieList: CommonPreferences().getCookies())
-      .then((response) => onSuccess(_data2GPABean(response.data.toString())))
-      .catchError((e, stacktrace) {
-    print('---------------------------spider error---------------------------');
-    print("Error happened: $e\n stacktrace: $stacktrace");
-    print('------------------------------------------------------------------');
-    if (e.runtimeType == DioError &&
-        (e as DioError).type == DioErrorType.RESPONSE) {
-      CommonPreferences().isBindTju.value = false;
-      onFailure("办公网绑定失效，请重新绑定");
-    } else
-      onFailure("网络连接发生错误");
-  });
+void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
+  try {
+    var response = await fetch(
+        "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
+        cookieList: CommonPreferences().getCookies());
+    onResult(_data2GPABean(response.data.toString()));
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 const double _DELAYED = 999.0;
@@ -28,9 +26,9 @@ const double _IGNORED = 999.0;
 /// 用请求到的html数据生成gpaBean对象
 GPABean _data2GPABean(String data) {
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
-  if (!data.contains("在校汇总"))
-    throw DioError(
-        type: DioErrorType.RESPONSE, error: "Http status error [302]");
+
+  // TODO: 修改绑定办公网逻辑后这里也得改
+  if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
 
   bool isMaster = false;
 
@@ -49,12 +47,14 @@ GPABean _data2GPABean(String data) {
 
   /// 匹配所有科目信息
   var filterStr = getRegExpStr(r'(?<=\>绩点\<)[\s\S]*', data); // 先去掉总数据部分的tr结点
+
+  // TODO 不知道这样检查是否评价可以不，只能等到期末了。。
+  if (filterStr.contains("评教")) throw WpyDioError(error: "有课程未评教，无法显示数据");
   var courseDataList =
       getRegExpList(r'(?<=\<tr)[\s\S]*?(?=\<\/tr)', filterStr); // 所有的课程数据（糙数据）
   var currentTermStr = "";
   List<GPAStat> stats = [];
   List<GPACourse> courses = [];
-  // TODO 检查filterStr中是否有“您与成绩之间只差一个评教的距离啦”字样，若有则直接抛出异常
   for (int i = 0; i < courseDataList.length; i++) {
     /// 这里特意适配了重修课的红色span，在中括号里面
     var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',

@@ -78,18 +78,20 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule({bool hint = true}) {
+  RefreshCallback refreshSchedule(
+      {bool hint = true, void Function() onFailure}) {
     return () async {
       if (hint) ToastProvider.running("刷新数据中……");
-      getScheduleCourses(onSuccess: (courses) {
+      getScheduleCourses(onResult: (courses) {
         if (hint) ToastProvider.success("刷新课程表数据成功");
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
         NotifyProvider.setNotificationData(); // 更新课程提醒
         CommonPreferences().scheduleData.value =
             json.encode(ScheduleBean(_termStart, "20212", courses));
-      }, onFailure: (msg) {
-        if (hint) ToastProvider.error(msg);
+      }, onFailure: (e) {
+        if (hint && onFailure == null) ToastProvider.error(e.error);
+        if (onFailure != null) onFailure();
       });
     };
   }

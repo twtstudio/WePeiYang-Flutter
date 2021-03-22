@@ -1,101 +1,219 @@
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import '../../commons/network/dio_server.dart';
-import 'package:flutter/material.dart' show required;
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/main.dart';
+import 'package:flutter/material.dart' show Navigator, required;
+import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
+import 'package:dio/dio.dart' show Options, Response;
+import 'dart:convert' show utf8, base64Encode;
+
+class AuthDio extends DioAbstract {
+  static const APP_KEY = "banana";
+  static const APP_SECRET = "37b590063d593716405a2c5a382b1130b28bf8a7";
+  static const DOMAIN = "weipeiyang.twt.edu.cn";
+  static String ticket = base64Encode(utf8.encode(APP_KEY + '.' + APP_SECRET));
+
+  @override
+  String baseUrl = "https://api.twt.edu.cn/api/";
+
+  @override
+  Map<String, String> headers = {"DOMAIN": DOMAIN, "ticket": ticket};
+
+  @override
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onRequest: (Options options) {
+      var pref = CommonPreferences();
+      options.headers['token'] = pref.token.value;
+      options.headers['Cookie'] = pref.captchaCookie.value;
+    }, onResponse: (Response response) {
+      print(response.toString());
+      var code = response?.data['error_code'] ?? -1;
+      switch (code) {
+        case 40002:
+          throw DioError(error: "该用户不存在");
+          break;
+        case 40004:
+          throw DioError(error: "用户名或密码错误");
+          break;
+        case 40005:
+          Navigator.pushNamedAndRemoveUntil(
+              WeiPeiYangApp.navigatorState.currentContext,
+              AuthRouter.login,
+              (route) => false);
+          throw DioError(error: "登录失效，请重新登录");
+          break;
+        case 50005:
+          throw DioError(error: "学号和身份证号不匹配");
+          break;
+        case 50006:
+          throw DioError(error: "用户名和邮箱已存在");
+          break;
+        case 50007:
+          throw DioError(error: "用户名已存在");
+          break;
+        case 50008:
+          throw DioError(error: "邮箱已存在");
+          break;
+        case 50009:
+          throw DioError(error: "手机号码无效");
+          break;
+        case 50011:
+          throw DioError(error: "验证失败，请重新尝试");
+          break;
+        case 50012:
+          throw DioError(error: "电子邮件或手机号格式不规范");
+          break;
+        case 50013:
+          throw DioError(error: "电子邮件或手机号重复");
+          break;
+        case 50014:
+          throw DioError(error: "手机号已存在");
+          break;
+        case 50015:
+          throw DioError(error: "升级失败，目标升级账号信息不存在");
+          break;
+        case 50016:
+          throw DioError(error: "无此学院");
+          break;
+        case 50019:
+          throw DioError(error: "用户名中含有非法字符");
+          break;
+        case 50020:
+          throw DioError(error: "用户名过长");
+          break;
+        case 50021:
+          throw DioError(error: "该学号所属用户已注册过");
+          break;
+        case 50022:
+          throw DioError(error: "该身份证号未在系统中登记");
+          break;
+        case 40001:
+        case 40003:
+        case 50001:
+        case 50002:
+        case 50003:
+        case 50004:
+        case 50010:
+          print("请求发生错误，error_code: $code, msg: ${response?.data['msg']}");
+          throw DioError(error: "发生未知错误，请重新尝试");
+      }
+    })
+  ];
+}
+
+final _dio = AuthDio();
 
 /// 注册或完善信息时获取短信验证码
+
 getCaptchaOnRegister(String phone,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().originPost("register/phone/msg",
-      queryParameters: {"phone": phone}, onSuccess: (response) {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    var response = await _dio
+        .post("register/phone/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
       CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 在用户界面更新信息时获取短信验证码
 getCaptchaOnInfo(String phone,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().originPost("user/phone/msg",
-      queryParameters: {"phone": phone}, onSuccess: (response) {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    var response =
+        await _dio.post("user/phone/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
       CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 修改密码时获取短信验证码
 getCaptchaOnReset(String phone,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().originPost("password/reset/msg",
-      queryParameters: {"phone": phone}, onSuccess: (response) {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    var response = await _dio
+        .post("password/reset/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
       CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 修改密码时认证短信验证码
 verifyOnReset(String phone, String code,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().originPost("password/reset/verify",
-      queryParameters: {"phone": phone, "code": code}, onSuccess: (response) {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    var response = await _dio.post("password/reset/verify",
+        queryParameters: {"phone": phone, "code": code});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
       CommonPreferences().captchaCookie.value =
           getRegExpStr(r'\S+(?=\;)', cookie[0]);
     }
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 修改密码
 resetPw(String phone, String password,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("password/reset",
-      queryParameters: {"phone": phone, "password": password},
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    await _dio.post("password/reset",
+        queryParameters: {"phone": phone, "password": password});
+    onSuccess();
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 注册
 register(String userNumber, String nickname, String phone, String verifyCode,
     String password, String email, String idNumber,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().post("register",
-      queryParameters: {
-        "userNumber": userNumber,
-        "nickname": nickname,
-        "phone": phone,
-        "verifyCode": verifyCode,
-        "password": password,
-        "email": email,
-        "idNumber": idNumber
-      },
-      onSuccess: (_) => onSuccess(),
-      onFailure: onFailure);
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    await _dio.post("register", queryParameters: {
+      "userNumber": userNumber,
+      "nickname": nickname,
+      "phone": phone,
+      "verifyCode": verifyCode,
+      "password": password,
+      "email": email,
+      "idNumber": idNumber
+    });
+    onSuccess();
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 使用学号/昵称/邮箱登录
 login(String account, String password,
-    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
-  await DioService().post("auth/common",
-      queryParameters: {"account": account, "password": password},
-      onSuccess: (result) {
+    {@required OnResult onResult, OnFailure onFailure}) async {
+  try {
+    var result = await _dio.postRst("auth/common",
+        queryParameters: {"account": account, "password": password});
     var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
     if (prefs.account.value != account && prefs.account.value != "") {
-        /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
+      /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
       prefs.clearTjuPrefs();
     }
     prefs.account.value = account;
@@ -105,73 +223,97 @@ login(String account, String password,
     prefs.phone.value = result['telephone'] ?? "";
     prefs.email.value = result['email'] ?? "";
     prefs.isLogin.value = true;
-    onSuccess(result);
-  }, onFailure: onFailure);
+    onResult(result);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 补全信息（手机号和邮箱）
 addInfo(String telephone, String verifyCode, String email,
-    {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().put("user/single", queryParameters: {
-    "telephone": telephone,
-    "verifyCode": verifyCode,
-    "email": email
-  }, onSuccess: (_) {
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    await _dio.put("user/single", queryParameters: {
+      "telephone": telephone,
+      "verifyCode": verifyCode,
+      "email": email
+    });
     var prefs = CommonPreferences();
     prefs.phone.value = telephone;
     prefs.email.value = email;
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 单独修改手机号
 changePhone(String phone, String code,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().put("user/single/phone",
-      queryParameters: {'phone': phone, 'code': code}, onSuccess: (_) {
+  try {
+    await _dio.put("user/single/phone",
+        queryParameters: {'phone': phone, 'code': code});
     CommonPreferences().phone.value = phone;
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 单独修改邮箱
 changeEmail(String email,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().put("user/single/email", queryParameters: {'email': email},
-      onSuccess: (_) {
+  try {
+    await _dio.put("user/single/email", queryParameters: {'email': email});
     CommonPreferences().email.value = email;
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 单独修改用户名
 changeNickname(String username,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
-  await DioService().put("user/single/username",
-      queryParameters: {'username': username}, onSuccess: (_) {
+  try {
+    await _dio
+        .put("user/single/username", queryParameters: {'username': username});
     CommonPreferences().nickname.value = username;
     onSuccess();
-  }, onFailure: onFailure);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 检测学号和用户名是否重复
 checkInfo1(String userNumber, String username,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
-  await DioService().get("register/checking/$userNumber/$username",
-      onSuccess: onSuccess, onFailure: onFailure);
+  try {
+    await _dio.get("register/checking/$userNumber/$username");
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 检测身份证、邮箱、手机号是否重复（其实手机号不用查重，获取验证码时已经查重过了）
 checkInfo2(String idNumber, String email, String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
-  await DioService().post("register/checking",
-      queryParameters: {'idNumber': idNumber, 'email': email, 'phone': phone},
-      onSuccess: onSuccess,
-      onFailure: onFailure);
+  try {
+    await _dio.post("register/checking", queryParameters: {
+      'idNumber': idNumber,
+      'email': email,
+      'phone': phone
+    });
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }
 
 /// 获得当前学期信息，仅在用户手动登录后被调用
 getSemesterInfo({@required OnSuccess onSuccess, OnFailure onFailure}) async {
-  await DioService()
-      .get("semester", onSuccess: onSuccess, onFailure: onFailure);
+  try {
+    await _dio.get("semester");
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
 }

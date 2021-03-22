@@ -7,6 +7,7 @@ import '../../main.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
 
 class SchedulePage extends StatelessWidget {
   /// 进入课程表页面后自动刷新数据
@@ -64,7 +65,12 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.autorenew, color: titleColor, size: 28),
               onTap: Provider.of<ScheduleNotifier>(context, listen: false)
-                  .refreshSchedule()),
+                  .refreshSchedule(onFailure: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => TjuRebindDialog());
+              })),
         ),
       ],
     );

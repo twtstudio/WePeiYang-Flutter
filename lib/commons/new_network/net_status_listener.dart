@@ -7,7 +7,7 @@ class NetStatusListener {
 
   factory NetStatusListener() => _instance;
 
-  Future<void> init() async {
+  static Future<void> init() async {
     _instance._status = await Connectivity().checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _instance._status = result;

@@ -24,7 +24,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _submit() async {
@@ -41,7 +41,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
+          onFailure: (e) => ToastProvider.error(e.error));
     }
   }
 
@@ -84,7 +84,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
@@ -112,7 +111,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
                     hintText: '手机号码',
@@ -138,7 +136,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
                         hintStyle: _hintStyle,

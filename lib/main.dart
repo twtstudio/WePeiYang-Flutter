@@ -13,6 +13,7 @@ import 'package:wei_pei_yang_demo/feedback/feedback_providers.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'commons/preferences/common_prefs.dart';
 import 'gpa/model/gpa_notifier.dart';
@@ -36,7 +37,6 @@ void main() async {
     ));
   }
 }
-
 
 // 全局捕获异常，还没想好
 //runZoned(
@@ -69,8 +69,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 
   @override
   Widget build(BuildContext context) {
-    UmengSdk.onProfileSignIn("BOTillya");
-    UmengSdk.onEvent('myevent', {'name': 'twt', 'age': 18, 'male': true});
+    UmengSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -86,7 +85,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           navigatorKey: WeiPeiYangApp.navigatorState,
           // theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
-          // navigatorObservers: [AppAnalysis()],
+          navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -133,9 +132,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
     super.initState();
-    UmengSdk.setPageCollectionModeManual();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await HiveManager.init();
+      await NetStatusListener.init();
       _autoLogin(context);
     });
   }
@@ -172,7 +171,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       /// 稍微显示一会启动页，不然它的意义是什么555
       /// 用缓存中的数据自动登录，无论失败与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          login(prefs.account.value, prefs.password.value, onSuccess: (_) {
+          login(prefs.account.value, prefs.password.value, onResult: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {

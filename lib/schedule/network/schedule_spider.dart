@@ -1,113 +1,75 @@
-import 'package:dio/dio.dart' show DioError, DioErrorType, Response;
+import 'package:dio/dio.dart' show DioError, Response;
 import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
+    show OnResult, OnFailure;
 
 /// 发送请求，获取html中的schedule数据
-void getScheduleCourses(
-    {void Function(List<ScheduleCourse>) onSuccess,
-    void Function(String) onFailure}) {
+void getScheduleCourses({OnResult onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
-  /// 学生没有辅修的情况
-  if (pref.ids.value != "useless") {
-    getDetailSchedule("", pref.ids.value)
-        .then((response) =>
-            onSuccess(_data2ScheduleCourses(response.data.toString())))
-        .catchError((e, stacktrace) {
-      print(
-          '---------------------------spider error---------------------------');
-      print("Error happened: $e\n stacktrace: $stacktrace");
-      print(
-          '------------------------------------------------------------------');
-      if (e.runtimeType == DioError &&
-          (e as DioError).type == DioErrorType.RESPONSE) {
-        CommonPreferences().isBindTju.value = false;
-        onFailure("办公网绑定失效，请重新绑定");
-      } else
-        onFailure("网络连接发生错误");
-    });
-  } else {
+  try {
+    /// 学生没有辅修的情况：
+    if (pref.ids.value != "useless") {
+      var response = await getDetailSchedule(pref.ids.value);
+      onResult(_data2ScheduleCourses(response.data.toString()));
+      return;
+    }
+
+    /// 学生有辅修的情况：
     var scheduleList = List<ScheduleCourse>();
     var idsValue = "";
 
     /// 获取semester.id
-    fetch("http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-            cookieList: pref.getCookies(), params: {'projectId': '1'})
-        .then((response) {
-          response.headers.map['set-cookie'].forEach((string) {
-            if (string.contains('semester'))
-              pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
-          });
+    var semesterRsp = await fetch(
+        "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
+        cookieList: pref.getCookies(),
+        params: {'projectId': '1'});
+    semesterRsp.headers.map['set-cookie'].forEach((string) {
+      if (string.contains('semester'))
+        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
+    });
 
-          /// 切换至主修
-          return fetch(
-              "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-              cookieList: pref.getCookies(),
-              params: {'projectId': '1'});
-        })
+    /// 切换至主修
+    await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+        cookieList: pref.getCookies(), params: {'projectId': '1'});
 
-        /// 获取主修的ids
-        .then((_) => fetch(
-                "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-                cookieList: pref.getCookies(),
-                params: {
-                  'projectId': '1',
-                  '_': DateTime.now().millisecondsSinceEpoch
-                }))
+    /// 获取主修的ids
+    var idsRsp1 = await fetch(
+        "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
+        cookieList: pref.getCookies(),
+        params: {'projectId': '1', '_': DateTime.now().millisecondsSinceEpoch});
+    idsValue = getRegExpStr(r'(?<=ids\"\,\")\w*', idsRsp1.data.toString());
 
-        /// 获取主修课程
-        .then((response) {
-          idsValue =
-              getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
-          return getDetailSchedule("1", idsValue);
-        })
-        .then((response) {
-          scheduleList.addAll(_data2ScheduleCourses(response.data.toString()));
+    /// 获取主修课程
+    var courseRsp1 = await getDetailSchedule(idsValue);
+    scheduleList.addAll(_data2ScheduleCourses(courseRsp1.data.toString()));
 
-          /// 切换至辅修
-          return fetch(
-              "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-              cookieList: pref.getCookies(),
-              params: {'projectId': '2'});
-        })
+    /// 切换至辅修
+    await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+        cookieList: pref.getCookies(), params: {'projectId': '2'});
 
-        /// 获取辅修的ids
-        .then((_) => fetch(
-            "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-            cookieList: pref.getCookies(),
-            params: {'projectId': '2'}))
-        .then((response) {
-          idsValue =
-              getRegExpStr(r'(?<=ids\"\,\")\w*', response.data.toString());
+    /// 获取辅修的ids
+    var idsRsp2 = await fetch(
+        "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
+        cookieList: pref.getCookies(),
+        params: {'projectId': '2'});
+    idsValue = getRegExpStr(r'(?<=ids\"\,\")\w*', idsRsp2.data.toString());
 
-          /// 获取辅修课程
-          return getDetailSchedule("2", idsValue);
-        })
-        .then((response) {
-          scheduleList.addAll(_data2ScheduleCourses(response.data.toString()));
-          onSuccess(scheduleList);
-        })
-        .catchError((e, stacktrace) {
-          print(
-              '---------------------------spider error---------------------------');
-          print("Error happened: $e\n stacktrace: $stacktrace");
-          print(
-              '------------------------------------------------------------------');
-          if (e.runtimeType == DioError &&
-              (e as DioError).type == DioErrorType.RESPONSE) {
-            CommonPreferences().isBindTju.value = false;
-            onFailure("办公网绑定失效，请重新绑定");
-          } else
-            onFailure("网络连接发生错误");
-        });
+    /// 获取辅修课程
+    var courseRsp2 = await getDetailSchedule(idsValue);
+    scheduleList.addAll(_data2ScheduleCourses(courseRsp2.data.toString()));
+    onResult(scheduleList);
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
   }
 }
 
 /// 获取主修 / 重修的课程数据
-/// * 如果学生只有主修，[projectId]的值应为[""]，[ids]应从缓存中读取
-/// * 如果学生还有重修，则需要指定两组[project]和[ids]，缓存中的ids无用
-Future<Response> getDetailSchedule(String projectId, String ids) async {
+/// * 如果学生只有主修，[ids]应从缓存中读取
+/// * 如果学生还有重修，则需要分别给出[ids]，缓存中的ids无用
+Future<Response> getDetailSchedule(String ids) {
   var pref = CommonPreferences();
   var map = {
     "ignoreHead": "1",
@@ -116,7 +78,6 @@ Future<Response> getDetailSchedule(String projectId, String ids) async {
     "semester.id": getRegExpStr(r'[0-9]+', pref.semesterId.value),
     "ids": ids
   };
-  // if (projectId != "") map['projectId'] = projectId;
   return fetch(
       "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
       cookieList: pref.getCookies(),
@@ -126,7 +87,7 @@ Future<Response> getDetailSchedule(String projectId, String ids) async {
 
 /// 用请求到的html数据生成schedule对象
 List<ScheduleCourse> _data2ScheduleCourses(String data) {
-  // TODO 这里throw什么好呢？
+  // TODO 之前grj的账号好像问题？
   // if (!data.contains("课程列表")) throw DioError();
 
   /// 先整理出所有的arrange对象

@@ -24,7 +24,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
           ToastProvider.success("邮箱绑定成功");
           setState(() {});
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   Widget _detail(BuildContext context) {
@@ -70,7 +70,6 @@ class _EmailBindPageState extends State<EmailBindPage> {
               maxHeight: 55,
             ),
             child: TextField(
-              keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                   hintText: '邮箱',
                   hintStyle: hintStyle,

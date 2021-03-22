@@ -26,7 +26,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _bind() async {
@@ -42,7 +42,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
           ToastProvider.success("手机号码绑定成功");
           setState(() {});
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   Widget _detail(BuildContext context) {
@@ -89,7 +89,6 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               maxHeight: 55,
             ),
             child: TextField(
-              keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                   hintText: '手机号',
                   hintStyle: hintStyle,

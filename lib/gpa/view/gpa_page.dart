@@ -8,7 +8,7 @@ import '../../main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
 import 'package:flutter/services.dart';
-import 'package:umeng_sdk/umeng_sdk.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -43,14 +43,7 @@ class _GPAPageState extends State<GPAPage> {
   @override
   void dispose() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    UmengSdk.onPageEnd('/gpa');
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    UmengSdk.onPageStart('/gpa');
-    super.initState();
   }
 
   @override
@@ -100,7 +93,12 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
               onTap: Provider.of<GPANotifier>(context, listen: false)
-                  .refreshGPA()),
+                  .refreshGPA(onFailure: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => TjuRebindDialog());
+              })),
         ),
       ],
     );

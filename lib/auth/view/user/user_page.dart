@@ -7,7 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends StatefulWidget {
+  @override
+  _UserPageState createState() => _UserPageState();
+}
+
+class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -46,7 +51,8 @@ class UserPage extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 15.0),
                   child: GestureDetector(
                       onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.userInfo),
+                          Navigator.pushNamed(context, AuthRouter.userInfo)
+                              .then((_) => setState(() {})),
                       child: Icon(Icons.account_circle_rounded,
                           size: 90, color: Colors.white)),
                 ),
