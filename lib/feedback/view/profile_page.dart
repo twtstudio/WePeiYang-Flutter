@@ -186,7 +186,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (_currentTab == _CurrentTab.myPosts) {
                                     if (!_deleteLock) {
                                       _deleteLock = true;
-                                      // TODO: Pop alert dialog here.
                                       showDialog(
                                           context: context,
                                           builder: (context) {
