@@ -13,11 +13,12 @@ void getGPABean(
     print('---------------------------spider error---------------------------');
     print("Error happened: $e\n stacktrace: $stacktrace");
     print('------------------------------------------------------------------');
-    if(e.runtimeType == DioError && (e as DioError).type == DioErrorType.RESPONSE) {
+    if (e.runtimeType == DioError &&
+        (e as DioError).type == DioErrorType.RESPONSE) {
       CommonPreferences().isBindTju.value = false;
       onFailure("办公网绑定失效，请重新绑定");
-    }
-    else onFailure("网络连接发生错误");
+    } else
+      onFailure("网络连接发生错误");
   });
 }
 
@@ -26,13 +27,20 @@ const double _IGNORED = 999.0;
 
 /// 用请求到的html数据生成gpaBean对象
 GPABean _data2GPABean(String data) {
-  /// 匹配总加权/绩点/学分
-  var totalData = getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
-
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
-  if (totalData == null)
+  if (!data.contains("在校汇总"))
     throw DioError(
         type: DioErrorType.RESPONSE, error: "Http status error [302]");
+
+  bool isMaster = false;
+
+  /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
+  var totalData = getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data) ??
+      () {
+        isMaster = true;
+        return getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
+      }.call();
+
   List<double> thList = [];
   getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
       .forEach((e) => thList.add(double.parse(e)));
@@ -46,6 +54,7 @@ GPABean _data2GPABean(String data) {
   var currentTermStr = "";
   List<GPAStat> stats = [];
   List<GPACourse> courses = [];
+  // TODO 检查filterStr中是否有“您与成绩之间只差一个评教的距离啦”字样，若有则直接抛出异常
   for (int i = 0; i < courseDataList.length; i++) {
     /// 这里特意适配了重修课的红色span，在中括号里面
     var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',
@@ -57,19 +66,20 @@ GPABean _data2GPABean(String data) {
       courses.clear();
       currentTermStr = term;
     }
-    var gpaCourse = _data2GPACourse(courseData);
-    if (!courseDataList[i].contains("重修") && gpaCourse != null) courses.add(gpaCourse);
+    var gpaCourse = _data2GPACourse(courseData, isMaster);
+    if (!courseDataList[i].contains("重修") && gpaCourse != null)
+      courses.add(gpaCourse);
     if (i == courseDataList.length - 1) stats.add(_calculateStat(courses));
   }
   return GPABean(total, stats);
 }
 
-/// 对课程数据进行整理后生成gpaCourse对象
-GPACourse _data2GPACourse(List<String> data) {
+/// 对课程数据进行整理后生成gpaCourse对象，注意研究生的list元素顺序和本科生的不一样
+GPACourse _data2GPACourse(List<String> data, bool isMaster) {
   List<String> list = [];
   data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
   double score = 0.0;
-  switch (list[6]) {
+  switch (isMaster ? list[8] : list[6]) {
     case 'P':
       score = 100.0;
       break;
@@ -87,15 +97,14 @@ GPACourse _data2GPACourse(List<String> data) {
       score = _IGNORED;
       break;
     default:
-      // Invalid double 文化素质教育必修
-      score = double.parse(list[6]);
+      score = double.parse(isMaster ? list[8] : list[6]);
   }
   double credit = 0.0;
   if (score >= 60) credit = double.parse(list[5]);
 
   if (score != _DELAYED && score != _IGNORED) {
-    double gpa = double.parse(list[8]);
-    return GPACourse(list[2], list[4], score, credit, gpa);
+    double gpa = double.parse(isMaster ? list[9] : list[8]);
+    return GPACourse(isMaster ? list[3] : list[2], list[4], score, credit, gpa);
   } else {
     return null;
   }

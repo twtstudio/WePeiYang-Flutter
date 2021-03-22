@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
+import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
@@ -93,7 +94,7 @@ class _FavourListWidgetState extends State<FavourListWidget> {
                         '------------------------- favourite room -------------------------');
                     debugPrint(classroom.toJson().toString());
                     var current = Time.week[model.currentDay - 1];
-                    var currentPlan = plan[current].join();
+                    var currentPlan = plan[current]?.join() ?? '';
                     var isIdle =
                         Time.availableNow(currentPlan, model.classTime);
                     return FavourListCard(
@@ -165,7 +166,7 @@ class FavourListCard extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  room.name,
+                  DataFactory.getRoomTitle(room),
                   style: TextStyle(
                     color: Color(0XFF62677B),
                     fontSize: 11,

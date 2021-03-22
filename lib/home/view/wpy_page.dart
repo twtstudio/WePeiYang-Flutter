@@ -13,8 +13,12 @@ final hintStyle = const TextStyle(
     color: Color.fromRGBO(53, 59, 84, 1.0),
     fontWeight: FontWeight.bold);
 
-class WPYPage extends StatelessWidget {
+class WPYPage extends StatefulWidget {
+  @override
+  _WPYPageState createState() => _WPYPageState();
+}
 
+class _WPYPageState extends State<WPYPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -26,8 +30,11 @@ class WPYPage extends StatelessWidget {
             /// 自定义标题栏
             SliverPadding(
               padding: const EdgeInsets.only(top: 30.0),
-              sliver:
-                  SliverPersistentHeader(delegate: _WPYHeader(), pinned: true),
+              sliver: SliverPersistentHeader(
+                  delegate: _WPYHeader(onChanged: (_) {
+                    setState(() {});
+                  }),
+                  pinned: true),
             ),
 
             /// 功能跳转卡片
@@ -53,6 +60,11 @@ class WPYPage extends StatelessWidget {
 
 ///替代appbar使用
 class _WPYHeader extends SliverPersistentHeaderDelegate {
+  /// 让WPYPage进行重绘的回调
+  final ValueChanged<void> onChanged;
+
+  const _WPYHeader({this.onChanged});
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -70,7 +82,9 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           Expanded(child: Text('')), // 起填充作用
           Text(CommonPreferences().nickname.value, style: hintStyle),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/user_info'),
+            onTap: () => Navigator.pushNamed(context, '/user_info').then((_) {
+              onChanged(null);
+            }),
             child: Container(
               margin: EdgeInsets.only(left: 7, right: 10),
               child: Icon(Icons.account_circle_rounded,
@@ -83,13 +97,13 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 120.0;
+  double get maxExtent => 120;
 
   @override
   double get minExtent => 65.0;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class SliverCardsWidget extends StatelessWidget {

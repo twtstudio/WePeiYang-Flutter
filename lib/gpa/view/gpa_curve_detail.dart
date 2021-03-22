@@ -235,6 +235,12 @@ class _GPACurveState extends State<GPACurve>
     var minStat = list.reduce(min);
     var maxStat = list.reduce(max);
     var gap = maxStat - minStat;
+
+    /// gap为0.0的时候令所有点均处于canvas的正中间（研究生gpa均为0所以会出现这种情况）
+    if ((1 / gap) == double.infinity) {
+      gap = 1.0; // 随便设个值，只要不是0.0就行
+      h1 -= h2 / 2;
+    }
     points.add(Point(0, h1 - (list.first - minStat) / gap * h2));
     for (var i = 0; i < list.length; i++) {
       points.add(Point((i + 1) * step, h1 - (list[i] - minStat) / gap * h2));

@@ -7,6 +7,7 @@ class Classroom {
   String status;
   String bId;
   String aId;
+  String bName;
 
   Classroom(
       {this.id,
@@ -14,7 +15,8 @@ class Classroom {
       this.capacity,
       this.status = '',
       this.bId = '',
-      this.aId = ''});
+      this.aId = '',
+      this.bName = ''});
 
   static Classroom fromMap(Map<String, dynamic> map, {String aId}) {
     if (map == null) return null;

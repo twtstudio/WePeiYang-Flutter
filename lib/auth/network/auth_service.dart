@@ -94,6 +94,9 @@ login(String account, String password,
       onSuccess: (result) {
     var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
+    if (prefs.account.value != account && prefs.account.value != "") {
+        /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
+    }
     prefs.account.value = account;
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";
@@ -136,6 +139,16 @@ changeEmail(String email,
   await DioService().put("user/single/email", queryParameters: {'email': email},
       onSuccess: (_) {
     CommonPreferences().email.value = email;
+    onSuccess();
+  }, onFailure: onFailure);
+}
+
+/// 单独修改用户名
+changeNickname(String username,
+    {@required void Function() onSuccess, OnFailure onFailure}) async {
+  await DioService().put("user/single/username",
+      queryParameters: {'username': username}, onSuccess: (_) {
+    CommonPreferences().nickname.value = username;
     onSuccess();
   }, onFailure: onFailure);
 }

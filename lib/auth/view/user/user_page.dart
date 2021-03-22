@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:flutter/services.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/auth/auth_router.dart';
 
 class UserPage extends StatelessWidget {
   @override
@@ -60,6 +62,38 @@ class UserPage extends StatelessWidget {
                         style: TextStyle(
                             color: MyColors.deepDust, fontSize: 13.0))),
                 NavigationWidget(),
+                Container(
+                  height: 80,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9)),
+                    child: InkWell(
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.userInfo),
+                      splashFactory: InkRipple.splashFactory,
+                      borderRadius: BorderRadius.circular(9),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 20,
+                            margin: const EdgeInsets.only(left: 20, right: 10),
+                            child: Image.asset(
+                                'assets/images/modify_info_icon.png'),
+                          ),
+                          Container(
+                              width: 150,
+                              child: Text('个人信息更改', style: textStyle)),
+                          Expanded(child: Text('')),
+                          Padding(
+                              padding: const EdgeInsets.only(right: 22),
+                              child: arrow)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Container(
                   height: 80,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -131,7 +165,6 @@ class UserPage extends StatelessWidget {
   }
 }
 
-// TODO 以后可能会在里面加小游戏？
 class NavigationWidget extends StatefulWidget {
   @override
   _NavigationState createState() => _NavigationState();
@@ -141,13 +174,18 @@ class _NavigationState extends State<NavigationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140.0,
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-      child: Card(
-        elevation: 1.8,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      ),
-    );
+        height: 140,
+        width: GlobalModel().screenWidth - 40,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Card(
+            elevation: 1.8,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            child: Center(
+              child: Image.asset(
+                'assets/images/to_be_continue.png',
+                height: 80,
+              ),
+            )));
   }
 }

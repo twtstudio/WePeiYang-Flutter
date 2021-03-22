@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
+import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
@@ -69,7 +70,7 @@ class ResultRoomsListView extends StatelessWidget {
     var b = entry.building?.name ?? '';
     var a = entry.area?.id ?? '';
     var c = entry.room?.name ?? '';
-    String title = DataFactory.getTitle(HistoryEntry(b, c, a));
+    String title = DataFactory.getRoomTitle(Classroom(name: c, aId: a, bName: b));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,16 +141,16 @@ class ResultRoomsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LoungeTimeModel>(
-      builder:(_,model,__)=> ListView.builder(
+      builder: (_, model, __) => ListView.builder(
           physics: BouncingScrollPhysics(),
           itemCount: list.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: EdgeInsets.all(5),
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   ResultEntry entry = list[index];
-                  var room  = entry.room..bId = entry.building.id;
+                  var room = entry.room..bId = entry.building.id;
                   Navigator.of(context).pushNamed(
                     LoungeRouter.plan,
                     arguments: room,
@@ -172,7 +173,7 @@ class ResultRoomsListView extends StatelessWidget {
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: _room(list[index],model),
+                      child: _room(list[index], model),
                     ),
                   ),
                 ),

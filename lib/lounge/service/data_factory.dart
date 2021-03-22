@@ -1,4 +1,6 @@
+import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
 class DataFactory {
@@ -136,15 +138,18 @@ class DataFactory {
         return false;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
-  static String getTitle(HistoryEntry h) {
-    if (h.aId == '-1') {
-      return '${h.bName}教 ${h.cName}';
+  static String getRoomTitle(Classroom r) {
+    if(r.bName == ''){
+      r.bName =  HiveManager.instance.getBuildingNameById(r.bId);
+    }
+    if (r.aId == '-1') {
+      return '${r.bName}教 ${r.name}';
     } else {
-      return '${h.bName}教 ${h.aId}区 ${h.cName}';
+      return '${r.bName}教 ${r.aId}区 ${r.name}';
     }
   }
 
