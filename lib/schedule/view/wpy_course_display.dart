@@ -4,7 +4,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
-import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -37,10 +37,10 @@ class TodayCoursesWidget extends StatelessWidget {
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
         flag = judgeActiveTomorrow(
-            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
+            notifier.currentWeek, today, notifier.weekCount, course);
       else
         flag = judgeActiveInDay(
-            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
+            notifier.currentWeek, today, notifier.weekCount, course);
       if (flag) todayCourses.add(course);
     });
     if (todayCourses.length == 0) {

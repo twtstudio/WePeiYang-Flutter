@@ -87,7 +87,7 @@ Future<Response> getDetailSchedule(String ids) {
 
 /// 用请求到的html数据生成schedule对象
 List<ScheduleCourse> _data2ScheduleCourses(String data) {
-  // TODO 之前grj的账号好像问题？
+  // TODO 之前grj的账号好像有问题？
   // if (!data.contains("课程列表")) throw DioError();
 
   /// 先整理出所有的arrange对象

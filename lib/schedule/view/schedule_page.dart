@@ -99,7 +99,7 @@ class TitleWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('today: WEEK ${notifier.currentWeekWithNotify}',
+                    child: Text('today: WEEK ${notifier.currentWeek}',
                         style: TextStyle(
                             color: Color.fromRGBO(205, 206, 211, 1),
                             fontSize: 15,
@@ -120,7 +120,7 @@ class HoursCounterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var notifier = Provider.of<ScheduleNotifier>(context);
     if (notifier.coursesWithNotify.length == 0) return Container();
-    int currentHours = getCurrentHours(notifier.currentWeekWithNotify,
+    int currentHours = getCurrentHours(notifier.currentWeek,
         DateTime.now().weekday, notifier.coursesWithNotify);
     int totalHours = getTotalHours(notifier.coursesWithNotify);
     double totalWidth = GlobalModel().screenWidth - 2 * 15;

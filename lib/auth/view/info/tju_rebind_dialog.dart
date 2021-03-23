@@ -55,6 +55,14 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    nameController?.dispose();
+    pwController?.dispose();
+    codeController?.dispose();
+    super.dispose();
+  }
+
   void _bind() {
     if (tjuuname == "" || tjupasswd == "" || captcha == "") {
       var message = "";

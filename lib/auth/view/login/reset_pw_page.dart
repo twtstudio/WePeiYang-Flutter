@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override

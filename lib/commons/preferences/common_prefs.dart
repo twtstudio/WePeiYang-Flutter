@@ -64,7 +64,7 @@ class CommonPreferences {
   }
 
   /// 清除twt用户的缓存
-  void clearPrefs() {
+  void clearUserPrefs() {
     isLogin.value = false;
     token.value = "";
     nickname.value = "";

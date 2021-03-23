@@ -21,7 +21,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       int current = Provider.of<ScheduleNotifier>(context, listen: false)
-          .currentWeekWithNotify;
+          .currentWeek;
       if (current == 1) current++;
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 15),

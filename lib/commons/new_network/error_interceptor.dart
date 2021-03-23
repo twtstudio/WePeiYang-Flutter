@@ -18,7 +18,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 401)
       return DioError(error: "密码或验证码输入错误");
 
-    // TODO: 修改绑定办公网逻辑后这里也得改
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 302)
       return DioError(error: "办公网绑定失效，请重新绑定");
 

@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 import 'package:flutter/material.dart' show Navigator, required;
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart'
+    show WpyDioError;
 import 'package:dio/dio.dart' show Options, Response;
 import 'dart:convert' show utf8, base64Encode;
 
@@ -30,62 +32,62 @@ class AuthDio extends DioAbstract {
       var code = response?.data['error_code'] ?? -1;
       switch (code) {
         case 40002:
-          throw DioError(error: "该用户不存在");
+          throw WpyDioError(error: "该用户不存在");
           break;
         case 40004:
-          throw DioError(error: "用户名或密码错误");
+          throw WpyDioError(error: "用户名或密码错误");
           break;
         case 40005:
           Navigator.pushNamedAndRemoveUntil(
               WeiPeiYangApp.navigatorState.currentContext,
               AuthRouter.login,
               (route) => false);
-          throw DioError(error: "登录失效，请重新登录");
+          throw WpyDioError(error: "登录失效，请重新登录");
           break;
         case 50005:
-          throw DioError(error: "学号和身份证号不匹配");
+          throw WpyDioError(error: "学号和身份证号不匹配");
           break;
         case 50006:
-          throw DioError(error: "用户名和邮箱已存在");
+          throw WpyDioError(error: "用户名和邮箱已存在");
           break;
         case 50007:
-          throw DioError(error: "用户名已存在");
+          throw WpyDioError(error: "用户名已存在");
           break;
         case 50008:
-          throw DioError(error: "邮箱已存在");
+          throw WpyDioError(error: "邮箱已存在");
           break;
         case 50009:
-          throw DioError(error: "手机号码无效");
+          throw WpyDioError(error: "手机号码无效");
           break;
         case 50011:
-          throw DioError(error: "验证失败，请重新尝试");
+          throw WpyDioError(error: "验证失败，请重新尝试");
           break;
         case 50012:
-          throw DioError(error: "电子邮件或手机号格式不规范");
+          throw WpyDioError(error: "电子邮件或手机号格式不规范");
           break;
         case 50013:
-          throw DioError(error: "电子邮件或手机号重复");
+          throw WpyDioError(error: "电子邮件或手机号重复");
           break;
         case 50014:
-          throw DioError(error: "手机号已存在");
+          throw WpyDioError(error: "手机号已存在");
           break;
         case 50015:
-          throw DioError(error: "升级失败，目标升级账号信息不存在");
+          throw WpyDioError(error: "升级失败，目标升级账号信息不存在");
           break;
         case 50016:
-          throw DioError(error: "无此学院");
+          throw WpyDioError(error: "无此学院");
           break;
         case 50019:
-          throw DioError(error: "用户名中含有非法字符");
+          throw WpyDioError(error: "用户名中含有非法字符");
           break;
         case 50020:
-          throw DioError(error: "用户名过长");
+          throw WpyDioError(error: "用户名过长");
           break;
         case 50021:
-          throw DioError(error: "该学号所属用户已注册过");
+          throw WpyDioError(error: "该学号所属用户已注册过");
           break;
         case 50022:
-          throw DioError(error: "该身份证号未在系统中登记");
+          throw WpyDioError(error: "该身份证号未在系统中登记");
           break;
         case 40001:
         case 40003:
@@ -95,7 +97,7 @@ class AuthDio extends DioAbstract {
         case 50004:
         case 50010:
           print("请求发生错误，error_code: $code, msg: ${response?.data['msg']}");
-          throw DioError(error: "发生未知错误，请重新尝试");
+          throw WpyDioError(error: "发生未知错误，请重新尝试");
       }
     })
   ];
@@ -205,7 +207,7 @@ register(String userNumber, String nickname, String phone, String verifyCode,
 }
 
 /// 使用学号/昵称/邮箱登录
-login(String account, String password,
+void login(String account, String password,
     {@required OnResult onResult, OnFailure onFailure}) async {
   try {
     var result = await _dio.postRst("auth/common",

@@ -7,7 +7,7 @@ import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class SettingPage extends StatefulWidget {
   @override

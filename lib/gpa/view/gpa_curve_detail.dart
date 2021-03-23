@@ -15,7 +15,6 @@ class GPAPreview extends StatelessWidget {
       else
         return Column(children: <Widget>[
           CurveText(notifier),
-          // TODO 以后可以把首页与gpa页面的配色设置成“格式相同”的设计，也就是对应颜色的应用位置相同
           // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义
           GPACurve(notifier, FavorColors.gpaColor, isPreview: true),
           GPAIntro(notifier)

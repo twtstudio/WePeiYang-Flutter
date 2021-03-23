@@ -5,7 +5,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class UserPage extends StatefulWidget {
   @override

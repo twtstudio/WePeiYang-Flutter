@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
-import 'package:wei_pei_yang_demo/home/home_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -19,7 +18,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       ToastProvider.error("账号密码不能为空");
       return;
     }
-    await login(account, password,
+    login(account, password,
         onResult: (result) {
           if (result['telephone'] == null || result['email'] == null) {
             Navigator.pushNamed(context, AuthRouter.addInfo);

@@ -35,22 +35,12 @@ class ScheduleNotifier with ChangeNotifier {
 
   int get selectedWeekWithNotify => _selectedWeek;
 
-  void quietResetWeek() => _selectedWeek = currentWeekWithNotify;
-
-  int _currentWeek = 1;
+  void quietResetWeek() => _selectedWeek = currentWeek;
 
   /// 手动计算当前周,不从办公网爬了
-  int get currentWeekWithNotify =>
+  int get currentWeek =>
       ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / 604800)
           .ceil();
-
-  // TODO 这个先不爬了吧
-  set currentWeekWithNotify(int newWeek) {
-    if (_currentWeek == newWeek) return;
-    _currentWeek = newWeek;
-    _selectedWeek = newWeek;
-    notifyListeners();
-  }
 
   /// 一学期一共有多少周……很没存在感的东西
   int _weekCount = 25;

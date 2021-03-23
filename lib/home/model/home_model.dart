@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
-import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_router.dart';
-import 'package:wei_pei_yang_demo/home/home_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class CardBean {
   IconData icon;

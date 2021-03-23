@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 import '../preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 /// 自定义错误拦截
 class ErrorInterceptor extends InterceptorsWrapper {

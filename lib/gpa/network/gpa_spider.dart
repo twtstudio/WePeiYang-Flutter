@@ -27,7 +27,6 @@ const double _IGNORED = 999.0;
 GPABean _data2GPABean(String data) {
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
 
-  // TODO: 修改绑定办公网逻辑后这里也得改
   if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
 
   bool isMaster = false;
