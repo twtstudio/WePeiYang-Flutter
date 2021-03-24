@@ -3,6 +3,7 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/register_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -20,15 +21,15 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
       ToastProvider.error("用户名不能为空");
     else {
       checkInfo1(userNum, nickname,
-          onSuccess: (_) {
+          onSuccess: () {
             _userNumFocus.unfocus();
             _nicknameFocus.unfocus();
-            Navigator.pushNamed(context, '/register2', arguments: {
+            Navigator.pushNamed(context, AuthRouter.register2, arguments: {
               'userNum': userNum,
               'nickname': nickname,
             });
           },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
+          onFailure: (e) => ToastProvider.error(e.error));
     }
   }
 
@@ -70,7 +71,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _userNumFocus,
                 decoration: InputDecoration(
@@ -98,7 +98,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 focusNode: _nicknameFocus,
                 decoration: InputDecoration(
                     hintText: '用户名',
@@ -156,7 +155,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _toNextPage() async {
@@ -170,12 +169,12 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       ToastProvider.error("短信验证码不能为空");
     else {
       checkInfo2(idNum, email, phone,
-          onSuccess: (_) {
+          onSuccess: () {
             _idNumFocus.unfocus();
             _emailFocus.unfocus();
             _phoneFocus.unfocus();
             _codeFocus.unfocus();
-            Navigator.pushNamed(context, '/register3', arguments: {
+            Navigator.pushNamed(context, AuthRouter.register3, arguments: {
               'userNum': widget.userNum,
               'nickname': widget.nickname,
               'idNum': idNum,
@@ -184,7 +183,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               'code': code
             });
           },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
+          onFailure: (e) => ToastProvider.error(e.error));
     }
   }
 
@@ -230,7 +229,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _idNumFocus,
                 decoration: InputDecoration(
@@ -258,7 +256,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
@@ -286,7 +283,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
                     hintText: '手机号码',
@@ -312,7 +308,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
                     focusNode: _codeFocus,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
@@ -333,39 +328,39 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     margin: const EdgeInsets.only(left: 20),
                     child: isPress
                         ? StreamBuilder<int>(
-                        stream: Stream.periodic(
-                            Duration(seconds: 1), (time) => time + 1)
-                            .take(60),
-                        builder: (context, snap) {
-                          var time = 60 - (snap.data ?? 0);
-                          if (time == 0)
-                            WidgetsBinding.instance.addPostFrameCallback(
+                            stream: Stream.periodic(
+                                    Duration(seconds: 1), (time) => time + 1)
+                                .take(60),
+                            builder: (context, snap) {
+                              var time = 60 - (snap.data ?? 0);
+                              if (time == 0)
+                                WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
-                          return RaisedButton(
-                            onPressed: () {},
-                            color: Colors.grey[300],
-                            splashColor: Colors.grey[300],
-                            child: Text('$time秒后重试',
+                              return RaisedButton(
+                                onPressed: () {},
+                                color: Colors.grey[300],
+                                splashColor: Colors.grey[300],
+                                child: Text('$time秒后重试',
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(98, 103, 123, 1),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold)),
+                                elevation: 5.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                              );
+                            })
+                        : RaisedButton(
+                            onPressed: _fetchCaptcha,
+                            color: Color.fromRGBO(53, 59, 84, 1.0),
+                            splashColor: Color.fromRGBO(103, 110, 150, 1.0),
+                            child: Text('获取验证码',
                                 style: TextStyle(
-                                    color: Color.fromRGBO(98, 103, 123, 1),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold)),
+                                    color: Colors.white, fontSize: 13)),
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30)),
-                          );
-                        })
-                        : RaisedButton(
-                      onPressed: _fetchCaptcha,
-                      color: Color.fromRGBO(53, 59, 84, 1.0),
-                      splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                      child: Text('获取验证码',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 13)),
-                      elevation: 5.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    )),
+                          )),
               ],
             ),
           ),
@@ -436,9 +431,9 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
           onSuccess: () {
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/login', (route) => false);
+                context, AuthRouter.login, (route) => false);
           },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
+          onFailure: (e) => ToastProvider.error(e.error));
     }
   }
 

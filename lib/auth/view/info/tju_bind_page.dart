@@ -6,8 +6,8 @@ import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
-import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -22,10 +22,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   TextEditingController nameController;
   TextEditingController pwController;
-  CaptchaWidget captchaWidget = CaptchaWidget();
+  TextEditingController codeController = TextEditingController();
+  GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
+  CaptchaWidget captchaWidget;
 
   @override
   void initState() {
+    captchaWidget = CaptchaWidget(captchaKey);
     if (pref.isBindTju.value) {
       super.initState();
       return;
@@ -43,6 +46,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   void dispose() {
     nameController?.dispose();
     pwController?.dispose();
+    codeController?.dispose();
     super.dispose();
   }
 
@@ -60,16 +64,19 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
-          ToastProvider.success("办公网绑定成功");
-          Provider.of<GPANotifier>(context, listen: false)
-              .refreshGPA(hint: false)
-              .call();
-          Provider.of<ScheduleNotifier>(context, listen: false)
-              .refreshSchedule(hint: false)
-              .call();
-          setState(() {});
-        },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+      ToastProvider.success("办公网绑定成功");
+      Provider.of<GPANotifier>(context, listen: false)
+          .refreshGPA(hint: false)
+          .call();
+      Provider.of<ScheduleNotifier>(context, listen: false)
+          .refreshSchedule(hint: false)
+          .call();
+      setState(() {});
+    }, onFailure: (e) {
+      ToastProvider.error(e.error);
+      captchaKey.currentState.refresh();
+    });
+    codeController.clear();
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -129,7 +136,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
             child: TextField(
               textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.visiblePassword,
               controller: nameController,
               focusNode: _accountFocus,
               decoration: InputDecoration(
@@ -193,7 +199,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   maxWidth: width - 120,
                 ),
                 child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
+                  controller: codeController,
                   decoration: InputDecoration(
                       hintText: '短信验证码',
                       hintStyle: hintStyle,
@@ -308,13 +314,19 @@ class _TjuBindPageState extends State<TjuBindPage> {
 class CaptchaWidget extends StatefulWidget {
   final Map<String, String> params = Map();
 
+  CaptchaWidget(Key key) : super(key: key);
+
   @override
-  _CaptchaWidgetState createState() => _CaptchaWidgetState();
+  CaptchaWidgetState createState() => CaptchaWidgetState();
 }
 
-class _CaptchaWidgetState extends State<CaptchaWidget> {
-  Widget _imageWidget;
+class CaptchaWidgetState extends State<CaptchaWidget> {
   int index;
+
+  void refresh() {
+    setState(() => index++);
+    GlobalModel().increase();
+  }
 
   @override
   void initState() {
@@ -326,25 +338,23 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getExecAndSession(onSuccess: (map) async {
-          widget.params.clear();
-          widget.params.addAll(map);
-          _imageWidget = InkWell(
-            onTap: () {
-              setState(() => index++);
-              GlobalModel().increase();
-            },
-            child: Image.network(
-                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                key: ValueKey(index),
-                headers: {"Cookie": map['session']},
-                fit: BoxFit.fill),
-          );
-        }),
-        builder: (context, snapshot) =>
-            (snapshot.connectionState == ConnectionState.done &&
-                    !snapshot.hasError)
-                ? _imageWidget
-                : Container());
+        future: getExecAndSession(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            Map map = snapshot.data;
+            widget.params.clear();
+            widget.params.addAll(map);
+            return InkWell(
+              onTap: refresh,
+              child: Image.network(
+                  "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
+                  key: ValueKey(index),
+                  headers: {"Cookie": map['session']},
+                  fit: BoxFit.fill),
+            );
+          } else
+            return Container();
+        });
   }
 }

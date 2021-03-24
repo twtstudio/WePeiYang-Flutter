@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -124,8 +124,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () => Navigator.pushNamed(context, '/tjuBind')
-                          .then((_) => this.setState(() {})),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.tjuBind)
+                              .then((_) => this.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(bottom: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
@@ -163,8 +164,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () => Navigator.pushNamed(context, '/phoneBind')
-                          .then((_) => this.setState(() {})),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.phoneBind)
+                              .then((_) => this.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
@@ -204,8 +206,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   Container(
                     height: 70,
                     child: InkWell(
-                      onTap: () => Navigator.pushNamed(context, '/emailBind')
-                          .then((_) => this.setState(() {})),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.emailBind)
+                              .then((_) => this.setState(() {})),
                       borderRadius:
                           BorderRadius.vertical(bottom: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,

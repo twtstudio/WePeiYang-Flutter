@@ -5,9 +5,8 @@ import 'package:wei_pei_yang_demo/main.dart';
 
 class LogoutDialog extends Dialog {
   void _logout() {
-    // TODO 其他退出逻辑
     ToastProvider.success("退出登录成功");
-    CommonPreferences().clearPrefs();
+    CommonPreferences().clearUserPrefs();
     Navigator.pushNamedAndRemoveUntil(
         WeiPeiYangApp.navigatorState.currentContext,
         '/login',

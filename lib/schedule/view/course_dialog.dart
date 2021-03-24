@@ -3,11 +3,12 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
 
-void showCourseDialog(BuildContext context, ScheduleCourse course) => showDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
-    builder: (BuildContext context) => CourseDialog(course));
+void showCourseDialog(BuildContext context, ScheduleCourse course) =>
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
+        builder: (BuildContext context) => CourseDialog(course));
 
 class CourseDialog extends Dialog {
   final ScheduleCourse course;
@@ -41,13 +42,18 @@ class CourseDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 50),
+      alignment: Alignment.center,
       child: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Container(
           height: 400,
-          width: 250,
           decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/icon_peiyang.png'),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.bottomRight),
               borderRadius: BorderRadius.circular(20),
               color: generateColor(course)),
           child: Padding(

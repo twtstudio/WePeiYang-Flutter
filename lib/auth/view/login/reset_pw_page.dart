@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override
@@ -24,8 +25,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
     }
     String phone = ModalRoute.of(context).settings.arguments;
     resetPw(phone, password1,
-        onSuccess: () => Navigator.pushNamed(context, '/reset_done'),
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   FocusNode _pwInput1 = FocusNode();

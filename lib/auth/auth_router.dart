@@ -47,11 +47,7 @@ class AuthRouter {
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
     loginPw: (_) => LoginPwWidget(),
-    // register1: (_) => RegisterPageOne(),
-    register1: (_) {
-      return RegisterPageThree('userNum', 'nickname', 'idNum',
-          'email', 'phone', 'code');
-    },
+    register1: (_) => RegisterPageOne(),
     register2: (arg) {
       var map = arg as Map;
       return RegisterPageTwo(map['userNum'], map['nickname']);

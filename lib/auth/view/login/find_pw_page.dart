@@ -3,6 +3,7 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'find_pw_dialog.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class FindPwWidget extends StatelessWidget {
   @override
@@ -36,7 +37,8 @@ class FindPwWidget extends StatelessWidget {
             width: 200,
             margin: const EdgeInsets.only(top: 30),
             child: RaisedButton(
-              onPressed: () => Navigator.pushNamed(context, '/find_phone'),
+              onPressed: () =>
+                  Navigator.pushNamed(context, AuthRouter.findPhone),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text('账号已绑定手机号',
@@ -90,7 +92,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _verifyCaptcha() async {
@@ -103,8 +105,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     }
     verifyOnReset(phone, code,
         onSuccess: () =>
-            Navigator.pushNamed(context, '/reset', arguments: phone),
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+            Navigator.pushNamed(context, AuthRouter.reset, arguments: phone),
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   TextStyle _hintStyle =
@@ -143,7 +145,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                     hintText: '手机号',
                     hintStyle: _hintStyle,
@@ -168,7 +169,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
                         hintStyle: _hintStyle,

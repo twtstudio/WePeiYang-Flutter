@@ -4,6 +4,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -31,15 +32,15 @@ class TodayCoursesWidget extends StatelessWidget {
     List<ScheduleCourse> todayCourses = [];
     int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
-    if (DateTime.now().hour < 22) nightMode = false;
+    if (DateTime.now().hour < 21) nightMode = false;
     bool flag;
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
         flag = judgeActiveTomorrow(
-            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
+            notifier.currentWeek, today, notifier.weekCount, course);
       else
         flag = judgeActiveInDay(
-            notifier.currentWeekWithNotify, today, notifier.weekCount, course);
+            notifier.currentWeek, today, notifier.weekCount, course);
       if (flag) todayCourses.add(course);
     });
     if (todayCourses.length == 0) {
@@ -70,7 +71,8 @@ class TodayCoursesWidget extends StatelessWidget {
           itemCount: todayCourses.length,
           itemBuilder: (context, i) {
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/schedule'),
+              onTap: () =>
+                  Navigator.pushNamed(context, ScheduleRouter.schedule),
               child: Container(
                 height: 180.0,
                 width: 150.0,

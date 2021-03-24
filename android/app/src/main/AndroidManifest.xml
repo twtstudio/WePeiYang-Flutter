@@ -10,10 +10,18 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--课程提醒，允许后台服务-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!--友盟需要的一些额外权限-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="wei_pei_yang_demo">
         <activity
@@ -47,13 +55,19 @@
 
         <service
             android:name=".AlarmService"
-            android:process=":remote">
-        </service>
+            android:process=":remote" />
 
         <receiver
             android:name=".AlarmReceiver"
-            android:process=":remote">
-        </receiver>
+            android:process=":remote" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="60464782b8c8d45c1390e7e3" />
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Umeng" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

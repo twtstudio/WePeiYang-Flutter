@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class CardBean {
   IconData icon;
@@ -11,9 +11,9 @@ class CardBean {
 
 class GlobalModel {
   GlobalModel._() {
-    cards.add(CardBean(Icons.event, '课程表', '/schedule'));
-    cards.add(CardBean(Icons.timeline, 'GPA', '/gpa'));
-    // cards.add(CardBean(Icons.call, '黄页', '/telNum'));
+    cards.add(CardBean(Icons.event, '课程表', ScheduleRouter.schedule));
+    cards.add(CardBean(Icons.timeline, 'GPA', GPARouter.gpa));
+    // cards.add(CardBean(Icons.call, '黄页', HomeRouter.telNum));
     cards
         .add(CardBean(Icons.calendar_today_outlined, "自习室", LoungeRouter.main));
   }

@@ -13,10 +13,14 @@ import 'package:wei_pei_yang_demo/feedback/feedback_providers.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'commons/preferences/common_prefs.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
+
+import 'commons/util/app_analysis.dart';
+import 'package:umeng_sdk/umeng_sdk.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
@@ -33,7 +37,6 @@ void main() async {
     ));
   }
 }
-
 
 // 全局捕获异常，还没想好
 //runZoned(
@@ -66,6 +69,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 
   @override
   Widget build(BuildContext context) {
+    UmengSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -81,6 +85,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           navigatorKey: WeiPeiYangApp.navigatorState,
           // theme: ThemeData(fontFamily: 'Montserrat'),
           onGenerateRoute: RouterManager.create,
+          navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -129,6 +134,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await HiveManager.init();
+      await NetStatusListener.init();
       _autoLogin(context);
     });
   }
@@ -159,18 +165,18 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         prefs.account.value == "" ||
         prefs.password.value == "") {
       /// 既然没登陆过就多看会启动页吧
-      Future.delayed(Duration(seconds: 3))
-          .then((_) => Navigator.pushReplacementNamed(context, '/login'));
+      Future.delayed(Duration(seconds: 3)).then(
+          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
       /// 稍微显示一会启动页，不然它的意义是什么555
-      /// 用缓存中的数据自动登录，失败则仍跳转至login页面
+      /// 用缓存中的数据自动登录，无论失败与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          login(prefs.account.value, prefs.password.value, onSuccess: (_) {
+          login(prefs.account.value, prefs.password.value, onResult: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, '/login', (route) => false);
+                context, HomeRouter.home, (route) => false);
           }));
     }
   }

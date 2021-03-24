@@ -27,7 +27,7 @@ class NotifyProvider {
         WeiPeiYangApp.navigatorState.currentContext,
         listen: false);
     var courses = notifier.coursesWithNotify;
-    var currentWeek = notifier.currentWeekWithNotify;
+    var currentWeek = notifier.currentWeek;
     var today = DateTime.now().weekday;
     var termStart = notifier.termStart;
     courses.forEach((course) {

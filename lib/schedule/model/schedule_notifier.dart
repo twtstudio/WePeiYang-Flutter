@@ -35,22 +35,12 @@ class ScheduleNotifier with ChangeNotifier {
 
   int get selectedWeekWithNotify => _selectedWeek;
 
-  void quietResetWeek() => _selectedWeek = currentWeekWithNotify;
-
-  int _currentWeek = 1;
+  void quietResetWeek() => _selectedWeek = currentWeek;
 
   /// 手动计算当前周,不从办公网爬了
-  int get currentWeekWithNotify =>
+  int get currentWeek =>
       ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / 604800)
           .ceil();
-
-  // TODO 这个先不爬了吧
-  set currentWeekWithNotify(int newWeek) {
-    if (_currentWeek == newWeek) return;
-    _currentWeek = newWeek;
-    _selectedWeek = newWeek;
-    notifyListeners();
-  }
 
   /// 一学期一共有多少周……很没存在感的东西
   int _weekCount = 25;
@@ -64,7 +54,7 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   /// 夜猫子模式
-  bool _nightMode = false;
+  bool _nightMode = true;
 
   set nightMode(bool value) {
     _nightMode = value;
@@ -78,18 +68,20 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule({bool hint = true}) {
+  RefreshCallback refreshSchedule(
+      {bool hint = true, void Function() onFailure}) {
     return () async {
       if (hint) ToastProvider.running("刷新数据中……");
-      getScheduleCourses(onSuccess: (courses) {
+      getScheduleCourses(onResult: (courses) {
         if (hint) ToastProvider.success("刷新课程表数据成功");
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
         NotifyProvider.setNotificationData(); // 更新课程提醒
         CommonPreferences().scheduleData.value =
             json.encode(ScheduleBean(_termStart, "20212", courses));
-      }, onFailure: (msg) {
-        if (hint) ToastProvider.error(msg);
+      }, onFailure: (e) {
+        if (hint && onFailure == null) ToastProvider.error(e.error);
+        if (onFailure != null) onFailure();
       });
     };
   }
@@ -102,6 +94,7 @@ class ScheduleNotifier with ChangeNotifier {
         ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
     _courses = schedule.courses;
     _termStart = schedule.termStart;
+    quietResetWeek();
     notifyListeners();
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -17,17 +18,17 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       ToastProvider.error("账号密码不能为空");
       return;
     }
-    await login(account, password,
-        onSuccess: (result) {
+    login(account, password,
+        onResult: (result) {
           if (result['telephone'] == null || result['email'] == null) {
-            Navigator.pushNamed(context, '/add_info');
+            Navigator.pushNamed(context, AuthRouter.addInfo);
           } else {
             ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           }
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -68,7 +69,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _accountFocus,
                 decoration: InputDecoration(
@@ -122,7 +122,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
-              onTap: () => Navigator.pushNamed(context, '/find_home'),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
           ),
           Container(

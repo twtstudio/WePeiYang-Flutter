@@ -52,7 +52,7 @@ class CommonPreferences {
   var language = PrefsBean<int>("language", 0); // 系统语言
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
-  var nightMode = PrefsBean<bool>("nightMode"); // 开启夜猫子模式
+  var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule = PrefsBean<bool>("otherWeekSchedule"); // 课表显示非本周课程
   var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
   var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
@@ -64,7 +64,7 @@ class CommonPreferences {
   }
 
   /// 清除twt用户的缓存
-  void clearPrefs() {
+  void clearUserPrefs() {
     isLogin.value = false;
     token.value = "";
     nickname.value = "";

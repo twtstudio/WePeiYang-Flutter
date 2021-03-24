@@ -7,7 +7,6 @@ import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
-    // TODO 其他解绑逻辑
     ToastProvider.success("解除绑定成功");
     CommonPreferences().clearTjuPrefs();
     Provider.of<GPANotifier>(context, listen: false).clear();
@@ -72,7 +71,6 @@ class TjuUnbindDialog extends Dialog {
 
 class PhoneUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
-    // TODO 其他解绑逻辑
     ToastProvider.success("解除绑定成功");
     CommonPreferences().phone.value = "";
     Navigator.pop(context);
@@ -136,7 +134,6 @@ class PhoneUnbindDialog extends Dialog {
 
 class EmailUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
-    // TODO 其他解绑逻辑
     ToastProvider.success("解除绑定成功");
     CommonPreferences().email.value = "";
     Navigator.pop(context);

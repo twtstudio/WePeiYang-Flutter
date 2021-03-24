@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class LoginHomeWidget extends StatelessWidget {
 
@@ -25,7 +26,7 @@ class LoginHomeWidget extends StatelessWidget {
                 height: 50,
                 width: 100,
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/login_pw'),
+                  onPressed: () => Navigator.pushNamed(context, AuthRouter.loginPw),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('登录',
@@ -40,7 +41,7 @@ class LoginHomeWidget extends StatelessWidget {
                 width: 100,
                 margin: const EdgeInsets.only(left: 50),
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/register1'),
+                  onPressed: () => Navigator.pushNamed(context, AuthRouter.register1),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
                   child: Text('注册',

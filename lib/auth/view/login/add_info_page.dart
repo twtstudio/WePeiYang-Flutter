@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+        onFailure: (e) => ToastProvider.error(e.error));
   }
 
   _submit() async {
@@ -38,9 +39,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
           onSuccess: () {
             ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
-                context, '/home', (route) => false);
+                context, HomeRouter.home, (route) => false);
           },
-          onFailure: (e) => ToastProvider.error(e.error.toString()));
+          onFailure: (e) => ToastProvider.error(e.error));
     }
   }
 
@@ -83,7 +84,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
@@ -111,7 +111,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 maxHeight: 55,
               ),
               child: TextField(
-                keyboardType: TextInputType.visiblePassword,
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
                     hintText: '手机号码',
@@ -137,7 +136,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     maxWidth: width / 2 + 20,
                   ),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                         hintText: '短信验证码',
                         hintStyle: _hintStyle,

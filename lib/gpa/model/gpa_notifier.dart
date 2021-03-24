@@ -62,9 +62,12 @@ class GPANotifier with ChangeNotifier {
   /// 获取曲线上的数据
   List<double> get curveDataWithNotify {
     var doubles = List<double>();
-    if (_type == 0) for (var i in _gpaStats) doubles.add(i.weighted);
-    if (_type == 1) for (var i in _gpaStats) doubles.add(i.gpa);
-    if (_type == 2) for (var i in _gpaStats) doubles.add(i.credits);
+    if (_type == 0) for (var i in _gpaStats)
+      doubles.add(i.weighted);
+    if (_type == 1) for (var i in _gpaStats)
+      doubles.add(i.gpa);
+    if (_type == 2) for (var i in _gpaStats)
+      doubles.add(i.credits);
     return doubles;
   }
 
@@ -131,17 +134,18 @@ class GPANotifier with ChangeNotifier {
     return _hideGPA;
   }
 
-  GestureTapCallback refreshGPA({bool hint = true}) {
+  GestureTapCallback refreshGPA({bool hint = true, void Function() onFailure}) {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
-      getGPABean(onSuccess: (gpaBean) {
+      getGPABean(onResult: (gpaBean) {
         if (hint) ToastProvider.success("刷新gpa数据成功");
         _gpaStats = gpaBean.stats;
         _total = gpaBean.total;
         notifyListeners();
         CommonPreferences().gpaData.value = json.encode(gpaBean);
-      }, onFailure: (msg) {
-        if (hint) ToastProvider.error(msg);
+      }, onFailure: (e) {
+        if (hint && onFailure == null) ToastProvider.error(e.error);
+        if (onFailure != null) onFailure();
       });
     };
   }

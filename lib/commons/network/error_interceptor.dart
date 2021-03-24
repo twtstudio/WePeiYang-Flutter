@@ -3,29 +3,30 @@ import 'package:dio/dio.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 import '../preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 
 /// 自定义错误拦截
 class ErrorInterceptor extends InterceptorsWrapper {
   /// token出错或过期时可能需要重新登陆
-  _reLogin() async {
-    var prefs = CommonPreferences();
-    if (prefs.account.value == "" || prefs.password.value == "") {
-      Navigator.pushNamedAndRemoveUntil(
-          WeiPeiYangApp.navigatorState.currentContext,
-          '/login',
-          (route) => false);
-      throw DioError(error: "登录失效，请重新登录");
-    }
-    login(prefs.account.value, prefs.password.value,
-        onSuccess: (_) {},
-        onFailure: (e) => throw DioError(error: "登录失效，请重新登录"));
-    throw DioError(error: "正在尝试自动重登");
-  }
+  // _reLogin() async {
+  //   var prefs = CommonPreferences();
+  //   if (prefs.account.value == "" || prefs.password.value == "") {
+  //     Navigator.pushNamedAndRemoveUntil(
+  //         WeiPeiYangApp.navigatorState.currentContext,
+  //         AuthRouter.login,
+  //         (route) => false);
+  //     throw DioError(error: "登录失效，请重新登录");
+  //   }
+  //   login(prefs.account.value, prefs.password.value,
+  //       onSuccess: (_) {},
+  //       onFailure: (e) => throw DioError(error: "登录失效，请重新登录"));
+  //   throw DioError(error: "正在尝试自动重登");
+  // }
 
   /// * 办公网输错验证码 / 密码: [DioErrorType.RESPONSE]: Http status error [401]
   /// * 没刷新验证码: [DioErrorType.DEFAULT]: RedirectException: Redirect limit exceeded
   /// * 连不上网: [DioErrorType.DEFAULT]: SocketException: Failed host lookup: '[host]'
-  /// *
+  /// * More....
 
   // TODO 待完善
 
@@ -55,7 +56,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
         // _reLogin();
         Navigator.pushNamedAndRemoveUntil(
             WeiPeiYangApp.navigatorState.currentContext,
-            '/login',
+            AuthRouter.login,
             (route) => false);
         throw DioError(error: "登录失效，请重新登录");
         break;
