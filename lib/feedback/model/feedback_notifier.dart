@@ -96,13 +96,13 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  initHomePostList(onSuccess) async {
+  initHomePostList(onSuccess, onError) async {
     clearHomePostList();
     await getToken().then((_) {
       clearTagList();
       return getTags();
     }).then((_) {
-      return getPosts('', '1', onSuccess: onSuccess);
+      return getPosts('', '1', onSuccess: onSuccess, onError: onError);
     });
   }
 
@@ -169,11 +169,13 @@ class FeedbackNotifier with ChangeNotifier {
         }
         notifyListeners();
       }).catchError((e, stacktrace) {
-        print(e + stacktrace); // TODO: 这里不对啊，加号是什么东西  Class 'NoSuchMethodError' has no instance method '+'.
+        print(e);
+        print(stacktrace);
         onError();
       });
     } catch (e, stacktrace) {
-      print(e + stacktrace);
+      print(e);
+      print(stacktrace);
     }
   }
 
@@ -525,6 +527,7 @@ class FeedbackNotifier with ChangeNotifier {
         }),
       )
           .then((value) {
+        if (value['ErrorCode'] == 200) ToastProvider.running('图片来咯');
         return value['data']['url'];
       });
     } catch (e) {

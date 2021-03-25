@@ -65,11 +65,12 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          BlankSpace.height(8),
           if (detail)
             Text(
               title,
@@ -127,12 +128,13 @@ class _CommentCardState extends State<CommentCard> {
                             .split('.')[0]
                             .substring(0, 5)),
                 style: TextStyle(
+                  fontSize: 12,
                   color: ColorUtil.lightTextColor,
                 ),
               ),
             ],
           ),
-          BlankSpace.height(8),
+          BlankSpace.height(16),
           if (official && !detail)
             GestureDetector(
               child: Text(
@@ -165,7 +167,6 @@ class _CommentCardState extends State<CommentCard> {
                 color: ColorUtil.boldTextColor,
               ),
             ),
-          BlankSpace.height(5),
           Row(
             children: [
               if (official && comment.rating == -1)
@@ -205,28 +206,24 @@ class _CommentCardState extends State<CommentCard> {
                 ),
               Spacer(),
               // Like count.
-              GestureDetector(
-                onTap: onLikePressed,
-                child: Row(
-                  children: [
-                    ClipOval(
-                      child: Icon(
-                        !comment.isLiked
-                            ? Icons.thumb_up_outlined
-                            : Icons.thumb_up,
-                        size: 16,
-                        color: !comment.isLiked
-                            ? ColorUtil.lightTextColor
-                            : Colors.red,
-                      ),
-                    ),
-                    BlankSpace.width(8),
-                    Text(
-                      comment.likeCount.toString(),
-                      style: TextStyle(
-                          fontSize: 14, color: ColorUtil.lightTextColor),
-                    ),
-                  ],
+              ButtonTheme(
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minWidth: 0,
+                child: FlatButton.icon(
+                  onPressed: onLikePressed,
+                  icon: Icon(
+                    !comment.isLiked ? Icons.thumb_up_outlined : Icons.thumb_up,
+                    size: 16,
+                    color: !comment.isLiked
+                        ? ColorUtil.lightTextColor
+                        : Colors.red,
+                  ),
+                  label: Text(
+                    comment.likeCount.toString(),
+                    style: TextStyle(
+                        fontSize: 14, color: ColorUtil.lightTextColor),
+                  ),
                 ),
               ),
             ],
@@ -234,7 +231,7 @@ class _CommentCardState extends State<CommentCard> {
         ],
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
