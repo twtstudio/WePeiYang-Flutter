@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show Widget;
 import 'package:wei_pei_yang_demo/auth/view/info/email_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/phone_bind_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/reset_password_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/find_pw_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/login_page.dart';
@@ -27,7 +28,7 @@ class AuthRouter {
   static String addInfo = '/add_info';
   static String findHome = '/find_home';
   static String findPhone = '/find_phone';
-  static String reset = '/reset';
+  static String resetPw = '/reset';
   static String resetDone = '/reset_done';
 
   /// 个人信息页
@@ -35,6 +36,7 @@ class AuthRouter {
   static String phoneBind = '/phoneBind';
   static String emailBind = '/emailBind';
   static String resetName = '/resetName';
+  static String resetPassword = '/resetPassword';
   static String userInfo = '/user_info';
 
   /// 个人页 & 设置页
@@ -60,12 +62,13 @@ class AuthRouter {
     addInfo: (_) => AddInfoWidget(),
     findHome: (_) => FindPwWidget(),
     findPhone: (_) => FindPwByPhoneWidget(),
-    reset: (_) => ResetPwWidget(),
+    resetPw: (_) => ResetPwWidget(), // 这个是登录时的修改密码
     resetDone: (_) => ResetDoneWidget(),
     tjuBind: (_) => TjuBindPage(),
     phoneBind: (_) => PhoneBindPage(),
     emailBind: (_) => EmailBindPage(),
     resetName: (_) => ResetNicknamePage(),
+    resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),

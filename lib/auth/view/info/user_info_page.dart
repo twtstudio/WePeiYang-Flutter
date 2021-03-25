@@ -26,7 +26,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       appBar: AppBar(
           title: Text('个人信息更改',
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 16,
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
           elevation: 0,
@@ -34,7 +34,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 20),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -127,8 +127,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.tjuBind)
                               .then((_) => this.setState(() {})),
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(9)),
+                      borderRadius: BorderRadius.zero,
                       splashFactory: InkRipple.splashFactory,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -144,6 +143,37 @@ class _UserInfoPageState extends State<UserInfoPage> {
                               child: Text(pref.isBindTju.value ? "已绑定" : "未绑定",
                                   style: hintTextStyle),
                             ),
+                            Padding(
+                                padding: const EdgeInsets.only(right: 11),
+                                child: arrow)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    height: 1.0,
+                    color: Color.fromRGBO(212, 214, 226, 1),
+                  ),
+                  Container(
+                    height: 70,
+                    child: InkWell(
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.resetPassword)
+                              .then((_) => this.setState(() {})),
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(9)),
+                      splashFactory: InkRipple.splashFactory,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                width: 150,
+                                child: Text('密码更改', style: mainTextStyle)),
+                            Expanded(child: Text('')),
                             Padding(
                                 padding: const EdgeInsets.only(right: 11),
                                 child: arrow)

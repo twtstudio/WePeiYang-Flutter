@@ -23,7 +23,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
 
     /// More...
     // TODO 发布的时候开这个
-    // return DioError(error: "发生未知错误，请联系开发人员解决");
+    return DioError(error: "发生未知错误，请联系开发人员解决");
   }
 }
 
