@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart' show DioError, Response;
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/unbind_dialogs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';

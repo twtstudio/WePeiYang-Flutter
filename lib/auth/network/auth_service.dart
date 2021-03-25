@@ -1,4 +1,4 @@
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/main.dart';

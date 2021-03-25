@@ -1,9 +1,9 @@
 // import 'package:cookie_jar/cookie_jar.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:wei_pei_yang_demo/commons/network/dio_server.dart';
-import 'package:wei_pei_yang_demo/commons/network/error_interceptor.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 
 // import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'api.dart';
@@ -16,8 +16,8 @@ class Http extends BaseHttp {
   void init() {
     options.baseUrl = 'https://selfstudy.twt.edu.cn/';
     options.headers = {
-      "DOMAIN": DioService.DOMAIN,
-      "ticket": DioService.ticket,
+      "DOMAIN": AuthDio.DOMAIN,
+      "ticket": AuthDio.ticket,
     };
     interceptors
       ..add(ApiInterceptor())
@@ -27,13 +27,12 @@ class Http extends BaseHttp {
         options.headers['Cookie'] = pref.captchaCookie.value;
       }))
       ..add(ErrorInterceptor());
-      // ..add(LogInterceptor(requestBody: true));
+    // ..add(LogInterceptor(requestBody: true));
   }
 }
 
 /// 玩Android API
 class ApiInterceptor extends InterceptorsWrapper {
-
   @override
   onResponse(Response response) async {
     final String data = response.data.toString();
