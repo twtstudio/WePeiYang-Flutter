@@ -6,19 +6,19 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import androidx.work.*
+import com.example.wei_pei_yang_demo.message.model.MessageDataBase
 import com.example.wei_pei_yang_demo.message.server.PushCIdWorker
 import com.igexin.sdk.PushManager
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.MethodChannel
 import java.lang.ref.WeakReference
 
-class WBYApplication : FlutterApplication(), Configuration.Provider {
+class WBYApplication : FlutterApplication() {
     companion object {
         const val TAG = "WBY"
         lateinit var appContext: Context
-        val handler = MyHandler()
+        private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
-        var feedbackCount = 1
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -26,8 +26,6 @@ class WBYApplication : FlutterApplication(), Configuration.Provider {
             companion object {
                 const val RECEIVE_MESSAGE_DATA = 0
                 const val RECEIVE_CLIENT_ID = 1
-                const val REFRESH_FEEDBACK_COUNT = 2
-                const val CLEAR_FEEDBACK_COUNT = 3
             }
 
             override fun handleMessage(msg: Message) {
@@ -41,6 +39,7 @@ class WBYApplication : FlutterApplication(), Configuration.Provider {
                                 .build()
                         val task = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
                                 .addTag("1")
+                                .setInputData(workDataOf("cid" to cId))
                                 .setConstraints(constraints)
                                 .build()
                         workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
@@ -63,14 +62,6 @@ class WBYApplication : FlutterApplication(), Configuration.Provider {
                                 activity?.get()?.showDialog("notimplemented")
                             }
                         })
-
-                    }
-                    REFRESH_FEEDBACK_COUNT -> {
-                        val data = msg.obj.toString()
-                        activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", data)
-                    }
-                    CLEAR_FEEDBACK_COUNT -> {
-                        feedbackCount = 0
                     }
                 }
             }
@@ -89,18 +80,6 @@ class WBYApplication : FlutterApplication(), Configuration.Provider {
         if (BuildConfig.DEBUG) {
             //切勿在 release 版本上开启调试日志
             PushManager.getInstance().setDebugLogger(this) { s -> Log.i("PUSH_LOG", s) }
-        }
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return if (BuildConfig.DEBUG) {
-            Configuration.Builder()
-                    .setMinimumLoggingLevel(Log.DEBUG)
-                    .build()
-        } else {
-            Configuration.Builder()
-                    .setMinimumLoggingLevel(Log.ERROR)
-                    .build()
         }
     }
 

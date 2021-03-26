@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
-import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
+import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
 import 'package:wei_pei_yang_demo/home/view/drawer_page.dart';

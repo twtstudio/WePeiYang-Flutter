@@ -60,6 +60,10 @@ class CommonPreferences {
   var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
   var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
 
+  /// feedback token
+  var feedbackToken = PrefsBean<String>("feedbackToken");
+  /// feedback token
+
   List<String> getCookies() {
     var jSessionId = 'J' +
         ((gSessionId.value.length > 0) ? gSessionId.value.substring(1) : "");

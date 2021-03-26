@@ -53,6 +53,7 @@ class FeedbackNotifier with ChangeNotifier {
       )
           .then((value) {
         _token = value['data']['token'];
+        CommonPreferences().feedbackToken.value = _token;
       });
       notifyListeners();
     } catch (e) {
@@ -169,7 +170,8 @@ class FeedbackNotifier with ChangeNotifier {
         }
         notifyListeners();
       }).catchError((e, stacktrace) {
-        print(e + stacktrace); // TODO: 这里不对啊，加号是什么东西  Class 'NoSuchMethodError' has no instance method '+'.
+        print(e +
+            stacktrace); // TODO: 这里不对啊，加号是什么东西  Class 'NoSuchMethodError' has no instance method '+'.
         onError();
       });
     } catch (e, stacktrace) {
@@ -327,7 +329,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-              (value) {
+          (value) {
             if (value['ErrorCode'] == 0) {
               if (_homePostList[index].isFavorite) {
                 _homePostList[index].isFavorite = false;
@@ -364,7 +366,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-              (value) {
+          (value) {
             if (value['ErrorCode'] == 0) {
               if (_profilePostList[index].isLiked) {
                 _profilePostList[index].likeCount--;
@@ -402,7 +404,7 @@ class FeedbackNotifier with ChangeNotifier {
           }),
         )
             .then(
-              (value) {
+          (value) {
             if (value['ErrorCode'] == 0) {
               if (_profilePostList[index].isFavorite) {
                 _profilePostList[index].isFavorite = false;

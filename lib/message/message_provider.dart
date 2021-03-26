@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wei_pei_yang_demo/commons/message/message_dialog.dart';
+import 'package:wei_pei_yang_demo/message/message_dialog.dart';
 
 class MessageProvider extends ChangeNotifier {
   MessageProvider(this._messageChannel);

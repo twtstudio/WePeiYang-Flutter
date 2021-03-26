@@ -2,14 +2,13 @@ package com.example.wei_pei_yang_demo.message.server
 
 import com.example.wei_pei_yang_demo.common.WBYBaseData
 import com.example.wei_pei_yang_demo.common.BaseServer
+import com.example.wei_pei_yang_demo.message.model.FeedbackMessage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
-private object WBYServer : BaseServer(baseUrl = "https://api.twt.edu.cn/api/") {
+private object FeedbackServer : BaseServer(baseUrl = "http://47.94.198.197:10805/") {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.HEADERS
     }
@@ -17,7 +16,6 @@ private object WBYServer : BaseServer(baseUrl = "https://api.twt.edu.cn/api/") {
     override val client: OkHttpClient
         get() = OkHttpClient.Builder()
                 .retryOnConnectionFailure(false)
-                .addInterceptor(SignatureInterceptor.forTrusted)
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
@@ -26,13 +24,19 @@ private object WBYServer : BaseServer(baseUrl = "https://api.twt.edu.cn/api/") {
 }
 
 
-interface WBYServerAPI {
+interface FeedbackServerAPI {
 
-    @POST("notification/cid")
-    suspend fun pushCId(
-            @Query("cid") cid: String,
-    ): WBYBaseData<Any>
+    @GET("api/user/message/get")
+    suspend fun getFeedbackMessage(
+            @Query("token") token: String,
+    ): FeedbackMessage
 
-    companion object : WBYServerAPI by WBYServer()
+    @POST("api/user/message/read")
+    suspend fun setMessageRead(
+            @Field("token") token: String,
+            @Field("message_id") id: String,
+    )
+
+    companion object : FeedbackServerAPI by FeedbackServer()
 
 }

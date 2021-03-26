@@ -1,6 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/message/message_provider.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
 class FeedbackBadgeWidget extends StatefulWidget {

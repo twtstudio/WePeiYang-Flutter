@@ -8,9 +8,12 @@ import io.flutter.plugin.common.MethodChannel
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.os.Message
+import androidx.activity.viewModels
 import androidx.work.*
 import com.example.wei_pei_yang_demo.alarm.AlarmService
 import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
+import com.example.wei_pei_yang_demo.message.model.FeedbackMessage
+import com.example.wei_pei_yang_demo.message.model.MessageDataBase
 import io.flutter.embedding.android.FlutterFragmentActivity
 import java.lang.ref.WeakReference
 import java.util.*
@@ -19,6 +22,8 @@ import java.util.*
 class MainActivity : FlutterFragmentActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
     var messageChannel: MethodChannel? = null
+
+    val model by viewModels<MainActivityViewModel>()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
@@ -43,13 +48,10 @@ class MainActivity : FlutterFragmentActivity() {
             setMethodCallHandler { call, result ->
                 when (call.method) {
                     "getFeedbackMessageCount" -> {
-                        result.success(WBYApplication.feedbackCount)
+                        model.refreshFeedbackMessage(result)
                     }
                     "clearFeedbackMessage" -> {
-                        WBYApplication.sendMessage(Message.obtain().apply {
-                            what = WBYApplication.Companion.MyHandler.CLEAR_FEEDBACK_COUNT
-                        })
-                        result.success(WBYApplication.feedbackCount)
+                        model.clearFeedbackMessageCount(result)
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }
@@ -89,6 +91,13 @@ class MainActivity : FlutterFragmentActivity() {
 
     private fun stopAlarmService() {
         stopService(Intent(this, AlarmService::class.java))
+    }
+
+    fun showDialog(data: String) {
+        val builder = AlertDialog.Builder(this);
+        builder.setPositiveButton("确定", null);
+        builder.setTitle(data);
+        builder.show();
     }
 
 }
