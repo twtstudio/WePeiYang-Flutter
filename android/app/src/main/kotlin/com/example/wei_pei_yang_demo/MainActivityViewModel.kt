@@ -32,6 +32,7 @@ class MainActivityViewModel : ViewModel() {
                 id?.let {
                     viewModelScope.launch {
                         FeedbackServerAPI.setMessageRead(token = token, id = it).apply {
+                            Log.d("WBYSETREADFINISH",this.toString())
                             when (ErrorCode) {
                                 0 -> {
                                     result.success(0)

@@ -41,12 +41,16 @@ class MessageProvider extends ChangeNotifier {
               [])
           .map((e) => MessageDataItem.fromMap(e)));
     _feedbackMessageList = [..._feedbackFavourites, ..._feedbackQuestions];
+    print("SETFEEDBACKSUCCESS");
     notifyListeners();
   }
 
-  int remind(int questionId){
-    var list = _feedbackMessageList.where((element) => element.id == questionId);
-    return list.isEmpty? null: list.first.messageId;
+  setFeedbackMessageRead(int messageId) async {
+    print("SETFEEDBACK");
+    await _messageChannel
+        .invokeMethod('setMessageReadById', {"id": messageId});
+    await refreshFeedbackCount();
+    print("SETFEEDBACKSUCCESS");
   }
 }
 

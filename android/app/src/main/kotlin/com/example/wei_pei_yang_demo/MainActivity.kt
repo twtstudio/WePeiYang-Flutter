@@ -7,6 +7,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.plugin.common.MethodChannel
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.work.*
 import com.example.wei_pei_yang_demo.alarm.AlarmService
@@ -48,6 +49,7 @@ class MainActivity : FlutterFragmentActivity() {
                         model.refreshFeedbackMessage(result)
                     }
                     "setMessageReadById" -> {
+                        Log.d("WBYFEEDBACKREAD","123")
                         model.setMessageReadById(result, call.argument<Int>("id"))
                     }
                     else -> result.error("-1", "cannot find method", null)

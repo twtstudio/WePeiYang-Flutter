@@ -9,6 +9,7 @@ import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override
@@ -74,6 +75,15 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<MessageProvider>(context,listen: false).refreshFeedbackCount();
+    });
   }
 
   @override

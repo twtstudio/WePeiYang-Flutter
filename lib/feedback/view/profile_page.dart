@@ -8,6 +8,7 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+import 'package:wei_pei_yang_demo/message/feedback_banner_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 import 'components/post_card.dart';
@@ -41,6 +42,27 @@ extension _CurrentTabExtension on _CurrentTab {
         return 'lib/feedback/assets/img/my_post.png';
     }
   }
+
+  getPostListOfCategory(
+      FeedbackNotifier feedbackNotifier, MessageProvider messageProvider) {
+    switch (this) {
+      case _CurrentTab.myPosts:
+        feedbackNotifier.getMyPosts(messageProvider.feedbackQs);
+        break;
+      case _CurrentTab.myFavorite:
+        feedbackNotifier.getMyFavoritePosts(messageProvider.feedbackFs);
+        break;
+    }
+  }
+
+  FeedbackMessageType get messageType {
+    switch (this) {
+      case _CurrentTab.myFavorite:
+        return FeedbackMessageType.detail_favourite;
+      case _CurrentTab.myPosts:
+        return FeedbackMessageType.detail_post;
+    }
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -53,7 +75,9 @@ class _ProfilePageState extends State<ProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<FeedbackNotifier>(context, listen: false)
           .clearProfilePostList();
-      Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts();
+      Provider.of<FeedbackNotifier>(context, listen: false).getMyPosts(
+        Provider.of<MessageProvider>(context, listen: false).feedbackQs,
+      );
     });
     super.initState();
   }
@@ -80,11 +104,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Row(
                         children: [
                           // My posts tab.
-                          _postListCategory(
-                              _CurrentTab.myPosts, feedbackNotifier),
+                          _postListCategory(_CurrentTab.myPosts,
+                              feedbackNotifier, messageNotifier),
                           // My favorite posts tab.
-                          _postListCategory(
-                              _CurrentTab.myFavorite, feedbackNotifier),
+                          _postListCategory(_CurrentTab.myFavorite,
+                              feedbackNotifier, messageNotifier),
                         ],
                       ),
                     ),
@@ -97,21 +121,17 @@ class _ProfilePageState extends State<ProfilePage> {
           Widget sliverList = SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return feedbackNotifier.profilePostList[index].topImgUrl !=
-                            '' &&
-                        feedbackNotifier.profilePostList[index].topImgUrl !=
-                            null
+                var item = feedbackNotifier.profilePostList[index];
+                return item.topImgUrl != '' && item.topImgUrl != null
                     ? _cardWithImage(
                         context,
                         feedbackNotifier,
                         index,
-                        messageNotifier,
                       )
                     : _cardWithoutImage(
                         context,
                         feedbackNotifier,
                         index,
-                        messageNotifier,
                       );
               },
               childCount: feedbackNotifier.profilePostList.length,
@@ -139,13 +159,17 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _postListCategory(_CurrentTab category, FeedbackNotifier notifier) =>
+  Widget _postListCategory(
+    _CurrentTab category,
+    FeedbackNotifier feedbackNotifier,
+    MessageProvider messageProvider,
+  ) =>
       Expanded(
         child: InkWell(
           child: Column(
             children: [
               FeedbackBadgeWidget(
-                type: FeedbackMessageType.detail_favourite,
+                type: category.messageType,
                 child: Image.asset(
                   category.image,
                   height: 30,
@@ -161,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   width: 5,
                   height: 5,
-                  color: _currentTab == _CurrentTab.myFavorite
+                  color: _currentTab == category
                       ? ColorUtil.mainColor
                       : Colors.white,
                 ),
@@ -170,10 +194,10 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.center,
           ),
           onTap: () {
-            if (_currentTab == _CurrentTab.myPosts) {
-              notifier.clearProfilePostList();
-              _currentTab = _CurrentTab.myFavorite;
-              notifier.getMyFavoritePosts();
+            if (_currentTab != category) {
+              feedbackNotifier.clearProfilePostList();
+              _currentTab = category;
+              category.getPostListOfCategory(feedbackNotifier, messageProvider);
             }
           },
         ),
@@ -298,7 +322,6 @@ class _ProfilePageState extends State<ProfilePage> {
     BuildContext context,
     FeedbackNotifier feedbackNotifier,
     int index,
-    MessageProvider messageProvider,
   ) =>
       PostCard.image(
         feedbackNotifier.profilePostList[index],
@@ -335,7 +358,6 @@ class _ProfilePageState extends State<ProfilePage> {
     BuildContext context,
     FeedbackNotifier feedbackNotifier,
     int index,
-    MessageProvider messageProvider,
   ) =>
       PostCard(
         feedbackNotifier.profilePostList[index],
