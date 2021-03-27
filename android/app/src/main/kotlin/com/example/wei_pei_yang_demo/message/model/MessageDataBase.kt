@@ -14,9 +14,7 @@ object MessageDataBase {
 
     private const val authTokenKey = "flutter.token"
     private const val feedbackTokenKey = "flutter.feedbackToken"
-    private const val feedbackMessageCountKey = "flutter.feedbackMessageCount"
-    private const val feedbackMessageQuestionsKey = "flutter.feedbackMessageQuestionsList"
-    private const val feedbackMessageFavouritesKey = "flutter.feedbackMessageFavouritesList"
+    private const val feedbackMessages = "flutter.feedbackMessageQuestionsList"
     private const val feedbackUserDataKey = "flutter.feedbackUserDataKey"
 
     val authToken: String?
@@ -42,24 +40,13 @@ object MessageDataBase {
             Log.d("WBYFEEDBACKTOKEN", it.toString())
         }
 
-    var feedbackMessageCount: Int
-        get() = sharedPreferences.getInt(feedbackMessageCountKey, 0).also {
-            Log.d("WBYFEEDBACKMESSAGECOUNT", it.toString())
-        }
-        set(value) = synchronized(this) {
-            sharedPreferences.edit {
-                putInt(feedbackMessageCountKey, value)
-            }
-        }
-
     var feedbackMessage: FeedbackMessageBaseData
         get() {
-            val str = sharedPreferences.getString(feedbackMessageQuestionsKey, "")
-            return Gson().fromJson(str, FeedbackMessageBaseData::class.java)
+            return Gson().fromJson("", FeedbackMessageBaseData::class.java)
         }
         set(value) = synchronized(this) {
             Log.d("WBYFEEDBACKMESSAGE", value.toString())
-            feedbackBaseData?.id.let{ user ->
+            feedbackBaseData?.id.let { user ->
                 val feedbackMessageQuestions = mutableListOf<MessageItem>()
                 val feedbackMessageFavourites = mutableListOf<MessageItem>()
                 for (item in value.data) {
@@ -84,11 +71,20 @@ object MessageDataBase {
                         }
                     }
                 }
-                feedbackMessageCount = feedbackMessageQuestions.size + feedbackMessageFavourites.size
+                val result = FeedbackMessages(qs = feedbackMessageQuestions, fs = feedbackMessageFavourites)
+                Log.d("WBYFBQS", feedbackMessageQuestions.toString());
                 sharedPreferences.edit {
-                    putString(feedbackMessageQuestionsKey, Gson().toJson(feedbackMessageQuestions))
-                    putString(feedbackMessageFavouritesKey, Gson().toJson(feedbackMessageFavourites))
+                    putString(feedbackMessages, Gson().toJson(result))
                 }
             }
         }
+
+    val feedbackMessagesLists: String
+        get() = sharedPreferences.getString(feedbackMessages, "") ?: ""
+
 }
+
+data class FeedbackMessages(
+        val qs: List<MessageItem>,
+        val fs: List<MessageItem>,
+)

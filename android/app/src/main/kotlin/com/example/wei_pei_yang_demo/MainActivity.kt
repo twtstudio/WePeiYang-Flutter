@@ -45,7 +45,7 @@ class MainActivity : FlutterFragmentActivity() {
         messageChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.example.wei_pei_yang_demo/message").apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "getFeedbackMessageCount" -> {
+                    "refreshFeedbackMessage" -> {
                         model.refreshFeedbackMessage(result)
                     }
                     "setMessageReadById" -> {

@@ -6,7 +6,7 @@ import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 enum FeedbackMessageType { detail_post, detail_favourite, home }
 
 extension MessageData on FeedbackMessageType {
-   int messageCount(MessageProvider model) {
+  int messageCount(MessageProvider model) {
     switch (this) {
       case FeedbackMessageType.detail_post:
         return model.feedbackQs.length;
@@ -38,7 +38,7 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(
       builder: (__, model, _) {
-        if (model.isEmpty) {
+        if (model.isEmpty || widget.type.messageCount(model) == 0) {
           return widget.child;
         } else {
           return Badge(

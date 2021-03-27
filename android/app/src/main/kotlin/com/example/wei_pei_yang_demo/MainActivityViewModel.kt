@@ -16,7 +16,7 @@ class MainActivityViewModel : ViewModel() {
                 FeedbackServerAPI.getUserData(token).data?.let {
                     MessageDataBase.feedbackBaseData = it
                     MessageDataBase.feedbackMessage = FeedbackServerAPI.getFeedbackMessage(token)
-                    result.success(MessageDataBase.feedbackMessageCount)
+                    result.success(MessageDataBase.feedbackMessagesLists)
                 }
             }.invokeOnCompletion {
                 it?.let {

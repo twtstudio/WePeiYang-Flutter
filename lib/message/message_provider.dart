@@ -9,7 +9,6 @@ class MessageProvider extends ChangeNotifier {
   MessageProvider(this._messageChannel);
 
   final MethodChannel _messageChannel;
-  int _feedbackCounts;
   List<MessageDataItem> _feedbackQuestions;
   List<MessageDataItem> _feedbackFavourites;
   List<MessageDataItem> _feedbackMessageList;
@@ -27,19 +26,16 @@ class MessageProvider extends ChangeNotifier {
   String get messageData => _messageData;
 
   refreshFeedbackCount() async {
-    _feedbackCounts =
-        await _messageChannel.invokeMethod<int>('getFeedbackMessageCount');
-    print(CommonPreferences().feedbackMessageQuestions.value);
+    String result =
+        await _messageChannel.invokeMethod<String>('refreshFeedbackMessage');
+    print("FeedbackmessageCount $result");
+    var map = jsonDecode(result) as Map ?? {};
     _feedbackQuestions = List()
-      ..addAll((jsonDecode(CommonPreferences().feedbackMessageQuestions.value)
-                  as List ??
-              [])
-          .map((e) => MessageDataItem.fromMap(e)));
+      ..addAll(
+          (map["qs"] as List ?? []).map((e) => MessageDataItem.fromMap(e)));
     _feedbackFavourites = List()
-      ..addAll((jsonDecode(CommonPreferences().feedbackMessageFavourites.value)
-                  as List ??
-              [])
-          .map((e) => MessageDataItem.fromMap(e)));
+      ..addAll(
+          (map["fs"] as List ?? []).map((e) => MessageDataItem.fromMap(e)));
     _feedbackMessageList = [..._feedbackFavourites, ..._feedbackQuestions];
     print("SETFEEDBACKSUCCESS");
     notifyListeners();
@@ -47,8 +43,7 @@ class MessageProvider extends ChangeNotifier {
 
   setFeedbackMessageRead(int messageId) async {
     print("SETFEEDBACK");
-    await _messageChannel
-        .invokeMethod('setMessageReadById', {"id": messageId});
+    await _messageChannel.invokeMethod('setMessageReadById', {"id": messageId});
     await refreshFeedbackCount();
     print("SETFEEDBACKSUCCESS");
   }
