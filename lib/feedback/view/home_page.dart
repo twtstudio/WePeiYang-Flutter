@@ -150,6 +150,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                           IconButton(
                             color: ColorUtil.mainColor,
                             icon: FeedbackBadgeWidget(
+                              type: FeedbackMessageType.home,
                               child: Image.asset(
                                   'lib/feedback/assets/img/profile.png'),
                             ),

@@ -1,22 +1,19 @@
 package com.example.wei_pei_yang_demo.message.model
 
-data class FeedbackMessage(
+data class FeedbackMessageBaseData(
         val ErrorCode: Int,
         val msg: String,
-        val data: FeedbackMessageList,
+        val data: List<FeedbackMessageItem>,
 )
 
-data class FeedbackMessageList(
-        val list : List<FeedbackMessageItem>,
-)
 
 data class FeedbackMessageItem(
         val id: Int,
         val type: Int,
         val created_at: String,
         val updated_at: String,
-        val contain: List<Contain>,
-        val question: List<Question>,
+        val contain: Contain,
+        val question: Question,
 )
 
 data class Contain(
@@ -28,7 +25,7 @@ data class Contain(
         val created_at: String,
         val updated_at: String,
         val username: String,
-        val adminname: String,
+        val admin_name: String,
         val is_liked: Boolean,
         val score: Int,
         val commit: String,
@@ -40,7 +37,7 @@ data class Question(
         val description: String,
         val campus: Int,
         val user_id: Int,
-        val visible: Boolean,
+        val visible: Int,
         val solved: Int,
         val no_commit: Int,
         val likes: Int,
@@ -59,4 +56,9 @@ data class Question(
 data class MTag(
         val id: Int,
         val name: String,
+)
+
+data class MessageItem(
+        val messageId: Int,
+        val id: Int,
 )

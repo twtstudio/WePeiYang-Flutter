@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FeedbackBadgeWidget(
+                          type: FeedbackMessageType.home,
                           child: Container(
                             width: 20,
                             height: 20,

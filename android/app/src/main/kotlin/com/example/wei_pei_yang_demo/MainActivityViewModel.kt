@@ -13,18 +13,41 @@ class MainActivityViewModel : ViewModel() {
     fun refreshFeedbackMessage(result: MethodChannel.Result) {
         MessageDataBase.feedbackToken?.let { token ->
             viewModelScope.launch {
-                val response = FeedbackServerAPI.getFeedbackMessage(token)
-                MessageDataBase.feedbackMessageList = response.data
+                FeedbackServerAPI.getUserData(token).data?.let {
+                    MessageDataBase.feedbackBaseData = it
+                    MessageDataBase.feedbackMessage = FeedbackServerAPI.getFeedbackMessage(token)
+                    result.success(MessageDataBase.feedbackMessageCount)
+                }
             }.invokeOnCompletion {
-                Log.d("WBYERROR",it.toString())
+                it?.let {
+                    Log.d("WBYERROR", it.toString())
+                    result.success(0)
+                }
             }
-            result.success(0)
         }
     }
 
-    fun clearFeedbackMessageCount(result: MethodChannel.Result) {
-        MessageDataBase.feedbackMessageCount = 0
-        result.success(0)
-    }
+    fun setMessageReadById(result: MethodChannel.Result, id: Int?) =
+            MessageDataBase.feedbackToken?.let { token ->
+                id?.let {
+                    viewModelScope.launch {
+                        FeedbackServerAPI.setMessageRead(token = token, id = it).apply {
+                            when (ErrorCode) {
+                                0 -> {
+                                    result.success(0)
+                                }
+                                else -> {
+                                    result.error(ErrorCode.toString(),msg,msg)
+                                }
+                            }
+                        }
+                    }.invokeOnCompletion {
+                        it?.let {
+                            Log.d("WBYERROR", it.toString())
+                            result.error("0", it.message.toString(), it.message)
+                        }
+                    }
+                }
+            }
 
 }

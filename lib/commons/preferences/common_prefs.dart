@@ -62,6 +62,8 @@ class CommonPreferences {
 
   /// feedback token
   var feedbackToken = PrefsBean<String>("feedbackToken");
+  var feedbackMessageQuestions = PrefsBean<String>("feedbackMessageQuestionsList");
+  var feedbackMessageFavourites = PrefsBean<String>("feedbackMessageFavouritesList");
   /// feedback token
 
   List<String> getCookies() {

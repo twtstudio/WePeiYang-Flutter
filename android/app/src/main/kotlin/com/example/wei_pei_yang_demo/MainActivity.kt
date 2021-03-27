@@ -7,13 +7,10 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.plugin.common.MethodChannel
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.os.Message
 import androidx.activity.viewModels
 import androidx.work.*
 import com.example.wei_pei_yang_demo.alarm.AlarmService
 import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
-import com.example.wei_pei_yang_demo.message.model.FeedbackMessage
-import com.example.wei_pei_yang_demo.message.model.MessageDataBase
 import io.flutter.embedding.android.FlutterFragmentActivity
 import java.lang.ref.WeakReference
 import java.util.*
@@ -50,8 +47,8 @@ class MainActivity : FlutterFragmentActivity() {
                     "getFeedbackMessageCount" -> {
                         model.refreshFeedbackMessage(result)
                     }
-                    "clearFeedbackMessage" -> {
-                        model.clearFeedbackMessageCount(result)
+                    "setMessageReadById" -> {
+                        model.setMessageReadById(result, call.argument<Int>("id"))
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }

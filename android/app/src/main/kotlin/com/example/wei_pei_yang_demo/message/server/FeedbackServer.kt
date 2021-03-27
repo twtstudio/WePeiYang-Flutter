@@ -1,8 +1,9 @@
 package com.example.wei_pei_yang_demo.message.server
 
-import com.example.wei_pei_yang_demo.common.WBYBaseData
 import com.example.wei_pei_yang_demo.common.BaseServer
-import com.example.wei_pei_yang_demo.message.model.FeedbackMessage
+import com.example.wei_pei_yang_demo.message.model.FeedbackBaseData
+import com.example.wei_pei_yang_demo.message.model.FeedbackMessageBaseData
+import com.example.wei_pei_yang_demo.message.model.User
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.http.*
@@ -29,13 +30,18 @@ interface FeedbackServerAPI {
     @GET("api/user/message/get")
     suspend fun getFeedbackMessage(
             @Query("token") token: String,
-    ): FeedbackMessage
+    ): FeedbackMessageBaseData
 
     @POST("api/user/message/read")
     suspend fun setMessageRead(
             @Field("token") token: String,
-            @Field("message_id") id: String,
-    )
+            @Field("message_id") id: Int,
+    ): FeedbackBaseData<Any>
+
+    @GET("api/user/userData")
+    suspend fun getUserData(
+            @Query("token") token: String,
+    ): FeedbackBaseData<User>
 
     companion object : FeedbackServerAPI by FeedbackServer()
 
