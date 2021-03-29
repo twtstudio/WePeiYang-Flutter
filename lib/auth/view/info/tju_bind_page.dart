@@ -201,7 +201,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 child: TextField(
                   controller: codeController,
                   decoration: InputDecoration(
-                      hintText: '短信验证码',
+                      hintText: '验证码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),

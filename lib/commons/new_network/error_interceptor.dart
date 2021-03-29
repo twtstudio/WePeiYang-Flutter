@@ -10,6 +10,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
   // TODO 待完善
   @override
   Future onError(DioError err) async {
+
     if (err is WpyDioError) return err;
     if (err.type == DioErrorType.CONNECT_TIMEOUT)
       return DioError(error: "网络连接超时");

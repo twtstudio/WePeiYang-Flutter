@@ -141,6 +141,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     GlobalModel().screenWidth = width;

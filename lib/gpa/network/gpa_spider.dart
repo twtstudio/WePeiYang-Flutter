@@ -85,6 +85,9 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
     case '缓考':
       score = _DELAYED;
       break;
+    case '--':
+      score = _DELAYED;
+      break;
     case 'F':
       score = 0.0;
       break;
