@@ -17,7 +17,7 @@ import 'package:wei_pei_yang_demo/message/message_model.dart';
 extension PostListSortExtension on List<Post> {
   List<Post> sortWithMessage(List<MessageDataItem> list) {
     List<Post> match = [];
-    List<int> ids = list.map((e) => e.id).toList();
+    List<int> ids = list.map((e) => e.questionId).toList();
     List<Post> base = [...this];
     this.forEach((element) {
       if (ids.contains(element.id)) {
@@ -25,8 +25,8 @@ extension PostListSortExtension on List<Post> {
         base.remove(element);
       }
     });
-    match.sort((a, b) => a.updatedTime.compareTo(b.updatedTime));
-    base.sort((a, b) => a.updatedTime.compareTo(b.updatedTime));
+    match.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
+    base.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
     return [...match, ...base];
   }
 }

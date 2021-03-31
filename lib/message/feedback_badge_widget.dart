@@ -1,24 +1,29 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
-enum FeedbackMessageType { detail_post, detail_favourite, home }
+enum FeedbackMessageType { detail_post, detail_favourite, home, mailbox }
 
 extension MessageData on FeedbackMessageType {
-  int messageCount(MessageProvider model) {
+  String messageCount(MessageProvider model) {
     switch (this) {
       case FeedbackMessageType.detail_post:
-        return model.feedbackQs.length;
+        return "";
         break;
       case FeedbackMessageType.detail_favourite:
-        return model.feedbackFs.length;
+        return "";
         break;
       case FeedbackMessageType.home:
-        return model.feedbackFs.length + model.feedbackQs.length;
+        return (model.feedbackFs.length + model.feedbackQs.length).toString();
+        break;
+      case FeedbackMessageType.mailbox:
+        return model.totalMessageCount.toString();
         break;
       default:
-        return 0;
+        return '';
     }
   }
 }
@@ -38,13 +43,15 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(
       builder: (__, model, _) {
-        if (model.isEmpty || widget.type.messageCount(model) == 0) {
+        if (model.isMessageEmptyOfType(widget.type)) {
           return widget.child;
         } else {
+          var str = widget.type.messageCount(model);
+          var padding = str.isEmpty ? 5.0 : 4.0;
           return Badge(
-            padding: EdgeInsets.all(4),
+            padding: EdgeInsets.all(padding),
             badgeContent: Text(
-              widget.type.messageCount(model).toString(),
+              str,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,

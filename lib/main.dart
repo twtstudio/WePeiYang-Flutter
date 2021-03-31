@@ -113,7 +113,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
         ChangeNotifierProvider(
             create: (context) =>
-                MessageProvider(methodChannel)..refreshFeedbackCount())
+                MessageProvider (methodChannel)..refreshFeedbackCount())
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(

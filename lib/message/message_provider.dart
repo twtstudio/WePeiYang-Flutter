@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
+import 'package:wei_pei_yang_demo/message/message_center.dart';
 import 'package:wei_pei_yang_demo/message/message_dialog.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 
@@ -11,14 +11,18 @@ class MessageProvider extends ChangeNotifier {
   final MethodChannel _messageChannel;
   List<MessageDataItem> _feedbackQuestions;
   List<MessageDataItem> _feedbackFavourites;
-  List<MessageDataItem> _feedbackMessageList;
+  List<int> _feedbackMessageList;
   String _messageData;
+  int _totalMessageCount ;
+
 
   List<MessageDataItem> get feedbackQs => _feedbackQuestions;
 
   List<MessageDataItem> get feedbackFs => _feedbackFavourites;
 
-  List<MessageDataItem> get feedbackMessageList => _feedbackMessageList;
+  List<int> get feedbackMessageList => _feedbackMessageList;
+
+  int get totalMessageCount => _totalMessageCount;
 
   bool get isEmpty =>
       (feedbackFs?.length ?? 0) + (feedbackQs?.length ?? 0) == 0;
@@ -26,26 +30,47 @@ class MessageProvider extends ChangeNotifier {
   String get messageData => _messageData;
 
   refreshFeedbackCount() async {
-    String result =
-        await _messageChannel.invokeMethod<String>('refreshFeedbackMessage');
-    print("FeedbackmessageCount $result");
-    var map = jsonDecode(result) as Map ?? {};
-    _feedbackQuestions = List()
-      ..addAll(
-          (map["qs"] as List ?? []).map((e) => MessageDataItem.fromMap(e)));
-    _feedbackFavourites = List()
-      ..addAll(
-          (map["fs"] as List ?? []).map((e) => MessageDataItem.fromMap(e)));
-    _feedbackMessageList = [..._feedbackFavourites, ..._feedbackQuestions];
+    var result = await MessageRepository.getAllMessages() ?? TotalMessageData();
+    print("FeedbackmessageCount ${result.questions?.length ?? -1}");
+    _feedbackQuestions =
+        result.questions?.where((element) => element.isOwner)?.toList() ?? [];
+    _feedbackFavourites =
+        result.questions?.where((element) => element.isFavour)?.toList() ?? [];
+    _feedbackMessageList = result.questions?.map((e) => e.questionId)?.toList() ?? [];
+    _totalMessageCount = result.totalMessageCount;
     print("SETFEEDBACKSUCCESS");
     notifyListeners();
   }
 
-  setFeedbackMessageRead(int messageId) async {
+  setFeedbackQuestionRead(int messageId) async {
     print("SETFEEDBACK");
-    await _messageChannel.invokeMethod('setMessageReadById', {"id": messageId});
+    await MessageRepository.setQuestionRead(messageId);
     await refreshFeedbackCount();
     print("SETFEEDBACKSUCCESS");
+  }
+
+  bool inMessageList(int questionId) => questionId == null
+      ? false
+      : _feedbackMessageList?.contains(questionId) ?? false;
+
+  bool isMessageEmptyOfType(FeedbackMessageType type) {
+    if(isEmpty) return true;
+    switch (type) {
+      case FeedbackMessageType.detail_post:
+        return feedbackQs.length.isZero;
+        break;
+      case FeedbackMessageType.detail_favourite:
+        return feedbackFs.length.isZero;
+        break;
+      case FeedbackMessageType.home:
+        return feedbackMessageList.length.isZero;
+        break;
+      case FeedbackMessageType.mailbox:
+        return totalMessageCount.isZero;
+        break;
+      default:
+        return true;
+    }
   }
 }
 
@@ -60,4 +85,8 @@ showMessageDialog(BuildContext context, String data) async {
   } catch (e) {
     print("??//////////$e");
   }
+}
+
+extension IntExtension on int {
+  bool get isZero => this == 0;
 }

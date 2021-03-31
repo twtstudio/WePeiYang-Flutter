@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Comment with ChangeNotifier {
+class Comment {
   int id;
   String content;
   int userId;

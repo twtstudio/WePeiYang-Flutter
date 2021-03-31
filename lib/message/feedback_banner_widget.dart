@@ -13,15 +13,10 @@ class FeedbackBannerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(builder: (__, model, _) {
-      var list = model.feedbackMessageList
-          .where((element) => element.id == questionId);
-      var messageId = list.isEmpty ? null : list.first.messageId;
-
       Widget result;
-      print("FEEDBACKMESSAGEID ${messageId?.toString() ?? "null"}");
-      if (messageId != null) {
+      if (model.inMessageList(questionId)) {
         result = GestureDetector(
-          onTapDown: (_) async => await model.setFeedbackMessageRead(messageId),
+          onTapDown: (_) async => await model.setFeedbackQuestionRead(questionId),
           child: ClipRect(
             child: Banner(
               message: "未读",

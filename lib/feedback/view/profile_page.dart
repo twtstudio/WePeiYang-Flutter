@@ -70,6 +70,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool _deleteLock = false;
 
+  ValueNotifier<_CurrentTab> category = ValueNotifier(_CurrentTab.myPosts);
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -86,8 +88,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
-      body: Consumer2<FeedbackNotifier, MessageProvider>(
-        builder: (context, feedbackNotifier, messageNotifier, widget) {
+      body: Consumer<FeedbackNotifier>(
+        builder: (context, feedbackNotifier, widget) {
           Widget sliverHeader = SliverToBoxAdapter(
             child: _profileHeader(
               SliverToBoxAdapter(
@@ -104,11 +106,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Row(
                         children: [
                           // My posts tab.
-                          _postListCategory(_CurrentTab.myPosts,
-                              feedbackNotifier, messageNotifier),
+                          _PostListCategory(category: _CurrentTab.myPosts),
                           // My favorite posts tab.
-                          _postListCategory(_CurrentTab.myFavorite,
-                              feedbackNotifier, messageNotifier),
+                          _PostListCategory(category: _CurrentTab.myFavorite),
                         ],
                       ),
                     ),
@@ -159,50 +159,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _postListCategory(
-    _CurrentTab category,
-    FeedbackNotifier feedbackNotifier,
-    MessageProvider messageProvider,
-  ) =>
-      Expanded(
-        child: InkWell(
-          child: Column(
-            children: [
-              FeedbackBadgeWidget(
-                type: category.messageType,
-                child: Image.asset(
-                  category.image,
-                  height: 30,
-                ),
-              ),
-              BlankSpace.height(5),
-              Text(
-                category.text,
-                style: TextStyle(height: 1, color: ColorUtil.lightTextColor),
-              ),
-              BlankSpace.height(5),
-              ClipOval(
-                child: Container(
-                  width: 5,
-                  height: 5,
-                  color: _currentTab == category
-                      ? ColorUtil.mainColor
-                      : Colors.white,
-                ),
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-          onTap: () {
-            if (_currentTab != category) {
-              feedbackNotifier.clearProfilePostList();
-              _currentTab = category;
-              category.getPostListOfCategory(feedbackNotifier, messageProvider);
-            }
-          },
-        ),
-      );
-
   Widget _profileHeader(Widget tab) => Stack(
         children: <Widget>[
           Container(
@@ -228,6 +184,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 title: Text('个人中心'),
                 centerTitle: true,
+                actions: [
+                  FeedbackMailbox(),
+                ],
               ),
               SliverToBoxAdapter(
                 child: BlankSpace.height(23),
@@ -396,4 +355,91 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         },
       );
+}
+
+class _PostListCategory extends StatelessWidget {
+  final _CurrentTab category;
+
+  const _PostListCategory({Key key, this.category}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<MessageProvider, FeedbackNotifier>(
+        builder: (_, messageProvider, feedbackNotifier, __) {
+      return Expanded(
+        child: ValueListenableBuilder(
+          valueListenable:
+              context.findAncestorStateOfType<_ProfilePageState>().category,
+          builder: (_, _CurrentTab value, __) {
+            return InkWell(
+              child: Column(
+                children: [
+                  FeedbackBadgeWidget(
+                    type: category.messageType,
+                    child: Image.asset(
+                      category.image,
+                      height: 30,
+                    ),
+                  ),
+                  BlankSpace.height(5),
+                  Text(
+                    category.text,
+                    style:
+                        TextStyle(height: 1, color: ColorUtil.lightTextColor),
+                  ),
+                  BlankSpace.height(5),
+                  ClipOval(
+                    child: Container(
+                      width: 5,
+                      height: 5,
+                      color: value == category
+                          ? ColorUtil.mainColor
+                          : Colors.white,
+                    ),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              onTap: () {
+                if (value != category) {
+                  feedbackNotifier.clearProfilePostList();
+                  context
+                      .findAncestorStateOfType<_ProfilePageState>()
+                      .category
+                      .value = category;
+                  category.getPostListOfCategory(
+                      feedbackNotifier, messageProvider);
+                }
+              },
+            );
+          },
+        ),
+      );
+    });
+  }
+}
+
+class FeedbackMailbox extends StatefulWidget {
+  @override
+  _FeedbackMailboxState createState() => _FeedbackMailboxState();
+}
+
+class _FeedbackMailboxState extends State<FeedbackMailbox> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Center(
+        child: FeedbackBadgeWidget(
+          type: FeedbackMessageType.mailbox,
+          child: InkWell(
+            child: Icon(Icons.mail_outline),
+            onTap: () {
+              Navigator.pushNamed(context, FeedbackRouter.mailbox);
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }
