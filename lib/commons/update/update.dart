@@ -14,8 +14,8 @@ class UpdateManager {
   }
 
   static void checkUpdate(BuildContext context, String url) {
-    searchLocalCache();
-    delAllTemporaryFile();
+    // searchLocalCache();
+    // delAllTemporaryFile();
     searchLocalCache();
     HttpUtils.get(url).then((response) {
       UpdateParser.parseJson(response.toString())?.then((value) {
@@ -23,7 +23,7 @@ class UpdateManager {
             updateEntity: value,
             onInstall: (String filePath) {
               CommonUtils.installAPP(filePath);
-            }).show(context);
+            }).show(context,value);
       });
     }).catchError((onError) {
       // ToastProvider.error(onError.toString());

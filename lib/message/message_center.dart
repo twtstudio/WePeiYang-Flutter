@@ -4,7 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
+import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
+import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
 
 class MessageRepository {
   static Future<FeedbackDetailMessages> getDetailMessages(int page) async {
@@ -34,6 +37,24 @@ class MessageRepository {
     var token = CommonPreferences().feedbackToken.value;
     await messageApi.post("question",
         queryParameters: {"token": token, "question_id": questionId});
+  }
+
+  static Future<List<UserMail>> getUserMails(int page) async {
+    var token = CommonPreferences().token.value;
+    await Future.delayed(Duration(seconds: 1));
+    List<UserMail> mails = [
+      UserMail.fromJson(1 + page),
+      UserMail.fromJson(2 + page),
+      UserMail.fromJson(3 + page),
+      UserMail.fromJson(4 + page),
+      UserMail.fromJson(5 + page),
+      UserMail.fromJson(6 + page),
+      UserMail.fromJson(7 + page),
+      UserMail.fromJson(8 + page),
+      UserMail.fromJson(9 + page),
+      UserMail.fromJson(10 + page),
+    ];
+    return mails;
   }
 }
 
@@ -133,18 +154,19 @@ class FeedbackDetailMessages {
 }
 
 class FeedbackMessageItem {
-  int id, type;
+  int id, type, visible;
   String createdAt, updatedAt;
-  Contain contain;
-  Question question;
+  Comment comment;
+  Post post;
 
   FeedbackMessageItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    visible = json['visible'] ?? 0;
     createdAt = json['create_at'];
     type = json['type'] ?? 0;
     updatedAt = json['update_at'];
-    contain = Contain.fromJson(json['contain'] ?? '');
-    question = Question.fromJson(json['question'] ?? '');
+    comment = Comment.fromJson(json['contain'] ?? '');
+    post = Post.fromJson(json['question'] ?? '');
   }
 
   Map get json => {
@@ -152,186 +174,7 @@ class FeedbackMessageItem {
         "type": type,
         "createdAt": createdAt,
         "updatedAt": updatedAt,
-        "contain": contain.toJson(),
-        "question": question.toJson(),
+        "contain": comment.toJson(),
+        "question": post.toJson(),
       };
-}
-
-class Contain {
-  int id;
-  String content;
-  int userId;
-  int adminId;
-  int likeCount;
-  int rating;
-  String createTime;
-  String updatedTime;
-  String userName;
-  String adminName;
-  bool isLiked;
-
-  Contain({
-    this.id,
-    this.content,
-    this.userId,
-    this.adminId,
-    this.likeCount,
-    this.rating,
-    this.createTime,
-    this.updatedTime,
-    this.userName,
-    this.adminName,
-    this.isLiked,
-  });
-
-  Contain.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    content = json['contain'];
-    userId = json['user_id'];
-    adminId = json['admin_id'];
-    likeCount = json['likes'];
-    rating = json['score'];
-    createTime = json['created_at'];
-    updatedTime = json['updated_at'];
-    userName = json['username'];
-    adminName = json['adminname'];
-    isLiked = json['is_liked'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['contain'] = this.content;
-    data['user_id'] = this.userId;
-    data['admin_id'] = this.adminId;
-    data['likes'] = this.likeCount;
-    data['created_at'] = this.createTime;
-    data['updated_at'] = this.updatedTime;
-    data['username'] = this.userName;
-    data['adminname'] = this.adminName;
-    data['is_liked'] = this.isLiked;
-    return data;
-  }
-}
-
-class Question {
-  int id;
-  String title;
-  String content;
-  int campus;
-  int userId;
-  int isSolved;
-  int isCommentForbidden;
-  int likeCount;
-  String createTime;
-  String updatedTime;
-  String userName;
-  int commentCount;
-  List<String> imgUrlList;
-  List<String> thumbImgUrlList;
-  String topImgUrl;
-  List<Tag> tags;
-  bool isLiked;
-  bool isFavorite;
-  bool isOwner;
-
-  Question(
-      {this.id,
-      this.title,
-      this.content,
-      this.campus,
-      this.userId,
-      this.isSolved,
-      this.isCommentForbidden,
-      this.likeCount,
-      this.createTime,
-      this.updatedTime,
-      this.userName,
-      this.commentCount,
-      this.imgUrlList,
-      this.thumbImgUrlList,
-      this.topImgUrl,
-      this.tags,
-      this.isLiked,
-      this.isFavorite,
-      this.isOwner});
-
-  Question.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['name'];
-    content = json['description'];
-    campus = json['campus'];
-    userId = json['user_id'];
-    isSolved = json['solved'];
-    isCommentForbidden = json['no_commit'];
-    likeCount = json['likes'];
-    createTime = json['created_at'];
-    updatedTime = json['updated_at'];
-    userName = json['username'];
-    commentCount = json['msgCount'];
-    if (json['url_list'] != null) {
-      imgUrlList = new List<String>();
-      json['url_list'].forEach((v) {
-        imgUrlList.add(v);
-      });
-    }
-    if (json['thumb_url_list'] != null) {
-      thumbImgUrlList = new List<String>();
-      json['thumb_url_list'].forEach((v) {
-        thumbImgUrlList.add(v);
-      });
-    }
-    topImgUrl = json['thumbImg'];
-    if (json['tags'] != null) {
-      tags = new List<Tag>();
-      json['tags'].forEach((v) {
-        tags.add(new Tag.fromJson(v));
-      });
-    }
-    isLiked = json['is_liked'];
-    isFavorite = json['is_favorite'];
-    isOwner = json['is_owner'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.title;
-    data['description'] = this.content;
-    data['campus'] = this.campus;
-    data['user_id'] = this.userId;
-    data['solved'] = this.isSolved;
-    data['no_commit'] = this.isCommentForbidden;
-    data['likes'] = this.likeCount;
-    data['created_at'] = this.createTime;
-    data['updated_at'] = this.updatedTime;
-    data['username'] = this.userName;
-    data['msgCount'] = this.commentCount;
-    data['thumbImg'] = this.topImgUrl;
-    if (this.tags != null) {
-      data['tags'] = this.tags.map((v) => v.toJson()).toList();
-    }
-    data['is_liked'] = this.isLiked;
-    data['is_owner'] = this.isOwner;
-    return data;
-  }
-}
-
-class Tag {
-  int id;
-  String name;
-
-  Tag({this.id, this.name});
-
-  Tag.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    return data;
-  }
 }

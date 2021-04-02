@@ -9,6 +9,7 @@ import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:wei_pei_yang_demo/home/view/wpy_page.dart';
 import 'list_load_steps.dart';
 
 class LoungeFavourWidget extends StatelessWidget {
@@ -64,7 +65,21 @@ class _FavourListWidgetState extends State<FavourListWidget> {
         timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
         favouriteModel: Provider.of<RoomFavouriteModel>(context, listen: false),
       ),
-      onModelReady: widget.init == true ? (model) => model.initData() : null,
+      onModelReady: widget.init == true
+          ? (model) async {
+              debugPrint("set can false");
+              context
+                  .findAncestorStateOfType<WPYPageState>()
+                  .canGoIntoLounge
+                  .value = true;
+              await model.initData();
+              debugPrint("set can true");
+              context
+                  .findAncestorStateOfType<WPYPageState>()
+                  .canGoIntoLounge
+                  .value = false;
+            }
+          : null,
       builder: (_, model, __) => ListLoadSteps(
         model: model,
         emptyV: Container(

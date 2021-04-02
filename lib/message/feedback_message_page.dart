@@ -2,6 +2,8 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
 import 'message_center.dart';
@@ -40,6 +42,8 @@ extension MessageTypeExtension on MessageType {
         return model.containCount;
       case MessageType.reply:
         return model.replyCount;
+      default:
+        return 0;
     }
   }
 }
@@ -170,14 +174,17 @@ class _MessagesListState extends State<MessagesList>
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  void _onRefresh() async {
+  onRefresh() async {
     // monitor network fetch
     try {
       var result = await MessageRepository.getDetailMessages(0);
       items.clear();
       items.addAll(
           result.data.where((element) => element.type == widget.type.index));
-      var messages = result.data.map((e) => e.type).toList();
+      var messages = result.data
+          .where((element) => element.visible == 1)
+          .map((e) => e.type)
+          .toList();
       var model = Provider.of<MessageTypes>(context, listen: false);
       widget.type.refreshMessageCount(messages, model);
       if (mounted) setState(() {});
@@ -185,12 +192,11 @@ class _MessagesListState extends State<MessagesList>
     } catch (e) {
       _refreshController.refreshFailed();
     }
-
     // if failed,use refreshFailed()
     // _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async {
+  _onLoading() async {
     // monitor network fetch
     // await Future.delayed(Duration(milliseconds: 1000));
     debugPrint("type ${widget.type.name}");
@@ -223,7 +229,10 @@ class _MessagesListState extends State<MessagesList>
         debugPrint((element.type).toString());
         return element.type == widget.type.index;
       }));
-      var messages = list.data.map((e) => e.type).toList();
+      var messages = list.data
+          .where((element) => element.visible == 1)
+          .map((e) => e.type)
+          .toList();
       var model = Provider.of<MessageTypes>(context, listen: false);
       widget.type.refreshMessageCount(messages, model);
       debugPrint('item length : ${items.length}');
@@ -259,12 +268,18 @@ class _MessagesListState extends State<MessagesList>
         },
       ),
       controller: _refreshController,
-      onRefresh: _onRefresh,
+      onRefresh: onRefresh,
       onLoading: _onLoading,
       child: ListView.builder(
         itemBuilder: (c, i) {
           print(i);
-          return MessageItem(data: items[i]);
+          return MessageItem(
+            data: items[i],
+            onTapDown: () async {
+              // await MessageRepository.setQuestionRead(items[i].post.id);
+              await onRefresh();
+            },
+          );
         },
         itemExtent: 100.0,
         itemCount: items.length,
@@ -278,22 +293,35 @@ class _MessagesListState extends State<MessagesList>
 
 class MessageItem extends StatelessWidget {
   final FeedbackMessageItem data;
+  final VoidCallback onTapDown;
 
-  const MessageItem({Key key, this.data}) : super(key: key);
+  const MessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(3),
-      child: Container(
-        decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(3),
-            color: Colors.greenAccent),
-        child: Center(
-          child: Text(
-            data.json.toString(),
-            style: TextStyle(fontSize: 7),
+      child: GestureDetector(
+        onTapDown: (_) => onTapDown?.call(),
+        onTapUp: (_) {
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.detail,
+            arguments: DetailPageArgs(data.post, 0, PostOrigin.mailbox),
+          ).then((_) => context
+              .findAncestorStateOfType<_MessagesListState>()
+              .onRefresh());
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(3),
+              color: Colors.greenAccent),
+          child: Center(
+            child: Text(
+              data.json.toString(),
+              style: TextStyle(fontSize: 7),
+            ),
           ),
         ),
       ),

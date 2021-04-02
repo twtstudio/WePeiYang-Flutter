@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
+import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
@@ -49,7 +50,7 @@ class HiveManager {
   Box<String> _searchHistory;
 
   final Map<String, LazyBox<Building>> _buildingBoxes = {};
-  final Map<String,String> _buildingName = {};
+  final Map<String, String> _buildingName = {};
 
   static init() async {
     _instance = await initHiveMemoizer.runOnce(() async {
@@ -125,29 +126,29 @@ class HiveManager {
   Future<Classroom> findRoomPathById({String id}) async {
     List<Classroom> rCs = [];
     await baseBuildingDataFromDisk.forEach(
-          (building) =>
-          building.areas.values.forEach(
-                (area) =>
-                rCs.addAll(
-                  area.classrooms.values
-                      .where((room) => room.id == id)
-                      .map((room) => room..bId = building.id),
-                ),
-          ),
+      (building) => building.areas.values.forEach(
+        (area) => rCs.addAll(
+          area.classrooms.values
+              .where((room) => room.id == id)
+              .map((room) => room..bId = building.id),
+        ),
+      ),
     );
     for (var r in rCs) {
       debugPrint(r.toJson().toString());
     }
-    assert (rCs.length == 1);
+    assert(rCs.length == 1);
     return rCs.first;
   }
 
   initBuildingName() async {
-    if(_boxesKeys.isNotEmpty && !shouldUpdateLocalData){
-      for(var id in _boxesKeys.keys){
+    if (_boxesKeys.isNotEmpty && !shouldUpdateLocalData) {
+      for (var id in _boxesKeys.keys) {
         var building = await _buildingBoxes[id].get(baseRoom);
         _buildingName[id] = building.name;
       }
+    } else if (shouldUpdateLocalData) {
+      await LoungeRepository.updateLocalData(DateTime.now());
     }
   }
 
@@ -172,14 +173,11 @@ class HiveManager {
     return _favourList.toMap().cast<String, Classroom>();
   }
 
-  bool get shouldUpdateLocalData =>
-      _boxesKeys.isEmpty
-          ? true
-          : !_boxesKeys.values
+  bool get shouldUpdateLocalData => _boxesKeys.isEmpty
+      ? true
+      : !_boxesKeys.values
           .map((e) =>
-      e == null ? false : DateTime
-          .parse(e?.dateTime ?? '')
-          .isToday)
+              e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday)
           .reduce((v, e) => v && e);
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
@@ -234,8 +232,10 @@ class HiveManager {
   }
 
   /// 从网路获取本周课程安排数据后，将数据写入本地文件，并更新时间信息
-  writeThisWeekDataInDisk(List<Building> buildings,
-      int day,) async {
+  writeThisWeekDataInDisk(
+    List<Building> buildings,
+    int day,
+  ) async {
     print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     for (var building in buildings) {
       print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -381,14 +381,12 @@ class HiveManager {
         if (hasA) {
           // 区域 + 教室
           List<MapEntry<Building, Classroom>> rCs = [];
-          await baseBuildingDataFromDisk.forEach((building) =>
-              building
-                  .areas.values
-                  .where((element) => element.id == aName)
-                  .forEach((e) =>
-                  rCs.addAll(e.classrooms.values
-                      .where((element) => element.name == cName)
-                      .map((e) => MapEntry(building, e)))));
+          await baseBuildingDataFromDisk.forEach((building) => building
+              .areas.values
+              .where((element) => element.id == aName)
+              .forEach((e) => rCs.addAll(e.classrooms.values
+                  .where((element) => element.name == cName)
+                  .map((e) => MapEntry(building, e)))));
           for (var r in rCs) {
             yield ResultEntry(
               building: r.key,
@@ -399,13 +397,11 @@ class HiveManager {
         } else {
           // 只有教室
           List<MapEntry<Building, Classroom>> rCs = [];
-          await baseBuildingDataFromDisk.forEach((building) =>
-              building
-                  .areas.values
-                  .forEach((e) =>
-                  rCs.addAll(e.classrooms.values
-                      .where((element) => element.name == cName)
-                      .map((e) => MapEntry(building, e)))));
+          await baseBuildingDataFromDisk.forEach((building) => building
+              .areas.values
+              .forEach((e) => rCs.addAll(e.classrooms.values
+                  .where((element) => element.name == cName)
+                  .map((e) => MapEntry(building, e)))));
           for (var r in rCs) {
             // print(r.value.toJson());
             yield ResultEntry(
@@ -443,8 +439,8 @@ class HiveManager {
     if (_searchHistory.values.contains(query)) {
       var key = _searchHistory.values
           .map((element) {
-        return element == query ? element : '';
-      })
+            return element == query ? element : '';
+          })
           .toList()
           .asMap()
           .entries

@@ -15,10 +15,12 @@ final hintStyle = const TextStyle(
 
 class WPYPage extends StatefulWidget {
   @override
-  _WPYPageState createState() => _WPYPageState();
+  WPYPageState createState() => WPYPageState();
 }
 
-class _WPYPageState extends State<WPYPage> {
+class WPYPageState extends State<WPYPage> {
+  ValueNotifier<bool> canGoIntoLounge = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -49,7 +51,7 @@ class _WPYPageState extends State<WPYPage> {
             SliverToBoxAdapter(
                 child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: LoungeFavourWidget(title: '自习室'),
+              child: LoungeFavourWidget(title: '自习室', init: true),
             ))
           ],
         ),
@@ -117,10 +119,11 @@ class SliverCardsWidget extends StatelessWidget {
       child: Container(
         height: 90.0,
         child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            itemCount: cards.length,
-            itemBuilder: (context, i) {
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          itemCount: cards.length,
+          itemBuilder: (context, i) {
+            if (i != 2) {
               return GestureDetector(
                 onTap: () => Navigator.pushNamed(context, cards[i].route),
                 child: Container(
@@ -130,7 +133,27 @@ class SliverCardsWidget extends StatelessWidget {
                   child: generateCard(context, cards[i]),
                 ),
               );
-            }),
+            } else {
+              return ValueListenableBuilder(
+                valueListenable: context
+                    .findAncestorStateOfType<WPYPageState>()
+                    .canGoIntoLounge,
+                builder: (_, bool absorbing, __) => AbsorbPointer(
+                  absorbing: absorbing,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, cards[i].route),
+                    child: Container(
+                      height: 90.0,
+                      width: 125.0,
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: generateCard(context, cards[i]),
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

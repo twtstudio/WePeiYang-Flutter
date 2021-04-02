@@ -296,6 +296,19 @@ class FeedbackNotifier with ChangeNotifier {
     });
   }
 
+  Future<Post> getPostById(int id) async {
+    var data = await HttpUtil().get(
+      'question/get/byId',
+      {
+        'id': id,
+        'token': _token,
+      },
+    );
+    print('success!');
+    var post = Post.fromJson(data);
+    return post;
+  }
+
   /// Like or dislike the post.
   Future homePostHitLike(index, id) async {
     if (!_hitLikeLock) {
@@ -408,6 +421,34 @@ class FeedbackNotifier with ChangeNotifier {
     }
   }
 
+  Future messagePostHitLike(bool isLiked, int id) async {
+    if (!_hitLikeLock) {
+      _hitLikeLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          isLiked ? 'question/dislike' : 'question/like',
+          FormData.fromMap({
+            'id': '$id',
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
+              notifyListeners();
+            } else {
+              ToastProvider.error('点赞失败');
+            }
+            _hitLikeLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   /// Add or remove the post from my favorite posts.
   Future profilePostHitFavorite(index) async {
     if (!_hitFavoriteLock) {
@@ -431,6 +472,34 @@ class FeedbackNotifier with ChangeNotifier {
               } else {
                 _profilePostList[index].isFavorite = true;
               }
+              notifyListeners();
+            } else {
+              ToastProvider.error('收藏失败');
+            }
+            _hitFavoriteLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  Future messagePostHitFavorite(bool isFavorite, int id) async {
+    if (!_hitFavoriteLock) {
+      _hitFavoriteLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          isFavorite ? 'question/unfavorite' : 'question/favorite',
+          FormData.fromMap({
+            'question_id': id,
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
               notifyListeners();
             } else {
               ToastProvider.error('收藏失败');

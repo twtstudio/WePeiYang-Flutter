@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:install_plugin/install_plugin.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,25 +21,33 @@ class CommonUtils {
     }
   }
 
-  ///获取下载缓存路径
-  static Future<String> getDownloadDirPath() async {
-    Directory directory = Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
   ///根据更新信息获取apk安装文件
   static Future<File> getApkFileWithTemporaryName(Version version) async {
-    String path = await getApkPath(true, version);
+    String path = await getApkPath(version);
     return File(path);
   }
 
-  static Future<String> getApkPath(bool temporary,Version version) async {
-    String appName = getApkNameByDownloadUrl(version.path);
-    String dirPath = await getDownloadDirPath();
-    String endName = temporary == true ? '.temporary' : '';
-    return "$dirPath/${version.version}/$appName$endName";
+  static Future<String> getApkPath(Version version) async {
+    String apkName = getApkNameByDownloadUrl(version.path);
+    Directory dir = await getExternalStorageDirectory();
+    var dirPath = dir.path;
+    try {
+      var matchDirs = dir
+          .listSync()
+          .where((element) => element.path.endsWith(version.version))
+          .toList();
+      debugPrint(matchDirs.length.toString());
+      var children = (matchDirs.first as Directory).listSync();
+      debugPrint(children.first.absolute.path);
+      if (children.length > 0 && children.first.absolute.path.endsWith('apk')) {
+        return children.first.absolute.path;
+      } else {
+        return "$dirPath/${version.version}/$apkName.temporary";
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      return "$dirPath/${version.version}/$apkName.temporary";
+    }
   }
 
   ///根据下载地址获取文件名
@@ -67,6 +76,11 @@ class CommonUtils {
   static Future<String> getVersionCode() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.buildNumber;
+  }
+
+  static Future<String> getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
   }
 
   ///获取应用包名
