@@ -162,9 +162,9 @@ class FeedbackMessageItem {
   FeedbackMessageItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     visible = json['visible'] ?? 0;
-    createdAt = json['create_at'];
+    createdAt = json['created_at'];
     type = json['type'] ?? 0;
-    updatedAt = json['update_at'];
+    updatedAt = json['updated_at'];
     comment = Comment.fromJson(json['contain'] ?? '');
     post = Post.fromJson(json['question'] ?? '');
   }

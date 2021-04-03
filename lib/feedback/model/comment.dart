@@ -37,7 +37,7 @@ class Comment {
     createTime = json['created_at'];
     updatedTime = json['updated_at'];
     userName = json['username'];
-    adminName = json['adminname'];
+    adminName = json['admin_name'];
     isLiked = json['is_liked'];
   }
 
@@ -51,7 +51,7 @@ class Comment {
     data['created_at'] = this.createTime;
     data['updated_at'] = this.updatedTime;
     data['username'] = this.userName;
-    data['adminname'] = this.adminName;
+    data['admin_name'] = this.adminName;
     data['is_liked'] = this.isLiked;
     return data;
   }
