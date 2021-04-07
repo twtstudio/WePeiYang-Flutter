@@ -40,6 +40,16 @@ class _UserPageState extends State<UserPage> {
                         Expanded(child: Text('')),
                         GestureDetector(
                           onTap: () =>
+                              Navigator.pushNamed(context, AuthRouter.mailbox),
+                          child: Icon(
+                            Icons.add_alert_outlined,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () =>
                               Navigator.pushNamed(context, AuthRouter.setting),
                           child: Image.asset('assets/images/setting.png',
                               width: 24, height: 24),

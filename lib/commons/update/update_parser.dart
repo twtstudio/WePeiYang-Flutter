@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/update/common.dart';
 import 'package:wei_pei_yang_demo/commons/update/version_data.dart';
 
@@ -12,6 +13,8 @@ class UpdateParser {
       return null;
     }
     String versionCode = await CommonUtils.getVersionCode();
+    debugPrint("versionCode local $versionCode");
+    debugPrint("versionCode remote ${release.versionCode}");
     if (release.versionCode <= int.parse(versionCode)) {
       return null;
     }

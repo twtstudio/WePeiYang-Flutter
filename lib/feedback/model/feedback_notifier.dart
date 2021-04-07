@@ -12,6 +12,24 @@ import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
+import 'package:wei_pei_yang_demo/message/message_model.dart';
+
+extension PostListSortExtension on List<Post> {
+  List<Post> sortWithMessage(List<MessageDataItem> list) {
+    List<Post> match = [];
+    List<int> ids = list.map((e) => e.questionId).toList();
+    List<Post> base = [...this];
+    this.forEach((element) {
+      if (ids.contains(element.id)) {
+        match.add(element);
+        base.remove(element);
+      }
+    });
+    match.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
+    base.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
+    return [...match, ...base];
+  }
+}
 
 class FeedbackNotifier with ChangeNotifier {
   List<Tag> _tagList = List();
@@ -53,6 +71,7 @@ class FeedbackNotifier with ChangeNotifier {
       )
           .then((value) {
         _token = value['data']['token'];
+        CommonPreferences().feedbackToken.value = _token;
       });
       notifyListeners();
     } catch (e) {
@@ -180,7 +199,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Get my posts.
-  Future getMyPosts() async {
+  Future getMyPosts(List<MessageDataItem> list) async {
     try {
       await HttpUtil().get(
         'question/get/myQuestion',
@@ -193,6 +212,7 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> map in value['data']) {
           _profilePostList.add(Post.fromJson(map));
         }
+        _profilePostList = _profilePostList.sortWithMessage(list);
         notifyListeners();
       });
     } catch (e) {
@@ -201,7 +221,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   /// Get my favorite posts.
-  Future getMyFavoritePosts() async {
+  Future getMyFavoritePosts(List<MessageDataItem> list) async {
     try {
       await HttpUtil().get(
         'favorite/get/all',
@@ -212,6 +232,7 @@ class FeedbackNotifier with ChangeNotifier {
         for (Map<String, dynamic> map in value['data']) {
           _profilePostList.add(Post.fromJson(map));
         }
+        _profilePostList = _profilePostList.sortWithMessage(list);
         notifyListeners();
       });
     } catch (e) {
@@ -274,6 +295,19 @@ class FeedbackNotifier with ChangeNotifier {
     await getOfficialComments(id).then((_) => getComments(id)).then((_) {
       onSuccess();
     });
+  }
+
+  Future<Post> getPostById(int id) async {
+    var data = await HttpUtil().get(
+      'question/get/byId',
+      {
+        'id': id,
+        'token': _token,
+      },
+    );
+    print('success!');
+    var post = Post.fromJson(data);
+    return post;
   }
 
   /// Like or dislike the post.
@@ -388,6 +422,34 @@ class FeedbackNotifier with ChangeNotifier {
     }
   }
 
+  Future messagePostHitLike(bool isLiked, int id) async {
+    if (!_hitLikeLock) {
+      _hitLikeLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          isLiked ? 'question/dislike' : 'question/like',
+          FormData.fromMap({
+            'id': '$id',
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
+              notifyListeners();
+            } else {
+              ToastProvider.error('点赞失败');
+            }
+            _hitLikeLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   /// Add or remove the post from my favorite posts.
   Future profilePostHitFavorite(index) async {
     if (!_hitFavoriteLock) {
@@ -411,6 +473,34 @@ class FeedbackNotifier with ChangeNotifier {
               } else {
                 _profilePostList[index].isFavorite = true;
               }
+              notifyListeners();
+            } else {
+              ToastProvider.error('收藏失败');
+            }
+            _hitFavoriteLock = false;
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  Future messagePostHitFavorite(bool isFavorite, int id) async {
+    if (!_hitFavoriteLock) {
+      _hitFavoriteLock = true;
+      try {
+        await HttpUtil()
+            .post(
+          isFavorite ? 'question/unfavorite' : 'question/favorite',
+          FormData.fromMap({
+            'question_id': id,
+            'token': _token,
+          }),
+        )
+            .then(
+          (value) {
+            if (value['ErrorCode'] == 0) {
               notifyListeners();
             } else {
               ToastProvider.error('收藏失败');

@@ -17,6 +17,7 @@ import 'package:wei_pei_yang_demo/auth/view/info/tju_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/reset_nickname_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/user_info_page.dart';
+import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
 
 class AuthRouter {
   /// 登录部分
@@ -45,6 +46,8 @@ class AuthRouter {
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
   static String colorSetting = 'setting/color_setting';
+
+  static String mailbox = "user/mailbox";
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
@@ -75,5 +78,6 @@ class AuthRouter {
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     colorSetting: (_) => ColorSettingPage(),
+    mailbox: (_) => UserMailboxPage(),
   };
 }

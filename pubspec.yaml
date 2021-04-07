@@ -51,6 +51,7 @@ dependencies:
   photo_view: ^0.10.3
   connectivity: 2.0.2
   badges: ^1.2.0
+  webview_flutter: ^1.0.7
 
   umeng_sdk:
     path: plugins/umeng_sdk

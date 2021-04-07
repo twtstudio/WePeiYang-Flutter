@@ -14,6 +14,7 @@ class GlobalModel {
     cards.add(CardBean(Icons.event, '课程表', ScheduleRouter.schedule));
     cards.add(CardBean(Icons.timeline, 'GPA', GPARouter.gpa));
     // cards.add(CardBean(Icons.call, '黄页', HomeRouter.telNum));
+    // !!! 别改变自习室的位置，确定在3，不然请去wpy_page最下面改一下index
     cards
         .add(CardBean(Icons.calendar_today_outlined, "自习室", LoungeRouter.main));
   }

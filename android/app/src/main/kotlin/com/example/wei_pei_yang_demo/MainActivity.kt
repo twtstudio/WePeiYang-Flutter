@@ -1,26 +1,28 @@
 package com.example.wei_pei_yang_demo
 
-import io.flutter.embedding.android.FlutterActivity
+import android.app.AlertDialog
+import android.content.*
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import com.example.umeng_sdk.UmengSdkPlugin
 import com.umeng.analytics.MobclickAgent
+import android.util.Log
+import androidx.activity.viewModels
+import androidx.work.*
+import com.example.wei_pei_yang_demo.alarm.AlarmService
+import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
+import io.flutter.embedding.android.FlutterFragmentActivity
+import java.lang.ref.WeakReference
+import java.util.*
 
-class MainActivity : FlutterActivity() {
+
+class MainActivity : FlutterFragmentActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
-    private val feedbackMessageChannel = "com.example.wei_pei_yang_demo/feedback"
-    private var messageCount = 1
+    var messageChannel: MethodChannel? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        UmengSdkPlugin.setContext(this)
-        android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
-    }
+    val model by viewModels<MainActivityViewModel>()
 
     override fun onPause() {
         super.onPause()
@@ -53,18 +55,28 @@ class MainActivity : FlutterActivity() {
                 else -> result.error("-1", "cannot find method", null)
             }
         }
-        MethodChannel(flutterEngine.dartExecutor, feedbackMessageChannel).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "getFeedbackMessageCount" -> {
-                    result.success(messageCount)
+        messageChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.example.wei_pei_yang_demo/message").apply {
+            setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "refreshFeedbackMessage" -> {
+                        model.refreshFeedbackMessage(result)
+                    }
+                    "setMessageReadById" -> {
+                        Log.d("WBYFEEDBACKREAD","123")
+                        model.setMessageReadById(result, call.argument<Int>("id"))
+                    }
+                    else -> result.error("-1", "cannot find method", null)
                 }
-                "clearFeedbackMessage" -> {
-                    //clear
-                }
-                else -> result.error("-1", "cannot find method", null)
             }
         }
         super.configureFlutterEngine(flutterEngine)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WBYApplication.activity = WeakReference(this)
+        UmengSdkPlugin.setContext(this)
+        android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
     }
 
     private fun setData(context: Context?, data: List<Map<String, Any>>) {
@@ -95,5 +107,11 @@ class MainActivity : FlutterActivity() {
         stopService(Intent(this, AlarmService::class.java))
     }
 
+    fun showDialog(data: String) {
+        val builder = AlertDialog.Builder(this);
+        builder.setPositiveButton("确定", null);
+        builder.setTitle(data);
+        builder.show();
+    }
 
 }

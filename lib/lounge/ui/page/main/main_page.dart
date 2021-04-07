@@ -1,20 +1,21 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
+import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
+import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/building_grid_view.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/home_model.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -29,13 +30,13 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await timeModel.setTime();
-      // checkUpdate();
+      await checkUpdate();
     });
   }
 
   String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
 
-  void checkUpdate() {
+  checkUpdate() async {
     UpdateManager.init();
     UpdateManager.checkUpdate(context, url);
   }
