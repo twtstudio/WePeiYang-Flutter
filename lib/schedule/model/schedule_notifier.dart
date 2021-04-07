@@ -94,7 +94,6 @@ class ScheduleNotifier with ChangeNotifier {
         ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
     _courses = schedule.courses;
     _termStart = schedule.termStart;
-    quietResetWeek();
     notifyListeners();
   }
 

@@ -10,7 +10,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
   // TODO 待完善
   @override
   Future onError(DioError err) async {
-
     if (err is WpyDioError) return err;
     if (err.type == DioErrorType.CONNECT_TIMEOUT)
       return DioError(error: "网络连接超时");
@@ -18,7 +17,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
       return DioError(error: "网络连接发生了未知错误");
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 401)
       return DioError(error: "密码或验证码输入错误");
-
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 302)
       return DioError(error: "办公网绑定失效，请重新绑定");
 

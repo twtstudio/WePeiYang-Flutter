@@ -85,15 +85,6 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
       );
     });
   }
-
-  /// 每次退出课程表页面，重新设置选中星期为当前星期
-  @override
-  void dispose() {
-    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext,
-            listen: false)
-        .quietResetWeek();
-    super.dispose();
-  }
 }
 
 class _WeekSelectPainter extends CustomPainter {

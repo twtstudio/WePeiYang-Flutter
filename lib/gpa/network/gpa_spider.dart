@@ -96,7 +96,7 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
     case 'C':
     case 'D':
     case 'E':
-    case "":
+    case '':
       score = _IGNORED;
       break;
     default:

@@ -33,6 +33,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
       super.initState();
       return;
     }
+    print("name: ${pref.tjuuname.value}");
+    print("pw: ${pref.tjupasswd.value}");
     tjuuname = pref.tjuuname.value;
     tjupasswd = pref.tjupasswd.value;
     nameController =
@@ -44,8 +46,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   void dispose() {
+    nameController?.clear();
     nameController?.dispose();
+    pwController?.clear();
     pwController?.dispose();
+    codeController?.clear();
     codeController?.dispose();
     super.dispose();
   }
@@ -242,6 +247,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
+    var pref = CommonPreferences();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),

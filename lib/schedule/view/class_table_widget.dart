@@ -40,8 +40,10 @@ class WeekDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        children: _generateCards(cardWidth,
-            getWeekDayString(notifier.termStart, notifier.selectedWeekWithNotify, dayCount)),
+        children: _generateCards(
+            cardWidth,
+            getWeekDayString(
+                notifier.termStart, notifier.selectedWeekWithNotify, dayCount)),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
 
@@ -70,7 +72,7 @@ class WeekDisplayWidget extends StatelessWidget {
       );
 }
 
-class CourseDisplayWidget extends StatelessWidget {
+class CourseDisplayWidget extends StatefulWidget {
   final double cardWidth;
   final ScheduleNotifier notifier;
   final int dayCount;
@@ -81,12 +83,43 @@ class CourseDisplayWidget extends StatelessWidget {
   static const double singleCourseHeight = 65;
 
   @override
+  _CourseDisplayWidgetState createState() => _CourseDisplayWidgetState();
+}
+
+class _CourseDisplayWidgetState extends State<CourseDisplayWidget>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1200));
+    _animation = Tween(
+      begin: 0.15,
+      end: 1.0,
+    ).animate(_controller);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (notifier.coursesWithNotify.length == 0) return Container();
-    return Container(
-      height: singleCourseHeight * 12 + cardStep * 11,
-      child: Stack(
-        children: _generatePositioned(context),
+    if (widget.notifier.coursesWithNotify.length == 0) return Container();
+    _controller.reset();
+    _controller.forward();
+    return FadeTransition(
+      opacity: _animation,
+      child: Container(
+        height: CourseDisplayWidget.singleCourseHeight * 12 + cardStep * 11,
+        child: Stack(
+          children: _generatePositioned(context),
+        ),
       ),
     );
   }
@@ -94,15 +127,17 @@ class CourseDisplayWidget extends StatelessWidget {
   List<Widget> _generatePositioned(BuildContext context) {
     int dayNumber = CommonPreferences().dayNumber.value;
     List<Positioned> list = [];
-    notifier.coursesWithNotify.forEach((course) {
+    widget.notifier.coursesWithNotify.forEach((course) {
       int day = int.parse(course.arrange.day);
       int start = int.parse(course.arrange.start);
       int end = int.parse(course.arrange.end);
-      double top =
-          (start == 1) ? 0 : (start - 1) * (singleCourseHeight + cardStep);
-      double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
+      double top = (start == 1)
+          ? 0
+          : (start - 1) * (CourseDisplayWidget.singleCourseHeight + cardStep);
+      double left = (day == 1) ? 0 : (day - 1) * (widget.cardWidth + cardStep);
       double height =
-          (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
+          (end - start + 1) * CourseDisplayWidget.singleCourseHeight +
+              (end - start) * cardStep;
 
       /// 判断周日的课是否需要显示在课表上
       if (day <= dayNumber)
@@ -110,14 +145,16 @@ class CourseDisplayWidget extends StatelessWidget {
             top: top,
             left: left,
             height: height,
-            width: cardWidth,
+            width: widget.cardWidth,
             child: _judgeChild(context, height, course)));
     });
     return list;
   }
 
-  Widget _judgeChild(BuildContext context, double height, ScheduleCourse course) =>
-      judgeActiveInWeek(notifier.selectedWeekWithNotify, notifier.weekCount, course)
-          ? getActiveCourseCard(context, height, cardWidth, course)
-          : getQuietCourseCard(height, cardWidth, course);
+  Widget _judgeChild(
+          BuildContext context, double height, ScheduleCourse course) =>
+      judgeActiveInWeek(widget.notifier.selectedWeekWithNotify,
+              widget.notifier.weekCount, course)
+          ? getActiveCourseCard(context, height, widget.cardWidth, course)
+          : getQuietCourseCard(height, widget.cardWidth, course);
 }
