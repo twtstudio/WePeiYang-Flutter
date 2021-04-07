@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -38,20 +40,30 @@ void main() async {
   }
 }
 
+// 全局捕获异常，想好了一半了
+/*
+FlutterError.onError = (FlutterErrorDetails details) async {
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    } else {
+      Zone.current.handleUncaughtError(details.exception, details.stack);
+    }
+  };
 
-// 全局捕获异常，还没想好
-//runZoned(
-//       () async => await _initializeApp()
-//           .then((_) => runApp(WeiPeiYangApp()))
-//           .catchError((e) {
-//         print(e);
-//       }),
-//       zoneSpecification: ZoneSpecification(
-//         print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-//           print(line);
-//         },
-//       ),
-//     );
+  runZoned<Future<Null>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // await FlutterDownloader.initialize(debug: true);
+    await CommonPreferences.initPrefs();
+    runApp(WeiPeiYangApp());
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ));
+    }
+  }, onError: (error, stackTrace) async {
+    await _reportError(error, stackTrace);
+  });
+ */
 
 class WeiPeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
@@ -113,7 +125,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
         ChangeNotifierProvider(
             create: (context) =>
-                MessageProvider (methodChannel)..refreshFeedbackCount())
+                MessageProvider(methodChannel)..refreshFeedbackCount())
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(

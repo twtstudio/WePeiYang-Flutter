@@ -311,6 +311,7 @@ class _ProfilePageState extends State<ProfilePage> {
             }
           }
         },
+        showBanner: true,
       );
 
   Widget _cardWithoutImage(
@@ -354,6 +355,7 @@ class _ProfilePageState extends State<ProfilePage> {
             }
           }
         },
+        showBanner: true,
       );
 }
 

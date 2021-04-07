@@ -15,6 +15,7 @@ class PostCard extends StatefulWidget {
   GesturePressedCallback onLikePressed = () {};
   GesturePressedCallback onFavoritePressed = () {};
   GesturePressedCallback onContentLongPressed = () {};
+  bool showBanner;
 
   @override
   State createState() {
@@ -33,7 +34,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
@@ -48,7 +50,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
@@ -63,7 +66,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
@@ -97,6 +101,7 @@ class _PostCardState extends State<PostCard> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       child: FeedbackBannerWidget(
+        showBanner: widget.showBanner ?? false,
         questionId: post.id,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -143,14 +148,16 @@ class _PostCardState extends State<PostCard> {
                                 post.tags.length > 0
                                     ? '#${post.tags[0].name}'
                                     : '#无标签',
-                                style: TextStyle(color: ColorUtil.lightTextColor),
+                                style:
+                                    TextStyle(color: ColorUtil.lightTextColor),
                               ),
                               BlankSpace.height(5),
                               Text(
                                 post.content,
                                 maxLines: enableImgList ? null : 2,
-                                overflow:
-                                    enableImgList ? null : TextOverflow.ellipsis,
+                                overflow: enableImgList
+                                    ? null
+                                    : TextOverflow.ellipsis,
                                 style: TextStyle(
                                   height: 1,
                                   color: ColorUtil.boldTextColor,
@@ -225,8 +232,8 @@ class _PostCardState extends State<PostCard> {
                   BlankSpace.width(8),
                   Text(
                     post.commentCount.toString(),
-                    style:
-                        TextStyle(fontSize: 14, color: ColorUtil.lightTextColor),
+                    style: TextStyle(
+                        fontSize: 14, color: ColorUtil.lightTextColor),
                   ),
                   BlankSpace.width(16),
                   // Like count.

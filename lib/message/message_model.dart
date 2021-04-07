@@ -1,8 +1,10 @@
+import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
+
 class TotalMessageData {
   List<MessageDataItem> questions;
-  int totalMessageCount;
+  ClassifiedCount classifiedMessageCount;
 
-  TotalMessageData({this.questions, this.totalMessageCount = 0});
+  TotalMessageData({this.questions, this.classifiedMessageCount});
 
   static TotalMessageData fromJson(Map<String, dynamic> map) {
     if (map == null) return null;
@@ -10,9 +12,24 @@ class TotalMessageData {
     total.questions = List()
       ..addAll((map['question_list'] as List ?? [])
           .map<MessageDataItem>((m) => MessageDataItem.fromJson(m)));
-    total.totalMessageCount = map['message_count'] ?? 0;
+    total.classifiedMessageCount =
+        ClassifiedCount.fromJson(map['message_count'] ?? []);
     return total;
   }
+}
+
+class ClassifiedCount {
+  int favor;
+  int contain;
+  int reply;
+
+  ClassifiedCount.fromJson(List<dynamic> list) {
+    favor = list[MessageType.favor.index] ?? 0;
+    contain = list[MessageType.contain.index] ?? 0;
+    reply = list[MessageType.reply.index] ?? 0;
+  }
+
+  int get total => favor + contain + reply;
 }
 
 class MessageDataItem {

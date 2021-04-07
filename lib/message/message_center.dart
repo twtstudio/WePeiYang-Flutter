@@ -6,14 +6,20 @@ import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
+import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
 
 class MessageRepository {
-  static Future<FeedbackDetailMessages> getDetailMessages(int page) async {
+  static Future<FeedbackDetailMessages> getDetailMessages(
+      MessageType type, int page) async {
     var token = CommonPreferences().feedbackToken.value;
-    var response = await messageApi.get("get",
-        queryParameters: {"token": token, "limits": 10, "page": page});
+    var response = await messageApi.get("get", queryParameters: {
+      "token": token,
+      "limits": 10,
+      "page": page,
+      "type": type.index
+    });
     FeedbackDetailMessages messages =
         FeedbackDetailMessages.fromJson(response.data);
     debugPrint("getDetailMessages");
@@ -165,7 +171,9 @@ class FeedbackMessageItem {
     createdAt = json['created_at'];
     type = json['type'] ?? 0;
     updatedAt = json['updated_at'];
-    comment = Comment.fromJson(json['contain'] ?? '');
+    comment = json['contain'] == "" && json['contain'] != null
+        ? null
+        : Comment.fromJson(json['contain']);
     post = Post.fromJson(json['question'] ?? '');
   }
 

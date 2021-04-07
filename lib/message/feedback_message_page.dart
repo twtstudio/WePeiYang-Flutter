@@ -2,11 +2,13 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
 import 'message_center.dart';
+import 'message_provider.dart';
 
 enum MessageType {
   favor,
@@ -38,23 +40,14 @@ extension MessageTypeExtension on MessageType {
     }
   }
 
-  refreshMessageCount(List<int> messages, MessageTypes model) {
-    List<MapEntry<MessageType, int>> result = [];
-    MessageType.values.forEach((element) {
-      result.add(
-          MapEntry(element, messages.where((m) => m == element.index).length));
-    });
-    model.setCount(result[0].value, result[1].value, result[2].value);
-  }
-
-  int getMessageCount(MessageTypes model) {
+  int getMessageCount(MessageProvider model) {
     switch (this) {
       case MessageType.favor:
-        return model.favorCount;
+        return model.classifiedMessageCount.favor;
       case MessageType.contain:
-        return model.containCount;
+        return model.classifiedMessageCount.contain;
       case MessageType.reply:
-        return model.replyCount;
+        return model.classifiedMessageCount.reply;
       default:
         return 0;
     }
@@ -73,88 +66,88 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
 
   ValueNotifier<int> currentIndex = ValueNotifier(2);
 
+  List<MessagesList> tabViewList;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: types.length,
-      vsync: ScrollableState(),
-    );
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _tabController.animateTo(2);
-    });
+        length: types.length, vsync: ScrollableState(), initialIndex: 2);
+    tabViewList = types.map((t) {
+      return MessagesList(type: t);
+    }).toList();
+  }
+
+  onRefresh() {
+    Provider.of<MessageProvider>(context, listen: false).refreshFeedbackCount();
+    tabViewList.forEach((t) => t.refresh());
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => MessageTypes(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: AppBar(
-              titleSpacing: 0,
-              leadingWidth: 30,
-              brightness: Brightness.light,
-              elevation: 0,
-              centerTitle: true,
-              title: Text(
-                "校务消息",
-                style: TextStyle(
-                  color: Color(0xff303c66),
-                  fontSize: 16,
-                ),
+    return Scaffold(
+      backgroundColor: Color(0xfff7f7f8),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: AppBar(
+            titleSpacing: 0,
+            leadingWidth: 30,
+            brightness: Brightness.light,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              "校务消息",
+              style: TextStyle(
+                color: Color(0xff303c66),
+                fontSize: 16,
               ),
-              leading: FlatButton(
-                padding: EdgeInsets.all(0),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  Icons.arrow_back,
-                  size: 25,
-                  color: Color(0XFF62677B),
-                ),
-              ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TabBar(
-                    tabs: types.map((t) {
-                      return MessageTab(type: t);
-                    }).toList(),
-                    controller: _tabController,
-                    onTap: (index) {
-                      debugPrint("tap $index");
-                      currentIndex.value = _tabController.index;
-                    },
-                    indicator: CustomIndicator(
-                      borderSide: BorderSide(
-                        width: 3.5,
-                        color: Color(0xff303c66),
-                      ),
-                    ),
-                    labelPadding: EdgeInsets.symmetric(horizontal: 10),
-                    isScrollable: true,
-                    labelColor: Colors.red,
-                    unselectedLabelColor: Colors.black,
-                  ),
-                ),
-              ),
-              backgroundColor: Colors.transparent,
             ),
+            leading: FlatButton(
+              padding: EdgeInsets.all(0),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back,
+                size: 25,
+                color: Color(0XFF62677B),
+              ),
+            ),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TabBar(
+                  tabs: types.map((t) {
+                    return MessageTab(type: t);
+                  }).toList(),
+                  controller: _tabController,
+                  onTap: (index) {
+                    debugPrint("tap $index");
+                    currentIndex.value = _tabController.index;
+                  },
+                  indicator: CustomIndicator(
+                    borderSide: BorderSide(
+                      width: 3.5,
+                      color: Color(0xff303c66),
+                    ),
+                  ),
+                  labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                  isScrollable: true,
+                  labelColor: Colors.red,
+                  unselectedLabelColor: Colors.black,
+                ),
+              ),
+            ),
+            backgroundColor: Colors.transparent,
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: types.map((t) {
-            return MessagesList(type: t);
-          }).toList(),
-        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: tabViewList,
       ),
     );
   }
@@ -193,7 +186,7 @@ class _MessageTabState extends State<MessageTab> {
 
     return Padding(
       padding: EdgeInsets.only(bottom: 5),
-      child: Consumer<MessageTypes>(builder: (_, model, __) {
+      child: Consumer<MessageProvider>(builder: (_, model, __) {
         var count = widget.type.getMessageCount(model);
         if (count.isZero) {
           return tab;
@@ -219,10 +212,16 @@ class _MessageTabState extends State<MessageTab> {
 class MessagesList extends StatefulWidget {
   final MessageType type;
 
-  const MessagesList({Key key, this.type}) : super(key: key);
+  MessagesList({Key key, this.type}) : super(key: key);
+
+  refresh() {
+    _state.onRefresh(refreshCount: false);
+  }
+
+  _MessagesListState _state = _MessagesListState();
 
   @override
-  _MessagesListState createState() => _MessagesListState();
+  _MessagesListState createState() => _state;
 }
 
 class _MessagesListState extends State<MessagesList>
@@ -231,20 +230,22 @@ class _MessagesListState extends State<MessagesList>
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  onRefresh() async {
+  onRefresh({bool refreshCount = true}) async {
+    if (widget == null) return;
+    debugPrint("onrefresh !!!!!!!!!!! ${widget.type.name}");
     // monitor network fetch
     try {
-      var result = await MessageRepository.getDetailMessages(0);
+      var result = await MessageRepository.getDetailMessages(widget.type, 0);
       items.clear();
       items.addAll(
           result.data.where((element) => element.type == widget.type.index));
-      var messages = result.data
-          .where((element) => element.visible == 1)
-          .map((e) => e.type)
-          .toList();
-      var model = Provider.of<MessageTypes>(context, listen: false);
-      widget.type.refreshMessageCount(messages, model);
-      if (mounted) setState(() {});
+      if (mounted) {
+        if (refreshCount) {
+          Provider.of<MessageProvider>(context, listen: false)
+              .refreshFeedbackCount();
+        }
+        setState(() {});
+      }
       _refreshController.refreshCompleted();
     } catch (e) {
       _refreshController.refreshFailed();
@@ -258,8 +259,8 @@ class _MessagesListState extends State<MessagesList>
     // await Future.delayed(Duration(milliseconds: 1000));
     debugPrint("type ${widget.type.name}");
     try {
-      var result =
-          await MessageRepository.getDetailMessages(items.length ~/ 10 + 2);
+      var result = await MessageRepository.getDetailMessages(
+          widget.type, items.length ~/ 10 + 2);
       items.addAll(
           result.data.where((element) => element.type == widget.type.index));
       if (mounted) setState(() {});
@@ -281,19 +282,17 @@ class _MessagesListState extends State<MessagesList>
     super.initState();
     debugPrint(widget.type.index.toString());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var list = await MessageRepository.getDetailMessages(0);
+      var list = await MessageRepository.getDetailMessages(widget.type, 0);
       items.addAll(list.data.where((element) {
         debugPrint((element.type).toString());
         return element.type == widget.type.index;
       }));
-      var messages = list.data
-          .where((element) => element.visible == 1)
-          .map((e) => e.type)
-          .toList();
-      var model = Provider.of<MessageTypes>(context, listen: false);
-      widget.type.refreshMessageCount(messages, model);
+      if (mounted) {
+        Provider.of<MessageProvider>(context, listen: false)
+            .refreshFeedbackCount();
+        setState(() {});
+      }
       debugPrint('item length : ${items.length}');
-      setState(() {});
     });
   }
 
@@ -333,10 +332,18 @@ class _MessagesListState extends State<MessagesList>
           print(i);
           return MessageItem(
             data: items[i],
-            onTapDown: () async {
-              // await MessageRepository.setQuestionRead(items[i].post.id);
-              await onRefresh();
-            },
+            onTapDown: items[i].visible.isOne
+                ? () async {
+                    try {
+                      print("校务消息 setFeedbackQuestionRead");
+                      await MessageRepository.setQuestionRead(items[i].post.id);
+                    } catch (e, stack) {
+                      debugPrint(
+                          "校务消息 setFeedbackQuestionRead ${e.toString()} : ${stack.toString()}");
+                      ToastProvider.error("设置问题已读失败");
+                    }
+                  }
+                : null,
             type: widget.type,
           );
         },
@@ -390,13 +397,10 @@ class MessageItem extends StatelessWidget {
       default:
         sender = Row(
           children: [
-            Image.asset(
-              'assets/images/user_back.png',
-              height: 20,
-            ),
+            Icon(Icons.account_circle_outlined, size: 20),
             SizedBox(width: 10),
             Text(
-              "${data.comment.userName ?? "匿名用户"}",
+              "${data.comment?.userName ?? "匿名用户"}",
               style: TextStyle(
                 color: Color(0xff434650),
                 fontSize: 9,
@@ -436,7 +440,7 @@ class MessageItem extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(7),
-        color: Colors.green,
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
               blurRadius: 5,
@@ -477,7 +481,7 @@ class MessageItem extends StatelessWidget {
             if (data.comment != null)
               Divider(
                 thickness: 1,
-                height: 10,
+                height: 15,
                 color: Color(0xffacaeba),
               ),
             if (data.comment != null)
@@ -490,50 +494,54 @@ class MessageItem extends StatelessWidget {
                   fontSize: 13,
                 ),
               ),
-            Row(
-              children: [
-                Image.asset(
-                  "assets/images/account/comment.png",
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8, right: 10),
-                  child: Text(
-                    data.post.commentCount.toString(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Color(0xffb1b2be),
-                    ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/account/comment.png",
+                    height: 20,
                   ),
-                ),
-                Image.asset(
-                  "assets/images/account/thumb_up.png",
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8, right: 10),
-                  child: Text(
-                    data.post.likeCount.toString(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Color(0xffb1b2be),
-                    ),
-                  ),
-                ),
-                Expanded(child: SizedBox()),
-                Builder(
-                  builder: (_) {
-                    var isSolved = data.post.isSolved == 1;
-                    return Text(
-                      isSolved ? "已回复" : "未回复",
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, right: 10),
+                    child: Text(
+                      data.post.commentCount.toString(),
                       style: TextStyle(
-                          color:
-                              isSolved ? Color(0xff434650) : Color(0xffb1b2be),
-                          fontSize: 10),
-                    );
-                  },
-                )
-              ],
+                        fontSize: 10,
+                        color: Color(0xffb1b2be),
+                      ),
+                    ),
+                  ),
+                  Image.asset(
+                    "assets/images/account/thumb_up.png",
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, right: 10),
+                    child: Text(
+                      data.post.likeCount.toString(),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xffb1b2be),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  Builder(
+                    builder: (_) {
+                      var isSolved = data.post.isSolved == 1;
+                      return Text(
+                        isSolved ? "已回复" : "未回复",
+                        style: TextStyle(
+                            color: isSolved
+                                ? Color(0xff434650)
+                                : Color(0xffb1b2be),
+                            fontSize: 10),
+                      );
+                    },
+                  )
+                ],
+              ),
             )
           ],
         ),
@@ -562,7 +570,7 @@ class MessageItem extends StatelessWidget {
             FeedbackRouter.detail,
             arguments: DetailPageArgs(data.post, 0, PostOrigin.mailbox),
           ).then((_) => context
-              .findAncestorStateOfType<_MessagesListState>()
+              .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
         },
         child: Column(
@@ -577,24 +585,6 @@ class MessageItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class MessageTypes extends ChangeNotifier {
-  var favorCount = 0;
-  var containCount = 0;
-  var replyCount = 0;
-
-  setCount(int f, int c, int r) {
-    favorCount = f;
-    containCount = c;
-    replyCount = r;
-    debugPrint("setCount $f , $c ,$r");
-    notifyListeners();
-  }
-}
-
-extension IntExtension on int {
-  bool get isZero => this == 0;
 }
 
 extension StringExtension on String {

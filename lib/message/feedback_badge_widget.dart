@@ -20,7 +20,7 @@ extension MessageData on FeedbackMessageType {
         return (model.feedbackFs.length + model.feedbackQs.length).toString();
         break;
       case FeedbackMessageType.mailbox:
-        return model.totalMessageCount.toString();
+        return model.classifiedMessageCount.total.toString();
         break;
       default:
         return '';

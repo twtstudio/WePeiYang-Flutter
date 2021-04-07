@@ -13,8 +13,7 @@ class MessageProvider extends ChangeNotifier {
   List<MessageDataItem> _feedbackFavourites;
   List<int> _feedbackMessageList;
   String _messageData;
-  int _totalMessageCount ;
-
+  ClassifiedCount _classifiedMessageCount;
 
   List<MessageDataItem> get feedbackQs => _feedbackQuestions;
 
@@ -22,7 +21,7 @@ class MessageProvider extends ChangeNotifier {
 
   List<int> get feedbackMessageList => _feedbackMessageList;
 
-  int get totalMessageCount => _totalMessageCount;
+  ClassifiedCount get classifiedMessageCount => _classifiedMessageCount;
 
   bool get isEmpty =>
       (feedbackFs?.length ?? 0) + (feedbackQs?.length ?? 0) == 0;
@@ -36,14 +35,15 @@ class MessageProvider extends ChangeNotifier {
         result.questions?.where((element) => element.isOwner)?.toList() ?? [];
     _feedbackFavourites =
         result.questions?.where((element) => element.isFavour)?.toList() ?? [];
-    _feedbackMessageList = result.questions?.map((e) => e.questionId)?.toList() ?? [];
-    _totalMessageCount = result.totalMessageCount;
+    _feedbackMessageList =
+        result.questions?.map((e) => e.questionId)?.toList() ?? [];
+    _classifiedMessageCount = result.classifiedMessageCount;
     print("SETFEEDBACKSUCCESS");
     notifyListeners();
   }
 
   setFeedbackQuestionRead(int messageId) async {
-    print("SETFEEDBACK");
+    print("SETFEEDBACK setFeedbackQuestionRead $messageId");
     await MessageRepository.setQuestionRead(messageId);
     await refreshFeedbackCount();
     print("SETFEEDBACKSUCCESS");
@@ -54,7 +54,7 @@ class MessageProvider extends ChangeNotifier {
       : _feedbackMessageList?.contains(questionId) ?? false;
 
   bool isMessageEmptyOfType(FeedbackMessageType type) {
-    if(isEmpty) return true;
+    if (isEmpty) return true;
     switch (type) {
       case FeedbackMessageType.detail_post:
         return feedbackQs.length.isZero;
@@ -66,7 +66,7 @@ class MessageProvider extends ChangeNotifier {
         return feedbackMessageList.length.isZero;
         break;
       case FeedbackMessageType.mailbox:
-        return totalMessageCount.isZero;
+        return classifiedMessageCount.total.isZero;
         break;
       default:
         return true;
@@ -89,4 +89,6 @@ showMessageDialog(BuildContext context, String data) async {
 
 extension IntExtension on int {
   bool get isZero => this == 0;
+
+  bool get isOne => this == 1;
 }
