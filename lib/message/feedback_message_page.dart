@@ -43,11 +43,11 @@ extension MessageTypeExtension on MessageType {
   int getMessageCount(MessageProvider model) {
     switch (this) {
       case MessageType.favor:
-        return model.classifiedMessageCount.favor;
+        return model.classifiedMessageCount?.favor ?? 0;
       case MessageType.contain:
-        return model.classifiedMessageCount.contain;
+        return model.classifiedMessageCount?.contain ?? 0;
       case MessageType.reply:
-        return model.classifiedMessageCount.reply;
+        return model.classifiedMessageCount?.reply ?? 0;
       default:
         return 0;
     }
