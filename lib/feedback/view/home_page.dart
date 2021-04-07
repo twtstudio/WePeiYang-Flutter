@@ -34,11 +34,18 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
       status = FeedbackHomePageStatus.loading;
     });
     currentPage = 1;
-    Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(() {
-      setState(() {
-        status = FeedbackHomePageStatus.idle;
-      });
-    });
+    Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
+      () {
+        setState(() {
+          status = FeedbackHomePageStatus.idle;
+        });
+      },
+      () {
+        setState(() {
+          status = FeedbackHomePageStatus.error;
+        });
+      },
+    );
     totalPage =
         Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     _refreshController.refreshCompleted();
@@ -65,12 +72,18 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     currentPage = 1;
     status = FeedbackHomePageStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .initHomePostList(() {
-        setState(() {
-          status = FeedbackHomePageStatus.idle;
-        });
-      });
+      Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
+        () {
+          setState(() {
+            status = FeedbackHomePageStatus.idle;
+          });
+        },
+        () {
+          setState(() {
+            status = FeedbackHomePageStatus.error;
+          });
+        },
+      );
       totalPage =
           Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     });
@@ -184,81 +197,65 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                         child: Loading(),
                       ),
 
+                    if (status == FeedbackHomePageStatus.error)
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: ScreenUtil.screenHeight / 2 -
+                                ScreenUtil.paddingTop -
+                                AppBar().preferredSize.height),
+                        child: Text('加载失败咯...'),
+                      ),
+
                     /// The list of posts.
                     if (status == FeedbackHomePageStatus.idle)
-                      if (notifier.homePostList.length == 0)
-                        Container(
-                          padding: EdgeInsets.only(
-                              top: ScreenUtil.screenHeight / 2 -
-                                  ScreenUtil.paddingTop -
-                                  AppBar().preferredSize.height),
-                          child: Text('空空如也...'),
-                        )
-                      else
-                        MediaQuery.removePadding(
-                          removeTop: true,
-                          context: context,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return notifier.homePostList[index].topImgUrl !=
-                                          '' &&
-                                      notifier.homePostList[index].topImgUrl !=
-                                          null
-                                  ? PostCard.image(
-                                      notifier.homePostList[index],
-                                      onContentPressed: () {
-                                        Navigator.pushNamed(
-                                            context, FeedbackRouter.detail,
-                                            arguments: DetailPageArgs(
-                                                notifier.homePostList[index],
-                                                index,
-                                                PostOrigin.home));
-                                      },
-                                      onLikePressed: () {
-                                        notifier.homePostHitLike(index,
-                                            notifier.homePostList[index].id);
-                                      },
-                                    )
-                                  : PostCard(
-                                      notifier.homePostList[index],
-                                      onContentPressed: () {
-                                        Navigator.pushNamed(
-                                            context, FeedbackRouter.detail,
-                                            arguments: DetailPageArgs(
-                                                notifier.homePostList[index],
-                                                index,
-                                                PostOrigin.home));
-                                      },
-                                      onLikePressed: () {
-                                        notifier.homePostHitLike(index,
-                                            notifier.homePostList[index].id);
-                                      },
-                                    );
-                            },
-                            itemCount: notifier.homePostList.length,
-                          ),
-                        )
+                      MediaQuery.removePadding(
+                        removeTop: true,
+                        context: context,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return notifier.homePostList[index].topImgUrl !=
+                                        '' &&
+                                    notifier.homePostList[index].topImgUrl !=
+                                        null
+                                ? PostCard.image(
+                                    notifier.homePostList[index],
+                                    onContentPressed: () {
+                                      Navigator.pushNamed(
+                                          context, FeedbackRouter.detail,
+                                          arguments: DetailPageArgs(
+                                              notifier.homePostList[index],
+                                              index,
+                                              PostOrigin.home));
+                                    },
+                                    onLikePressed: () {
+                                      notifier.homePostHitLike(index,
+                                          notifier.homePostList[index].id);
+                                    },
+                                  )
+                                : PostCard(
+                                    notifier.homePostList[index],
+                                    onContentPressed: () {
+                                      Navigator.pushNamed(
+                                          context, FeedbackRouter.detail,
+                                          arguments: DetailPageArgs(
+                                              notifier.homePostList[index],
+                                              index,
+                                              PostOrigin.home));
+                                    },
+                                    onLikePressed: () {
+                                      notifier.homePostHitLike(index,
+                                          notifier.homePostList[index].id);
+                                    },
+                                  );
+                          },
+                          itemCount: notifier.homePostList.length,
+                        ),
+                      )
                   ],
                 ),
               ),
-              // child: CustomScrollView(
-              //   slivers: [
-              //
-              //     /// Header.
-              //     SliverPersistentHeader(
-              //       delegate: HomeHeaderDelegate(
-              //           child:
-              //       ),
-              //       pinned: false,
-              //       // TODO: Opacity issue here.
-              //       floating: false,
-              //     ),
-              //
-              //
-              //   ],
-              // ),
             );
           },
         ),

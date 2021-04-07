@@ -188,7 +188,6 @@ class _DetailPageState extends State<DetailPage> {
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
-                                print('bbb');
                                 return index <
                                         notifier.officialCommentList.length
                                     ? CommentCard.official(

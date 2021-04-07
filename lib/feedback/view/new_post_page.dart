@@ -459,7 +459,7 @@ class ImagesGridView extends StatefulWidget {
 
 class _ImagesGridViewState extends State<ImagesGridView> {
   List<ByteData> images = List<ByteData>();
-  int maxImage = 4;
+  int maxImage = 3;
 
   Future<void> loadAssets() async {
     String error;
