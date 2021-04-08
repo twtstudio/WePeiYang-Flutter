@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
+import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
@@ -35,9 +37,11 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     });
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
-      () {
+      (page) {
         setState(() {
+          totalPage = page;
           status = FeedbackHomePageStatus.idle;
+          _refreshController.refreshCompleted();
         });
       },
       () {
@@ -46,22 +50,23 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
         });
       },
     );
-    totalPage =
-        Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
-    _refreshController.refreshCompleted();
   }
 
   _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .getPosts('', currentPage, onSuccess: () {
-        totalPage =
-            Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
-        _refreshController.loadComplete();
-      }, onError: () {
-        _refreshController.loadFailed();
-      });
+      getPosts(
+        tagId: '',
+        page: currentPage,
+        onSuccess: (list, page) {
+          totalPage = page;
+          Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
+          _refreshController.loadComplete();
+        },
+        onFailure: () {
+          _refreshController.loadFailed();
+        },
+      );
     } else {
       _refreshController.loadComplete();
     }
@@ -73,8 +78,9 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     status = FeedbackHomePageStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
-        () {
+        (page) {
           setState(() {
+            totalPage = page;
             status = FeedbackHomePageStatus.idle;
           });
         },
@@ -84,8 +90,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
           });
         },
       );
-      totalPage =
-          Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
     });
     super.initState();
   }
@@ -230,8 +234,18 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                               PostOrigin.home));
                                     },
                                     onLikePressed: () {
-                                      notifier.homePostHitLike(index,
-                                          notifier.homePostList[index].id);
+                                      postHitLike(
+                                        id: notifier.homePostList[index].id,
+                                        isLiked: notifier
+                                            .homePostList[index].isLiked,
+                                        onSuccess: () {
+                                          notifier
+                                              .changeHomePostLikeState(index);
+                                        },
+                                        onFailure: () {
+                                          ToastProvider.error('校务专区点赞失败，请重试');
+                                        },
+                                      );
                                     },
                                   )
                                 : PostCard(
@@ -245,8 +259,18 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                               PostOrigin.home));
                                     },
                                     onLikePressed: () {
-                                      notifier.homePostHitLike(index,
-                                          notifier.homePostList[index].id);
+                                      postHitLike(
+                                        id: notifier.homePostList[index].id,
+                                        isLiked: notifier
+                                            .homePostList[index].isLiked,
+                                        onSuccess: () {
+                                          notifier
+                                              .changeHomePostLikeState(index);
+                                        },
+                                        onFailure: () {
+                                          ToastProvider.error('校务专区点赞失败，请重试');
+                                        },
+                                      );
                                     },
                                   );
                           },

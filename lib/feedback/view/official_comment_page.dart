@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/rating_card.dart';
 
@@ -31,8 +33,6 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
   final String title;
   final int index;
   final bool isOwner;
-
-  bool _ratingLock = false;
 
   _OfficialCommentPageState(this.comment, this.title, this.index, this.isOwner);
 
@@ -70,7 +70,16 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                   comment,
                   title: title,
                   onLikePressed: () {
-                    notifier.officialCommentHitLike(index, comment.id);
+                    officialCommentHitLike(
+                      id: notifier.officialCommentList[index].id,
+                      isLiked: notifier.officialCommentList[index].isLiked,
+                      onSuccess: () {
+                        notifier.changeOfficialCommentLikeState(index);
+                      },
+                      onFailure: () {
+                        ToastProvider.error('校务专区点赞失败，请重试');
+                      },
+                    );
                   },
                 ),
               ),
@@ -78,24 +87,18 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                 SliverToBoxAdapter(
                   child: RatingCard(
                     initialRating: comment.rating == -1 ? 5 : comment.rating,
-                    onRatingChanged: (rating) async {
-                      if (!_ratingLock) {
-                        _ratingLock = true;
-                        await notifier
-                            .rate(rating * 2, comment.id, index)
-                            .then((value) {
-                          print('now\t' + (rating * 2).toString());
-                          print('data\t' +
-                              Provider.of<FeedbackNotifier>(context,
-                                      listen: false)
-                                  .officialCommentList[0]
-                                  .rating
-                                  .toString());
-                        }).whenComplete(() {
+                    onRatingChanged: (rating) {
+                      rate(
+                        id: comment.id,
+                        rating: rating * 2,
+                        onSuccess: () {
                           notifier.updateRating(rating, index);
-                          _ratingLock = false;
-                        });
-                      }
+                          ToastProvider.success('评价成功');
+                          },
+                        onFailure: () {
+                          ToastProvider.error('评价失败，请重试');
+                        },
+                      );
                     },
                   ),
                 ),

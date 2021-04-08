@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 
 TextEditingController _titleController;
@@ -23,8 +24,6 @@ class NewPostPage extends StatefulWidget {
 }
 
 class _NewPostPageState extends State<NewPostPage> {
-  bool _submitLock = false;
-
   Divider _divider() {
     return const Divider(
       height: 0.6,
@@ -47,7 +46,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   color: Colors.grey[200],
                   blurRadius: 5.0, //阴影模糊程度
                   spreadRadius: 5.0 //阴影扩散程度
-              )
+                  )
             ],
           ),
           child: ListView(
@@ -67,29 +66,28 @@ class _NewPostPageState extends State<NewPostPage> {
                 children: [
                   Expanded(
                     child: TextButton(
-                      onPressed: () async {
-                        if (!_submitLock) {
-                          _submitLock = true;
-                          if (_titleController.text.isNotEmpty &&
-                              _bodyController.text.isNotEmpty &&
-                              _currentTagId != null) {
-                            await Provider.of<FeedbackNotifier>(context,
-                                    listen: false)
-                                .sendPost(
-                              _titleController.text,
-                              _bodyController.text,
-                              _currentTagId,
-                              _resultList,
-                            )
-                                .then((value) {
+                      onPressed: () {
+                        if (_titleController.text.isNotEmpty &&
+                            _bodyController.text.isNotEmpty &&
+                            _currentTagId != null) {
+                          sendPost(
+                            title: _titleController.text,
+                            content: _bodyController.text,
+                            tagId: _currentTagId,
+                            imgList: _resultList,
+                            onSuccess: () {
                               ToastProvider.success('发布成功');
-                              _submitLock = false;
                               Navigator.pop(context);
-                            });
-                          } else {
-                            ToastProvider.error('内容和标签不能为空');
-                            _submitLock = false;
-                          }
+                            },
+                            onFailure: () {
+                              ToastProvider.error('校务专区发帖失败，请重试');
+                            },
+                            onUploadImageFailure: () {
+                              ToastProvider.error('校务专区图片上传失败');
+                            },
+                          );
+                        } else {
+                          ToastProvider.error('内容和标签不能为空');
                         }
                       },
                       child: Text(
@@ -280,35 +278,35 @@ class _TabGridViewState extends State<TabGridView>
                     .tagList
                     .length, (index) {
               return Provider.of<FeedbackNotifier>(context, listen: false)
-                  .tagList[index]
-                  .name ==
-                  currentTab
+                          .tagList[index]
+                          .name ==
+                      currentTab
                   ? FadeTransition(
-                opacity: Tween(begin: 0.0, end: 1.0)
-                    .animate(_animationController),
-                child: _tagChip(
-                  text: Provider.of<FeedbackNotifier>(context,
-                      listen: false)
-                      .tagList[index]
-                      .name,
-                  tagId: Provider.of<FeedbackNotifier>(context,
-                      listen: false)
-                      .tagList[index]
-                      .id,
-                  index: index,
-                ),
-              )
+                      opacity: Tween(begin: 0.0, end: 1.0)
+                          .animate(_animationController),
+                      child: _tagChip(
+                        text: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .name,
+                        tagId: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .id,
+                        index: index,
+                      ),
+                    )
                   : _tagChip(
-                text:
-                Provider.of<FeedbackNotifier>(context, listen: false)
-                    .tagList[index]
-                    .name,
-                tagId:
-                Provider.of<FeedbackNotifier>(context, listen: false)
-                    .tagList[index]
-                    .id,
-                index: index,
-              );
+                      text:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .name,
+                      tagId:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .id,
+                      index: index,
+                    );
             }),
           )
         ],

@@ -23,7 +23,7 @@
     <application
         android:name=".WBYApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="wei_pei_yang_demo">
+        android:label="微北洋Alpha">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

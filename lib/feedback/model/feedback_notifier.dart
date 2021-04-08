@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +39,6 @@ class FeedbackNotifier with ChangeNotifier {
   List<Comment> _officialCommentList = List();
   List<Comment> _commentList = List();
   List<String> _searchHistoryList = List();
-  int _homeTotalPage = 0;
-  bool _hitLikeLock = false;
-  bool _hitFavoriteLock = false;
   String _token;
 
   List<Tag> get tagList => _tagList;
@@ -55,29 +53,7 @@ class FeedbackNotifier with ChangeNotifier {
 
   List<String> get searchHistoryList => _searchHistoryList;
 
-  int get homeTotalPage => _homeTotalPage;
-
   String get token => _token;
-
-  Future getToken() async {
-    try {
-      await HttpUtil()
-          .post(
-        'login',
-        FormData.fromMap({
-          'username': CommonPreferences().account.value,
-          'password': CommonPreferences().password.value,
-        }),
-      )
-          .then((value) {
-        _token = value['data']['token'];
-        CommonPreferences().feedbackToken.value = _token;
-      });
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
-  }
 
   initSearchHistory() async {
     final _prefs = await SharedPreferences.getInstance();
@@ -110,19 +86,87 @@ class FeedbackNotifier with ChangeNotifier {
     _commentList.clear();
   }
 
+  addComments(List<Comment> officialCommentList, List<Comment> commentList) {
+    print(officialCommentList);
+    print(commentList);
+    _officialCommentList.addAll(officialCommentList);
+    _commentList.addAll(commentList);
+    notifyListeners();
+  }
+
   updateRating(double rating, index) {
     _officialCommentList[index].rating = (rating * 2).toInt();
     notifyListeners();
   }
 
-  initHomePostList(onSuccess, onError) async {
+  addHomePosts(List<Post> posts) {
+    _homePostList.addAll(posts);
+    notifyListeners();
+  }
+
+  changeProfilePostFavoriteState(index) {
+    if (_profilePostList[index].isFavorite) {
+      _profilePostList[index].isFavorite = false;
+    } else {
+      _profilePostList[index].isFavorite = true;
+    }
+    notifyListeners();
+  }
+
+  changeCommentLikeState(index) {
+    if (_commentList[index].isLiked) {
+      _commentList[index].likeCount--;
+      _commentList[index].isLiked = false;
+    } else {
+      _commentList[index].likeCount++;
+      _commentList[index].isLiked = true;
+    }
+    notifyListeners();
+  }
+
+  changeOfficialCommentLikeState(index) {
+    if (_officialCommentList[index].isLiked) {
+      _officialCommentList[index].likeCount--;
+      _officialCommentList[index].isLiked = false;
+    } else {
+      _officialCommentList[index].likeCount++;
+      _officialCommentList[index].isLiked = true;
+    }
+    notifyListeners();
+  }
+
+  // TODO: Callback hell goes brrrrrrrrrr.
+  initHomePostList(onSuccess, onError) {
     clearHomePostList();
-    await getToken().then((_) {
-      clearTagList();
-      return getTags();
-    }).then((_) {
-      return getPosts('', '1', onSuccess: onSuccess, onError: onError);
-    });
+    getToken(
+      onSuccess: (token) {
+        _token = token;
+        getTags(
+          _token,
+          onSuccess: (list) {
+            _tagList.clear();
+            _tagList.addAll(list);
+            getPosts(
+              tagId: '',
+              page: '1',
+              onSuccess: (postList, totalPage) {
+                _homePostList.addAll(postList);
+                onSuccess(totalPage);
+              },
+              onFailure: () {
+                ToastProvider.error('校务专区获取帖子失败, 请刷新');
+              },
+            );
+          },
+          onFailure: () {
+            ToastProvider.error('校务专区获取标签失败, 请刷新');
+          },
+        );
+      },
+      onFailure: () {
+        ToastProvider.error('校务专区登录失败, 请刷新');
+      },
+    );
   }
 
   addSearchHistory(content) async {
@@ -147,557 +191,23 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get tags.
-  Future getTags() async {
-    try {
-      await HttpUtil().get('tag/get/all', {
-        'token': _token,
-      }).then((value) {
-        if (0 != value['data'][0]['children'].length) {
-          for (Map<String, dynamic> json in value['data'][0]['children']) {
-            _tagList.add(Tag.fromJson(json));
-          }
-          notifyListeners();
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
+  changeHomePostLikeState(int index) {
+    homePostList[index].isLiked = !homePostList[index].isLiked;
+    notifyListeners();
   }
 
-  /// Get posts.
-  Future getPosts(tagId, page, {keyword, onSuccess, onError}) async {
-    try {
-      await HttpUtil().get(
-        'question/search',
-        {
-          'searchString': keyword ?? '',
-          'tagList': '[$tagId]',
-          'limits': '20',
-          'token': _token,
-          'page': '$page',
-        },
-      ).then((value) {
-        print(json.encode(value));
-        _homeTotalPage = value['data']['last_page'];
-        for (Map<String, dynamic> json in value['data']['data']) {
-          _homePostList.add(Post.fromJson(json));
-        }
-        if (onSuccess != null) {
-          onSuccess();
-        }
-        notifyListeners();
-      }).catchError((e, stacktrace) {
-        print(e);
-        print(stacktrace);
-        onError();
-      });
-    } catch (e, stacktrace) {
-      print(e);
-      print(stacktrace);
-    }
+  changeProfilePostLikeState(int index) {
+    profilePostList[index].isLiked = !profilePostList[index].isLiked;
+    notifyListeners();
   }
 
-  /// Get my posts.
-  Future getMyPosts(List<MessageDataItem> list) async {
-    try {
-      await HttpUtil().get(
-        'question/get/myQuestion',
-        {
-          'limits': 0,
-          'token': _token,
-          'page': 1,
-        },
-      ).then((value) {
-        for (Map<String, dynamic> map in value['data']) {
-          _profilePostList.add(Post.fromJson(map));
-        }
-        _profilePostList = _profilePostList.sortWithMessage(list);
-        notifyListeners();
-      });
-    } catch (e) {
-      print(e);
-    }
+  changeHomePostFavoriteState(int index) {
+    homePostList[index].isFavorite = !homePostList[index].isFavorite;
+    notifyListeners();
   }
 
-  /// Get my favorite posts.
-  Future getMyFavoritePosts(List<MessageDataItem> list) async {
-    try {
-      await HttpUtil().get(
-        'favorite/get/all',
-        {
-          'token': _token,
-        },
-      ).then((value) {
-        for (Map<String, dynamic> map in value['data']) {
-          _profilePostList.add(Post.fromJson(map));
-        }
-        _profilePostList = _profilePostList.sortWithMessage(list);
-        notifyListeners();
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Get official comments.
-  Future getOfficialComments(id) async {
-    try {
-      await HttpUtil().get(
-        'question/get/answer',
-        {
-          'question_id': '$id',
-          'token': _token,
-        },
-      ).then((value) {
-        print(json.encode(value));
-        for (Map<String, dynamic> comment in value['data']) {
-          _officialCommentList.add(Comment.fromJson(comment));
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Get user comments.
-  Future getComments(id) async {
-    try {
-      await HttpUtil().get(
-        'question/get/commit',
-        {
-          'question_id': '$id',
-          'token': _token,
-        },
-      ).then((value) {
-        print('success!');
-        for (Map<String, dynamic> comment in value['data']) {
-          _commentList.add(Comment.fromJson(comment));
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Get all types of comment.
-  Future getAllComments(id, onSuccess) async {
-    await getOfficialComments(id)
-        .then((value) => getComments(id))
-        .then((value) {
-      onSuccess();
-      notifyListeners();
-    });
-  }
-
-  /// Initialize DetailPage.
-  Future initDetailPage(id, onSuccess) async {
-    await getOfficialComments(id).then((_) => getComments(id)).then((_) {
-      onSuccess();
-    });
-  }
-
-  Future<Post> getPostById(int id) async {
-    var data = await HttpUtil().get(
-      'question/get/byId',
-      {
-        'id': id,
-        'token': _token,
-      },
-    );
-    print('success!');
-    var post = Post.fromJson(data);
-    return post;
-  }
-
-  /// Like or dislike the post.
-  Future homePostHitLike(index, id) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          _homePostList[index].isLiked ? 'question/dislike' : 'question/like',
-          FormData.fromMap({
-            'id': '$id',
-            'token': _token,
-          }),
-        )
-            .then(
-          (value) {
-            if (value['ErrorCode'] == 0) {
-              if (_homePostList[index].isLiked) {
-                _homePostList[index].likeCount--;
-                _homePostList[index].isLiked = false;
-              } else {
-                _homePostList[index].likeCount++;
-                _homePostList[index].isLiked = true;
-              }
-              print(json.encode(value));
-              notifyListeners();
-            } else {
-              ToastProvider.error('点赞失败');
-            }
-            _hitLikeLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  /// Add or remove the post from my favorite posts.
-  Future homePostHitFavorite(index) async {
-    if (!_hitFavoriteLock) {
-      _hitFavoriteLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          _homePostList[index].isFavorite
-              ? 'question/unfavorite'
-              : 'question/favorite',
-          FormData.fromMap({
-            'question_id': _homePostList[index].id,
-            'token': _token,
-          }),
-        )
-            .then(
-              (value) {
-            if (value['ErrorCode'] == 0) {
-              if (_homePostList[index].isFavorite) {
-                _homePostList[index].isFavorite = false;
-              } else {
-                _homePostList[index].isFavorite = true;
-              }
-              notifyListeners();
-            } else {
-              ToastProvider.error('收藏失败');
-              print(json.encode(value));
-            }
-            _hitFavoriteLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  /// Like or dislike the post.
-  Future profilePostHitLike(index, id) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          _profilePostList[index].isLiked
-              ? 'question/dislike'
-              : 'question/like',
-          FormData.fromMap({
-            'id': '$id',
-            'token': _token,
-          }),
-        )
-            .then(
-              (value) {
-            if (value['ErrorCode'] == 0) {
-              if (_profilePostList[index].isLiked) {
-                _profilePostList[index].likeCount--;
-                _profilePostList[index].isLiked = false;
-              } else {
-                _profilePostList[index].likeCount++;
-                _profilePostList[index].isLiked = true;
-              }
-              notifyListeners();
-            } else {
-              ToastProvider.error('点赞失败');
-            }
-            _hitLikeLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future messagePostHitLike(bool isLiked, int id) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          isLiked ? 'question/dislike' : 'question/like',
-          FormData.fromMap({
-            'id': '$id',
-            'token': _token,
-          }),
-        )
-            .then(
-          (value) {
-            if (value['ErrorCode'] == 0) {
-              notifyListeners();
-            } else {
-              ToastProvider.error('点赞失败');
-            }
-            _hitLikeLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  /// Add or remove the post from my favorite posts.
-  Future profilePostHitFavorite(index) async {
-    if (!_hitFavoriteLock) {
-      _hitFavoriteLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          _profilePostList[index].isFavorite
-              ? 'question/unfavorite'
-              : 'question/favorite',
-          FormData.fromMap({
-            'question_id': _profilePostList[index].id,
-            'token': _token,
-          }),
-        )
-            .then(
-              (value) {
-            if (value['ErrorCode'] == 0) {
-              if (_profilePostList[index].isFavorite) {
-                _profilePostList[index].isFavorite = false;
-              } else {
-                _profilePostList[index].isFavorite = true;
-              }
-              notifyListeners();
-            } else {
-              ToastProvider.error('收藏失败');
-            }
-            _hitFavoriteLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future messagePostHitFavorite(bool isFavorite, int id) async {
-    if (!_hitFavoriteLock) {
-      _hitFavoriteLock = true;
-      try {
-        await HttpUtil()
-            .post(
-          isFavorite ? 'question/unfavorite' : 'question/favorite',
-          FormData.fromMap({
-            'question_id': id,
-            'token': _token,
-          }),
-        )
-            .then(
-          (value) {
-            if (value['ErrorCode'] == 0) {
-              notifyListeners();
-            } else {
-              ToastProvider.error('收藏失败');
-            }
-            _hitFavoriteLock = false;
-          },
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  /// Like or dislike the comment.
-  Future commentHitLike(index, id) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
-      await HttpUtil()
-          .post(
-        _commentList[index].isLiked ? 'commit/dislike' : 'commit/like',
-        FormData.fromMap({
-          'id': '$id',
-          'token': _token,
-        }),
-      )
-          .then((value) {
-        if (value['ErrorCode'] == 0) {
-          if (_commentList[index].isLiked) {
-            _commentList[index].likeCount--;
-            _commentList[index].isLiked = false;
-          } else {
-            _commentList[index].likeCount++;
-            _commentList[index].isLiked = true;
-          }
-          notifyListeners();
-        } else {
-          ToastProvider.error('点赞失败');
-        }
-        _hitLikeLock = false;
-      });
-    }
-  }
-
-  /// Like or dislike the comment.
-  Future officialCommentHitLike(index, id) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
-      await HttpUtil()
-          .post(
-        _officialCommentList[index].isLiked ? 'answer/dislike' : 'answer/like',
-        FormData.fromMap({
-          'id': '$id',
-          'token': _token,
-        }),
-      )
-          .then((value) {
-        if (value['ErrorCode'] == 0) {
-          if (_officialCommentList[index].isLiked) {
-            _officialCommentList[index].likeCount--;
-            _officialCommentList[index].isLiked = false;
-          } else {
-            _officialCommentList[index].likeCount++;
-            _officialCommentList[index].isLiked = true;
-          }
-          notifyListeners();
-        } else {
-          ToastProvider.error('点赞失败');
-        }
-        _hitLikeLock = false;
-      });
-    }
-  }
-
-  /// Send comment.
-  Future sendComment(content, id, onSuccess) async {
-    try {
-      await HttpUtil()
-          .post(
-        'commit/add/question',
-        FormData.fromMap({
-          'token': _token,
-          'question_id': id,
-          'contain': content,
-        }),
-      )
-          .then((value) {
-        if (value['ErrorCode'] == 0) {
-          ToastProvider.success('评论成功');
-          onSuccess();
-        } else {
-          ToastProvider.error('评论失败');
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Upload picture.
-  Future uploadImage(Asset data, id, index) async {
-    try {
-      ByteData byteData = await data.getByteData();
-      await HttpUtil()
-          .post(
-        'image/add',
-        FormData.fromMap({
-          'token': _token,
-          'newImg': MultipartFile.fromBytes(
-            byteData.buffer.asUint8List(),
-            filename: 'p${id}i$index.jpg',
-            contentType: MediaType("image", "jpg"),
-          ),
-          'question_id': id,
-        }),
-      )
-          .then((value) {
-        if (value['ErrorCode'] == 200) ToastProvider.running('图片来咯');
-        return value['data']['url'];
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Send post.
-  Future sendPost(title, content, tagId, List<Asset> imgList) async {
-    try {
-      await HttpUtil()
-          .post(
-        'question/add',
-        FormData.fromMap({
-          'token': _token,
-          'name': title,
-          'description': content,
-          'tagList': '[$tagId]',
-          'campus': 0,
-        }),
-      )
-          .then((value) async {
-        for (int index = 0; index < imgList.length; index++) {
-          await uploadImage(
-              imgList[index], value['data']['question_id'], index);
-        }
-        return value['data']['question_id'];
-      }).then((value) => value);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Rate the official comment.
-  Future rate(double rating, id, index) async {
-    try {
-      print('rate' + rating.toString());
-      await HttpUtil()
-          .post(
-        'answer/commit',
-        FormData.fromMap({
-          'token': _token,
-          'answer_id': id,
-          'score': rating.toInt(),
-          'commit': '评分',
-        }),
-      )
-          .then((value) {
-        print(json.encode(value));
-        if (value['ErrorCode'] == 0) {
-          ToastProvider.success('评价成功');
-        } else {
-          ToastProvider.error('评价失败');
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  /// Long press to delete post.
-  Future deletePost(index, onComplete) async {
-    try {
-      await HttpUtil()
-          .post(
-              'question/delete',
-              FormData.fromMap(
-                  {'token': _token, 'question_id': _profilePostList[index].id}))
-          .then((value) {
-        if (value['ErrorCode'] == 0) {
-          ToastProvider.success('删除成功');
-          removeProfilePost(index);
-        } else {
-          ToastProvider.error('删除问题失败');
-        }
-      }).then((value) {
-        onComplete();
-      });
-    } catch (e) {
-      print(e);
-    }
+  addProfilePosts(List<Post> list) {
+    profilePostList.addAll(list);
+    notifyListeners();
   }
 }

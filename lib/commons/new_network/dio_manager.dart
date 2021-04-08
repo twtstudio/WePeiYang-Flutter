@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'error_interceptor.dart';
 import 'net_check_interceptor.dart';

@@ -104,7 +104,7 @@ class _CommentCardState extends State<CommentCard> {
               if (!official)
                 Expanded(
                   child: Text(
-                    comment.userName,
+                    comment.userName ?? '匿名',
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextStyle(

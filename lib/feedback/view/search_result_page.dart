@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 
 import 'components/post_card.dart';
@@ -49,23 +54,39 @@ class _SearchResultPageState extends State<SearchResultPage> {
   _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    Provider.of<FeedbackNotifier>(context, listen: false)
-        .getPosts(tagId, currentPage, keyword: keyword, onSuccess: () {
-      totalPage =
-          Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
-      _refreshController.refreshCompleted();
-    });
+    getPosts(
+      tagId: tagId,
+      page: currentPage,
+      keyword: keyword,
+      onSuccess: (list, page) {
+        totalPage = page;
+        Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
+        _refreshController.refreshCompleted();
+      },
+      onFailure: () {
+        ToastProvider.error('校务专区获取帖子失败, 请刷新');
+        _refreshController.refreshFailed();
+      },
+    );
   }
 
   _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .getPosts(tagId, currentPage, keyword: keyword, onSuccess: () {
-        totalPage =
-            Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
-        _refreshController.loadComplete();
-      });
+      getPosts(
+        tagId: tagId,
+        page: currentPage,
+        keyword: keyword,
+        onSuccess: (list, page) {
+          totalPage = page;
+          Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
+          _refreshController.refreshCompleted();
+        },
+        onFailure: () {
+          ToastProvider.error('校务专区获取帖子失败, 请刷新');
+          _refreshController.loadFailed();
+        },
+      );
     } else {
       _refreshController.loadComplete();
     }
@@ -75,18 +96,23 @@ class _SearchResultPageState extends State<SearchResultPage> {
   void initState() {
     status = SearchPageStatus.loading;
     currentPage = 1;
-    print(tagId);
-    print('init');
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<FeedbackNotifier>(context, listen: false)
-          .getPosts(tagId, currentPage, keyword: keyword, onSuccess: () {
-        totalPage =
-            Provider.of<FeedbackNotifier>(context, listen: false).homeTotalPage;
-        setState(() {
-          status = SearchPageStatus.idle;
-        });
-      });
+      getPosts(
+        tagId: tagId,
+        page: currentPage,
+        keyword: keyword,
+        onSuccess: (list, page) {
+          totalPage = page;
+          Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
+          setState(() {
+            status = SearchPageStatus.idle;
+          });
+        },
+        onFailure: () {
+          ToastProvider.error('校务专区获取帖子失败, 请刷新');
+        },
+      );
     });
     super.initState();
   }
@@ -178,10 +204,16 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            notifier.homePostHitLike(
-                                                index,
-                                                notifier
-                                                    .homePostList[index].id);
+                                            postHitLike(
+                                              id: notifier.homePostList[index].id,
+                                              isLiked: notifier.homePostList[index].isLiked,
+                                              onSuccess: () {
+                                                notifier.changeHomePostLikeState(index);
+                                              },
+                                              onFailure: () {
+                                                ToastProvider.error('校务专区点赞失败，请重试');
+                                              },
+                                            );
                                           },
                                         )
                                       : PostCard(
@@ -196,10 +228,16 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            notifier.homePostHitLike(
-                                                index,
-                                                notifier
-                                                    .homePostList[index].id);
+                                            postHitLike(
+                                              id: notifier.homePostList[index].id,
+                                              isLiked: notifier.homePostList[index].isLiked,
+                                              onSuccess: () {
+                                                notifier.changeHomePostLikeState(index);
+                                              },
+                                              onFailure: () {
+                                                ToastProvider.error('校务专区点赞失败，请重试');
+                                              },
+                                            );
                                           },
                                         );
                                 },
