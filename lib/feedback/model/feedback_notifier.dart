@@ -1,13 +1,6 @@
-import 'dart:convert';
-import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -192,12 +185,24 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   changeHomePostLikeState(int index) {
-    homePostList[index].isLiked = !homePostList[index].isLiked;
+    if (homePostList[index].isLiked) {
+      homePostList[index].isLiked = false;
+      homePostList[index].likeCount--;
+    } else {
+      homePostList[index].isLiked = true;
+      homePostList[index].likeCount++;
+    }
     notifyListeners();
   }
 
   changeProfilePostLikeState(int index) {
-    profilePostList[index].isLiked = !profilePostList[index].isLiked;
+    if (profilePostList[index].isLiked) {
+      profilePostList[index].isLiked = false;
+      profilePostList[index].likeCount--;
+    } else {
+      profilePostList[index].isLiked = true;
+      profilePostList[index].likeCount++;
+    }
     notifyListeners();
   }
 

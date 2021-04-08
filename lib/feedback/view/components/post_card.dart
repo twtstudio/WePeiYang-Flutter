@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/message/feedback_banner_widget.dart';
 
@@ -187,17 +189,31 @@ class _PostCardState extends State<PostCard> {
                 BlankSpace.height(10),
               // Image list.
               if (enableImgList && post.imgUrlList.length != 0)
-                ListView.builder(
-                  itemBuilder: (context, index) =>
-                      Image.network(post.imgUrlList[index]),
-                  itemCount: post.imgUrlList.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                Row(
+                  children: [
+                    for (int i = 0; i < post.imgUrlList.length; i++)
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.imageView,
+                                arguments: post.imgUrlList[i]);
+                          },
+                          child: FadeInImage.memoryNetwork(
+                              fit: BoxFit.cover,
+                              height:
+                                  200 - (post.thumbImgUrlList.length) * 40.0,
+                              placeholder: ScreenUtil.kTransparentImage,
+                              image: post.thumbImgUrlList[i]),
+                        ),
+                      ),
+                  ],
                 ),
-              BlankSpace.height(10),
               Row(
                 children: [
                   // Time.
+                  if (enableImgList) BlankSpace.width(12),
                   if (enableImgList)
                     Text(
                       post.createTime.substring(0, 10) +
@@ -215,68 +231,72 @@ class _PostCardState extends State<PostCard> {
                                   .split('.')[0]
                                   .substring(0, 5)),
                       style: TextStyle(
+                        fontSize: 12,
                         color: ColorUtil.lightTextColor,
                       ),
                     ),
                   if (enableImgList) Spacer(),
                   // Comment count
-                  ClipOval(
-                    child: InkWell(
-                      child: Icon(
+                  ButtonTheme(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minWidth: 0,
+                    child: FlatButton.icon(
+                      onPressed: onContentPressed,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      icon: Icon(
                         Icons.message_outlined,
                         size: 16,
                         color: ColorUtil.lightTextColor,
                       ),
-                    ),
-                  ),
-                  BlankSpace.width(8),
-                  Text(
-                    post.commentCount.toString(),
-                    style: TextStyle(
-                        fontSize: 14, color: ColorUtil.lightTextColor),
-                  ),
-                  BlankSpace.width(16),
-                  // Like count.
-                  GestureDetector(
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Icon(
-                            !post.isLiked
-                                ? Icons.thumb_up_outlined
-                                : Icons.thumb_up,
-                            size: 16,
-                            color: !post.isLiked
-                                ? ColorUtil.lightTextColor
-                                : Colors.red,
-                          ),
-                        ),
-                        BlankSpace.width(8),
-                        Text(
-                          post.likeCount.toString(),
-                          style: TextStyle(
-                              fontSize: 14, color: ColorUtil.lightTextColor),
-                        ),
-                      ],
-                    ),
-                    onTap: onLikePressed,
-                  ),
-                  if (!enableImgList) Spacer(),
-                  if (enableImgList) BlankSpace.width(16),
-                  // Favorite.
-                  if (enableImgList)
-                    ClipOval(
-                      child: InkWell(
-                        child: Icon(
-                          post.isFavorite ? Icons.star : Icons.star_border,
-                          size: 16,
-                          color: post.isFavorite
-                              ? Colors.amber
-                              : ColorUtil.lightTextColor,
-                        ),
-                        onTap: onFavoritePressed,
+                      label: Text(
+                        post.commentCount.toString(),
+                        style: TextStyle(
+                            fontSize: 14, color: ColorUtil.lightTextColor),
                       ),
                     ),
+                  ),
+                  // Like count.
+                  ButtonTheme(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minWidth: 0,
+                    child: FlatButton.icon(
+                      onPressed: onLikePressed,
+                      icon: Icon(
+                        !post.isLiked
+                            ? Icons.thumb_up_outlined
+                            : Icons.thumb_up,
+                        size: 16,
+                        color: !post.isLiked
+                            ? ColorUtil.lightTextColor
+                            : Colors.red,
+                      ),
+                      label: Text(
+                        post.likeCount.toString(),
+                        style: TextStyle(
+                            fontSize: 14, color: ColorUtil.lightTextColor),
+                      ),
+                    ),
+                  ),
+                  if (!enableImgList) Spacer(),
+                  // Favorite.
+                  if (enableImgList)
+                    ButtonTheme(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 8.0),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minWidth: 0,
+                        child: FlatButton(
+                          child: Icon(
+                            post.isFavorite ? Icons.star : Icons.star_border,
+                            size: 16,
+                            color: post.isFavorite
+                                ? Colors.amber
+                                : ColorUtil.lightTextColor,
+                          ),
+                          onPressed: onFavoritePressed,
+                        )),
                   if (!enableImgList)
                     Text(
                       post.createTime.substring(0, 10) +
@@ -294,11 +314,117 @@ class _PostCardState extends State<PostCard> {
                                   .split('.')[0]
                                   .substring(0, 5)),
                       style: TextStyle(
+                        fontSize: 12,
                         color: ColorUtil.lightTextColor,
                       ),
                     ),
+                  if (enableImgList) BlankSpace.width(12),
                 ],
               ),
+              // Row(
+              //   children: [
+              //     // Time.
+              //     if (enableImgList)
+              //       Text(
+              //         post.createTime.substring(0, 10) +
+              //             '  ' +
+              //             (post.createTime
+              //                     .substring(11)
+              //                     .split('.')[0]
+              //                     .startsWith('0')
+              //                 ? post.createTime
+              //                     .substring(12)
+              //                     .split('.')[0]
+              //                     .substring(0, 4)
+              //                 : post.createTime
+              //                     .substring(11)
+              //                     .split('.')[0]
+              //                     .substring(0, 5)),
+              //         style: TextStyle(
+              //           color: ColorUtil.lightTextColor,
+              //         ),
+              //       ),
+              //     if (enableImgList) Spacer(),
+              //     // Comment count
+              //     ClipOval(
+              //       child: InkWell(
+              //         child: Icon(
+              //           Icons.message_outlined,
+              //           size: 16,
+              //           color: ColorUtil.lightTextColor,
+              //         ),
+              //       ),
+              //     ),
+              //     BlankSpace.width(8),
+              //     Text(
+              //       post.commentCount.toString(),
+              //       style: TextStyle(
+              //           fontSize: 14, color: ColorUtil.lightTextColor),
+              //     ),
+              //     BlankSpace.width(16),
+              //     // Like count.
+              //     GestureDetector(
+              //       child: Row(
+              //         children: [
+              //           ClipOval(
+              //             child: Icon(
+              //               !post.isLiked
+              //                   ? Icons.thumb_up_outlined
+              //                   : Icons.thumb_up,
+              //               size: 16,
+              //               color: !post.isLiked
+              //                   ? ColorUtil.lightTextColor
+              //                   : Colors.red,
+              //             ),
+              //           ),
+              //           BlankSpace.width(8),
+              //           Text(
+              //             post.likeCount.toString(),
+              //             style: TextStyle(
+              //                 fontSize: 14, color: ColorUtil.lightTextColor),
+              //           ),
+              //         ],
+              //       ),
+              //       onTap: onLikePressed,
+              //     ),
+              //     if (!enableImgList) Spacer(),
+              //     if (enableImgList) BlankSpace.width(16),
+              //     // Favorite.
+              //     if (enableImgList)
+              //       ClipOval(
+              //         child: InkWell(
+              //           child: Icon(
+              //             post.isFavorite ? Icons.star : Icons.star_border,
+              //             size: 16,
+              //             color: post.isFavorite
+              //                 ? Colors.amber
+              //                 : ColorUtil.lightTextColor,
+              //           ),
+              //           onTap: onFavoritePressed,
+              //         ),
+              //       ),
+              //     if (!enableImgList)
+              //       Text(
+              //         post.createTime.substring(0, 10) +
+              //             '  ' +
+              //             (post.createTime
+              //                     .substring(11)
+              //                     .split('.')[0]
+              //                     .startsWith('0')
+              //                 ? post.createTime
+              //                     .substring(12)
+              //                     .split('.')[0]
+              //                     .substring(0, 4)
+              //                 : post.createTime
+              //                     .substring(11)
+              //                     .split('.')[0]
+              //                     .substring(0, 5)),
+              //         style: TextStyle(
+              //           color: ColorUtil.lightTextColor,
+              //         ),
+              //       ),
+              //   ],
+              // ),
               BlankSpace.height(5),
             ],
           ),
