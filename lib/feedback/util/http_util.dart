@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -9,11 +8,10 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
+import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 
 // Simple encapsulation of Dio.
@@ -117,6 +115,8 @@ Future getToken({@required void Function(String token) onSuccess,
     if (response.data['data']['token'] != null) {
       log('getToken大成功');
       onSuccess(response.data['data']['token']);
+    } else {
+      onFailure();
     }
   } on DioError catch (e) {
     log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
