@@ -58,7 +58,7 @@ android {
 
         ndk {
             // 注意：这里需要添加项目所需 CPU 类型的最小集
-            abiFilters "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86"
         }
     }
 

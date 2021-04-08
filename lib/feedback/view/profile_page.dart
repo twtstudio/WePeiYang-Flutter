@@ -6,8 +6,8 @@ import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/profile_dialog.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
+import 'package:wei_pei_yang_demo/feedback/view/components/profile_dialog.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
@@ -36,14 +36,14 @@ class _ProfilePageState extends State<ProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<FeedbackNotifier>(context, listen: false)
           .clearProfilePostList();
-      getMyPosts(
-          onSuccess: (list) {
-            Provider.of<FeedbackNotifier>(context, listen: false)
-                .addProfilePosts(list.sortWithMessage(
-                    Provider.of<MessageProvider>(context, listen: false)
-                        .feedbackQs));
-          },
-          onFailure: () {});
+      getMyPosts(onSuccess: (list) {
+        Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
+            list.sortWithMessage(
+                Provider.of<MessageProvider>(context, listen: false)
+                    .feedbackQs));
+      }, onFailure: () {
+        ToastProvider.error('校务专区获取帖子失败，请重试');
+      });
     });
     super.initState();
   }
