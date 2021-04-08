@@ -105,7 +105,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     }
     verifyOnReset(phone, code,
         onSuccess: () =>
-            Navigator.pushNamed(context, AuthRouter.reset, arguments: phone),
+            Navigator.pushNamed(context, AuthRouter.resetPw, arguments: phone),
         onFailure: (e) => ToastProvider.error(e.error));
   }
 

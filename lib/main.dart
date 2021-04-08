@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -8,13 +10,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/feedback/feedback_providers.dart';
+import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+
 import 'commons/preferences/common_prefs.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
@@ -29,6 +34,7 @@ import 'package:umeng_sdk/umeng_sdk.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await FlutterDownloader.initialize(debug: true);
   await CommonPreferences.initPrefs();
   runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
@@ -38,19 +44,30 @@ void main() async {
   }
 }
 
-// 全局捕获异常，还没想好
-//runZoned(
-//       () async => await _initializeApp()
-//           .then((_) => runApp(WeiPeiYangApp()))
-//           .catchError((e) {
-//         print(e);
-//       }),
-//       zoneSpecification: ZoneSpecification(
-//         print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-//           print(line);
-//         },
-//       ),
-//     );
+// 全局捕获异常，想好了一半了
+/*
+FlutterError.onError = (FlutterErrorDetails details) async {
+    if (kDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    } else {
+      Zone.current.handleUncaughtError(details.exception, details.stack);
+    }
+  };
+
+  runZoned<Future<Null>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    // await FlutterDownloader.initialize(debug: true);
+    await CommonPreferences.initPrefs();
+    runApp(WeiPeiYangApp());
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ));
+    }
+  }, onError: (error, stackTrace) async {
+    await _reportError(error, stackTrace);
+  });
+ */
 
 class WeiPeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
@@ -67,6 +84,40 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
     super.dispose();
   }
 
+  final methodChannel = MethodChannel('com.example.wei_pei_yang_demo/message');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    methodChannel
+      ..setMethodCallHandler((call) async {
+        switch (call.method) {
+          case 'showMessage':
+            print("*****************************************");
+            String content = await call.arguments;
+            print(
+                "*******************${content} + ${content != null && content.isNotEmpty}*****************");
+            if (content != null && content.isNotEmpty) {
+              print("????");
+              await showMessageDialog(
+                WeiPeiYangApp.navigatorState.currentState.overlay.context,
+                content,
+              );
+              ToastProvider.success(content);
+              return "success";
+            } else {
+              throw PlatformException(
+                  code: 'error', message: '失败', details: 'content is null');
+            }
+            break;
+          default:
+            print("???????????????????????????????????????????");
+        }
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     UmengSdk.setPageCollectionModeManual();
@@ -76,7 +127,10 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ...loungeProviders,
-        ...feedbackProviders,
+        ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
+        ChangeNotifierProvider(
+            create: (context) =>
+                MessageProvider(methodChannel)..refreshFeedbackCount())
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
@@ -141,6 +195,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     GlobalModel().screenWidth = width;

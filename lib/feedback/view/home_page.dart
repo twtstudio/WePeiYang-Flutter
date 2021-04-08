@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
+import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
@@ -9,6 +9,7 @@ import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override
@@ -90,6 +91,15 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<MessageProvider>(context,listen: false).refreshFeedbackCount();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       /// Click and jump to NewPostPage.
@@ -163,6 +173,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                           IconButton(
                             color: ColorUtil.mainColor,
                             icon: FeedbackBadgeWidget(
+                              type: FeedbackMessageType.home,
                               child: Image.asset(
                                   'lib/feedback/assets/img/profile.png'),
                             ),

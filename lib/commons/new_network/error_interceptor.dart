@@ -17,13 +17,12 @@ class ErrorInterceptor extends InterceptorsWrapper {
       return DioError(error: "网络连接发生了未知错误");
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 401)
       return DioError(error: "密码或验证码输入错误");
-
     if (err.type == DioErrorType.RESPONSE && err.response?.statusCode == 302)
       return DioError(error: "办公网绑定失效，请重新绑定");
 
     /// More...
     // TODO 发布的时候开这个
-    // return DioError(error: "发生未知错误，请联系开发人员解决");
+    return DioError(error: "发生未知错误，请联系开发人员解决");
   }
 }
 

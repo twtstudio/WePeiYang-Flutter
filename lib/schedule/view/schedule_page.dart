@@ -7,39 +7,42 @@ import '../../main.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
-class SchedulePage extends StatelessWidget {
-  /// 进入课程表页面后自动刷新数据
+class SchedulePage extends StatefulWidget {
+  /// 进入课程表页面后重设选中周并自动刷新数据
   SchedulePage() {
-    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext)
-        .refreshSchedule(hint: false)
-        .call();
+    var notifier = Provider.of<ScheduleNotifier>(
+        WeiPeiYangApp.navigatorState.currentContext);
+    notifier.quietResetWeek();
+    notifier.refreshSchedule(hint: false);
   }
 
   @override
+  _SchedulePageState createState() => _SchedulePageState();
+}
+
+class _SchedulePageState extends State<SchedulePage> {
+  @override
   Widget build(BuildContext context) {
     var titleColor = FavorColors.scheduleTitleColor();
-    return RefreshIndicator(
-      displacement: 60,
-      color: titleColor,
-      onRefresh: Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(),
-      child: Scaffold(
-        appBar: ScheduleAppBar(titleColor),
-        backgroundColor: Colors.white,
-        body: ListView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            TitleWidget(titleColor),
-            WeekSelectWidget(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-              child: ClassTableWidget(),
-            ),
-            HoursCounterWidget(titleColor)
-          ],
-        ),
+    return Scaffold(
+      appBar: ScheduleAppBar(titleColor),
+      backgroundColor: Colors.white,
+      body: ListView(
+        physics: BouncingScrollPhysics(),
+        children: [
+          TitleWidget(titleColor),
+          WeekSelectWidget(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+            child: ClassTableWidget(),
+          ),
+          HoursCounterWidget(titleColor)
+        ],
       ),
     );
   }
@@ -64,13 +67,20 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.autorenew, color: titleColor, size: 28),
-              onTap: Provider.of<ScheduleNotifier>(context, listen: false)
-                  .refreshSchedule(onFailure: () {
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => TjuRebindDialog());
-              })),
+              onTap: () {
+                if (CommonPreferences().isBindTju.value) {
+                  Provider.of<ScheduleNotifier>(context, listen: false)
+                      .refreshSchedule(onFailure: () {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => TjuRebindDialog());
+                  }).call();
+                } else {
+                  ToastProvider.error("请绑定办公网");
+                  Navigator.pushNamed(context, AuthRouter.tjuBind);
+                }
+              }),
         ),
       ],
     );

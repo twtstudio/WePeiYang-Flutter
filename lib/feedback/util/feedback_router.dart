@@ -6,6 +6,7 @@ import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
 import 'package:wei_pei_yang_demo/feedback/view/profile_page.dart';
 import 'package:wei_pei_yang_demo/feedback/view/search_page.dart';
 import 'package:wei_pei_yang_demo/feedback/view/search_result_page.dart';
+import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
 
 import '../../home/view/home_page.dart';
 
@@ -17,6 +18,7 @@ class FeedbackRouter {
   static String officialComment = 'feedback/official_comment';
   static String search = 'feedback/search';
   static String searchResult = 'feedback/search_result';
+  static String mailbox = 'feedback/mailbox';
   static String imageView = 'feedback/image_view';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
@@ -28,5 +30,6 @@ class FeedbackRouter {
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     imageView: (url) => ImageViewPage(url),
+    mailbox: (_) => FeedbackMessagePage(),
   };
 }

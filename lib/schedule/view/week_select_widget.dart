@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/main.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
@@ -84,15 +83,6 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
             }),
       );
     });
-  }
-
-  /// 每次退出课程表页面，重新设置选中星期为当前星期
-  @override
-  void dispose() {
-    Provider.of<ScheduleNotifier>(WeiPeiYangApp.navigatorState.currentContext,
-            listen: false)
-        .quietResetWeek();
-    super.dispose();
   }
 }
 

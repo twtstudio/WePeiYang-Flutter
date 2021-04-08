@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-class Post with ChangeNotifier {
+class Post {
   int id;
   String title;
   String content;
@@ -111,7 +109,7 @@ class Post with ChangeNotifier {
   }
 }
 
-class TagOfPost with ChangeNotifier {
+class TagOfPost {
   int id;
   String name;
 

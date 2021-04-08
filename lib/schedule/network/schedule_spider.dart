@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart' show DioError, Response;
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
@@ -154,10 +154,15 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     Week week = Week(weekStr[0], weekStr[1]);
     var roomList = getRegExpList(r'[\S]+', tdList[8]);
     var roomIndex = 0;
+
+    /// 匹配arrange的课程名称来生成course对象，其中course的courseName通过分割空格来取mainName，arrange的courseName去掉所有空格
+    /// 之所以这么做是因为有两种比较特殊的课：(\s表示空格)
+    /// "体育D\s(体适能)"这门课，course中的名称为"体育D\s(体适能)"，arrange中的名称为"体育D"
+    /// "流体力学（1）\s"这门课，course中的名称为"流体力学（1）\s"，arrange中的名称为"流体力学（1）\s"
     arrangeList.forEach((arrange) {
       var mainName =
           courseName.contains(' ') ? courseName.split(' ').first : courseName;
-      if (arrange.courseName == mainName) {
+      if (arrange.courseName.trim() == mainName) {
         arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
         roomIndex += 2; // step为2用来跳过roomList匹配到的 “<br/>”
         courses.add(ScheduleCourse(classId, courseId, courseName, credit,

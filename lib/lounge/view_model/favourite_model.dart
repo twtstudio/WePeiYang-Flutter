@@ -23,6 +23,7 @@ class RoomFavouriteModel extends ChangeNotifier {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
+
       List<String> remoteIds = await LoungeRepository.favouriteList;
       await LoungeRepository.updateLocalData(DateTime.now());
 
@@ -147,12 +148,12 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
   }
 
   @override
-  refresh() {
+  refresh() async {
     setBusy();
     if (timeModel.state == ViewState.idle) {
       debugPrint(
           '++++++++++++++++ favourite list get data +++++++++++++++++++');
-      super.refresh();
+      await super.refresh();
     } else if (timeModel.state == ViewState.error) {
       viewState = ViewState.error;
     }

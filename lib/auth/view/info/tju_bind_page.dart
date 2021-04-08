@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/unbind_dialogs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
@@ -33,6 +33,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
       super.initState();
       return;
     }
+    print("name: ${pref.tjuuname.value}");
+    print("pw: ${pref.tjupasswd.value}");
     tjuuname = pref.tjuuname.value;
     tjupasswd = pref.tjupasswd.value;
     nameController =
@@ -44,8 +46,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   void dispose() {
+    nameController?.clear();
     nameController?.dispose();
+    pwController?.clear();
     pwController?.dispose();
+    codeController?.clear();
     codeController?.dispose();
     super.dispose();
   }
@@ -201,7 +206,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 child: TextField(
                   controller: codeController,
                   decoration: InputDecoration(
-                      hintText: '短信验证码',
+                      hintText: '验证码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
@@ -242,6 +247,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
+    var pref = CommonPreferences();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),

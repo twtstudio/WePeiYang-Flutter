@@ -28,11 +28,7 @@ enum DetailPageStatus {
   error,
 }
 
-enum PostOrigin {
-  home,
-  profile,
-  favorite,
-}
+enum PostOrigin { home, profile, favorite, mailbox }
 
 class DetailPageArgs {
   final Post post;
@@ -43,7 +39,7 @@ class DetailPageArgs {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  final Post post;
+  Post post;
   final int index;
   final PostOrigin origin;
 
@@ -57,9 +53,11 @@ class _DetailPageState extends State<DetailPage> {
 
   _DetailPageState(this.post, this.index, this.origin);
 
-  _onRefresh() {
-    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-    Provider.of<FeedbackNotifier>(context, listen: false).getAllComments(
+  _onRefresh() async {
+    var model = Provider.of<FeedbackNotifier>(context, listen: false);
+    model.clearCommentList();
+    post = await model.getPostById(post.id);
+    await model.getAllComments(
       post.id,
       () {
         status = DetailPageStatus.idle;
@@ -149,10 +147,22 @@ class _DetailPageState extends State<DetailPage> {
                           SliverToBoxAdapter(
                             child: PostCard.detail(
                               post,
-                              onLikePressed: () {
+                              onLikePressed: () async {
                                 if (origin == PostOrigin.home) {
                                   notifier.homePostHitLike(
                                       index, notifier.homePostList[index].id);
+                                } else if (origin == PostOrigin.mailbox) {
+                                  await notifier
+                                      .messagePostHitLike(post.isLiked, post.id)
+                                      .then((_) {
+                                    if (post.isLiked) {
+                                      post.likeCount--;
+                                    } else {
+                                      post.likeCount++;
+                                    }
+                                    post.isLiked = !post.isLiked;
+                                    setState(() {});
+                                  });
                                 } else {
                                   notifier.profilePostHitLike(index,
                                       notifier.profilePostList[index].id);
@@ -161,6 +171,14 @@ class _DetailPageState extends State<DetailPage> {
                               onFavoritePressed: () {
                                 if (origin == PostOrigin.home) {
                                   notifier.homePostHitFavorite(index);
+                                } else if (origin == PostOrigin.mailbox) {
+                                  notifier
+                                      .messagePostHitFavorite(
+                                          post.isFavorite, post.id)
+                                      .then((_) {
+                                    post.isFavorite = !post.isFavorite;
+                                    setState(() {});
+                                  });
                                 } else {
                                   notifier.profilePostHitFavorite(index);
                                 }
@@ -181,26 +199,25 @@ class _DetailPageState extends State<DetailPage> {
                                             arguments: OfficialCommentPageArgs(
                                               notifier
                                                   .officialCommentList[index],
-                                        post.title,
-                                        index,
-                                        post.isOwner,
-                                      ),
-                                    );
-                                  },
-                                  onLikePressed: () {
-                                    notifier.officialCommentHitLike(
-                                      index,
-                                      notifier
-                                          .officialCommentList[index].id,
-                                    );
-                                  },
-                                )
+                                              post.title,
+                                              index,
+                                              post.isOwner,
+                                            ),
+                                          );
+                                        },
+                                        onLikePressed: () {
+                                          notifier.officialCommentHitLike(
+                                            index,
+                                            notifier
+                                                .officialCommentList[index].id,
+                                          );
+                                        },
+                                      )
                                     : CommentCard(
-                                  notifier.commentList[index -
-                                      notifier
-                                          .officialCommentList.length],
-                                  onLikePressed: () {
-                                    print('hit like!');
+                                        notifier.commentList[index -
+                                            notifier
+                                                .officialCommentList.length],
+                                        onLikePressed: () {
                                           notifier.commentHitLike(
                                             index -
                                                 notifier

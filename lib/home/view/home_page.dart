@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
-import 'package:wei_pei_yang_demo/commons/message/feedback_badge_widget.dart';
+import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
 import 'package:wei_pei_yang_demo/home/view/drawer_page.dart';
@@ -23,13 +23,13 @@ class _HomePageState extends State<HomePage> {
     pages
       ..add(WPYPage())
       ..add(FeedbackHomePage())
-      ..add(DrawerPage())
+      // ..add(DrawerPage())
       ..add(UserPage());
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = GlobalModel().screenWidth / 4;
+    double width = GlobalModel().screenWidth / 3;
     var currentStyle = TextStyle(
         fontSize: 12, color: MyColors.deepBlue, fontWeight: FontWeight.w800);
     var otherStyle = TextStyle(
@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FeedbackBadgeWidget(
+                          type: FeedbackMessageType.home,
                           child: Container(
                             width: 20,
                             height: 20,
@@ -105,6 +106,39 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     onPressed: () => setState(() => _currentIndex = 1))),
+            // Container(
+            //     height: 70,
+            //     width: width,
+            //     child: RaisedButton(
+            //         elevation: 0.0,
+            //         shape: RoundedRectangleBorder(),
+            //         color: Colors.white,
+            //         splashColor: Colors.transparent,
+            //         highlightColor: Colors.transparent,
+            //         highlightElevation: 0,
+            //         child: Column(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Container(
+            //               width: 20,
+            //               height: 20,
+            //               child: Image(
+            //                   image: _currentIndex == 2
+            //                       ? AssetImage(
+            //                           'assets/images/icon_action_active.png')
+            //                       : AssetImage(
+            //                           'assets/images/icon_action.png')),
+            //             ),
+            //             Padding(
+            //               padding: const EdgeInsets.only(top: 3),
+            //               child: Text('抽屉',
+            //                   style: _currentIndex == 2
+            //                       ? currentStyle
+            //                       : otherStyle),
+            //             ),
+            //           ],
+            //         ),
+            //         onPressed: () => setState(() => _currentIndex = 2))),
             Container(
                 height: 70,
                 width: width,
@@ -124,13 +158,12 @@ class _HomePageState extends State<HomePage> {
                           child: Image(
                               image: _currentIndex == 2
                                   ? AssetImage(
-                                      'assets/images/icon_action_active.png')
-                                  : AssetImage(
-                                      'assets/images/icon_action.png')),
+                                      'assets/images/icon_user_active.png')
+                                  : AssetImage('assets/images/icon_user.png')),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
-                          child: Text('抽屉',
+                          child: Text('个人中心',
                               style: _currentIndex == 2
                                   ? currentStyle
                                   : otherStyle),
@@ -138,38 +171,6 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     onPressed: () => setState(() => _currentIndex = 2))),
-            Container(
-                height: 70,
-                width: width,
-                child: RaisedButton(
-                    elevation: 0.0,
-                    shape: RoundedRectangleBorder(),
-                    color: Colors.white,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    highlightElevation: 0,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 20,
-                          height: 20,
-                          child: Image(
-                              image: _currentIndex == 3
-                                  ? AssetImage(
-                                      'assets/images/icon_user_active.png')
-                                  : AssetImage('assets/images/icon_user.png')),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text('个人中心',
-                              style: _currentIndex == 3
-                                  ? currentStyle
-                                  : otherStyle),
-                        ),
-                      ],
-                    ),
-                    onPressed: () => setState(() => _currentIndex = 3))),
           ],
         ),
       ),

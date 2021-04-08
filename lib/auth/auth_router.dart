@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show Widget;
 import 'package:wei_pei_yang_demo/auth/view/info/email_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/phone_bind_page.dart';
+import 'package:wei_pei_yang_demo/auth/view/info/reset_password_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/add_info_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/find_pw_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/login/login_page.dart';
@@ -16,33 +17,37 @@ import 'package:wei_pei_yang_demo/auth/view/info/tju_bind_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/reset_nickname_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/user_info_page.dart';
+import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
 
 class AuthRouter {
   /// 登录部分
-  static String login = '/login';
-  static String loginPw = '/login_pw';
-  static String register1 = '/register1';
-  static String register2 = '/register2';
-  static String register3 = '/register3';
-  static String addInfo = '/add_info';
-  static String findHome = '/find_home';
-  static String findPhone = '/find_phone';
-  static String reset = '/reset';
-  static String resetDone = '/reset_done';
+  static String login = 'login/home';
+  static String loginPw = 'login/login_pw';
+  static String register1 = 'login/register1';
+  static String register2 = 'login/register2';
+  static String register3 = 'login/register3';
+  static String addInfo = 'login/add_info';
+  static String findHome = 'login/find_home';
+  static String findPhone = 'login/find_phone';
+  static String resetPw = 'login/reset';
+  static String resetDone = 'login/reset_done';
 
   /// 个人信息页
-  static String tjuBind = '/tjuBind';
-  static String phoneBind = '/phoneBind';
-  static String emailBind = '/emailBind';
-  static String resetName = '/resetName';
-  static String userInfo = '/user_info';
+  static String tjuBind = 'info/tjuBind';
+  static String phoneBind = 'info/phoneBind';
+  static String emailBind = 'info/emailBind';
+  static String resetName = 'info/resetName';
+  static String resetPassword = 'info/resetPassword';
+  static String userInfo = 'info/home';
 
   /// 个人页 & 设置页
-  static String user = '/user';
-  static String setting = '/setting';
-  static String languageSetting = '/language_setting';
-  static String scheduleSetting = '/schedule_setting';
-  static String colorSetting = '/color_setting';
+  static String user = 'home/user';
+  static String setting = 'setting/home';
+  static String languageSetting = 'setting/language_setting';
+  static String scheduleSetting = 'setting/schedule_setting';
+  static String colorSetting = 'setting/color_setting';
+
+  static String mailbox = "user/mailbox";
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
@@ -60,17 +65,19 @@ class AuthRouter {
     addInfo: (_) => AddInfoWidget(),
     findHome: (_) => FindPwWidget(),
     findPhone: (_) => FindPwByPhoneWidget(),
-    reset: (_) => ResetPwWidget(),
+    resetPw: (_) => ResetPwWidget(), // 这个是登录时的修改密码
     resetDone: (_) => ResetDoneWidget(),
     tjuBind: (_) => TjuBindPage(),
     phoneBind: (_) => PhoneBindPage(),
     emailBind: (_) => EmailBindPage(),
     resetName: (_) => ResetNicknamePage(),
+    resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     colorSetting: (_) => ColorSettingPage(),
+    mailbox: (_) => UserMailboxPage(),
   };
 }

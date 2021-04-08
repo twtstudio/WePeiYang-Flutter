@@ -8,6 +8,8 @@ import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'hive_manager.dart';
 
 class LoungeRepository {
+  static bool canLoadData = true;
+
   static Future<List<Building>> get _getBaseBuildingList async {
     debugPrint('????????????????? _getBaseBuildingList ?????????????????');
     var response = await openApi.get('getBuildingList');
@@ -61,7 +63,8 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
-    if (HiveManager.instance.shouldUpdateLocalData) {
+    if (HiveManager.instance.shouldUpdateLocalData && canLoadData) {
+      canLoadData = !canLoadData;
       ToastProvider.running('加载数据需要一点时间');
       await _getBaseBuildingList.then((value) async {
         await HiveManager.instance.clearLocalData();
@@ -76,13 +79,17 @@ class LoungeRepository {
           });
           ToastProvider.success('教室安排加载成功');
         }, onError: (e) {
-          ToastProvider.error(e.toString().split(':')[1].trim());
           throw e;
         });
       }, onError: (e) {
-        ToastProvider.error('基础数据解析错误');
         throw e;
-      });
+      }).catchError(
+        (e) {
+          ToastProvider.error(e.toString().split(':')[1].trim());
+          debugPrint("updatelocaldata error ${e.toString()}");
+        },
+      );
+      canLoadData = !canLoadData;
     }
   }
 

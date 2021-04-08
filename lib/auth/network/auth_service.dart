@@ -1,4 +1,4 @@
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/main.dart';
@@ -174,12 +174,25 @@ verifyOnReset(String phone, String code,
   }
 }
 
-/// 修改密码
-resetPw(String phone, String password,
+/// 忘记密码时，使用手机号修改密码
+resetPwByPhone(String phone, String password,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
     await _dio.post("password/reset",
         queryParameters: {"phone": phone, "password": password});
+    onSuccess();
+  } on DioError catch (e) {
+    if (onFailure != null) onFailure(e);
+  }
+}
+
+/// 登录状态下修改密码
+resetPwByLogin(String password,
+    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+  try {
+    await _dio
+        .put("password/person/reset", queryParameters: {"password": password});
+    CommonPreferences().password.value = password;
     onSuccess();
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);

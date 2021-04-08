@@ -200,7 +200,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
               children: [
                 Expanded(child: SizedBox()),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pop(context),
                   child: Text(
                     '确定',
                     style: TextStyle(

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart' show DioError;
 import 'package:flutter/material.dart' show required;
-import 'package:wei_pei_yang_demo/commons/network/spider_service.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_model.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
@@ -85,6 +85,9 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
     case '缓考':
       score = _DELAYED;
       break;
+    case '--':
+      score = _DELAYED;
+      break;
     case 'F':
       score = 0.0;
       break;
@@ -93,6 +96,7 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
     case 'C':
     case 'D':
     case 'E':
+    case '':
       score = _IGNORED;
       break;
     default:

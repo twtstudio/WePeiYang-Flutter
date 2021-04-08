@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 //加载缓存
@@ -47,16 +48,29 @@ Future<Null> delAllTemporaryFile() async {
   Directory tempDir = await getExternalStorageDirectory();
   final List<FileSystemEntity> children = tempDir.listSync();
   for (var child in children) {
+    debugPrint(child.path);
+    if (child.path.endsWith("gtpush")) continue;
     if (child is Directory) {
-      var delete = false;
-      for (var apk in child.listSync()) {
-        if (apk.path.endsWith('temporary')) {
-          delete = true;
+      var delete = true;
+      var reg = RegExp(r'^[0-9].[0-9].[0-9]$');
+      var dirName = child.path.substring(
+          child.path.lastIndexOf("/") + 1,
+          child.path.length);
+      debugPrint("dirName : $dirName");
+      if (reg.hasMatch(dirName)) {
+        for (var apk in child.listSync()) {
+          if (apk.path.endsWith('apk')) {
+            delete = false;
+          }
         }
       }
       if (delete) {
-        _delDir(child);
+        debugPrint("delete Directory : ${child.path}");
+        await _delDir(child);
       }
+    } else {
+      debugPrint("delete other : ${child.path}");
+      await child.delete();
     }
   }
 }

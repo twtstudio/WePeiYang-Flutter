@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/update/UpdateDialog.dart';
+import 'package:wei_pei_yang_demo/commons/update/update_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/update/common.dart';
 import 'package:wei_pei_yang_demo/commons/update/http.dart';
 import 'package:wei_pei_yang_demo/commons/update/update.dart';
@@ -22,7 +22,7 @@ class UpdatePrompter {
 
   UpdatePrompter({@required this.updateEntity, @required this.onInstall});
 
-  void show(BuildContext context) async {
+  void show(BuildContext context, Version version) async {
     if (_dialog != null && _dialog.isShowing()) {
       return;
     }
@@ -30,6 +30,8 @@ class UpdatePrompter {
     String updateContent = getUpdateContent();
     if (Platform.isAndroid) {
       _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
+      debugPrint("apkfile path:");
+      debugPrint(_apkFile.path);
     }
     if (_apkFile != null && _apkFile.existsSync()) {
       _dialog = UpdateDialog.showUpdate(
@@ -39,6 +41,7 @@ class UpdatePrompter {
         updateButtonText: "安装",
         extraHeight: 10,
         onUpdate: doInstall,
+        version: version,
       );
     } else {
       _dialog = UpdateDialog.showUpdate(
@@ -46,7 +49,10 @@ class UpdatePrompter {
         title: title,
         updateContent: updateContent,
         extraHeight: 10,
+        enableIgnore: true,
+        onIgnore: () => Navigator.pop(context),
         onUpdate: onUpdate,
+        version: version,
       );
     }
   }
@@ -62,7 +68,7 @@ class UpdatePrompter {
     return updateContent;
   }
 
-  void onUpdate() {
+  Future<void> onUpdate() async {
     if (Platform.isIOS) {
       doInstall();
       return;
@@ -76,17 +82,22 @@ class UpdatePrompter {
       }
     }).then((value) async {
       var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
-      _apkFile.rename(path);
-      doInstall();
+      debugPrint(path);
+      debugPrint(updateEntity.path);
+      var newPath = _apkFile.absolute.parent.path + "/" + path;
+      debugPrint(newPath);
+      await _apkFile.rename(newPath).then((_) => doInstall(newPath));
     }).catchError((value) {
       ToastProvider.error("下载失败！");
       _dialog.dismiss();
+      debugPrint(value.toString());
     });
   }
 
   /// 安装
-  void doInstall() {
+  void doInstall([String path]) {
     _dialog.dismiss();
-    onInstall.call(_apkFile != null ? _apkFile.path : updateEntity.path);
+    debugPrint("abcdefg   ${_apkFile.absolute.path}");
+    onInstall.call(path ?? _apkFile.absolute.path);
   }
 }

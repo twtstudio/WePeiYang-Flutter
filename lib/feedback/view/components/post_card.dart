@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
+import 'package:wei_pei_yang_demo/message/feedback_banner_widget.dart';
 
 typedef GesturePressedCallback = void Function();
 
@@ -16,6 +15,7 @@ class PostCard extends StatefulWidget {
   GesturePressedCallback onLikePressed = () {};
   GesturePressedCallback onFavoritePressed = () {};
   GesturePressedCallback onContentLongPressed = () {};
+  bool showBanner;
 
   @override
   State createState() {
@@ -34,7 +34,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
@@ -49,7 +50,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
@@ -64,7 +66,8 @@ class PostCard extends StatefulWidget {
       {GesturePressedCallback onContentPressed,
       GesturePressedCallback onLikePressed,
       GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed}) {
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
@@ -95,232 +98,223 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(),
-          InkWell(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      // Post title.
-                      Expanded(
-                        child: Text(
-                          post.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: ColorUtil.boldTextColor,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            height: 1.5,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      child: FeedbackBannerWidget(
+        showBanner: widget.showBanner ?? false,
+        questionId: post.id,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BlankSpace.height(5),
+                    Row(
+                      children: [
+                        // Post title.
+                        Expanded(
+                          child: Text(
+                            post.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: ColorUtil.boldTextColor,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              height: 1,
+                            ),
                           ),
                         ),
-                      ),
-                      if (post.isSolved == 1)
-                        Text(
-                          '已解决',
-                          style: TextStyle(
-                              color: ColorUtil.boldTextColor, fontSize: 12),
-                        ),
-                    ],
-                  ),
-                  BlankSpace.height(5),
-                  // Tag.
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              post.tags.length > 0
-                                  ? '#${post.tags[0].name}'
-                                  : '#无标签',
-                              style: TextStyle(color: ColorUtil.lightTextColor),
-                            ),
-                            BlankSpace.height(5),
-                            Text(
-                              post.content,
-                              maxLines: enableImgList ? null : 2,
-                              overflow:
-                                  enableImgList ? null : TextOverflow.ellipsis,
-                              style: TextStyle(
-                                height: 1.5,
-                                color: ColorUtil.boldTextColor,
+                        if (post.isSolved == 1)
+                          Text(
+                            '已解决',
+                            style: TextStyle(
+                                color: ColorUtil.boldTextColor, fontSize: 12),
+                          ),
+                      ],
+                    ),
+                    BlankSpace.height(5),
+                    // Tag.
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                post.tags.length > 0
+                                    ? '#${post.tags[0].name}'
+                                    : '#无标签',
+                                style:
+                                    TextStyle(color: ColorUtil.lightTextColor),
                               ),
-                            ),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                              BlankSpace.height(5),
+                              Text(
+                                post.content,
+                                maxLines: enableImgList ? null : 2,
+                                overflow: enableImgList
+                                    ? null
+                                    : TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  height: 1,
+                                  color: ColorUtil.boldTextColor,
+                                ),
+                              ),
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
                         ),
-                      ),
-                      if (enableTopImg) BlankSpace.width(10),
-                      // Thumbnail when top image enabled.
-                      if (enableTopImg)
-                        Image.network(
-                          post.topImgUrl,
-                          width: 80,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        ),
-                    ],
-                  ),
-                ],
+                        if (enableTopImg) BlankSpace.width(10),
+                        // Thumbnail when top image enabled.
+                        if (enableTopImg)
+                          Image.network(
+                            post.topImgUrl,
+                            width: 80,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+                onTap: onContentPressed,
+                onLongPress: onContentLongPressed,
               ),
-            ),
-            onTap: onContentPressed,
-            onLongPress: onContentLongPressed,
-          ),
-          if (enableImgList && post.imgUrlList.length != 0)
-            BlankSpace.height(10),
-          // Image list.
-          // TODO: Replace height with correct expression.
-          if (enableImgList && post.imgUrlList.length != 0)
-            Row(
-              children: [
-                for (int i = 0; i < post.imgUrlList.length; i++)
-                  Expanded(
-                    flex: 1,
+              if (enableImgList && post.imgUrlList.length != 0)
+                BlankSpace.height(10),
+              // Image list.
+              if (enableImgList && post.imgUrlList.length != 0)
+                ListView.builder(
+                  itemBuilder: (context, index) =>
+                      Image.network(post.imgUrlList[index]),
+                  itemCount: post.imgUrlList.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                ),
+              BlankSpace.height(10),
+              Row(
+                children: [
+                  // Time.
+                  if (enableImgList)
+                    Text(
+                      post.createTime.substring(0, 10) +
+                          '  ' +
+                          (post.createTime
+                                  .substring(11)
+                                  .split('.')[0]
+                                  .startsWith('0')
+                              ? post.createTime
+                                  .substring(12)
+                                  .split('.')[0]
+                                  .substring(0, 4)
+                              : post.createTime
+                                  .substring(11)
+                                  .split('.')[0]
+                                  .substring(0, 5)),
+                      style: TextStyle(
+                        color: ColorUtil.lightTextColor,
+                      ),
+                    ),
+                  if (enableImgList) Spacer(),
+                  // Comment count
+                  ClipOval(
                     child: InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, FeedbackRouter.imageView,
-                            arguments: post.imgUrlList[i]);
-                      },
-                      child: FadeInImage.memoryNetwork(
-                          fit: BoxFit.cover,
-                          height: 200 - (post.thumbImgUrlList.length) * 40.0,
-                          placeholder: ScreenUtil.kTransparentImage,
-                          image: post.thumbImgUrlList[i]),
+                      child: Icon(
+                        Icons.message_outlined,
+                        size: 16,
+                        color: ColorUtil.lightTextColor,
+                      ),
                     ),
                   ),
-              ],
-            ),
-          Row(
-            children: [
-              // Time.
-              if (enableImgList) BlankSpace.width(12),
-              if (enableImgList)
-                Text(
-                  post.createTime.substring(0, 10) +
-                      '  ' +
-                      (post.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .startsWith('0')
-                          ? post.createTime
-                              .substring(12)
-                              .split('.')[0]
-                              .substring(0, 4)
-                          : post.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .substring(0, 5)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: ColorUtil.lightTextColor,
-                  ),
-                ),
-              if (enableImgList) Spacer(),
-              // Comment count
-              ButtonTheme(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                child: FlatButton.icon(
-                  onPressed: onContentPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  icon: Icon(
-                    Icons.message_outlined,
-                    size: 16,
-                    color: ColorUtil.lightTextColor,
-                  ),
-                  label: Text(
+                  BlankSpace.width(8),
+                  Text(
                     post.commentCount.toString(),
                     style: TextStyle(
                         fontSize: 14, color: ColorUtil.lightTextColor),
                   ),
-                ),
-              ),
-              // Like count.
-              ButtonTheme(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minWidth: 0,
-                child: FlatButton.icon(
-                  onPressed: onLikePressed,
-                  icon: Icon(
-                    !post.isLiked ? Icons.thumb_up_outlined : Icons.thumb_up,
-                    size: 16,
-                    color:
-                        !post.isLiked ? ColorUtil.lightTextColor : Colors.red,
+                  BlankSpace.width(16),
+                  // Like count.
+                  GestureDetector(
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          child: Icon(
+                            !post.isLiked
+                                ? Icons.thumb_up_outlined
+                                : Icons.thumb_up,
+                            size: 16,
+                            color: !post.isLiked
+                                ? ColorUtil.lightTextColor
+                                : Colors.red,
+                          ),
+                        ),
+                        BlankSpace.width(8),
+                        Text(
+                          post.likeCount.toString(),
+                          style: TextStyle(
+                              fontSize: 14, color: ColorUtil.lightTextColor),
+                        ),
+                      ],
+                    ),
+                    onTap: onLikePressed,
                   ),
-                  label: Text(
-                    post.likeCount.toString(),
-                    style: TextStyle(
-                        fontSize: 14, color: ColorUtil.lightTextColor),
-                  ),
-                ),
-              ),
-              if (!enableImgList) Spacer(),
-              // Favorite.
-              if (enableImgList)
-                ButtonTheme(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8.0),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    child: FlatButton(
-                      child: Icon(
-                        post.isFavorite ? Icons.star : Icons.star_border,
-                        size: 16,
-                        color: post.isFavorite
-                            ? Colors.amber
-                            : ColorUtil.lightTextColor,
+                  if (!enableImgList) Spacer(),
+                  if (enableImgList) BlankSpace.width(16),
+                  // Favorite.
+                  if (enableImgList)
+                    ClipOval(
+                      child: InkWell(
+                        child: Icon(
+                          post.isFavorite ? Icons.star : Icons.star_border,
+                          size: 16,
+                          color: post.isFavorite
+                              ? Colors.amber
+                              : ColorUtil.lightTextColor,
+                        ),
+                        onTap: onFavoritePressed,
                       ),
-                      onPressed: onFavoritePressed,
-                    )),
-              if (!enableImgList)
-                Text(
-                  post.createTime.substring(0, 10) +
-                      '  ' +
-                      (post.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .startsWith('0')
-                          ? post.createTime
-                              .substring(12)
-                              .split('.')[0]
-                              .substring(0, 4)
-                          : post.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .substring(0, 5)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: ColorUtil.lightTextColor,
-                  ),
-                ),
-              if (enableImgList) BlankSpace.width(12),
+                    ),
+                  if (!enableImgList)
+                    Text(
+                      post.createTime.substring(0, 10) +
+                          '  ' +
+                          (post.createTime
+                                  .substring(11)
+                                  .split('.')[0]
+                                  .startsWith('0')
+                              ? post.createTime
+                                  .substring(12)
+                                  .split('.')[0]
+                                  .substring(0, 4)
+                              : post.createTime
+                                  .substring(11)
+                                  .split('.')[0]
+                                  .substring(0, 5)),
+                      style: TextStyle(
+                        color: ColorUtil.lightTextColor,
+                      ),
+                    ),
+                ],
+              ),
+              BlankSpace.height(5),
             ],
           ),
-        ],
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 5,
+                  color: Color.fromARGB(64, 236, 237, 239),
+                  offset: Offset(0, 0),
+                  spreadRadius: 3),
+            ],
+          ),
+        ),
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-              blurRadius: 5,
-              color: Color.fromARGB(64, 236, 237, 239),
-              offset: Offset(0, 0),
-              spreadRadius: 3),
-        ],
-      ),
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
     );
   }
 }
