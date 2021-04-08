@@ -1,5 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
@@ -23,7 +25,6 @@ class RoomFavouriteModel extends ChangeNotifier {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
-
       List<String> remoteIds = await LoungeRepository.favouriteList;
       await LoungeRepository.updateLocalData(DateTime.now());
 
@@ -98,9 +99,11 @@ class FavouriteModel extends ViewStateModel {
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
+        ToastProvider.success('取消收藏成功', gravity: ToastGravity.TOP);
       } else {
         await LoungeRepository.collect(id: room.id);
         await globalFavouriteModel.addFavourite(room: room);
+        ToastProvider.success('收藏成功', gravity: ToastGravity.TOP);
       }
       setIdle();
     } catch (e, s) {

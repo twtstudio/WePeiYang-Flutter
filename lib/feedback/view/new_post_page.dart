@@ -47,7 +47,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   color: Colors.grey[200],
                   blurRadius: 5.0, //阴影模糊程度
                   spreadRadius: 5.0 //阴影扩散程度
-              )
+                  )
             ],
           ),
           child: ListView(
@@ -280,35 +280,35 @@ class _TabGridViewState extends State<TabGridView>
                     .tagList
                     .length, (index) {
               return Provider.of<FeedbackNotifier>(context, listen: false)
-                  .tagList[index]
-                  .name ==
-                  currentTab
+                          .tagList[index]
+                          .name ==
+                      currentTab
                   ? FadeTransition(
-                opacity: Tween(begin: 0.0, end: 1.0)
-                    .animate(_animationController),
-                child: _tagChip(
-                  text: Provider.of<FeedbackNotifier>(context,
-                      listen: false)
-                      .tagList[index]
-                      .name,
-                  tagId: Provider.of<FeedbackNotifier>(context,
-                      listen: false)
-                      .tagList[index]
-                      .id,
-                  index: index,
-                ),
-              )
+                      opacity: Tween(begin: 0.0, end: 1.0)
+                          .animate(_animationController),
+                      child: _tagChip(
+                        text: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .name,
+                        tagId: Provider.of<FeedbackNotifier>(context,
+                                listen: false)
+                            .tagList[index]
+                            .id,
+                        index: index,
+                      ),
+                    )
                   : _tagChip(
-                text:
-                Provider.of<FeedbackNotifier>(context, listen: false)
-                    .tagList[index]
-                    .name,
-                tagId:
-                Provider.of<FeedbackNotifier>(context, listen: false)
-                    .tagList[index]
-                    .id,
-                index: index,
-              );
+                      text:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .name,
+                      tagId:
+                          Provider.of<FeedbackNotifier>(context, listen: false)
+                              .tagList[index]
+                              .id,
+                      index: index,
+                    );
             }),
           )
         ],
