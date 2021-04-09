@@ -16,6 +16,7 @@ import 'package:wei_pei_yang_demo/message/message_model.dart';
 
 extension PostListSortExtension on List<Post> {
   List<Post> sortWithMessage(List<MessageDataItem> list) {
+    if(list == null) return this;
     List<Post> match = [];
     List<int> ids = list.map((e) => e.questionId).toList();
     List<Post> base = [...this];

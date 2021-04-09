@@ -59,9 +59,10 @@ class CommonPreferences {
 
   /// feedback token
   var feedbackToken = PrefsBean<String>("feedbackToken");
-  var feedbackMessageQuestions = PrefsBean<String>("feedbackMessageQuestionsList");
-  var feedbackMessageFavourites = PrefsBean<String>("feedbackMessageFavouritesList");
   /// feedback token
+
+  /// lounge temporary data update time
+  var temporaryUpdateTime = PrefsBean<String>("");
 
   List<String> getCookies() {
     var jSessionId = 'J' +

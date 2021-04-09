@@ -285,6 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
       PostCard.image(
         feedbackNotifier.profilePostList[index],
         onContentPressed: () {
+          debugPrint("jump to detailpage");
           Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
@@ -304,7 +305,7 @@ class _ProfilePageState extends State<ProfilePage> {
               showDialog(
                   context: context,
                   builder: (context) {
-                    return;
+                    return _dialog(context, feedbackNotifier, index);
                   }).then((value) {
                 _deleteLock = false;
               });

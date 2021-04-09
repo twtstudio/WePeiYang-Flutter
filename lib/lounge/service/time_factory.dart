@@ -45,45 +45,53 @@ class Time {
   static bool availableNow(String state, List<ClassTime> schedules) =>
       state.isNotEmpty && schedules.isNotEmpty
           ? schedules.map((time) {
-              var list = state.split('');
-              if (list[time.id * 2 - 1] == '0' &&
-                  list[time.id * 2 - 2] == '0') {
-                return true;
-              } else {
-                return false;
-              }
-            }).reduce((v, e) => v && e)
+        var list = state.split('');
+        if (list[time.id * 2 - 1] == '0' &&
+            list[time.id * 2 - 2] == '0') {
+          return true;
+        } else {
+          return false;
+        }
+      }).reduce((v, e) => v && e)
           : !state.contains('1');
 
-  static ClassTime classOfDay(DateTime date) {
+  static Current classOfDay(DateTime date) {
     var h = date.hour;
     // print(date);
     if (h < 10) {
-      return ClassTime.am_1;
+      return Current(date, ClassTime.am_1);
     } else if (h < 12) {
-      return ClassTime.am_2;
+      return Current(date, ClassTime.am_2);
     } else if (h < 15) {
-      return ClassTime.pm_1;
+      return Current(date, ClassTime.pm_1);
     } else if (h < 17) {
-      return ClassTime.am_2;
+      return Current(date, ClassTime.pm_2);
     } else if (h < 20) {
-      return ClassTime.pm_3;
+      return Current(date, ClassTime.pm_3);
     } else if (h < 22) {
-      return ClassTime.pm_4;
+      return Current(date, ClassTime.pm_4);
     } else {
       // 晚上十点以后显示第二天早上第一节课
-      return ClassTime.am_1;
+      return Current(date.next, ClassTime.am_1);
     }
   }
 
-  static List<ClassTime> get rangeList => [
-    ClassTime.am_1,
-    ClassTime.am_2,
-    ClassTime.pm_1,
-    ClassTime.pm_2,
-    ClassTime.pm_3,
-    ClassTime.pm_4
+  static List<ClassTime> get rangeList =>
+      [
+        ClassTime.am_1,
+        ClassTime.am_2,
+        ClassTime.pm_1,
+        ClassTime.pm_2,
+        ClassTime.pm_3,
+        ClassTime.pm_4
       ];
+}
+
+class Current {
+  final DateTime date;
+  final ClassTime classTime;
+
+  Current(this.date, this.classTime);
 }
 
 enum ClassTime { am_1, am_2, pm_1, pm_2, pm_3, pm_4 }
@@ -91,7 +99,8 @@ enum ClassTime { am_1, am_2, pm_1, pm_2, pm_3, pm_4 }
 extension ScheduleExtension on ClassTime {
   int get id => [1, 2, 3, 4, 5, 6][this.index];
 
-  String get timeRange => [
+  String get timeRange =>
+      [
         "8:30--10:05",
         "10:25--12:00",
         "13:30--15:05",
@@ -115,7 +124,7 @@ extension DateTimeExtension on DateTime {
     var start = await Time.semesterStart();
     return thisWeek
         .map((e) =>
-            PlanDate(e._weekConversion(start), e._weekdayConversion(start)))
+        PlanDate(e._weekConversion(start), e._weekdayConversion(start)))
         .toList();
   }
 
@@ -126,7 +135,13 @@ extension DateTimeExtension on DateTime {
 
   // error:   DateTime(2021,2,17,25,0).isToday => true  today: 17
   bool get isToday =>
-      _dayStart.difference(DateTime.now()._dayStart).inDays == 0;
+      _dayStart
+          .difference(DateTime
+          .now()
+          ._dayStart)
+          .inDays == 0 && isBefore22;
+
+  bool get isBefore22 => difference(DateTime(year,month,day,22)).isNegative;
 
   DateTime get _dayStart => DateTime(year, month, day);
 
@@ -139,15 +154,22 @@ extension DateTimeExtension on DateTime {
     return _weekConversion(begin) == DateTime.now()._weekConversion(begin);
   }
 
-  List<DateTime> get thisWeek => Time.week
-      .asMap()
-      .keys
-      .map((i) => weekStart.add(Duration(days: i)))
-      .toList();
+  List<DateTime> get thisWeek =>
+      Time.week
+          .asMap()
+          .keys
+          .map((i) => weekStart.add(Duration(days: i)))
+          .toList();
 
   bool isTheSameWeek(DateTime dateTime) =>
-      weekStart.difference(dateTime.weekStart).inDays == 0;
+      weekStart
+          .difference(dateTime.weekStart)
+          .inDays == 0;
 
   bool isTheSameDay(DateTime dateTime) =>
-      _dayStart.difference(dateTime._dayStart).inDays == 0;
+      _dayStart
+          .difference(dateTime._dayStart)
+          .inDays == 0;
+
+  DateTime get next => this._dayStart.add(Duration(days: 1));
 }

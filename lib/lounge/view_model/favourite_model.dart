@@ -21,12 +21,11 @@ class RoomFavouriteModel extends ChangeNotifier {
   refreshData({DateTime dateTime}) async {
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
-    await instance.initBuildingName();
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
+      await instance.initBuildingName();
       List<String> remoteIds = await LoungeRepository.favouriteList;
-      await LoungeRepository.updateLocalData(DateTime.now());
 
       // 添加新的收藏到本地
       for (var id in remoteIds) {
