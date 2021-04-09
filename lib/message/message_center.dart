@@ -51,6 +51,7 @@ class MessageRepository {
     try {
       await messageApi.post("question",
           queryParameters: {"token": token, "question_id": questionId});
+      debugPrint("setQuestionRead");
     } catch (e) {
       debugPrint(e.toString());
     }

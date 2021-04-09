@@ -379,7 +379,7 @@ class _MessagesListState extends State<MessagesList>
 
 class MessageItem extends StatelessWidget {
   final FeedbackMessageItem data;
-  final VoidCallback onTapDown;
+  final VoidFutureCallBack onTapDown;
   final MessageType type;
 
   const MessageItem({Key key, this.data, this.onTapDown, this.type})
@@ -566,19 +566,25 @@ class MessageItem extends StatelessWidget {
     Widget messageWrapper;
 
     if (data.visible == 1) {
-      messageWrapper = ClipRect(
-        child: Banner(
-          message: "未读",
-          location: BannerLocation.topEnd,
-          child: questionItem,
-        ),
+      // messageWrapper = ClipRect(
+      //   child: Banner(
+      //     message: "未读",
+      //     location: BannerLocation.topEnd,
+      //     child: questionItem,
+      //   ),
+      // );
+      messageWrapper = Badge(
+        position: BadgePosition.topEnd(end: -2,top: -14),
+        padding: EdgeInsets.all(5),
+        badgeContent: Text(""),
+        child: questionItem,
       );
     }
 
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20, top: 10),
       child: GestureDetector(
-        onTapDown: (_) => onTapDown?.call(),
+        onTapDown: (_) async => await onTapDown?.call(),
         onTapUp: (_) {
           Navigator.pushNamed(
             context,

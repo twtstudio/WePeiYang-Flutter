@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/feedback/view/profile_page.dart';
 
 import 'blank_space.dart';
 
@@ -36,6 +37,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               title: Text('个人中心'),
               centerTitle: true,
+              actions: [FeedbackMailbox()],
             ),
             SliverToBoxAdapter(
               child: BlankSpace.height(23),

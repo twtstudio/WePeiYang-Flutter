@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -135,6 +136,7 @@ class FeedbackNotifier with ChangeNotifier {
     getToken(
       onSuccess: (token) {
         _token = token;
+        CommonPreferences().feedbackToken.value = token;
         getTags(
           _token,
           onSuccess: (list) {
