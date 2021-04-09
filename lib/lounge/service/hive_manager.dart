@@ -2,6 +2,7 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -100,6 +101,7 @@ class HiveManager {
   setTemporaryDataFinish(DateTime dateTime) async {
     await _temporaryData.put(temporary, null);
     _temporaryDateTime = dateTime;
+    CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
@@ -142,6 +144,7 @@ class HiveManager {
   }
 
   initBuildingName() async {
+    debugPrint("initBuildingName");
     if (_boxesKeys.isNotEmpty && !shouldUpdateLocalData) {
       for (var id in _boxesKeys.keys) {
         var building = await _buildingBoxes[id].get(baseRoom);
@@ -149,6 +152,7 @@ class HiveManager {
       }
     } else if (shouldUpdateLocalData) {
       await LoungeRepository.updateLocalData(DateTime.now());
+      initBuildingName();
     }
   }
 
@@ -175,14 +179,16 @@ class HiveManager {
 
   bool get shouldUpdateLocalData => _boxesKeys.isEmpty
       ? true
-      : !_boxesKeys.values
-          .map((e) =>
-              e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday)
-          .reduce((v, e) => v && e);
+      : !_boxesKeys.values.map((e) {
+          print(e.dateTime);
+          return e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday;
+        }).reduce((v, e) => v && e);
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
+    debugPrint("shouldUpdateTemporaryData ${_temporaryDateTime.toString()}");
     if (_temporaryDateTime == null) {
       _temporaryDateTime = dateTime;
+      CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
       return true;
     } else {
       if (_temporaryDateTime.isTheSameWeek(dateTime) &&
@@ -282,6 +288,7 @@ class HiveManager {
     Map<String, List<String>> _plans = {};
     var id = r.bId;
     // print('get class plans id: ' + id);
+    debugPrint("getRoomPlans ${r.id} ${dateTime.toString()}");
     await getBuildingPlanData(id: id, time: dateTime).forEach((plan) {
       var day = plan.key;
       var building = plan.value;
@@ -310,14 +317,22 @@ class HiveManager {
         throw Exception('get data from box error: ' + id);
       }
     } else {
-      if (_temporaryData.isNotEmpty) {
-        for (var day in Time.week) {
-          var data = _temporaryData.get(day);
-          for (var building in data.buildings) {
-            if (building.id == id) {
-              yield MapEntry(day, building);
-              break;
-            }
+      var updateTime = DateTime.tryParse(
+        CommonPreferences().temporaryUpdateTime.value,
+      );
+
+      var ifNotUpdate = updateTime?.isTheSameWeek(time) ?? false;
+
+      if (_temporaryData.isEmpty || !ifNotUpdate) {
+        await LoungeRepository.updateTemporaryData(time);
+      }
+
+      for (var day in Time.week) {
+        var data = _temporaryData.get(day);
+        for (var building in data.buildings) {
+          if (building.id == id) {
+            yield MapEntry(day, building);
+            break;
           }
         }
       }

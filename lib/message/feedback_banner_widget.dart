@@ -18,9 +18,8 @@ class FeedbackBannerWidget extends StatelessWidget {
       return Consumer<MessageProvider>(builder: (__, model, _) {
         Widget result;
         if (model.inMessageList(questionId)) {
-          result = GestureDetector(
-            onTapDown: (_) async =>
-                await model.setFeedbackQuestionRead(questionId),
+          result = Listener(
+            onPointerDown: (_) => model.setFeedbackQuestionRead(questionId),
             child: ClipRect(
               child: Banner(
                 message: "未读",

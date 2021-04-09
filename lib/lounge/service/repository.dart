@@ -63,6 +63,9 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
+    if(!dateTime.isBefore22){
+      dateTime = dateTime.next;
+    }
     if (HiveManager.instance.shouldUpdateLocalData && canLoadData) {
       canLoadData = !canLoadData;
       ToastProvider.running('加载数据需要一点时间');
@@ -93,28 +96,32 @@ class LoungeRepository {
     }
   }
 
+  static updateTemporaryData(DateTime dateTime) async {
+    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
+      ToastProvider.running('加载数据需要一点时间');
+      await HiveManager.instance.setTemporaryDataStart();
+      await _getWeekClassPlan(dateTime: dateTime).toList().then(
+              (plans) async {
+            await Future.forEach<MapEntry<int, List<Building>>>(
+                plans,
+                    (plan) => HiveManager.instance
+                    .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
+              HiveManager.instance.setTemporaryDataFinish(dateTime);
+            });
+            ToastProvider.success('教室安排加载成功');
+          }, onError: (e) {
+        ToastProvider.error(e.toString().split(':')[1].trim());
+        throw e;
+      });
+    }
+  }
+
   static setLoungeData({@required LoungeTimeModel model}) async {
     var dateTime = model.dateTime;
     if (dateTime.isThisWeek) {
       await updateLocalData(dateTime);
     } else {
-      if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
-        ToastProvider.running('加载数据需要一点时间');
-        await HiveManager.instance.setTemporaryDataStart();
-        await _getWeekClassPlan(dateTime: dateTime).toList().then(
-            (plans) async {
-          await Future.forEach<MapEntry<int, List<Building>>>(
-              plans,
-              (plan) => HiveManager.instance
-                  .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
-            HiveManager.instance.setTemporaryDataFinish(dateTime);
-          });
-          ToastProvider.success('教室安排加载成功');
-        }, onError: (e) {
-          ToastProvider.error(e.toString().split(':')[1].trim());
-          throw e;
-        });
-      }
+      await updateTemporaryData(dateTime);
     }
   }
 }

@@ -31,18 +31,21 @@ class LoungeTimeModel extends ChangeNotifier {
     List<ClassTime> schedule,
     bool init = false,
   }) async {
-    debugPrint('++++++++++++++++ lounge time model change time +++++++++++++++++++');
+    debugPrint(
+        '++++++++++++++++ lounge time model change time +++++++++++++++++++');
     _state = ViewState.busy;
     if (_classTime == null && _dateTime == null) {
-      _classTime = [Time.classOfDay(DateTime.now())];
-      _dateTime = DateTime.now();
+      var current = Time.classOfDay(DateTime.now());
+      // var current = Time.classOfDay(DateTime(2021, 4, 18, 22, 25));
+      _classTime = [current.classTime];
+      _dateTime = current.date;
     } else {
       _classTime = schedule ?? _classTime;
       _dateTime = date ?? _dateTime;
     }
-    if(!init){
+    if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
-      if(connectivityResult != ConnectivityResult.none){
+      if (connectivityResult != ConnectivityResult.none) {
         notifyListeners();
         try {
           await LoungeRepository.setLoungeData(model: this);
@@ -51,7 +54,7 @@ class LoungeTimeModel extends ChangeNotifier {
           _state = ViewState.error;
         }
         notifyListeners();
-      }else {
+      } else {
         _state = ViewState.idle;
         notifyListeners();
       }

@@ -28,7 +28,7 @@ class LoungeFavourWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.symmetric(horizontal: 25),
             child: Text(
               title,
               style: TextStyle(
@@ -57,6 +57,14 @@ class FavourListWidget extends StatefulWidget {
 }
 
 class _FavourListWidgetState extends State<FavourListWidget> {
+  WPYPageState pageState;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    pageState = context.findAncestorStateOfType<WPYPageState>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<FavouriteListModel>(
@@ -68,16 +76,10 @@ class _FavourListWidgetState extends State<FavourListWidget> {
       onModelReady: widget.init == true
           ? (model) async {
               debugPrint("set can false");
-              context
-                  .findAncestorStateOfType<WPYPageState>()
-                  .canGoIntoLounge
-                  .value = true;
+              pageState.canGoIntoLounge.value = true;
               await model.initData();
               debugPrint("set can true");
-              context
-                  .findAncestorStateOfType<WPYPageState>()
-                  .canGoIntoLounge
-                  .value = false;
+              pageState.canGoIntoLounge.value = false;
             }
           : null,
       builder: (_, model, __) => ListLoadSteps(
