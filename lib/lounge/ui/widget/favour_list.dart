@@ -89,7 +89,7 @@ class _FavourListWidgetState extends State<FavourListWidget> {
           child: Container(
             child: Center(
               child: Text(
-                '莫得数据，速去动动你的小手手',
+                '暂无收藏',
                 style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
               ),
             ),

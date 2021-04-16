@@ -62,7 +62,8 @@ class CommonPreferences {
   /// feedback token
 
   /// lounge temporary data update time
-  var temporaryUpdateTime = PrefsBean<String>("");
+  var temporaryUpdateTime = PrefsBean<String>("temporaryUpdateTime","");
+  var lastChoseCampus = PrefsBean<int>("lastChoseCampus",0);
 
   List<String> getCookies() {
     var jSessionId = 'J' +

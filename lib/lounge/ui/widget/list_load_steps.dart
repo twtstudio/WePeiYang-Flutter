@@ -79,7 +79,7 @@ class _ListLoadStepsState<T extends ViewStateListModel>
     } else {
       body = widget.defaultV ?? Container(
         height: 80,
-        color: Colors.black,
+        color: Colors.white,
         child: Text('default', style: TextStyle(fontSize: 20,color: Colors.white)),
       );
     }

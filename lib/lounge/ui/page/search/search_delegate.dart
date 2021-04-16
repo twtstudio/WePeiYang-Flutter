@@ -26,6 +26,14 @@ class SRSearchDelegate extends MySearchDelegate<HistoryEntry> {
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
+      IconButton(
+        icon: Icon(Icons.clear,color: Color(0x8862677c),),
+        onPressed: () {
+          _focusNode.requestFocus();
+          _queryTextController.clear();
+        },
+        padding: EdgeInsets.all(0),
+      ),
       TextButton(
         style: ButtonStyle(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -392,7 +400,7 @@ class _MySearchPageState<T> extends State<_MySearchPage<T>> {
                           border: InputBorder.none,
                           hintText: '请输入',
                           hintStyle: TextStyle(
-                            color: Color(0xcc363c54),
+                            color: Color(0x77363c54),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),

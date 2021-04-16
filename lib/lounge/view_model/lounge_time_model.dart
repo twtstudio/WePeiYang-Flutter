@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
@@ -14,7 +15,7 @@ class LoungeTimeModel extends ChangeNotifier {
 
   DateTime get dateTime => _dateTime;
 
-  Campus _campus = Campus.WJL;
+  Campus _campus = Campus.WJL.init;
 
   Campus get campus => _campus;
 
@@ -68,6 +69,8 @@ enum Campus { WJL, BYY }
 
 extension CampusExtension on Campus {
   Campus get change => [Campus.BYY, Campus.WJL][this.index];
+
+  Campus get init => Campus.values[CommonPreferences().lastChoseCampus.value];
 
   String get id => ['1', '2'][this.index];
 
