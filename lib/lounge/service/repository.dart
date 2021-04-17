@@ -8,7 +8,8 @@ import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'hive_manager.dart';
 
 class LoungeRepository {
-  static bool canLoadData = true;
+  static bool canLoadLocalData = true;
+  static bool canLoadTemporaryData = true;
 
   static Future<List<Building>> get _getBaseBuildingList async {
     debugPrint('????????????????? _getBaseBuildingList ?????????????????');
@@ -66,8 +67,8 @@ class LoungeRepository {
     if(!dateTime.isBefore22){
       dateTime = dateTime.next;
     }
-    if (HiveManager.instance.shouldUpdateLocalData && canLoadData) {
-      canLoadData = !canLoadData;
+    if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
+      canLoadLocalData = !canLoadLocalData;
       ToastProvider.running('加载数据需要一点时间');
       await _getBaseBuildingList.then((value) async {
         await HiveManager.instance.clearLocalData();
@@ -92,12 +93,13 @@ class LoungeRepository {
           debugPrint("updatelocaldata error ${e.toString()}");
         },
       );
-      canLoadData = !canLoadData;
+      canLoadLocalData = !canLoadLocalData;
     }
   }
 
   static updateTemporaryData(DateTime dateTime) async {
-    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
+    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime) && canLoadTemporaryData) {
+      canLoadTemporaryData = !canLoadTemporaryData;
       ToastProvider.running('加载数据需要一点时间');
       await HiveManager.instance.setTemporaryDataStart();
       await _getWeekClassPlan(dateTime: dateTime).toList().then(
@@ -110,9 +112,12 @@ class LoungeRepository {
             });
             ToastProvider.success('教室安排加载成功');
           }, onError: (e) {
-        ToastProvider.error(e.toString().split(':')[1].trim());
         throw e;
+      }).catchError((e){
+        ToastProvider.error(e.toString().split(':')[1].trim());
+        debugPrint("updateTemporaryData error ${e.toString()}");
       });
+      canLoadTemporaryData = !canLoadTemporaryData;
     }
   }
 

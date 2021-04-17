@@ -98,11 +98,15 @@ class FavouriteModel extends ViewStateModel {
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
-        ToastProvider.success('取消收藏成功', gravity: ToastGravity.TOP);
+        ToastProvider.success(
+          '取消收藏成功',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+        );
       } else {
         await LoungeRepository.collect(id: room.id);
         await globalFavouriteModel.addFavourite(room: room);
-        ToastProvider.success('收藏成功', gravity: ToastGravity.TOP);
+        ToastProvider.success('收藏成功', gravity: ToastGravity.BOTTOM);
       }
       setIdle();
     } catch (e, s) {

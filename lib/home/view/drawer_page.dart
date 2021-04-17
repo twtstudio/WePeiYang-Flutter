@@ -37,11 +37,7 @@ Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(
-            bean.icon,
-            color: MyColors.darkGrey,
-            size: 25.0,
-          ),
+          bean.icon,
           Container(height: 5),
           Center(
             child: Text(bean.label,
