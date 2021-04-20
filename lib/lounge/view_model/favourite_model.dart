@@ -27,8 +27,11 @@ class RoomFavouriteModel extends ChangeNotifier {
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
-      await instance.initBuildingName();
       List<String> remoteIds = await LoungeRepository.favouriteList;
+
+      if(remoteIds.isNotEmpty || localData.isNotEmpty){
+        await instance.initBuildingName();
+      }
 
       // 添加新的收藏到本地
       for (var id in remoteIds) {
