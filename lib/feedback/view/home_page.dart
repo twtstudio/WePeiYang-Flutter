@@ -60,7 +60,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
         page: currentPage,
         onSuccess: (list, page) {
           totalPage = page;
-          Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
+          Provider.of<FeedbackNotifier>(context, listen: false)
+              .addHomePosts(list);
           _refreshController.loadComplete();
         },
         onFailure: () {
@@ -79,15 +80,19 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
         (page) {
-          setState(() {
-            totalPage = page;
-            status = FeedbackHomePageStatus.idle;
-          });
+          if (mounted) {
+            setState(() {
+              totalPage = page;
+              status = FeedbackHomePageStatus.idle;
+            });
+          }
         },
         () {
-          setState(() {
-            status = FeedbackHomePageStatus.error;
-          });
+          if (mounted) {
+            setState(() {
+              status = FeedbackHomePageStatus.error;
+            });
+          }
         },
       );
     });
@@ -99,7 +104,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await Provider.of<MessageProvider>(context,listen: false).refreshFeedbackCount();
+      await Provider.of<MessageProvider>(context, listen: false)
+          .refreshFeedbackCount();
     });
   }
 

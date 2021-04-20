@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -143,20 +144,27 @@ class HiveManager {
     return rCs.first;
   }
 
-  initBuildingName() async {
+  initBuildingName([bool first]) async {
     debugPrint("initBuildingName");
     if (_boxesKeys.isNotEmpty && !shouldUpdateLocalData) {
       for (var id in _boxesKeys.keys) {
         var building = await _buildingBoxes[id].get(baseRoom);
         _buildingName[id] = building.name;
+        print("building name : ${building.name}");
       }
     } else if (shouldUpdateLocalData) {
-      await LoungeRepository.updateLocalData(DateTime.now());
-      initBuildingName();
+      try {
+        await LoungeRepository.updateLocalData(DateTime.now());
+        await initBuildingName(false);
+      } catch (e) {
+        ToastProvider.error(e.toString().split(':')[1].trim());
+        debugPrint("initBuildingName retry error ${e.toString()}");
+        throw e;
+      }
     }
   }
 
-  String getBuildingNameById(String id) => _buildingName[id] ?? "不知道";
+  String getBuildingNameById(String id) => _boxesKeys.get(id)?.name ?? "不知道";
 
   removeFavourite({String cId}) async {
     await _favourList.delete(cId);
@@ -180,7 +188,7 @@ class HiveManager {
   bool get shouldUpdateLocalData => _boxesKeys.isEmpty
       ? true
       : !_boxesKeys.values.map((e) {
-          print(e.dateTime);
+          print(e?.dateTime ?? "no date time error");
           return e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday;
         }).reduce((v, e) => v && e);
 
@@ -234,6 +242,7 @@ class HiveManager {
       // print(box.path);
       await _boxesKeys.put(building.id, null);
       _buildingName[id] = building.name;
+      print("building name : ${building.name}");
     }
   }
 

@@ -64,7 +64,7 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
-    if(!dateTime.isBefore22){
+    if (!dateTime.isBefore22) {
       dateTime = dateTime.next;
     }
     if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
@@ -81,6 +81,7 @@ class LoungeRepository {
                   .writeThisWeekDataInDisk(plan.value, plan.key)).then((_) {
             HiveManager.instance.checkBaseDataIsAllInDisk();
           });
+          canLoadLocalData = !canLoadLocalData;
           ToastProvider.success('教室安排加载成功');
         }, onError: (e) {
           throw e;
@@ -91,42 +92,50 @@ class LoungeRepository {
         (e) {
           ToastProvider.error(e.toString().split(':')[1].trim());
           debugPrint("updatelocaldata error ${e.toString()}");
+          canLoadLocalData = !canLoadLocalData;
+          throw e;
         },
       );
-      canLoadLocalData = !canLoadLocalData;
     }
   }
 
   static updateTemporaryData(DateTime dateTime) async {
-    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime) && canLoadTemporaryData) {
+    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime) &&
+        canLoadTemporaryData) {
       canLoadTemporaryData = !canLoadTemporaryData;
       ToastProvider.running('加载数据需要一点时间');
       await HiveManager.instance.setTemporaryDataStart();
-      await _getWeekClassPlan(dateTime: dateTime).toList().then(
-              (plans) async {
-            await Future.forEach<MapEntry<int, List<Building>>>(
-                plans,
-                    (plan) => HiveManager.instance
-                    .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
-              HiveManager.instance.setTemporaryDataFinish(dateTime);
-            });
-            ToastProvider.success('教室安排加载成功');
-          }, onError: (e) {
+      await _getWeekClassPlan(dateTime: dateTime).toList().then((plans) async {
+        await Future.forEach<MapEntry<int, List<Building>>>(
+            plans,
+            (plan) => HiveManager.instance
+                .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
+          HiveManager.instance.setTemporaryDataFinish(dateTime);
+        });
+        canLoadTemporaryData = !canLoadTemporaryData;
+        ToastProvider.success('教室安排加载成功');
+      }, onError: (e) {
         throw e;
-      }).catchError((e){
+      }).catchError((e) {
         ToastProvider.error(e.toString().split(':')[1].trim());
         debugPrint("updateTemporaryData error ${e.toString()}");
+        canLoadTemporaryData = !canLoadTemporaryData;
+        throw e;
       });
-      canLoadTemporaryData = !canLoadTemporaryData;
     }
   }
 
   static setLoungeData({@required LoungeTimeModel model}) async {
     var dateTime = model.dateTime;
-    if (dateTime.isThisWeek) {
-      await updateLocalData(dateTime);
-    } else {
-      await updateTemporaryData(dateTime);
+    try {
+      if (dateTime.isThisWeek) {
+        await updateLocalData(dateTime);
+      } else {
+        await updateTemporaryData(dateTime);
+      }
+    } catch (e) {
+      throw e;
+      // ToastProvider.error(e.toString());
     }
   }
 }

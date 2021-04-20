@@ -6,7 +6,10 @@ import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 
 class BuildingDataModel extends ViewStateListModel {
   BuildingDataModel(this.timeModel) {
-    timeModel.addListener(refresh);
+    timeModel.addListener((){
+      print("lounge time model state: ${timeModel.state.toString()}");
+      refresh();
+    });
   }
 
   final LoungeTimeModel timeModel;
@@ -22,6 +25,7 @@ class BuildingDataModel extends ViewStateListModel {
 
   @override
   refresh() async {
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${timeModel.state.toString()}");
     setBusy();
     if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
@@ -37,7 +41,7 @@ class BuildingDataModel extends ViewStateListModel {
         .where((building) => building.campus == campus.id)
         .toList();
     list.sort((a, b) => a.name.compareTo(b.name));
-    print(list.map((e) => e.name).toList());
+    print("home model load data : ${list.map((e) => e.name).toList()},  ${timeModel.state.toString()}");
     return list;
   }
 }

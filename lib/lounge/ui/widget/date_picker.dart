@@ -218,7 +218,11 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                   _fToast.removeCustomToast();
                   _fToast.removeQueuedCustomToasts();
                   _animationController.forward(from: 0.0);
-                  await model.setTime(date: date);
+                  await model.setTime(date: date).then((_) {
+                    if(mounted) {
+                      _calendarController.setSelectedDay(model.dateTime);
+                    }
+                  });
                 },
                 initialSelectedDay: model.dateTime,
               ),

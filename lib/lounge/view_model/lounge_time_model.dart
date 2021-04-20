@@ -1,8 +1,10 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
@@ -27,11 +29,13 @@ class LoungeTimeModel extends ChangeNotifier {
 
   String reloadFavouriteList;
 
-  setTime({
+  Future<void> setTime({
     DateTime date,
     List<ClassTime> schedule,
     bool init = false,
   }) async {
+    List<ClassTime> preCs;
+    DateTime preD;
     debugPrint(
         '++++++++++++++++ lounge time model change time +++++++++++++++++++');
     _state = ViewState.busy;
@@ -41,6 +45,8 @@ class LoungeTimeModel extends ChangeNotifier {
       _classTime = [current.classTime];
       _dateTime = current.date;
     } else {
+      preCs = [..._classTime];
+      preD = DateTime.parse(_dateTime.toString());
       _classTime = schedule ?? _classTime;
       _dateTime = date ?? _dateTime;
     }
@@ -51,14 +57,33 @@ class LoungeTimeModel extends ChangeNotifier {
         try {
           await LoungeRepository.setLoungeData(model: this);
           _state = ViewState.idle;
+          notifyListeners();
         } catch (_) {
-          _state = ViewState.error;
+          ToastProvider.error("加载数据失败");
+          print("preD : ${preD.toString()}");
+          _classTime = preCs;
+          _dateTime = preD;
+          _state = ViewState.idle;
+          notifyListeners();
         }
+      } else if ((_dateTime.isThisWeek &&
+              !HiveManager.instance.shouldUpdateLocalData) ||
+          !HiveManager.instance
+              .shouldUpdateTemporaryData(dateTime: _dateTime)) {
+        ToastProvider.success("虽然没有网络连接，但是我有本地数据");
+        _state = ViewState.idle;
         notifyListeners();
       } else {
+        print("preD ${preD.toString()}");
+        if (!_dateTime.isTheSameDay(preD)) {
+          ToastProvider.error("没有网络连接");
+          _classTime = preCs;
+        }
+        _dateTime = preD;
         _state = ViewState.idle;
         notifyListeners();
       }
+
       return;
     }
     _state = ViewState.idle;

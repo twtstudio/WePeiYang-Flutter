@@ -76,10 +76,12 @@ class _FavourListWidgetState extends State<FavourListWidget> {
       onModelReady: widget.init == true
           ? (model) async {
               debugPrint("set can false");
-              pageState.canGoIntoLounge.value = true;
+              pageState.canNotGoIntoLounge.value = true;
               await model.initData();
-              debugPrint("set can true");
-              pageState.canGoIntoLounge.value = false;
+              if (model.isIdle || model.isEmpty) {
+                debugPrint("set can true");
+                pageState.canNotGoIntoLounge.value = false;
+              }
             }
           : null,
       builder: (_, model, __) => ListLoadSteps(

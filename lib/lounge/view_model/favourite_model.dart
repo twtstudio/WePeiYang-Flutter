@@ -45,6 +45,9 @@ class RoomFavouriteModel extends ChangeNotifier {
       }
     } else {
       _map.clear();
+      // if(localData.isEmpty){
+      //   throw Exception("网络未连接");
+      // }
       _map.addAll(localData);
     }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
 import '../model/home_model.dart';
 import 'drawer_page.dart';
@@ -20,7 +22,45 @@ class WPYPage extends StatefulWidget {
 }
 
 class WPYPageState extends State<WPYPage> {
-  ValueNotifier<bool> canGoIntoLounge = ValueNotifier<bool>(false);
+  ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
+
+  FToast _fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    _fToast = FToast();
+    _fToast.init(context);
+  }
+
+  showToast({Widget custom}) {
+    Widget toast = custom ??
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            color: Colors.greenAccent,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon(Icons.check),
+              // SizedBox(
+              //   width: 12.0,
+              // ),
+              Text("正在加载数据，请稍后"),
+            ],
+          ),
+        );
+
+    _fToast.removeQueuedCustomToasts();
+
+    _fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.CENTER,
+      toastDuration: Duration(seconds: 1),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,45 +157,53 @@ class SliverCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget cardList = ListView.builder(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      itemCount: cards.length,
+      itemBuilder: (context, i) {
+        if (i != 2) {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, cards[i].route),
+            child: Container(
+              height: 90.0,
+              width: 125.0,
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: generateCard(context, cards[i]),
+            ),
+          );
+        } else {
+          return ValueListenableBuilder(
+            valueListenable: context
+                .findAncestorStateOfType<WPYPageState>()
+                .canNotGoIntoLounge,
+            builder: (_, bool absorbing, __) => GestureDetector(
+              onTap: () {
+                print("absorbing : $absorbing");
+                if (absorbing) {
+                  context.findAncestorStateOfType<WPYPageState>().showToast(
+                        custom: null,
+                      );
+                } else {
+                  Navigator.pushNamed(context, cards[i].route);
+                }
+              },
+              child: Container(
+                height: 90.0,
+                width: 125.0,
+                padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                child: generateCard(context, cards[i]),
+              ),
+            ),
+          );
+        }
+      },
+    );
+
     return SliverToBoxAdapter(
       child: Container(
         height: 90.0,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          itemCount: cards.length,
-          itemBuilder: (context, i) {
-            if (i != 2) {
-              return GestureDetector(
-                onTap: () => Navigator.pushNamed(context, cards[i].route),
-                child: Container(
-                  height: 90.0,
-                  width: 125.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: generateCard(context, cards[i]),
-                ),
-              );
-            } else {
-              return ValueListenableBuilder(
-                valueListenable: context
-                    .findAncestorStateOfType<WPYPageState>()
-                    .canGoIntoLounge,
-                builder: (_, bool absorbing, __) => AbsorbPointer(
-                  absorbing: absorbing,
-                  child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, cards[i].route),
-                    child: Container(
-                      height: 90.0,
-                      width: 125.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                      child: generateCard(context, cards[i]),
-                    ),
-                  ),
-                ),
-              );
-            }
-          },
-        ),
+        child: cardList,
       ),
     );
   }
