@@ -95,7 +95,7 @@ class HiveManager {
     await _temporaryData.put(Time.week[day - 1], Buildings(buildings: data));
   }
 
-  setTemporaryDataStart() async {
+  changeTemporaryDataStart() async {
     await _temporaryData.delete(temporary);
   }
 
@@ -189,8 +189,32 @@ class HiveManager {
       ? true
       : !_boxesKeys.values.map((e) {
           print(e?.dateTime ?? "no date time error");
-          return e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday;
+          bool isToday;
+          try {
+            isToday =
+                e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday;
+          } catch (e) {
+            isToday = false;
+          }
+          return isToday;
         }).reduce((v, e) => v && e);
+
+  DateTime get localDateLastUpdateTime {
+    DateTime last;
+    _boxesKeys.isEmpty
+        ? () {
+            last = null;
+          }()
+        : () {
+            var first = _boxesKeys.values.first;
+            try {
+              last = DateTime.parse(first?.dateTime ?? "");
+            } catch (e) {
+              last = null;
+            }
+          }();
+    return last;
+  }
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
     debugPrint("shouldUpdateTemporaryData ${_temporaryDateTime.toString()}");

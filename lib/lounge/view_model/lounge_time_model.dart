@@ -61,9 +61,19 @@ class LoungeTimeModel extends ChangeNotifier {
         } catch (_) {
           ToastProvider.error("加载数据失败");
           print("preD : ${preD.toString()}");
-          _classTime = preCs;
+          if(HiveManager.instance.shouldUpdateLocalData){
+            var localLastUpdateTime = HiveManager.instance.localDateLastUpdateTime;
+            if (localLastUpdateTime == null) {
+              _state = ViewState.error;
+            } else {
+              _dateTime = localLastUpdateTime;
+              _state = ViewState.idle;
+            }
+          }else {
+            _state = ViewState.idle;
+          }
+          // _classTime = preCs;
           _dateTime = preD;
-          _state = ViewState.idle;
           notifyListeners();
         }
       } else if ((_dateTime.isThisWeek &&

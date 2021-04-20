@@ -104,8 +104,8 @@ class LoungeRepository {
         canLoadTemporaryData) {
       canLoadTemporaryData = !canLoadTemporaryData;
       ToastProvider.running('加载数据需要一点时间');
-      await HiveManager.instance.setTemporaryDataStart();
       await _getWeekClassPlan(dateTime: dateTime).toList().then((plans) async {
+        await HiveManager.instance.changeTemporaryDataStart();
         await Future.forEach<MapEntry<int, List<Building>>>(
             plans,
             (plan) => HiveManager.instance
