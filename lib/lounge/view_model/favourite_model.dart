@@ -19,6 +19,9 @@ class RoomFavouriteModel extends ChangeNotifier {
   Map<String, Map<String, List<String>>> get classPlan => _classPlan;
 
   refreshData({DateTime dateTime}) async {
+    print("----------------------------------------------------");
+    print("-----   refresh   ${dateTime.toString()}   ---------");
+    print("----------------------------------------------------");
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
     var connectivityResult = await Connectivity().checkConnectivity();

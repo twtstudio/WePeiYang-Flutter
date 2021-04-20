@@ -53,6 +53,7 @@ class LoungeTimeModel extends ChangeNotifier {
     if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
+        print("===============    notifyListeners  ${_state.toString()} ===============");
         notifyListeners();
         try {
           await LoungeRepository.setLoungeData(model: this);

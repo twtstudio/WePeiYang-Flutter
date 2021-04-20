@@ -103,6 +103,7 @@ class HiveManager {
     await _temporaryData.put(temporary, null);
     _temporaryDateTime = dateTime;
     CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
+    debugPrint("++++++++++++++++++++      set temporaryUpdateTime ${dateTime.toString()}     +++++++++++++++++++++");
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
@@ -196,6 +197,7 @@ class HiveManager {
           } catch (e) {
             isToday = false;
           }
+          print("isToday : $isToday");
           return isToday;
         }).reduce((v, e) => v && e);
 
@@ -217,18 +219,19 @@ class HiveManager {
   }
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
-    debugPrint("shouldUpdateTemporaryData ${_temporaryDateTime.toString()}");
-    if (_temporaryDateTime == null) {
-      _temporaryDateTime = dateTime;
-      CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
-      return true;
-    } else {
-      if (_temporaryDateTime.isTheSameWeek(dateTime) &&
-          _temporaryData.containsKey(temporary)) {
-        return false;
-      } else {
+    if (_temporaryDateTime == null ) {
+      if(CommonPreferences().temporaryUpdateTime.value != ""){
+        _temporaryDateTime = DateTime.parse(CommonPreferences().temporaryUpdateTime.value);
+      }else {
         return true;
       }
+    }
+    debugPrint("shouldUpdateTemporaryData ${_temporaryDateTime.toString()}");
+    if (_temporaryDateTime.isTheSameWeek(dateTime) &&
+        _temporaryData.containsKey(temporary)) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -274,16 +277,17 @@ class HiveManager {
   writeThisWeekDataInDisk(
     List<Building> buildings,
     int day,
+    DateTime time,
   ) async {
     print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     for (var building in buildings) {
       print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      await _writeThisWeekData(building, day);
+      await _writeThisWeekData(building, day,time);
     }
   }
 
   /// 根据日期先判断时星期几，然后设置那天的教室安排
-  _writeThisWeekData(Building building, int day) async {
+  _writeThisWeekData(Building building, int day,DateTime time) async {
     var key = Time.week[day - 1];
     // TODO: 错误处理
     if (_buildingBoxes.containsKey(building.id)) {
@@ -292,15 +296,15 @@ class HiveManager {
         await box.delete(key);
       }
       await box.put(key, building);
-      await _setBuildingDataRefreshTime(building.id, building.name);
+      await _setBuildingDataRefreshTime(building.id, building.name,time);
     } else {
       // print('box not exist :' + building.id);
     }
   }
 
   /// 记录最重要的本周数据的获取时间，以判断是否需要刷新数据
-  _setBuildingDataRefreshTime(String id, String name) async =>
-      await _boxesKeys.put(id, LocalEntry(id, name, DateTime.now().toString()));
+  _setBuildingDataRefreshTime(String id, String name,DateTime time) async =>
+      await _boxesKeys.put(id, LocalEntry(id, name, time.toString()));
 
   clearLocalData() async {
     for (var box in _buildingBoxes.values) {
@@ -356,6 +360,7 @@ class HiveManager {
 
       var ifNotUpdate = updateTime?.isTheSameWeek(time) ?? false;
 
+      print("updateTime : ${updateTime.toString()}    ifNotUpdate : $ifNotUpdate");
       if (_temporaryData.isEmpty || !ifNotUpdate) {
         await LoungeRepository.updateTemporaryData(time);
       }

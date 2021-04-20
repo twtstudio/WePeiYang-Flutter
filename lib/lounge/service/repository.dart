@@ -78,7 +78,7 @@ class LoungeRepository {
           await Future.forEach<MapEntry<int, List<Building>>>(
               plans,
               (plan) => HiveManager.instance
-                  .writeThisWeekDataInDisk(plan.value, plan.key)).then((_) {
+                  .writeThisWeekDataInDisk(plan.value, plan.key,dateTime)).then((_) {
             HiveManager.instance.checkBaseDataIsAllInDisk();
           });
           canLoadLocalData = !canLoadLocalData;
@@ -109,8 +109,8 @@ class LoungeRepository {
         await Future.forEach<MapEntry<int, List<Building>>>(
             plans,
             (plan) => HiveManager.instance
-                .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
-          HiveManager.instance.setTemporaryDataFinish(dateTime);
+                .setTemporaryData(data: plan.value, day: plan.key)).then((_) async {
+          await HiveManager.instance.setTemporaryDataFinish(dateTime);
         });
         canLoadTemporaryData = !canLoadTemporaryData;
         ToastProvider.success('教室安排加载成功');
