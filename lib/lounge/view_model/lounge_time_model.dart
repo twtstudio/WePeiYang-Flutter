@@ -53,7 +53,8 @@ class LoungeTimeModel extends ChangeNotifier {
     if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        print("===============    notifyListeners  ${_state.toString()} ===============");
+        print(
+            "===============    notifyListeners  ${_state.toString()} ===============");
         notifyListeners();
         try {
           await LoungeRepository.setLoungeData(model: this);
@@ -62,15 +63,16 @@ class LoungeTimeModel extends ChangeNotifier {
         } catch (_) {
           ToastProvider.error("加载数据失败");
           print("preD : ${preD.toString()}");
-          if(HiveManager.instance.shouldUpdateLocalData){
-            var localLastUpdateTime = HiveManager.instance.localDateLastUpdateTime;
+          if (HiveManager.instance.shouldUpdateLocalData) {
+            var localLastUpdateTime =
+                HiveManager.instance.localDateLastUpdateTime;
             if (localLastUpdateTime == null) {
               _state = ViewState.error;
             } else {
               _dateTime = localLastUpdateTime;
               _state = ViewState.idle;
             }
-          }else {
+          } else {
             _state = ViewState.idle;
           }
           // _classTime = preCs;
@@ -104,7 +106,13 @@ class LoungeTimeModel extends ChangeNotifier {
 enum Campus { WJL, BYY }
 
 extension CampusExtension on Campus {
-  Campus get change => [Campus.BYY, Campus.WJL][this.index];
+  List<Campus> get campuses => [Campus.WJL, Campus.BYY];
+
+  Campus get change {
+    var next = (this.index + 1) % 2;
+    CommonPreferences().lastChoseCampus.value = next;
+    return campuses[next];
+  }
 
   Campus get init => Campus.values[CommonPreferences().lastChoseCampus.value];
 
