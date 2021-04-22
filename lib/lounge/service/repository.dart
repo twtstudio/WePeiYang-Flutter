@@ -8,7 +8,8 @@ import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'hive_manager.dart';
 
 class LoungeRepository {
-  static bool canLoadData = true;
+  static bool canLoadLocalData = true;
+  static bool canLoadTemporaryData = true;
 
   static Future<List<Building>> get _getBaseBuildingList async {
     debugPrint('????????????????? _getBaseBuildingList ?????????????????');
@@ -63,8 +64,11 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
-    if (HiveManager.instance.shouldUpdateLocalData && canLoadData) {
-      canLoadData = !canLoadData;
+    if (!dateTime.isBefore22) {
+      dateTime = dateTime.next;
+    }
+    if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
+      canLoadLocalData = !canLoadLocalData;
       ToastProvider.running('加载数据需要一点时间');
       await _getBaseBuildingList.then((value) async {
         await HiveManager.instance.clearLocalData();
@@ -74,9 +78,10 @@ class LoungeRepository {
           await Future.forEach<MapEntry<int, List<Building>>>(
               plans,
               (plan) => HiveManager.instance
-                  .writeThisWeekDataInDisk(plan.value, plan.key)).then((_) {
+                  .writeThisWeekDataInDisk(plan.value, plan.key,dateTime)).then((_) {
             HiveManager.instance.checkBaseDataIsAllInDisk();
           });
+          canLoadLocalData = !canLoadLocalData;
           ToastProvider.success('教室安排加载成功');
         }, onError: (e) {
           throw e;
@@ -87,34 +92,50 @@ class LoungeRepository {
         (e) {
           ToastProvider.error(e.toString().split(':')[1].trim());
           debugPrint("updatelocaldata error ${e.toString()}");
+          canLoadLocalData = !canLoadLocalData;
+          throw e;
         },
       );
-      canLoadData = !canLoadData;
+    }
+  }
+
+  static updateTemporaryData(DateTime dateTime) async {
+    if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime) &&
+        canLoadTemporaryData) {
+      canLoadTemporaryData = !canLoadTemporaryData;
+      ToastProvider.running('加载数据需要一点时间');
+      await _getWeekClassPlan(dateTime: dateTime).toList().then((plans) async {
+        await HiveManager.instance.changeTemporaryDataStart();
+        await Future.forEach<MapEntry<int, List<Building>>>(
+            plans,
+            (plan) => HiveManager.instance
+                .setTemporaryData(data: plan.value, day: plan.key)).then((_) async {
+          await HiveManager.instance.setTemporaryDataFinish(dateTime);
+        });
+        canLoadTemporaryData = !canLoadTemporaryData;
+        ToastProvider.success('教室安排加载成功');
+      }, onError: (e) {
+        throw e;
+      }).catchError((e) {
+        ToastProvider.error(e.toString().split(':')[1].trim());
+        debugPrint("updateTemporaryData error ${e.toString()}");
+        canLoadTemporaryData = !canLoadTemporaryData;
+        throw e;
+      });
     }
   }
 
   static setLoungeData({@required LoungeTimeModel model}) async {
     var dateTime = model.dateTime;
-    if (dateTime.isThisWeek) {
-      await updateLocalData(dateTime);
-    } else {
-      if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime)) {
-        ToastProvider.running('加载数据需要一点时间');
-        await HiveManager.instance.setTemporaryDataStart();
-        await _getWeekClassPlan(dateTime: dateTime).toList().then(
-            (plans) async {
-          await Future.forEach<MapEntry<int, List<Building>>>(
-              plans,
-              (plan) => HiveManager.instance
-                  .setTemporaryData(data: plan.value, day: plan.key)).then((_) {
-            HiveManager.instance.setTemporaryDataFinish(dateTime);
-          });
-          ToastProvider.success('教室安排加载成功');
-        }, onError: (e) {
-          ToastProvider.error(e.toString().split(':')[1].trim());
-          throw e;
-        });
+    try {
+      if (dateTime.isThisWeek) {
+        await updateLocalData(dateTime);
+      } else {
+        await updateTemporaryData(dateTime);
       }
+    } catch (e) {
+      throw e;
+      // ToastProvider.error(e.toString());
     }
   }
 }

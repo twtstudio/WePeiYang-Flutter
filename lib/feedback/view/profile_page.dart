@@ -6,8 +6,8 @@ import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/profile_dialog.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
+import 'package:wei_pei_yang_demo/feedback/view/components/profile_dialog.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
@@ -135,6 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   }
                                 },
+                                showBanner: true,
                               )
                             : PostCard(
                                 notifier.profilePostList[index],
@@ -196,6 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     }
                                   }
                                 },
+                                showBanner: true,
                               );
                       },
                       childCount: notifier.profilePostList.length,
@@ -231,6 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             'lib/feedback/assets/img/my_post.png',
                             height: 30,
                           ),
+                          type: FeedbackMessageType.detail_post,
                         ),
                         BlankSpace.height(5),
                         Text(
@@ -269,9 +272,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: InkWell(
                     child: Column(
                       children: [
-                        Image.asset(
-                          'lib/feedback/assets/img/my_favorite.png',
-                          height: 30,
+                        FeedbackBadgeWidget(
+                          type: FeedbackMessageType.detail_favourite,
+                          child: Image.asset(
+                            'lib/feedback/assets/img/my_favorite.png',
+                            height: 30,
+                          ),
                         ),
                         BlankSpace.height(5),
                         Text(

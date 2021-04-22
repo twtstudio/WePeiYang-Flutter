@@ -1,5 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
@@ -17,15 +19,19 @@ class RoomFavouriteModel extends ChangeNotifier {
   Map<String, Map<String, List<String>>> get classPlan => _classPlan;
 
   refreshData({DateTime dateTime}) async {
+    print("----------------------------------------------------");
+    print("-----   refresh   ${dateTime.toString()}   ---------");
+    print("----------------------------------------------------");
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
-    await instance.initBuildingName();
     var connectivityResult = await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
-
       List<String> remoteIds = await LoungeRepository.favouriteList;
-      await LoungeRepository.updateLocalData(DateTime.now());
+
+      if(remoteIds.isNotEmpty || localData.isNotEmpty){
+        await instance.initBuildingName();
+      }
 
       // 添加新的收藏到本地
       for (var id in remoteIds) {
@@ -45,6 +51,9 @@ class RoomFavouriteModel extends ChangeNotifier {
       }
     } else {
       _map.clear();
+      // if(localData.isEmpty){
+      //   throw Exception("网络未连接");
+      // }
       _map.addAll(localData);
     }
 
@@ -98,9 +107,15 @@ class FavouriteModel extends ViewStateModel {
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
+        ToastProvider.success(
+          '取消收藏成功',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+        );
       } else {
         await LoungeRepository.collect(id: room.id);
         await globalFavouriteModel.addFavourite(room: room);
+        ToastProvider.success('收藏成功', gravity: ToastGravity.BOTTOM);
       }
       setIdle();
     } catch (e, s) {

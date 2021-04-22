@@ -65,22 +65,18 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
   TabController _tabController;
 
   ValueNotifier<int> currentIndex = ValueNotifier(2);
-
-  List<MessagesList> tabViewList;
+  ValueNotifier<int> refresh = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
         length: types.length, vsync: ScrollableState(), initialIndex: 2);
-    tabViewList = types.map((t) {
-      return MessagesList(type: t);
-    }).toList();
   }
 
   onRefresh() {
     Provider.of<MessageProvider>(context, listen: false).refreshFeedbackCount();
-    tabViewList.forEach((t) => t.refresh());
+    refresh.value++;
   }
 
   @override
@@ -147,7 +143,9 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: tabViewList,
+        children: types.map((t) {
+          return MessagesList(type: t);
+        }).toList(),
       ),
     );
   }
@@ -163,12 +161,19 @@ class MessageTab extends StatefulWidget {
 }
 
 class _MessageTabState extends State<MessageTab> {
+  _FeedbackMessagePageState pageState;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    pageState = context.findAncestorStateOfType<_FeedbackMessagePageState>();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget tab = ValueListenableBuilder(
-      valueListenable: context
-          .findAncestorStateOfType<_FeedbackMessagePageState>()
-          .currentIndex,
+      valueListenable: pageState.currentIndex,
       builder: (_, int current, __) {
         debugPrint("tap current : $current current type ${widget.type.index}");
         return Text(
@@ -209,19 +214,20 @@ class _MessageTabState extends State<MessageTab> {
   }
 }
 
+// ignore: must_be_immutable
 class MessagesList extends StatefulWidget {
   final MessageType type;
 
   MessagesList({Key key, this.type}) : super(key: key);
 
   refresh() {
-    _state.onRefresh(refreshCount: false);
+    // _state.onRefresh(refreshCount: false);
   }
 
-  _MessagesListState _state = _MessagesListState();
+  // _MessagesListState _state = _MessagesListState();
 
   @override
-  _MessagesListState createState() => _state;
+  _MessagesListState createState() => _MessagesListState();
 }
 
 class _MessagesListState extends State<MessagesList>
@@ -291,6 +297,14 @@ class _MessagesListState extends State<MessagesList>
         Provider.of<MessageProvider>(context, listen: false)
             .refreshFeedbackCount();
         setState(() {});
+        context
+            .findAncestorStateOfType<_FeedbackMessagePageState>()
+            .refresh
+            .addListener(
+              () => onRefresh(
+                refreshCount: false,
+              ),
+            );
       }
       debugPrint('item length : ${items.length}');
     });
@@ -365,7 +379,7 @@ class _MessagesListState extends State<MessagesList>
 
 class MessageItem extends StatelessWidget {
   final FeedbackMessageItem data;
-  final VoidCallback onTapDown;
+  final VoidFutureCallBack onTapDown;
   final MessageType type;
 
   const MessageItem({Key key, this.data, this.onTapDown, this.type})
@@ -455,6 +469,7 @@ class MessageItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
@@ -470,10 +485,10 @@ class MessageItem extends StatelessWidget {
                 ),
                 if (data.post.topImgUrl != null)
                   Padding(
-                    padding: EdgeInsets.only(left: 20),
+                    padding: EdgeInsets.only(left: 10),
                     child: Image.network(
                       data.post.topImgUrl,
-                      height: 30,
+                      height: 50,
                     ),
                   ),
               ],
@@ -551,19 +566,25 @@ class MessageItem extends StatelessWidget {
     Widget messageWrapper;
 
     if (data.visible == 1) {
-      messageWrapper = ClipRect(
-        child: Banner(
-          message: "未读",
-          location: BannerLocation.topEnd,
-          child: questionItem,
-        ),
+      // messageWrapper = ClipRect(
+      //   child: Banner(
+      //     message: "未读",
+      //     location: BannerLocation.topEnd,
+      //     child: questionItem,
+      //   ),
+      // );
+      messageWrapper = Badge(
+        position: BadgePosition.topEnd(end: -2,top: -14),
+        padding: EdgeInsets.all(5),
+        badgeContent: Text(""),
+        child: questionItem,
       );
     }
 
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20, top: 10),
       child: GestureDetector(
-        onTapDown: (_) => onTapDown?.call(),
+        onTapDown: (_) async => await onTapDown?.call(),
         onTapUp: (_) {
           Navigator.pushNamed(
             context,

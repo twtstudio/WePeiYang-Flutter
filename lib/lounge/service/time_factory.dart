@@ -55,35 +55,42 @@ class Time {
             }).reduce((v, e) => v && e)
           : !state.contains('1');
 
-  static ClassTime classOfDay(DateTime date) {
+  static Current classOfDay(DateTime date) {
     var h = date.hour;
     // print(date);
     if (h < 10) {
-      return ClassTime.am_1;
+      return Current(date, ClassTime.am_1);
     } else if (h < 12) {
-      return ClassTime.am_2;
+      return Current(date, ClassTime.am_2);
     } else if (h < 15) {
-      return ClassTime.pm_1;
+      return Current(date, ClassTime.pm_1);
     } else if (h < 17) {
-      return ClassTime.am_2;
+      return Current(date, ClassTime.pm_2);
     } else if (h < 20) {
-      return ClassTime.pm_3;
+      return Current(date, ClassTime.pm_3);
     } else if (h < 22) {
-      return ClassTime.pm_4;
+      return Current(date, ClassTime.pm_4);
     } else {
       // 晚上十点以后显示第二天早上第一节课
-      return ClassTime.am_1;
+      return Current(date.next, ClassTime.am_1);
     }
   }
 
   static List<ClassTime> get rangeList => [
-    ClassTime.am_1,
-    ClassTime.am_2,
-    ClassTime.pm_1,
-    ClassTime.pm_2,
-    ClassTime.pm_3,
-    ClassTime.pm_4
+        ClassTime.am_1,
+        ClassTime.am_2,
+        ClassTime.pm_1,
+        ClassTime.pm_2,
+        ClassTime.pm_3,
+        ClassTime.pm_4
       ];
+}
+
+class Current {
+  final DateTime date;
+  final ClassTime classTime;
+
+  Current(this.date, this.classTime);
 }
 
 enum ClassTime { am_1, am_2, pm_1, pm_2, pm_3, pm_4 }
@@ -125,8 +132,15 @@ extension DateTimeExtension on DateTime {
   }
 
   // error:   DateTime(2021,2,17,25,0).isToday => true  today: 17
-  bool get isToday =>
-      _dayStart.difference(DateTime.now()._dayStart).inDays == 0;
+  bool get isToday {
+    var now = DateTime.now();
+    if (!now.isBefore22) {
+      now = now.next;
+    }
+    return _dayStart.difference(now._dayStart).inDays == 0;
+  }
+
+  bool get isBefore22 => difference(DateTime(year, month, day, 22)).isNegative;
 
   DateTime get _dayStart => DateTime(year, month, day);
 
@@ -150,4 +164,6 @@ extension DateTimeExtension on DateTime {
 
   bool isTheSameDay(DateTime dateTime) =>
       _dayStart.difference(dateTime._dayStart).inDays == 0;
+
+  DateTime get next => this._dayStart.add(Duration(days: 1));
 }

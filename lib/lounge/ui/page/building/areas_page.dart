@@ -1,16 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
-
-const List<Color> areaColors = [
-  Color(0xff363c54),
-  Color(0xff74788a),
-  Color(0xff676f96)
-];
 
 class AreasPage extends StatelessWidget {
   final Building building;
@@ -75,7 +70,7 @@ class AreasPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       shape: BoxShape.rectangle,
-                      color: areaColors[Random().nextInt(areaColors.length)],
+                      color: FavorColors.scheduleColor[Random().nextInt(FavorColors.scheduleColor.length)],
                     ),
                     child: Center(
                       child: Text(

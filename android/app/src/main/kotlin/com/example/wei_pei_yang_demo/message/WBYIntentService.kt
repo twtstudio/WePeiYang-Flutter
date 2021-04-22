@@ -40,8 +40,8 @@ class WBYIntentService : GTIntentService() {
         // 第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
 
         // 第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
-        val result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001)
-        Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
+//        val result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001)
+//        Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
 
         Log.d(TAG, """
             onReceiveMessageData -> appid = $appid
@@ -70,8 +70,15 @@ class WBYIntentService : GTIntentService() {
 //        TODO("Not yet implemented")
     }
 
-    override fun onNotificationMessageArrived(p0: Context?, p1: GTNotificationMessage?) {
-//        TODO("Not yet implemented")
+    override fun onNotificationMessageArrived(p0: Context?, message: GTNotificationMessage?) {
+        Log.d(TAG, "onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = "+message?.title);
     }
 
     override fun onNotificationMessageClicked(p0: Context?, p1: GTNotificationMessage?) {

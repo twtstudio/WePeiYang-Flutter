@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -56,12 +57,34 @@ class PageTitleWidget extends StatelessWidget {
             ),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(left: 0, bottom: 12),
+          child: Consumer<LoungeTimeModel>(
+            builder: (_, model, __) => FutureBuilder(
+              future: model.dateTime.convertedWeekAndDay,
+              builder: (_, AsyncSnapshot<List<PlanDate>> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    'WEEK ${snapshot.data.first.week}',
+                    style: TextStyle(
+                      color: Color(0xffcdced3),
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          ),
+        ),
         Expanded(child: SizedBox()),
 
         // article list item 中有收藏按钮的写法
         Container(
           // color: Colors.yellow,
-          padding: const EdgeInsets.only(bottom: 7),
+          // padding: const EdgeInsets.only(bottom: 7),
           child: ProviderWidget<FavouriteModel>(
             model: FavouriteModel(
                 globalFavouriteModel: Provider.of(context, listen: false)),
@@ -92,7 +115,7 @@ class PageTitleWidget extends StatelessWidget {
                       : '收藏',
                   style: TextStyle(
                     color: Color(0xff62677b),
-                    fontSize: 10,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -304,6 +327,7 @@ class CourseDisplayWidget extends StatelessWidget {
         },
         builder: (_, model, __) => ListLoadSteps(
           model: model,
+          alignment: Alignment.center,
           successV: Builder(
             builder: (_) {
               if (model.plan.isNotEmpty) {
@@ -329,6 +353,7 @@ class CourseDisplayWidget extends StatelessWidget {
     int dayCount,
   ) {
     List<Positioned> list = [];
+    var colors = FavorColors.scheduleColor;
     var d = 1;
     for (var wd in Time.week.getRange(0, dayCount)) {
       var index = 1;
@@ -356,8 +381,7 @@ class CourseDisplayWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   shape: BoxShape.rectangle,
-                  color:
-                      roomPlanColors[Random().nextInt(roomPlanColors.length)],
+                  color: colors[Random().nextInt(colors.length)],
                 ),
                 child: Center(
                   child: Column(
@@ -387,10 +411,3 @@ class CourseDisplayWidget extends StatelessWidget {
     return list;
   }
 }
-
-const List<Color> roomPlanColors = [
-  Color(0xff8f92a5),
-  Color(0xff7a778a),
-  Color(0xff727588),
-  Color(0xff8286a1),
-];

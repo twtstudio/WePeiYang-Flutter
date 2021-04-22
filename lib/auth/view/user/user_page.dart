@@ -42,12 +42,12 @@ class _UserPageState extends State<UserPage> {
                           onTap: () =>
                               Navigator.pushNamed(context, AuthRouter.mailbox),
                           child: Icon(
-                            Icons.add_alert_outlined,
+                            Icons.email_outlined,
                             size: 30,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(width: 10),
+                        SizedBox(width: 15),
                         GestureDetector(
                           onTap: () =>
                               Navigator.pushNamed(context, AuthRouter.setting),
@@ -192,18 +192,20 @@ class _NavigationState extends State<NavigationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 140,
-        width: GlobalModel().screenWidth - 40,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        child: Card(
-            elevation: 1.8,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0)),
-            child: Center(
-              child: Image.asset(
-                'assets/images/to_be_continue.png',
-                height: 80,
-              ),
-            )));
+      height: 140,
+      width: GlobalModel().screenWidth - 40,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Card(
+        elevation: 1.8,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Center(
+          child: Image.asset(
+            'assets/images/to_be_continue.png',
+            height: 80,
+          ),
+        ),
+      ),
+    );
   }
 }

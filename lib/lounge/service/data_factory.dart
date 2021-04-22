@@ -144,6 +144,7 @@ class DataFactory {
 
   static String getRoomTitle(Classroom r) {
     if(r.bName == ''){
+      print("r.bid: ${r.bId}");
       r.bName =  HiveManager.instance.getBuildingNameById(r.bId);
     }
     if (r.aId == '-1') {

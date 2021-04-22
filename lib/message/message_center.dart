@@ -30,19 +30,31 @@ class MessageRepository {
 
   static Future<TotalMessageData> getAllMessages() async {
     var token = CommonPreferences().feedbackToken.value;
-    var response =
-        await messageApi.get("qid", queryParameters: {"token": token});
-    TotalMessageData data = TotalMessageData.fromJson(response.data);
+    TotalMessageData data;
+    try {
+      var response = await messageApi.get(
+        "qid",
+        queryParameters: {"token": token},
+      );
+      data = TotalMessageData.fromJson(response.data);
+    } catch (e) {
+      data = null;
+    }
     debugPrint('getAllMessages');
     debugPrint(token);
-    debugPrint(response.data.toString());
+    debugPrint("$data");
     return data;
   }
 
   static setQuestionRead(int questionId) async {
     var token = CommonPreferences().feedbackToken.value;
-    await messageApi.post("question",
-        queryParameters: {"token": token, "question_id": questionId});
+    try {
+      await messageApi.post("question",
+          queryParameters: {"token": token, "question_id": questionId});
+      debugPrint("setQuestionRead");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static Future<List<UserMail>> getUserMails(int page) async {
@@ -171,7 +183,7 @@ class FeedbackMessageItem {
     createdAt = json['created_at'];
     type = json['type'] ?? 0;
     updatedAt = json['updated_at'];
-    comment = json['contain'] == "" && json['contain'] != null
+    comment = json['contain'] == "" || json['contain'] == null
         ? null
         : Comment.fromJson(json['contain']);
     post = Post.fromJson(json['question'] ?? '');

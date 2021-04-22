@@ -10,17 +10,19 @@ class ListLoadSteps<T extends ViewStateListModel> extends StatefulWidget {
   final Widget successV;
   final Widget defaultV;
   final double errorHeight;
+  final Alignment alignment;
 
-  const ListLoadSteps(
-      {Key key,
-      @required this.model,
-      this.busyV,
-      this.errorV,
-      this.emptyV,
-      this.successV,
-      this.defaultV,
-      this.errorHeight})
-      : super(key: key);
+  const ListLoadSteps({
+    Key key,
+    @required this.model,
+    this.busyV,
+    this.errorV,
+    this.emptyV,
+    this.successV,
+    this.defaultV,
+    this.errorHeight,
+    this.alignment = Alignment.topLeft,
+  }) : super(key: key);
 
   @override
   _ListLoadStepsState<T> createState() => _ListLoadStepsState<T>();
@@ -57,7 +59,8 @@ class _ListLoadStepsState<T extends ViewStateListModel>
             Container(
               height: 80,
               color: Colors.red,
-              child: Text('error', style: TextStyle(fontSize: 20,color: Colors.white)),
+              child: Text('error',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
       );
     } else if (widget.model.isEmpty) {
@@ -67,7 +70,8 @@ class _ListLoadStepsState<T extends ViewStateListModel>
             Container(
               height: 80,
               color: Colors.blue,
-              child: Text('empty', style: TextStyle(fontSize: 20,color: Colors.white)),
+              child: Text('empty',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
       );
     } else if (widget.model.isIdle && widget.model.list.isNotEmpty) {
@@ -77,23 +81,26 @@ class _ListLoadStepsState<T extends ViewStateListModel>
         child: widget.successV ?? Container(),
       );
     } else {
-      body = widget.defaultV ?? Container(
-        height: 80,
-        color: Colors.black,
-        child: Text('default', style: TextStyle(fontSize: 20,color: Colors.white)),
-      );
+      body = widget.defaultV ??
+          Container(
+            height: 80,
+            color: Colors.white,
+            child: Text('default',
+                style: TextStyle(fontSize: 20, color: Colors.white)),
+          );
     }
     return AnimatedSwitcher(
-        layoutBuilder: (Widget currentChild, List<Widget> previousChildren) {
-          return Stack(
-            children: <Widget>[
-              ...previousChildren,
-              if (currentChild != null) currentChild,
-            ],
-            alignment: Alignment.topLeft,
-          );
-        },
-        duration: const Duration(milliseconds: 300),
-        child: body);
+      layoutBuilder: (Widget currentChild, List<Widget> previousChildren) {
+        return Stack(
+          children: <Widget>[
+            ...previousChildren,
+            if (currentChild != null) currentChild,
+          ],
+          alignment: widget.alignment,
+        );
+      },
+      duration: const Duration(milliseconds: 300),
+      child: body,
+    );
   }
 }

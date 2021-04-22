@@ -1,7 +1,10 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 
@@ -14,7 +17,7 @@ class LoungeTimeModel extends ChangeNotifier {
 
   DateTime get dateTime => _dateTime;
 
-  Campus _campus = Campus.WJL;
+  Campus _campus = Campus.WJL.init;
 
   Campus get campus => _campus;
 
@@ -26,35 +29,72 @@ class LoungeTimeModel extends ChangeNotifier {
 
   String reloadFavouriteList;
 
-  setTime({
+  Future<void> setTime({
     DateTime date,
     List<ClassTime> schedule,
     bool init = false,
   }) async {
-    debugPrint('++++++++++++++++ lounge time model change time +++++++++++++++++++');
+    List<ClassTime> preCs;
+    DateTime preD;
+    debugPrint(
+        '++++++++++++++++ lounge time model change time +++++++++++++++++++');
     _state = ViewState.busy;
     if (_classTime == null && _dateTime == null) {
-      _classTime = [Time.classOfDay(DateTime.now())];
-      _dateTime = DateTime.now();
+      var current = Time.classOfDay(DateTime.now());
+      // var current = Time.classOfDay(DateTime(2021, 4, 18, 22, 25));
+      _classTime = [current.classTime];
+      _dateTime = current.date;
     } else {
+      preCs = [..._classTime];
+      preD = DateTime.parse(_dateTime.toString());
       _classTime = schedule ?? _classTime;
       _dateTime = date ?? _dateTime;
     }
-    if(!init){
+    if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
-      if(connectivityResult != ConnectivityResult.none){
+      if (connectivityResult != ConnectivityResult.none) {
+        print("===============    notifyListeners  ${_state.toString()} ===============");
         notifyListeners();
         try {
           await LoungeRepository.setLoungeData(model: this);
           _state = ViewState.idle;
+          notifyListeners();
         } catch (_) {
-          _state = ViewState.error;
+          ToastProvider.error("加载数据失败");
+          print("preD : ${preD.toString()}");
+          if(HiveManager.instance.shouldUpdateLocalData){
+            var localLastUpdateTime = HiveManager.instance.localDateLastUpdateTime;
+            if (localLastUpdateTime == null) {
+              _state = ViewState.error;
+            } else {
+              _dateTime = localLastUpdateTime;
+              _state = ViewState.idle;
+            }
+          }else {
+            _state = ViewState.idle;
+          }
+          // _classTime = preCs;
+          _dateTime = preD;
+          notifyListeners();
         }
+      } else if ((_dateTime.isThisWeek &&
+              !HiveManager.instance.shouldUpdateLocalData) ||
+          !HiveManager.instance
+              .shouldUpdateTemporaryData(dateTime: _dateTime)) {
+        ToastProvider.success("虽然没有网络连接，但是我有本地数据");
+        _state = ViewState.idle;
         notifyListeners();
-      }else {
+      } else {
+        print("preD ${preD.toString()}");
+        if (!_dateTime.isTheSameDay(preD)) {
+          ToastProvider.error("没有网络连接");
+          _classTime = preCs;
+        }
+        _dateTime = preD;
         _state = ViewState.idle;
         notifyListeners();
       }
+
       return;
     }
     _state = ViewState.idle;
@@ -65,6 +105,8 @@ enum Campus { WJL, BYY }
 
 extension CampusExtension on Campus {
   Campus get change => [Campus.BYY, Campus.WJL][this.index];
+
+  Campus get init => Campus.values[CommonPreferences().lastChoseCampus.value];
 
   String get id => ['1', '2'][this.index];
 

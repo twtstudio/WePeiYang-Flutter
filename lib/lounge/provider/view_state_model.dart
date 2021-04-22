@@ -18,8 +18,9 @@ class ViewStateModel with ChangeNotifier {
   ///
   /// 子类可以在构造函数指定需要的页面状态
   /// FooModel():super(viewState:ViewState.busy);
+  /// viewState = idle but data = empty
   ViewStateModel({ViewState viewState})
-      : _viewState = viewState ?? ViewState.empty {
+      : _viewState = viewState ?? ViewState.idle {
     debugPrint('ViewStateModel---constructor--->$runtimeType');
   }
 

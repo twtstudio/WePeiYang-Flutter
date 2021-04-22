@@ -80,7 +80,7 @@ class _PathTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
+      padding: EdgeInsets.fromLTRB(2, 20, 2, 0),
       child: Row(
         children: [
           SizedBox(width: 1),
@@ -221,7 +221,7 @@ class _RoomItem extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xff62677b),
-                  fontSize: 10,
+                  fontSize: 11,
                 ),
               ),
               SizedBox(height: 5),

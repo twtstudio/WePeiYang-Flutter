@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/update/update.dart';
@@ -38,7 +37,9 @@ class _MainPageState extends State<MainPage> {
 
   checkUpdate() async {
     UpdateManager.init();
-    UpdateManager.checkUpdate(context, url);
+    try {
+      UpdateManager.checkUpdate(context, url);
+    } catch (e) {}
   }
 
   @override

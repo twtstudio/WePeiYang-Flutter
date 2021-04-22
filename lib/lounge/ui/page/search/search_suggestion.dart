@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
@@ -72,18 +73,24 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
                 ),
                 InkWell(
                   onTap: () async => await model.clearHistory(),
-                  child: Image(
-                    image: AssetImage(Images.crash),
-                    width: 17,
-                    fit: BoxFit.cover,
+                  child: Container(
+                    width: 40,
+                    height: 30,
+                    alignment: Alignment.center,
+                    child: Image(
+                      image: AssetImage(Images.crash),
+                      width: 17,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
         ),
         SearchSuggestionStateWidget<SearchHistoryModel, String>(
           builder: (context, item) => ActionChip(
+            elevation: 0.5,
             backgroundColor: Colors.white,
             label: Text(
               item,

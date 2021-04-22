@@ -30,6 +30,39 @@ class SearchResult extends StatelessWidget {
       },
       builder: (_, model, __) => ListLoadSteps(
         model: model,
+        emptyV: FutureBuilder(
+          future: Future.delayed(Duration(seconds: 1)),
+          builder: (_, __) => Container(
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '“没有找到这件教室···”',
+                  style: TextStyle(
+                    color: Color(0xff363c54),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    "请输入阿拉伯数字和字母\n以查找教学楼或教室\n\n如果你想找到26教B区120教室：\n可输"
+                    "入26教b120，26b120，26120或120...",
+                    style: TextStyle(
+                      color: Color(0x99363c54),
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         successV: Builder(
           builder: (_) {
             Widget body;
@@ -70,7 +103,8 @@ class ResultRoomsListView extends StatelessWidget {
     var b = entry.building?.name ?? '';
     var a = entry.area?.id ?? '';
     var c = entry.room?.name ?? '';
-    String title = DataFactory.getRoomTitle(Classroom(name: c, aId: a, bName: b));
+    String title =
+        DataFactory.getRoomTitle(Classroom(name: c, aId: a, bName: b));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

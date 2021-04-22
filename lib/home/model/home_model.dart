@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 
 class CardBean {
-  IconData icon;
+  Widget icon;
   String label;
   String route;
 
@@ -11,12 +15,32 @@ class CardBean {
 
 class GlobalModel {
   GlobalModel._() {
-    cards.add(CardBean(Icons.event, '课程表', ScheduleRouter.schedule));
-    cards.add(CardBean(Icons.timeline, 'GPA', GPARouter.gpa));
+    cards.add(CardBean(
+        Icon(
+          Icons.event,
+          color: MyColors.darkGrey,
+          size: 25.0,
+        ),
+        '课程表',
+        ScheduleRouter.schedule));
+    cards.add(CardBean(
+        Icon(
+          Icons.timeline,
+          color: MyColors.darkGrey,
+          size: 25.0,
+        ),
+        'GPA',
+        GPARouter.gpa));
     // cards.add(CardBean(Icons.call, '黄页', HomeRouter.telNum));
     // !!! 别改变自习室的位置，确定在3，不然请去wpy_page最下面改一下index
-    cards
-        .add(CardBean(Icons.calendar_today_outlined, "自习室", LoungeRouter.main));
+    cards.add(CardBean(
+        ImageIcon(
+          AssetImage(Images.building),
+          size: 20,
+          color: Color(0xffcecfd4),
+        ),
+        "自习室",
+        LoungeRouter.main));
   }
 
   static final _instance = GlobalModel._();
