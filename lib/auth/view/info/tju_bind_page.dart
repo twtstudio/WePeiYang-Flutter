@@ -46,11 +46,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   void dispose() {
-    nameController?.clear();
     nameController?.dispose();
-    pwController?.clear();
     pwController?.dispose();
-    codeController?.clear();
     codeController?.dispose();
     super.dispose();
   }
