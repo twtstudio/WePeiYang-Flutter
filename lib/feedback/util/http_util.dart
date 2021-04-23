@@ -102,8 +102,9 @@ FeedbackNotifier notifier = Provider.of<FeedbackNotifier>(
     WeiPeiYangApp.navigatorState.currentContext,
     listen: false);
 
-Future getToken({@required void Function(String token) onSuccess,
-  @required void Function() onFailure}) async {
+Future getToken(
+    {@required void Function(String token) onSuccess,
+    @required void Function() onFailure}) async {
   try {
     Response response = await _client.post(
       'login',
@@ -126,7 +127,7 @@ Future getToken({@required void Function(String token) onSuccess,
 
 Future getTags(token,
     {@required void Function(List<Tag> tagList) onSuccess,
-      @required void Function() onFailure}) async {
+    @required void Function() onFailure}) async {
   try {
     Response response = await _client.get('tag/get/all', queryParameters: {
       'token': token,
@@ -147,11 +148,12 @@ Future getTags(token,
   }
 }
 
-Future getPosts({keyword,
-  @required tagId,
-  @required page,
-  @required void Function(List<Post> list, int totalPage) onSuccess,
-  @required onFailure}) async {
+Future getPosts(
+    {keyword,
+    @required tagId,
+    @required page,
+    @required void Function(List<Post> list, int totalPage) onSuccess,
+    @required onFailure}) async {
   try {
     Response response = await _client.get(
       'question/search',
@@ -159,10 +161,9 @@ Future getPosts({keyword,
         'searchString': keyword ?? '',
         'tagList': '[$tagId]',
         'limits': '20',
-        'token': Provider
-            .of<FeedbackNotifier>(
-            WeiPeiYangApp.navigatorState.currentContext,
-            listen: false)
+        'token': Provider.of<FeedbackNotifier>(
+                WeiPeiYangApp.navigatorState.currentContext,
+                listen: false)
             .token,
         'page': '$page',
       },
@@ -210,14 +211,18 @@ Future getMyPosts({
   }
 }
 
-Future getComments({@required id,
-  @required void Function(
-      List<Comment> officialCommentList, List<Comment> commentList)
-  onSuccess,
-  @required void Function() onFailure}) async {
+Future getComments(
+    {@required
+        id,
+    @required
+        void Function(
+                List<Comment> officialCommentList, List<Comment> commentList)
+            onSuccess,
+    @required
+        void Function() onFailure}) async {
   try {
     Response officialCommentResponse =
-    await _client.get('question/get/answer', queryParameters: {
+        await _client.get('question/get/answer', queryParameters: {
       'question_id': '$id',
       'token': notifier.token,
     });
@@ -274,10 +279,11 @@ Future getFavoritePosts({
   }
 }
 
-Future postHitLike({@required id,
-  @required bool isLiked,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future postHitLike(
+    {@required id,
+    @required bool isLiked,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
@@ -301,10 +307,11 @@ Future postHitLike({@required id,
   }
 }
 
-Future postHitFavorite({@required id,
-  @required bool isFavorite,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future postHitFavorite(
+    {@required id,
+    @required bool isFavorite,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_hitFavoriteLock) {
     _hitFavoriteLock = true;
     try {
@@ -328,10 +335,11 @@ Future postHitFavorite({@required id,
   }
 }
 
-Future commentHitLike({@required id,
-  @required bool isLiked,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future commentHitLike(
+    {@required id,
+    @required bool isLiked,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
@@ -354,10 +362,11 @@ Future commentHitLike({@required id,
   }
 }
 
-Future officialCommentHitLike({@required id,
-  @required bool isLiked,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future officialCommentHitLike(
+    {@required id,
+    @required bool isLiked,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
@@ -380,10 +389,11 @@ Future officialCommentHitLike({@required id,
   }
 }
 
-Future sendComment({@required id,
-  @required content,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future sendComment(
+    {@required id,
+    @required content,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_sendCommentLock) {
     _sendCommentLock = true;
     try {
@@ -409,13 +419,14 @@ Future sendComment({@required id,
   }
 }
 
-Future sendPost({@required title,
-  @required content,
-  @required tagId,
-  @required List<Asset> imgList,
-  @required void Function() onSuccess,
-  @required void Function() onFailure,
-  @required void Function() onUploadImageFailure}) async {
+Future sendPost(
+    {@required title,
+    @required content,
+    @required tagId,
+    @required List<Asset> imgList,
+    @required void Function() onSuccess,
+    @required void Function() onFailure,
+    @required void Function() onUploadImageFailure}) async {
   if (!_sendPostLock) {
     _sendPostLock = true;
     try {
@@ -427,11 +438,13 @@ Future sendPost({@required title,
         'campus': 0,
       });
       if (0 == response.data['ErrorCode']) {
+        debugPrint(
+            "send question success ${response.data['data']['question_id']}");
+
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {
             ByteData byteData = await imgList[index].getByteData();
-            Response uploadImgResponse =
-            await _client.post('image/add', queryParameters: {
+            FormData data = FormData.fromMap({
               'token': notifier.token,
               'newImg': MultipartFile.fromBytes(
                 byteData.buffer.asUint8List(),
@@ -440,10 +453,12 @@ Future sendPost({@required title,
               ),
               'question_id': response.data['data']['question_id'],
             });
+            Response uploadImgResponse =
+                await _client.postForm('image/add', form: data);
             if (0 != uploadImgResponse.data['ErrorCode']) {
               onUploadImageFailure();
               log(response.data['data'].toString());
-              log(uploadImgResponse.data['ErrorCode']);
+              log(uploadImgResponse.data.toString());
             }
             if (0 == uploadImgResponse.data['ErrorCode'] &&
                 index == imgList.length - 1) {
@@ -465,19 +480,23 @@ Future sendPost({@required title,
   }
 }
 
-Future rate({@required id,
-  @required rating,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future rate(
+    {@required id,
+    @required rating,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_rateLock) {
     _rateLock = true;
     try {
-      Response response = await _client.post('answer/commit', queryParameters: {
-        'token': notifier.token,
-        'answer_id': id,
-        'score': rating.toInt(),
-        'commit': '评分',
-      },);
+      Response response = await _client.post(
+        'answer/commit',
+        queryParameters: {
+          'token': notifier.token,
+          'answer_id': id,
+          'score': rating.toInt(),
+          'commit': '评分',
+        },
+      );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -492,16 +511,20 @@ Future rate({@required id,
   }
 }
 
-Future deletePost({@required id,
-  @required void Function() onSuccess,
-  @required void Function() onFailure}) async {
+Future deletePost(
+    {@required id,
+    @required void Function() onSuccess,
+    @required void Function() onFailure}) async {
   if (!_deleteLock) {
     _deleteLock = true;
     try {
       Response response = await _client.post(
-        'question/delete', queryParameters: {
-        'token': notifier.token, 'question_id': id,
-      },);
+        'question/delete',
+        queryParameters: {
+          'token': notifier.token,
+          'question_id': id,
+        },
+      );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {

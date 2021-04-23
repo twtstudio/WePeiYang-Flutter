@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
@@ -29,17 +28,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await timeModel.setTime();
-      await checkUpdate();
     });
-  }
-
-  String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
-
-  checkUpdate() async {
-    UpdateManager.init();
-    try {
-      UpdateManager.checkUpdate(context, url);
-    } catch (e) {}
   }
 
   @override

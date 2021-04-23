@@ -4,18 +4,26 @@ import 'package:wei_pei_yang_demo/commons/update/common.dart';
 import 'package:wei_pei_yang_demo/commons/update/http.dart';
 import 'package:wei_pei_yang_demo/commons/update/update_parser.dart';
 import 'package:wei_pei_yang_demo/commons/update/update_prompter.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 /// 版本更新管理
 class UpdateManager {
   ///全局初始化
   static init(
-      {String baseUrl, int timeout = 5000, Map<String, dynamic> headers}) {
+      {String baseUrl,
+      int timeout = 5000,
+      Map<String, dynamic> headers,
+      BuildContext context}) {
     HttpUtils.init(baseUrl: baseUrl, timeout: timeout, headers: headers);
+    baseContext = context;
   }
 
-  static void checkUpdate(BuildContext context, String url) {
+  static BuildContext baseContext;
+
+  static void checkUpdate() {
     // searchLocalCache();
     // delAllTemporaryFile();
+    String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
     searchLocalCache();
     HttpUtils.get(url).then((response) {
       UpdateParser.parseJson(response.toString())?.then((value) {
@@ -23,11 +31,11 @@ class UpdateManager {
             updateEntity: value,
             onInstall: (String filePath) {
               CommonUtils.installAPP(filePath);
-            }).show(context,value);
+            }).show(baseContext, value);
       });
     }).catchError((onError) {
       // ToastProvider.error(onError.toString());
-      throw onError;
+      ToastProvider.error("检查更新失败");
     });
   }
 }

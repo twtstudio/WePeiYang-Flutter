@@ -40,20 +40,21 @@ extension DioRequests on DioAbstract {
   /// 普通的[get]、[post]与[put]方法，返回[Response]
   Future<Response<dynamic>> get(String path,
       {Map<String, dynamic> queryParameters}) {
-    return dio
-        .get(path, queryParameters: queryParameters);
+    return dio.get(path, queryParameters: queryParameters);
   }
 
   Future<Response<dynamic>> post(String path,
       {Map<String, dynamic> queryParameters}) {
-    return dio
-        .post(path, queryParameters: queryParameters);
+    return dio.post(path, queryParameters: queryParameters);
+  }
+
+  Future<Response<dynamic>> postForm(String path, {FormData form}) {
+    return dio.post(path, data: form);
   }
 
   Future<Response<dynamic>> put(String path,
       {Map<String, dynamic> queryParameters}) {
-    return dio
-        .put(path, queryParameters: queryParameters);
+    return dio.put(path, queryParameters: queryParameters);
   }
 
   /// twt后台包装的[get]与[post]方法，返回[CommonBody.result]
