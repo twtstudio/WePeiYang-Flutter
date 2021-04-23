@@ -10,7 +10,6 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'dart:math';
 
 final hintStyle = const TextStyle(
     fontSize: 17,

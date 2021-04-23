@@ -74,7 +74,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                     ),
                     Container(
                       height: 75,
-                      width: canvasWidth,
+                      width: canvasWidth + 25,
 
                       /// 加上material使inkwell能在list中显示出来
                       child: Material(
