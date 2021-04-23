@@ -34,8 +34,18 @@ class _EmailBindPageState extends State<EmailBindPage> {
       return Column(children: [
         Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(0, 60, 0, 95),
-          child: Text('已绑定邮箱：\n${pref.email.value}',
+          padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
+          child: Text('已绑定邮箱：',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Color.fromRGBO(79, 88, 107, 1))),
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 95),
+          child: Text(pref.email.value,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,

@@ -362,7 +362,7 @@ class GPAStatsWidget extends StatelessWidget {
     textStyle = TextStyle(
         color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13.0);
     numStyle = TextStyle(
-        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 22.0);
+        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 25.0);
   }
 
   static var textStyle;
@@ -453,90 +453,93 @@ class _CourseListState extends State<CourseListWidget> {
   @override
   Widget build(BuildContext context) {
     var courses = widget.notifier.coursesWithNotify;
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () => widget.notifier.reSort(),
-          child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: RichText(
-                  text: TextSpan(
-                      text: 'ORDERED\tBY\t',
-                      style: TextStyle(
-                          fontSize: 13,
-                          letterSpacing: 4,
-                          color: widget.gpaColors[2]),
-                      children: <TextSpan>[
-                    TextSpan(
-                        text: widget.notifier.sortType.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => widget.notifier.reSort(),
+            child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: RichText(
+                    text: TextSpan(
+                        text: 'ORDERED\tBY\t',
                         style: TextStyle(
                             fontSize: 13,
                             letterSpacing: 4,
-                            color: widget.gpaColors[1],
-                            fontWeight: FontWeight.bold))
-                  ]))),
-        ),
-        Container(
-          height: cardHeight * courses.length,
-          child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: courses.length,
-              itemBuilder: (context, i) => Container(
-                    height: cardHeight,
-                    padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
-                    child: Card(
-                      color: widget.gpaColors[3],
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      child: InkWell(
-                        splashFactory: InkRipple.splashFactory,
-                        borderRadius: BorderRadius.circular(12),
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                              child: Icon(Icons.assignment_turned_in,
-                                  color: widget.gpaColors[2], size: 25),
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(_formatText(courses[i].name),
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: widget.gpaColors[1])),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        "${courses[i].classType} / ${courses[i].credit} Credits",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: widget.gpaColors[2])),
-                                  )
-                                ],
+                            color: widget.gpaColors[2]),
+                        children: <TextSpan>[
+                      TextSpan(
+                          text: widget.notifier.sortType.toUpperCase(),
+                          style: TextStyle(
+                              fontSize: 13,
+                              letterSpacing: 4,
+                              color: widget.gpaColors[1],
+                              fontWeight: FontWeight.bold))
+                    ]))),
+          ),
+          Container(
+            height: cardHeight * courses.length,
+            child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: courses.length,
+                itemBuilder: (context, i) => Container(
+                      height: cardHeight,
+                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
+                      child: Card(
+                        color: widget.gpaColors[3],
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        child: InkWell(
+                          splashFactory: InkRipple.splashFactory,
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                                child: Icon(Icons.assignment_turned_in,
+                                    color: widget.gpaColors[2], size: 25),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10, right: 15),
-                              child: Text('${courses[i].score.round()}',
-                                  style: TextStyle(
-                                      fontSize: 28,
-                                      color: widget.gpaColors[1],
-                                      fontWeight: FontWeight.bold)),
-                            )
-                          ],
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(_formatText(courses[i].name),
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: widget.gpaColors[1])),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          "${courses[i].classType} / ${courses[i].credit} Credits",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: widget.gpaColors[2])),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10, right: 15),
+                                child: Text('${courses[i].score.round()}',
+                                    style: TextStyle(
+                                        fontSize: 28,
+                                        color: widget.gpaColors[1],
+                                        fontWeight: FontWeight.bold)),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  )),
-        )
-      ],
+                    )),
+          )
+        ],
+      ),
     );
   }
 

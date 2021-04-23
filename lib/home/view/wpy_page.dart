@@ -10,6 +10,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'dart:math';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -111,30 +112,48 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    DateTime now = DateTime.now();
+    double distance = maxExtent - minExtent;
+    if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
-      alignment: Alignment.center,
-      padding: EdgeInsets.fromLTRB(30.0, 15.0, 10.0, 0.0),
-      child: Row(
-        children: <Widget>[
-          Text("Hello",
-              style: TextStyle(
-                  fontSize: 35,
-                  color: MyColors.deepBlue,
-                  fontWeight: FontWeight.bold)),
-          Expanded(child: Text('')), // 起填充作用
-          Text(CommonPreferences().nickname.value, style: hintStyle),
-          GestureDetector(
-            onTap: () =>
-                Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {
-              onChanged(null);
-            }),
-            child: Container(
-              margin: EdgeInsets.only(left: 7, right: 10),
-              child: Icon(Icons.account_circle_rounded,
-                  size: 40, color: MyColors.deepBlue),
-            ),
-          )
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.fromLTRB(30, 28, 10, 0),
+      child: Column(
+        children: [
+          Row(
+            children: <Widget>[
+              Text("Hello",
+                  style: TextStyle(
+                      fontSize: 35,
+                      color: MyColors.deepBlue,
+                      fontWeight: FontWeight.bold)),
+              Expanded(child: Text('')), // 起填充作用
+              Text(CommonPreferences().nickname.value, style: hintStyle),
+              GestureDetector(
+                onTap: () =>
+                    Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {
+                  onChanged(null);
+                }),
+                child: Container(
+                  margin: EdgeInsets.only(left: 7, right: 10),
+                  child: Icon(Icons.account_circle_rounded,
+                      size: 40, color: MyColors.deepBlue),
+                ),
+              )
+            ],
+          ),
+          (distance - shrinkOffset > 25)
+              ? Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
+                      style: TextStyle(
+                          color: Color.fromRGBO(114, 119, 138, 1),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15)),
+                )
+              : Container()
         ],
       ),
     );
@@ -144,10 +163,29 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   double get maxExtent => 120;
 
   @override
-  double get minExtent => 65.0;
+  double get minExtent => 70;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
+
+  String _chineseWeekDay(int weekday) {
+    switch (weekday) {
+      case 1:
+        return "周一";
+      case 2:
+        return "周二";
+      case 3:
+        return "周三";
+      case 4:
+        return "周四";
+      case 5:
+        return "周五";
+      case 6:
+        return "周六";
+      default:
+        return "周日";
+    }
+  }
 }
 
 class SliverCardsWidget extends StatelessWidget {

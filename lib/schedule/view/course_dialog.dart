@@ -54,7 +54,7 @@ class CourseDialog extends Dialog {
                   image: AssetImage('assets/images/icon_peiyang.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(15),
               color: generateColor(course)),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
@@ -89,7 +89,10 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ID', style: hintNameStyle),
+              Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Text('ID', style: hintNameStyle),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: Text(course.courseId, style: hintValueStyle),
@@ -97,14 +100,28 @@ class CourseDialog extends Dialog {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.only(left: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('LOGIC NO.', style: hintNameStyle),
+                Text('逻辑班号', style: hintNameStyle),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(course.classId, style: hintValueStyle),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('校区', style: hintNameStyle.copyWith(letterSpacing: 3)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 1, left: 1),
+                  child: Text("${course.campus}${course.campus.isNotEmpty ? "校区" : ""}",
+                      style: hintValueStyle.copyWith(fontSize: 10)),
                 )
               ],
             ),
@@ -117,33 +134,20 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CAMPUS', style: hintNameStyle),
+              Text('上课地点', style: hintNameStyle),
               Padding(
-                padding: const EdgeInsets.only(top: 1),
-                child: Text(course.campus, style: hintValueStyle),
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(replaceBuildingWord(course.arrange.room),
+                    style: hintValueStyle),
               )
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.only(left: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ROOM', style: hintNameStyle),
-                Padding(
-                  padding: const EdgeInsets.only(top: 3),
-                  child: Text(replaceBuildingWord(course.arrange.room),
-                      style: hintValueStyle),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('WEEKS', style: hintNameStyle),
+                Text('起止周', style: hintNameStyle),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text("${course.week.start}-${course.week.end}",
@@ -151,37 +155,33 @@ class CourseDialog extends Dialog {
                 )
               ],
             ),
-          )
-        ],
-      );
-
-  Widget _getRow3() => Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('CREDITS', style: hintNameStyle),
-              Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Text(course.credit, style: hintValueStyle),
-              )
-            ],
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.only(left: 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('TIME', style: hintNameStyle),
+                Text('学分', style: hintNameStyle.copyWith(letterSpacing: 3)),
                 Padding(
-                  padding: const EdgeInsets.only(top: 3),
-                  child: Text(
-                      getCourseTime(course.arrange.start, course.arrange.end),
-                      style: hintValueStyle),
+                  padding: const EdgeInsets.only(top: 3, left: 2),
+                  child: Text(course.credit, style: hintValueStyle),
                 )
               ],
             ),
           )
         ],
       );
+
+  Widget _getRow3() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('时间', style: hintNameStyle.copyWith(letterSpacing: 3)),
+      Padding(
+        padding: const EdgeInsets.only(top: 3),
+        child: Text(
+            getCourseTime(course.arrange.start, course.arrange.end),
+            style: hintValueStyle),
+      )
+    ],
+  );
 }

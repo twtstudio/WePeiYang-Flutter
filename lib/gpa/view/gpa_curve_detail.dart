@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'dart:math';
 import '../../home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
@@ -65,29 +66,44 @@ class GPAIntro extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Column(
-          children: <Widget>[
-            Text('Total Weighted', style: textStyle),
-            Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(weighted, style: numStyle))
-          ],
+        InkResponse(
+          onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Total Weighted', style: textStyle),
+              Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(weighted, style: numStyle))
+            ],
+          ),
         ),
-        Column(
-          children: <Widget>[
-            Text('Total GPA', style: textStyle),
-            Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(grade, style: numStyle))
-          ],
+        InkResponse(
+          onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Total GPA', style: textStyle),
+              Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(grade, style: numStyle))
+            ],
+          ),
         ),
-        Column(
-          children: <Widget>[
-            Text('Credit Earned', style: textStyle),
-            Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(credit, style: numStyle))
-          ],
+        InkResponse(
+          onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Credit Earned', style: textStyle),
+              Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(credit, style: numStyle))
+            ],
+          ),
         )
       ],
     );
@@ -177,17 +193,17 @@ class _GPACurveState extends State<GPACurve>
                   var lT = points[_lastTaped], nT = points[_newTaped];
                   return Transform.translate(
                     /// 计算两次点击之间的偏移量Offset
-                    /// 40.0和55.0用来对准黑白圆点的圆心(与下方container大小有关)
+                    /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
                     offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                        lT.y - 55 + (nT.y - lT.y) * value),
+                        lT.y - 60 + (nT.y - lT.y) * value),
                     child: Container(
                       width: 80,
-                      height: 70,
+                      height: 75,
                       child: Column(
                         children: <Widget>[
                           Container(
                             width: 80,
-                            height: 40,
+                            height: 45,
                             child: Card(
                               color: widget.isPreview
                                   ? _popupCardPreview
@@ -198,7 +214,7 @@ class _GPACurveState extends State<GPACurve>
                               child: Center(
                                 child: Text('${curveData[_newTaped - 1]}',
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 17,
                                         color: widget.isPreview
                                             ? _popupTextPreview
                                             : _popupTextColor,
