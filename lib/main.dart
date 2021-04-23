@@ -1,31 +1,29 @@
 import 'dart:async';
 import 'dart:io' show Platform;
-import 'dart:isolate';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:umeng_sdk/umeng_sdk.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
-import 'package:wei_pei_yang_demo/message/message_provider.dart';
+import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
+import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 
 import 'commons/preferences/common_prefs.dart';
+import 'commons/util/app_analysis.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
-
-import 'commons/util/app_analysis.dart';
-import 'package:umeng_sdk/umeng_sdk.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
@@ -88,36 +86,38 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    methodChannel
-      ..setMethodCallHandler((call) async {
-        switch (call.method) {
-          case 'showMessage':
-            print("*****************************************");
-            String content = await call.arguments;
-            print(
-                "*******************${content} + ${content != null && content.isNotEmpty}*****************");
-            if (content != null && content.isNotEmpty) {
-              print("????");
-              await showMessageDialog(
-                WeiPeiYangApp.navigatorState.currentState.overlay.context,
-                content,
-              );
-              ToastProvider.success(content);
-              return "success";
-            } else {
-              throw PlatformException(
-                  code: 'error', message: '失败', details: 'content is null');
-            }
-            break;
-          case 'getReply':
-            break;
-          default:
-            print("???????????????????????????????????????????");
-        }
-      });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var baseContext = WeiPeiYangApp.navigatorState.currentState.overlay.context;
+      UpdateManager.init(context: baseContext);
+      methodChannel
+        ..setMethodCallHandler((call) async {
+          switch (call.method) {
+            case 'showMessage':
+              print("*****************************************");
+              String content = await call.arguments;
+              print(
+                  "*******************${content} + ${content != null && content.isNotEmpty}*****************");
+              if (content != null && content.isNotEmpty) {
+                print("????");
+                await showMessageDialog(
+                  baseContext,
+                  content,
+                );
+                ToastProvider.success(content);
+                return "success";
+              } else {
+                throw PlatformException(
+                    code: 'error', message: '失败', details: 'content is null');
+              }
+              break;
+            case 'getReply':
+              break;
+            default:
+              print("???????????????????????????????????????????");
+          }
+        });
+    });
   }
 
   @override
@@ -222,7 +222,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         prefs.account.value == "" ||
         prefs.password.value == "") {
       /// 既然没登陆过就多看会启动页吧
-      Future.delayed(Duration(seconds: 3)).then(
+      Future.delayed(Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
       /// 稍微显示一会启动页，不然它的意义是什么555

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/update/common.dart';
+import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
@@ -30,6 +32,7 @@ class _UserPageState extends State<UserPage> {
             Image.asset('assets/images/user_back.png',
                 height: 350, alignment: Alignment.topCenter, fit: BoxFit.fill),
             ListView(
+              physics: BouncingScrollPhysics(),
               children: <Widget>[
                 Container(
                     margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0),
@@ -140,6 +143,53 @@ class _UserPageState extends State<UserPage> {
                           Padding(
                               padding: const EdgeInsets.only(right: 22),
                               child: arrow)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 80,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9)),
+                    child: InkWell(
+                      onTap: () {
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
+                          UpdateManager.checkUpdate();
+                        });
+                      },
+                      splashFactory: InkRipple.splashFactory,
+                      borderRadius: BorderRadius.circular(9),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            width: 20,
+                            margin: const EdgeInsets.only(left: 20, right: 10),
+                            child: Icon(Icons.update),
+                          ),
+                          Container(
+                              width: 100,
+                              child: Text('检查更新', style: textStyle)),
+                          FutureBuilder(
+                            future: CommonUtils.getVersion(),
+                            builder: (_, AsyncSnapshot<String> snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "当前版本：${snapshot.data}",
+                                  style: TextStyle(
+                                    color: Color(0xffcfd0d5),
+                                    fontSize: 12,
+                                  ),
+                                );
+                              } else {
+                                return SizedBox.expand();
+                              }
+                            },
+                          )
                         ],
                       ),
                     ),

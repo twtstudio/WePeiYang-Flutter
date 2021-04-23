@@ -21,26 +21,51 @@ class LoungeFavourWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.removePadding(
-      context: context,
-      removeRight: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25),
-            child: Text(
-              title,
-              style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0XFF62677B)),
-            ),
+    Widget body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25),
+          child: Text(
+            title,
+            style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: Color(0XFF62677B)),
           ),
-          FavourListWidget(init: init),
-        ],
-      ),
+        ),
+        FavourListWidget(init: init),
+      ],
     );
+
+    Widget wrapper;
+    if (init) {
+      wrapper = ValueListenableBuilder(
+        valueListenable:
+            context.findAncestorStateOfType<WPYPageState>().canNotGoIntoLounge,
+        builder: (_, bool absorbing, __) => GestureDetector(
+          onTap: () {
+            print("==================================================");
+            print("==================================================");
+            print("absorbing : $absorbing");
+            print("==================================================");
+            print("==================================================");
+            if (absorbing) {
+              context.findAncestorStateOfType<WPYPageState>().showToast(
+                    custom: null,
+                  );
+            } else {
+              Navigator.pushNamed(context, LoungeRouter.main);
+            }
+          },
+          behavior: HitTestBehavior.translucent,
+          child: body,
+        ),
+      );
+    }
+
+    return MediaQuery.removePadding(
+        context: context, removeRight: true, child: wrapper ?? body);
   }
 }
 
@@ -87,11 +112,11 @@ class _FavourListWidgetState extends State<FavourListWidget> {
       builder: (_, model, __) => ListLoadSteps(
         model: model,
         emptyV: Container(
-          height: 40,
+          height: 60,
           child: Container(
             child: Center(
               child: Text(
-                '暂无收藏',
+                widget.init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
                 style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
               ),
             ),
