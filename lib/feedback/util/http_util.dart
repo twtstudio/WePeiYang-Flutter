@@ -188,6 +188,7 @@ Future getMyPosts({
   @required void Function() onFailure,
 }) async {
   try {
+    log("notifier.token ${notifier.token}");
     Response response = await _client.get(
       'question/get/myQuestion',
       queryParameters: {
@@ -203,6 +204,7 @@ Future getMyPosts({
       }
       onSuccess(list);
     } else {
+      log("${response.data.toString()}");
       onFailure();
     }
   } on DioError catch (e) {
@@ -211,26 +213,50 @@ Future getMyPosts({
   }
 }
 
-Future getComments(
-    {@required
-        id,
-    @required
-        void Function(
-                List<Comment> officialCommentList, List<Comment> commentList)
-            onSuccess,
-    @required
-        void Function() onFailure}) async {
+Future getPostById({
+  @required int id,
+  @required void Function(Post post) onSuccess,
+  @required void Function() onFailure,
+}) async {
+  try {
+    Response response = await _client.get(
+      'question/get/byId',
+      queryParameters: {
+        'id': id,
+        'token': notifier.token,
+      },
+    );
+    if (0 == response.data['ErrorCode']) {
+      Post post = Post.fromJson(response.data['data']);
+      onSuccess(post);
+    } else {
+      onFailure();
+    }
+  } on DioError catch (e) {
+    log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
+    onFailure();
+  }
+}
+
+Future getComments({
+  @required id,
+  @required
+      void Function(
+              List<Comment> officialCommentList, List<Comment> commentList)
+          onSuccess,
+  @required void Function() onFailure,
+}) async {
   try {
     Response officialCommentResponse =
         await _client.get('question/get/answer', queryParameters: {
       'question_id': '$id',
-      'token': notifier.token,
+      'token': notifier.token ,
     });
     Response commentResponse = await _client.get(
       'question/get/commit',
       queryParameters: {
         'question_id': '$id',
-        'token': notifier.token,
+        'token': notifier.token ,
       },
     );
     if (0 == officialCommentResponse.data['ErrorCode'] &&
@@ -279,11 +305,12 @@ Future getFavoritePosts({
   }
 }
 
-Future postHitLike(
-    {@required id,
-    @required bool isLiked,
-    @required void Function() onSuccess,
-    @required void Function() onFailure}) async {
+Future postHitLike({
+  @required id,
+  @required bool isLiked,
+  @required void Function() onSuccess,
+  @required void Function() onFailure,
+}) async {
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
@@ -307,11 +334,12 @@ Future postHitLike(
   }
 }
 
-Future postHitFavorite(
-    {@required id,
-    @required bool isFavorite,
-    @required void Function() onSuccess,
-    @required void Function() onFailure}) async {
+Future postHitFavorite({
+  @required id,
+  @required bool isFavorite,
+  @required void Function() onSuccess,
+  @required void Function() onFailure,
+}) async {
   if (!_hitFavoriteLock) {
     _hitFavoriteLock = true;
     try {

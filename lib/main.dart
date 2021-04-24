@@ -34,6 +34,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await FlutterDownloader.initialize(debug: true);
   await CommonPreferences.initPrefs();
+  await NetStatusListener.init();
   runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -75,6 +76,8 @@ class WeiPeiYangApp extends StatefulWidget {
   _WeiPeiYangAppState createState() => _WeiPeiYangAppState();
 }
 
+final messageChannel = MethodChannel('com.example.wei_pei_yang_demo/message');
+
 class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
   @override
   void dispose() async {
@@ -82,15 +85,15 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
     super.dispose();
   }
 
-  final methodChannel = MethodChannel('com.example.wei_pei_yang_demo/message');
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var baseContext = WeiPeiYangApp.navigatorState.currentState.overlay.context;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var baseContext =
+          WeiPeiYangApp.navigatorState.currentState.overlay.context;
       UpdateManager.init(context: baseContext);
-      methodChannel
+      GlobalModel().init(baseContext);
+      messageChannel
         ..setMethodCallHandler((call) async {
           switch (call.method) {
             case 'showMessage':
@@ -112,11 +115,17 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
               }
               break;
             case 'getReply':
+              print("******************  get reply ***********************");
+              print("******************  get reply ***********************");
+              print("******************  get reply ***********************");
+              await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
+              return "success";
               break;
             default:
               print("???????????????????????????????????????????");
           }
         });
+      await HiveManager.init();
     });
   }
 
@@ -131,8 +140,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ...loungeProviders,
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
         ChangeNotifierProvider(
-            create: (context) =>
-                MessageProvider(methodChannel)..refreshFeedbackCount())
+            create: (context) => MessageProvider()..refreshFeedbackCount())
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
@@ -189,8 +197,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await HiveManager.init();
-      await NetStatusListener.init();
       _autoLogin(context);
     });
   }
@@ -198,10 +204,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    GlobalModel().screenWidth = width;
-    GlobalModel().screenHeight = height;
+
     return Container(
       color: Colors.white,
       child: Center(

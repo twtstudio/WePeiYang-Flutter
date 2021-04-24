@@ -105,7 +105,7 @@ class _PostCardState extends State<PostCard> {
       child: FeedbackBannerWidget(
         showBanner: widget.showBanner ?? false,
         questionId: post.id,
-        builder:(tap) =>  Container(
+        builder: (tap) => Container(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -359,19 +359,24 @@ class _PostCardState extends State<PostCard> {
                       ),
                     ),
                   ),
-                  BlankSpace.width(8),
+                  BlankSpace.width(6),
                   Text(
                     post.commentCount.toString(),
                     style: TextStyle(
                         fontSize: 14, color: ColorUtil.lightTextColor),
                   ),
-                  BlankSpace.width(16),
+                  BlankSpace.width(8),
                   // Like count.
                   GestureDetector(
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Icon(
+                    behavior: HitTestBehavior.translucent,
+                    child: Container(
+                      // color: Colors.blue,
+                      width: 40,
+                      height: 25,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
                             !post.isLiked
                                 ? Icons.thumb_up_outlined
                                 : Icons.thumb_up,
@@ -380,26 +385,29 @@ class _PostCardState extends State<PostCard> {
                                 ? ColorUtil.lightTextColor
                                 : Colors.red,
                           ),
-                        ),
-                        BlankSpace.width(8),
-                        Text(
-                          post.likeCount.toString(),
-                          style: TextStyle(
-                              fontSize: 14, color: ColorUtil.lightTextColor),
-                        ),
-                      ],
+                          BlankSpace.width(6),
+                          Text(
+                            post.likeCount.toString(),
+                            style: TextStyle(
+                                fontSize: 14, color: ColorUtil.lightTextColor),
+                          ),
+                        ],
+                      ),
                     ),
                     onTap: onLikePressed,
                   ),
                   if (!enableImgList) Spacer(),
-                  if (enableImgList) BlankSpace.width(16),
+                  if (enableImgList) BlankSpace.width(5),
                   // Favorite.
                   if (enableImgList)
-                    ClipOval(
+                    Container(
+                      width: 30,
+                      height: 25,
+                      // color: Colors.red,
                       child: InkWell(
                         child: Icon(
                           post.isFavorite ? Icons.star : Icons.star_border,
-                          size: 16,
+                          size: 20,
                           color: post.isFavorite
                               ? Colors.amber
                               : ColorUtil.lightTextColor,
@@ -429,7 +437,6 @@ class _PostCardState extends State<PostCard> {
                     ),
                 ],
               ),
-              BlankSpace.height(5),
             ],
           ),
           decoration: BoxDecoration(

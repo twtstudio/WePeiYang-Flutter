@@ -21,6 +21,7 @@ class WBYApplication : FlutterApplication() {
         lateinit var appContext: Context
         private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
+        var postId: Int? = null
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -28,6 +29,7 @@ class WBYApplication : FlutterApplication() {
             companion object {
                 const val RECEIVE_MESSAGE_DATA = 0
                 const val RECEIVE_CLIENT_ID = 1
+                const val RECEIVE_FEEDBACK_MESSAGE = 2
             }
 
             override fun handleMessage(msg: Message) {
@@ -63,6 +65,26 @@ class WBYApplication : FlutterApplication() {
                             override fun notImplemented() {
                                 activity?.get()?.showDialog("notimplemented")
                             }
+                        })
+                    }
+                    RECEIVE_FEEDBACK_MESSAGE -> {
+                        val data = msg.obj.toString()
+                        postId = data.toIntOrNull();
+                        Log.d("RECEIVE_FEEDBACK", data)
+                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
+                            override fun success(result: Any?) {
+//                                TODO("Not yet implemented")
+                                postId = null;
+                            }
+
+                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+//                                TODO("Not yet implemented")
+                            }
+
+                            override fun notImplemented() {
+//                                TODO("Not yet implemented")
+                            }
+
                         })
                     }
                 }

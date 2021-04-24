@@ -13,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.work.*
 import com.example.wei_pei_yang_demo.alarm.AlarmService
 import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
+import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.android.FlutterFragmentActivity
 import java.lang.ref.WeakReference
 import java.util.*
@@ -62,8 +63,15 @@ class MainActivity : FlutterFragmentActivity() {
                         model.refreshFeedbackMessage(result)
                     }
                     "setMessageReadById" -> {
-                        Log.d("WBYFEEDBACKREAD","123")
+                        Log.d("WBYFEEDBACKREAD", "123")
                         model.setMessageReadById(result, call.argument<Int>("id"))
+                    }
+                    "getPostId" -> {
+                        WBYApplication.postId?.let {
+                            WBYApplication.postId = null
+                            return@setMethodCallHandler result.success(it)
+                        }
+                        result.error("-1", "can not find post id", null)
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }
@@ -77,6 +85,14 @@ class MainActivity : FlutterFragmentActivity() {
         WBYApplication.activity = WeakReference(this)
         UmengSdkPlugin.setContext(this)
         android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
+    }
+
+    // 这么写没用，但是先留着，如果之后有厂商推送就有用了
+    override fun getInitialRoute(): String {
+        WBYApplication.postId?.let {
+            return "feedback/detail";
+        }
+        return super.getInitialRoute();
     }
 
     private fun setData(context: Context?, data: List<Map<String, Any>>) {

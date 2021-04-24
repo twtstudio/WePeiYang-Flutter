@@ -77,8 +77,9 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   void initState() {
     currentPage = 1;
     status = FeedbackHomePageStatus.loading;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<FeedbackNotifier>(context, listen: false).initHomePostList(
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<FeedbackNotifier>(context, listen: false)
+          .initHomePostList(
         (page) {
           if (mounted) {
             setState(() {

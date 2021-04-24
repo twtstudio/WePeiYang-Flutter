@@ -6,9 +6,7 @@ import 'package:wei_pei_yang_demo/message/message_dialog.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 
 class MessageProvider extends ChangeNotifier {
-  MessageProvider(this._messageChannel);
 
-  final MethodChannel _messageChannel;
   List<MessageDataItem> _feedbackQuestions;
   List<MessageDataItem> _feedbackFavourites;
   List<int> _feedbackMessageList;

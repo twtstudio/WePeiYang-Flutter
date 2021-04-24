@@ -33,10 +33,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Provider.of<FeedbackNotifier>(context, listen: false)
           .clearProfilePostList();
-      getMyPosts(onSuccess: (list) {
+      await getMyPosts(onSuccess: (list) {
         Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
             Provider.of<MessageProvider>(context, listen: false).feedbackQs ==
                     null
@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Provider.of<MessageProvider>(context, listen: false)
                         .feedbackQs));
       }, onFailure: () {
-        ToastProvider.error('校务专区获取帖子失败，请重试');
+        ToastProvider.error('校务专区获取帖子失败，请重试???');
       });
     });
     super.initState();

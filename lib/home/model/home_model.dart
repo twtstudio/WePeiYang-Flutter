@@ -47,6 +47,14 @@ class GlobalModel {
 
   factory GlobalModel() => _instance;
 
+  init(BuildContext ctx) {
+    var size = MediaQuery.of(ctx).size;
+    var width = size.width;
+    var height = size.height;
+    screenWidth = width;
+    screenHeight = height;
+  }
+
   double screenWidth;
   double screenHeight;
   int captchaIndex = 0;

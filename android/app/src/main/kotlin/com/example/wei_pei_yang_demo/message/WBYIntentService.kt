@@ -24,8 +24,8 @@ class WBYIntentService : GTIntentService() {
     override fun onReceiveClientId(p0: Context?, clientid: String?) {
 //        TODO("Not yet implemented")
         Log.e(TAG, "onReceiveClientId -> clientid = $clientid")
-        clientid?.let { 
-            sendMessage(it,WBYApplication.Companion.MyHandler.RECEIVE_CLIENT_ID)
+        clientid?.let {
+            sendMessage(it, WBYApplication.Companion.MyHandler.RECEIVE_CLIENT_ID)
         }
     }
 
@@ -56,7 +56,7 @@ class WBYIntentService : GTIntentService() {
         } else {
             val data = String(payload)
             Log.d(TAG, "receiver payload = $data")
-            sendMessage(data,WBYApplication.Companion.MyHandler.RECEIVE_MESSAGE_DATA)
+            sendMessage(data, WBYApplication.Companion.MyHandler.RECEIVE_MESSAGE_DATA)
         }
 
         Log.d(TAG, "----------------------------------------------------------------------------------------------")
@@ -78,14 +78,24 @@ class WBYIntentService : GTIntentService() {
                 + "\npkg = " + message?.pkgName
                 + "\ncid = " + message?.clientId
                 + "\ncontent = " + message?.content
-                + "\ntitle = "+message?.title);
+                + "\ntitle = " + message?.title);
     }
 
-    override fun onNotificationMessageClicked(p0: Context?, p1: GTNotificationMessage?) {
-//        TODO("Not yet implemented")
+    override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
+        message?.content?.let {
+            sendMessage(it, 2)
+        }
+        Log.d(TAG, "onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = " + message?.title);
     }
 
-    private fun sendMessage(data: String, what: Int){
+    private fun sendMessage(data: String, what: Int) {
         val msg = Message.obtain()
         msg.what = what
         msg.obj = data

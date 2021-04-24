@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
@@ -48,7 +50,7 @@ class FeedbackNotifier with ChangeNotifier {
 
   List<String> get searchHistoryList => _searchHistoryList;
 
-  String get token => _token;
+  String get token => _token ?? CommonPreferences().feedbackToken.value;
 
   initSearchHistory() async {
     final _prefs = await SharedPreferences.getInstance();
@@ -131,11 +133,12 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   // TODO: Callback hell goes brrrrrrrrrr.
-  initHomePostList(onSuccess, onError) {
+  Future<void> initHomePostList(onSuccess, onError) async {
     clearHomePostList();
-    getToken(
+    await getToken(
       onSuccess: (token) {
         _token = token;
+        log("token: ${token}");
         CommonPreferences().feedbackToken.value = token;
         getTags(
           _token,
