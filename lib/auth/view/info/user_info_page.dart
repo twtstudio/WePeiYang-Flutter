@@ -207,7 +207,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           children: <Widget>[
                             Container(
                               width: 20,
-                              margin: const EdgeInsets.only(right: 10),
+                              margin: const EdgeInsets.only(right: 15),
                               child: Image.asset('assets/images/telephone.png'),
                             ),
                             Container(
@@ -249,7 +249,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           children: <Widget>[
                             Container(
                               width: 20,
-                              margin: const EdgeInsets.only(right: 10),
+                              margin: const EdgeInsets.only(right: 15),
                               child: Image.asset('assets/images/email.png'),
                             ),
                             Container(

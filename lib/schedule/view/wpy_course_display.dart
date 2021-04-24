@@ -10,25 +10,54 @@ class TodayCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
+      List<ScheduleCourse> todayCourses = _getTodayCourses(notifier);
       return Column(
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(25.0, 20.0, 0.0, 12.0),
             alignment: Alignment.centerLeft,
-            child: Text('课程表',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromRGBO(100, 103, 122, 1.0),
-                    fontWeight: FontWeight.bold)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('课程表',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color.fromRGBO(100, 103, 122, 1.0),
+                        fontWeight: FontWeight.bold)),
+                Expanded(child: Text("")),
+                Padding(
+                  padding: const EdgeInsets.only(right: 25.0, top: 2),
+                  child: (todayCourses.length == 0)
+                      ? Container()
+                      : GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                              context, ScheduleRouter.schedule),
+                          child: DefaultTextStyle(
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color.fromRGBO(100, 103, 122, 1.0)),
+                            child: Text.rich(TextSpan(children: [
+                              TextSpan(text: "明天"),
+                              TextSpan(
+                                  text: todayCourses.length.toString(),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text: "节课 "),
+                              TextSpan(text: ">", style: TextStyle(fontSize: 15))
+                            ])),
+                          ),
+                        ),
+                )
+              ],
+            ),
           ),
-          _getDisplayWidget(notifier)
+          _getDisplayWidget(todayCourses)
         ],
       );
     });
   }
 
-  /// 返回首页显示课程的widget
-  Widget _getDisplayWidget(ScheduleNotifier notifier) {
+  List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
     List<ScheduleCourse> todayCourses = [];
     int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
@@ -43,6 +72,11 @@ class TodayCoursesWidget extends StatelessWidget {
             notifier.currentWeek, today, notifier.weekCount, course);
       if (flag) todayCourses.add(course);
     });
+    return todayCourses;
+  }
+
+  /// 返回首页显示课程的widget
+  Widget _getDisplayWidget(List<ScheduleCourse> todayCourses) {
     if (todayCourses.length == 0) {
       // 如果今天没有课，就返回文字框
       return Container(

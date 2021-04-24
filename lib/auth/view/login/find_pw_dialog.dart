@@ -12,7 +12,7 @@ class FindPwDialog extends Dialog {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 120,
+        height: 150,
         width: GlobalModel().screenWidth - 40,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
@@ -25,12 +25,12 @@ class FindPwDialog extends Dialog {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.only(left: 10, top: 15),
+                    padding: const EdgeInsets.only(left: 18, top: 30, right: 5),
                     child: Text("您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群：",
                         style: _hintStyle, textAlign: TextAlign.center),
                   ),
                   Container(
-                    padding: const EdgeInsets.only(left: 10, top: 2),
+                    padding: const EdgeInsets.only(left: 18, top: 2, right: 5),
                     child: Text("\n1群群号：738068756\n2群群号：738064793",
                         style: _hintStyle, textAlign: TextAlign.center),
                   )
@@ -39,7 +39,7 @@ class FindPwDialog extends Dialog {
             ),
             Container(
               alignment: Alignment.topRight,
-              padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+              padding: const EdgeInsets.fromLTRB(0, 15, 10, 0),
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Icon(Icons.close,

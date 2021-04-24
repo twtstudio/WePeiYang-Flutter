@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/main.dart';
 
 class LogoutDialog extends Dialog {
@@ -9,7 +10,7 @@ class LogoutDialog extends Dialog {
     CommonPreferences().clearUserPrefs();
     Navigator.pushNamedAndRemoveUntil(
         WeiPeiYangApp.navigatorState.currentContext,
-        '/login',
+        AuthRouter.login,
         (route) => false);
   }
 

@@ -99,7 +99,7 @@ class TitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(
         builder: (context, notifier, _) => Padding(
-              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
               child: Row(
                 children: [
                   Text('Schedule',
@@ -109,11 +109,10 @@ class TitleWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('today: WEEK ${notifier.currentWeek}',
+                    child: Text('WEEK ${notifier.currentWeek}',
                         style: TextStyle(
                             color: Color.fromRGBO(205, 206, 211, 1),
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold)),
+                            fontSize: 15)),
                   )
                 ],
               ),

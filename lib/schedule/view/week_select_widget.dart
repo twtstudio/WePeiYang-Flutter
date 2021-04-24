@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;
@@ -18,34 +19,45 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   Widget build(BuildContext context) {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
+    double offset = GlobalModel().screenWidth / 4 - canvasWidth - 25;
+    if (offset < 0) offset = 0;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      int current = Provider.of<ScheduleNotifier>(context, listen: false)
-          .currentWeek;
+      int current =
+          Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
       if (current == 1) current++;
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        height: 85,
+        height: 95,
         child: ListView.builder(
             itemCount: notifier.weekCount,
             scrollDirection: Axis.horizontal,
             controller: ScrollController(
-                initialScrollOffset: (current - 2) * (canvasWidth + 30)),
+                initialScrollOffset:
+                    (current - 2) * (canvasWidth + 25 + offset)),
             itemBuilder: (context, i) {
+              /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
               return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 30, 0),
-
-                /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
+                padding: EdgeInsets.only(left: offset),
                 child: Stack(
                   children: [
                     Column(
                       children: [
-                        CustomPaint(
-                          painter: _WeekSelectPainter(getBoolMatrix(
-                              i + 1,
-                              notifier.weekCount,
-                              notifier.coursesWithNotify,
-                              false)),
-                          size: Size(canvasWidth, canvasHeight),
+                        Container(
+                          height: canvasHeight + 20,
+                          width: canvasWidth + 25,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: i + 1 == notifier.selectedWeekWithNotify
+                                  ? Color.fromRGBO(245, 245, 245, 1)
+                                  : null,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: CustomPaint(
+                            painter: _WeekSelectPainter(getBoolMatrix(
+                                i + 1,
+                                notifier.weekCount,
+                                notifier.coursesWithNotify,
+                                false)),
+                            size: Size(canvasWidth, canvasHeight),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 12),
@@ -62,7 +74,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                     ),
                     Container(
                       height: 75,
-                      width: canvasWidth,
+                      width: canvasWidth + 25,
 
                       /// 加上material使inkwell能在list中显示出来
                       child: Material(
