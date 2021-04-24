@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ import 'package:wei_pei_yang_demo/message/message_model.dart';
 
 extension PostListSortExtension on List<Post> {
   List<Post> sortWithMessage(List<MessageDataItem> list) {
-    if(list == null) return this;
+    if (list == null) return this;
     List<Post> match = [];
     List<int> ids = list.map((e) => e.questionId).toList();
     List<Post> base = [...this];
@@ -135,35 +134,44 @@ class FeedbackNotifier with ChangeNotifier {
   // TODO: Callback hell goes brrrrrrrrrr.
   Future<void> initHomePostList(onSuccess, onError) async {
     clearHomePostList();
-    await getToken(
-      onSuccess: (token) {
-        _token = token;
-        log("token: ${token}");
-        CommonPreferences().feedbackToken.value = token;
-        getTags(
-          _token,
-          onSuccess: (list) {
-            _tagList.clear();
-            _tagList.addAll(list);
-            getPosts(
-              tagId: '',
-              page: '1',
-              onSuccess: (postList, totalPage) {
-                _homePostList.addAll(postList);
-                onSuccess(totalPage);
-              },
-              onFailure: () {
-                ToastProvider.error('校务专区获取帖子失败, 请刷新');
-              },
-            );
+    if (CommonPreferences().feedbackToken.value == "") {
+      await getToken(
+        onSuccess: (token) {
+          _token = token;
+          log("token: ${token}");
+          CommonPreferences().feedbackToken.value = token;
+          initTags(onSuccess, onError);
+        },
+        onFailure: () {
+          ToastProvider.error('校务专区登录失败, 请刷新');
+        },
+      );
+    } else {
+      _token = CommonPreferences().feedbackToken.value;
+      await initTags(onSuccess, onError);
+    }
+  }
+
+  Future<void> initTags(onSuccess, onError) async {
+    await getTags(
+      _token,
+      onSuccess: (list) {
+        _tagList.clear();
+        _tagList.addAll(list);
+        getPosts(
+          tagId: '',
+          page: '1',
+          onSuccess: (postList, totalPage) {
+            _homePostList.addAll(postList);
+            onSuccess(totalPage);
           },
           onFailure: () {
-            ToastProvider.error('校务专区获取标签失败, 请刷新');
+            ToastProvider.error('校务专区获取帖子失败, 请刷新');
           },
         );
       },
       onFailure: () {
-        ToastProvider.error('校务专区登录失败, 请刷新');
+        ToastProvider.error('校务专区获取标签失败, 请刷新');
       },
     );
   }

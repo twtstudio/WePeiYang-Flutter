@@ -115,6 +115,7 @@ Future getToken(
     );
     if (response.data['data']['token'] != null) {
       log('getToken大成功');
+      CommonPreferences().feedbackToken.value = response.data['data']['token'];
       onSuccess(response.data['data']['token']);
     } else {
       onFailure();
@@ -140,6 +141,7 @@ Future getTags(token,
       }
       onSuccess(tagList);
     } else {
+      log(response.data.toString());
       onFailure();
     }
   } on DioError catch (e) {

@@ -14,6 +14,7 @@ import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
 import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
@@ -126,6 +127,11 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           }
         });
       await HiveManager.init();
+      await getToken(onSuccess: (token){
+        ToastProvider.success("token : $token");
+      }, onFailure: (){
+        ToastProvider.error("获取token失败");
+      });
     });
   }
 
@@ -230,14 +236,20 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     } else {
       /// 稍微显示一会启动页，不然它的意义是什么555
       /// 用缓存中的数据自动登录，无论失败与否都进入主页
-      Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          login(prefs.account.value, prefs.password.value, onResult: (_) {
+      Future.delayed(Duration(milliseconds: 500)).then(
+        (_) => login(
+          prefs.account.value,
+          prefs.password.value,
+          onResult: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
-          }, onFailure: (_) {
+          },
+          onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
-          }));
+          },
+        ),
+      );
     }
   }
 }
