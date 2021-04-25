@@ -44,12 +44,8 @@ extension DioRequests on DioAbstract {
   }
 
   Future<Response<dynamic>> post(String path,
-      {Map<String, dynamic> queryParameters}) {
-    return dio.post(path, queryParameters: queryParameters);
-  }
-
-  Future<Response<dynamic>> postForm(String path, {FormData form}) {
-    return dio.post(path, data: form);
+      {Map<String, dynamic> queryParameters, FormData formData}) {
+    return dio.post(path, queryParameters: queryParameters, data: formData);
   }
 
   Future<Response<dynamic>> put(String path,
@@ -64,9 +60,10 @@ extension DioRequests on DioAbstract {
         .then((value) => CommonBody.fromJson(value.data).result);
   }
 
-  Future<Map> postRst(String path, {Map<String, dynamic> queryParameters}) {
+  Future<Map> postRst(String path,
+      {Map<String, dynamic> queryParameters, FormData formData}) {
     return dio
-        .post(path, queryParameters: queryParameters)
+        .post(path, queryParameters: queryParameters, data: formData)
         .then((value) => CommonBody.fromJson(value.data).result);
   }
 }

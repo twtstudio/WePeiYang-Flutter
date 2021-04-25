@@ -128,7 +128,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         });
       await HiveManager.init();
       await getToken(onSuccess: (token){
-        ToastProvider.success("token : $token");
+        assert(() {
+          ToastProvider.success("token : $token");
+        }());
       }, onFailure: (){
         ToastProvider.error("获取token失败");
       });

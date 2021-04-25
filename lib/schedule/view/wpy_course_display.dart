@@ -30,23 +30,26 @@ class TodayCoursesWidget extends StatelessWidget {
                   child: (todayCourses.length == 0)
                       ? Container()
                       : GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                              context, ScheduleRouter.schedule),
-                          child: DefaultTextStyle(
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Color.fromRGBO(100, 103, 122, 1.0)),
-                            child: Text.rich(TextSpan(children: [
-                              TextSpan(text: "明天"),
-                              TextSpan(
-                                  text: todayCourses.length.toString(),
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text: "节课 "),
-                              TextSpan(text: ">", style: TextStyle(fontSize: 15))
-                            ])),
-                          ),
-                        ),
+                    onTap: () =>
+                        Navigator.pushNamed(
+                            context, ScheduleRouter.schedule),
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Color.fromRGBO(100, 103, 122, 1.0)),
+                      child: Text.rich(TextSpan(children: [
+                        TextSpan(text: (notifier.nightMode && DateTime
+                            .now()
+                            .hour >= 21) ? "明天" : "今天"),
+                        TextSpan(
+                            text: todayCourses.length.toString(),
+                            style:
+                            TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: "节课 "),
+                        TextSpan(text: ">", style: TextStyle(fontSize: 15))
+                      ])),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -59,9 +62,13 @@ class TodayCoursesWidget extends StatelessWidget {
 
   List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
     List<ScheduleCourse> todayCourses = [];
-    int today = DateTime.now().weekday;
+    int today = DateTime
+        .now()
+        .weekday;
     bool nightMode = notifier.nightMode;
-    if (DateTime.now().hour < 21) nightMode = false;
+    if (DateTime
+        .now()
+        .hour < 21) nightMode = false;
     bool flag;
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)

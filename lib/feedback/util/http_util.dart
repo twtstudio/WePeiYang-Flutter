@@ -484,7 +484,7 @@ Future sendPost(
               'question_id': response.data['data']['question_id'],
             });
             Response uploadImgResponse =
-                await _client.postForm('image/add', form: data);
+                await _client.post('image/add', formData: data);
             if (0 != uploadImgResponse.data['ErrorCode']) {
               onUploadImageFailure();
               log(response.data['data'].toString());

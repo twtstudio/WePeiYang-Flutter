@@ -38,7 +38,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('设置',
+          title: Text("设置",
               style: TextStyle(
                   fontSize: 19,
                   color: Color.fromRGBO(36, 43, 69, 1),
