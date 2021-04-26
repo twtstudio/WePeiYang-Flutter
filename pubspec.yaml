@@ -90,6 +90,7 @@ flutter:
     - lib/feedback/assets/img/profile.png
     - lib/feedback/assets/img/trash_can.png
     - lib/feedback/assets/img/arrow_nw.png
+    - lib/feedback/assets/img/error.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

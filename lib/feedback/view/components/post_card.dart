@@ -111,7 +111,7 @@ class _PostCardState extends State<PostCard> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
-                behavior: HitTestBehavior.translucent,
+                behavior: HitTestBehavior.opaque,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -368,7 +368,7 @@ class _PostCardState extends State<PostCard> {
                   BlankSpace.width(8),
                   // Like count.
                   GestureDetector(
-                    behavior: HitTestBehavior.translucent,
+                    behavior: HitTestBehavior.opaque,
                     child: Container(
                       // color: Colors.blue,
                       width: 40,
