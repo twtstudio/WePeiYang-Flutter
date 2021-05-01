@@ -81,6 +81,11 @@ Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
       : Container();
 }
 
+/// 返回本周冲突的课, [courses]中的第一个元素应为显示在外的课（其余的在dialog中）
+Widget getOverlapCourseCard(List<ScheduleCourse> courses) {
+  return Container();
+}
+
 /// 为ActiveCourse生成随机颜色
 Color generateColor(ScheduleCourse course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色

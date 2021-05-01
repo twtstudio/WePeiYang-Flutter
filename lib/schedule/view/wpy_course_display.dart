@@ -60,6 +60,7 @@ class TodayCoursesWidget extends StatelessWidget {
     });
   }
 
+  /// 获取今天（夜猫子则是明天）的课程列表
   List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
     List<ScheduleCourse> todayCourses = [];
     int today = DateTime

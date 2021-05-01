@@ -155,7 +155,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
-          // theme: ThemeData(fontFamily: 'Montserrat'),
+          // theme: ThemeData(fontFamily: 'WeiYuanYaHei'),
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
