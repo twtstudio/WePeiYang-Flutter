@@ -4,9 +4,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
+import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
@@ -121,175 +122,181 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
           Navigator.pushNamed(context, FeedbackRouter.newPost);
         },
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
-        child: Consumer<FeedbackNotifier>(
-          builder: (BuildContext context, notifier, Widget child) {
-            return SmartRefresher(
-              physics: BouncingScrollPhysics(),
-              controller: _refreshController,
-              header: ClassicHeader(),
-              enablePullDown: true,
-              onRefresh: _onRefresh,
-              footer: ClassicFooter(),
-              enablePullUp: currentPage != totalPage,
-              onLoading: _onLoading,
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 0),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(1080),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    hintText: '搜索问题',
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(1080),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+            child: Consumer<FeedbackNotifier>(
+              builder: (BuildContext context, notifier, Widget child) {
+                return SmartRefresher(
+                  physics: BouncingScrollPhysics(),
+                  controller: _refreshController,
+                  header: ClassicHeader(),
+                  enablePullDown: true,
+                  onRefresh: _onRefresh,
+                  footer: ClassicFooter(),
+                  enablePullUp: currentPage != totalPage,
+                  onLoading: _onLoading,
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 0),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(1080),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        hintText: '搜索问题',
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius:
+                                              BorderRadius.circular(1080),
+                                        ),
+                                        contentPadding: EdgeInsets.zero,
+                                        fillColor:
+                                            ColorUtil.searchBarBackgroundColor,
+                                        filled: true,
+                                        prefixIcon: Icon(
+                                          Icons.search,
+                                          color: ColorUtil.mainColor,
+                                        ),
+                                      ),
+                                      enabled: false,
                                     ),
-                                    contentPadding: EdgeInsets.zero,
-                                    fillColor:
-                                        ColorUtil.searchBarBackgroundColor,
-                                    filled: true,
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: ColorUtil.mainColor,
-                                    ),
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                              context, FeedbackRouter.search)
+                                          .then((value) async {
+                                        if (value == true) {
+                                          notifier.clearHomePostList();
+                                          _onRefresh();
+                                        }
+                                      });
+                                    },
                                   ),
-                                  enabled: false,
                                 ),
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                          context, FeedbackRouter.search)
-                                      .then((value) async {
-                                    if (value == true) {
-                                      notifier.clearHomePostList();
-                                      _onRefresh();
-                                    }
-                                  });
-                                },
                               ),
-                            ),
-                          ),
-                          IconButton(
-                            color: ColorUtil.mainColor,
-                            icon: FeedbackBadgeWidget(
-                              type: FeedbackMessageType.home,
-                              child: Image.asset(
-                                  'lib/feedback/assets/img/profile.png'),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.profile,
-                              );
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-
-                    if (status == FeedbackHomePageStatus.loading)
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: ScreenUtil.screenHeight / 2 -
-                                ScreenUtil.paddingTop -
-                                AppBar().preferredSize.height),
-                        child: Loading(),
-                      ),
-
-                    if (status == FeedbackHomePageStatus.error)
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: ScreenUtil.screenHeight / 2 -
-                                ScreenUtil.paddingTop -
-                                AppBar().preferredSize.height),
-                        child: Text('加载失败咯...'),
-                      ),
-
-                    /// The list of posts.
-                    if (status == FeedbackHomePageStatus.idle)
-                      MediaQuery.removePadding(
-                        removeTop: true,
-                        context: context,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return notifier.homePostList[index].topImgUrl !=
-                                        '' &&
-                                    notifier.homePostList[index].topImgUrl !=
-                                        null
-                                ? PostCard.image(
-                                    notifier.homePostList[index],
-                                    onContentPressed: () {
-                                      Navigator.pushNamed(
-                                          context, FeedbackRouter.detail,
-                                          arguments: DetailPageArgs(
-                                              notifier.homePostList[index],
-                                              index,
-                                              PostOrigin.home));
-                                    },
-                                    onLikePressed: () {
-                                      postHitLike(
-                                        id: notifier.homePostList[index].id,
-                                        isLiked: notifier
-                                            .homePostList[index].isLiked,
-                                        onSuccess: () {
-                                          notifier
-                                              .changeHomePostLikeState(index);
-                                        },
-                                        onFailure: () {
-                                          ToastProvider.error('校务专区点赞失败，请重试');
-                                        },
-                                      );
-                                    },
-                                  )
-                                : PostCard(
-                                    notifier.homePostList[index],
-                                    onContentPressed: () {
-                                      Navigator.pushNamed(
-                                          context, FeedbackRouter.detail,
-                                          arguments: DetailPageArgs(
-                                              notifier.homePostList[index],
-                                              index,
-                                              PostOrigin.home));
-                                    },
-                                    onLikePressed: () {
-                                      postHitLike(
-                                        id: notifier.homePostList[index].id,
-                                        isLiked: notifier
-                                            .homePostList[index].isLiked,
-                                        onSuccess: () {
-                                          notifier
-                                              .changeHomePostLikeState(index);
-                                        },
-                                        onFailure: () {
-                                          ToastProvider.error('校务专区点赞失败，请重试');
-                                        },
-                                      );
-                                    },
+                              IconButton(
+                                color: ColorUtil.mainColor,
+                                icon: FeedbackBadgeWidget(
+                                  type: FeedbackMessageType.home,
+                                  child: Image.asset(
+                                      'lib/feedback/assets/img/profile.png'),
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    FeedbackRouter.profile,
                                   );
-                          },
-                          itemCount: notifier.homePostList.length,
+                                },
+                              )
+                            ],
+                          ),
                         ),
-                      )
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+
+                        /// The list of posts.
+                        if (status == FeedbackHomePageStatus.idle)
+                          MediaQuery.removePadding(
+                            removeTop: true,
+                            context: context,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return notifier.homePostList[index].topImgUrl !=
+                                            '' &&
+                                        notifier.homePostList[index]
+                                                .topImgUrl !=
+                                            null
+                                    ? PostCard.image(
+                                        notifier.homePostList[index],
+                                        onContentPressed: () {
+                                          Navigator.pushNamed(
+                                              context, FeedbackRouter.detail,
+                                              arguments: DetailPageArgs(
+                                                  notifier.homePostList[index],
+                                                  index,
+                                                  PostOrigin.home));
+                                        },
+                                        onLikePressed: () {
+                                          postHitLike(
+                                            id: notifier.homePostList[index].id,
+                                            isLiked: notifier
+                                                .homePostList[index].isLiked,
+                                            onSuccess: () {
+                                              notifier.changeHomePostLikeState(
+                                                  index);
+                                            },
+                                            onFailure: () {
+                                              ToastProvider.error(
+                                                  '校务专区点赞失败，请重试');
+                                            },
+                                          );
+                                        },
+                                      )
+                                    : PostCard(
+                                        notifier.homePostList[index],
+                                        onContentPressed: () {
+                                          Navigator.pushNamed(
+                                              context, FeedbackRouter.detail,
+                                              arguments: DetailPageArgs(
+                                                  notifier.homePostList[index],
+                                                  index,
+                                                  PostOrigin.home));
+                                        },
+                                        onLikePressed: () {
+                                          postHitLike(
+                                            id: notifier.homePostList[index].id,
+                                            isLiked: notifier
+                                                .homePostList[index].isLiked,
+                                            onSuccess: () {
+                                              notifier.changeHomePostLikeState(
+                                                  index);
+                                            },
+                                            onFailure: () {
+                                              ToastProvider.error(
+                                                  '校务专区点赞失败，请重试');
+                                            },
+                                          );
+                                        },
+                                      );
+                              },
+                              itemCount: notifier.homePostList.length,
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (status == FeedbackHomePageStatus.loading)
+            Positioned(
+              child: Loading(),
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            ),
+          if (status == FeedbackHomePageStatus.error)
+            Positioned(
+              child: HomeErrorContainer(_onRefresh),
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            ),
+        ],
       ),
     );
   }
@@ -315,5 +322,45 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
+  }
+}
+
+class HomeErrorContainer extends StatelessWidget {
+  final void Function() onPressed;
+
+  HomeErrorContainer(this.onPressed);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Image.asset(
+              'lib/feedback/assets/img/error.png',
+              height: 192,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Text(
+            '错误！请重试',
+            style: TextStyle(
+              color: ColorUtil.lightTextColor,
+            ),
+          ),
+          BlankSpace.height(16),
+          FloatingActionButton(
+            child: Icon(Icons.refresh),
+            heroTag: 'error_btn',
+            backgroundColor: ColorUtil.mainColor,
+            onPressed: onPressed,
+            mini: true,
+          ),
+        ],
+      ),
+    );
   }
 }

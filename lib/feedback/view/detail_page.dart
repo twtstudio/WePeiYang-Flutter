@@ -373,6 +373,7 @@ class _DetailPageState extends State<DetailPage> {
             ),
             onPressed: () {
               if (ModalRoute.of(context).canPop) {
+                Navigator.pop(context);
                 return true;
               } else {
                 Navigator.of(context).pushReplacementNamed(HomeRouter.home);

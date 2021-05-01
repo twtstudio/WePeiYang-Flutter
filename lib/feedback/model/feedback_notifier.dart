@@ -10,6 +10,7 @@ import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 
+// TODO: Invoke this method when initialize [ProfilePage].
 extension PostListSortExtension on List<Post> {
   List<Post> sortWithMessage(List<MessageDataItem> list) {
     if (list == null) return this;
@@ -132,7 +133,7 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   // TODO: Callback hell goes brrrrrrrrrr.
-  Future<void> initHomePostList(onSuccess, onError) async {
+  Future<void> initHomePostList(onSuccess, onFailure) async {
     clearHomePostList();
     if (CommonPreferences().feedbackToken.value == "") {
       await getToken(
@@ -140,7 +141,7 @@ class FeedbackNotifier with ChangeNotifier {
           _token = token;
           log("token: ${token}");
           CommonPreferences().feedbackToken.value = token;
-          initTags(onSuccess, onError);
+          initTags(onSuccess, onFailure);
         },
         onFailure: () {
           ToastProvider.error('校务专区登录失败, 请刷新');
@@ -148,7 +149,7 @@ class FeedbackNotifier with ChangeNotifier {
       );
     } else {
       _token = CommonPreferences().feedbackToken.value;
-      await initTags(onSuccess, onError);
+      await initTags(onSuccess, onFailure);
     }
   }
 

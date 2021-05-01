@@ -206,23 +206,30 @@ class _CommentCardState extends State<CommentCard> {
                 ),
               Spacer(),
               // Like count.
+              // TODO: Replace this with [GestureDetector]
               ButtonTheme(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 minWidth: 0,
-                child: FlatButton.icon(
-                  onPressed: onLikePressed,
-                  icon: Icon(
-                    !comment.isLiked ? Icons.thumb_up_outlined : Icons.thumb_up,
-                    size: 16,
-                    color: !comment.isLiked
-                        ? ColorUtil.lightTextColor
-                        : Colors.red,
-                  ),
-                  label: Text(
-                    comment.likeCount.toString(),
-                    style: TextStyle(
-                        fontSize: 14, color: ColorUtil.lightTextColor),
+                child: GestureDetector(
+                  onTap: onLikePressed,
+                  child: Row(
+                    children: [
+                      Icon(
+                        !comment.isLiked
+                            ? Icons.thumb_up_outlined
+                            : Icons.thumb_up,
+                        size: 16,
+                        color: !comment.isLiked
+                            ? ColorUtil.lightTextColor
+                            : Colors.red,
+                      ),
+                      Text(
+                        comment.likeCount.toString(),
+                        style: TextStyle(
+                            fontSize: 14, color: ColorUtil.lightTextColor),
+                      ),
+                    ],
                   ),
                 ),
               ),
