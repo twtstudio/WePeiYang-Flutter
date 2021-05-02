@@ -103,20 +103,19 @@ class SearchBarWidget extends StatelessWidget {
             }
           },
           child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                shape: BoxShape.rectangle,
-                color: Color(0xffecedef),
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              shape: BoxShape.rectangle,
+              color: Color(0xffecedef),
+            ),
+            child: Container(
+              padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+              child: Row(
+                children: [Image(image: AssetImage(Images.search), width: 16)],
               ),
-              child: Container(
-                padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-                child: Row(
-                  children: [
-                    Image(image: AssetImage(Images.search), width: 16)
-                  ],
-                ),
-              )),
+            ),
+          ),
         ),
       ),
     );

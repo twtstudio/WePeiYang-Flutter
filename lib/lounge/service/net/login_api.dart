@@ -27,12 +27,20 @@ class Http extends BaseHttp {
         options.headers['Cookie'] = pref.captchaCookie.value;
       }))
       ..add(ErrorInterceptor());
-    // ..add(LogInterceptor(requestBody: true));
   }
 }
 
 /// 玩Android API
 class ApiInterceptor extends InterceptorsWrapper {
+
+  @override
+  Future onRequest(RequestOptions options) {
+    debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
+        ' queryParameters: ${options.queryParameters}');
+    debugPrint('---api-request--->data--->${options.data}');
+    return super.onRequest(options);
+  }
+
   @override
   onResponse(Response response) async {
     final String data = response.data.toString();

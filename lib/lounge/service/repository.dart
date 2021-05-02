@@ -23,7 +23,7 @@ class LoungeRepository {
   static Future<List<String>> get favouriteList async {
     debugPrint('????????????????? favouriteList ?????????????????');
     var response = await loginApi.get('getCollections');
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
     var pre = Map<String, List<dynamic>>.from(response.data).values;
     if (pre.length == 0) {
       return <String>[];

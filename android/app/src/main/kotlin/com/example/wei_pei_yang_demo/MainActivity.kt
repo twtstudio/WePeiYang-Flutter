@@ -1,20 +1,26 @@
 package com.example.wei_pei_yang_demo
 
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.*
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
 import android.database.sqlite.SQLiteDatabase
+import android.net.Uri
 import android.os.Bundle
-import com.example.umeng_sdk.UmengSdkPlugin
-import com.umeng.analytics.MobclickAgent
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import com.example.umeng_sdk.UmengSdkPlugin
 import com.example.wei_pei_yang_demo.alarm.AlarmService
 import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
-import io.flutter.embedding.android.FlutterFragment
+import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -36,6 +42,55 @@ class MainActivity : FlutterFragmentActivity() {
         MobclickAgent.onResume(this)
         android.util.Log.i("UMLog", "onResume@MainActivity")
     }
+
+    private fun showNotification() {
+        //点击时想要打开的界面
+        //点击时想要打开的界面
+        val intent = Intent(this, MainActivity::class.java)
+        intent.setData(Uri.parse("824"))
+        //一般点击通知都是打开独立的界面，为了避免添加到现有的activity栈中，可以设置下面的启动方式
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        //创建activity类型的pendingIntent，还可以创建广播等其他组件
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.ok)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //设置pendingIntent
+                .setContentIntent(pendingIntent) //设置点击后是否自动消失
+                .setAutoCancel(true)
+
+        val notificationManager = NotificationManagerCompat.from(this)
+        //notificationId 相当于通知的唯一标识，用于更新或者移除通知
+        notificationManager.notify(1, builder.build())
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        intent.dataString?.let {
+            Log.d("WBYDEMO", it)
+            WBYApplication.postId = it.toInt()
+            messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
+                override fun success(result: Any?) {
+//                                TODO("Not yet implemented")
+                    WBYApplication.postId = null;
+                }
+
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+//                                TODO("Not yet implemented")
+                }
+
+                override fun notImplemented() {
+//                                TODO("Not yet implemented")
+                }
+
+            })
+        }
+        
+        super.onNewIntent(intent)
+    }
+
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -85,6 +140,10 @@ class MainActivity : FlutterFragmentActivity() {
         WBYApplication.activity = WeakReference(this)
         UmengSdkPlugin.setContext(this)
         android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
+        GlobalScope.launch {
+            delay(5000)
+            showNotification()
+        }
     }
 
     // 这么写没用，但是先留着，如果之后有厂商推送就有用了

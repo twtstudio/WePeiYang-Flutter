@@ -5,6 +5,7 @@ import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
+import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
@@ -12,7 +13,7 @@ import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
 import 'package:wei_pei_yang_demo/home/view/wpy_page.dart';
 import 'list_load_steps.dart';
 
-class LoungeFavourWidget extends StatelessWidget {
+class LoungeFavourWidget extends StatefulWidget {
   final String title;
   final bool init;
 
@@ -20,68 +21,10 @@ class LoungeFavourWidget extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    Widget body = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          child: Text(
-            title,
-            style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: Color(0XFF62677B)),
-          ),
-        ),
-        FavourListWidget(init: init),
-      ],
-    );
-
-    Widget wrapper;
-    if (init) {
-      wrapper = ValueListenableBuilder(
-        valueListenable:
-            context.findAncestorStateOfType<WPYPageState>().canNotGoIntoLounge,
-        builder: (_, bool absorbing, __) => GestureDetector(
-          onTap: () {
-            print("==================================================");
-            print("==================================================");
-            print("absorbing : $absorbing");
-            print("==================================================");
-            print("==================================================");
-            if (absorbing) {
-              context.findAncestorStateOfType<WPYPageState>().showToast(
-                    custom: null,
-                  );
-            } else {
-              Navigator.pushNamed(context, LoungeRouter.main);
-            }
-          },
-          behavior: HitTestBehavior.translucent,
-          child: body,
-        ),
-      );
-    }
-
-    return MediaQuery.removePadding(
-        context: context, removeRight: true, child: wrapper ?? body);
-  }
+  _LoungeFavourWidgetState createState() => _LoungeFavourWidgetState();
 }
 
-class FavourListWidget extends StatefulWidget {
-  final bool init;
-
-  const FavourListWidget({
-    Key key,
-    this.init,
-  }) : super(key: key);
-
-  @override
-  _FavourListWidgetState createState() => _FavourListWidgetState();
-}
-
-class _FavourListWidgetState extends State<FavourListWidget> {
+class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
   WPYPageState pageState;
 
   @override
@@ -91,65 +34,129 @@ class _FavourListWidgetState extends State<FavourListWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ProviderWidget<FavouriteListModel>(
-      autoDispose: false,
-      model: FavouriteListModel(
-        timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
-        favouriteModel: Provider.of<RoomFavouriteModel>(context, listen: false),
-      ),
-      onModelReady: widget.init == true
-          ? (model) async {
-              debugPrint("set can false");
-              pageState.canNotGoIntoLounge.value = true;
-              await model.initData();
-              if (model.isIdle || model.isEmpty) {
-                debugPrint("set can true");
-                pageState.canNotGoIntoLounge.value = false;
+  Widget build(BuildContext context) => ProviderWidget(
+        autoDispose: false,
+        model: FavouriteListModel(
+          timeModel: Provider.of<LoungeTimeModel>(context, listen: false),
+          favouriteModel:
+              Provider.of<RoomFavouriteModel>(context, listen: false),
+        ),
+        onModelReady: widget.init == true
+            ? (model) async {
+                debugPrint("set can false");
+                pageState.canNotGoIntoLounge.value = true;
+                await model.initData();
+                if (model.isIdle || model.isEmpty) {
+                  debugPrint("set can true");
+                  pageState.canNotGoIntoLounge.value = false;
+                }
               }
-            }
-          : null,
-      builder: (_, model, __) => ListLoadSteps(
-        model: model,
-        emptyV: Container(
-          height: 60,
-          child: Container(
-            child: Center(
-              child: Text(
-                widget.init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
-                style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
+            : null,
+        builder: (_, FavouriteListModel model, __) {
+          Widget body = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: Text(
+                  widget.title,
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0XFF62677B)),
+                ),
               ),
+              FavourListWidget(
+                model: model,
+                init: widget.init,
+              ),
+            ],
+          );
+
+          Widget wrapper;
+          if (widget.init) {
+            wrapper = ValueListenableBuilder(
+              valueListenable: context
+                  .findAncestorStateOfType<WPYPageState>()
+                  .canNotGoIntoLounge,
+              builder: (_, bool absorbing, __) => GestureDetector(
+                onTap: () {
+                  print("==================================================");
+                  print("==================================================");
+                  print("absorbing : $absorbing");
+                  print("==================================================");
+                  print("==================================================");
+                  if (absorbing) {
+                    context.findAncestorStateOfType<WPYPageState>().showToast(
+                          custom: null,
+                        );
+                  } else {
+                    Navigator.pushNamed(context, LoungeRouter.main).then((_) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        model.refresh();
+                      });
+                    });
+                  }
+                },
+                behavior: HitTestBehavior.translucent,
+                child: body,
+              ),
+            );
+          }
+
+          return MediaQuery.removePadding(
+              context: context, removeRight: true, child: wrapper ?? body);
+        },
+      );
+}
+
+class FavourListWidget extends StatelessWidget {
+  final FavouriteListModel model;
+  final bool init;
+
+  const FavourListWidget({Key key, this.model, this.init}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListLoadSteps(
+      model: model,
+      emptyV: Container(
+        height: 60,
+        child: Container(
+          child: Center(
+            child: Text(
+              init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
+              style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
             ),
           ),
         ),
-        successV: Padding(
-          padding: EdgeInsets.fromLTRB(22, 10, 0, 0),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: model.favourList.map(
-                (classroom) {
-                  // print('classroom: ' + classroom.toJson().toString());
-                  var plan = model.classPlan[classroom.id];
-                  if (plan != null) {
-                    debugPrint(
-                        '------------------------- favourite room -------------------------');
-                    debugPrint(classroom.toJson().toString());
-                    var current = Time.week[model.currentDay - 1];
-                    var currentPlan = plan[current]?.join() ?? '';
-                    var isIdle =
-                        Time.availableNow(currentPlan, model.classTime);
-                    return FavourListCard(
-                      room: classroom,
-                      available: isIdle,
-                    );
-                  }
-                  return Container();
-                },
-              ).toList(),
-            ),
+      ),
+      successV: Padding(
+        padding: EdgeInsets.fromLTRB(22, 10, 0, 0),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: model.favourList.map(
+              (classroom) {
+                // print('classroom: ' + classroom.toJson().toString());
+                var plan = model.classPlan[classroom.id];
+                if (plan != null) {
+                  debugPrint(
+                      '------------------------- favourite room -------------------------');
+                  debugPrint(classroom.toJson().toString());
+                  var current = Time.week[model.currentDay - 1];
+                  var currentPlan = plan[current]?.join() ?? '';
+                  var isIdle = Time.availableNow(currentPlan, model.classTime);
+                  return FavourListCard(
+                    room: classroom,
+                    available: isIdle,
+                  );
+                }
+                return Container();
+              },
+            ).toList(),
           ),
         ),
       ),

@@ -38,9 +38,11 @@ void main() async {
   await NetStatusListener.init();
   runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+    );
   }
 }
 
@@ -127,9 +129,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           }
         });
       await HiveManager.init();
-      await getToken(onSuccess: (token){
+      await getToken(onSuccess: (token) {
         ToastProvider.success("token : $token");
-      }, onFailure: (){
+      }, onFailure: () {
         ToastProvider.error("获取token失败");
       });
     });

@@ -88,17 +88,18 @@ class _DetailPageState extends State<DetailPage> {
         origin = PostOrigin.mailbox;
         var id = await messageChannel.invokeMethod<int>("getPostId");
         await getPostById(
-            id: id,
-            onSuccess: (Post p) {
-              post = p;
-            },
-            onFailure: () {
-              ToastProvider.error('初始化问题信息失败');
-              setState(() {
-                status = DetailPageStatus.error;
-              });
-              return;
+          id: id,
+          onSuccess: (Post p) {
+            post = p;
+          },
+          onFailure: () {
+            ToastProvider.error('初始化问题信息失败');
+            setState(() {
+              status = DetailPageStatus.error;
             });
+            return;
+          },
+        );
       }
       await getComments(
         id: post.id,

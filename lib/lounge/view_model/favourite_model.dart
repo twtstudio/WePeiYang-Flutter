@@ -24,9 +24,8 @@ class RoomFavouriteModel extends ChangeNotifier {
     print("----------------------------------------------------");
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
-    var connectivityResult = await Connectivity().checkConnectivity();
 
-    if (connectivityResult != ConnectivityResult.none) {
+    try {
       List<String> remoteIds = await LoungeRepository.favouriteList;
 
       if(remoteIds.isNotEmpty || localData.isNotEmpty){
@@ -49,7 +48,7 @@ class RoomFavouriteModel extends ChangeNotifier {
           await LoungeRepository.collect(id: room.id);
         }
       }
-    } else {
+    }catch (e){
       _map.clear();
       // if(localData.isEmpty){
       //   throw Exception("网络未连接");

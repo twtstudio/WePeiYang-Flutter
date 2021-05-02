@@ -121,3 +121,5 @@ flutter:
         - asset: assets/fonts/Montserrat/Montserrat-Regular-8.otf
         - asset: assets/fonts/Montserrat/Montserrat-Bold-3.otf
           weight: 700
+flutter_intl:
+  enabled: true

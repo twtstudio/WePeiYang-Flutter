@@ -91,7 +91,7 @@ class ViewStateModel with ChangeNotifier {
           errorType = ViewStateErrorType.networkTimeOutError;
           message = e.message;
         } else {
-          message = e.message;
+          message = e.toString();
         }
       }
     }

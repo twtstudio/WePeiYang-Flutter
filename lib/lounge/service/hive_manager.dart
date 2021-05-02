@@ -235,6 +235,8 @@ class HiveManager {
     }
   }
 
+  bool get canloadLocalData => localDateLastUpdateTime != null ;
+
   Stream<Building> get baseBuildingDataFromDisk async* {
     // print(_boxesKeys.keys.toList());
     debugPrint(

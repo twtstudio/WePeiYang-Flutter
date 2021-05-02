@@ -83,6 +83,7 @@ class CommonPreferences {
     account.value = "";
     password.value = "";
     captchaCookie.value = "";
+    feedbackToken.value = "";
   }
 
   /// 清除办公网缓存

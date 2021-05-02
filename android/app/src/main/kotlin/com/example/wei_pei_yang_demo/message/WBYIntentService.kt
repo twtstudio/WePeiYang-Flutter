@@ -15,8 +15,7 @@ class WBYIntentService : GTIntentService() {
     companion object {
         const val TAG = "WBYDemo"
     }
-
-
+    
     override fun onReceiveServicePid(p0: Context?, p1: Int) {
 //        TODO("Not yet implemented")
     }
@@ -93,6 +92,8 @@ class WBYIntentService : GTIntentService() {
                 + "\ncid = " + message?.clientId
                 + "\ncontent = " + message?.content
                 + "\ntitle = " + message?.title);
+
+
     }
 
     private fun sendMessage(data: String, what: Int) {

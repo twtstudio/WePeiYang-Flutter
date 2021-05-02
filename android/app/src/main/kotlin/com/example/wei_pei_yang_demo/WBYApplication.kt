@@ -1,6 +1,9 @@
 package com.example.wei_pei_yang_demo
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -66,26 +69,27 @@ class WBYApplication : FlutterApplication() {
                                 activity?.get()?.showDialog("notimplemented")
                             }
                         })
+                        
                     }
                     RECEIVE_FEEDBACK_MESSAGE -> {
                         val data = msg.obj.toString()
                         postId = data.toIntOrNull();
                         Log.d("RECEIVE_FEEDBACK", data)
-                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
-                            override fun success(result: Any?) {
-//                                TODO("Not yet implemented")
-                                postId = null;
-                            }
-
-                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-//                                TODO("Not yet implemented")
-                            }
-
-                            override fun notImplemented() {
-//                                TODO("Not yet implemented")
-                            }
-
-                        })
+//                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
+//                            override fun success(result: Any?) {
+////                                TODO("Not yet implemented")
+//                                postId = null;
+//                            }
+//
+//                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+////                                TODO("Not yet implemented")
+//                            }
+//
+//                            override fun notImplemented() {
+////                                TODO("Not yet implemented")
+//                            }
+//
+//                        })
                     }
                 }
             }
@@ -101,6 +105,20 @@ class WBYApplication : FlutterApplication() {
         UMConfigure.setLogEnabled(true)
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
         android.util.Log.i("UMLog", "UMConfigure.init@MainApplication")
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "aaa"
+            val description = "bbb"
+            //不同的重要程度会影响通知显示的方式
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("1", name, importance)
+            channel.description = description
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private fun initSdk() {
