@@ -38,11 +38,9 @@ void main() async {
   await NetStatusListener.init();
   runApp(WeiPeiYangApp());
   if (Platform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
   }
 }
 
@@ -129,9 +127,11 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           }
         });
       await HiveManager.init();
-      await getToken(onSuccess: (token) {
-        ToastProvider.success("token : $token");
-      }, onFailure: () {
+      await getToken(onSuccess: (token){
+        assert(() {
+          ToastProvider.success("token : $token");
+        }());
+      }, onFailure: (){
         ToastProvider.error("获取token失败");
       });
     });
@@ -155,7 +155,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
-          // theme: ThemeData(fontFamily: 'Montserrat'),
+          // theme: ThemeData(fontFamily: 'WeiYuanYaHei'),
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [

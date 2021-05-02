@@ -77,7 +77,7 @@ class WPYPageState extends State<WPYPage> {
                   delegate: _WPYHeader(onChanged: (_) {
                     setState(() {});
                   }),
-                  pinned: true),
+                  pinned: true, floating: true),
             ),
 
             /// 功能跳转卡片
@@ -113,6 +113,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     DateTime now = DateTime.now();
     double distance = maxExtent - minExtent;
+    print(shrinkOffset);
     if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域

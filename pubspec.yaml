@@ -90,6 +90,7 @@ flutter:
     - lib/feedback/assets/img/profile.png
     - lib/feedback/assets/img/trash_can.png
     - lib/feedback/assets/img/arrow_nw.png
+    - lib/feedback/assets/img/error.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -118,8 +119,25 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset: assets/fonts/Montserrat/Montserrat-Regular-8.otf
-        - asset: assets/fonts/Montserrat/Montserrat-Bold-3.otf
-          weight: 700
+        - asset: assets/fonts/Montserrat-Alternates-Bold.ttf
+
+    - family: Aspira
+      fonts:
+        - asset: assets/fonts/ASPIRA WIDE W01 BOLD.ttf
+
+    - family: Texta
+      fonts:
+        - asset: assets/fonts/Texta Narrow W00 Thin.ttf
+
+    - family: WeiYuanYaQiHei
+      fonts:
+        - asset: assets/fonts/MicrosoftYaqiHeiBold.ttf
+
+    - family: WeiYuanYaHei
+      fonts:
+        - asset: assets/fonts/WeiRuanYaHei-1.ttf
+        - asset: assets/fonts/Microsoft YaHei Light.ttf
+        - asset: assets/fonts/YaHei Bold.ttf
+
 flutter_intl:
   enabled: true

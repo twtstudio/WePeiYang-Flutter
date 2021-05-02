@@ -42,43 +42,52 @@ class CourseDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 50),
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          height: 400,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/icon_peiyang.png'),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(15),
-              color: generateColor(course)),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(course.courseName, style: nameStyle),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(course.teacher, style: teacherStyle),
+    return Center(
+      child: Container(
+        height: 400,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 100),
+          itemCount: 3,
+          itemBuilder: (context, i){
+            return Container(
+              // margin: const EdgeInsets.symmetric(horizontal: 50),
+              // height: 400,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/icon_peiyang.png'),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.bottomRight),
+                  borderRadius: BorderRadius.circular(15),
+                  color: generateColor(course)),
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(course.courseName, style: nameStyle),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(course.teacher, style: teacherStyle),
+                      ),
+                      Expanded(child: Text("")),
+                      _getRow1(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: _getRow2(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: _getRow3(),
+                      )
+                    ],
+                  ),
                 ),
-                Expanded(child: Text("")),
-                _getRow1(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: _getRow2(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: _getRow3(),
-                )
-              ],
-            ),
-          ),
+              ),
+            );
+          }
         ),
       ),
     );
@@ -120,7 +129,8 @@ class CourseDialog extends Dialog {
                 Text('校区', style: hintNameStyle.copyWith(letterSpacing: 3)),
                 Padding(
                   padding: const EdgeInsets.only(top: 1, left: 1),
-                  child: Text("${course.campus}${course.campus.isNotEmpty ? "校区" : ""}",
+                  child: Text(
+                      "${course.campus}${course.campus.isNotEmpty ? "校区" : ""}",
                       style: hintValueStyle.copyWith(fontSize: 10)),
                 )
               ],
@@ -173,15 +183,14 @@ class CourseDialog extends Dialog {
       );
 
   Widget _getRow3() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('时间', style: hintNameStyle.copyWith(letterSpacing: 3)),
-      Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-            getCourseTime(course.arrange.start, course.arrange.end),
-            style: hintValueStyle),
-      )
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('时间', style: hintNameStyle.copyWith(letterSpacing: 3)),
+          Padding(
+            padding: const EdgeInsets.only(top: 3),
+            child: Text(getCourseTime(course.arrange.start, course.arrange.end),
+                style: hintValueStyle),
+          )
+        ],
+      );
 }
