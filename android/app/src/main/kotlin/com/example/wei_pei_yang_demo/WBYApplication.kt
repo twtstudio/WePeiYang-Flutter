@@ -9,14 +9,15 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import androidx.work.*
-import com.example.wei_pei_yang_demo.message.model.MessageDataBase
 import com.example.wei_pei_yang_demo.message.server.PushCIdWorker
+import com.google.gson.Gson
 import com.igexin.sdk.PushManager
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.MethodChannel
 import java.lang.ref.WeakReference
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.analytics.MobclickAgent
+import java.lang.Exception
 
 class WBYApplication : FlutterApplication() {
     companion object {
@@ -24,7 +25,7 @@ class WBYApplication : FlutterApplication() {
         lateinit var appContext: Context
         private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
-        var postId: Int? = null
+        var postId: Int = -1
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -56,25 +57,69 @@ class WBYApplication : FlutterApplication() {
                         val data = msg.obj.toString()
                         Log.d("WBY", data)
                         Log.d("WBY", (activity?.get()?.messageChannel == null).toString())
-                        activity?.get()?.messageChannel?.invokeMethod("showMessage", data, object : MethodChannel.Result {
-                            override fun success(result: Any?) {
-                                Log.d("WBY", "success")
-                            }
+                        val formData = try {
+                            Gson().fromJson(data, BaseMessage::class.java)
+                                    ?: BaseMessage(type = 0, data = "null")
+                        } catch (e: Exception) {
+                            BaseMessage(type = 0, data = "null")
+                        }
+                        Log.d("WBYDemo", formData.toString())
+                        when (formData.type) {
+                            0 -> {
+                                activity?.get()?.messageChannel?.invokeMethod("showMessage", data, object : MethodChannel.Result {
+                                    override fun success(result: Any?) {
+                                        Log.d("WBY", "success")
+                                    }
 
-                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                                Log.d("WBY", errorCode.toString())
-                            }
+                                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                        Log.d("WBY", errorCode.toString())
+                                    }
 
-                            override fun notImplemented() {
-                                activity?.get()?.showDialog("notimplemented")
+                                    override fun notImplemented() {
+                                        activity?.get()?.showDialog("notimplemented")
+                                    }
+                                })
                             }
-                        })
-                        
+                            1 -> {
+                                Log.d("WBYDemo", Gson().toJson(formData.data))
+                                val feedbackMessage = try {
+                                    Gson().fromJson(Gson().toJson(formData.data), FeedbackMessage::class.java)
+                                } catch (e: Exception) {
+                                    FeedbackMessage(title = "null", content = "null", question_id = -1)
+                                }
+                                Log.d("WBYDemo", feedbackMessage.toString())
+
+                                feedbackMessage?.takeIf { it.question_id != -1 }?.let { message ->
+                                    activity?.get()?.let {
+                                        it.showNotification(message)
+                                        postId = -1
+                                        activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", null, object : MethodChannel.Result {
+                                            override fun success(result: Any?) {
+                                                Log.d("WBYDemo","refreshFeedbackMessageCount")
+                                            }
+
+                                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                                Log.d("WBYDemo","refreshFeedbackMessageCount error")
+
+                                            }
+
+                                            override fun notImplemented() {
+                                                Log.d("WBYDemo","refreshFeedbackMessageCount notImplemented")
+
+                                            }
+
+                                        })
+                                    }
+                                }
+
+                            }
+                        }
+
                     }
-                    RECEIVE_FEEDBACK_MESSAGE -> {
-                        val data = msg.obj.toString()
-                        postId = data.toIntOrNull();
-                        Log.d("RECEIVE_FEEDBACK", data)
+//                    RECEIVE_FEEDBACK_MESSAGE -> {
+//                        val data = msg.obj.toString()
+//                        postId = data.toInt();
+//                        Log.d("RECEIVE_FEEDBACK", data)
 //                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
 //                            override fun success(result: Any?) {
 ////                                TODO("Not yet implemented")
@@ -90,7 +135,7 @@ class WBYApplication : FlutterApplication() {
 //                            }
 //
 //                        })
-                    }
+//                    }
                 }
             }
         }
@@ -129,6 +174,15 @@ class WBYApplication : FlutterApplication() {
             PushManager.getInstance().setDebugLogger(this) { s -> Log.i("PUSH_LOG", s) }
         }
     }
-
-
 }
+
+data class BaseMessage(
+        val type: Int,
+        val data: Any,
+)
+
+data class FeedbackMessage(
+        val title: String,
+        val content: String,
+        val question_id: Int,
+)

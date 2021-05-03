@@ -148,7 +148,7 @@ class _PostCardState extends State<PostCard> {
                           child: Column(
                             children: [
                               Text(
-                                post.tags.length > 0
+                                (post.tags?.length ?? 0) > 0
                                     ? '#${post.tags[0].name}'
                                     : '#无标签',
                                 style:
@@ -214,6 +214,8 @@ class _PostCardState extends State<PostCard> {
                       ),
                   ],
                 ),
+              if (enableImgList)
+                BlankSpace.height(10),
               // Row(
               //   children: [
               //     // Time.

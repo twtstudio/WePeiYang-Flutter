@@ -4,18 +4,20 @@ import android.content.Context
 import android.os.Message
 import android.util.Log
 import com.example.wei_pei_yang_demo.WBYApplication
+import com.google.gson.Gson
 import com.igexin.sdk.GTIntentService
 import com.igexin.sdk.PushManager
 import com.igexin.sdk.message.GTCmdMessage
 import com.igexin.sdk.message.GTNotificationMessage
 import com.igexin.sdk.message.GTTransmitMessage
+import java.lang.Exception
 
 class WBYIntentService : GTIntentService() {
 
     companion object {
         const val TAG = "WBYDemo"
     }
-    
+
     override fun onReceiveServicePid(p0: Context?, p1: Int) {
 //        TODO("Not yet implemented")
     }

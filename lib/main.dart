@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -94,44 +95,17 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           WeiPeiYangApp.navigatorState.currentState.overlay.context;
       UpdateManager.init(context: baseContext);
       GlobalModel().init(baseContext);
-      messageChannel
-        ..setMethodCallHandler((call) async {
-          switch (call.method) {
-            case 'showMessage':
-              print("*****************************************");
-              String content = await call.arguments;
-              print(
-                  "*******************${content} + ${content != null && content.isNotEmpty}*****************");
-              if (content != null && content.isNotEmpty) {
-                print("????");
-                await showMessageDialog(
-                  baseContext,
-                  content,
-                );
-                ToastProvider.success(content);
-                return "success";
-              } else {
-                throw PlatformException(
-                    code: 'error', message: '失败', details: 'content is null');
-              }
-              break;
-            case 'getReply':
-              print("******************  get reply ***********************");
-              print("******************  get reply ***********************");
-              print("******************  get reply ***********************");
-              await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
-              return "success";
-              break;
-            default:
-              print("???????????????????????????????????????????");
-          }
-        });
       await HiveManager.init();
       await getToken(onSuccess: (token) {
         ToastProvider.success("token : $token");
       }, onFailure: () {
         ToastProvider.error("获取token失败");
       });
+      var id = await messageChannel?.invokeMethod<int>("getPostId");
+      ToastProvider.success("$id");
+      if (id != -1) {
+        await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
+      }
     });
   }
 
@@ -146,7 +120,56 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ...loungeProviders,
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
         ChangeNotifierProvider(
-            create: (context) => MessageProvider()..refreshFeedbackCount())
+          create: (context) {
+            var messageProvider = MessageProvider()..refreshFeedbackCount();
+            var baseContext =
+                WeiPeiYangApp.navigatorState.currentState.overlay.context;
+            messageChannel
+              ..setMethodCallHandler((call) async {
+                switch (call.method) {
+                  case 'showMessage':
+                    print("*****************************************");
+                    String content = await call.arguments;
+                    print(
+                        "*******************${content} + ${content != null && content.isNotEmpty}*****************");
+                    if (content != null && content.isNotEmpty) {
+                      print("????");
+                      await showMessageDialog(
+                        baseContext,
+                        content,
+                      );
+                      ToastProvider.success(content);
+                      return "success";
+                    } else {
+                      throw PlatformException(
+                          code: 'error',
+                          message: '失败',
+                          details: 'content is null');
+                    }
+                    break;
+                  case 'getReply':
+                    print(
+                        "******************  get reply ***********************");
+                    print(
+                        "******************  get reply ***********************");
+                    print(
+                        "******************  get reply ***********************");
+                    await Navigator.pushNamed(
+                        baseContext, FeedbackRouter.detail);
+                    return "success";
+                    break;
+                  case 'refreshFeedbackMessageCount':
+                    log("refreshFeedbackMessageCount");
+                    await messageProvider.refreshFeedbackCount();
+                    return "success";
+                    break;
+                  default:
+                    print("???????????????????????????????????????????");
+                }
+              });
+            return messageProvider;
+          },
+        )
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(

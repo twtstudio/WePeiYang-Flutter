@@ -15,6 +15,8 @@ import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
 import 'package:wei_pei_yang_demo/home/home_router.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 import 'package:wei_pei_yang_demo/main.dart';
+import 'package:wei_pei_yang_demo/message/message_center.dart';
+import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 import 'components/post_card.dart';
 
@@ -44,7 +46,6 @@ class DetailPageArgs {
   DetailPageArgs(this.post, this.index, this.origin);
 }
 
-// 校务专区必须重写，这都是什么东西啊，changeNotifier第一条就是不能有太多的属性
 class _DetailPageState extends State<DetailPage> {
   Post post;
   final int index;
@@ -91,6 +92,10 @@ class _DetailPageState extends State<DetailPage> {
           id: id,
           onSuccess: (Post p) {
             post = p;
+            log("image : ${p.toJson()}");
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+              await Provider.of<MessageProvider>(context,listen: false).setFeedbackQuestionRead(p.id);
+            });
           },
           onFailure: () {
             ToastProvider.error('初始化问题信息失败');

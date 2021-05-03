@@ -489,7 +489,9 @@ class MessageItem extends StatelessWidget {
                     padding: EdgeInsets.only(left: 10),
                     child: Image.network(
                       data.post.topImgUrl,
+                      fit: BoxFit.cover,
                       height: 50,
+                      width: 70,
                     ),
                   ),
               ],
@@ -585,9 +587,9 @@ class MessageItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20, top: 10),
       child: GestureDetector(
-        onTapDown: (_) async => await onTapDown?.call(),
-        onTapUp: (_) {
-          Navigator.pushNamed(
+        onTap: () async {
+          await onTapDown?.call();
+          await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
             arguments: DetailPageArgs(data.post, 0, PostOrigin.mailbox),

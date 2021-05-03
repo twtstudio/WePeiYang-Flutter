@@ -28,6 +28,7 @@ import java.util.*
 class MainActivity : FlutterFragmentActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
     var messageChannel: MethodChannel? = null
+    private var notificationManager: NotificationManagerCompat? = null
 
     val model by viewModels<MainActivityViewModel>()
 
@@ -43,11 +44,11 @@ class MainActivity : FlutterFragmentActivity() {
         android.util.Log.i("UMLog", "onResume@MainActivity")
     }
 
-    private fun showNotification() {
+    fun showNotification(data: FeedbackMessage) {
         //点击时想要打开的界面
         //点击时想要打开的界面
         val intent = Intent(this, MainActivity::class.java)
-        intent.setData(Uri.parse("824"))
+        intent.data = Uri.parse(data.question_id.toString())
         //一般点击通知都是打开独立的界面，为了避免添加到现有的activity栈中，可以设置下面的启动方式
 //        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
@@ -56,25 +57,24 @@ class MainActivity : FlutterFragmentActivity() {
 
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "1")
                 .setSmallIcon(R.drawable.ok)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
+                .setContentTitle(data.title)
+                .setContentText(data.content)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //设置pendingIntent
                 .setContentIntent(pendingIntent) //设置点击后是否自动消失
                 .setAutoCancel(true)
 
-        val notificationManager = NotificationManagerCompat.from(this)
         //notificationId 相当于通知的唯一标识，用于更新或者移除通知
-        notificationManager.notify(1, builder.build())
+        notificationManager?.notify(data.question_id, builder.build())
     }
 
     override fun onNewIntent(intent: Intent) {
         intent.dataString?.let {
             Log.d("WBYDEMO", it)
-            WBYApplication.postId = it.toInt()
-            messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
+            WBYApplication.postId = it.toIntOrNull() ?: -1
+            messageChannel?.invokeMethod("getReply", null, object : MethodChannel.Result {
                 override fun success(result: Any?) {
 //                                TODO("Not yet implemented")
-                    WBYApplication.postId = null;
+                    WBYApplication.postId = -1;
                 }
 
                 override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -87,7 +87,7 @@ class MainActivity : FlutterFragmentActivity() {
 
             })
         }
-        
+
         super.onNewIntent(intent)
     }
 
@@ -122,11 +122,22 @@ class MainActivity : FlutterFragmentActivity() {
                         model.setMessageReadById(result, call.argument<Int>("id"))
                     }
                     "getPostId" -> {
-                        WBYApplication.postId?.let {
-                            WBYApplication.postId = null
-                            return@setMethodCallHandler result.success(it)
+//                        WBYApplication.postId?.let {
+//                            WBYApplication.postId = null
+//                            return@setMethodCallHandler result.success(it)
+//                        }
+//                        result.error("-1", "can not find post id", null)
+                        result.success(WBYApplication.postId)
+                    }
+                    "cancelNotification" -> {
+                        try {
+                            call.argument<Int>("id")
+                        } catch (e: Exception) {
+                            -1
+                        }.takeIf { it != -1 }?.let {
+                            notificationManager?.cancel(it)
                         }
-                        result.error("-1", "can not find post id", null)
+                        result.success("cancel success")
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }
@@ -139,16 +150,17 @@ class MainActivity : FlutterFragmentActivity() {
         super.onCreate(savedInstanceState)
         WBYApplication.activity = WeakReference(this)
         UmengSdkPlugin.setContext(this)
+        notificationManager = NotificationManagerCompat.from(this)
         android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
-        GlobalScope.launch {
-            delay(5000)
-            showNotification()
-        }
+//        GlobalScope.launch {
+//            delay(5000)
+//            showNotification(FeedbackMessage(title = "test", content = "test", question_id = 824))
+//        }
     }
 
     // 这么写没用，但是先留着，如果之后有厂商推送就有用了
     override fun getInitialRoute(): String {
-        WBYApplication.postId?.let {
+        WBYApplication.postId.takeIf { it != -1 }?.let {
             return "feedback/detail";
         }
         return super.getInitialRoute();

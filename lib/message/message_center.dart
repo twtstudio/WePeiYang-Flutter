@@ -5,11 +5,14 @@ import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
+
+import '../main.dart';
 
 class MessageRepository {
   static Future<FeedbackDetailMessages> getDetailMessages(
@@ -52,6 +55,11 @@ class MessageRepository {
     try {
       await messageApi.post("question",
           queryParameters: {"token": token, "question_id": questionId});
+      var result = await messageChannel.invokeMethod<String>(
+        "cancelNotification",
+        {"id": questionId},
+      );
+      ToastProvider.success("$result");
       debugPrint("setQuestionRead");
     } catch (e) {
       debugPrint(e.toString());
