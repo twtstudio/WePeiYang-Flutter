@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_center.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
@@ -26,7 +27,7 @@ class FeedbackBannerWidget extends StatelessWidget {
           };
           result = ClipRect(
             child: Banner(
-              message: "未读",
+              message: S.current.have_read,
               location: BannerLocation.bottomEnd,
               child: builder(tap),
             ),

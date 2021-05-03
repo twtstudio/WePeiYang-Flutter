@@ -5,7 +5,8 @@ import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class LocaleModel extends ChangeNotifier {
   // zh_Hans_CN => 世界上所有的简体中文
-  final localeValueList = [Platform.localeName, 'zh_Hans_CN', 'en_CN'];
+  // final localeValueList = [Platform.localeName, 'zh_Hans_CN', 'en_CN'];
+  final localeValueList = ['zh_Hans_CN', 'en_CN'];
 
   final key = 'language';
 
@@ -19,7 +20,8 @@ class LocaleModel extends ChangeNotifier {
   }
 
   LocaleModel() {
-    _localeIndex = CommonPreferences.getPref().getInt(key) ?? 0;
+    // _localeIndex = CommonPreferences.getPref().getInt(key) ?? 0;
+    _localeIndex = 0;
     S.load(locale());
   }
 

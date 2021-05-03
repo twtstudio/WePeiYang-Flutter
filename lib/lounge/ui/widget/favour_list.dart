@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
@@ -60,10 +62,11 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: Text(
                   widget.title,
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0XFF62677B)),
+                  style: FontManager.YaQiHei.copyWith(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0XFF62677B),
+                  ),
                 ),
               ),
               FavourListWidget(
@@ -125,8 +128,9 @@ class FavourListWidget extends StatelessWidget {
         child: Container(
           child: Center(
             child: Text(
-              init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
-              style: TextStyle(color: Color(0xffcdcdd3), fontSize: 12),
+              // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
+              S.current.notHaveLoungeFavour,
+              style: FontManager.YaQiHei.copyWith(color: Color(0xffcdcdd3), fontSize: 12),
             ),
           ),
         ),
@@ -218,7 +222,7 @@ class FavourListCard extends StatelessWidget {
                 SizedBox(height: 6),
                 Text(
                   DataFactory.getRoomTitle(room),
-                  style: TextStyle(
+                  style: FontManager.YaQiHei.copyWith(
                     color: Color(0XFF62677B),
                     fontSize: 11,
                   ),
@@ -237,8 +241,8 @@ class FavourListCard extends StatelessWidget {
                     ),
                     SizedBox(width: 3),
                     Text(
-                      available ? '空闲' : '占用',
-                      style: TextStyle(
+                      available ? S.current.idle : S.current.occupy,
+                      style: FontManager.YaQiHei.copyWith(
                         color: available ? Colors.lightGreen : Colors.red,
                         fontSize: 8,
                         fontWeight: FontWeight.bold,

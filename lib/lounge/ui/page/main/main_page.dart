@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
@@ -52,7 +54,7 @@ class _MainPageState extends State<MainPage> {
                       var time = model.dateTime.toString().split(' ')[0];
                       return Text(
                         time,
-                        style: TextStyle(
+                        style: FontManager.YaHei.copyWith(
                           color: Color(0xff62677b),
                           fontSize: 10,
                         ),
@@ -63,7 +65,7 @@ class _MainPageState extends State<MainPage> {
               ),
               SearchBarWidget(),
               BuildingGridWidget(),
-              const LoungeFavourWidget(title: '我的收藏')
+              LoungeFavourWidget(title: S.current.myFavour)
             ],
           ),
         );
@@ -137,7 +139,7 @@ class CampusChangeWidget extends StatelessWidget {
             onPressed: () => model.changeCampus(),
             child: Text(
               model.campus.name,
-              style: TextStyle(
+              style: FontManager.YaQiHei.copyWith(
                   color: Color(0XFF62677B),
                   fontSize: 17,
                   fontWeight: FontWeight.bold),

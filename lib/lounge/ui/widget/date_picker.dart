@@ -4,7 +4,9 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
@@ -104,7 +106,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
           // SizedBox(
           //   width: 12.0,
           // ),
-          Text("正在加载数据，请稍后"),
+          Text(S.current.pleaseWaiting),
         ],
       ),
     );
@@ -136,8 +138,8 @@ class _BottomDatePickerState extends State<BottomDatePicker>
         shrinkWrap: true,
         children: [
           GestureDetector(
-            onTap: (){
-              if(cannotTap){
+            onTap: () {
+              if (cannotTap) {
                 _showToast();
               }
             },
@@ -151,21 +153,16 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                 formatAnimation: FormatAnimation.slide,
                 availableGestures: AvailableGestures.horizontalSwipe,
                 headerStyle: HeaderStyle(
-                    centerHeaderTitle: true,
-                    formatButtonVisible: false,
-                    headerMargin: EdgeInsets.fromLTRB(0, 8, 0, 8)),
-                calendarStyle: CalendarStyle(
-                    outsideDaysVisible: true,
-                    todayStyle: TextStyle().copyWith(color: Color(0XFF62677B)),
-                    weekdayStyle: TextStyle().copyWith(color: Color(0XFF62677B)),
-                    weekendStyle: TextStyle().copyWith(color: Color(0XFF62677B)),
-                    unavailableStyle:
-                        TextStyle().copyWith(color: Color(0XFFCFD0D5))),
+                  centerHeaderTitle: true,
+                  formatButtonVisible: false,
+                  headerMargin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                ),
+                calendarStyle: CalendarStyle(outsideDaysVisible: true),
                 builders:
                     CalendarBuilders(selectedDayBuilder: (context, date, _) {
                   return FadeTransition(
-                    opacity:
-                        Tween(begin: 0.0, end: 1.0).animate(_animationController),
+                    opacity: Tween(begin: 0.0, end: 1.0)
+                        .animate(_animationController),
                     child: Center(
                       child: Container(
                         decoration: BoxDecoration(
@@ -177,7 +174,8 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                         child: Center(
                           child: Text(
                             '${date.day}',
-                            style: TextStyle().copyWith(color: Colors.white),
+                            style:
+                                FontManager.YaHei.copyWith(color: Colors.white),
                           ),
                         ),
                       ),
@@ -198,8 +196,11 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style: TextStyle()
-                              .copyWith(fontSize: 16, color: Color(0XFF62677B)),
+                          style: FontManager.YaHei.copyWith(
+                            fontSize: 16,
+                            color: Color(0XFF62677B),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -209,7 +210,9 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 13),
                     child: Container(
                       child: Center(
-                        child: Text(date),
+                        child: Text(
+                          date.substring(1, 2),  // 为了去掉 周一 的 周
+                        ),
                       ),
                     ),
                   );
@@ -219,7 +222,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                   _fToast.removeQueuedCustomToasts();
                   _animationController.forward(from: 0.0);
                   await model.setTime(date: date).then((_) {
-                    if(mounted) {
+                    if (mounted) {
                       _calendarController.setSelectedDay(model.dateTime);
                     }
                   });
@@ -253,8 +256,8 @@ class _BottomDatePickerState extends State<BottomDatePicker>
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  '确定',
-                  style: TextStyle(
+                  S.current.ok,
+                  style: FontManager.YaQiHei.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Color(0XFF62677B),
@@ -311,6 +314,7 @@ class TimeItem extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
+                  fontSize: 14,
                   color: isChecked ? Colors.white : Color(0XFF62677B),
                 ),
               ),

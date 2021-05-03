@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
@@ -30,8 +32,8 @@ class AreasPage extends StatelessWidget {
                   ),
                   SizedBox(width: 7),
                   Text(
-                    building.name + "教学楼",
-                    style: TextStyle(
+                    building.name + S.current.teachingBuilding,
+                    style: FontManager.Aspira.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                       color: Color(0xff62677b),
@@ -75,8 +77,8 @@ class AreasPage extends StatelessWidget {
                     child: Center(
                       child: Text(
                         building.areas.values.toList()[index].id +
-                            "区",
-                        style: TextStyle(
+                            S.current.area,
+                        style: FontManager.Aspira.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           fontSize: 14,

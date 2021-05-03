@@ -113,8 +113,9 @@ Future getToken(
         'password': CommonPreferences().password.value,
       },
     );
-    if (response.data['data']['token'] != null) {
+    if (null != response.data['data']['token']) {
       log('getToken大成功');
+      log(response.data.toString());
       CommonPreferences().feedbackToken.value = response.data['data']['token'];
       onSuccess(response.data['data']['token']);
     } else {
@@ -252,13 +253,13 @@ Future getComments({
     Response officialCommentResponse =
         await _client.get('question/get/answer', queryParameters: {
       'question_id': '$id',
-      'token': notifier.token ,
+      'token': notifier.token,
     });
     Response commentResponse = await _client.get(
       'question/get/commit',
       queryParameters: {
         'question_id': '$id',
-        'token': notifier.token ,
+        'token': notifier.token,
       },
     );
     if (0 == officialCommentResponse.data['ErrorCode'] &&

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/building.dart';
@@ -39,7 +41,7 @@ class SearchResult extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '“没有找到这件教室···”',
+                  S.current.cannotFindRoom1,
                   style: TextStyle(
                     color: Color(0xff363c54),
                     fontSize: 20,
@@ -50,8 +52,7 @@ class SearchResult extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    "请输入阿拉伯数字和字母\n以查找教学楼或教室\n\n如果你想找到26教B区120教室：\n可输"
-                    "入26教b120，26b120，26120或120...",
+                    S.current.cannotFindRoom2,
                     style: TextStyle(
                       color: Color(0x99363c54),
                       fontSize: 13,
@@ -111,10 +112,11 @@ class ResultRoomsListView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
-              color: Color(0xff62677c),
-              fontWeight: FontWeight.bold,
-              fontSize: 12),
+          style: FontManager.YaQiHei.copyWith(
+            color: Color(0xff62677c),
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
         ),
         FutureBuilder(
           future: HiveManager.instance.getRoomPlans(
@@ -148,8 +150,8 @@ class ResultRoomsListView extends StatelessWidget {
                     ),
                     SizedBox(width: 3),
                     Text(
-                      isIdle ? '空闲' : '占用',
-                      style: TextStyle(
+                      isIdle ? S.current.idle : S.current.occupy,
+                      style: FontManager.YaQiHei.copyWith(
                         color: isIdle ? Colors.lightGreen : Colors.red,
                         fontSize: 8,
                         fontWeight: FontWeight.bold,
@@ -251,7 +253,7 @@ class ResultAreasGridView extends StatelessWidget {
                 child: Center(
                   child: Text(
                     entry.building.name + "教",
-                    style: TextStyle(
+                    style: FontManager.YaQiHei.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontSize: 14,
@@ -316,7 +318,7 @@ class WaterMark extends CustomPainter {
       ..textDirection = TextDirection.ltr
       ..text = TextSpan(
         text: letter,
-        style: TextStyle(
+        style: FontManager.Aspira.copyWith(
           color: Color(0x25f7f7f8),
           fontWeight: FontWeight.w900,
           fontSize: 70,

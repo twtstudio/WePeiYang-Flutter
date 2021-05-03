@@ -74,6 +74,336 @@ class S {
       args: [],
     );
   }
+
+  /// ``
+  String get ok {
+    return Intl.message(
+      '',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get pleaseWaiting {
+    return Intl.message(
+      '',
+      name: 'pleaseWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get teachingBuilding {
+    return Intl.message(
+      '',
+      name: 'teachingBuilding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get area {
+    return Intl.message(
+      '',
+      name: 'area',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get idle {
+    return Intl.message(
+      '',
+      name: 'idle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get occupy {
+    return Intl.message(
+      '',
+      name: 'occupy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get courseOccupy {
+    return Intl.message(
+      '',
+      name: 'courseOccupy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get cancelFavour {
+    return Intl.message(
+      '',
+      name: 'cancelFavour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get favour {
+    return Intl.message(
+      '',
+      name: 'favour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get myFavour {
+    return Intl.message(
+      '',
+      name: 'myFavour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get search {
+    return Intl.message(
+      '',
+      name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get cancel {
+    return Intl.message(
+      '',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get cannotFindRoom1 {
+    return Intl.message(
+      '',
+      name: 'cannotFindRoom1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get cannotFindRoom2 {
+    return Intl.message(
+      '',
+      name: 'cannotFindRoom2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get searchHistory {
+    return Intl.message(
+      '',
+      name: 'searchHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get notHaveLoungeFavour {
+    return Intl.message(
+      '',
+      name: 'notHaveLoungeFavour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get like {
+    return Intl.message(
+      '',
+      name: 'like',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get comment {
+    return Intl.message(
+      '',
+      name: 'comment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reply {
+    return Intl.message(
+      '',
+      name: 'reply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get like_a_question {
+    return Intl.message(
+      '',
+      name: 'like_a_question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get comment_a_question {
+    return Intl.message(
+      '',
+      name: 'comment_a_question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reply_a_question {
+    return Intl.message(
+      '',
+      name: 'reply_a_question',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_message {
+    return Intl.message(
+      '',
+      name: 'feedback_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get anonymous_user {
+    return Intl.message(
+      '',
+      name: 'anonymous_user',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get unknown_department {
+    return Intl.message(
+      '',
+      name: 'unknown_department',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get have_replied {
+    return Intl.message(
+      '',
+      name: 'have_replied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get not_reply {
+    return Intl.message(
+      '',
+      name: 'not_reply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get up_load {
+    return Intl.message(
+      '',
+      name: 'up_load',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get load_fail {
+    return Intl.message(
+      '',
+      name: 'load_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get load_more {
+    return Intl.message(
+      '',
+      name: 'load_more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get no_more_data {
+    return Intl.message(
+      '',
+      name: 'no_more_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get have_read {
+    return Intl.message(
+      '',
+      name: 'have_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get not_read {
+    return Intl.message(
+      '',
+      name: 'not_read',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

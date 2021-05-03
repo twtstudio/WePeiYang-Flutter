@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_result.dart';
@@ -27,7 +29,10 @@ class SRSearchDelegate extends MySearchDelegate<HistoryEntry> {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear,color: Color(0x8862677c),),
+        icon: Icon(
+          Icons.clear,
+          color: Color(0x8862677c),
+        ),
         onPressed: () {
           _focusNode.requestFocus();
           _queryTextController.clear();
@@ -44,11 +49,12 @@ class SRSearchDelegate extends MySearchDelegate<HistoryEntry> {
           query.trim().isNotEmpty ? showResults(context) : close(context, null);
         },
         child: Text(
-          query.trim().isNotEmpty ? '搜索' : '取消',
-          style: TextStyle(
-              color: Color(0xff62677c),
-              fontWeight: FontWeight.bold,
-              fontSize: 12),
+          query.trim().isNotEmpty ? S.current.search : S.current.cancel,
+          style: FontManager.YaQiHei.copyWith(
+            color: Color(0xff62677c),
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
         ),
       ),
     ];
@@ -398,12 +404,12 @@ class _MySearchPageState<T> extends State<_MySearchPage<T>> {
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: '请输入',
-                          hintStyle: TextStyle(
-                            color: Color(0x77363c54),
-                            fontSize: 14,
-                            fontWeight: FontWeight.normal,
-                          ),
+                          // hintText: '请输入',
+                          // hintStyle: TextStyle(
+                          //   color: Color(0x77363c54),
+                          //   fontSize: 14,
+                          //   fontWeight: FontWeight.normal,
+                          // ),
                         ),
                       ),
                       trailing: Row(

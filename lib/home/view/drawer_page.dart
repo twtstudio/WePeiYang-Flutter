@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import '../model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +40,7 @@ Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
         Container(height: 5),
         Center(
           child: Text(bean.label,
-              style: TextStyle(
+              style: FontManager.YaQiHei.copyWith(
                   color: textColor ?? MyColors.darkGrey,
                   fontSize: 13.0,
                   fontWeight: FontWeight.bold)),

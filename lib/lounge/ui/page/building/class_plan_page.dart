@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
 import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
 import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
@@ -50,7 +52,7 @@ class PageTitleWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Text(
             DataFactory.getRoomTitle(room),
-            style: TextStyle(
+            style: FontManager.Aspira.copyWith(
               color: Color(0xff62677b),
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -66,10 +68,10 @@ class PageTitleWidget extends StatelessWidget {
                 if (snapshot.hasData) {
                   return Text(
                     'WEEK ${snapshot.data.first.week}',
-                    style: TextStyle(
+                    style: FontManager.Texta.copyWith(
                       color: Color(0xffcdced3),
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
                     ),
                   );
                 } else {
@@ -111,9 +113,9 @@ class PageTitleWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: Text(
                   favouriteModel.globalFavouriteModel.contains(cId: room.id)
-                      ? '取消收藏'
-                      : '收藏',
-                  style: TextStyle(
+                      ? S.current.cancelFavour
+                      : S.current.favour,
+                  style: FontManager.YaQiHei.copyWith(
                     color: Color(0xff62677b),
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
@@ -251,10 +253,11 @@ class CourseTab extends StatelessWidget {
       child: Center(
         child: Text(
           '$step',
-          style: TextStyle(
-              color: chosen ? Color(0xfff7f7f8) : Color(0xffcfd0d5),
-              fontSize: 9,
-              fontWeight: FontWeight.bold),
+          style: FontManager.Aspira.copyWith(
+            color: chosen ? Color(0xfff7f7f8) : Color(0xffcfd0d5),
+            fontSize: 9,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -284,7 +287,7 @@ class WeekDisplayWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '${date.month}/${date.day}',
-                      style: TextStyle(
+                      style: FontManager.Aspira.copyWith(
                           color: model.dateTime.isTheSameDay(date)
                               ? Color(0xfff7f7f8)
                               : Color(0xffcfd0d5),
@@ -384,24 +387,12 @@ class CourseDisplayWidget extends StatelessWidget {
                   color: colors[Random().nextInt(colors.length)],
                 ),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '课程占',
-                        style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        '用',
-                        style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                    ],
+                  child: Text(
+                    S.current.courseOccupy,
+                    style: FontManager.YaQiHei.copyWith(
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               )));

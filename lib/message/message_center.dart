@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
+import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
@@ -57,22 +58,24 @@ class MessageRepository {
     }
   }
 
-  static Future<List<UserMail>> getUserMails(int page) async {
+  static Future<UserMessages> getUserMails(int page) async {
     var token = CommonPreferences().token.value;
-    await Future.delayed(Duration(seconds: 1));
-    List<UserMail> mails = [
-      UserMail.fromJson(1 + page),
-      UserMail.fromJson(2 + page),
-      UserMail.fromJson(3 + page),
-      UserMail.fromJson(4 + page),
-      UserMail.fromJson(5 + page),
-      UserMail.fromJson(6 + page),
-      UserMail.fromJson(7 + page),
-      UserMail.fromJson(8 + page),
-      UserMail.fromJson(9 + page),
-      UserMail.fromJson(10 + page),
-    ];
-    return mails;
+    debugPrint("get mails@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$token");
+    var response = await Dio().get(
+      "https://api.twt.edu.cn/api/notification/message/user",
+      options: Options(
+        headers: {
+          "DOMAIN": AuthDio.DOMAIN,
+          "ticket": AuthDio.ticket,
+          "token": token,
+        },
+      ),
+    );
+    debugPrint(
+        "${response.data.toString()}@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    var messages = UserMessages.fromJson(response.data);
+    debugPrint(messages.mails.length.toString());
+    return messages;
   }
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
@@ -64,8 +66,8 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
                 FlatButton(
                   onPressed: null,
                   child: Text(
-                    '历史记录',
-                    style: TextStyle(
+                    S.current.searchHistory,
+                    style: FontManager.YaQiHei.copyWith(
                         color: Color(0xff62677c),
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
@@ -94,7 +96,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
             backgroundColor: Colors.white,
             label: Text(
               item,
-              style: TextStyle(
+              style: FontManager.YaHei.copyWith(
                 fontSize: 12,
                 color: Color(0xff62677b),
               ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
 import 'package:wei_pei_yang_demo/lounge/model/area.dart';
 import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
@@ -91,9 +93,12 @@ class _PathTitle extends StatelessWidget {
           SizedBox(width: 7),
           Text(
             area.id != '-1'
-                ? area.building + '教学楼' + area.id + '区'
-                : area.building + '教学楼',
-            style: TextStyle(
+                ? area.building +
+                    S.current.teachingBuilding +
+                    area.id +
+                    S.current.area
+                : area.building + S.current.teachingBuilding,
+            style: FontManager.Aspira.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 15,
               color: Color(0xff62677b),
@@ -166,7 +171,7 @@ class FloorWidget extends StatelessWidget {
               SizedBox(width: 1),
               Text(
                 floor + "F",
-                style: TextStyle(
+                style: FontManager.YaQiHei.copyWith(
                   fontSize: 12,
                   color: Color(0xff62677b),
                   fontWeight: FontWeight.bold,
@@ -218,7 +223,7 @@ class _RoomItem extends StatelessWidget {
                 classroom.aId == '-1'
                     ? classroom.name
                     : classroom.aId + classroom.name,
-                style: TextStyle(
+                style: FontManager.YaQiHei.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Color(0xff62677b),
                   fontSize: 11,
@@ -238,8 +243,8 @@ class _RoomItem extends StatelessWidget {
                   ),
                   SizedBox(width: 3),
                   Text(
-                    isIdle ? '空闲' : '占用',
-                    style: TextStyle(
+                    isIdle ? S.current.idle : S.current.occupy,
+                    style: FontManager.YaQiHei.copyWith(
                       color: isIdle ? Colors.lightGreen : Colors.red,
                       fontSize: 8,
                       fontWeight: FontWeight.bold,

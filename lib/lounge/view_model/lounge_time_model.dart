@@ -68,15 +68,16 @@ class LoungeTimeModel extends ChangeNotifier {
                 HiveManager.instance.localDateLastUpdateTime;
             if (localLastUpdateTime == null) {
               _state = ViewState.error;
+              _dateTime = preD;
             } else {
               _dateTime = localLastUpdateTime;
               _state = ViewState.idle;
             }
           } else {
+            _dateTime = preD;
             _state = ViewState.idle;
           }
           // _classTime = preCs;
-          _dateTime = preD;
           notifyListeners();
         }
       } else if ((_dateTime.isThisWeek &&

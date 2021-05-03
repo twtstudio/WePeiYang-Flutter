@@ -186,7 +186,7 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                 );
                               } else {
-                                return SizedBox.expand();
+                                return Container();
                               }
                             },
                           )

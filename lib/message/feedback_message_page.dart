@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
 
 import 'message_center.dart';
@@ -17,7 +18,7 @@ enum MessageType {
 }
 
 extension MessageTypeExtension on MessageType {
-  String get name => ['点赞', '评论', '官方回复'][this.index];
+  String get name => [S.current.like, S.current.comment, S.current.reply][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -30,11 +31,11 @@ extension MessageTypeExtension on MessageType {
   String get action {
     switch (this) {
       case MessageType.favor:
-        return "点赞了问题";
+        return S.current.like_a_question;
       case MessageType.contain:
-        return "评论了问题";
+        return S.current.comment_a_question;
       case MessageType.reply:
-        return "回复了问题";
+        return S.current.reply_a_question;
       default:
         return "";
     }
@@ -94,7 +95,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
             elevation: 0,
             centerTitle: true,
             title: Text(
-              "校务消息",
+              S.current.feedback_message,
               style: TextStyle(
                 color: Color(0xff303c66),
                 fontSize: 16,
@@ -321,15 +322,15 @@ class _MessagesListState extends State<MessagesList>
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text("上拉加载");
+            body = Text(S.current.up_load);
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text("加载失败！点击重试！");
+            body = Text(S.current.load_fail);
           } else if (mode == LoadStatus.canLoading) {
-            body = Text("松手,加载更多!");
+            body = Text(S.current.load_more);
           } else {
-            body = Text("没有更多数据了!");
+            body = Text(S.current.no_more_data);
           }
           return Container(
             height: 55.0,
@@ -395,7 +396,7 @@ class MessageItem extends StatelessWidget {
           width: (data.comment.adminName?.length ?? 3) * 17.0,
           child: Center(
             child: Text(
-              "${data.comment.adminName ?? "学工部"}",
+              "${data.comment.adminName ?? S.current.unknown_department}",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,
@@ -414,7 +415,7 @@ class MessageItem extends StatelessWidget {
             Icon(Icons.account_circle_outlined, size: 20),
             SizedBox(width: 10),
             Text(
-              "${data.comment?.userName ?? "匿名用户"}",
+              "${data.comment?.userName ?? S.current.anonymous_user}",
               style: TextStyle(
                 color: Color(0xff434650),
                 fontSize: 9,
@@ -546,7 +547,7 @@ class MessageItem extends StatelessWidget {
                     builder: (_) {
                       var isSolved = data.post.isSolved == 1;
                       return Text(
-                        isSolved ? "已回复" : "未回复",
+                        isSolved ? S.current.have_replied : S.current.not_reply,
                         style: TextStyle(
                             color: isSolved
                                 ? Color(0xff434650)

@@ -61,46 +61,46 @@ class _SettingPageState extends State<SettingPage> {
             alignment: Alignment.centerLeft,
             child: Text('通用', style: titleTextStyle),
           ),
-          Container(
-            height: 80,
-            child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.languageSetting).then((_) {
-                  /// 使用pop返回此页面时进行rebuild
-                  this.setState(() {});
-                }),
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(9),
-                child: Row(
-                  children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(left: 15),
-                            child: Text('系统语言', style: mainTextStyle)),
-                        Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(left: 15, top: 3),
-                            child: Text(S.current.language,
-                                style: hintTextStyle,
-                                textAlign: TextAlign.left))
-                      ],
-                    ),
-                    Expanded(child: Text('')),
-                    Padding(
-                        padding: const EdgeInsets.only(right: 26), child: arrow)
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Container(
+          //   height: 80,
+          //   child: Card(
+          //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          //     elevation: 0,
+          //     shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(9)),
+          //     child: InkWell(
+          //       onTap: () =>
+          //           Navigator.pushNamed(context, AuthRouter.languageSetting).then((_) {
+          //         /// 使用pop返回此页面时进行rebuild
+          //         this.setState(() {});
+          //       }),
+          //       splashFactory: InkRipple.splashFactory,
+          //       borderRadius: BorderRadius.circular(9),
+          //       child: Row(
+          //         children: <Widget>[
+          //           Column(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: [
+          //               Container(
+          //                   width: 150,
+          //                   margin: const EdgeInsets.only(left: 15),
+          //                   child: Text('系统语言', style: mainTextStyle)),
+          //               Container(
+          //                   width: 150,
+          //                   margin: const EdgeInsets.only(left: 15, top: 3),
+          //                   child: Text(S.current.language,
+          //                       style: hintTextStyle,
+          //                       textAlign: TextAlign.left))
+          //             ],
+          //           ),
+          //           Expanded(child: Text('')),
+          //           Padding(
+          //               padding: const EdgeInsets.only(right: 26), child: arrow)
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Container(
             height: 80,
             child: Card(

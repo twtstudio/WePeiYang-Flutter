@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/message/message_center.dart';
 import 'package:wei_pei_yang_demo/message/user_mail_webview_dialog.dart';
 
@@ -55,97 +56,134 @@ class UserMailList extends StatefulWidget {
 }
 
 class _UserMailListState extends State<UserMailList> {
-  List<UserMail> mails = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  onRefresh() async {
-    // monitor network fetch
-    try {
-      var result = await MessageRepository.getUserMails(0);
-      mails.clear();
-      mails.addAll(result);
-      if (mounted) setState(() {});
-      _refreshController.refreshCompleted();
-    } catch (e) {
-      _refreshController.refreshFailed();
-    }
-    // if failed,use refreshFailed()
-    // _refreshController.refreshCompleted();
-  }
-
-  _onLoading() async {
-    // monitor network fetch
-    // await Future.delayed(Duration(milliseconds: 1000));
-    try {
-      var result = await MessageRepository.getUserMails(mails.length ~/ 10 + 2);
-      mails.addAll(result);
-      if (mounted) setState(() {});
-      _refreshController.loadComplete();
-    } catch (e) {
-      _refreshController.loadFailed();
-    }
-
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // items.add((items.length + 1).toString());
-  }
+  UserMessages _messages;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var list = await MessageRepository.getUserMails(0);
-      mails.addAll(list);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _messages = await MessageRepository.getUserMails(0);
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: WaterDropHeader(),
-      footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
-          Widget body;
-          if (mode == LoadStatus.idle) {
-            body = Text("上拉加载");
-          } else if (mode == LoadStatus.loading) {
-            body = CupertinoActivityIndicator();
-          } else if (mode == LoadStatus.failed) {
-            body = Text("加载失败！点击重试！");
-          } else if (mode == LoadStatus.canLoading) {
-            body = Text("松手,加载更多!");
-          } else {
-            body = Text("没有更多数据了!");
-          }
-          return Container(
-            height: 55.0,
-            child: Center(child: body),
-          );
-        },
-      ),
-      controller: _refreshController,
-      onRefresh: onRefresh,
-      onLoading: _onLoading,
-      child: ListView.builder(
+    if(_messages == null){
+      return Center(
+        child: Text("waiting"),
+      );
+    }
+    return  ListView.builder(
         itemBuilder: (c, i) {
           print(i);
           return MailItem(
-            data: mails[i],
-            onTapDown: () async {
-              // await MessageRepository.setQuestionRead(items[i].post.id);
-              await onRefresh();
-            },
+            data: _messages.mails[i],
           );
         },
         // itemExtent: 170,
-        itemCount: mails.length,
-      ),
-    );
+        itemCount: _messages.mails.length,
+      );
   }
 }
+
+// class UserMailList extends StatefulWidget {
+//   @override
+//   _UserMailListState createState() => _UserMailListState();
+// }
+//
+// class _UserMailListState extends State<UserMailList> {
+//   List<UserMail> mails = [];
+//   RefreshController _refreshController =
+//       RefreshController(initialRefresh: false);
+//
+//   onRefresh() async {
+//     // monitor network fetch
+//     try {
+//       var result = await MessageRepository.getUserMails(0);
+//       mails.clear();
+//       mails.addAll(result);
+//       if (mounted) setState(() {});
+//       _refreshController.refreshCompleted();
+//     } catch (e) {
+//       _refreshController.refreshFailed();
+//     }
+//     // if failed,use refreshFailed()
+//     // _refreshController.refreshCompleted();
+//   }
+//
+//   _onLoading() async {
+//     // monitor network fetch
+//     // await Future.delayed(Duration(milliseconds: 1000));
+//     try {
+//       var result = await MessageRepository.getUserMails(mails.length ~/ 10 + 2);
+//       mails.addAll(result);
+//       if (mounted) setState(() {});
+//       _refreshController.loadComplete();
+//     } catch (e) {
+//       _refreshController.loadFailed();
+//     }
+//
+//     // if failed,use loadFailed(),if no data return,use LoadNodata()
+//     // items.add((items.length + 1).toString());
+//   }
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) async {
+//       var list = await MessageRepository.getUserMails(0);
+//       mails.addAll(list);
+//       setState(() {});
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SmartRefresher(
+//       enablePullDown: true,
+//       enablePullUp: true,
+//       header: WaterDropHeader(),
+//       footer: CustomFooter(
+//         builder: (BuildContext context, LoadStatus mode) {
+//           Widget body;
+//           if (mode == LoadStatus.idle) {
+//             body = Text(S.current.up_load);
+//           } else if (mode == LoadStatus.loading) {
+//             body = CupertinoActivityIndicator();
+//           } else if (mode == LoadStatus.failed) {
+//             body = Text(S.current.load_fail);
+//           } else if (mode == LoadStatus.canLoading) {
+//             body = Text(S.current.load_more);
+//           } else {
+//             body = Text(S.current.no_more_data);
+//           }
+//           return Container(
+//             height: 55.0,
+//             child: Center(child: body),
+//           );
+//         },
+//       ),
+//       controller: _refreshController,
+//       onRefresh: onRefresh,
+//       onLoading: _onLoading,
+//       child: ListView.builder(
+//         itemBuilder: (c, i) {
+//           print(i);
+//           return MailItem(
+//             data: mails[i],
+//             onTapDown: () async {
+//               // await MessageRepository.setQuestionRead(items[i].post.id);
+//               await onRefresh();
+//             },
+//           );
+//         },
+//         // itemExtent: 170,
+//         itemCount: mails.length,
+//       ),
+//     );
+//   }
+// }
 
 class MailItem extends StatefulWidget {
   final UserMail data;
@@ -163,7 +201,8 @@ class _MailItemState extends State<MailItem> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: GestureDetector(
-        onTapUp: (_) => showDialog(context: context,builder: (_) => UserMailDialog(widget.data.detail)),
+        onTapUp: (_) => showDialog(
+            context: context, builder: (_) => UserMailDialog(widget.data.url)),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -203,10 +242,10 @@ class _MailItemState extends State<MailItem> {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    Image.network(widget.data.icon, height: 10),
+                    // Image.network(widget.data.icon, height: 10),
                     SizedBox(width: 10),
                     Text(
-                      widget.data.sender,
+                      "twt",
                       style: TextStyle(
                         color: Color(0xff414650),
                         fontSize: 11,
@@ -231,24 +270,36 @@ class _MailItemState extends State<MailItem> {
   }
 }
 
+class UserMessages {
+  int code;
+  String message;
+  List<UserMail> mails;
+
+  UserMessages.fromJson(Map<dynamic, dynamic> json) {
+    if (json == null) return;
+    this.code = json['error_code'];
+    this.message = json['message'];
+    this.mails = [
+      ...(json["result"] as List ?? [])
+          .map((e) => UserMail.fromJson(e))
+          .toList()
+    ];
+  }
+}
+
 class UserMail {
   String title;
   String content;
-  String sender;
-  String icon;
   String time;
-  String detail;
+  String url;
+  int id;
 
-  UserMail.fromJson(int i) {
-    this.title = "一个通知  = $i";
-    this.content = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-    this.icon =
-        "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3183870429,2347116615&fm=26&gp=0.jpg";
-    this.time = "2021-2-12 21:28";
-    this.detail = "https://www.baidu.com";
-    this.sender = "天外天";
+  UserMail.fromJson(Map<dynamic, dynamic> json) {
+    if (json == null) return;
+    this.title = json['title'] ?? "";
+    this.content = json['content'] ?? "";
+    this.time = json['createAt'] ?? "";
+    this.url = "https://www.baidu.com";
+    this.id = json["id"] ?? 0;
   }
 }
