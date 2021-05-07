@@ -2,98 +2,115 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
+import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 
-void showCourseDialog(BuildContext context, ScheduleCourse course) =>
+void showCourseDialog(BuildContext context, List<ScheduleCourse> courses) =>
     showDialog(
         context: context,
         barrierDismissible: true,
         barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
-        builder: (BuildContext context) => CourseDialog(course));
+        builder: (BuildContext context) => CourseDialog(courses));
 
 class CourseDialog extends Dialog {
-  final ScheduleCourse course;
+  final List<ScheduleCourse> courses;
 
-  CourseDialog(this.course);
+  CourseDialog(this.courses);
 
   static const nameStyle = TextStyle(
-      fontSize: 25,
+      fontSize: 21,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.bold);
 
   static const teacherStyle = TextStyle(
-      fontSize: 16,
-      color: Colors.white,
-      decoration: TextDecoration.none,
-      fontWeight: FontWeight.normal);
+      fontSize: 13, color: Colors.white, decoration: TextDecoration.none);
 
   static const hintNameStyle = TextStyle(
-      fontSize: 11,
+      fontSize: 10,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w200,
       letterSpacing: 1);
 
   static const hintValueStyle = TextStyle(
-      fontSize: 11,
+      fontSize: 10,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.w900);
 
   @override
   Widget build(BuildContext context) {
+    double width = GlobalModel().screenWidth - 120;
     return Center(
       child: Container(
-        height: 400,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 100),
-          itemCount: 3,
-          itemBuilder: (context, i){
-            return Container(
-              // margin: const EdgeInsets.symmetric(horizontal: 50),
-              // height: 400,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/icon_peiyang.png'),
-                      fit: BoxFit.cover,
-                      alignment: Alignment.bottomRight),
-                  borderRadius: BorderRadius.circular(15),
-                  color: generateColor(course)),
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 35, 50, 35),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(course.courseName, style: nameStyle),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(course.teacher, style: teacherStyle),
-                      ),
-                      Expanded(child: Text("")),
-                      _getRow1(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: _getRow2(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: _getRow3(),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-        ),
+        height: 340,
+        child: courses.length == 1
+            ? _getSingleCard(context, width, courses[0], false)
+            : ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                itemCount: courses.length,
+                itemBuilder: (context, i) =>
+                    _getSingleCard(context, width, courses[i], i == 0)),
       ),
     );
   }
 
-  Widget _getRow1() => Row(
+  Widget _getSingleCard(BuildContext context, double width,
+          ScheduleCourse course, bool conflict) =>
+      Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        width: width,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/icon_peiyang.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.bottomRight),
+            borderRadius: BorderRadius.circular(15),
+            color: generateColor(course)),
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(25, 35, 25, 35),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(course.courseName, style: nameStyle),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Text(course.teacher, style: teacherStyle),
+                ),
+                conflict
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset('assets/images/schedule_warn.png',
+                                  width: 20, height: 20),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Text("冲突", style: teacherStyle),
+                              )
+                            ]))
+                    : Container(),
+                Expanded(child: Text("")),
+                _getRow1(course),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: _getRow2(course),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: _getRow3(course),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _getRow1(ScheduleCourse course) => Row(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +156,7 @@ class CourseDialog extends Dialog {
         ],
       );
 
-  Widget _getRow2() => Row(
+  Widget _getRow2(ScheduleCourse course) => Row(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +199,7 @@ class CourseDialog extends Dialog {
         ],
       );
 
-  Widget _getRow3() => Column(
+  Widget _getRow3(ScheduleCourse course) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('时间', style: hintNameStyle.copyWith(letterSpacing: 3)),
