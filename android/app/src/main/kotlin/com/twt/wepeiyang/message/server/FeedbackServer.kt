@@ -1,9 +1,9 @@
-package com.example.wei_pei_yang_demo.message.server
+package com.twt.wepeiyang.message.server
 
-import com.example.wei_pei_yang_demo.common.BaseServer
-import com.example.wei_pei_yang_demo.message.model.FeedbackBaseData
-import com.example.wei_pei_yang_demo.message.model.FeedbackMessageBaseData
-import com.example.wei_pei_yang_demo.message.model.User
+import com.twt.wepeiyang.common.BaseServer
+import com.twt.wepeiyang.message.model.FeedbackBaseData
+import com.twt.wepeiyang.message.model.FeedbackMessageBaseData
+import com.twt.wepeiyang.message.model.User
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request

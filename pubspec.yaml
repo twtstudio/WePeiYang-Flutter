@@ -129,15 +129,15 @@ flutter:
       fonts:
         - asset: assets/fonts/Texta Narrow W00 Thin.ttf
 
-    - family: WeiYuanYaQiHei
+    - family: MicrosoftYaQiHei
       fonts:
-        - asset: assets/fonts/MicrosoftYaqiHeiBold.ttf
+        - asset: assets/fonts/YaqiHeiBold.ttf
 
-    - family: WeiYuanYaHei
+    - family: MicrosoftYaHei
       fonts:
-        - asset: assets/fonts/WeiRuanYaHei-1.ttf
-        - asset: assets/fonts/Microsoft YaHei Light.ttf
-        - asset: assets/fonts/YaHei Bold.ttf
+        - asset: assets/fonts/MicrosoftYaHei-Regular.ttf
+        - asset: assets/fonts/MicrosoftYaHei-Light.ttf
+        - asset: assets/fonts/MicrosoftYaHei-Bold.ttf
 
 flutter_intl:
   enabled: true

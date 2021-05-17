@@ -1,16 +1,13 @@
-package com.example.wei_pei_yang_demo.message
+package com.twt.wepeiyang.message
 
 import android.content.Context
 import android.os.Message
 import android.util.Log
-import com.example.wei_pei_yang_demo.WBYApplication
-import com.google.gson.Gson
+import com.twt.wepeiyang.WBYApplication
 import com.igexin.sdk.GTIntentService
-import com.igexin.sdk.PushManager
 import com.igexin.sdk.message.GTCmdMessage
 import com.igexin.sdk.message.GTNotificationMessage
 import com.igexin.sdk.message.GTTransmitMessage
-import java.lang.Exception
 
 class WBYIntentService : GTIntentService() {
 
@@ -79,7 +76,7 @@ class WBYIntentService : GTIntentService() {
                 + "\npkg = " + message?.pkgName
                 + "\ncid = " + message?.clientId
                 + "\ncontent = " + message?.content
-                + "\ntitle = " + message?.title);
+                + "\ntitle = " + message?.title)
     }
 
     override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
@@ -93,7 +90,7 @@ class WBYIntentService : GTIntentService() {
                 + "\npkg = " + message?.pkgName
                 + "\ncid = " + message?.clientId
                 + "\ncontent = " + message?.content
-                + "\ntitle = " + message?.title);
+                + "\ntitle = " + message?.title)
 
 
     }

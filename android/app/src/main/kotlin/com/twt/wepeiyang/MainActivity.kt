@@ -1,8 +1,10 @@
-package com.example.wei_pei_yang_demo
+package com.twt.wepeiyang
 
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.content.*
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Bundle
@@ -10,19 +12,14 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.*
 import com.example.umeng_sdk.UmengSdkPlugin
-import com.example.wei_pei_yang_demo.alarm.AlarmService
-import com.example.wei_pei_yang_demo.alarm.ScheduleDatabase
+import com.twt.wepeiyang.alarm.AlarmService
+import com.twt.wepeiyang.alarm.ScheduleDatabase
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
-import java.util.*
 
 
 class MainActivity : FlutterFragmentActivity() {
@@ -30,18 +27,18 @@ class MainActivity : FlutterFragmentActivity() {
     var messageChannel: MethodChannel? = null
     private var notificationManager: NotificationManagerCompat? = null
 
-    val model by viewModels<MainActivityViewModel>()
+    private val model by viewModels<MainActivityViewModel>()
 
     override fun onPause() {
         super.onPause()
         MobclickAgent.onPause(this)
-        android.util.Log.i("UMLog", "onPause@MainActivity")
+        Log.i("UMLog", "onPause@MainActivity")
     }
 
     override fun onResume() {
         super.onResume()
         MobclickAgent.onResume(this)
-        android.util.Log.i("UMLog", "onResume@MainActivity")
+        Log.i("UMLog", "onResume@MainActivity")
     }
 
     fun showNotification(data: FeedbackMessage) {
@@ -74,7 +71,7 @@ class MainActivity : FlutterFragmentActivity() {
             messageChannel?.invokeMethod("getReply", null, object : MethodChannel.Result {
                 override fun success(result: Any?) {
 //                                TODO("Not yet implemented")
-                    WBYApplication.postId = -1;
+                    WBYApplication.postId = -1
                 }
 
                 override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -151,7 +148,7 @@ class MainActivity : FlutterFragmentActivity() {
         WBYApplication.activity = WeakReference(this)
         UmengSdkPlugin.setContext(this)
         notificationManager = NotificationManagerCompat.from(this)
-        android.util.Log.i("UMLog", "UMConfigure.init@MainActivity")
+        Log.i("UMLog", "UMConfigure.init@MainActivity")
 //        GlobalScope.launch {
 //            delay(5000)
 //            showNotification(FeedbackMessage(title = "test", content = "test", question_id = 824))
@@ -161,9 +158,9 @@ class MainActivity : FlutterFragmentActivity() {
     // 这么写没用，但是先留着，如果之后有厂商推送就有用了
     override fun getInitialRoute(): String {
         WBYApplication.postId.takeIf { it != -1 }?.let {
-            return "feedback/detail";
+            return "feedback/detail"
         }
-        return super.getInitialRoute();
+        return super.getInitialRoute()
     }
 
     private fun setData(context: Context?, data: List<Map<String, Any>>) {
@@ -195,10 +192,10 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     fun showDialog(data: String) {
-        val builder = AlertDialog.Builder(this);
-        builder.setPositiveButton("确定", null);
-        builder.setTitle(data);
-        builder.show();
+        val builder = AlertDialog.Builder(this)
+        builder.setPositiveButton("确定", null)
+        builder.setTitle(data)
+        builder.show()
     }
 
 }

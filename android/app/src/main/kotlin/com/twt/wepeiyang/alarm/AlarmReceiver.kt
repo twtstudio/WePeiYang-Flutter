@@ -1,4 +1,4 @@
-package com.example.wei_pei_yang_demo.alarm
+package com.twt.wepeiyang.alarm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,8 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.wei_pei_yang_demo.MainActivity
-import com.example.wei_pei_yang_demo.R
+import com.twt.wepeiyang.MainActivity
+import com.twt.wepeiyang.R
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {

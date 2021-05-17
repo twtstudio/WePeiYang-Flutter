@@ -1,4 +1,4 @@
-package com.example.wei_pei_yang_demo
+package com.twt.wepeiyang
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,7 +9,7 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import androidx.work.*
-import com.example.wei_pei_yang_demo.message.server.PushCIdWorker
+import com.twt.wepeiyang.message.server.PushCIdWorker
 import com.google.gson.Gson
 import com.igexin.sdk.PushManager
 import io.flutter.app.FlutterApplication
@@ -149,7 +149,7 @@ class WBYApplication : FlutterApplication() {
         UMConfigure.init(this, "60464782b8c8d45c1390e7e3", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "")
         UMConfigure.setLogEnabled(true)
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
-        android.util.Log.i("UMLog", "UMConfigure.init@MainApplication")
+        Log.i("UMLog", "UMConfigure.init@MainApplication")
         createNotificationChannel()
     }
 

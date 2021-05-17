@@ -1,4 +1,4 @@
-package com.example.wei_pei_yang_demo.message.model
+package com.twt.wepeiyang.message.model
 
 data class FeedbackMessageBaseData(
         val ErrorCode: Int,

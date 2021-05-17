@@ -96,7 +96,7 @@ class _SearchHistoriesWidgetState extends State<SearchHistoriesWidget> {
             backgroundColor: Colors.white,
             label: Text(
               item,
-              style: FontManager.YaHei.copyWith(
+              style: FontManager.YaHeiRegular.copyWith(
                 fontSize: 12,
                 color: Color(0xff62677b),
               ),

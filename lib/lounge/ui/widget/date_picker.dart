@@ -175,7 +175,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                           child: Text(
                             '${date.day}',
                             style:
-                                FontManager.YaHei.copyWith(color: Colors.white),
+                                FontManager.YaHeiRegular.copyWith(color: Colors.white),
                           ),
                         ),
                       ),
@@ -196,7 +196,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style: FontManager.YaHei.copyWith(
+                          style: FontManager.YaHeiRegular.copyWith(
                             fontSize: 16,
                             color: Color(0XFF62677B),
                             fontWeight: FontWeight.bold,

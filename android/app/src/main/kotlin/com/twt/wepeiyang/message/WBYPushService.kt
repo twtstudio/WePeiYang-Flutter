@@ -1,4 +1,4 @@
-package com.example.wei_pei_yang_demo.message
+package com.twt.wepeiyang.message
 
 import com.igexin.sdk.PushService
 

@@ -1,16 +1,15 @@
-package com.example.wei_pei_yang_demo.message
+package com.twt.wepeiyang.message
 
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import com.example.wei_pei_yang_demo.BuildConfig
 
 object Config {
     const val AUTH_ACTION = "com.action.auth"
     private val TAG = Config::class.java.simpleName
-    var appid: String? = ""
-    var appName = ""
-    var packageName = ""
+    private var appid: String? = ""
+    private var appName = ""
+    private var packageName = ""
     var authToken: String? = null
     fun init(context: Context) {
         parseManifests(context)

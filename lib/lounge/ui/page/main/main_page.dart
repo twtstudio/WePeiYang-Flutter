@@ -54,7 +54,7 @@ class _MainPageState extends State<MainPage> {
                       var time = model.dateTime.toString().split(' ')[0];
                       return Text(
                         time,
-                        style: FontManager.YaHei.copyWith(
+                        style: FontManager.YaHeiRegular.copyWith(
                           color: Color(0xff62677b),
                           fontSize: 10,
                         ),

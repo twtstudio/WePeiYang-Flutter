@@ -1,4 +1,4 @@
-package com.example.wei_pei_yang_demo.common
+package com.twt.wepeiyang.common
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

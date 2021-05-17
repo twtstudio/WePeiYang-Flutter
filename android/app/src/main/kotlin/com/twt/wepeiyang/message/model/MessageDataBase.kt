@@ -1,9 +1,9 @@
-package com.example.wei_pei_yang_demo.message.model
+package com.twt.wepeiyang.message.model
 
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
-import com.example.wei_pei_yang_demo.WBYApplication
+import com.twt.wepeiyang.WBYApplication
 import com.google.gson.Gson
 
 object MessageDataBase {
@@ -25,7 +25,7 @@ object MessageDataBase {
     var feedbackBaseData: User?
         get() {
             val str = sharedPreferences.getString(feedbackUserDataKey, null)
-            Log.d("WBYFBUSER", str.toString());
+            Log.d("WBYFBUSER", str.toString())
             return Gson().fromJson(str.toString(), User::class.java)
         }
         set(value) = synchronized(this) {
@@ -72,7 +72,7 @@ object MessageDataBase {
                     }
                 }
                 val result = FeedbackMessages(qs = feedbackMessageQuestions, fs = feedbackMessageFavourites)
-                Log.d("WBYFBQS", feedbackMessageQuestions.toString());
+                Log.d("WBYFBQS", feedbackMessageQuestions.toString())
                 sharedPreferences.edit {
                     putString(feedbackMessages, Gson().toJson(result))
                 }
