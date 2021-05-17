@@ -375,7 +375,8 @@ class CourseDisplayWidget extends StatelessWidget {
 
         /// 判断周日的课是否需要显示在课表上
         if (day <= 7 && c.contains('1'))
-          list.add(Positioned(
+          list.add(
+            Positioned(
               top: top,
               left: left,
               height: height,
@@ -387,15 +388,21 @@ class CourseDisplayWidget extends StatelessWidget {
                   color: colors[Random().nextInt(colors.length)],
                 ),
                 child: Center(
-                  child: Text(
-                    S.current.courseOccupy,
-                    style: FontManager.YaQiHei.copyWith(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text(
+                      S.current.courseOccupy,
+                      textAlign: TextAlign.center,
+                      style: FontManager.YaQiHei.copyWith(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
                   ),
                 ),
-              )));
+              ),
+            ),
+          );
       }
       d++;
     }

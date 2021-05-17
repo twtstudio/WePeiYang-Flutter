@@ -5,20 +5,23 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!--课程提醒，允许后台服务-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <!--友盟需要的一些额外权限-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+<!--    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />-->
+
+    <!--前台服务开启权限-->
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
+    <!--弹出横幅通知的权限-->
+<!--    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
+
 
     <application
         android:name=".WBYApplication"
@@ -53,14 +56,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".AlarmService"
-            android:process=":remote" />
-
-        <receiver
-            android:name=".AlarmReceiver"
-            android:process=":remote" />
-
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="60464782b8c8d45c1390e7e3" />
@@ -75,11 +70,11 @@
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
-            android:name="com.example.wei_pei_yang_demo.message.WBYIntentService"
+            android:name="com.twt.wepeiyang.message.WBYIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <!-- 用户自定义服务名 -->
         <service
-            android:name="com.example.wei_pei_yang_demo.message.WBYPushService"
+            android:name="com.twt.wepeiyang.message.WBYPushService"
             android:exported="true"
             android:label="PushService"
             android:process=":pushservice" />

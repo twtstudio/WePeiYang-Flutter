@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/network/schedule_spider.dart';
@@ -76,7 +75,6 @@ class ScheduleNotifier with ChangeNotifier {
         if (hint) ToastProvider.success("刷新课程表数据成功");
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
-        NotifyProvider.setNotificationData(); // 更新课程提醒
         CommonPreferences().scheduleData.value =
             json.encode(ScheduleBean(_termStart, "20212", courses));
       }, onFailure: (e) {

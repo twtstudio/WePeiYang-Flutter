@@ -12,12 +12,11 @@ import androidx.work.*
 import com.twt.wepeiyang.message.server.PushCIdWorker
 import com.google.gson.Gson
 import com.igexin.sdk.PushManager
+import com.umeng.analytics.MobclickAgent
+import com.umeng.commonsdk.UMConfigure
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.MethodChannel
 import java.lang.ref.WeakReference
-import com.umeng.commonsdk.UMConfigure
-import com.umeng.analytics.MobclickAgent
-import java.lang.Exception
 
 class WBYApplication : FlutterApplication() {
     companion object {
@@ -95,16 +94,16 @@ class WBYApplication : FlutterApplication() {
                                         postId = -1
                                         activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", null, object : MethodChannel.Result {
                                             override fun success(result: Any?) {
-                                                Log.d("WBYDemo","refreshFeedbackMessageCount")
+                                                Log.d("WBYDemo", "refreshFeedbackMessageCount")
                                             }
 
                                             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                                                Log.d("WBYDemo","refreshFeedbackMessageCount error")
+                                                Log.d("WBYDemo", "refreshFeedbackMessageCount error")
 
                                             }
 
                                             override fun notImplemented() {
-                                                Log.d("WBYDemo","refreshFeedbackMessageCount notImplemented")
+                                                Log.d("WBYDemo", "refreshFeedbackMessageCount notImplemented")
 
                                             }
 
@@ -116,26 +115,6 @@ class WBYApplication : FlutterApplication() {
                         }
 
                     }
-//                    RECEIVE_FEEDBACK_MESSAGE -> {
-//                        val data = msg.obj.toString()
-//                        postId = data.toInt();
-//                        Log.d("RECEIVE_FEEDBACK", data)
-//                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
-//                            override fun success(result: Any?) {
-////                                TODO("Not yet implemented")
-//                                postId = null;
-//                            }
-//
-//                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-////                                TODO("Not yet implemented")
-//                            }
-//
-//                            override fun notImplemented() {
-////                                TODO("Not yet implemented")
-//                            }
-//
-//                        })
-//                    }
                 }
             }
         }
@@ -158,9 +137,12 @@ class WBYApplication : FlutterApplication() {
             val name = "aaa"
             val description = "bbb"
             //不同的重要程度会影响通知显示的方式
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel("1", name, importance)
             channel.description = description
+            channel.setSound(null, null)
+            channel.vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+            channel.enableVibration(true)
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
@@ -173,6 +155,8 @@ class WBYApplication : FlutterApplication() {
             //切勿在 release 版本上开启调试日志
             PushManager.getInstance().setDebugLogger(this) { s -> Log.i("PUSH_LOG", s) }
         }
+//        PushManager.getInstance().turnOffPush(this)
+        // 之后改成登陆了才会打开推送
     }
 }
 

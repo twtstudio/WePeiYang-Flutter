@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/notify_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
@@ -28,10 +27,6 @@ class _SettingPageState extends State<SettingPage> {
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   var pref = CommonPreferences();
-
-  int _pickerHour = (CommonPreferences().remindTime.value / 3600).round();
-  int _pickerMinute =
-      ((CommonPreferences().remindTime.value % 3600) / 60).round();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +55,7 @@ class _SettingPageState extends State<SettingPage> {
             alignment: Alignment.centerLeft,
             child: Text('通用', style: titleTextStyle),
           ),
+          // TODO 系统语言
           // Container(
           //   height: 80,
           //   child: Card(
@@ -304,106 +300,8 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
           ),
-          Card(
-              margin: EdgeInsets.fromLTRB(20, 5, 20, 30),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                          width: 150,
-                          margin: const EdgeInsets.only(left: 15),
-                          child: Text('课前提醒', style: mainTextStyle)),
-                      Expanded(child: Text('')),
-                      Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: Switch(
-                            value: pref.remindBefore.value,
-                            onChanged: (value) {
-                              if (pref.remindBefore.value != value) {
-                                if (value)
-                                  NotifyProvider.startNotification();
-                                else
-                                  NotifyProvider.stopNotification();
-                              }
-                              setState(() => pref.remindBefore.value = value);
-                            },
-                            activeColor: Color.fromRGBO(105, 109, 127, 1),
-                            inactiveThumbColor:
-                                Color.fromRGBO(205, 206, 212, 1),
-                            activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                            inactiveTrackColor:
-                                Color.fromRGBO(240, 241, 242, 1),
-                          ))
-                    ],
-                  ),
-                  _setTimeWidget()
-                ],
-              )),
         ],
       ),
     );
   }
-
-  Widget _setTimeWidget() {
-    if (pref.remindBefore.value)
-      return Column(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
-            height: 1.0,
-            color: Color.fromRGBO(212, 214, 226, 1),
-          ),
-          GestureDetector(
-            onTap: () => _showTimePicker(),
-            child: Row(
-              children: <Widget>[
-                Container(
-                    margin: const EdgeInsets.only(left: 15),
-                    child: Text('课前提醒时间', style: mainTextStyle)),
-                Expanded(child: Text('')),
-                Container(
-                    margin:
-                        EdgeInsets.only(right: (_pickerHour == 0) ? 25 : 15),
-                    child: Text(
-                        (_pickerHour == 0)
-                            ? "$_pickerMinute分钟"
-                            : "$_pickerHour小时$_pickerMinute分钟",
-                        style: hintTextStyle)),
-              ],
-            ),
-          ),
-          Container(height: 15)
-        ],
-      );
-    else
-      return Container();
-  }
-
-  _showTimePicker() async {
-    var picker = await showTimePicker(
-        context: context, initialTime: TimeOfDay(hour: 0, minute: 0));
-    setState(() {
-      _pickerHour = picker.hour;
-      _pickerMinute = picker.minute;
-    });
-    pref.remindTime.value = _pickerHour * 3600 + _pickerMinute * 60;
-    NotifyProvider.setNotificationData();
-  }
-// await showModalBottomSheet(
-//     backgroundColor: Colors.transparent,
-//     context: context,
-//     isScrollControlled: true,
-//     builder: (ctx) => CupertinoTimerPicker(
-//         onTimerDurationChanged: (duration) {
-//           _time = duration.inSeconds;
-//         },
-//         mode: CupertinoTimerPickerMode.hm));
-// }
 }
