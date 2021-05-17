@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/message/message_center.dart';
 import 'package:wei_pei_yang_demo/message/user_mail_webview_dialog.dart';
 
@@ -69,21 +70,21 @@ class _UserMailListState extends State<UserMailList> {
 
   @override
   Widget build(BuildContext context) {
-    if(_messages == null){
+    if (_messages == null) {
       return Center(
         child: Text("waiting"),
       );
     }
-    return  ListView.builder(
-        itemBuilder: (c, i) {
-          print(i);
-          return MailItem(
-            data: _messages.mails[i],
-          );
-        },
-        // itemExtent: 170,
-        itemCount: _messages.mails.length,
-      );
+    return ListView.builder(
+      itemBuilder: (c, i) {
+        print(i);
+        return MailItem(
+          data: _messages.mails[i],
+        );
+      },
+      // itemExtent: 170,
+      itemCount: _messages.mails.length,
+    );
   }
 }
 
@@ -242,7 +243,12 @@ class _MailItemState extends State<MailItem> {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    // Image.network(widget.data.icon, height: 10),
+                    Image(
+                      image: AssetImage(Images.cloud),
+                      width: 17,
+                      color: Colors.black,
+                      fit: BoxFit.cover,
+                    ),
                     SizedBox(width: 10),
                     Text(
                       "twt",
@@ -298,8 +304,11 @@ class UserMail {
     if (json == null) return;
     this.title = json['title'] ?? "";
     this.content = json['content'] ?? "";
-    this.time = json['createAt'] ?? "";
+    var t = json['createdAt'] ?? "";
+    this.time = reg1.firstMatch(t)?.group(0) ?? "";
     this.url = "https://www.baidu.com";
     this.id = json["id"] ?? 0;
   }
 }
+
+final reg1 = RegExp(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}");

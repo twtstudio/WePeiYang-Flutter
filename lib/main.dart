@@ -102,7 +102,6 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
         ToastProvider.error("获取token失败");
       });
       var id = await messageChannel?.invokeMethod<int>("getPostId");
-      ToastProvider.success("$id");
       if (id != -1) {
         await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
       }

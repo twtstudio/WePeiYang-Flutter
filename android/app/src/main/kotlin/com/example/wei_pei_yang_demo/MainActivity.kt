@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.*
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -30,7 +31,7 @@ class MainActivity : FlutterFragmentActivity() {
     var messageChannel: MethodChannel? = null
     private var notificationManager: NotificationManagerCompat? = null
 
-    val model by viewModels<MainActivityViewModel>()
+    private val model by viewModels<MainActivityViewModel>()
 
     override fun onPause() {
         super.onPause()
@@ -55,13 +56,23 @@ class MainActivity : FlutterFragmentActivity() {
         //创建activity类型的pendingIntent，还可以创建广播等其他组件
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
-        val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.ok)
+        val builder = NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.push_small)
                 .setContentTitle(data.title)
                 .setContentText(data.content)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //设置pendingIntent
-                .setContentIntent(pendingIntent) //设置点击后是否自动消失
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Log.d("WBYDemo","Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
+            val intent2 = Intent(this,MainActivity::class.java);
+            val pIntent = PendingIntent.getActivity(applicationContext, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setFullScreenIntent(pIntent, false)
+        }
 
         //notificationId 相当于通知的唯一标识，用于更新或者移除通知
         notificationManager?.notify(data.question_id, builder.build())
