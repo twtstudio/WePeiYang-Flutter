@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+
 import '../model/school/school_model.dart';
 
 /// 生成一周内的日期，格式为 “MM/dd”，用0填充空位
@@ -52,18 +54,91 @@ List<List<bool>> getBoolMatrix(
   return list;
 }
 
+/// 返回每天合并冲突后的课程，[courses]是未经检验冲突的课程
+/// 最外层List储存所有天的合并课（周一至周dayNumber）
+/// 次外层List储存每一天的所有合并课
+/// 最内层List储存单个合并课，[List.first]的课显示在外，同时用于冲突判断
+List<List<List<ScheduleCourse>>> getMergedCourses(
+    ScheduleNotifier notifier, int dayNumber) {
+  List<ScheduleCourse> courses = notifier.coursesWithNotify;
+  List<List<List<ScheduleCourse>>> result = List();
+  for (int i = 0; i < dayNumber; i++) result.add(List());
+  courses.forEach((course) {
+    int day = int.parse(course.arrange.day);
+    if (day > dayNumber) return; // 这里return起到continue的作用
+    int start = int.parse(course.arrange.start);
+    int end = int.parse(course.arrange.end);
+    bool hasMerged = false;
+
+    /// 对当天的所有的已合并课（List<ScheduleCourse>）遍历，若均未冲突则添加至当天
+    result[day - 1].forEach((element) {
+      int eStart = int.parse(element[0].arrange.start);
+      int eEnd = int.parse(element[0].arrange.end);
+
+      /// 判断当前课与List中的第一节课是否冲突
+      if (checkMerged(course, element[0])) {
+        hasMerged = true;
+
+        /// List中只有一节inactive的课时，直接进行替换（这样List中的inactive课不会多于1节）
+        if (element.length == 1 &&
+            !judgeActiveInWeek(notifier.selectedWeekWithNotify,
+                notifier.weekCount, element[0])) {
+          element[0] = course;
+
+          /// 若不满足上述，且当前课（course）为inactive时，直接return
+        } else if (!judgeActiveInWeek(
+            notifier.selectedWeekWithNotify, notifier.weekCount, course)) {
+          return;
+
+          /// 当前课时长较长，插入first处
+        } else if ((end - start) > (eEnd - eStart)) {
+          element.insert(0, course);
+
+          /// List中第一节课时长较长，add即可
+        } else if ((end - start) < (eEnd - eStart)) {
+          element.add(course);
+
+          /// 当前课较早，插入first处
+        } else if (start < eStart) {
+          element.insert(0, course);
+
+          /// 当前课不比List第一节课早，add即可
+        } else {
+          element.add(course);
+        }
+      }
+    });
+    if (!hasMerged) result[day - 1].add(List()..add(course));
+  });
+  return result;
+}
+
+/// 检查两节课是否时间冲突
+bool checkMerged(ScheduleCourse c1, ScheduleCourse c2) {
+  int start1 = int.parse(c1.arrange.start);
+  int end1 = int.parse(c1.arrange.end);
+  int start2 = int.parse(c2.arrange.start);
+  int end2 = int.parse(c2.arrange.end);
+  List<int> flag = List.filled(12, 0);
+  for (int i = start1; i <= end1; i++) flag[i - 1]++;
+  for (int i = start2; i <= end2; i++) flag[i - 1]++;
+  return flag.contains(2);
+}
+
 /// 检查当前课程在选中周的状态
 bool judgeActiveInWeek(int week, int weekCount, ScheduleCourse course) =>
     getWeekStatus(weekCount, course)[week];
 
 /// 检查当天课程（day从1开始数）
-bool judgeActiveInDay(int week, int day, int weekCount, ScheduleCourse course) =>
+bool judgeActiveInDay(
+        int week, int day, int weekCount, ScheduleCourse course) =>
     int.parse(course.arrange.day) == day
         ? getWeekStatus(weekCount, course)[week]
         : false;
 
 /// 检查明天课程（用于夜猫子模式）
-bool judgeActiveTomorrow(int week, int day, int weekCount, ScheduleCourse course) {
+bool judgeActiveTomorrow(
+    int week, int day, int weekCount, ScheduleCourse course) {
   int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
   return (int.parse(course.arrange.day) == ((day + 1) % 7))
       ? getWeekStatus(weekCount, course)[week + offset]

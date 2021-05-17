@@ -10,16 +10,16 @@ const TextStyle activeNameStyle =
 const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
-Widget getActiveCourseCard(
-    BuildContext context, double height, double width, ScheduleCourse course) {
+Widget getActiveCourseCard(BuildContext context, double height, double width,
+    List<ScheduleCourse> courses) {
   return Container(
     height: height,
     width: width,
     child: Material(
-      color: generateColor(course),
+      color: generateColor(courses[0]),
       borderRadius: BorderRadius.circular(5),
       child: InkWell(
-        onTap: () => showCourseDialog(context, course),
+        onTap: () => showCourseDialog(context, courses),
         borderRadius: BorderRadius.circular(5),
         splashFactory: InkRipple.splashFactory,
         splashColor: Color.fromRGBO(179, 182, 191, 1),
@@ -28,15 +28,25 @@ Widget getActiveCourseCard(
           child: Column(
             children: [
               Expanded(child: Text("")),
-              Text(course.courseName,
+              Text(courses[0].courseName,
                   style: activeNameStyle, textAlign: TextAlign.center),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text(removeParentheses(course.teacher),
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(removeParentheses(courses[0].teacher),
                     style: activeHintStyle, textAlign: TextAlign.center),
               ),
-              Text(replaceBuildingWord(course.arrange.room),
-                  style: activeHintStyle, textAlign: TextAlign.center),
+              courses[0].arrange.room == "" ? Container() : Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(replaceBuildingWord(courses[0].arrange.room),
+                    style: activeHintStyle, textAlign: TextAlign.center),
+              ),
+              courses.length == 1
+                  ? Container()
+                  : Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Image.asset('assets/images/schedule_warn.png',
+                    width: 20, height: 20),
+                  ),
               Expanded(child: Text(""))
             ],
           ),

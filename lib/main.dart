@@ -97,11 +97,18 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       GlobalModel().init(baseContext);
       await HiveManager.init();
       await getToken(onSuccess: (token) {
-        ToastProvider.success("token : $token");
+        assert(() {
+          ToastProvider.success("token : $token");
+        }());
       }, onFailure: () {
-        ToastProvider.error("获取token失败");
+        assert(() {
+          ToastProvider.error("获取token失败");
+        }());
       });
       var id = await messageChannel?.invokeMethod<int>("getPostId");
+      assert(() {
+        ToastProvider.success("$id");
+      }());
       if (id != -1) {
         await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
       }
@@ -130,14 +137,16 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
                     print("*****************************************");
                     String content = await call.arguments;
                     print(
-                        "*******************${content} + ${content != null && content.isNotEmpty}*****************");
+                        "*******************$content + ${content != null && content.isNotEmpty}*****************");
                     if (content != null && content.isNotEmpty) {
                       print("????");
                       await showMessageDialog(
                         baseContext,
                         content,
                       );
-                      ToastProvider.success(content);
+                      assert(() {
+                        ToastProvider.success(content);
+                      }());
                       return "success";
                     } else {
                       throw PlatformException(

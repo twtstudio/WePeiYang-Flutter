@@ -127,34 +127,36 @@ class _CourseDisplayWidgetState extends State<CourseDisplayWidget>
   List<Widget> _generatePositioned(BuildContext context) {
     int dayNumber = CommonPreferences().dayNumber.value;
     List<Positioned> list = [];
-    widget.notifier.coursesWithNotify.forEach((course) {
-      int day = int.parse(course.arrange.day);
-      int start = int.parse(course.arrange.start);
-      int end = int.parse(course.arrange.end);
-      double top = (start == 1)
-          ? 0
-          : (start - 1) * (CourseDisplayWidget.singleCourseHeight + cardStep);
-      double left = (day == 1) ? 0 : (day - 1) * (widget.cardWidth + cardStep);
-      double height =
-          (end - start + 1) * CourseDisplayWidget.singleCourseHeight +
-              (end - start) * cardStep;
-
-      /// 判断周日的课是否需要显示在课表上
-      if (day <= dayNumber)
+    List<List<List<ScheduleCourse>>> merged =
+        getMergedCourses(widget.notifier, dayNumber);
+    for (int i = 0; i < dayNumber; i++) {
+      int day = i + 1;
+      merged[i].forEach((courses) {
+        int start = int.parse(courses[0].arrange.start);
+        int end = int.parse(courses[0].arrange.end);
+        double top = (start == 1)
+            ? 0
+            : (start - 1) * (CourseDisplayWidget.singleCourseHeight + cardStep);
+        double left =
+            (day == 1) ? 0 : (day - 1) * (widget.cardWidth + cardStep);
+        double height =
+            (end - start + 1) * CourseDisplayWidget.singleCourseHeight +
+                (end - start) * cardStep;
         list.add(Positioned(
             top: top,
             left: left,
             height: height,
             width: widget.cardWidth,
-            child: _judgeChild(context, height, course)));
-    });
+            child: _judgeChild(context, height, courses)));
+      });
+    }
     return list;
   }
 
   Widget _judgeChild(
-          BuildContext context, double height, ScheduleCourse course) =>
+          BuildContext context, double height, List<ScheduleCourse> courses) =>
       judgeActiveInWeek(widget.notifier.selectedWeekWithNotify,
-              widget.notifier.weekCount, course)
-          ? getActiveCourseCard(context, height, widget.cardWidth, course)
-          : getQuietCourseCard(height, widget.cardWidth, course);
+              widget.notifier.weekCount, courses[0])
+          ? getActiveCourseCard(context, height, widget.cardWidth, courses)
+          : getQuietCourseCard(height, widget.cardWidth, courses[0]);
 }
