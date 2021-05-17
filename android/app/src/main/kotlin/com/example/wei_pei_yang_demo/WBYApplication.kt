@@ -115,26 +115,6 @@ class WBYApplication : FlutterApplication() {
                         }
 
                     }
-//                    RECEIVE_FEEDBACK_MESSAGE -> {
-//                        val data = msg.obj.toString()
-//                        postId = data.toInt();
-//                        Log.d("RECEIVE_FEEDBACK", data)
-//                        activity?.get()?.messageChannel?.invokeMethod("getReply", null , object : MethodChannel.Result {
-//                            override fun success(result: Any?) {
-////                                TODO("Not yet implemented")
-//                                postId = null;
-//                            }
-//
-//                            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-////                                TODO("Not yet implemented")
-//                            }
-//
-//                            override fun notImplemented() {
-////                                TODO("Not yet implemented")
-//                            }
-//
-//                        })
-//                    }
                 }
             }
         }

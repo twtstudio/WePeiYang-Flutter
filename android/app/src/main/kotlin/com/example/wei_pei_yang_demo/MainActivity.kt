@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
@@ -19,9 +18,6 @@ import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -30,8 +26,6 @@ class MainActivity : FlutterFragmentActivity() {
     private val notifyChannel = "com.example.wei_pei_yang_demo/notify"
     var messageChannel: MethodChannel? = null
     private var notificationManager: NotificationManagerCompat? = null
-
-    private val model by viewModels<MainActivityViewModel>()
 
     override fun onPause() {
         super.onPause()
@@ -125,19 +119,7 @@ class MainActivity : FlutterFragmentActivity() {
         messageChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.example.wei_pei_yang_demo/message").apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
-                    "refreshFeedbackMessage" -> {
-                        model.refreshFeedbackMessage(result)
-                    }
-                    "setMessageReadById" -> {
-                        Log.d("WBYFEEDBACKREAD", "123")
-                        model.setMessageReadById(result, call.argument<Int>("id"))
-                    }
                     "getPostId" -> {
-//                        WBYApplication.postId?.let {
-//                            WBYApplication.postId = null
-//                            return@setMethodCallHandler result.success(it)
-//                        }
-//                        result.error("-1", "can not find post id", null)
                         result.success(WBYApplication.postId)
                     }
                     "cancelNotification" -> {
