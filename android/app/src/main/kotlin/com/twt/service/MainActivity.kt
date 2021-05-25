@@ -1,4 +1,4 @@
-package com.twt.wepeiyang
+package com.twt.service
 
 import android.app.AlertDialog
 import android.app.PendingIntent
@@ -93,7 +93,7 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        messageChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.twt.wepeiyang/message").apply {
+        messageChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.twt.service/message").apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
                     "getPostId" -> {

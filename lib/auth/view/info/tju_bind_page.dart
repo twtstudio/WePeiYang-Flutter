@@ -8,6 +8,8 @@ import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -33,8 +35,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
       super.initState();
       return;
     }
-    print("name: ${pref.tjuuname.value}");
-    print("pw: ${pref.tjupasswd.value}");
     tjuuname = pref.tjuuname.value;
     tjupasswd = pref.tjupasswd.value;
     nameController =
@@ -85,16 +85,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
   FocusNode _passwordFocus = FocusNode();
 
   Widget _detail(BuildContext context) {
-    var hintStyle =
-        TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = FontManager.YaHeiRegular.copyWith(
+        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     double width = GlobalModel().screenWidth - 80;
     if (pref.isBindTju.value)
       return Column(children: [
         Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(0, 50, 0, 60),
-          child: Text('绑定账号：${pref.tjuuname.value}',
-              style: TextStyle(
+          child: Text("${S.current.bind_account}: ${pref.tjuuname.value}",
+              style: FontManager.YaHeiRegular.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Color.fromRGBO(79, 88, 107, 1))),
@@ -110,8 +110,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 .then((_) => this.setState(() {})),
             color: Color.fromRGBO(79, 88, 107, 1),
             splashColor: MyColors.brightBlue,
-            child: Text('解除绑定',
-                style: TextStyle(color: Colors.white, fontSize: 14)),
+            child: Text(S.current.unbind,
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Colors.white, fontSize: 13)),
             elevation: 3.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
@@ -124,10 +125,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(60, 20, 60, 10),
           child: Text(
-            '只有绑定了办公网后才能正常使用课表、GPA、校务专区功能。 若忘记密码请前往办公网找回。',
+            S.current.tju_bind_hint,
             textAlign: TextAlign.center,
-            style:
-                TextStyle(fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
           ),
         ),
         Padding(
@@ -141,12 +142,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
               controller: nameController,
               focusNode: _accountFocus,
               decoration: InputDecoration(
-                  hintText: '办公网账号',
+                  hintText: S.current.tju_account,
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -173,12 +174,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
               controller: pwController,
               focusNode: _passwordFocus,
               decoration: InputDecoration(
-                  hintText: '密码',
+                  hintText: S.current.password,
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -203,12 +204,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 child: TextField(
                   controller: codeController,
                   decoration: InputDecoration(
-                      hintText: '验证码',
+                      hintText: S.current.captcha,
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -232,8 +233,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
               onPressed: _bind,
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-              child: Text('绑定',
-                  style: TextStyle(color: Colors.white, fontSize: 14)),
+              child: Text(S.current.bind,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white, fontSize: 13)),
               elevation: 5.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -251,7 +253,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -265,8 +267,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(35, 20, 20, 50),
-                  child: Text("办公网账号绑定",
-                      style: TextStyle(
+                  child: Text(S.current.tju_bind,
+                      style: FontManager.YaQiHei.copyWith(
                           color: Color.fromRGBO(48, 60, 102, 1),
                           fontWeight: FontWeight.bold,
                           fontSize: 28)),
@@ -275,7 +277,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   children: [
                     Container(
                       margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
-                      child: Text(pref.isBindTju.value ? "已绑定" : "未绑定",
+                      child: Text(
+                          pref.isBindTju.value
+                              ? S.current.is_bind
+                              : S.current.not_bind,
                           style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey,

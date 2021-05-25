@@ -19,6 +19,7 @@ class ScheduleNotifier with ChangeNotifier {
   List<ScheduleCourse> get coursesWithNotify => _courses;
 
   /// 每学期的开始时间
+  // TODO 这个得上接口
   int _termStart = 1614528000;
 
   int get termStart => _termStart;

@@ -35,20 +35,20 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `wei jin lu`
+  /// `Wei Jin Lu`
   String get WJL {
     return Intl.message(
-      'wei jin lu',
+      'Wei Jin Lu',
       name: 'WJL',
       desc: '',
       args: [],
     );
   }
 
-  /// `bei yang yuan`
+  /// `Bei Yang Yuan`
   String get BYY {
     return Intl.message(
-      'bei yang yuan',
+      'Bei Yang Yuan',
       name: 'BYY',
       desc: '',
       args: [],
@@ -70,6 +70,56 @@ class S {
     return Intl.message(
       'English',
       name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WePeiYang`
+  String get WBY {
+    return Intl.message(
+      'WePeiYang',
+      name: 'WBY',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get about_twt {
+    return Intl.message(
+      '',
+      name: 'about_twt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get check_new {
+    return Intl.message(
+      '',
+      name: 'check_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get current_version {
+    return Intl.message(
+      '',
+      name: 'current_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get lounge {
+    return Intl.message(
+      '',
+      name: 'lounge',
       desc: '',
       args: [],
     );
@@ -266,6 +316,16 @@ class S {
   }
 
   /// ``
+  String get feedback_message {
+    return Intl.message(
+      '',
+      name: 'feedback_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get like_a_question {
     return Intl.message(
       '',
@@ -290,16 +350,6 @@ class S {
     return Intl.message(
       '',
       name: 'reply_a_question',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// ``
-  String get feedback_message {
-    return Intl.message(
-      '',
-      name: 'feedback_message',
       desc: '',
       args: [],
     );
@@ -400,6 +450,896 @@ class S {
     return Intl.message(
       '',
       name: 'not_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get login {
+    return Intl.message(
+      '',
+      name: 'login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get login2 {
+    return Intl.message(
+      '',
+      name: 'login2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get login3 {
+    return Intl.message(
+      '',
+      name: 'login3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get register {
+    return Intl.message(
+      '',
+      name: 'register',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get save {
+    return Intl.message(
+      '',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get account {
+    return Intl.message(
+      '',
+      name: 'account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get user_name {
+    return Intl.message(
+      '',
+      name: 'user_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get password {
+    return Intl.message(
+      '',
+      name: 'password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get captcha {
+    return Intl.message(
+      '',
+      name: 'captcha',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get text_captcha {
+    return Intl.message(
+      '',
+      name: 'text_captcha',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get student_id {
+    return Intl.message(
+      '',
+      name: 'student_id',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get person_id {
+    return Intl.message(
+      '',
+      name: 'person_id',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get phone {
+    return Intl.message(
+      '',
+      name: 'phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get phone2 {
+    return Intl.message(
+      '',
+      name: 'phone2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get email {
+    return Intl.message(
+      '',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get email2 {
+    return Intl.message(
+      '',
+      name: 'email2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get tju_account {
+    return Intl.message(
+      '',
+      name: 'tju_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get forget_password {
+    return Intl.message(
+      '',
+      name: 'forget_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get fetch_captcha {
+    return Intl.message(
+      '',
+      name: 'fetch_captcha',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get register2 {
+    return Intl.message(
+      '',
+      name: 'register2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get input_password1 {
+    return Intl.message(
+      '',
+      name: 'input_password1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get input_password2 {
+    return Intl.message(
+      '',
+      name: 'input_password2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get input_password3 {
+    return Intl.message(
+      '',
+      name: 'input_password3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get input_password4 {
+    return Intl.message(
+      '',
+      name: 'input_password4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get password1 {
+    return Intl.message(
+      '',
+      name: 'password1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get password2 {
+    return Intl.message(
+      '',
+      name: 'password2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get password3 {
+    return Intl.message(
+      '',
+      name: 'password3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reset_ok {
+    return Intl.message(
+      '',
+      name: 'reset_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reset_username {
+    return Intl.message(
+      '',
+      name: 'reset_username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reset_password {
+    return Intl.message(
+      '',
+      name: 'reset_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reset_password_done {
+    return Intl.message(
+      '',
+      name: 'reset_password_done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get find_password_title {
+    return Intl.message(
+      '',
+      name: 'find_password_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get has_bind_phone {
+    return Intl.message(
+      '',
+      name: 'has_bind_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get has_not_bind_phone {
+    return Intl.message(
+      '',
+      name: 'has_not_bind_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get register_hint1 {
+    return Intl.message(
+      '',
+      name: 'register_hint1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get register_hint2 {
+    return Intl.message(
+      '',
+      name: 'register_hint2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get first_login_hint {
+    return Intl.message(
+      '',
+      name: 'first_login_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get add_info_hint {
+    return Intl.message(
+      '',
+      name: 'add_info_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get has_not_bind_hint1 {
+    return Intl.message(
+      '',
+      name: 'has_not_bind_hint1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get has_not_bind_hint2 {
+    return Intl.message(
+      '',
+      name: 'has_not_bind_hint2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get reset_user_info {
+    return Intl.message(
+      '',
+      name: 'reset_user_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get message {
+    return Intl.message(
+      '',
+      name: 'message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get logout {
+    return Intl.message(
+      '',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get logout_hint {
+    return Intl.message(
+      '',
+      name: 'logout_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get avatar {
+    return Intl.message(
+      '',
+      name: 'avatar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get office_network {
+    return Intl.message(
+      '',
+      name: 'office_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get is_bind {
+    return Intl.message(
+      '',
+      name: 'is_bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get not_bind {
+    return Intl.message(
+      '',
+      name: 'not_bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bind {
+    return Intl.message(
+      '',
+      name: 'bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bind_account {
+    return Intl.message(
+      '',
+      name: 'bind_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bind_phone {
+    return Intl.message(
+      '',
+      name: 'bind_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get bind_email {
+    return Intl.message(
+      '',
+      name: 'bind_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get tju_bind {
+    return Intl.message(
+      '',
+      name: 'tju_bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get phone_bind {
+    return Intl.message(
+      '',
+      name: 'phone_bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get email_bind {
+    return Intl.message(
+      '',
+      name: 'email_bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get unbind {
+    return Intl.message(
+      '',
+      name: 'unbind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get tju_bind_hint {
+    return Intl.message(
+      '',
+      name: 'tju_bind_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get tju_unbind_hint {
+    return Intl.message(
+      '',
+      name: 'tju_unbind_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get phone_unbind_hint {
+    return Intl.message(
+      '',
+      name: 'phone_unbind_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get email_unbind_hint {
+    return Intl.message(
+      '',
+      name: 'email_unbind_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting {
+    return Intl.message(
+      '',
+      name: 'setting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_general {
+    return Intl.message(
+      '',
+      name: 'setting_general',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_language {
+    return Intl.message(
+      '',
+      name: 'setting_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_language_hint {
+    return Intl.message(
+      '',
+      name: 'setting_language_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_color {
+    return Intl.message(
+      '',
+      name: 'setting_color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_color_hint {
+    return Intl.message(
+      '',
+      name: 'setting_color_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_gpa {
+    return Intl.message(
+      '',
+      name: 'setting_gpa',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_night_mode {
+    return Intl.message(
+      '',
+      name: 'setting_night_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_night_mode_hint {
+    return Intl.message(
+      '',
+      name: 'setting_night_mode_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_day_number {
+    return Intl.message(
+      '',
+      name: 'setting_day_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_day_number_hint {
+    return Intl.message(
+      '',
+      name: 'setting_day_number_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get day {
+    return Intl.message(
+      '',
+      name: 'day',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get mon_fri {
+    return Intl.message(
+      '',
+      name: 'mon_fri',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get mon_sat {
+    return Intl.message(
+      '',
+      name: 'mon_sat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get mon_sun {
+    return Intl.message(
+      '',
+      name: 'mon_sun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_other_week {
+    return Intl.message(
+      '',
+      name: 'setting_other_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get setting_other_week_hint {
+    return Intl.message(
+      '',
+      name: 'setting_other_week_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get schedule {
+    return Intl.message(
+      '',
+      name: 'schedule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get curve {
+    return Intl.message(
+      '',
+      name: 'curve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get wrong {
+    return Intl.message(
+      '',
+      name: 'wrong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get re_login_text {
+    return Intl.message(
+      '',
+      name: 're_login_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get conflict {
+    return Intl.message(
+      '',
+      name: 'conflict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get class_id {
+    return Intl.message(
+      '',
+      name: 'class_id',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get campus {
+    return Intl.message(
+      '',
+      name: 'campus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get arrange_room {
+    return Intl.message(
+      '',
+      name: 'arrange_room',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get arrange_week {
+    return Intl.message(
+      '',
+      name: 'arrange_week',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get credit {
+    return Intl.message(
+      '',
+      name: 'credit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get time {
+    return Intl.message(
+      '',
+      name: 'time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get not_this_week {
+    return Intl.message(
+      '',
+      name: 'not_this_week',
       desc: '',
       args: [],
     );

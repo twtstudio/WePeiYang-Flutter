@@ -7,6 +7,8 @@ import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'tju_bind_page.dart' show CaptchaWidget, CaptchaWidgetState;
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class TjuRebindDialog extends Dialog {
   @override
@@ -97,8 +99,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle =
-        TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = FontManager.YaHeiRegular.copyWith(
+        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     double width = GlobalModel().screenWidth - 120;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -109,16 +111,16 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             margin: const EdgeInsets.only(right: 8),
             child: Image.asset('assets/images/tju_error.png'),
           ),
-          Text("出错了！",
-              style: TextStyle(
+          Text(S.current.wrong + " !",
+              style: FontManager.YaQiHei.copyWith(
                   color: Color.fromRGBO(79, 88, 107, 1),
                   fontWeight: FontWeight.bold,
                   fontSize: 17))
         ]),
         Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: Text("办公网数据已过期，请重新登录",
-              style: TextStyle(
+          child: Text(S.current.re_login_text,
+              style: FontManager.YaHeiRegular.copyWith(
                   color: Color.fromRGBO(79, 88, 107, 1), fontSize: 12)),
         ),
         Padding(
@@ -132,12 +134,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
               controller: nameController,
               focusNode: _accountFocus,
               decoration: InputDecoration(
-                  hintText: '用户名',
+                  hintText: S.current.user_name,
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -164,12 +166,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
               controller: pwController,
               focusNode: _passwordFocus,
               decoration: InputDecoration(
-                  hintText: '密码',
+                  hintText: S.current.password,
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -194,12 +196,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 child: TextField(
                   controller: codeController,
                   decoration: InputDecoration(
-                      hintText: '验证码',
+                      hintText: S.current.captcha,
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -223,8 +225,9 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
               onPressed: _bind,
               color: Color.fromRGBO(53, 59, 84, 1),
               splashColor: Color.fromRGBO(103, 110, 150, 1),
-              child: Text('登录',
-                  style: TextStyle(color: Colors.white, fontSize: 14)),
+              child: Text(S.current.login,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white, fontSize: 13)),
               elevation: 2,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)),

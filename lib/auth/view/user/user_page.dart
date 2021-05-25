@@ -4,10 +4,11 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/update/common.dart';
 import 'package:wei_pei_yang_demo/commons/update/update.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -18,8 +19,8 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-    const textStyle = TextStyle(
-        fontSize: 14,
+    final textStyle = FontManager.YaHeiRegular.copyWith(
+        fontSize: 13,
         fontWeight: FontWeight.bold,
         color: Color.fromRGBO(98, 103, 122, 1));
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
@@ -46,7 +47,7 @@ class _UserPageState extends State<UserPage> {
                               Navigator.pushNamed(context, AuthRouter.mailbox),
                           child: Icon(
                             Icons.email_outlined,
-                            size: 30,
+                            size: 28,
                             color: Colors.white,
                           ),
                         ),
@@ -71,17 +72,17 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Text(CommonPreferences().nickname.value,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: FontManager.YaHeiRegular.copyWith(
                       color: Colors.white,
-                      fontSize: 25.0,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                     )),
                 Container(
-                    margin: EdgeInsets.symmetric(vertical: 10.0),
+                    margin: EdgeInsets.symmetric(vertical: 8),
                     child: Text(CommonPreferences().userNumber.value,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: MyColors.deepDust, fontSize: 13.0))),
+                        style: FontManager.Texta.copyWith(
+                            color: MyColors.deepDust, fontSize: 15))),
                 NavigationWidget(),
                 Container(
                   height: 80,
@@ -105,7 +106,8 @@ class _UserPageState extends State<UserPage> {
                           ),
                           Container(
                               width: 150,
-                              child: Text('个人信息更改', style: textStyle)),
+                              child: Text(S.current.reset_user_info,
+                                  style: textStyle)),
                           Expanded(child: Text('')),
                           Padding(
                               padding: const EdgeInsets.only(right: 22),
@@ -123,10 +125,8 @@ class _UserPageState extends State<UserPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(9)),
                     child: InkWell(
-                      onTap: () {
-                        // TODO 关于twt页面
-                        ToastProvider.error('还没做呢，悲');
-                      },
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.aboutTwt),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
@@ -138,7 +138,8 @@ class _UserPageState extends State<UserPage> {
                           ),
                           Container(
                               width: 150,
-                              child: Text('关于天外天', style: textStyle)),
+                              child:
+                                  Text(S.current.about_twt, style: textStyle)),
                           Expanded(child: Text('')),
                           Padding(
                               padding: const EdgeInsets.only(right: 22),
@@ -169,20 +170,22 @@ class _UserPageState extends State<UserPage> {
                           Container(
                             width: 20,
                             margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Icon(Icons.update),
+                            child: Icon(Icons.update,
+                                color: Color.fromRGBO(98, 103, 122, 1)),
                           ),
                           Container(
                               width: 100,
-                              child: Text('检查更新', style: textStyle)),
+                              child:
+                                  Text(S.current.check_new, style: textStyle)),
                           FutureBuilder(
                             future: CommonUtils.getVersion(),
                             builder: (_, AsyncSnapshot<String> snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
-                                  "当前版本：${snapshot.data}",
-                                  style: TextStyle(
+                                  "${S.current.current_version}: ${snapshot.data}",
+                                  style: FontManager.YaHeiLight.copyWith(
                                     color: Color(0xffcfd0d5),
-                                    fontSize: 12,
+                                    fontSize: 11,
                                   ),
                                 );
                               } else {
@@ -217,7 +220,8 @@ class _UserPageState extends State<UserPage> {
                             child: Image.asset('assets/images/logout.png'),
                           ),
                           Container(
-                              width: 150, child: Text('登出', style: textStyle)),
+                              width: 150,
+                              child: Text(S.current.logout, style: textStyle)),
                           Expanded(child: Text('')),
                         ],
                       ),

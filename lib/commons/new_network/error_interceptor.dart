@@ -21,7 +21,6 @@ class ErrorInterceptor extends InterceptorsWrapper {
       return DioError(error: "办公网绑定失效，请重新绑定");
 
     /// More...
-    // TODO 发布的时候开这个
     return DioError(error: "发生未知错误，请联系开发人员解决");
   }
 }

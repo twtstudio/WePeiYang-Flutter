@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -13,17 +14,17 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static const titleTextStyle = TextStyle(
+  static final titleTextStyle = FontManager.YaHeiBold.copyWith(
       fontSize: 14,
       color: Color.fromRGBO(177, 180, 186, 1),
       fontWeight: FontWeight.bold);
-  static const mainTextStyle = TextStyle(
-      fontSize: 15,
+  static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 14,
       color: Color.fromRGBO(98, 103, 122, 1),
       fontWeight: FontWeight.bold);
-  static const hintTextStyle =
-      TextStyle(fontSize: 10.5, color: Color.fromRGBO(205, 206, 212, 1));
-  static const arrow =
+  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
+  static final arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   var pref = CommonPreferences();
@@ -32,9 +33,9 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("设置",
-              style: TextStyle(
-                  fontSize: 19,
+          title: Text(S.current.setting,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 16,
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
           elevation: 0,
@@ -42,7 +43,7 @@ class _SettingPageState extends State<SettingPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -53,7 +54,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
             alignment: Alignment.centerLeft,
-            child: Text('通用', style: titleTextStyle),
+            child: Text(S.current.setting_general, style: titleTextStyle),
           ),
           // TODO 系统语言
           // Container(
@@ -79,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
           //               Container(
           //                   width: 150,
           //                   margin: const EdgeInsets.only(left: 15),
-          //                   child: Text('系统语言', style: mainTextStyle)),
+          //                   child: Text(S.current.setting_language, style: mainTextStyle)),
           //               Container(
           //                   width: 150,
           //                   margin: const EdgeInsets.only(left: 15, top: 3),
@@ -105,7 +106,8 @@ class _SettingPageState extends State<SettingPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                 onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.colorSetting).then((_) {
+                    Navigator.pushNamed(context, AuthRouter.colorSetting)
+                        .then((_) {
                   /// 使用pop返回此页面时进行rebuild
                   this.setState(() {});
                 }),
@@ -119,11 +121,12 @@ class _SettingPageState extends State<SettingPage> {
                         Container(
                             width: 230,
                             margin: const EdgeInsets.only(left: 15),
-                            child: Text('调色板', style: mainTextStyle)),
+                            child: Text(S.current.setting_color,
+                                style: mainTextStyle)),
                         Container(
                             width: 230,
                             margin: const EdgeInsets.only(left: 15, top: 3),
-                            child: Text('给课表、GPA以及黄页自定义喜欢的颜色',
+                            child: Text(S.current.setting_color_hint,
                                 style: hintTextStyle))
                       ],
                     ),
@@ -148,7 +151,8 @@ class _SettingPageState extends State<SettingPage> {
                     padding: const EdgeInsets.only(left: 15),
                     child: Container(
                         width: 150,
-                        child: Text('首页不显示GPA', style: mainTextStyle)),
+                        child:
+                            Text(S.current.setting_gpa, style: mainTextStyle)),
                   ),
                   Expanded(child: Text('')),
                   Padding(
@@ -184,12 +188,13 @@ class _SettingPageState extends State<SettingPage> {
                       Container(
                           width: 210,
                           margin: const EdgeInsets.only(left: 15),
-                          child: Text('开启夜猫子模式', style: mainTextStyle)),
+                          child: Text(S.current.setting_night_mode,
+                              style: mainTextStyle)),
                       Container(
                           width: 210,
                           margin: const EdgeInsets.only(left: 15, top: 3),
                           child: Text(
-                            '晚上9:00以后首页课表将展示第二天课程安排',
+                            S.current.setting_night_mode_hint,
                             style: hintTextStyle,
                           ))
                     ],
@@ -216,7 +221,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
               padding: const EdgeInsets.fromLTRB(20, 17, 20, 5),
               alignment: Alignment.centerLeft,
-              child: Text('课程表', style: titleTextStyle)),
+              child: Text(S.current.schedule, style: titleTextStyle)),
           Container(
             height: 80,
             child: Card(
@@ -226,7 +231,8 @@ class _SettingPageState extends State<SettingPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: InkWell(
                 onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.scheduleSetting).then((_) {
+                    Navigator.pushNamed(context, AuthRouter.scheduleSetting)
+                        .then((_) {
                   /// 使用pop返回此页面时进行rebuild
                   this.setState(() {});
                 }),
@@ -240,7 +246,8 @@ class _SettingPageState extends State<SettingPage> {
                         Container(
                             width: 150,
                             margin: const EdgeInsets.only(left: 15),
-                            child: Text('每周显示天数', style: mainTextStyle)),
+                            child: Text(S.current.setting_day_number,
+                                style: mainTextStyle)),
                         Container(
                             width: 150,
                             margin: const EdgeInsets.only(left: 15, top: 3),
@@ -273,11 +280,12 @@ class _SettingPageState extends State<SettingPage> {
                           Container(
                               width: 210,
                               margin: const EdgeInsets.only(left: 15),
-                              child: Text('课表显示非本周课程', style: mainTextStyle)),
+                              child: Text(S.current.setting_other_week,
+                                  style: mainTextStyle)),
                           Container(
                               width: 210,
                               margin: const EdgeInsets.only(left: 15, top: 3),
-                              child: Text('课表中将会展示当周并未开课的课程',
+                              child: Text(S.current.setting_other_week_hint,
                                   style: hintTextStyle))
                         ],
                       ),

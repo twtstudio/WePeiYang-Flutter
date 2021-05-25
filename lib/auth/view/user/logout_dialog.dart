@@ -3,6 +3,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/main.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class LogoutDialog extends Dialog {
   void _logout() {
@@ -14,7 +16,7 @@ class LogoutDialog extends Dialog {
         (route) => false);
   }
 
-  static const _hintStyle = TextStyle(
+  static final _hintStyle = FontManager.YaQiHei.copyWith(
       fontSize: 15,
       color: Color.fromRGBO(98, 103, 123, 1),
       fontWeight: FontWeight.bold,
@@ -34,8 +36,8 @@ class LogoutDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Text("您确定要退出登录吗？",
-                  style: TextStyle(
+              child: Text(S.current.logout_hint,
+                  style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
@@ -48,7 +50,7 @@ class LogoutDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("取消", style: _hintStyle),
+                    child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 Container(width: 30),
@@ -56,7 +58,7 @@ class LogoutDialog extends Dialog {
                   onTap: _logout,
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("确定", style: _hintStyle),
+                    child: Text(S.current.ok, style: _hintStyle),
                   ),
                 )
               ],

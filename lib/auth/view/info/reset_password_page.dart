@@ -3,6 +3,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -45,19 +47,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    const titleStyle = TextStyle(
-        fontSize: 15,
+    final titleStyle = FontManager.YaHeiRegular.copyWith(
+        fontSize: 14.5,
         color: Color.fromRGBO(98, 103, 122, 1),
         fontWeight: FontWeight.bold);
-    const hintStyle = TextStyle(
+    final hintStyle = FontManager.YaHeiRegular.copyWith(
         fontSize: 13,
         color: Color.fromRGBO(205, 206, 212, 1),
         fontWeight: FontWeight.w400);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text('密码更改',
-              style: TextStyle(
+          title: Text(S.current.reset_password,
+              style: FontManager.YaHeiRegular.copyWith(
                   fontSize: 16,
                   color: Color.fromRGBO(36, 43, 69, 1),
                   fontWeight: FontWeight.bold)),
@@ -66,7 +68,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -78,9 +80,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           children: <Widget>[
             Padding(
                 padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                child: Text("原密码", style: titleStyle)),
+                child: Text(S.current.password1, style: titleStyle)),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -90,12 +92,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: oldPwNode,
                   decoration: InputDecoration(
-                      hintText: '请输入原来的密码',
+                      hintText: S.current.input_password3,
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -109,10 +111,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-                child: Text("新密码", style: titleStyle)),
+                padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                child: Text(S.current.password2, style: titleStyle)),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -122,12 +124,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode1,
                   decoration: InputDecoration(
-                      hintText: '请输入新密码',
+                      hintText: S.current.input_password1,
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -141,10 +143,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-                child: Text("请确认新密码", style: titleStyle)),
+                padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                child: Text(S.current.password3, style: titleStyle)),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -154,12 +156,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode2,
                   decoration: InputDecoration(
-                      hintText: '请再次输入新密码',
+                      hintText: S.current.input_password4,
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -171,8 +173,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             Padding(
               padding: EdgeInsets.fromLTRB(30, 15, 30, 0),
               child: GestureDetector(
-                child: Text('忘记原密码',
-                    style: TextStyle(
+                child: Text(S.current.forget_password,
+                    style: FontManager.YaHeiRegular.copyWith(
                         fontSize: 12, decoration: TextDecoration.underline)),
                 onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
               ),
@@ -185,8 +187,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   onPressed: _reset,
                   color: Color.fromRGBO(53, 59, 84, 1),
                   splashColor: Color.fromRGBO(103, 110, 150, 1),
-                  child: Text('确认更改',
-                      style: TextStyle(color: Colors.white, fontSize: 13)),
+                  child: Text(S.current.reset_ok,
+                      style: FontManager.YaHeiRegular.copyWith(
+                          color: Colors.white, fontSize: 13)),
                   elevation: 5.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),

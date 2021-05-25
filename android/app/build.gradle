@@ -25,6 +25,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+Properties pro = new Properties()
+pro.load(project.rootProject.file('local.properties').newDataInputStream())
+print(pro.getProperty('keyAlias'))
+
 android {
     compileSdkVersion 30
 
@@ -41,8 +45,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.twt.wepeiyang"
+        applicationId "com.twt.service"
         multiDexEnabled true
         minSdkVersion 17
         targetSdkVersion 30
@@ -50,10 +53,10 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                GETUI_APPID     : "VlevpYsCnW94GOOUPAmWx9",
-                GETUI_APP_KEY   : "ZkjeAWnvst8L9lkbSOeZ28",
-                GETUI_APP_SECRET: "o96WJlB3dv5V8J3JxMT1c",
-                MASTERSECRET    : "GdGVUga5qt7d6WWLC7taK3"
+                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
+                GETUI_APP_KEY   : "lMfDbXITSXALHE5EtfZv6A",
+                GETUI_APP_SECRET: "kyL4r0PNpG9xnSEUO1omn5",
+                MASTERSECRET    : "WLVrpl4GFz7esi3AeyrYj"
         ]
 
         ndk {
@@ -62,11 +65,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file(pro.getProperty('jksPath'))
+            storePassword pro.getProperty('storePassword')
+            keyAlias pro.getProperty('keyAlias')
+            keyPassword pro.getProperty('storePassword')
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            signingConfig signingConfigs.release
         }
     }
 }

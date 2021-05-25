@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class FindPwDialog extends Dialog {
-  static const _hintStyle = TextStyle(
+  static final _hintStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 12,
       color: Color.fromRGBO(79, 88, 107, 1),
       fontWeight: FontWeight.w600,
@@ -26,12 +28,12 @@ class FindPwDialog extends Dialog {
                 children: [
                   Container(
                     padding: const EdgeInsets.only(left: 18, top: 30, right: 5),
-                    child: Text("您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群：",
+                    child: Text(S.current.has_not_bind_hint1,
                         style: _hintStyle, textAlign: TextAlign.center),
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 18, top: 2, right: 5),
-                    child: Text("\n1群群号：738068756\n2群群号：738064793",
+                    child: Text(S.current.has_not_bind_hint2,
                         style: _hintStyle, textAlign: TextAlign.center),
                   )
                 ],

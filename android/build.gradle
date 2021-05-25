@@ -21,12 +21,12 @@ allprojects {
     }
 }
 
-ext {
-    GETUI_APPID = "VlevpYsCnW94GOOUPAmWx9"
-    GETUI_APP_KEY = "ZkjeAWnvst8L9lkbSOeZ28"
-    GETUI_APP_SECRET = "o96WJlB3dv5V8J3JxMT1c"
-    MASTERSECRET = "GdGVUga5qt7d6WWLC7taK3"
-}
+//ext {
+//    GETUI_APPID = "VlevpYsCnW94GOOUPAmWx9"
+//    GETUI_APP_KEY = "ZkjeAWnvst8L9lkbSOeZ28"
+//    GETUI_APP_SECRET = "o96WJlB3dv5V8J3JxMT1c"
+//    MASTERSECRET = "GdGVUga5qt7d6WWLC7taK3"
+//}
 
 rootProject.buildDir = '../build'
 subprojects {

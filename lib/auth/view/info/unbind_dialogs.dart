@@ -4,6 +4,14 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/gpa/model/gpa_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+
+final _hintStyle = FontManager.YaQiHei.copyWith(
+    fontSize: 15,
+    color: Color.fromRGBO(98, 103, 123, 1),
+    fontWeight: FontWeight.bold,
+    decoration: TextDecoration.none);
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
@@ -13,12 +21,6 @@ class TjuUnbindDialog extends Dialog {
     Provider.of<ScheduleNotifier>(context, listen: false).clear();
     Navigator.pop(context);
   }
-
-  static const _hintStyle = TextStyle(
-      fontSize: 15,
-      color: Color.fromRGBO(98, 103, 123, 1),
-      fontWeight: FontWeight.bold,
-      decoration: TextDecoration.none);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,9 @@ class TjuUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text("解除办公网绑定后无法正常使用课表、GPA、校务专区功能。您是否确定解除绑定？",
+              child: Text(S.current.tju_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),
                       fontSize: 11,
                       fontWeight: FontWeight.normal,
@@ -49,7 +51,7 @@ class TjuUnbindDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("取消", style: _hintStyle),
+                    child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 Container(width: 30),
@@ -57,7 +59,7 @@ class TjuUnbindDialog extends Dialog {
                   onTap: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("确定", style: _hintStyle),
+                    child: Text(S.current.ok, style: _hintStyle),
                   ),
                 )
               ],
@@ -76,12 +78,6 @@ class PhoneUnbindDialog extends Dialog {
     Navigator.pop(context);
   }
 
-  static const _hintStyle = TextStyle(
-      fontSize: 15,
-      color: Color.fromRGBO(98, 103, 123, 1),
-      fontWeight: FontWeight.bold,
-      decoration: TextDecoration.none);
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -96,10 +92,9 @@ class PhoneUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(
-                  "解除手机号绑定后无法使用手机号登陆微北洋。若本次登录为手机号登陆则将退出登陆，需要您重新进行账号密码登陆。您是否确定解除绑定？",
+              child: Text(S.current.not_bind,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),
                       fontSize: 11,
                       fontWeight: FontWeight.normal,
@@ -112,7 +107,7 @@ class PhoneUnbindDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("取消", style: _hintStyle),
+                    child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 Container(width: 30),
@@ -120,7 +115,7 @@ class PhoneUnbindDialog extends Dialog {
                   onTap: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("确定", style: _hintStyle),
+                    child: Text(S.current.ok, style: _hintStyle),
                   ),
                 )
               ],
@@ -139,12 +134,6 @@ class EmailUnbindDialog extends Dialog {
     Navigator.pop(context);
   }
 
-  static const _hintStyle = TextStyle(
-      fontSize: 15,
-      color: Color.fromRGBO(98, 103, 123, 1),
-      fontWeight: FontWeight.bold,
-      decoration: TextDecoration.none);
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -159,10 +148,9 @@ class EmailUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(
-                  "解除邮箱绑定后无法使用邮箱登陆微北洋。若本次登录为邮箱登陆则将退出登陆，需要您重新进行账号密码登陆。您是否确定解除绑定？",
+              child: Text(S.current.email_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),
                       fontSize: 11,
                       fontWeight: FontWeight.normal,
@@ -175,7 +163,7 @@ class EmailUnbindDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("取消", style: _hintStyle),
+                    child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 Container(width: 30),
@@ -183,7 +171,7 @@ class EmailUnbindDialog extends Dialog {
                   onTap: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text("确定", style: _hintStyle),
+                    child: Text(S.current.ok, style: _hintStyle),
                   ),
                 )
               ],

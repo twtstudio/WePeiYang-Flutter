@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class ResetNicknamePage extends StatefulWidget {
   @override
@@ -34,8 +36,8 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text('更改用户名',
-                style: TextStyle(
+            title: Text(S.current.reset_username,
+                style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 17,
                     color: Color.fromRGBO(36, 43, 69, 1),
                     fontWeight: FontWeight.bold)),
@@ -44,7 +46,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             centerTitle: true,
             backgroundColor: Colors.white,
             leading: Padding(
-              padding: const EdgeInsets.only(left: 5),
+              padding: const EdgeInsets.only(left: 15),
               child: GestureDetector(
                   child: Icon(Icons.arrow_back,
                       color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -63,11 +65,11 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
                           color: Color.fromRGBO(48, 60, 102, 1), width: 2)),
                   suffixIcon: IconButton(
                       onPressed: _reset,
-                      icon: Text("保存",
-                          style: TextStyle(
+                      icon: Text(S.current.save,
+                          style: FontManager.YaQiHei.copyWith(
                               color: Color.fromRGBO(98, 103, 124, 1),
                               fontWeight: FontWeight.bold,
-                              fontSize: 14)))),
+                              fontSize: 13)))),
               onChanged: (input) => setState(() => nickname = input)),
         ));
   }

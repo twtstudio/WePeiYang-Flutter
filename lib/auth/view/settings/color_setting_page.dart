@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class ColorSettingPage extends StatefulWidget {
   @override
@@ -19,13 +21,13 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
     if (index == 0 && FavorColors.gpaType.value == target) suffix = "(已选)";
     if (index == 1 && FavorColors.scheduleType.value == target) suffix = "(已选)";
     return Text(text + suffix,
-        style:
-            TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.bold));
+        style: FontManager.Aspira.copyWith(
+            color: color, fontSize: 14, fontWeight: FontWeight.bold));
   }
 
   @override
   Widget build(BuildContext context) {
-    const titleTextStyle = TextStyle(
+    var titleTextStyle = FontManager.YaHeiBold.copyWith(
         fontSize: 14,
         color: Color.fromRGBO(177, 180, 186, 1),
         fontWeight: FontWeight.bold);
@@ -36,7 +38,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -47,8 +49,8 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
-            child: Text("调色板",
-                style: TextStyle(
+            child: Text(S.current.setting_color,
+                style: FontManager.YaQiHei.copyWith(
                     color: Color.fromRGBO(48, 60, 102, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 28)),
@@ -56,8 +58,9 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
           Container(
             margin: EdgeInsets.fromLTRB(35, 20, 35, 20),
             alignment: Alignment.centerLeft,
-            child: Text("给课表、GPA以及黄页自定义喜欢的颜色。",
-                style: TextStyle(color: Colors.grey, fontSize: 11)),
+            child: Text(S.current.setting_color_hint,
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Colors.grey, fontSize: 11)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -143,7 +146,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
             alignment: Alignment.centerLeft,
-            child: Text('课表', style: titleTextStyle),
+            child: Text(S.current.schedule, style: titleTextStyle),
           ),
           Container(
             height: 75,

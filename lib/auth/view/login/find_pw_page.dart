@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'find_pw_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class FindPwWidget extends StatelessWidget {
   @override
@@ -15,7 +17,7 @@ class FindPwWidget extends StatelessWidget {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -26,8 +28,8 @@ class FindPwWidget extends StatelessWidget {
           Expanded(child: Text(""), flex: 1),
           Container(
             alignment: Alignment.center,
-            child: Text("天外天账号密码找回",
-                style: TextStyle(
+            child: Text(S.current.find_password_title,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -35,14 +37,15 @@ class FindPwWidget extends StatelessWidget {
           Container(
             height: 50,
             width: 200,
-            margin: const EdgeInsets.only(top: 30),
+            margin: const EdgeInsets.only(top: 40),
             child: RaisedButton(
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-              child: Text('账号已绑定手机号',
-                  style: TextStyle(color: Colors.white, fontSize: 13)),
+              child: Text(S.current.has_bind_phone,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white, fontSize: 13)),
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -59,8 +62,9 @@ class FindPwWidget extends StatelessWidget {
                   builder: (BuildContext context) => FindPwDialog()),
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-              child: Text('账号未绑定手机号',
-                  style: TextStyle(color: Colors.white, fontSize: 13)),
+              child: Text(S.current.has_not_bind_phone,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white, fontSize: 13)),
               elevation: 3.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -109,8 +113,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onFailure: (e) => ToastProvider.error(e.error));
   }
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +126,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -132,26 +136,26 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("天外天账号密码找回",
-                style: TextStyle(
+            child: Text(S.current.find_password_title,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.fromLTRB(30, 40, 30, 0),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
               ),
               child: TextField(
                 decoration: InputDecoration(
-                    hintText: '手机号',
+                    hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -170,12 +174,12 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: '短信验证码',
+                        hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
@@ -201,7 +205,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                 color: Colors.grey[300],
                                 splashColor: Colors.grey[300],
                                 child: Text('$time秒后重试',
-                                    style: TextStyle(
+                                    style: FontManager.YaHeiRegular.copyWith(
                                         color: Color.fromRGBO(98, 103, 123, 1),
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold)),
@@ -214,8 +218,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                             onPressed: _fetchCaptcha,
                             color: Color.fromRGBO(53, 59, 84, 1.0),
                             splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                            child: Text('获取验证码',
-                                style: TextStyle(
+                            child: Text(S.current.fetch_captcha,
+                                style: FontManager.YaHeiRegular.copyWith(
                                     color: Colors.white, fontSize: 13)),
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(

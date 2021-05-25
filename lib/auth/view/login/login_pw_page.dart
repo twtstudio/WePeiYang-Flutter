@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -34,8 +36,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   FocusNode _accountFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +58,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("微北洋4.0",
-                style: TextStyle(
+            child: Text("${S.current.WBY}4.0",
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -72,12 +74,12 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _accountFocus,
                 decoration: InputDecoration(
-                    hintText: '学号/手机号/邮箱号/用户名',
+                    hintText: S.current.account,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -99,12 +101,12 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _passwordFocus,
                 decoration: InputDecoration(
-                    hintText: '密码',
+                    hintText: S.current.password,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -117,8 +119,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.fromLTRB(40, 15, 40, 60),
             child: GestureDetector(
-              child: Text('忘记密码',
-                  style: TextStyle(
+              child: Text(S.current.forget_password,
+                  style: FontManager.YaHeiRegular.copyWith(
                       fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
@@ -133,8 +135,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 onPressed: _login,
                 color: Color.fromRGBO(53, 59, 84, 1.0),
                 splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                child: Text('登录',
-                    style: TextStyle(color: Colors.white, fontSize: 13)),
+                child: Text(S.current.login,
+                    style: FontManager.YaHeiRegular.copyWith(
+                        color: Colors.white, fontSize: 13)),
                 elevation: 5.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0)),

@@ -9,6 +9,7 @@ import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -82,7 +83,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Brightness.light
           : Brightness.dark,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 5),
+        padding: const EdgeInsets.only(left: 15),
         child: GestureDetector(
             child: Icon(Icons.arrow_back, color: gpaColors[1], size: 28),
             onTap: () => Navigator.pop(context)),
@@ -167,7 +168,8 @@ class _RadarChartState extends State<RadarChartWidget> {
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
                     "Radar & Rose chart is not available with semesters of less than three courses.",
-                    style: TextStyle(color: widget.gpaColors[2], fontSize: 13)),
+                    style: FontManager.Texta.copyWith(
+                        color: widget.gpaColors[2], fontSize: 13)),
               )
             ],
           ),
@@ -190,7 +192,8 @@ class _RadarChartPainter extends CustomPainter {
 
   _RadarChartPainter(this.courses, this.gpaColors);
 
-  double radarChartRatio = 2.15; // 用这个控制雷达图大小,不能低于2
+  /// 用这个控制雷达图大小,不能低于2
+  double radarChartRatio = 2.15;
   double centerX;
   double centerY;
   double outer;
@@ -288,7 +291,8 @@ class _RadarChartPainter extends CustomPainter {
       var textPainter = TextPainter(
           text: TextSpan(
               text: _formatText(courses[i].name),
-              style: TextStyle(fontSize: 10, color: gpaColors[1])),
+              style: FontManager.YaHeiLight.copyWith(
+                  fontSize: 9, color: gpaColors[1])),
           maxLines: 3,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
@@ -353,16 +357,15 @@ class _RadarChartPainter extends CustomPainter {
   bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
 }
 
-/// 其实代码很像gpa_curve_detail.dart中的GPAIntro,只不过没法复用555
 class GPAStatsWidget extends StatelessWidget {
   final GPANotifier notifier;
   final List<Color> gpaColors;
 
   GPAStatsWidget(this.notifier, this.gpaColors) {
-    textStyle = TextStyle(
-        color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13.0);
-    numStyle = TextStyle(
-        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 25.0);
+    textStyle = FontManager.Aspira.copyWith(
+        color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13);
+    numStyle = FontManager.Montserrat.copyWith(
+        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
   }
 
   static var textStyle;
@@ -394,7 +397,7 @@ class GPAStatsWidget extends StatelessWidget {
               children: <Widget>[
                 Text('Weighted', style: textStyle),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Text(weighted, style: numStyle),
                 )
               ],
@@ -410,7 +413,7 @@ class GPAStatsWidget extends StatelessWidget {
                 children: <Widget>[
                   Text('GPA', style: textStyle),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(gpa, style: numStyle),
                   )
                 ],
@@ -425,7 +428,7 @@ class GPAStatsWidget extends StatelessWidget {
               children: <Widget>[
                 Text('Credits', style: textStyle),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Text(credits, style: numStyle),
                 )
               ],
@@ -464,15 +467,15 @@ class _CourseListState extends State<CourseListWidget> {
                 child: RichText(
                     text: TextSpan(
                         text: 'ORDERED\tBY\t',
-                        style: TextStyle(
-                            fontSize: 13,
+                        style: FontManager.Texta.copyWith(
+                            fontSize: 14,
                             letterSpacing: 4,
                             color: widget.gpaColors[2]),
                         children: <TextSpan>[
                       TextSpan(
                           text: widget.notifier.sortType.toUpperCase(),
-                          style: TextStyle(
-                              fontSize: 13,
+                          style: FontManager.Texta.copyWith(
+                              fontSize: 14,
                               letterSpacing: 4,
                               color: widget.gpaColors[1],
                               fontWeight: FontWeight.bold))
@@ -509,26 +512,29 @@ class _CourseListState extends State<CourseListWidget> {
                                     Container(
                                       alignment: Alignment.centerLeft,
                                       child: Text(_formatText(courses[i].name),
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: widget.gpaColors[1])),
+                                          style:
+                                              FontManager.YaHeiRegular.copyWith(
+                                                  fontSize: 14,
+                                                  color: widget.gpaColors[1])),
                                     ),
                                     Container(
                                       alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.only(top: 2),
                                       child: Text(
                                           "${courses[i].classType} / ${courses[i].credit} Credits",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: widget.gpaColors[2])),
+                                          style:
+                                              FontManager.YaHeiLight.copyWith(
+                                                  fontSize: 11,
+                                                  color: widget.gpaColors[2])),
                                     )
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(left: 10, right: 15),
+                                padding: EdgeInsets.only(left: 10, right: 18),
                                 child: Text('${courses[i].score.round()}',
-                                    style: TextStyle(
-                                        fontSize: 28,
+                                    style: FontManager.Montserrat.copyWith(
+                                        fontSize: 26,
                                         color: widget.gpaColors[1],
                                         fontWeight: FontWeight.bold)),
                               )

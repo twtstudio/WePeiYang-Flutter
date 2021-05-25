@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
@@ -64,7 +65,7 @@ class WeekDisplayWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
-              style: TextStyle(
+              style: FontManager.Aspira.copyWith(
                   color: Color.fromRGBO(200, 200, 200, 1),
                   fontSize: 10,
                   fontWeight: FontWeight.bold)),

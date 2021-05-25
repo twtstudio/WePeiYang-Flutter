@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class ScheduleSettingPage extends StatefulWidget {
   @override
@@ -7,8 +9,16 @@ class ScheduleSettingPage extends StatefulWidget {
 }
 
 class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
-  final upNumberList = ["5天", "6天", "7天"];
-  final downNumberList = ["周一至周五", "周一至周六", "周一至周日"];
+  final upNumberList = [
+    "5${S.current.day}",
+    "6${S.current.day}",
+    "7${S.current.day}"
+  ];
+  final downNumberList = [
+    S.current.mon_fri,
+    S.current.mon_sat,
+    S.current.mon_sun
+  ];
   int _index = CommonPreferences().dayNumber.value - 5;
 
   Widget _judgeIndex(int index) {
@@ -33,10 +43,10 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   }
 
   Widget _getNumberOfDaysCard(BuildContext context, int index) {
-    const hintTextStyle =
-        TextStyle(fontSize: 13.0, color: Color.fromRGBO(205, 206, 212, 1));
-    const mainTextStyle = TextStyle(
-      fontSize: 18.0,
+    var hintTextStyle = FontManager.YaHeiRegular.copyWith(
+        fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
+    var mainTextStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 16.5,
       color: Color.fromRGBO(98, 103, 122, 1),
     );
     return InkWell(
@@ -78,7 +88,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -89,18 +99,18 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
-            child: Text("课程表-每周展示天数",
-                style: TextStyle(
+            child: Text("${S.current.schedule}-${S.current.setting_day_number}",
+                style: FontManager.YaQiHei.copyWith(
                     color: Color.fromRGBO(48, 60, 102, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 28)),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(35, 20, 35, 20),
+            margin: EdgeInsets.fromLTRB(35, 15, 35, 20),
             alignment: Alignment.centerLeft,
-            child: Text("课程表页面将会根据选择调整展示的天数。",
-                style: TextStyle(
-                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 12)),
+            child: Text(S.current.setting_day_number_hint,
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 11.5)),
           ),
           Container(
               child: Card(

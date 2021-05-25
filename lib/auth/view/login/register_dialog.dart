@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class RegisterDialog extends Dialog {
   @override
@@ -19,13 +21,15 @@ class RegisterDialog extends Dialog {
             Expanded(
               child: DefaultTextStyle(
                 textAlign: TextAlign.start,
-                style: TextStyle(color: textColor, fontSize: 13),
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: textColor, fontSize: 13),
                 child: ListView(physics: BouncingScrollPhysics(), children: [
                   Container(
                       alignment: Alignment.topCenter,
                       margin: const EdgeInsets.only(top: 20, bottom: 18),
-                      child: Text("微北洋用户需知",
-                          style: TextStyle(color: textColor, fontSize: 18))),
+                      child: Text(S.current.register_hint2,
+                          style: FontManager.YaHeiRegular.copyWith(
+                              color: textColor, fontSize: 18))),
                   Text("更新日期：2021年02月26日" + "生效日期：2021年02月26日\n"),
                   Text("一．引言\n" +
                       "微北洋自推出以来连接全校师生，带来学习与生活的便捷。" +
@@ -112,8 +116,8 @@ class RegisterDialog extends Dialog {
               margin: const EdgeInsets.only(bottom: 14),
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: Text("确定",
-                    style: TextStyle(
+                child: Text(S.current.ok,
+                    style: FontManager.YaQiHei.copyWith(
                         color: Color.fromRGBO(98, 103, 123, 1),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

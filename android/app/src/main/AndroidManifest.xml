@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.twt.wepeiyang">
+    package="com.twt.service">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -66,15 +66,15 @@
 
         <meta-data
             android:name="PUSH_APPID"
-            android:value="VlevpYsCnW94GOOUPAmWx9" />
+            android:value="43HGFmIKsnAmjrjDLr60X4" />
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
-            android:name="com.twt.wepeiyang.message.WBYIntentService"
+            android:name="com.twt.service.message.WBYIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <!-- 用户自定义服务名 -->
         <service
-            android:name="com.twt.wepeiyang.message.WBYPushService"
+            android:name="com.twt.service.message.WBYPushService"
             android:exported="true"
             android:label="PushService"
             android:process=":pushservice" />

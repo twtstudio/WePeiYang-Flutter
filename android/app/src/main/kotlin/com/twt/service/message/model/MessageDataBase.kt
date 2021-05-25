@@ -1,8 +1,8 @@
-package com.twt.wepeiyang.message.model
+package com.twt.service.message.model
 
 import android.content.Context
 import android.util.Log
-import com.twt.wepeiyang.WBYApplication
+import com.twt.service.WBYApplication
 
 object MessageDataBase {
 

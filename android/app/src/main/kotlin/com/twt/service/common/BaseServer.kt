@@ -1,4 +1,4 @@
-package com.twt.wepeiyang.common
+package com.twt.service.common
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

@@ -5,6 +5,8 @@ import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'dart:math';
 import '../../home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -34,8 +36,8 @@ class CurveText extends StatelessWidget {
   Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.fromLTRB(25.0, 25.0, 0.0, 20.0),
       alignment: Alignment.centerLeft,
-      child: Text("${notifier.typeName()}曲线",
-          style: TextStyle(
+      child: Text("${notifier.typeName()}${S.current.curve}",
+          style: FontManager.YaQiHei.copyWith(
               fontSize: 16.0,
               color: Color.fromRGBO(100, 103, 122, 1.0),
               fontWeight: FontWeight.bold)));
@@ -47,11 +49,11 @@ class GPAIntro extends StatelessWidget {
 
   GPAIntro(this.notifier);
 
-  static const textStyle = TextStyle(
-      color: Color(0xffcdcdd3), fontWeight: FontWeight.bold, fontSize: 13.0);
+  static final textStyle = FontManager.Aspira.copyWith(
+      color: Color(0xffcdcdd3), fontWeight: FontWeight.bold, fontSize: 13);
 
-  static const numStyle = TextStyle(
-      color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 25.0);
+  static final numStyle = FontManager.Montserrat.copyWith(
+      color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 22);
 
   @override
   Widget build(BuildContext context) {
@@ -213,12 +215,11 @@ class _GPACurveState extends State<GPACurve>
                                   borderRadius: BorderRadius.circular(5)),
                               child: Center(
                                 child: Text('${curveData[_newTaped - 1]}',
-                                    style: TextStyle(
-                                        fontSize: 17,
+                                    style: FontManager.Montserrat.copyWith(
+                                        fontSize: 16,
                                         color: widget.isPreview
                                             ? _popupTextPreview
-                                            : _popupTextColor,
-                                        fontWeight: FontWeight.w900)),
+                                            : _popupTextColor)),
                               ),
                             ),
                           ),

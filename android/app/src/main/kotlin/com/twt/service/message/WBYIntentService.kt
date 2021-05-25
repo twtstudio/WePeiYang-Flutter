@@ -1,9 +1,9 @@
-package com.twt.wepeiyang.message
+package com.twt.service.message
 
 import android.content.Context
 import android.os.Message
 import android.util.Log
-import com.twt.wepeiyang.WBYApplication
+import com.twt.service.WBYApplication
 import com.igexin.sdk.GTIntentService
 import com.igexin.sdk.message.GTCmdMessage
 import com.igexin.sdk.message.GTNotificationMessage

@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/message/message_center.dart';
-import 'package:wei_pei_yang_demo/message/user_mail_webview_dialog.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+
 
 class UserMailboxPage extends StatefulWidget {
   @override
@@ -16,36 +16,23 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff7f7f8),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
-        child: AppBar(
-          titleSpacing: 0,
-          leadingWidth: 50,
-          brightness: Brightness.light,
+      appBar: AppBar(
+          title: Text(S.current.message,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 16,
+                  color: Color.fromRGBO(36, 43, 69, 1),
+                  fontWeight: FontWeight.bold)),
           elevation: 0,
+          brightness: Brightness.light,
           centerTitle: true,
-          title: Text(
-            '消息',
-            style: TextStyle(
-              color: Color(0xff242b45),
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          leading: FlatButton(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.arrow_back,
-              size: 30,
-              color: Color(0XFF62677B),
-            ),
-          ),
           backgroundColor: Colors.white,
-        ),
-      ),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: GestureDetector(
+                child: Icon(Icons.arrow_back,
+                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                onTap: () => Navigator.pop(context)),
+          )),
       body: UserMailList(),
     );
   }
@@ -202,8 +189,15 @@ class _MailItemState extends State<MailItem> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: GestureDetector(
-        onTapUp: (_) => showDialog(
-            context: context, builder: (_) => UserMailDialog(widget.data.url)),
+        // onTapUp: (_) => showDialog(
+        //     context: context, builder: (_) => UserMailDialog(widget.data.url)),
+        onTapUp: (_) => Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new MailPage(
+                      url: widget.data.url,
+                      title: widget.data.title,
+                    ))),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -271,6 +265,39 @@ class _MailItemState extends State<MailItem> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MailPage extends StatelessWidget {
+  final String url;
+  final String title;
+
+  const MailPage({Key key, this.url, this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          title: Text(title,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 16,
+                  color: Color.fromRGBO(36, 43, 69, 1))),
+          elevation: 0,
+          brightness: Brightness.light,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: GestureDetector(
+                child: Icon(Icons.arrow_back,
+                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                onTap: () => Navigator.pop(context)),
+          )),
+      body: WebView(
+        initialUrl: url,
       ),
     );
   }

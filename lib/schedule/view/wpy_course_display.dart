@@ -5,6 +5,8 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -19,8 +21,8 @@ class TodayCoursesWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('课程表',
-                    style: TextStyle(
+                Text(S.current.schedule,
+                    style: FontManager.YaQiHei.copyWith(
                         fontSize: 16,
                         color: Color.fromRGBO(100, 103, 122, 1.0),
                         fontWeight: FontWeight.bold)),
@@ -34,10 +36,11 @@ class TodayCoursesWidget extends StatelessWidget {
                         Navigator.pushNamed(
                             context, ScheduleRouter.schedule),
                     child: DefaultTextStyle(
-                      style: TextStyle(
+                      style: FontManager.YaHeiRegular.copyWith(
                           fontSize: 12,
                           color: Color.fromRGBO(100, 103, 122, 1.0)),
                       child: Text.rich(TextSpan(children: [
+                        // TODO 这里的国际化
                         TextSpan(text: (notifier.nightMode && DateTime
                             .now()
                             .hour >= 21) ? "明天" : "今天"),
@@ -95,7 +98,7 @@ class TodayCoursesWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(15)),
           child: Center(
             child: Text("NO COURSE TODAY",
-                style: TextStyle(
+                style: FontManager.Texta.copyWith(
                     color: Color.fromRGBO(207, 208, 212, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -132,8 +135,8 @@ class TodayCoursesWidget extends StatelessWidget {
                           height: 95.0,
                           alignment: Alignment.centerLeft,
                           child: Text(todayCourses[i].courseName,
-                              style: TextStyle(
-                                  fontSize: 16.0,
+                              style: FontManager.YaHeiBold.copyWith(
+                                  fontSize: 15,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
                         ),
@@ -143,16 +146,16 @@ class TodayCoursesWidget extends StatelessWidget {
                           child: Text(
                               getCourseTime(todayCourses[i].arrange.start,
                                   todayCourses[i].arrange.end),
-                              style: TextStyle(
-                                  fontSize: 13.0, color: Colors.white)),
+                              style: FontManager.Aspira.copyWith(
+                                  fontSize: 11.5, color: Colors.white)),
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Text(
                               replaceBuildingWord(todayCourses[i].arrange.room),
-                              style: TextStyle(
-                                  fontSize: 13.0,
+                              style: FontManager.Aspira.copyWith(
+                                  fontSize: 12.5,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
                         )

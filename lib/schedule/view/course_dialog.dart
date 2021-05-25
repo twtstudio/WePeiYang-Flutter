@@ -3,6 +3,8 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/schedule/extension/ui_extension.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 void showCourseDialog(BuildContext context, List<ScheduleCourse> courses) =>
     showDialog(
@@ -16,27 +18,26 @@ class CourseDialog extends Dialog {
 
   CourseDialog(this.courses);
 
-  static const nameStyle = TextStyle(
+  static final nameStyle = FontManager.YaQiHei.copyWith(
       fontSize: 21,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.bold);
 
-  static const teacherStyle = TextStyle(
+  static final teacherStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 13, color: Colors.white, decoration: TextDecoration.none);
 
-  static const hintNameStyle = TextStyle(
+  static final hintNameStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 10,
       color: Colors.white,
       decoration: TextDecoration.none,
-      fontWeight: FontWeight.w200,
       letterSpacing: 1);
 
-  static const hintValueStyle = TextStyle(
-      fontSize: 10,
+  static final hintValueStyle = FontManager.Montserrat.copyWith(
+      fontSize: 9,
       color: Colors.white,
-      decoration: TextDecoration.none,
-      fontWeight: FontWeight.w900);
+      letterSpacing: 0.5,
+      decoration: TextDecoration.none);
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,8 @@ class CourseDialog extends Dialog {
                                   width: 20, height: 20),
                               Padding(
                                 padding: const EdgeInsets.only(left: 5),
-                                child: Text("冲突", style: teacherStyle),
+                                child: Text(S.current.conflict,
+                                    style: teacherStyle),
                               )
                             ]))
                     : Container(),
@@ -130,7 +132,7 @@ class CourseDialog extends Dialog {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('逻辑班号', style: hintNameStyle),
+                Text(S.current.class_id, style: hintNameStyle),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(course.classId, style: hintValueStyle),
@@ -143,7 +145,8 @@ class CourseDialog extends Dialog {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('校区', style: hintNameStyle.copyWith(letterSpacing: 3)),
+                Text(S.current.campus,
+                    style: hintNameStyle.copyWith(letterSpacing: 3)),
                 Padding(
                   padding: const EdgeInsets.only(top: 1, left: 1),
                   child: Text(
@@ -161,7 +164,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('上课地点', style: hintNameStyle),
+              Text(S.current.arrange_room, style: hintNameStyle),
               Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: Text(replaceBuildingWord(course.arrange.room),
@@ -174,7 +177,7 @@ class CourseDialog extends Dialog {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('起止周', style: hintNameStyle),
+                Text(S.current.arrange_week, style: hintNameStyle),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text("${course.week.start}-${course.week.end}",
@@ -188,7 +191,8 @@ class CourseDialog extends Dialog {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('学分', style: hintNameStyle.copyWith(letterSpacing: 3)),
+                Text(S.current.credit,
+                    style: hintNameStyle.copyWith(letterSpacing: 3)),
                 Padding(
                   padding: const EdgeInsets.only(top: 3, left: 2),
                   child: Text(course.credit, style: hintValueStyle),
@@ -202,7 +206,7 @@ class CourseDialog extends Dialog {
   Widget _getRow3(ScheduleCourse course) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('时间', style: hintNameStyle.copyWith(letterSpacing: 3)),
+          Text(S.current.time, style: hintNameStyle.copyWith(letterSpacing: 3)),
           Padding(
             padding: const EdgeInsets.only(top: 3),
             child: Text(getCourseTime(course.arrange.start, course.arrange.end),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class LanguageSettingPage extends StatelessWidget {
   Widget _judgeLanguage(String value) {
@@ -15,9 +17,9 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const hintTextStyle =
-        TextStyle(fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
-    const mainTextStyle = TextStyle(
+    var hintTextStyle = FontManager.YaHeiRegular.copyWith(
+        fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
+    var mainTextStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 18.0,
       color: Color.fromRGBO(98, 103, 122, 1),
     );
@@ -27,7 +29,7 @@ class LanguageSettingPage extends StatelessWidget {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -38,8 +40,8 @@ class LanguageSettingPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
             alignment: Alignment.centerLeft,
-            child: Text("系统语言",
-                style: TextStyle(
+            child: Text(S.current.setting_language,
+                style: FontManager.YaQiHei.copyWith(
                     color: Color.fromRGBO(48, 60, 102, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 30)),
@@ -47,9 +49,8 @@ class LanguageSettingPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(35, 15, 35, 15),
             alignment: Alignment.centerLeft,
-            child: Text(
-                "请注意，只有WeiPeiyang应用程序级别内的文本将被更改。依赖外部资源的文本，如课程名称和校务转区的回复内容，将不被翻译。",
-                style: TextStyle(
+            child: Text(S.current.setting_language_hint,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 124, 1), fontSize: 9)),
           ),
           Consumer<LocaleModel>(

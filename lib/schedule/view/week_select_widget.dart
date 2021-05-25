@@ -4,6 +4,7 @@ import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
 import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
 const double cubeSideLength = 6;
@@ -26,7 +27,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
           Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
       if (current == 1) current++;
       return Container(
-        height: 95,
+        height: 90,
         child: ListView.builder(
             itemCount: notifier.weekCount,
             scrollDirection: Axis.horizontal,
@@ -60,9 +61,9 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.only(top: 3),
                           child: Text('WEEK ${i + 1}',
-                              style: TextStyle(
+                              style: FontManager.Aspira.copyWith(
                                   color:
                                       (notifier.selectedWeekWithNotify == i + 1)
                                           ? Colors.black

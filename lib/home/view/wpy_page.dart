@@ -9,6 +9,8 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
 import 'package:flutter/services.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -91,7 +93,7 @@ class WPYPageState extends State<WPYPage> {
             SliverToBoxAdapter(
                 child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: LoungeFavourWidget(title: '自习室', init: true),
+              child: LoungeFavourWidget(title: S.current.lounge, init: true),
             ))
           ],
         ),
@@ -112,7 +114,6 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     DateTime now = DateTime.now();
     double distance = maxExtent - minExtent;
-    print(shrinkOffset);
     if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
@@ -123,7 +124,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           Row(
             children: <Widget>[
               Text("Hello",
-                  style: TextStyle(
+                  style: FontManager.YaQiHei.copyWith(
                       fontSize: 35,
                       color: MyColors.deepBlue,
                       fontWeight: FontWeight.bold)),
@@ -145,9 +146,10 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           (distance - shrinkOffset > 25)
               ? Align(
                   alignment: Alignment.centerLeft,
+                  // TODO 这里的国际化
                   child: Text(
                       "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
-                      style: TextStyle(
+                      style: FontManager.YaQiHei.copyWith(
                           color: Color.fromRGBO(114, 119, 138, 1),
                           fontWeight: FontWeight.bold,
                           fontSize: 15)),
@@ -162,7 +164,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   double get maxExtent => 120;
 
   @override
-  double get minExtent => 70;
+  double get minExtent => 75;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;

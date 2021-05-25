@@ -1,7 +1,7 @@
-package com.twt.wepeiyang.message.server
+package com.twt.service.message.server
 
-import com.twt.wepeiyang.common.WBYBaseData
-import com.twt.wepeiyang.common.BaseServer
+import com.twt.service.common.WBYBaseData
+import com.twt.service.common.BaseServer
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 

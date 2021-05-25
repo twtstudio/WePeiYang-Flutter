@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override
@@ -32,10 +34,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
   FocusNode _pwInput1 = FocusNode();
   FocusNode _pwInput2 = FocusNode();
 
-  TextStyle _hintStyle = TextStyle(
-      color: Color.fromRGBO(201, 204, 209, 1),
-      fontSize: 13
-  );
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -56,8 +56,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("天外天账号密码找回",
-                style: TextStyle(
+            child: Text(S.current.find_password_title,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -73,12 +73,12 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _pwInput1,
                 decoration: InputDecoration(
-                    hintText: '请输入新密码',
+                    hintText: S.current.input_password1,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -101,12 +101,12 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _pwInput2,
                 decoration: InputDecoration(
-                    hintText: '再次输入密码',
+                    hintText: S.current.input_password2,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),

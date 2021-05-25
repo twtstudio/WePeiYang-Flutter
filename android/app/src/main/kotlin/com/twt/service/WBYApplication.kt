@@ -1,4 +1,4 @@
-package com.twt.wepeiyang
+package com.twt.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,7 +9,7 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import androidx.work.*
-import com.twt.wepeiyang.message.server.PushCIdWorker
+import com.twt.service.message.server.PushCIdWorker
 import com.google.gson.Gson
 import com.igexin.sdk.PushManager
 import com.umeng.analytics.MobclickAgent

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/update/update.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class LoginHomeWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -16,8 +17,8 @@ class LoginHomeWidget extends StatelessWidget {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(30, 50, 0, 0),
-            child: Text("Hello,\n微北洋4.0",
-                style: TextStyle(
+            child: Text("Hello,\n${S.current.WBY}4.0",
+                style: FontManager.YaHeiLight.copyWith(
                     color: Color.fromRGBO(98, 103, 124, 1),
                     fontSize: 50,
                     fontWeight: FontWeight.w300)),
@@ -30,11 +31,13 @@ class LoginHomeWidget extends StatelessWidget {
                 height: 50,
                 width: 100,
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, AuthRouter.loginPw),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, AuthRouter.loginPw),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
-                  child: Text('登录',
-                      style: TextStyle(color: Colors.white, fontSize: 13)),
+                  child: Text(S.current.login,
+                      style: FontManager.YaHeiRegular.copyWith(
+                          color: Colors.white, fontSize: 13)),
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
@@ -45,11 +48,13 @@ class LoginHomeWidget extends StatelessWidget {
                 width: 100,
                 margin: const EdgeInsets.only(left: 50),
                 child: RaisedButton(
-                  onPressed: () => Navigator.pushNamed(context, AuthRouter.register1),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, AuthRouter.register1),
                   color: MyColors.deepBlue,
                   splashColor: MyColors.brightBlue,
-                  child: Text('注册',
-                      style: TextStyle(color: Colors.white, fontSize: 13)),
+                  child: Text(S.current.register,
+                      style: FontManager.YaHeiRegular.copyWith(
+                          color: Colors.white, fontSize: 13)),
                   elevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
@@ -59,10 +64,10 @@ class LoginHomeWidget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(top: 30),
-            child: Text("首次登陆微北洋4.0请使用天外天账号密码登录，\n在登陆后绑定手机号码即可手机验证登录。",
+            child: Text(S.current.first_login_hint,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 12, color: Color.fromRGBO(98, 103, 124, 1))),
+                style: FontManager.YaHeiRegular.copyWith(
+                    fontSize: 11, color: Color.fromRGBO(98, 103, 124, 1))),
           ),
           Expanded(child: Text(""), flex: 2)
         ],

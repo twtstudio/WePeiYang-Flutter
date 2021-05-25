@@ -11,6 +11,7 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class SchedulePage extends StatefulWidget {
   /// 进入课程表页面后重设选中周并自动刷新数据
@@ -103,16 +104,16 @@ class TitleWidget extends StatelessWidget {
               child: Row(
                 children: [
                   Text('Schedule',
-                      style: TextStyle(
+                      style: FontManager.Aspira.copyWith(
                           color: titleColor,
                           fontSize: 35,
                           fontWeight: FontWeight.bold)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
                     child: Text('WEEK ${notifier.currentWeek}',
-                        style: TextStyle(
-                            color: Color.fromRGBO(205, 206, 211, 1),
-                            fontSize: 15)),
+                        style: FontManager.Texta.copyWith(
+                            color: Color.fromRGBO(114, 113, 113, 1),
+                            fontSize: 16)),
                   )
                 ],
               ),
@@ -142,7 +143,7 @@ class HoursCounterWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
-                  style: TextStyle(
+                  style: FontManager.Aspira.copyWith(
                       color: Color.fromRGBO(205, 206, 211, 1),
                       fontSize: 14,
                       fontWeight: FontWeight.bold))),

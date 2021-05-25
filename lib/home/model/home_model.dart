@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class CardBean {
   Widget icon;
@@ -21,7 +22,7 @@ class GlobalModel {
           color: MyColors.darkGrey,
           size: 25.0,
         ),
-        '课程表',
+        S.current.schedule,
         ScheduleRouter.schedule));
     cards.add(CardBean(
         Icon(
@@ -39,7 +40,7 @@ class GlobalModel {
           size: 20,
           color: Color(0xffcecfd4),
         ),
-        "自习室",
+        S.current.lounge,
         LoungeRouter.main));
   }
 

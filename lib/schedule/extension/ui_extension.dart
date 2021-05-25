@@ -4,10 +4,15 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'logic_extension.dart';
 import '../model/school/school_model.dart';
 import '../view/course_dialog.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
-const TextStyle activeNameStyle =
-    TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);
-const TextStyle activeHintStyle = TextStyle(color: Colors.white, fontSize: 8);
+final TextStyle activeNameStyle = FontManager.YaQiHei.copyWith(
+    color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);
+final TextStyle activeTeacherStyle =
+    FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
+final TextStyle activeClassroomStyle =
+    FontManager.Texta.copyWith(color: Colors.white, fontSize: 9);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
 Widget getActiveCourseCard(BuildContext context, double height, double width,
@@ -33,20 +38,23 @@ Widget getActiveCourseCard(BuildContext context, double height, double width,
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(removeParentheses(courses[0].teacher),
-                    style: activeHintStyle, textAlign: TextAlign.center),
+                    style: activeTeacherStyle, textAlign: TextAlign.center),
               ),
-              courses[0].arrange.room == "" ? Container() : Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(replaceBuildingWord(courses[0].arrange.room),
-                    style: activeHintStyle, textAlign: TextAlign.center),
-              ),
+              courses[0].arrange.room == ""
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(replaceBuildingWord(courses[0].arrange.room),
+                          style: activeClassroomStyle,
+                          textAlign: TextAlign.center),
+                    ),
               courses.length == 1
                   ? Container()
                   : Padding(
-                    padding: const EdgeInsets.only(top: 3),
-                    child: Image.asset('assets/images/schedule_warn.png',
-                    width: 20, height: 20),
-                  ),
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Image.asset('assets/images/schedule_warn.png',
+                          width: 20, height: 20),
+                    ),
               Expanded(child: Text(""))
             ],
           ),
@@ -59,9 +67,10 @@ Widget getActiveCourseCard(BuildContext context, double height, double width,
 const Color quietBackColor = Color.fromRGBO(236, 238, 237, 1);
 const Color quiteFrontColor = Color.fromRGBO(205, 206, 210, 1);
 
-const TextStyle quietNameStyle = TextStyle(
+final TextStyle quietNameStyle = FontManager.YaQiHei.copyWith(
     color: quiteFrontColor, fontSize: 10, fontWeight: FontWeight.bold);
-const TextStyle quietHintStyle = TextStyle(color: quiteFrontColor, fontSize: 8);
+final TextStyle quietHintStyle =
+    FontManager.YaHeiRegular.copyWith(color: quiteFrontColor, fontSize: 9);
 
 /// 返回本周无需上的课（灰色）
 Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
@@ -82,7 +91,8 @@ Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
                   child: Text(course.courseName,
                       style: quietNameStyle, textAlign: TextAlign.center),
                 ),
-                Text("非本周", style: quietHintStyle, textAlign: TextAlign.center),
+                Text(S.current.not_this_week,
+                    style: quietHintStyle, textAlign: TextAlign.center),
                 Expanded(child: Text(""))
               ],
             ),

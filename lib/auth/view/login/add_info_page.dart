@@ -3,6 +3,8 @@ import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -48,8 +50,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
   FocusNode _emailFocus = FocusNode();
   FocusNode _phoneFocus = FocusNode();
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -71,8 +73,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("请补全信息后登录",
-                style: TextStyle(
+            child: Text(S.current.add_info_hint,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -87,12 +89,12 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
-                    hintText: 'E-mail',
+                    hintText: S.current.email,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -113,12 +115,12 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               child: TextField(
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
-                    hintText: '手机号码',
+                    hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -137,12 +139,12 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: '短信验证码',
+                        hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
@@ -155,39 +157,39 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     margin: const EdgeInsets.only(left: 20),
                     child: isPress
                         ? StreamBuilder<int>(
-                        stream: Stream.periodic(
-                            Duration(seconds: 1), (time) => time + 1)
-                            .take(60),
-                        builder: (context, snap) {
-                          var time = 60 - (snap.data ?? 0);
-                          if (time == 0)
-                            WidgetsBinding.instance.addPostFrameCallback(
+                            stream: Stream.periodic(
+                                    Duration(seconds: 1), (time) => time + 1)
+                                .take(60),
+                            builder: (context, snap) {
+                              var time = 60 - (snap.data ?? 0);
+                              if (time == 0)
+                                WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
-                          return RaisedButton(
-                            onPressed: () {},
-                            color: Colors.grey[300],
-                            splashColor: Colors.grey[300],
-                            child: Text('$time秒后重试',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(98, 103, 123, 1),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold)),
+                              return RaisedButton(
+                                onPressed: () {},
+                                color: Colors.grey[300],
+                                splashColor: Colors.grey[300],
+                                child: Text('$time秒后重试',
+                                    style: FontManager.YaHeiRegular.copyWith(
+                                        color: Color.fromRGBO(98, 103, 123, 1),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold)),
+                                elevation: 5.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                              );
+                            })
+                        : RaisedButton(
+                            onPressed: _fetchCaptcha,
+                            color: Color.fromRGBO(53, 59, 84, 1.0),
+                            splashColor: Color.fromRGBO(103, 110, 150, 1.0),
+                            child: Text(S.current.fetch_captcha,
+                                style: FontManager.YaHeiRegular.copyWith(
+                                    color: Colors.white, fontSize: 13)),
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30)),
-                          );
-                        })
-                        : RaisedButton(
-                      onPressed: _fetchCaptcha,
-                      color: Color.fromRGBO(53, 59, 84, 1.0),
-                      splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                      child: Text('获取验证码',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 13)),
-                      elevation: 5.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    )),
+                          )),
               ],
             ),
           ),
@@ -199,8 +201,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 onPressed: _submit,
                 color: Color.fromRGBO(53, 59, 84, 1.0),
                 splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                child: Text('提交并登录',
-                    style: TextStyle(color: Colors.white, fontSize: 13)),
+                child: Text(S.current.login2,
+                    style: FontManager.YaHeiRegular.copyWith(
+                        color: Colors.white, fontSize: 13)),
                 elevation: 5.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0)),

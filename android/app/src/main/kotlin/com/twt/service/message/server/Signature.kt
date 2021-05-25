@@ -1,7 +1,7 @@
-package com.twt.wepeiyang.message.server
+package com.twt.service.message.server
 
 import android.util.Base64
-import com.twt.wepeiyang.message.model.MessageDataBase
+import com.twt.service.message.model.MessageDataBase
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

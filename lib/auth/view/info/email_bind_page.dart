@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/auth/view/info/unbind_dialogs.dart';
 import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class EmailBindPage extends StatefulWidget {
   @override
@@ -28,16 +30,16 @@ class _EmailBindPageState extends State<EmailBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle =
-        TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = FontManager.YaHeiRegular.copyWith(
+        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     if (pref.email.value != "")
       return Column(children: [
         Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
-          child: Text('已绑定邮箱：',
+          child: Text("${S.current.bind_email}: ",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: FontManager.YaHeiRegular.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Color.fromRGBO(79, 88, 107, 1))),
@@ -63,8 +65,9 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 .then((_) => this.setState(() {})),
             color: Color.fromRGBO(79, 88, 107, 1),
             splashColor: MyColors.brightBlue,
-            child: Text('解除绑定',
-                style: TextStyle(color: Colors.white, fontSize: 14)),
+            child: Text(S.current.unbind,
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Colors.white, fontSize: 13)),
             elevation: 3.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
@@ -81,12 +84,12 @@ class _EmailBindPageState extends State<EmailBindPage> {
             ),
             child: TextField(
               decoration: InputDecoration(
-                  hintText: '邮箱',
+                  hintText: S.current.email2,
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -102,8 +105,9 @@ class _EmailBindPageState extends State<EmailBindPage> {
               onPressed: _bind,
               color: Color.fromRGBO(53, 59, 84, 1.0),
               splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-              child: Text('绑定',
-                  style: TextStyle(color: Colors.white, fontSize: 14)),
+              child: Text(S.current.bind,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white, fontSize: 13)),
               elevation: 5.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
@@ -121,7 +125,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
@@ -134,8 +138,8 @@ class _EmailBindPageState extends State<EmailBindPage> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 30),
-                child: Text("邮箱绑定",
-                    style: TextStyle(
+                child: Text(S.current.email_bind,
+                    style: FontManager.YaQiHei.copyWith(
                         color: Color.fromRGBO(48, 60, 102, 1),
                         fontWeight: FontWeight.bold,
                         fontSize: 28)),
@@ -144,8 +148,11 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 children: [
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 32, 0, 30),
-                    child: Text((pref.email.value != "") ? "已绑定" : "未绑定",
-                        style: TextStyle(
+                    child: Text(
+                        (pref.email.value != "")
+                            ? S.current.is_bind
+                            : S.current.not_bind,
+                        style: FontManager.YaHeiRegular.copyWith(
                             fontSize: 12,
                             color: Colors.grey,
                             fontWeight: FontWeight.bold)),

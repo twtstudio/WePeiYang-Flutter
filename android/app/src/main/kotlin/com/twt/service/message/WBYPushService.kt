@@ -1,4 +1,4 @@
-package com.twt.wepeiyang.message
+package com.twt.service.message
 
 import com.igexin.sdk.PushService
 

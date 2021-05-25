@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/auth/view/login/register_dialog.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/home/model/home_model.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -36,8 +38,8 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   FocusNode _userNumFocus = FocusNode();
   FocusNode _nicknameFocus = FocusNode();
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -58,8 +60,8 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("新用户注册",
-                style: TextStyle(
+            child: Text(S.current.register2,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -74,12 +76,12 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 textInputAction: TextInputAction.next,
                 focusNode: _userNumFocus,
                 decoration: InputDecoration(
-                    hintText: '学号',
+                    hintText: S.current.student_id,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -100,12 +102,12 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               child: TextField(
                 focusNode: _nicknameFocus,
                 decoration: InputDecoration(
-                    hintText: '用户名',
+                    hintText: S.current.user_name,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -192,8 +194,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   FocusNode _phoneFocus = FocusNode();
   FocusNode _codeFocus = FocusNode();
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +208,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -216,8 +218,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("新用户注册",
-                style: TextStyle(
+            child: Text(S.current.register2,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -232,12 +234,12 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 textInputAction: TextInputAction.next,
                 focusNode: _idNumFocus,
                 decoration: InputDecoration(
-                    hintText: '身份证号',
+                    hintText: S.current.person_id,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -259,12 +261,12 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
-                    hintText: 'E-mail',
+                    hintText: S.current.email,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -285,12 +287,12 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               child: TextField(
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
-                    hintText: '手机号码',
+                    hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -310,12 +312,12 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                   child: TextField(
                     focusNode: _codeFocus,
                     decoration: InputDecoration(
-                        hintText: '短信验证码',
+                        hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
@@ -341,7 +343,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                 color: Colors.grey[300],
                                 splashColor: Colors.grey[300],
                                 child: Text('$time秒后重试',
-                                    style: TextStyle(
+                                    style: FontManager.YaHeiRegular.copyWith(
                                         color: Color.fromRGBO(98, 103, 123, 1),
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold)),
@@ -354,8 +356,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                             onPressed: _fetchCaptcha,
                             color: Color.fromRGBO(53, 59, 84, 1.0),
                             splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                            child: Text('获取验证码',
-                                style: TextStyle(
+                            child: Text(S.current.fetch_captcha,
+                                style: FontManager.YaHeiRegular.copyWith(
                                     color: Colors.white, fontSize: 13)),
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(
@@ -440,8 +442,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
   FocusNode _pw1Focus = FocusNode();
   FocusNode _pw2Focus = FocusNode();
 
-  TextStyle _hintStyle =
-      TextStyle(color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -452,7 +454,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
           elevation: 0,
           brightness: Brightness.light,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
@@ -462,8 +464,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
         children: [
           Container(
             alignment: Alignment.center,
-            child: Text("新用户注册",
-                style: TextStyle(
+            child: Text(S.current.register2,
+                style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
@@ -480,12 +482,12 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 focusNode: _pw1Focus,
                 obscureText: true,
                 decoration: InputDecoration(
-                    hintText: '请输入新密码',
+                    hintText: S.current.input_password1,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -508,12 +510,12 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 focusNode: _pw2Focus,
                 obscureText: true,
                 decoration: InputDecoration(
-                    hintText: '再次输入密码',
+                    hintText: S.current.input_password2,
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 20, 0, 20),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -537,15 +539,16 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     },
                   ),
                 ),
-                Text("我已阅读",
-                    style: TextStyle(color: Color.fromRGBO(79, 88, 107, 1))),
+                Text(S.current.register_hint1,
+                    style: FontManager.YaHeiRegular.copyWith(
+                        color: Color.fromRGBO(79, 88, 107, 1))),
                 GestureDetector(
                   onTap: () => showDialog(
                       context: context,
                       barrierDismissible: true,
                       builder: (BuildContext context) => RegisterDialog()),
-                  child: Text("微北洋用户须知",
-                      style: TextStyle(
+                  child: Text(S.current.register_hint2,
+                      style: FontManager.YaHeiRegular.copyWith(
                           color: Colors.blue,
                           textBaseline: TextBaseline.alphabetic,
                           decoration: TextDecoration.underline)),
