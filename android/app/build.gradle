@@ -67,10 +67,14 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(pro.getProperty('jksPath'))
-            storePassword pro.getProperty('storePassword')
-            keyAlias pro.getProperty('keyAlias')
-            keyPassword pro.getProperty('storePassword')
+            try {
+                storeFile file(pro.getProperty('jksPath'))
+                storePassword pro.getProperty('storePassword')
+                keyAlias pro.getProperty('keyAlias')
+                keyPassword pro.getProperty('storePassword')
+            } catch (ex) {
+                ex.printStackTrace()
+            }
         }
     }
 
