@@ -27,12 +27,12 @@ class LoungeFavourWidget extends StatefulWidget {
 }
 
 class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
-  WPYPageState pageState;
+  // WPYPageState pageState;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    pageState = context.findAncestorStateOfType<WPYPageState>();
+    // pageState = context.findAncestorStateOfType<WPYPageState>();
   }
 
   @override
@@ -45,13 +45,13 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
         ),
         onModelReady: widget.init == true
             ? (model) async {
-                debugPrint("set can false");
-                pageState.canNotGoIntoLounge.value = true;
+                // debugPrint("set can false");
+                // pageState.canNotGoIntoLounge.value = true;
                 await model.initData();
-                if (model.isIdle || model.isEmpty) {
-                  debugPrint("set can true");
-                  pageState.canNotGoIntoLounge.value = false;
-                }
+                // if (model.isIdle || model.isEmpty) {
+                //   // debugPrint("set can true");
+                //   pageState.canNotGoIntoLounge.value = false;
+                // }
               }
             : null,
         builder: (_, FavouriteListModel model, __) {
@@ -84,11 +84,11 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
                   .canNotGoIntoLounge,
               builder: (_, bool absorbing, __) => GestureDetector(
                 onTap: () {
-                  print("==================================================");
-                  print("==================================================");
-                  print("absorbing : $absorbing");
-                  print("==================================================");
-                  print("==================================================");
+                  // print("==================================================");
+                  // print("==================================================");
+                  // print("absorbing : $absorbing");
+                  // print("==================================================");
+                  // print("==================================================");
                   if (absorbing) {
                     context.findAncestorStateOfType<WPYPageState>().showToast(
                           custom: null,
@@ -147,9 +147,9 @@ class FavourListWidget extends StatelessWidget {
                 // print('classroom: ' + classroom.toJson().toString());
                 var plan = model.classPlan[classroom.id];
                 if (plan != null) {
-                  debugPrint(
-                      '------------------------- favourite room -------------------------');
-                  debugPrint(classroom.toJson().toString());
+                  // debugPrint(
+                  //     '------------------------- favourite room -------------------------');
+                  // debugPrint(classroom.toJson().toString());
                   var current = Time.week[model.currentDay - 1];
                   var currentPlan = plan[current]?.join() ?? '';
                   var isIdle = Time.availableNow(currentPlan, model.classTime);
@@ -161,6 +161,18 @@ class FavourListWidget extends StatelessWidget {
                 return Container();
               },
             ).toList(),
+          ),
+        ),
+      ),
+      errorV: Container(
+        height: 60,
+        child: Container(
+          child: Center(
+            child: Text(
+              // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
+              "未获取到数据",
+              style: FontManager.YaQiHei.copyWith(color: Color(0xffcdcdd3), fontSize: 12),
+            ),
           ),
         ),
       ),
@@ -191,7 +203,7 @@ class FavourListCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: InkWell(
         onTap: () {
-          print('you tap class:' + room.name);
+          // print('you tap class:' + room.name);
           Navigator.of(context).pushNamed(
             LoungeRouter.plan,
             arguments: room,

@@ -134,12 +134,12 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'showMessage':
-                    print("*****************************************");
+                    // print("*****************************************");
                     String content = await call.arguments;
-                    print(
-                        "*******************$content + ${content != null && content.isNotEmpty}*****************");
+                    // print(
+                    //     "*******************$content + ${content != null && content.isNotEmpty}*****************");
                     if (content != null && content.isNotEmpty) {
-                      print("????");
+                      // print("????");
                       await showMessageDialog(
                         baseContext,
                         content,
@@ -156,12 +156,12 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
                     }
                     break;
                   case 'getReply':
-                    print(
-                        "******************  get reply ***********************");
-                    print(
-                        "******************  get reply ***********************");
-                    print(
-                        "******************  get reply ***********************");
+                    // print(
+                    //     "******************  get reply ***********************");
+                    // print(
+                    //     "******************  get reply ***********************");
+                    // print(
+                    //     "******************  get reply ***********************");
                     await Navigator.pushNamed(
                         baseContext, FeedbackRouter.detail);
                     return "success";
@@ -172,7 +172,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
                     return "success";
                     break;
                   default:
-                    print("???????????????????????????????????????????");
+                    // print("???????????????????????????????????????????");
                 }
               });
             return messageProvider;

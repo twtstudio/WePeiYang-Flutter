@@ -469,8 +469,8 @@ Future sendPost(
         'campus': 0,
       });
       if (0 == response.data['ErrorCode']) {
-        debugPrint(
-            "send question success ${response.data['data']['question_id']}");
+        // debugPrint(
+        //     "send question success ${response.data['data']['question_id']}");
 
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {

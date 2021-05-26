@@ -30,8 +30,8 @@ class UpdatePrompter {
     String updateContent = getUpdateContent();
     if (Platform.isAndroid) {
       _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
-      debugPrint("apkfile path:");
-      debugPrint(_apkFile.path);
+      // debugPrint("apkfile path:");
+      // debugPrint(_apkFile.path);
     }
     if (_apkFile != null && _apkFile.existsSync()) {
       _dialog = UpdateDialog.showUpdate(
@@ -82,22 +82,22 @@ class UpdatePrompter {
       }
     }).then((value) async {
       var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
-      debugPrint(path);
-      debugPrint(updateEntity.path);
+      // debugPrint(path);
+      // debugPrint(updateEntity.path);
       var newPath = _apkFile.absolute.parent.path + "/" + path;
-      debugPrint(newPath);
+      // debugPrint(newPath);
       await _apkFile.rename(newPath).then((_) => doInstall(newPath));
     }).catchError((value) {
       ToastProvider.error("下载失败！");
       _dialog.dismiss();
-      debugPrint(value.toString());
+      // debugPrint(value.toString());
     });
   }
 
   /// 安装
   void doInstall([String path]) {
     _dialog.dismiss();
-    debugPrint("abcdefg   ${_apkFile.absolute.path}");
+    // debugPrint("abcdefg   ${_apkFile.absolute.path}");
     onInstall.call(path ?? _apkFile.absolute.path);
   }
 }

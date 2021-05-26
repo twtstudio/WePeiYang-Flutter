@@ -35,9 +35,9 @@ class ApiInterceptor extends InterceptorsWrapper {
 
   @override
   Future onRequest(RequestOptions options) {
-    debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
-        ' queryParameters: ${options.queryParameters}');
-    debugPrint('---api-request--->data--->${options.data}');
+    // debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
+    //     ' queryParameters: ${options.queryParameters}');
+    // debugPrint('---api-request--->data--->${options.data}');
     return super.onRequest(options);
   }
 
@@ -48,7 +48,7 @@ class ApiInterceptor extends InterceptorsWrapper {
     final Map<dynamic, dynamic> _map =
         isCompute ? await compute(parseData, data) : parseData(data);
     ResponseData respData = ResponseData.fromJson(_map);
-    print(respData.toJson());
+    // print(respData.toJson());
     if (respData.success) {
       response.data = respData.data;
       return loginApi.resolve(response);

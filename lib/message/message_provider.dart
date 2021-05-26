@@ -32,7 +32,7 @@ class MessageProvider extends ChangeNotifier {
 
   refreshFeedbackCount() async {
     var result = await MessageRepository.getAllMessages() ?? TotalMessageData();
-    print("FeedbackmessageCount ${result.questions?.length ?? -1}");
+    // print("FeedbackmessageCount ${result.questions?.length ?? -1}");
     _feedbackQuestions =
         result.questions?.where((element) => element.isOwner)?.toList() ?? [];
     _feedbackFavourites =
@@ -40,15 +40,15 @@ class MessageProvider extends ChangeNotifier {
     _feedbackMessageList =
         result.questions?.map((e) => e.questionId)?.toList() ?? [];
     _classifiedMessageCount = result.classifiedMessageCount;
-    print("SETFEEDBACKSUCCESS");
+    // print("SETFEEDBACKSUCCESS");
     notifyListeners();
   }
 
   setFeedbackQuestionRead(int messageId) async {
-    print("SETFEEDBACK setFeedbackQuestionRead $messageId");
+    // print("SETFEEDBACK setFeedbackQuestionRead $messageId");
     await MessageRepository.setQuestionRead(messageId);
     await refreshFeedbackCount();
-    print("SETFEEDBACKSUCCESS");
+    // print("SETFEEDBACKSUCCESS");
   }
 
   bool inMessageList(int questionId) => questionId == null
@@ -77,7 +77,7 @@ class MessageProvider extends ChangeNotifier {
 }
 
 showMessageDialog(BuildContext context, String data) async {
-  print("&&&&&&&&&&&&&&&&&&&&&&&&&&&$data&&&&&&&&&&&&&&&&&&&&&&&");
+  // print("&&&&&&&&&&&&&&&&&&&&&&&&&&&$data&&&&&&&&&&&&&&&&&&&&&&&");
   try {
     await showDialog<String>(
       context: context,
@@ -85,7 +85,7 @@ showMessageDialog(BuildContext context, String data) async {
       builder: (_) => MessageDialog(data),
     );
   } catch (e) {
-    print("??//////////$e");
+    // print("??//////////$e");
   }
 }
 

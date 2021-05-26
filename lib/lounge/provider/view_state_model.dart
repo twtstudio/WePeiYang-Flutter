@@ -21,7 +21,7 @@ class ViewStateModel with ChangeNotifier {
   /// viewState = idle but data = empty
   ViewStateModel({ViewState viewState})
       : _viewState = viewState ?? ViewState.idle {
-    debugPrint('ViewStateModel---constructor--->$runtimeType');
+    // debugPrint('ViewStateModel---constructor--->$runtimeType');
   }
 
   /// ViewState
@@ -101,7 +101,7 @@ class ViewStateModel with ChangeNotifier {
       message: message,
       errorMessage: e.toString(),
     );
-    printErrorStack(e, stackTrace);
+    // printErrorStack(e, stackTrace);
     onError(viewStateError);
   }
 
@@ -142,7 +142,7 @@ class ViewStateModel with ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    debugPrint('view_state_model dispose -->$runtimeType');
+    // debugPrint('view_state_model dispose -->$runtimeType');
     super.dispose();
   }
 }

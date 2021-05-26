@@ -10,14 +10,14 @@ searchLocalCache() async {
           //打印每个缓存文件的路径
         print(file.path);
       });*/
-  print('临时目录大小: ' + _renderSize(value));
+  // print('临时目录大小: ' + _renderSize(value));
   await delAllTemporaryFile();
 }
 
 // 循环计算文件的大小（递归）
 Future<double> _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
-  print(file.path);
-  print(file.uri);
+  // print(file.path);
+  // print(file.uri);
   if (file is File) {
     int length = await file.length();
     return double.parse(length.toString());
@@ -48,7 +48,7 @@ Future<Null> delAllTemporaryFile() async {
   Directory tempDir = await getExternalStorageDirectory();
   final List<FileSystemEntity> children = tempDir.listSync();
   for (var child in children) {
-    debugPrint(child.path);
+    // debugPrint(child.path);
     if (child.path.endsWith("gtpush")) continue;
     if (child is Directory) {
       var delete = true;
@@ -56,7 +56,7 @@ Future<Null> delAllTemporaryFile() async {
       var dirName = child.path.substring(
           child.path.lastIndexOf("/") + 1,
           child.path.length);
-      debugPrint("dirName : $dirName");
+      // debugPrint("dirName : $dirName");
       if (reg.hasMatch(dirName)) {
         for (var apk in child.listSync()) {
           if (apk.path.endsWith('apk')) {
@@ -65,11 +65,11 @@ Future<Null> delAllTemporaryFile() async {
         }
       }
       if (delete) {
-        debugPrint("delete Directory : ${child.path}");
+        // debugPrint("delete Directory : ${child.path}");
         await _delDir(child);
       }
     } else {
-      debugPrint("delete other : ${child.path}");
+      // debugPrint("delete other : ${child.path}");
       await child.delete();
     }
   }

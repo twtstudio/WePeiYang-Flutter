@@ -12,7 +12,7 @@ class LoungeRepository {
   static bool canLoadTemporaryData = true;
 
   static Future<List<Building>> get _getBaseBuildingList async {
-    debugPrint('????????????????? _getBaseBuildingList ?????????????????');
+    // debugPrint('????????????????? _getBaseBuildingList ?????????????????');
     var response = await openApi.get('getBuildingList');
 
     List<Building> buildings =
@@ -21,7 +21,7 @@ class LoungeRepository {
   }
 
   static Future<List<String>> get favouriteList async {
-    debugPrint('????????????????? favouriteList ?????????????????');
+    // debugPrint('????????????????? favouriteList ?????????????????');
     var response = await loginApi.get('getCollections');
     // await Future.delayed(Duration(seconds: 1));
     var pre = Map<String, List<dynamic>>.from(response.data).values;
@@ -29,7 +29,7 @@ class LoungeRepository {
       return <String>[];
     } else {
       List<String> rooms = pre.first.map((e) => e.toString()).toList();
-      print(rooms);
+      // print(rooms);
       return rooms;
     }
   }
@@ -43,12 +43,12 @@ class LoungeRepository {
   /// 从网络上获取一周的全部数据
   static Stream<MapEntry<int, List<Building>>> _getWeekClassPlan(
       {@required DateTime dateTime}) async* {
-    debugPrint('????????????????? _getWeekClassPlan ?????????????????');
+    // debugPrint('????????????????? _getWeekClassPlan ?????????????????');
     var thatWeek = await dateTime.convertedWeekAndDay;
     var term = '20212';
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week}/${weekday.day}';
-      debugPrint('??????????????????' + 'getDayData/$requestDate');
+      // debugPrint('??????????????????' + 'getDayData/$requestDate');
       var response = await openApi.get('getDayData/$requestDate');
       try {
         List<Building> buildings =
@@ -69,7 +69,7 @@ class LoungeRepository {
     }
     if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
       canLoadLocalData = !canLoadLocalData;
-      ToastProvider.running('加载数据需要一点时间');
+      // ToastProvider.running('加载数据需要一点时间');
       await _getBaseBuildingList.then((value) async {
         await HiveManager.instance.clearLocalData();
         await HiveManager.instance.writeBaseDataInDisk(buildings: value);
@@ -82,7 +82,7 @@ class LoungeRepository {
             HiveManager.instance.checkBaseDataIsAllInDisk();
           });
           canLoadLocalData = !canLoadLocalData;
-          ToastProvider.success('教室安排加载成功');
+          // ToastProvider.success('教室安排加载成功');
         }, onError: (e) {
           throw e;
         });
@@ -90,8 +90,8 @@ class LoungeRepository {
         throw e;
       }).catchError(
         (e) {
-          ToastProvider.error(e.toString().split(':')[1].trim());
-          debugPrint("updatelocaldata error ${e.toString()}");
+          // ToastProvider.error(e.toString().split(':')[1].trim());
+          // debugPrint("updatelocaldata error ${e.toString()}");
           canLoadLocalData = !canLoadLocalData;
           throw e;
         },
@@ -103,7 +103,7 @@ class LoungeRepository {
     if (HiveManager.instance.shouldUpdateTemporaryData(dateTime: dateTime) &&
         canLoadTemporaryData) {
       canLoadTemporaryData = !canLoadTemporaryData;
-      ToastProvider.running('加载数据需要一点时间');
+      // ToastProvider.running('加载数据需要一点时间');
       await _getWeekClassPlan(dateTime: dateTime).toList().then((plans) async {
         await HiveManager.instance.changeTemporaryDataStart();
         await Future.forEach<MapEntry<int, List<Building>>>(
@@ -113,12 +113,12 @@ class LoungeRepository {
           await HiveManager.instance.setTemporaryDataFinish(dateTime);
         });
         canLoadTemporaryData = !canLoadTemporaryData;
-        ToastProvider.success('教室安排加载成功');
+        // ToastProvider.success('教室安排加载成功');
       }, onError: (e) {
         throw e;
       }).catchError((e) {
-        ToastProvider.error(e.toString().split(':')[1].trim());
-        debugPrint("updateTemporaryData error ${e.toString()}");
+        // ToastProvider.error(e.toString().split(':')[1].trim());
+        // debugPrint("updateTemporaryData error ${e.toString()}");
         canLoadTemporaryData = !canLoadTemporaryData;
         throw e;
       });

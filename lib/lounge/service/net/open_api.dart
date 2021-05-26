@@ -22,9 +22,9 @@ class Http extends BaseHttp {
 class ApiInterceptor extends InterceptorsWrapper {
   @override
   onRequest(RequestOptions options) async {
-    debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
-        ' queryParameters: ${options.queryParameters}');
-   debugPrint('---api-request--->data--->${options.data}');
+    // debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
+    //     ' queryParameters: ${options.queryParameters}');
+   // debugPrint('---api-request--->data--->${options.data}');
     return options;
   }
 

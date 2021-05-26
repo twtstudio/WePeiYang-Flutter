@@ -19,9 +19,9 @@ class RoomFavouriteModel extends ChangeNotifier {
   Map<String, Map<String, List<String>>> get classPlan => _classPlan;
 
   refreshData({DateTime dateTime}) async {
-    print("----------------------------------------------------");
-    print("-----   refresh   ${dateTime.toString()}   ---------");
-    print("----------------------------------------------------");
+    // print("----------------------------------------------------");
+    // print("-----   refresh   ${dateTime.toString()}   ---------");
+    // print("----------------------------------------------------");
     var instance = HiveManager.instance;
     var localData = await instance.getFavourList();
 
@@ -101,8 +101,8 @@ class FavouriteModel extends ViewStateModel {
   collect({@required Classroom room}) async {
     setBusy();
     try {
-      debugPrint(
-          '++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
+      // debugPrint(
+      //     '++++++++++++++++ collect data: ${room.toJson()} +++++++++++++++++++');
       if (globalFavouriteModel.contains(cId: room.id)) {
         await LoungeRepository.unCollect(id: room.id);
         await globalFavouriteModel.removeFavourite(cId: room.id);
@@ -165,8 +165,8 @@ class FavouriteListModel extends ViewStateListModel<Classroom> {
   refresh() async {
     setBusy();
     if (timeModel.state == ViewState.idle) {
-      debugPrint(
-          '++++++++++++++++ favourite list get data +++++++++++++++++++');
+      // debugPrint(
+      //     '++++++++++++++++ favourite list get data +++++++++++++++++++');
       await super.refresh();
     } else if (timeModel.state == ViewState.error) {
       viewState = ViewState.error;
@@ -188,6 +188,6 @@ addFavourites(BuildContext context,
     bool playAnim: true}) async {
   await model.collect(room: room);
   if (model.isError) {
-    model.showErrorMessage();
+    // model.showErrorMessage();
   }
 }

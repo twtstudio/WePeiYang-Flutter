@@ -27,7 +27,7 @@ class ClassPlanModel extends ViewStateListModel {
     if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
     } else if (timeModel.state == ViewState.idle) {
-      debugPrint('++++++++++++++++ class plan model get data +++++++++++++++++++');
+      // debugPrint('++++++++++++++++ class plan model get data +++++++++++++++++++');
       super.refresh();
     }
   }
