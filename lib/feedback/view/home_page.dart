@@ -10,6 +10,7 @@ import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
@@ -155,7 +156,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                     borderRadius: BorderRadius.circular(1080),
                                     child: TextField(
                                       decoration: InputDecoration(
-                                        hintText: '搜索问题',
+                                        hintText: S.current.feedback_search,
                                         border: OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                           borderRadius:
@@ -237,8 +238,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                   index);
                                             },
                                             onFailure: () {
-                                              ToastProvider.error(
-                                                  '校务专区点赞失败，请重试');
+                                              ToastProvider.error(S
+                                                  .current.feedback_like_error);
                                             },
                                           );
                                         },
@@ -263,8 +264,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                   index);
                                             },
                                             onFailure: () {
-                                              ToastProvider.error(
-                                                  '校务专区点赞失败，请重试');
+                                              ToastProvider.error(S
+                                                  .current.feedback_like_error);
                                             },
                                           );
                                         },
@@ -346,7 +347,7 @@ class HomeErrorContainer extends StatelessWidget {
             ),
           ),
           Text(
-            '错误！请重试',
+            S.current.feedback_error,
             style: TextStyle(
               color: ColorUtil.lightTextColor,
             ),

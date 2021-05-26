@@ -9,6 +9,7 @@ import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/profile_dialog.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
@@ -45,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Provider.of<MessageProvider>(context, listen: false)
                         .feedbackQs));
       }, onFailure: () {
-        ToastProvider.error('校务专区获取帖子失败，请重试???');
+        ToastProvider.error(S.current.feedback_get_post_error);
       });
     });
     super.initState();
@@ -103,7 +104,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .changeProfilePostLikeState(index);
                                     },
                                     onFailure: () {
-                                      ToastProvider.error('校务专区点赞失败，请重试');
+                                      ToastProvider.error(
+                                          S.current.feedback_like_error);
                                     },
                                   );
                                 },
@@ -119,11 +121,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                             onSuccess: () {
                                               setState(() {});
                                               Navigator.pop(context);
-                                              ToastProvider.success('删除成功');
+                                              ToastProvider.success(S.current
+                                                  .feedback_delete_success);
                                             },
                                             onFailure: () {
-                                              ToastProvider.error(
-                                                  '校务专区删帖失败，请重试');
+                                              ToastProvider.error(S.current
+                                                  .feedback_delete_error);
                                               Navigator.pop(context);
                                             },
                                           );
@@ -160,7 +163,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                           .changeProfilePostLikeState(index);
                                     },
                                     onFailure: () {
-                                      ToastProvider.error('校务专区点赞失败，请重试');
+                                      ToastProvider.error(
+                                          S.current.feedback_like_error);
                                     },
                                   );
                                 },
@@ -178,11 +182,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                               onSuccess: () {
                                                 setState(() {});
                                                 Navigator.pop(context);
-                                                ToastProvider.success('删除成功');
+                                                ToastProvider.success(S.current
+                                                    .feedback_delete_success);
                                               },
                                               onFailure: () {
-                                                ToastProvider.error(
-                                                    '校务专区删帖失败，请重试');
+                                                ToastProvider.error(S.current
+                                                    .feedback_delete_error);
                                                 Navigator.pop(context);
                                               },
                                             );
@@ -237,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         BlankSpace.height(5),
                         Text(
-                          '我的提问',
+                          S.current.feedback_my_post,
                           style: TextStyle(
                               height: 1, color: ColorUtil.lightTextColor),
                         ),
@@ -261,7 +266,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         getMyPosts(onSuccess: (list) {
                           notifier.addProfilePosts(list);
                         }, onFailure: () {
-                          ToastProvider.error('校务专区获取帖子失败，请刷新');
+                          ToastProvider.error(
+                              S.current.feedback_get_post_error);
                         });
                       }
                     },
@@ -281,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         BlankSpace.height(5),
                         Text(
-                          '我的收藏',
+                          S.current.feedback_my_favorite,
                           style: TextStyle(
                               height: 1, color: ColorUtil.lightTextColor),
                         ),
@@ -305,7 +311,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         getFavoritePosts(onSuccess: (list) {
                           notifier.addProfilePosts(list);
                         }, onFailure: () {
-                          ToastProvider.error('校务专区获取帖子失败, 请刷新');
+                          ToastProvider.error(
+                              S.current.feedback_get_post_error);
                         });
                       }
                     },

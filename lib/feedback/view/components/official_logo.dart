@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class OfficialLogo extends StatelessWidget {
   @override
@@ -7,7 +8,7 @@ class OfficialLogo extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Text(
-        '官方',
+        S.current.feedback_official,
         style: TextStyle(
           fontSize: 12,
           color: Colors.white,

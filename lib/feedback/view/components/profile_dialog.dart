@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class ProfileDialog extends StatelessWidget {
   final void Function() onConfirm;
@@ -22,7 +23,7 @@ class ProfileDialog extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Text("您确定要删除问题吗？",
+              child: Text(S.current.feedback_delete_dialog_content,
                   style: TextStyle(
                       color: Color.fromRGBO(79, 88, 107, 1),
                       fontSize: 16,
@@ -35,7 +36,7 @@ class ProfileDialog extends StatelessWidget {
                 GestureDetector(
                   onTap: onCancel,
                   child: Text(
-                    "取消",
+                    S.current.feedback_cancel,
                     style: TextStyle(
                       color: ColorUtil.boldTextColor,
                       fontWeight: FontWeight.bold,
@@ -50,7 +51,7 @@ class ProfileDialog extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(
-                      "确定",
+                      S.current.feedback_ok,
                       style: TextStyle(
                         color: ColorUtil.boldTextColor,
                         fontWeight: FontWeight.bold,

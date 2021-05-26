@@ -12,10 +12,10 @@ import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/home/home_router.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 import 'package:wei_pei_yang_demo/main.dart';
-import 'package:wei_pei_yang_demo/message/message_center.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
 
 import 'components/post_card.dart';
@@ -51,7 +51,6 @@ class _DetailPageState extends State<DetailPage> {
   final int index;
   PostOrigin origin;
 
-  bool _sendCommentLock = false;
   String _commentLengthIndicator;
   DetailPageStatus status;
 
@@ -73,7 +72,7 @@ class _DetailPageState extends State<DetailPage> {
         });
       },
       onFailure: () {
-        ToastProvider.error('校务专区获取评论失败, 请刷新');
+        ToastProvider.error(S.current.feedback_get_comment_error);
       },
     );
     _refreshController.refreshCompleted();
@@ -116,7 +115,7 @@ class _DetailPageState extends State<DetailPage> {
           });
         },
         onFailure: () {
-          ToastProvider.error('校务专区获取评论失败, 请刷新');
+          ToastProvider.error(S.current.feedback_get_comment_error);
         },
       );
     });
@@ -180,7 +179,8 @@ class _DetailPageState extends State<DetailPage> {
                                 }
                               },
                               onFailure: () {
-                                ToastProvider.error('校务专区点赞失败，请重试');
+                                ToastProvider.error(
+                                    S.current.feedback_like_error);
                               },
                             );
                           },
@@ -239,7 +239,8 @@ class _DetailPageState extends State<DetailPage> {
                                                   index);
                                         },
                                         onFailure: () {
-                                          ToastProvider.error('校务专区点赞失败，请重试');
+                                          ToastProvider.error(
+                                              S.current.feedback_like_error);
                                         },
                                       );
                                     },
@@ -266,7 +267,8 @@ class _DetailPageState extends State<DetailPage> {
                                                       .length);
                                         },
                                         onFailure: () {
-                                          ToastProvider.error('校务专区点赞失败，请重试');
+                                          ToastProvider.error(
+                                              S.current.feedback_like_error);
                                         },
                                       );
                                     },
@@ -296,7 +298,7 @@ class _DetailPageState extends State<DetailPage> {
                       maxLength: 200,
                       decoration: InputDecoration(
                         counterText: '',
-                        hintText: '写评论…',
+                        hintText: S.current.feedback_write_comment,
                         suffix: Text(
                           _commentLengthIndicator,
                           style: TextStyle(
@@ -340,10 +342,12 @@ class _DetailPageState extends State<DetailPage> {
                             _onRefresh();
                           },
                           onFailure: () {
-                            ToastProvider.error('校务专区评论失败，请重试');
+                            ToastProvider.error(
+                                S.current.feedback_comment_error);
                           });
                     } else {
-                      ToastProvider.error('评论不能为空');
+                      ToastProvider.error(
+                          S.current.feedback_empty_comment_error);
                     }
                   },
                 ),
@@ -388,7 +392,7 @@ class _DetailPageState extends State<DetailPage> {
             },
           ),
           title: Text(
-            '问题详情',
+            S.current.feedback_detail,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: ColorUtil.boldTextColor,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/profile_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 import 'blank_space.dart';
 
@@ -35,7 +36,7 @@ class ProfileHeader extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              title: Text('个人中心'),
+              title: Text(S.current.feedback_profile),
               centerTitle: true,
               actions: [FeedbackMailbox()],
             ),

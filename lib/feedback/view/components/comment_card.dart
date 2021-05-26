@@ -4,6 +4,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/official_logo.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 import 'blank_space.dart';
 
@@ -104,7 +105,7 @@ class _CommentCardState extends State<CommentCard> {
               if (!official)
                 Expanded(
                   child: Text(
-                    comment.userName ?? '匿名',
+                    comment.userName ?? S.current.feedback_anonymous,
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -171,7 +172,7 @@ class _CommentCardState extends State<CommentCard> {
             children: [
               if (official && comment.rating == -1)
                 Text(
-                  '提问者未评分',
+                  S.current.feedback_no_rating,
                   style: TextStyle(
                     fontSize: 12,
                     color: ColorUtil.lightTextColor,
@@ -182,7 +183,7 @@ class _CommentCardState extends State<CommentCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '提问者评分:',
+                      S.current.feedback_rating,
                       style: TextStyle(
                         fontSize: 12,
                         color: ColorUtil.lightTextColor,

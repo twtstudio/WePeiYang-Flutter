@@ -6,12 +6,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 TextEditingController _titleController;
 TextEditingController _bodyController;
@@ -77,22 +77,26 @@ class _NewPostPageState extends State<NewPostPage> {
                             tagId: _currentTagId,
                             imgList: _resultList,
                             onSuccess: () {
-                              ToastProvider.success('发布成功');
+                              ToastProvider.success(
+                                  S.current.feedback_post_success);
                               Navigator.pop(context);
                             },
                             onFailure: () {
-                              ToastProvider.error('校务专区发帖失败，请重试');
+                              ToastProvider.error(
+                                  S.current.feedback_post_error);
                             },
                             onUploadImageFailure: () {
-                              ToastProvider.error('校务专区图片上传失败');
+                              ToastProvider.error(
+                                  S.current.feedback_upload_image_error);
                             },
                           );
                         } else {
-                          ToastProvider.error('内容和标签不能为空');
+                          ToastProvider.error(
+                              S.current.feedback_empty_content_error);
                         }
                       },
                       child: Text(
-                        '提交',
+                        S.current.feedback_submit,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xff303c66),
@@ -141,7 +145,9 @@ class _TagViewState extends State<TagView> {
         builder: (_) => InkWell(
           onTap: () async => await _showTags(context),
           child: Text(
-            tab == null ? '+添加标签（必须添加一个）' : '#$tab （点击更改标签）',
+            tab == null
+                ? S.current.feedback_add_tag_hint
+                : '#$tab ${S.current.feedback_change_tag_hint}',
             style: TextStyle(
               fontSize: 12,
               color: Color(0xff303c66),
@@ -192,8 +198,8 @@ class _TabGridViewState extends State<TabGridView>
         padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: onPressed,
-      child: const Text(
-        '确定',
+      child: Text(
+        S.current.feedback_ok,
         style: TextStyle(
           color: Color(0xff303c66),
           fontWeight: FontWeight.bold,
@@ -240,8 +246,8 @@ class _TabGridViewState extends State<TabGridView>
                 maintainState: true,
                 child: _confirmButton(onPressed: null),
               ),
-              const Text(
-                '添加标签',
+              Text(
+                S.current.feedback_add_tag,
                 style: TextStyle(
                   color: Color(0xff303c66),
                   fontSize: 16,
@@ -264,7 +270,7 @@ class _TabGridViewState extends State<TabGridView>
                         ? Provider.of<FeedbackNotifier>(context, listen: false)
                             .tagList[_currentTagIndex]
                             .description
-                        : '暂无介绍'),
+                        : S.current.feedback_no_description),
                 style: TextStyle(
                   color: Color(0xff303c66),
                   fontSize: 10,
@@ -358,7 +364,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
-                  hintText: '输入标题',
+                  hintText: S.current.feedback_enter_title,
                 ),
                 onChanged: (text) {
                   titleCounter = '${text.characters.length}/20';
@@ -422,7 +428,7 @@ class _BodyInputFieldState extends State<BodyInputField> {
                 color: Color(0xffd0d1d6),
                 fontSize: 14,
               ),
-              hintText: '问题详情...',
+              hintText: '${S.current.feedback_detail}...',
             ),
             onChanged: (text) {
               bodyCounter = '${text.characters.length}/200';
@@ -469,15 +475,14 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         enableCamera: true,
         maxImages: maxImage,
         materialOptions: MaterialOptions(
-          actionBarTitle: "图库",
-          allViewTitle: "全部的照片",
+          actionBarTitle: S.current.feedback_gallery,
+          allViewTitle: S.current.feedback_all_photos,
           actionBarColor: "#f7f7f8",
           actionBarTitleColor: "#303c66",
           lightStatusBar: true,
           statusBarColor: '#f7f7f8',
           startInAllView: false,
           selectCircleStrokeColor: "#f7f7f8",
-          selectionLimitReachedText: "足够了.",
           okButtonDrawable: "@drawable/ok",
         ),
       );
@@ -523,18 +528,19 @@ class _ImagesGridViewState extends State<ImagesGridView> {
                   var result = await showDialog<String>(
                       context: context,
                       builder: (context) => AlertDialog(
-                            title: Text('是否要删除'),
+                            title:
+                                Text(S.current.feedback_delete_dialog_content),
                             actions: [
                               FlatButton(
                                   onPressed: () {
                                     Navigator.of(context).pop('cancel');
                                   },
-                                  child: Text('取消')),
+                                  child: Text(S.current.feedback_cancel)),
                               FlatButton(
                                   onPressed: () {
                                     Navigator.of(context).pop('ok');
                                   },
-                                  child: Text('是的')),
+                                  child: Text(S.current.feedback_ok)),
                             ],
                           ));
 
@@ -595,7 +601,7 @@ class _ImagePickerWidget extends StatelessWidget {
                   color: Color(0xffb5b7c5),
                 ),
                 Text(
-                  '添加图片',
+                  S.current.feedback_add_image,
                   style: TextStyle(
                     color: Color(0xffd0d1d6),
                     fontSize: 12,
@@ -636,7 +642,7 @@ class _BasePage extends StatelessWidget {
               child: AppBar(
                 centerTitle: true,
                 title: Text(
-                  '新建问题',
+                  S.current.feedback_new_post,
                   style: TextStyle(
                     fontSize: 18,
                     color: Color(0xff303c66),

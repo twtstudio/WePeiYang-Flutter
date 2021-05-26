@@ -6,6 +6,7 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/search_result_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 bool _homePostChanged = false;
 
@@ -60,7 +61,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: TextField(
                             controller: _controller,
                             decoration: InputDecoration(
-                              hintText: '搜索问题',
+                              hintText: S.current.feedback_search_hint,
                               border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
                                 borderRadius: BorderRadius.circular(1080),
@@ -89,13 +90,14 @@ class _SearchPageState extends State<SearchPage> {
                                   arguments: SearchResultPageArgs(
                                     content,
                                     '',
-                                    '搜索结果',
+                                    S.current.feedback_search_result,
                                   ),
                                 ).then((_) {
                                   Navigator.pop(context, _homePostChanged);
                                 });
                               } else {
-                                ToastProvider.error('关键词不能为空');
+                                ToastProvider.error(
+                                    S.current.feedback_empty_keyword);
                               }
                             },
                             textInputAction: TextInputAction.search,
@@ -104,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       TextButton(
                         child: Text(
-                          '取消',
+                          S.current.feedback_cancel,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: ColorUtil.boldTextColor,
@@ -146,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "历史记录",
+                  S.current.feedback_search_history,
                   style: titleTextStyle,
                 ),
                 InkWell(
@@ -178,7 +180,7 @@ class _SearchPageState extends State<SearchPage> {
                           arguments: SearchResultPageArgs(
                             notifier.searchHistoryList[index],
                             '',
-                            '搜索结果',
+                            S.current.feedback_search_result,
                           ),
                         ).then((_) {
                           Navigator.pop(context, _homePostChanged);
@@ -236,7 +238,7 @@ class _SearchPageState extends State<SearchPage> {
             margin: EdgeInsets.only(top: 20),
             alignment: Alignment.centerLeft,
             child: Text(
-              "标签搜索",
+              S.current.feedback_search_tag,
               style: titleTextStyle,
             ),
           ),
@@ -292,16 +294,16 @@ class _SearchPageState extends State<SearchPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("确认清除所有搜索记录吗？"),
+            title: Text(S.current.feedback_clear_history),
             actions: <Widget>[
               FlatButton(
-                child: Text("取消"),
+                child: Text(S.current.feedback_cancel),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               FlatButton(
-                child: Text("确定"),
+                child: Text(S.current.feedback_ok),
                 onPressed: () {
                   Provider.of<FeedbackNotifier>(context, listen: false)
                       .clearSearchHistory();

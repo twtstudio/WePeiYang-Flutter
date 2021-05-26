@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class RatingCard extends StatefulWidget {
   final int initialRating;
@@ -27,7 +28,7 @@ class _RatingCardState extends State<RatingCard> {
       child: Row(
         children: [
           Text(
-            '请评分:',
+            S.current.feedback_please_rating,
             style: TextStyle(
               color: ColorUtil.boldTextColor,
             ),

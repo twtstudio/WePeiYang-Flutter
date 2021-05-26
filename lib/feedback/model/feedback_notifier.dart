@@ -8,6 +8,7 @@ import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/post.dart';
 import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/message/message_model.dart';
 
 // TODO: Invoke this method when initialize [ProfilePage].
@@ -167,7 +168,7 @@ class FeedbackNotifier with ChangeNotifier {
             onSuccess(totalPage);
           },
           onFailure: () {
-            ToastProvider.error('校务专区获取帖子失败, 请刷新');
+            ToastProvider.error(S.current.feedback_get_post_error);
           },
         );
       },

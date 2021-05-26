@@ -7,6 +7,7 @@ import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/comment_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/rating_card.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 class OfficialCommentPage extends StatefulWidget {
   final OfficialCommentPageArgs args;
@@ -55,7 +56,7 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                   },
                 ),
                 title: Text(
-                  '回复详情',
+                  S.current.feedback_comment_detail,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: ColorUtil.boldTextColor,
@@ -77,7 +78,7 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                         notifier.changeOfficialCommentLikeState(index);
                       },
                       onFailure: () {
-                        ToastProvider.error('校务专区点赞失败，请重试');
+                        ToastProvider.error(S.current.feedback_like_error);
                       },
                     );
                   },
@@ -93,10 +94,11 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                         rating: rating * 2,
                         onSuccess: () {
                           notifier.updateRating(rating, index);
-                          ToastProvider.success('评价成功');
-                          },
+                          ToastProvider.success(
+                              S.current.feedback_rating_success);
+                        },
                         onFailure: () {
-                          ToastProvider.error('评价失败，请重试');
+                          ToastProvider.error(S.current.feedback_rating_error);
                         },
                       );
                     },
