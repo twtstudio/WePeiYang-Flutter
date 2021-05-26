@@ -7,7 +7,7 @@ const String kSearchHistory = 'kSearchHistory';
 
 class SearchHistoryModel extends ViewStateListModel<String> {
   clearHistory() async {
-    debugPrint('clearHistory');
+    // debugPrint('clearHistory');
     await HiveManager.instance.clearHistory();
     list.clear();
     setEmpty();
@@ -32,7 +32,7 @@ class SearchResultModel extends ViewStateListModel {
 
   @override
   refresh() {
-    debugPrint('++++++++++++++++ search model get data +++++++++++++++++++');
+    // debugPrint('++++++++++++++++ search model get data +++++++++++++++++++');
     super.refresh();
   }
 

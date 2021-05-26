@@ -98,13 +98,13 @@ class PageTitleWidget extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.zero),
               ),
               onPressed: () async {
-                debugPrint(favouriteModel.isIdle.toString());
+                // debugPrint(favouriteModel.isIdle.toString());
                 if (favouriteModel.isIdle ||
                     favouriteModel.isEmpty ||
                     favouriteModel.isError) {
-                  debugPrint(
-                      '========================== add favourite room ==========================');
-                  debugPrint(room.toJson().toString());
+                  // debugPrint(
+                  //     '========================== add favourite room ==========================');
+                  // debugPrint(room.toJson().toString());
                   await addFavourites(context,
                       room: room, model: favouriteModel);
                 }

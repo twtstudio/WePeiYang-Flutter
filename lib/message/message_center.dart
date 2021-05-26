@@ -26,9 +26,9 @@ class MessageRepository {
     });
     FeedbackDetailMessages messages =
         FeedbackDetailMessages.fromJson(response.data);
-    debugPrint("getDetailMessages");
-    debugPrint(CommonPreferences().feedbackToken.value);
-    debugPrint(response.data.toString());
+    // debugPrint("getDetailMessages");
+    // debugPrint(CommonPreferences().feedbackToken.value);
+    // debugPrint(response.data.toString());
     return messages;
   }
 
@@ -44,9 +44,9 @@ class MessageRepository {
     } catch (e) {
       data = null;
     }
-    debugPrint('getAllMessages');
-    debugPrint(token);
-    debugPrint("$data");
+    // debugPrint('getAllMessages');
+    // debugPrint(token);
+    // debugPrint("$data");
     return data;
   }
 
@@ -60,15 +60,15 @@ class MessageRepository {
         {"id": questionId},
       );
       ToastProvider.success("$result");
-      debugPrint("setQuestionRead");
+      // debugPrint("setQuestionRead");
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
     }
   }
 
   static Future<UserMessages> getUserMails(int page) async {
     var token = CommonPreferences().token.value;
-    debugPrint("get mails@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$token");
+    // debugPrint("get mails@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$token");
     var response = await Dio().get(
       "https://api.twt.edu.cn/api/notification/message/user",
       options: Options(
@@ -79,10 +79,10 @@ class MessageRepository {
         },
       ),
     );
-    debugPrint(
-        "${response.data.toString()}@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    // debugPrint(
+    //     "${response.data.toString()}@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     var messages = UserMessages.fromJson(response.data);
-    debugPrint(messages.mails.length.toString());
+    // debugPrint(messages.mails.length.toString());
     return messages;
   }
 }

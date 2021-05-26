@@ -33,7 +33,7 @@ class SearchResult extends StatelessWidget {
       builder: (_, model, __) => ListLoadSteps(
         model: model,
         emptyV: FutureBuilder(
-          future: Future.delayed(Duration(seconds: 1)),
+          future: Future.delayed(Duration(seconds: 0)),
           builder: (_, __) => Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -232,7 +232,7 @@ class ResultAreasGridView extends StatelessWidget {
           Container(
             child: InkWell(
               onTap: () {
-                print(entry.area.toJson());
+                // print(entry.area.toJson());
                 Navigator.of(context).pushNamed(
                   LoungeRouter.classrooms,
                   arguments: [

@@ -13,8 +13,8 @@ class UpdateParser {
       return null;
     }
     String versionCode = await CommonUtils.getVersionCode();
-    debugPrint("versionCode local $versionCode");
-    debugPrint("versionCode remote ${release.versionCode}");
+    // debugPrint("versionCode local $versionCode");
+    // debugPrint("versionCode remote ${release.versionCode}");
     if (release.versionCode <= int.parse(versionCode)) {
       return null;
     }

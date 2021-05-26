@@ -113,11 +113,11 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
     _fToast.removeQueuedCustomToasts();
 
-    _fToast.showToast(
-      child: toast,
-      gravity: ToastGravity.CENTER,
-      toastDuration: Duration(seconds: 1),
-    );
+    // _fToast.showToast(
+    //   child: toast,
+    //   gravity: ToastGravity.CENTER,
+    //   toastDuration: Duration(seconds: 1),
+    // );
   }
 
   void updateGroupValue(ClassTime v) {

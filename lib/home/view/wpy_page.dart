@@ -56,11 +56,11 @@ class WPYPageState extends State<WPYPage> {
 
     _fToast.removeQueuedCustomToasts();
 
-    _fToast.showToast(
-      child: toast,
-      gravity: ToastGravity.CENTER,
-      toastDuration: Duration(seconds: 1),
-    );
+    // _fToast.showToast(
+    //   child: toast,
+    //   gravity: ToastGravity.CENTER,
+    //   toastDuration: Duration(seconds: 1),
+    // );
   }
 
   @override
@@ -218,7 +218,7 @@ class SliverCardsWidget extends StatelessWidget {
                 .canNotGoIntoLounge,
             builder: (_, bool absorbing, __) => GestureDetector(
               onTap: () {
-                print("absorbing : $absorbing");
+                // print("absorbing : $absorbing");
                 if (absorbing) {
                   context.findAncestorStateOfType<WPYPageState>().showToast(
                         custom: null,

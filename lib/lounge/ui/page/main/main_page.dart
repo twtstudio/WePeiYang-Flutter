@@ -93,7 +93,7 @@ class SearchBarWidget extends StatelessWidget {
                 aId: result.aId,
                 bName: result.bName,
               ));
-              print('you tap class:' + result.toJson().toString());
+              // print('you tap class:' + result.toJson().toString());
               Navigator.of(context).pushNamed(
                 LoungeRouter.plan,
                 arguments: Classroom(
@@ -161,11 +161,41 @@ class BuildingGridWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(15, 40, 15, 10),
       child: Container(
         child: Consumer<BuildingDataModel>(
-            builder: (_, model, __) => ListLoadSteps(
-                  errorHeight: 80,
-                  model: model,
-                  successV: _successView(model),
-                )),
+          builder: (_, model, __) => ListLoadSteps(
+            model: model,
+            errorHeight: 80,
+            successV: _successView(model),
+            errorV: RetryWidget(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RetryWidget extends StatefulWidget {
+  @override
+  _RetryWidgetState createState() => _RetryWidgetState();
+}
+
+class _RetryWidgetState extends State<RetryWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      color: Colors.transparent,
+      child: Center(
+        child: FlatButton(
+          onPressed: () {
+            Provider.of<LoungeTimeModel>(context, listen: false).setTime();
+          },
+          color: Colors.blue,
+          highlightColor: Colors.blue[700],
+          colorBrightness: Brightness.dark,
+          splashColor: Colors.grey,
+          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          child: Text("重试"),
+        ),
       ),
     );
   }

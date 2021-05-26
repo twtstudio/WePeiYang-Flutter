@@ -39,7 +39,7 @@ class ClassroomsDataModel extends ViewStateListModel {
       // print(c.toJson());
       // print(floors);
       if (classPlan.containsKey(c.id)) {
-        print('classrooms have same id:' + c.id);
+        // print('classrooms have same id:' + c.id);
       } else {
         classPlan[c.id] = {};
       }
@@ -54,7 +54,7 @@ class ClassroomsDataModel extends ViewStateListModel {
     if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
     } else if (timeModel.state == ViewState.idle) {
-      debugPrint('++++++++++++++++ class plan model get data +++++++++++++++++++');
+      // debugPrint('++++++++++++++++ class plan model get data +++++++++++++++++++');
       super.refresh();
     }
   }
