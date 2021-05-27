@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -159,7 +160,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   child: Center(
                     child: Text(
                       S.current.feedback_no_post,
-                      style: TextStyle(
+                      style: FontManager.YaHeiRegular.copyWith(
                         color: ColorUtil.lightTextColor,
                       ),
                     ),

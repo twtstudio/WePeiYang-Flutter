@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -34,79 +35,82 @@ class _NewPostPageState extends State<NewPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _BasePage(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            shape: BoxShape.rectangle,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey[200],
-                  blurRadius: 5.0, //阴影模糊程度
-                  spreadRadius: 5.0 //阴影扩散程度
-                  )
-            ],
-          ),
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              TitleInputField(),
-              _divider(),
-              BodyInputField(),
-              ImagesGridView(),
-              TagView(),
-              _divider(),
-              // Submit.
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        if (_titleController.text.isNotEmpty &&
-                            _bodyController.text.isNotEmpty &&
-                            _currentTagId != null) {
-                          sendPost(
-                            title: _titleController.text,
-                            content: _bodyController.text,
-                            tagId: _currentTagId,
-                            imgList: _resultList,
-                            onSuccess: () {
-                              ToastProvider.success(
-                                  S.current.feedback_post_success);
-                              Navigator.pop(context);
-                            },
-                            onFailure: () {
-                              ToastProvider.error(
-                                  S.current.feedback_post_error);
-                            },
-                            onUploadImageFailure: () {
-                              ToastProvider.error(
-                                  S.current.feedback_upload_image_error);
-                            },
-                          );
-                        } else {
-                          ToastProvider.error(
-                              S.current.feedback_empty_content_error);
-                        }
-                      },
-                      child: Text(
-                        S.current.feedback_submit,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff303c66),
-                            fontSize: 16),
+    return DefaultTextStyle(
+      style: FontManager.YaHeiRegular,
+      child: _BasePage(
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              shape: BoxShape.rectangle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey[200],
+                    blurRadius: 5.0, //阴影模糊程度
+                    spreadRadius: 5.0 //阴影扩散程度
+                    )
+              ],
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                TitleInputField(),
+                _divider(),
+                BodyInputField(),
+                ImagesGridView(),
+                TagView(),
+                _divider(),
+                // Submit.
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          if (_titleController.text.isNotEmpty &&
+                              _bodyController.text.isNotEmpty &&
+                              _currentTagId != null) {
+                            sendPost(
+                              title: _titleController.text,
+                              content: _bodyController.text,
+                              tagId: _currentTagId,
+                              imgList: _resultList,
+                              onSuccess: () {
+                                ToastProvider.success(
+                                    S.current.feedback_post_success);
+                                Navigator.pop(context);
+                              },
+                              onFailure: () {
+                                ToastProvider.error(
+                                    S.current.feedback_post_error);
+                              },
+                              onUploadImageFailure: () {
+                                ToastProvider.error(
+                                    S.current.feedback_upload_image_error);
+                              },
+                            );
+                          } else {
+                            ToastProvider.error(
+                                S.current.feedback_empty_content_error);
+                          }
+                        },
+                        child: Text(
+                          S.current.feedback_submit,
+                          style: FontManager.YaHeiRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff303c66),
+                              fontSize: 16),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -148,7 +152,7 @@ class _TagViewState extends State<TagView> {
             tab == null
                 ? S.current.feedback_add_tag_hint
                 : '#$tab ${S.current.feedback_change_tag_hint}',
-            style: TextStyle(
+            style: FontManager.YaHeiRegular.copyWith(
               fontSize: 12,
               color: Color(0xff303c66),
             ),
@@ -200,7 +204,7 @@ class _TabGridViewState extends State<TabGridView>
       onPressed: onPressed,
       child: Text(
         S.current.feedback_ok,
-        style: TextStyle(
+        style: FontManager.YaHeiRegular.copyWith(
           color: Color(0xff303c66),
           fontWeight: FontWeight.bold,
           fontSize: 16,
@@ -212,7 +216,7 @@ class _TabGridViewState extends State<TabGridView>
             text == currentTab ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           text,
-          style: TextStyle(
+          style: FontManager.YaHeiRegular.copyWith(
             fontSize: 12,
             color: text == currentTab ? Colors.white : Color(0xff62677c),
           ),
@@ -248,7 +252,7 @@ class _TabGridViewState extends State<TabGridView>
               ),
               Text(
                 S.current.feedback_add_tag,
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xff303c66),
                   fontSize: 16,
                 ),
@@ -271,7 +275,7 @@ class _TabGridViewState extends State<TabGridView>
                             .tagList[_currentTagIndex]
                             .description
                         : S.current.feedback_no_description),
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xff303c66),
                   fontSize: 10,
                 ),
@@ -351,7 +355,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
                 controller: _titleController,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: ColorUtil.boldTextColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -359,7 +363,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
                 minLines: 1,
                 maxLines: 10,
                 decoration: InputDecoration.collapsed(
-                  hintStyle: TextStyle(
+                  hintStyle: FontManager.YaHeiRegular.copyWith(
                     color: Color(0xffd0d1d6),
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -378,7 +382,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
             Container(width: 3),
             Text(
               titleCounter,
-              style: TextStyle(
+              style: FontManager.YaHeiRegular.copyWith(
                 color: Color(0xffd0d1d6),
                 fontSize: 12,
               ),
@@ -419,12 +423,12 @@ class _BodyInputFieldState extends State<BodyInputField> {
             textInputAction: TextInputAction.done,
             minLines: 6,
             maxLines: 20,
-            style: TextStyle(
+            style: FontManager.YaHeiRegular.copyWith(
                 color: ColorUtil.boldTextColor,
                 fontWeight: FontWeight.normal,
                 fontSize: 14),
             decoration: InputDecoration.collapsed(
-              hintStyle: TextStyle(
+              hintStyle: FontManager.YaHeiRegular.copyWith(
                 color: Color(0xffd0d1d6),
                 fontSize: 14,
               ),
@@ -444,7 +448,7 @@ class _BodyInputFieldState extends State<BodyInputField> {
             children: [
               Text(
                 bodyCounter,
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xffd0d1d6),
                   fontSize: 12,
                 ),
@@ -602,7 +606,7 @@ class _ImagePickerWidget extends StatelessWidget {
                 ),
                 Text(
                   S.current.feedback_add_image,
-                  style: TextStyle(
+                  style: FontManager.YaHeiRegular.copyWith(
                     color: Color(0xffd0d1d6),
                     fontSize: 12,
                   ),
@@ -643,7 +647,7 @@ class _BasePage extends StatelessWidget {
                 centerTitle: true,
                 title: Text(
                   S.current.feedback_new_post,
-                  style: TextStyle(
+                  style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 18,
                     color: Color(0xff303c66),
                   ),

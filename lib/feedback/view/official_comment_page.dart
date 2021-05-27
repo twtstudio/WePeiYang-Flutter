@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
@@ -42,69 +43,73 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
     return Scaffold(
       body: Consumer<FeedbackNotifier>(
         builder: (context, notifier, widget) {
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: ColorUtil.mainColor,
+          return DefaultTextStyle(
+            style: FontManager.YaHeiRegular,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  leading: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: ColorUtil.mainColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                title: Text(
-                  S.current.feedback_comment_detail,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: ColorUtil.boldTextColor,
+                  title: Text(
+                    S.current.feedback_comment_detail,
+                    style: FontManager.YaHeiRegular.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: ColorUtil.boldTextColor,
+                    ),
                   ),
+                  centerTitle: true,
+                  floating: true,
+                  elevation: 0,
                 ),
-                centerTitle: true,
-                floating: true,
-                elevation: 0,
-              ),
-              SliverToBoxAdapter(
-                child: CommentCard.detail(
-                  comment,
-                  title: title,
-                  onLikePressed: () {
-                    officialCommentHitLike(
-                      id: notifier.officialCommentList[index].id,
-                      isLiked: notifier.officialCommentList[index].isLiked,
-                      onSuccess: () {
-                        notifier.changeOfficialCommentLikeState(index);
-                      },
-                      onFailure: () {
-                        ToastProvider.error(S.current.feedback_like_error);
-                      },
-                    );
-                  },
-                ),
-              ),
-              if (isOwner)
                 SliverToBoxAdapter(
-                  child: RatingCard(
-                    initialRating: comment.rating == -1 ? 5 : comment.rating,
-                    onRatingChanged: (rating) {
-                      rate(
-                        id: comment.id,
-                        rating: rating * 2,
+                  child: CommentCard.detail(
+                    comment,
+                    title: title,
+                    onLikePressed: () {
+                      officialCommentHitLike(
+                        id: notifier.officialCommentList[index].id,
+                        isLiked: notifier.officialCommentList[index].isLiked,
                         onSuccess: () {
-                          notifier.updateRating(rating, index);
-                          ToastProvider.success(
-                              S.current.feedback_rating_success);
+                          notifier.changeOfficialCommentLikeState(index);
                         },
                         onFailure: () {
-                          ToastProvider.error(S.current.feedback_rating_error);
+                          ToastProvider.error(S.current.feedback_like_error);
                         },
                       );
                     },
                   ),
                 ),
-            ],
+                if (isOwner)
+                  SliverToBoxAdapter(
+                    child: RatingCard(
+                      initialRating: comment.rating == -1 ? 5 : comment.rating,
+                      onRatingChanged: (rating) {
+                        rate(
+                          id: comment.id,
+                          rating: rating * 2,
+                          onSuccess: () {
+                            notifier.updateRating(rating, index);
+                            ToastProvider.success(
+                                S.current.feedback_rating_success);
+                          },
+                          onFailure: () {
+                            ToastProvider.error(
+                                S.current.feedback_rating_error);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
           );
         },
       ),

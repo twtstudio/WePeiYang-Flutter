@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -56,122 +57,63 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
-      body: Consumer<FeedbackNotifier>(
-        builder: (context, notifier, widget) {
-          return ScrollConfiguration(
-            behavior: ScrollBehavior(),
-            child: GlowingOverscrollIndicator(
-              showLeading: true,
-              showTrailing: false,
-              color: Color.fromRGBO(0, 0, 0, 0),
-              axisDirection: AxisDirection.down,
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: ProfileHeader(
-                      child: SliverToBoxAdapter(
-                        child: _tabs(),
+      body: DefaultTextStyle(
+        style: FontManager.YaHeiRegular,
+        child: Consumer<FeedbackNotifier>(
+          builder: (context, notifier, widget) {
+            return ScrollConfiguration(
+              behavior: ScrollBehavior(),
+              child: GlowingOverscrollIndicator(
+                showLeading: true,
+                showTrailing: false,
+                color: Color.fromRGBO(0, 0, 0, 0),
+                axisDirection: AxisDirection.down,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: ProfileHeader(
+                        child: SliverToBoxAdapter(
+                          child: _tabs(),
+                        ),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(child: BlankSpace.height(5)),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return notifier.profilePostList[index].topImgUrl !=
-                                    '' &&
-                                notifier.profilePostList[index].topImgUrl !=
-                                    null
-                            ? PostCard.image(
-                                notifier.profilePostList[index],
-                                onContentPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    FeedbackRouter.detail,
-                                    arguments: DetailPageArgs(
-                                        notifier.profilePostList[index],
-                                        index,
-                                        PostOrigin.profile),
-                                  );
-                                },
-                                onLikePressed: () {
-                                  postHitLike(
-                                    id: notifier.homePostList[index].id,
-                                    isLiked:
-                                        notifier.homePostList[index].isLiked,
-                                    onSuccess: () {
-                                      notifier
-                                          .changeProfilePostLikeState(index);
-                                    },
-                                    onFailure: () {
-                                      ToastProvider.error(
-                                          S.current.feedback_like_error);
-                                    },
-                                  );
-                                },
-                                onContentLongPressed: () {
-                                  if (_currentTab == _CurrentTab.myPosts) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ProfileDialog(
-                                        onConfirm: () {
-                                          deletePost(
-                                            id: notifier
-                                                .profilePostList[index].id,
-                                            onSuccess: () {
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                              ToastProvider.success(S.current
-                                                  .feedback_delete_success);
-                                            },
-                                            onFailure: () {
-                                              ToastProvider.error(S.current
-                                                  .feedback_delete_error);
-                                              Navigator.pop(context);
-                                            },
-                                          );
-                                        },
-                                        onCancel: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
+                    SliverToBoxAdapter(child: BlankSpace.height(5)),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return notifier.profilePostList[index].topImgUrl !=
+                                      '' &&
+                                  notifier.profilePostList[index].topImgUrl !=
+                                      null
+                              ? PostCard.image(
+                                  notifier.profilePostList[index],
+                                  onContentPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                          notifier.profilePostList[index],
+                                          index,
+                                          PostOrigin.profile),
                                     );
-                                  }
-                                },
-                                showBanner: true,
-                              )
-                            : PostCard(
-                                notifier.profilePostList[index],
-                                onContentPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    FeedbackRouter.detail,
-                                    arguments: DetailPageArgs(
-                                      notifier.profilePostList[index],
-                                      index,
-                                      PostOrigin.profile,
-                                    ),
-                                  );
-                                },
-                                onLikePressed: () {
-                                  postHitLike(
-                                    id: notifier.homePostList[index].id,
-                                    isLiked:
-                                        notifier.homePostList[index].isLiked,
-                                    onSuccess: () {
-                                      notifier
-                                          .changeProfilePostLikeState(index);
-                                    },
-                                    onFailure: () {
-                                      ToastProvider.error(
-                                          S.current.feedback_like_error);
-                                    },
-                                  );
-                                },
-                                onContentLongPressed: () {
-                                  if (_currentTab == _CurrentTab.myPosts) {
-                                    if (!_deleteLock) {
-                                      _deleteLock = true;
+                                  },
+                                  onLikePressed: () {
+                                    postHitLike(
+                                      id: notifier.homePostList[index].id,
+                                      isLiked:
+                                          notifier.homePostList[index].isLiked,
+                                      onSuccess: () {
+                                        notifier
+                                            .changeProfilePostLikeState(index);
+                                      },
+                                      onFailure: () {
+                                        ToastProvider.error(
+                                            S.current.feedback_like_error);
+                                      },
+                                    );
+                                  },
+                                  onContentLongPressed: () {
+                                    if (_currentTab == _CurrentTab.myPosts) {
                                       showDialog(
                                         context: context,
                                         builder: (context) => ProfileDialog(
@@ -196,23 +138,86 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Navigator.pop(context);
                                           },
                                         ),
-                                      ).then((value) {
-                                        _deleteLock = false;
-                                      });
+                                      );
                                     }
-                                  }
-                                },
-                                showBanner: true,
-                              );
-                      },
-                      childCount: notifier.profilePostList.length,
+                                  },
+                                  showBanner: true,
+                                )
+                              : PostCard(
+                                  notifier.profilePostList[index],
+                                  onContentPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      FeedbackRouter.detail,
+                                      arguments: DetailPageArgs(
+                                        notifier.profilePostList[index],
+                                        index,
+                                        PostOrigin.profile,
+                                      ),
+                                    );
+                                  },
+                                  onLikePressed: () {
+                                    postHitLike(
+                                      id: notifier.homePostList[index].id,
+                                      isLiked:
+                                          notifier.homePostList[index].isLiked,
+                                      onSuccess: () {
+                                        notifier
+                                            .changeProfilePostLikeState(index);
+                                      },
+                                      onFailure: () {
+                                        ToastProvider.error(
+                                            S.current.feedback_like_error);
+                                      },
+                                    );
+                                  },
+                                  onContentLongPressed: () {
+                                    if (_currentTab == _CurrentTab.myPosts) {
+                                      if (!_deleteLock) {
+                                        _deleteLock = true;
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => ProfileDialog(
+                                            onConfirm: () {
+                                              deletePost(
+                                                id: notifier
+                                                    .profilePostList[index].id,
+                                                onSuccess: () {
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                  ToastProvider.success(S
+                                                      .current
+                                                      .feedback_delete_success);
+                                                },
+                                                onFailure: () {
+                                                  ToastProvider.error(S.current
+                                                      .feedback_delete_error);
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            },
+                                            onCancel: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ).then((value) {
+                                          _deleteLock = false;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  showBanner: true,
+                                );
+                        },
+                        childCount: notifier.profilePostList.length,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -243,7 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         BlankSpace.height(5),
                         Text(
                           S.current.feedback_my_post,
-                          style: TextStyle(
+                          style: FontManager.YaHeiRegular.copyWith(
                               height: 1, color: ColorUtil.lightTextColor),
                         ),
                         BlankSpace.height(5),
@@ -288,7 +293,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         BlankSpace.height(5),
                         Text(
                           S.current.feedback_my_favorite,
-                          style: TextStyle(
+                          style: FontManager.YaHeiRegular.copyWith(
                               height: 1, color: ColorUtil.lightTextColor),
                         ),
                         BlankSpace.height(5),
