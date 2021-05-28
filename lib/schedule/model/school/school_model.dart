@@ -9,8 +9,8 @@ class ScheduleBean {
       : termStart = map['termStart'],
         term = map['term'],
         courses = List()
-          ..addAll(
-              (map['courses'] as List ?? []).map((e) => ScheduleCourse.fromJson(e)));
+          ..addAll((map['courses'] as List ?? [])
+              .map((e) => ScheduleCourse.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'termStart': termStart,
@@ -66,19 +66,23 @@ class ScheduleCourse {
 
 class Arrange {
   String week; // 单双周、单周、双周
+  String binStr; // 每周是否有课的二进制字符串
   String room; // 上课地点
   String start; // 第几节开始 (从1开始数)
   String end; // 第几节结束
   String day; // 周几 （1 -> 周一）
   String courseName; // 课程名称，仅供爬虫时对照用
 
+  // TODO 这个是蹭课用的，记得补上binStr
   Arrange(this.week, this.room, this.start, this.end, this.day);
 
   /// 用这个构造方法需要自行补上room
-  Arrange.spider(this.week, this.start, this.end, this.day, this.courseName);
+  Arrange.spider(
+      this.week, this.binStr, this.start, this.end, this.day, this.courseName);
 
   Arrange.fromJson(Map<String, dynamic> map)
       : week = map['week'],
+        binStr = map['binStr'],
         room = map['room'],
         start = map['start'],
         end = map['end'],
@@ -87,6 +91,7 @@ class Arrange {
 
   Map<String, dynamic> toJson() => {
         'week': week,
+        'binStr': binStr,
         'room': room,
         'start': start,
         'end': end,

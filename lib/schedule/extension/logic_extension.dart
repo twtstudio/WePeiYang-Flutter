@@ -149,27 +149,8 @@ bool judgeActiveTomorrow(
 /// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
 List<bool> getWeekStatus(int weekCount, ScheduleCourse course) {
   List<bool> list = [];
-
-  /// 先默认所有周都没课（list[0]恒为false,反正也用不上）
-  for (var i = 0; i <= weekCount; i++) list.add(false);
-  var start = int.parse(course.week.start);
-  var end = int.parse(course.week.end);
-  var reminder = 0;
-  bool shouldMod = false;
-  switch (course.arrange.week) {
-    case "单周":
-      reminder = 1;
-      shouldMod = true;
-      break;
-    case "双周":
-      reminder = 0;
-      shouldMod = true;
-      break;
-  }
-
-  /// 利用取模操作判断是否有课
-  for (var i = start; i <= end; i++)
-    if (!shouldMod || (i % 2 == reminder)) list[i] = true;
+  for (var i = 0; i <= weekCount; i++)
+    list.add(course.arrange.binStr[i] == '1');
   return list;
 }
 
@@ -178,35 +159,11 @@ List<bool> getWeekStatus(int weekCount, ScheduleCourse course) {
 int getCurrentHours(int week, int day, List<ScheduleCourse> courses) {
   int totalHour = 0;
   courses.forEach((course) {
-    int start = int.parse(course.week.start);
-    int end = int.parse(course.week.end);
-
-    /// lastWeek双关，它的值为：最后一周 或 上一周
-    int lastWeek = min<int>(end, week - 1);
     int weekCount = 0;
-    if (start <= lastWeek) {
-      switch (course.arrange.week) {
-        case "单双周":
-          weekCount = lastWeek - start + 1;
-          break;
-        case "单周":
-          if (start.isEven) start++;
-          if (lastWeek.isOdd) lastWeek++;
-          weekCount = ((lastWeek - start + 1) / 2).round();
-          break;
-        case "双周":
-          if (start.isOdd) start++;
-          if (lastWeek.isEven) lastWeek++;
-          weekCount = ((lastWeek - start + 1) / 2).round();
-          break;
-      }
-    }
-    bool flag = true;
-    if (week > end || week < start) flag = false;
-    if (course.arrange.week == "单周" && week.isEven) flag = false;
-    if (course.arrange.week == "双周" && week.isOdd) flag = false;
-    if (day <= int.parse(course.arrange.day)) flag = false;
-    if (flag) weekCount++;
+    for (int i = 1; i < week; i++)
+      if (course.arrange.binStr[i] == '1') weekCount++;
+    if (course.arrange.binStr[week] == "1" &&
+        day > int.parse(course.arrange.day)) weekCount++;
     var arrangeStart = int.parse(course.arrange.start);
     var arrangeEnd = int.parse(course.arrange.end);
     totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
@@ -218,24 +175,9 @@ int getCurrentHours(int week, int day, List<ScheduleCourse> courses) {
 int getTotalHours(List<ScheduleCourse> courses) {
   int totalHour = 0;
   courses.forEach((course) {
-    int start = int.parse(course.week.start);
-    int end = int.parse(course.week.end);
-    int weekCount;
-    switch (course.arrange.week) {
-      case "单双周":
-        weekCount = end - start + 1;
-        break;
-      case "单周":
-        if (start.isEven) start++;
-        if (end.isOdd) end++;
-        weekCount = ((end - start + 1) / 2).round();
-        break;
-      case "双周":
-        if (start.isOdd) start++;
-        if (end.isEven) end++;
-        weekCount = ((end - start + 1) / 2).round();
-        break;
-    }
+    int weekCount = 0;
+    for (int i = 1; i < course.arrange.binStr.length; i++)
+      if (course.arrange.binStr[i] == '1') weekCount++;
     var arrangeStart = int.parse(course.arrange.start);
     var arrangeEnd = int.parse(course.arrange.end);
     totalHour += weekCount * (arrangeEnd - arrangeStart + 1);

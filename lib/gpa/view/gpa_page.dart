@@ -154,9 +154,9 @@ class _RadarChartState extends State<RadarChartWidget> {
   Widget _judgeListLength(List<GPACourse> _list) {
     if (_list.length < 3)
       return Container(
-        height: 300,
+        height: 350,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 65),
           child: Column(
             children: [
               Padding(

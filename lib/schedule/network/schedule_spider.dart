@@ -4,6 +4,8 @@ import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
 import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
     show OnResult, OnFailure;
+import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart'
+    show WpyDioError;
 
 /// 发送请求，获取html中的schedule数据
 void getScheduleCourses({OnResult onResult, OnFailure onFailure}) async {
@@ -90,6 +92,9 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
   // TODO 之前grj的账号好像有问题？
   // if (!data.contains("课程列表")) throw DioError();
 
+  /// 判断会话是否过期
+  if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
+
   /// 先整理出所有的arrange对象
   List<Arrange> arrangeList = [];
   List<String> arrangeDataList =
@@ -105,15 +110,29 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     List<String> courseInfo =
         getRegExpStr(r'(?<=activity )[^]*?(?=\;)', item).split('\"');
     var courseName = courseInfo[3];
+    var weekInfo = courseInfo[9];
 
     /// 如果当前的信息与arrangeList数组中的都不相同，则代表arrange没有重复
     /// （如果某一门课有多个老师上就会出现重复）
-    bool notContains = arrangeList.every((it) => !(it.day == day &&
-        it.start == start &&
-        it.end == end &&
-        it.courseName == courseName));
+    bool notContains = true;
+    arrangeList.forEach((e) {
+      if (e.day == day &&
+          e.start == start &&
+          e.end == end &&
+          e.courseName == courseName) {
+        String str = "";
+        for (int i = 0; i < weekInfo.length && i < e.binStr.length; i++)
+          str += (weekInfo[i] == '1' || e.binStr[i] == '1') ? '1' : '0';
+        e.binStr = str;
+        notContains = false;
+        return;
+      }
+    });
+    // bool notContains = arrangeList.every((it) => !(it.day == day &&
+    //     it.start == start &&
+    //     it.end == end &&
+    //     it.courseName == courseName));
     if (notContains) {
-      var weekInfo = courseInfo[9];
       var week = "单双周";
       bool isAllWeek = weekInfo.contains("11");
       bool isSingle = false;
@@ -125,7 +144,8 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
       }
       if (!isAllWeek && isSingle) week = "单周";
       if (!isAllWeek && !isSingle) week = "双周";
-      arrangeList.add(Arrange.spider(week, start, end, day, courseName));
+      arrangeList
+          .add(Arrange.spider(week, weekInfo, start, end, day, courseName));
     }
   });
 

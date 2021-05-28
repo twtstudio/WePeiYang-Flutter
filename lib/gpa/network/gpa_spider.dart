@@ -10,11 +10,20 @@ import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart'
 
 /// 发送请求，获取html中的gpa数据
 void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
+  var pref = CommonPreferences();
+
   try {
+    /// 如果学生没有辅修，需要做一下谜之操作，不然无数据
+    if (pref.ids.value == "useless") {
+      /// 切换至主修
+      await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+          cookieList: pref.getCookies(), params: {'projectId': '1'});
+    }
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-        cookieList: CommonPreferences().getCookies());
+        cookieList: pref.getCookies());
     onResult(_data2GPABean(response.data.toString()));
+    return;
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
   }
@@ -26,9 +35,8 @@ const double _IGNORED = 999.0;
 /// 用请求到的html数据生成gpaBean对象
 GPABean _data2GPABean(String data) {
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
-
   if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
-
+  if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
   bool isMaster = false;
 
   /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
