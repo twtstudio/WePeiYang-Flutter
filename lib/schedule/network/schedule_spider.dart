@@ -9,6 +9,7 @@ import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart'
 void getScheduleCourses({OnResult onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
+
   try {
     /// 学生没有辅修的情况：
     if (pref.ids.value != "useless") {
