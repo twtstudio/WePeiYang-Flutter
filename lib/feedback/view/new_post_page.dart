@@ -6,12 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 TextEditingController _titleController;
 TextEditingController _bodyController;
@@ -34,75 +35,82 @@ class _NewPostPageState extends State<NewPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _BasePage(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            shape: BoxShape.rectangle,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey[200],
-                  blurRadius: 5.0, //阴影模糊程度
-                  spreadRadius: 5.0 //阴影扩散程度
-                  )
-            ],
-          ),
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              TitleInputField(),
-              _divider(),
-              BodyInputField(),
-              ImagesGridView(),
-              TagView(),
-              _divider(),
-              // Submit.
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        if (_titleController.text.isNotEmpty &&
-                            _bodyController.text.isNotEmpty &&
-                            _currentTagId != null) {
-                          sendPost(
-                            title: _titleController.text,
-                            content: _bodyController.text,
-                            tagId: _currentTagId,
-                            imgList: _resultList,
-                            onSuccess: () {
-                              ToastProvider.success('发布成功');
-                              Navigator.pop(context);
-                            },
-                            onFailure: () {
-                              ToastProvider.error('校务专区发帖失败，请重试');
-                            },
-                            onUploadImageFailure: () {
-                              ToastProvider.error('校务专区图片上传失败');
-                            },
-                          );
-                        } else {
-                          ToastProvider.error('内容和标签不能为空');
-                        }
-                      },
-                      child: Text(
-                        '提交',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff303c66),
-                            fontSize: 16),
+    return DefaultTextStyle(
+      style: FontManager.YaHeiRegular,
+      child: _BasePage(
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              shape: BoxShape.rectangle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey[200],
+                    blurRadius: 5.0, //阴影模糊程度
+                    spreadRadius: 5.0 //阴影扩散程度
+                    )
+              ],
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                TitleInputField(),
+                _divider(),
+                BodyInputField(),
+                ImagesGridView(),
+                TagView(),
+                _divider(),
+                // Submit.
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          if (_titleController.text.isNotEmpty &&
+                              _bodyController.text.isNotEmpty &&
+                              _currentTagId != null) {
+                            sendPost(
+                              title: _titleController.text,
+                              content: _bodyController.text,
+                              tagId: _currentTagId,
+                              imgList: _resultList,
+                              onSuccess: () {
+                                ToastProvider.success(
+                                    S.current.feedback_post_success);
+                                Navigator.pop(context);
+                              },
+                              onFailure: () {
+                                ToastProvider.error(
+                                    S.current.feedback_post_error);
+                              },
+                              onUploadImageFailure: () {
+                                ToastProvider.error(
+                                    S.current.feedback_upload_image_error);
+                              },
+                            );
+                          } else {
+                            ToastProvider.error(
+                                S.current.feedback_empty_content_error);
+                          }
+                        },
+                        child: Text(
+                          S.current.feedback_submit,
+                          style: FontManager.YaHeiRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff303c66),
+                              fontSize: 16),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -141,8 +149,10 @@ class _TagViewState extends State<TagView> {
         builder: (_) => InkWell(
           onTap: () async => await _showTags(context),
           child: Text(
-            tab == null ? '+添加标签（必须添加一个）' : '#$tab （点击更改标签）',
-            style: TextStyle(
+            tab == null
+                ? S.current.feedback_add_tag_hint
+                : '#$tab ${S.current.feedback_change_tag_hint}',
+            style: FontManager.YaHeiRegular.copyWith(
               fontSize: 12,
               color: Color(0xff303c66),
             ),
@@ -192,9 +202,9 @@ class _TabGridViewState extends State<TabGridView>
         padding: MaterialStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: onPressed,
-      child: const Text(
-        '确定',
-        style: TextStyle(
+      child: Text(
+        S.current.feedback_ok,
+        style: FontManager.YaHeiRegular.copyWith(
           color: Color(0xff303c66),
           fontWeight: FontWeight.bold,
           fontSize: 16,
@@ -206,7 +216,7 @@ class _TabGridViewState extends State<TabGridView>
             text == currentTab ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           text,
-          style: TextStyle(
+          style: FontManager.YaHeiRegular.copyWith(
             fontSize: 12,
             color: text == currentTab ? Colors.white : Color(0xff62677c),
           ),
@@ -240,9 +250,9 @@ class _TabGridViewState extends State<TabGridView>
                 maintainState: true,
                 child: _confirmButton(onPressed: null),
               ),
-              const Text(
-                '添加标签',
-                style: TextStyle(
+              Text(
+                S.current.feedback_add_tag,
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xff303c66),
                   fontSize: 16,
                 ),
@@ -264,8 +274,8 @@ class _TabGridViewState extends State<TabGridView>
                         ? Provider.of<FeedbackNotifier>(context, listen: false)
                             .tagList[_currentTagIndex]
                             .description
-                        : '暂无介绍'),
-                style: TextStyle(
+                        : S.current.feedback_no_description),
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xff303c66),
                   fontSize: 10,
                 ),
@@ -345,7 +355,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
                 controller: _titleController,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: ColorUtil.boldTextColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -353,12 +363,12 @@ class _TitleInputFieldState extends State<TitleInputField> {
                 minLines: 1,
                 maxLines: 10,
                 decoration: InputDecoration.collapsed(
-                  hintStyle: TextStyle(
+                  hintStyle: FontManager.YaHeiRegular.copyWith(
                     color: Color(0xffd0d1d6),
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
-                  hintText: '输入标题',
+                  hintText: S.current.feedback_enter_title,
                 ),
                 onChanged: (text) {
                   titleCounter = '${text.characters.length}/20';
@@ -372,7 +382,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
             Container(width: 3),
             Text(
               titleCounter,
-              style: TextStyle(
+              style: FontManager.YaHeiRegular.copyWith(
                 color: Color(0xffd0d1d6),
                 fontSize: 12,
               ),
@@ -413,16 +423,16 @@ class _BodyInputFieldState extends State<BodyInputField> {
             textInputAction: TextInputAction.done,
             minLines: 6,
             maxLines: 20,
-            style: TextStyle(
+            style: FontManager.YaHeiRegular.copyWith(
                 color: ColorUtil.boldTextColor,
                 fontWeight: FontWeight.normal,
                 fontSize: 14),
             decoration: InputDecoration.collapsed(
-              hintStyle: TextStyle(
+              hintStyle: FontManager.YaHeiRegular.copyWith(
                 color: Color(0xffd0d1d6),
                 fontSize: 14,
               ),
-              hintText: '问题详情...',
+              hintText: '${S.current.feedback_detail}...',
             ),
             onChanged: (text) {
               bodyCounter = '${text.characters.length}/200';
@@ -438,7 +448,7 @@ class _BodyInputFieldState extends State<BodyInputField> {
             children: [
               Text(
                 bodyCounter,
-                style: TextStyle(
+                style: FontManager.YaHeiRegular.copyWith(
                   color: Color(0xffd0d1d6),
                   fontSize: 12,
                 ),
@@ -469,15 +479,14 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         enableCamera: true,
         maxImages: maxImage,
         materialOptions: MaterialOptions(
-          actionBarTitle: "图库",
-          allViewTitle: "全部的照片",
+          actionBarTitle: S.current.feedback_gallery,
+          allViewTitle: S.current.feedback_all_photos,
           actionBarColor: "#f7f7f8",
           actionBarTitleColor: "#303c66",
           lightStatusBar: true,
           statusBarColor: '#f7f7f8',
           startInAllView: false,
           selectCircleStrokeColor: "#f7f7f8",
-          selectionLimitReachedText: "足够了.",
           okButtonDrawable: "@drawable/ok",
         ),
       );
@@ -523,18 +532,19 @@ class _ImagesGridViewState extends State<ImagesGridView> {
                   var result = await showDialog<String>(
                       context: context,
                       builder: (context) => AlertDialog(
-                            title: Text('是否要删除'),
+                            title:
+                                Text(S.current.feedback_delete_dialog_content),
                             actions: [
                               FlatButton(
                                   onPressed: () {
                                     Navigator.of(context).pop('cancel');
                                   },
-                                  child: Text('取消')),
+                                  child: Text(S.current.feedback_cancel)),
                               FlatButton(
                                   onPressed: () {
                                     Navigator.of(context).pop('ok');
                                   },
-                                  child: Text('是的')),
+                                  child: Text(S.current.feedback_ok)),
                             ],
                           ));
 
@@ -595,8 +605,8 @@ class _ImagePickerWidget extends StatelessWidget {
                   color: Color(0xffb5b7c5),
                 ),
                 Text(
-                  '添加图片',
-                  style: TextStyle(
+                  S.current.feedback_add_image,
+                  style: FontManager.YaHeiRegular.copyWith(
                     color: Color(0xffd0d1d6),
                     fontSize: 12,
                   ),
@@ -636,8 +646,8 @@ class _BasePage extends StatelessWidget {
               child: AppBar(
                 centerTitle: true,
                 title: Text(
-                  '新建问题',
-                  style: TextStyle(
+                  S.current.feedback_new_post,
+                  style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 18,
                     color: Color(0xff303c66),
                   ),

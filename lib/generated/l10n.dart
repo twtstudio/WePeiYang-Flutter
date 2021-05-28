@@ -1344,6 +1344,466 @@ class S {
       args: [],
     );
   }
+
+  /// ``
+  String get feedback_search {
+    return Intl.message(
+      '',
+      name: 'feedback_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_search_hint {
+    return Intl.message(
+      '',
+      name: 'feedback_search_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_search_result {
+    return Intl.message(
+      '',
+      name: 'feedback_search_result',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_empty_keyword {
+    return Intl.message(
+      '',
+      name: 'feedback_empty_keyword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_search_history {
+    return Intl.message(
+      '',
+      name: 'feedback_search_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_search_tag {
+    return Intl.message(
+      '',
+      name: 'feedback_search_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_clear_history {
+    return Intl.message(
+      '',
+      name: 'feedback_clear_history',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_detail {
+    return Intl.message(
+      '',
+      name: 'feedback_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_comment_detail {
+    return Intl.message(
+      '',
+      name: 'feedback_comment_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_get_post_error {
+    return Intl.message(
+      '',
+      name: 'feedback_get_post_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_delete_success {
+    return Intl.message(
+      '',
+      name: 'feedback_delete_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_delete_error {
+    return Intl.message(
+      '',
+      name: 'feedback_delete_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_my_post {
+    return Intl.message(
+      '',
+      name: 'feedback_my_post',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_my_favorite {
+    return Intl.message(
+      '',
+      name: 'feedback_my_favorite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_new_post {
+    return Intl.message(
+      '',
+      name: 'feedback_new_post',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_post_success {
+    return Intl.message(
+      '',
+      name: 'feedback_post_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_post_error {
+    return Intl.message(
+      '',
+      name: 'feedback_post_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_upload_image_error {
+    return Intl.message(
+      '',
+      name: 'feedback_upload_image_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_empty_content_error {
+    return Intl.message(
+      '',
+      name: 'feedback_empty_content_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_submit {
+    return Intl.message(
+      '',
+      name: 'feedback_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_add_tag_hint {
+    return Intl.message(
+      '',
+      name: 'feedback_add_tag_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_change_tag_hint {
+    return Intl.message(
+      '',
+      name: 'feedback_change_tag_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_ok {
+    return Intl.message(
+      '',
+      name: 'feedback_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_cancel {
+    return Intl.message(
+      '',
+      name: 'feedback_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_add_tag {
+    return Intl.message(
+      '',
+      name: 'feedback_add_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_no_description {
+    return Intl.message(
+      '',
+      name: 'feedback_no_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_enter_title {
+    return Intl.message(
+      '',
+      name: 'feedback_enter_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_add_image {
+    return Intl.message(
+      '',
+      name: 'feedback_add_image',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_gallery {
+    return Intl.message(
+      '',
+      name: 'feedback_gallery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_all_photos {
+    return Intl.message(
+      '',
+      name: 'feedback_all_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_delete_dialog_content {
+    return Intl.message(
+      '',
+      name: 'feedback_delete_dialog_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_write_comment {
+    return Intl.message(
+      '',
+      name: 'feedback_write_comment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_rating_success {
+    return Intl.message(
+      '',
+      name: 'feedback_rating_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_rating_error {
+    return Intl.message(
+      '',
+      name: 'feedback_rating_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_error {
+    return Intl.message(
+      '',
+      name: 'feedback_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_like_error {
+    return Intl.message(
+      '',
+      name: 'feedback_like_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_comment_error {
+    return Intl.message(
+      '',
+      name: 'feedback_comment_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_empty_comment_error {
+    return Intl.message(
+      '',
+      name: 'feedback_empty_comment_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_get_comment_error {
+    return Intl.message(
+      '',
+      name: 'feedback_get_comment_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_no_post {
+    return Intl.message(
+      '',
+      name: 'feedback_no_post',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_please_rating {
+    return Intl.message(
+      '',
+      name: 'feedback_please_rating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_no_rating {
+    return Intl.message(
+      '',
+      name: 'feedback_no_rating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_rating {
+    return Intl.message(
+      '',
+      name: 'feedback_rating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_anonymous {
+    return Intl.message(
+      '',
+      name: 'feedback_anonymous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_official {
+    return Intl.message(
+      '',
+      name: 'feedback_official',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_profile {
+    return Intl.message(
+      '',
+      name: 'feedback_profile',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

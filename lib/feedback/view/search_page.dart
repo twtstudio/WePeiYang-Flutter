@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
 import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/search_result_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 
 bool _homePostChanged = false;
 
@@ -42,83 +44,87 @@ class _SearchPageState extends State<SearchPage> {
         Navigator.pop(context, _homePostChanged);
         return true;
       },
-      child: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                  height: AppBar().preferredSize.height,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 0),
-                          child: TextField(
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              hintText: '搜索问题',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(1080),
+      child: DefaultTextStyle(
+        style: FontManager.YaHeiRegular,
+        child: Scaffold(
+          body: Padding(
+            padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                    height: AppBar().preferredSize.height,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 0),
+                            child: TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                hintText: S.current.feedback_search_hint,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(1080),
+                                ),
+                                contentPadding: EdgeInsets.zero,
+                                fillColor: ColorUtil.searchBarBackgroundColor,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: ColorUtil.mainColor,
+                                ),
                               ),
-                              contentPadding: EdgeInsets.zero,
-                              fillColor: ColorUtil.searchBarBackgroundColor,
-                              filled: true,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: ColorUtil.mainColor,
-                              ),
+                              enabled: true,
+                              onSubmitted: (content) {
+                                if (content.isNotEmpty) {
+                                  Provider.of<FeedbackNotifier>(context,
+                                          listen: false)
+                                      .addSearchHistory(content);
+                                  _homePostChanged = true;
+                                  Provider.of<FeedbackNotifier>(context,
+                                          listen: false)
+                                      .clearHomePostList();
+                                  Navigator.pushNamed(
+                                    context,
+                                    FeedbackRouter.searchResult,
+                                    arguments: SearchResultPageArgs(
+                                      content,
+                                      '',
+                                      S.current.feedback_search_result,
+                                    ),
+                                  ).then((_) {
+                                    Navigator.pop(context, _homePostChanged);
+                                  });
+                                } else {
+                                  ToastProvider.error(
+                                      S.current.feedback_empty_keyword);
+                                }
+                              },
+                              textInputAction: TextInputAction.search,
                             ),
-                            enabled: true,
-                            onSubmitted: (content) {
-                              if (content.isNotEmpty) {
-                                Provider.of<FeedbackNotifier>(context,
-                                        listen: false)
-                                    .addSearchHistory(content);
-                                _homePostChanged = true;
-                                Provider.of<FeedbackNotifier>(context,
-                                        listen: false)
-                                    .clearHomePostList();
-                                Navigator.pushNamed(
-                                  context,
-                                  FeedbackRouter.searchResult,
-                                  arguments: SearchResultPageArgs(
-                                    content,
-                                    '',
-                                    '搜索结果',
-                                  ),
-                                ).then((_) {
-                                  Navigator.pop(context, _homePostChanged);
-                                });
-                              } else {
-                                ToastProvider.error('关键词不能为空');
-                              }
-                            },
-                            textInputAction: TextInputAction.search,
                           ),
                         ),
-                      ),
-                      TextButton(
-                        child: Text(
-                          '取消',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: ColorUtil.boldTextColor,
+                        TextButton(
+                          child: Text(
+                            S.current.feedback_cancel,
+                            style: FontManager.YaHeiRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: ColorUtil.boldTextColor,
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context, _homePostChanged);
-                        },
-                      )
-                    ],
+                          onPressed: () {
+                            Navigator.pop(context, _homePostChanged);
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                getTagWidget(),
-              ],
+                  getTagWidget(),
+                ],
+              ),
             ),
           ),
         ),
@@ -128,11 +134,11 @@ class _SearchPageState extends State<SearchPage> {
 
   ///搜索历史
   Widget getHistoryWidget() {
-    const titleTextStyle = TextStyle(
+    var titleTextStyle = FontManager.YaHeiRegular.copyWith(
         fontSize: 13.0,
         color: Color.fromRGBO(98, 103, 124, 1),
         fontWeight: FontWeight.bold);
-    const historyTextStyle = TextStyle(
+    var historyTextStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 15.0,
       color: Color.fromRGBO(48, 60, 102, 1),
     );
@@ -146,7 +152,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "历史记录",
+                  S.current.feedback_search_history,
                   style: titleTextStyle,
                 ),
                 InkWell(
@@ -178,7 +184,7 @@ class _SearchPageState extends State<SearchPage> {
                           arguments: SearchResultPageArgs(
                             notifier.searchHistoryList[index],
                             '',
-                            '搜索结果',
+                            S.current.feedback_search_result,
                           ),
                         ).then((_) {
                           Navigator.pop(context, _homePostChanged);
@@ -224,8 +230,8 @@ class _SearchPageState extends State<SearchPage> {
         fontSize: 13.0,
         color: Color.fromRGBO(98, 103, 124, 1),
         fontWeight: FontWeight.bold);
-    const tagTextStyle =
-        TextStyle(fontSize: 12.0, color: Color.fromRGBO(98, 103, 124, 1));
+    var tagTextStyle = FontManager.YaHeiRegular.copyWith(
+        fontSize: 12.0, color: Color.fromRGBO(98, 103, 124, 1));
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
       child: Column(
@@ -236,7 +242,7 @@ class _SearchPageState extends State<SearchPage> {
             margin: EdgeInsets.only(top: 20),
             alignment: Alignment.centerLeft,
             child: Text(
-              "标签搜索",
+              S.current.feedback_search_tag,
               style: titleTextStyle,
             ),
           ),
@@ -292,16 +298,16 @@ class _SearchPageState extends State<SearchPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("确认清除所有搜索记录吗？"),
+            title: Text(S.current.feedback_clear_history),
             actions: <Widget>[
               FlatButton(
-                child: Text("取消"),
+                child: Text(S.current.feedback_cancel),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               FlatButton(
-                child: Text("确定"),
+                child: Text(S.current.feedback_ok),
                 onPressed: () {
                   Provider.of<FeedbackNotifier>(context, listen: false)
                       .clearSearchHistory();

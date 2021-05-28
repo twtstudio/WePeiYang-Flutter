@@ -1,14 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
 import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
+import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 
 import 'components/post_card.dart';
@@ -64,7 +63,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         _refreshController.refreshCompleted();
       },
       onFailure: () {
-        ToastProvider.error('校务专区获取帖子失败, 请刷新');
+        ToastProvider.error(S.current.feedback_get_post_error);
         _refreshController.refreshFailed();
       },
     );
@@ -83,7 +82,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           _refreshController.refreshCompleted();
         },
         onFailure: () {
-          ToastProvider.error('校务专区获取帖子失败, 请刷新');
+          ToastProvider.error(S.current.feedback_get_post_error);
           _refreshController.loadFailed();
         },
       );
@@ -110,7 +109,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           });
         },
         onFailure: () {
-          ToastProvider.error('校务专区获取帖子失败, 请刷新');
+          ToastProvider.error(S.current.feedback_get_post_error);
         },
       );
     });
@@ -160,8 +159,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      '未检索到相关问题',
-                      style: TextStyle(
+                      S.current.feedback_no_post,
+                      style: FontManager.YaHeiRegular.copyWith(
                         color: ColorUtil.lightTextColor,
                       ),
                     ),
@@ -211,7 +210,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                 notifier.changeHomePostLikeState(index);
                                               },
                                               onFailure: () {
-                                                ToastProvider.error('校务专区点赞失败，请重试');
+                                                ToastProvider.error(S.current
+                                                    .feedback_like_error);
                                               },
                                             );
                                           },
@@ -235,7 +235,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                 notifier.changeHomePostLikeState(index);
                                               },
                                               onFailure: () {
-                                                ToastProvider.error('校务专区点赞失败，请重试');
+                                                ToastProvider.error(S.current
+                                                    .feedback_like_error);
                                               },
                                             );
                                           },

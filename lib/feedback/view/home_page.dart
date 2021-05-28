@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
 import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
 import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
@@ -10,6 +11,7 @@ import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
 import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
 import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
+import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
 import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
 import 'package:wei_pei_yang_demo/message/message_provider.dart';
@@ -122,181 +124,191 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
           Navigator.pushNamed(context, FeedbackRouter.newPost);
         },
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
-            child: Consumer<FeedbackNotifier>(
-              builder: (BuildContext context, notifier, Widget child) {
-                return SmartRefresher(
-                  physics: BouncingScrollPhysics(),
-                  controller: _refreshController,
-                  header: ClassicHeader(),
-                  enablePullDown: true,
-                  onRefresh: _onRefresh,
-                  footer: ClassicFooter(),
-                  enablePullUp: currentPage != totalPage,
-                  onLoading: _onLoading,
-                  child: SingleChildScrollView(
+      body: DefaultTextStyle(
+        style: FontManager.YaHeiRegular,
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+              child: Consumer<FeedbackNotifier>(
+                builder: (BuildContext context, notifier, Widget child) {
+                  return SmartRefresher(
                     physics: BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 20),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 0),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(1080),
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        hintText: '搜索问题',
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide.none,
-                                          borderRadius:
-                                              BorderRadius.circular(1080),
+                    controller: _refreshController,
+                    header: ClassicHeader(),
+                    enablePullDown: true,
+                    onRefresh: _onRefresh,
+                    footer: ClassicFooter(),
+                    enablePullUp: currentPage != totalPage,
+                    onLoading: _onLoading,
+                    child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 20),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 0),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(1080),
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          hintText: S.current.feedback_search,
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide.none,
+                                            borderRadius:
+                                                BorderRadius.circular(1080),
+                                          ),
+                                          contentPadding: EdgeInsets.zero,
+                                          fillColor: ColorUtil
+                                              .searchBarBackgroundColor,
+                                          filled: true,
+                                          prefixIcon: Icon(
+                                            Icons.search,
+                                            color: ColorUtil.mainColor,
+                                          ),
                                         ),
-                                        contentPadding: EdgeInsets.zero,
-                                        fillColor:
-                                            ColorUtil.searchBarBackgroundColor,
-                                        filled: true,
-                                        prefixIcon: Icon(
-                                          Icons.search,
-                                          color: ColorUtil.mainColor,
-                                        ),
+                                        enabled: false,
                                       ),
-                                      enabled: false,
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                                context, FeedbackRouter.search)
+                                            .then((value) async {
+                                          if (value == true) {
+                                            notifier.clearHomePostList();
+                                            _onRefresh();
+                                          }
+                                        });
+                                      },
                                     ),
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                              context, FeedbackRouter.search)
-                                          .then((value) async {
-                                        if (value == true) {
-                                          notifier.clearHomePostList();
-                                          _onRefresh();
-                                        }
-                                      });
-                                    },
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                color: ColorUtil.mainColor,
-                                icon: FeedbackBadgeWidget(
-                                  type: FeedbackMessageType.home,
-                                  child: Image.asset(
-                                      'lib/feedback/assets/img/profile.png'),
-                                ),
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    FeedbackRouter.profile,
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-
-                        /// The list of posts.
-                        if (status == FeedbackHomePageStatus.idle)
-                          MediaQuery.removePadding(
-                            removeTop: true,
-                            context: context,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return notifier.homePostList[index].topImgUrl !=
-                                            '' &&
-                                        notifier.homePostList[index]
-                                                .topImgUrl !=
-                                            null
-                                    ? PostCard.image(
-                                        notifier.homePostList[index],
-                                        onContentPressed: () {
-                                          Navigator.pushNamed(
-                                              context, FeedbackRouter.detail,
-                                              arguments: DetailPageArgs(
-                                                  notifier.homePostList[index],
-                                                  index,
-                                                  PostOrigin.home));
-                                        },
-                                        onLikePressed: () {
-                                          postHitLike(
-                                            id: notifier.homePostList[index].id,
-                                            isLiked: notifier
-                                                .homePostList[index].isLiked,
-                                            onSuccess: () {
-                                              notifier.changeHomePostLikeState(
-                                                  index);
-                                            },
-                                            onFailure: () {
-                                              ToastProvider.error(
-                                                  '校务专区点赞失败，请重试');
-                                            },
-                                          );
-                                        },
-                                      )
-                                    : PostCard(
-                                        notifier.homePostList[index],
-                                        onContentPressed: () {
-                                          Navigator.pushNamed(
-                                              context, FeedbackRouter.detail,
-                                              arguments: DetailPageArgs(
-                                                  notifier.homePostList[index],
-                                                  index,
-                                                  PostOrigin.home));
-                                        },
-                                        onLikePressed: () {
-                                          postHitLike(
-                                            id: notifier.homePostList[index].id,
-                                            isLiked: notifier
-                                                .homePostList[index].isLiked,
-                                            onSuccess: () {
-                                              notifier.changeHomePostLikeState(
-                                                  index);
-                                            },
-                                            onFailure: () {
-                                              ToastProvider.error(
-                                                  '校务专区点赞失败，请重试');
-                                            },
-                                          );
-                                        },
-                                      );
-                              },
-                              itemCount: notifier.homePostList.length,
+                                IconButton(
+                                  color: ColorUtil.mainColor,
+                                  icon: FeedbackBadgeWidget(
+                                    type: FeedbackMessageType.home,
+                                    child: Image.asset(
+                                        'lib/feedback/assets/img/profile.png'),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      FeedbackRouter.profile,
+                                    );
+                                  },
+                                )
+                              ],
                             ),
-                          )
-                      ],
+                          ),
+
+                          /// The list of posts.
+                          if (status == FeedbackHomePageStatus.idle)
+                            MediaQuery.removePadding(
+                              removeTop: true,
+                              context: context,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return notifier.homePostList[index]
+                                                  .topImgUrl !=
+                                              '' &&
+                                          notifier.homePostList[index]
+                                                  .topImgUrl !=
+                                              null
+                                      ? PostCard.image(
+                                          notifier.homePostList[index],
+                                          onContentPressed: () {
+                                            Navigator.pushNamed(
+                                                context, FeedbackRouter.detail,
+                                                arguments: DetailPageArgs(
+                                                    notifier
+                                                        .homePostList[index],
+                                                    index,
+                                                    PostOrigin.home));
+                                          },
+                                          onLikePressed: () {
+                                            postHitLike(
+                                              id: notifier
+                                                  .homePostList[index].id,
+                                              isLiked: notifier
+                                                  .homePostList[index].isLiked,
+                                              onSuccess: () {
+                                                notifier
+                                                    .changeHomePostLikeState(
+                                                        index);
+                                              },
+                                              onFailure: () {
+                                                ToastProvider.error(S.current
+                                                    .feedback_like_error);
+                                              },
+                                            );
+                                          },
+                                        )
+                                      : PostCard(
+                                          notifier.homePostList[index],
+                                          onContentPressed: () {
+                                            Navigator.pushNamed(
+                                                context, FeedbackRouter.detail,
+                                                arguments: DetailPageArgs(
+                                                    notifier
+                                                        .homePostList[index],
+                                                    index,
+                                                    PostOrigin.home));
+                                          },
+                                          onLikePressed: () {
+                                            postHitLike(
+                                              id: notifier
+                                                  .homePostList[index].id,
+                                              isLiked: notifier
+                                                  .homePostList[index].isLiked,
+                                              onSuccess: () {
+                                                notifier
+                                                    .changeHomePostLikeState(
+                                                        index);
+                                              },
+                                              onFailure: () {
+                                                ToastProvider.error(S.current
+                                                    .feedback_like_error);
+                                              },
+                                            );
+                                          },
+                                        );
+                                },
+                                itemCount: notifier.homePostList.length,
+                              ),
+                            )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          if (status == FeedbackHomePageStatus.loading)
-            Positioned(
-              child: Loading(),
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-            ),
-          if (status == FeedbackHomePageStatus.error)
-            Positioned(
-              child: HomeErrorContainer(_onRefresh),
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-            ),
-        ],
+            if (status == FeedbackHomePageStatus.loading)
+              Positioned(
+                child: Loading(),
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              ),
+            if (status == FeedbackHomePageStatus.error)
+              Positioned(
+                child: HomeErrorContainer(_onRefresh),
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -346,8 +358,8 @@ class HomeErrorContainer extends StatelessWidget {
             ),
           ),
           Text(
-            '错误！请重试',
-            style: TextStyle(
+            S.current.feedback_error,
+            style: FontManager.YaHeiRegular.copyWith(
               color: ColorUtil.lightTextColor,
             ),
           ),
