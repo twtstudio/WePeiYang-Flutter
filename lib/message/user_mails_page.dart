@@ -5,7 +5,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
 import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
 
-
 class UserMailboxPage extends StatefulWidget {
   @override
   _UserMailboxPageState createState() => _UserMailboxPageState();
@@ -191,13 +190,19 @@ class _MailItemState extends State<MailItem> {
       child: GestureDetector(
         // onTapUp: (_) => showDialog(
         //     context: context, builder: (_) => UserMailDialog(widget.data.url)),
-        onTapUp: (_) => Navigator.push(
-            context,
-            new MaterialPageRoute(
+        onTapUp: (_) {
+          if (widget.data.url != "") {
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
                 builder: (context) => new MailPage(
-                      url: widget.data.url,
-                      title: widget.data.title,
-                    ))),
+                  url: widget.data.url,
+                  title: widget.data.title,
+                ),
+              ),
+            );
+          }
+        },
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -281,21 +286,21 @@ class MailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          title: Text(title,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1))),
-          elevation: 0,
-          brightness: Brightness.light,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
-                onTap: () => Navigator.pop(context)),
-          )),
+        title: Text(title,
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 16, color: Color.fromRGBO(36, 43, 69, 1))),
+        elevation: 0,
+        brightness: Brightness.light,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: GestureDetector(
+              child: Icon(Icons.arrow_back,
+                  color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+              onTap: () => Navigator.pop(context)),
+        ),
+      ),
       body: WebView(
         initialUrl: url,
       ),
@@ -333,7 +338,8 @@ class UserMail {
     this.content = json['content'] ?? "";
     var t = json['createdAt'] ?? "";
     this.time = reg1.firstMatch(t)?.group(0) ?? "";
-    this.url = "https://www.baidu.com";
+    this.url = json['url'] ?? "";
+    // print('url: ${this.url}');
     this.id = json["id"] ?? 0;
   }
 }

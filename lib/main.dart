@@ -97,9 +97,9 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       GlobalModel().init(baseContext);
       await HiveManager.init();
       await getToken(onSuccess: (token) {
-        assert(() {
-          ToastProvider.success("token : $token");
-        }());
+        // assert(() {
+        //   ToastProvider.success("token : $token");
+        // }());
       }, onFailure: () {
         assert(() {
           ToastProvider.error("获取token失败");
