@@ -128,10 +128,6 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
         return;
       }
     });
-    // bool notContains = arrangeList.every((it) => !(it.day == day &&
-    //     it.start == start &&
-    //     it.end == end &&
-    //     it.courseName == courseName));
     if (notContains) {
       var week = "单双周";
       bool isAllWeek = weekInfo.contains("11");
