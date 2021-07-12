@@ -13,11 +13,13 @@ void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
   try {
-    /// 如果学生没有辅修，需要做一下谜之操作，不然无数据
+    /// 如果学生有辅修，需要做一下谜之操作，不然无数据
     if (pref.ids.value == "useless") {
       /// 切换至主修
-      await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-          cookieList: pref.getCookies(), params: {'projectId': '1'});
+      await fetch(
+          "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+          cookieList: pref.getCookies(),
+          params: {'projectId': '1'});
     }
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
@@ -37,6 +39,10 @@ GPABean _data2GPABean(String data) {
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
   if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
   if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
+
+  /// 没评教赶快去评教啊喂
+  if (data.contains("就差一个评教的距离啦")) return null;
+
   bool isMaster = false;
 
   /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
@@ -55,8 +61,6 @@ GPABean _data2GPABean(String data) {
   /// 匹配所有科目信息
   var filterStr = getRegExpStr(r'(?<=\>绩点\<)[\s\S]*', data); // 先去掉总数据部分的tr结点
 
-  // TODO 不知道这样检查是否评价可以不，只能等到期末了。。
-  if (filterStr.contains("评教")) throw WpyDioError(error: "有课程未评教，无法显示数据");
   var courseDataList =
       getRegExpList(r'(?<=\<tr)[\s\S]*?(?=\<\/tr)', filterStr); // 所有的课程数据（糙数据）
   var currentTermStr = "";

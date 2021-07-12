@@ -42,16 +42,10 @@ class ScheduleNotifier with ChangeNotifier {
       ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / 604800)
           .ceil();
 
-  /// 一学期一共有多少周……很没存在感的东西
+  /// 一学期一共有多少周……总之25周肯定够用了
   int _weekCount = 25;
 
   int get weekCount => _weekCount;
-
-  // TODO 这个先不爬了吧
-  set weekCount(int newCount) {
-    if (_weekCount == newCount) return;
-    _weekCount = newCount;
-  }
 
   /// 夜猫子模式
   bool _nightMode = true;
