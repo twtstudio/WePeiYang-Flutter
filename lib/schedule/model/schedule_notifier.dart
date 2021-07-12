@@ -19,10 +19,10 @@ class ScheduleNotifier with ChangeNotifier {
   List<ScheduleCourse> get coursesWithNotify => _courses;
 
   /// 每学期的开始时间
-  // TODO 这个得上接口
-  int _termStart = 1614528000;
+  int get termStart => CommonPreferences().termStart.value;
 
-  int get termStart => _termStart;
+  /// 学期名
+  String get termName => CommonPreferences().termName.value;
 
   /// 当前显示的星期
   int _selectedWeek = 1;
@@ -71,7 +71,7 @@ class ScheduleNotifier with ChangeNotifier {
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
         CommonPreferences().scheduleData.value =
-            json.encode(ScheduleBean(_termStart, "20212", courses));
+            json.encode(ScheduleBean(termStart, termName, courses));
       }, onFailure: (e) {
         if (hint && onFailure == null) ToastProvider.error(e.error);
         if (onFailure != null) onFailure();
@@ -86,7 +86,6 @@ class ScheduleNotifier with ChangeNotifier {
     ScheduleBean schedule =
         ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
     _courses = schedule.courses;
-    _termStart = schedule.termStart;
     notifyListeners();
   }
 

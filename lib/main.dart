@@ -134,45 +134,27 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'showMessage':
-                    // print("*****************************************");
                     String content = await call.arguments;
-                    // print(
-                    //     "*******************$content + ${content != null && content.isNotEmpty}*****************");
                     if (content != null && content.isNotEmpty) {
-                      // print("????");
-                      await showMessageDialog(
-                        baseContext,
-                        content,
-                      );
+                      await showMessageDialog(baseContext, content);
                       assert(() {
                         ToastProvider.success(content);
                       }());
                       return "success";
-                    } else {
+                    } else
                       throw PlatformException(
                           code: 'error',
                           message: '失败',
                           details: 'content is null');
-                    }
                     break;
                   case 'getReply':
-                    // print(
-                    //     "******************  get reply ***********************");
-                    // print(
-                    //     "******************  get reply ***********************");
-                    // print(
-                    //     "******************  get reply ***********************");
                     await Navigator.pushNamed(
                         baseContext, FeedbackRouter.detail);
                     return "success";
-                    break;
                   case 'refreshFeedbackMessageCount':
                     log("refreshFeedbackMessageCount");
                     await messageProvider.refreshFeedbackCount();
                     return "success";
-                    break;
-                  default:
-                    // print("???????????????????????????????????????????");
                 }
               });
             return messageProvider;
@@ -184,7 +166,6 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WeiPeiYangDemo',
           navigatorKey: WeiPeiYangApp.navigatorState,
-          // theme: ThemeData(fontFamily: 'WeiYuanYaHei'),
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [

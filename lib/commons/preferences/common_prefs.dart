@@ -18,7 +18,6 @@ class CommonPreferences {
   }
 
   ///twt相关
-
   var isLogin = PrefsBean<bool>('login');
   var token = PrefsBean<String>('token');
   var nickname = PrefsBean<String>('nickname', '未登录');
@@ -35,9 +34,10 @@ class CommonPreferences {
   /// GPA & 课程表数据
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
+  var termStart = PrefsBean<int>('termStart', 1614528000);
+  var termName = PrefsBean<String>('termName', '20212');
 
   ///办公网相关
-
   var isBindTju = PrefsBean<bool>('bindtju');
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');

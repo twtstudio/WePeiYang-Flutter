@@ -1,20 +1,20 @@
 class ScheduleBean {
   int termStart;
-  String term;
+  String termName;
   List<ScheduleCourse> courses;
 
-  ScheduleBean(this.termStart, this.term, this.courses);
+  ScheduleBean(this.termStart, this.termName, this.courses);
 
   ScheduleBean.fromJson(Map<String, dynamic> map)
       : termStart = map['termStart'],
-        term = map['term'],
+        termName = map['termName'],
         courses = List()
           ..addAll((map['courses'] as List ?? [])
               .map((e) => ScheduleCourse.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'termStart': termStart,
-        'term': term,
+        'termName': termName,
         'courses': courses.map((e) => e.toJson()).toList(),
       };
 }
