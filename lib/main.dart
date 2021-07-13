@@ -167,25 +167,6 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
                         baseContext, FeedbackRouter.detail);
                     return "success";
                     break;
-                  case 'getWBYPushMessage':
-                  // print(
-                  //     "******************  get reply ***********************");
-                  // print(
-                  //     "******************  get reply ***********************");
-                  // print(
-                  //     "******************  get reply ***********************");
-                    print("try to open wby push message");
-                    Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                        builder: (context) => new MailPage(
-                          url: call.arguments["url"],
-                          title: call.arguments["title"],
-                        ),
-                      ),
-                    );
-                    return "success";
-                    break;
                   case 'refreshFeedbackMessageCount':
                     log("refreshFeedbackMessageCount");
                     await messageProvider.refreshFeedbackCount();

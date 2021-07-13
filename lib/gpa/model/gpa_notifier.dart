@@ -62,12 +62,9 @@ class GPANotifier with ChangeNotifier {
   /// 获取曲线上的数据
   List<double> get curveDataWithNotify {
     var doubles = List<double>();
-    if (_type == 0) for (var i in _gpaStats)
-      doubles.add(i.weighted);
-    if (_type == 1) for (var i in _gpaStats)
-      doubles.add(i.gpa);
-    if (_type == 2) for (var i in _gpaStats)
-      doubles.add(i.credits);
+    if (_type == 0) for (var i in _gpaStats) doubles.add(i.weighted);
+    if (_type == 1) for (var i in _gpaStats) doubles.add(i.gpa);
+    if (_type == 2) for (var i in _gpaStats) doubles.add(i.credits);
     return doubles;
   }
 
@@ -138,6 +135,10 @@ class GPANotifier with ChangeNotifier {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
       getGPABean(onResult: (gpaBean) {
+        if (gpaBean == null) {
+          ToastProvider.error("存在未评教的课程，请先前往评教");
+          return;
+        }
         if (hint) ToastProvider.success("刷新gpa数据成功");
         _gpaStats = gpaBean.stats;
         _total = gpaBean.total;

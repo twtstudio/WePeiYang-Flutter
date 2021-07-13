@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
 import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
@@ -106,7 +108,6 @@ class AuthDio extends DioAbstract {
 final _dio = AuthDio();
 
 /// 注册或完善信息时获取短信验证码
-
 getCaptchaOnRegister(String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
@@ -239,6 +240,9 @@ void login(String account, String password,
     prefs.email.value = result['email'] ?? "";
     prefs.isLogin.value = true;
     onResult(result);
+
+    /// 登录成功后尝试更新学期信息
+    getSemesterInfo();
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
   }
@@ -324,11 +328,20 @@ checkInfo2(String idNumber, String email, String phone,
   }
 }
 
-/// 获得当前学期信息，仅在用户手动登录后被调用
-getSemesterInfo({@required OnSuccess onSuccess, OnFailure onFailure}) async {
+/// 获得当前学期信息，在用户 手动/自动 登录后被调用
+getSemesterInfo() async {
   try {
-    await _dio.get("semester");
+    var result = await _dio.getRst("semester");
+    var pref = CommonPreferences();
+    pref.termStart.value = result['semesterStartTimestamp'];
+    pref.termName.value = result['semesterName'];
+    // TODO: 这里留着下学期开学用
+    // print("hahahhahahahahaahhahahahahahahahahahaha");
+    // print(result);
+    // print(result['semesterStartTimestamp']);
+    // print(result['semesterName']);
+    // print("dhsauodhaudhashdsahkdjshjdajdajshdjashjda");
   } on DioError catch (e) {
-    if (onFailure != null) onFailure(e);
+    log('获取学期信息失败\t$e\n\tMessage: ${e.message}');
   }
 }

@@ -19,7 +19,7 @@ class CourseDialog extends Dialog {
   CourseDialog(this.courses);
 
   static final nameStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 21,
+      fontSize: 24,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.bold);
@@ -46,19 +46,19 @@ class CourseDialog extends Dialog {
       child: Container(
         height: 340,
         child: courses.length == 1
-            ? _getSingleCard(context, width, courses[0], false)
+            ? _getSingleCard(context, width, courses[0])
             : ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 itemCount: courses.length,
                 itemBuilder: (context, i) =>
-                    _getSingleCard(context, width, courses[i], i == 0)),
+                    _getSingleCard(context, width, courses[i])),
       ),
     );
   }
 
   Widget _getSingleCard(BuildContext context, double width,
-          ScheduleCourse course, bool conflict) =>
+          ScheduleCourse course) =>
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         width: width,
@@ -81,21 +81,6 @@ class CourseDialog extends Dialog {
                   padding: const EdgeInsets.only(top: 12),
                   child: Text(course.teacher, style: teacherStyle),
                 ),
-                conflict
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/images/schedule_warn.png',
-                                  width: 20, height: 20),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Text(S.current.conflict,
-                                    style: teacherStyle),
-                              )
-                            ]))
-                    : Container(),
                 Expanded(child: Text("")),
                 _getRow1(course),
                 Padding(

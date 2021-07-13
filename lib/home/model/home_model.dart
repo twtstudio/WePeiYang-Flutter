@@ -32,8 +32,7 @@ class GlobalModel {
         ),
         'GPA',
         GPARouter.gpa));
-    // cards.add(CardBean(Icons.call, '黄页', HomeRouter.telNum));
-    // !!! 别改变自习室的位置，确定在3，不然请去wpy_page最下面改一下index
+    /// 别改变自习室的位置，确定下标为2，不然请去wpy_page最下面改一下index
     cards.add(CardBean(
         ImageIcon(
           AssetImage(Images.building),
