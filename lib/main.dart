@@ -26,6 +26,7 @@ import 'commons/preferences/common_prefs.dart';
 import 'commons/util/app_analysis.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
+import 'message/user_mails_page.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
@@ -164,6 +165,25 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
                     //     "******************  get reply ***********************");
                     await Navigator.pushNamed(
                         baseContext, FeedbackRouter.detail);
+                    return "success";
+                    break;
+                  case 'getWBYPushMessage':
+                  // print(
+                  //     "******************  get reply ***********************");
+                  // print(
+                  //     "******************  get reply ***********************");
+                  // print(
+                  //     "******************  get reply ***********************");
+                    print("try to open wby push message");
+                    Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                        builder: (context) => new MailPage(
+                          url: call.arguments["url"],
+                          title: call.arguments["title"],
+                        ),
+                      ),
+                    );
                     return "success";
                     break;
                   case 'refreshFeedbackMessageCount':

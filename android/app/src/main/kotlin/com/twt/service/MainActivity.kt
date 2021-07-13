@@ -10,16 +10,20 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.umeng_sdk.UmengSdkPlugin
+import com.google.gson.Gson
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.lang.ref.WeakReference
+import java.util.*
 
 
 class MainActivity : FlutterFragmentActivity() {
     var messageChannel: MethodChannel? = null
-    private var notificationManager: NotificationManagerCompat? = null
+    private val notificationManager: NotificationManagerCompat by lazy {
+        NotificationManagerCompat.from(this)
+    }
 
     override fun onPause() {
         super.onPause()
@@ -33,58 +37,105 @@ class MainActivity : FlutterFragmentActivity() {
         Log.i("UMLog", "onResume@MainActivity")
     }
 
-    fun showNotification(data: FeedbackMessage) {
+    fun showNotification(data: MessageData) {
+
+        fun send(id: Int, title: String, content: String, intent: Intent) {
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+            val builder = NotificationCompat.Builder(this, "1")
+                    .setSmallIcon(R.drawable.push_small)
+                    .setContentTitle(title)
+                    .setContentText(content)
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setContentIntent(pendingIntent)
+                    .setWhen(System.currentTimeMillis())
+                    .setAutoCancel(true)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Log.d("WBYDemo", "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
+                val intent2 = Intent(this, MainActivity::class.java)
+                val pIntent = PendingIntent.getActivity(applicationContext, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
+                builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                builder.setFullScreenIntent(pIntent, false)
+            }
+
+            notificationManager.notify(id, builder.build())
+        }
+
         //点击时想要打开的界面
         //点击时想要打开的界面
         val intent = Intent(this, MainActivity::class.java)
-        intent.data = Uri.parse(data.question_id.toString())
-        //一般点击通知都是打开独立的界面，为了避免添加到现有的activity栈中，可以设置下面的启动方式
+
+        when (data) {
+            is FeedbackMessage -> {
+                //一般点击通知都是打开独立的界面，为了避免添加到现有的activity栈中，可以设置下面的启动方式
 //        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-        //创建activity类型的pendingIntent，还可以创建广播等其他组件
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-
-        val builder = NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.push_small)
-                .setContentTitle(data.title)
-                .setContentText(data.content)
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.d("WBYDemo", "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
-            val intent2 = Intent(this, MainActivity::class.java)
-            val pIntent = PendingIntent.getActivity(applicationContext, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            builder.setFullScreenIntent(pIntent, false)
+                val intentContent = IntentType(type = 1, data = data.question_id.toString())
+                intent.data = Uri.parse(intentContent.toString())
+                send(data.question_id, data.title, data.content, intent)
+            }
+            is WBYPushMessage -> {
+                val intentContent = IntentType(type = 2, data = Gson().toJson(data))
+                intent.data = Uri.parse(intentContent.toString())
+                send(0, data.title, data.content, intent)
+            }
         }
 
-        //notificationId 相当于通知的唯一标识，用于更新或者移除通知
-        notificationManager?.notify(data.question_id, builder.build())
+
     }
+
 
     override fun onNewIntent(intent: Intent) {
         intent.dataString?.let {
             Log.d("WBYDEMO", it)
-            WBYApplication.postId = it.toIntOrNull() ?: -1
-            messageChannel?.invokeMethod("getReply", null, object : MethodChannel.Result {
-                override fun success(result: Any?) {
+            val intentContent = Gson().fromJson(it, IntentType::class.java)
+            when (intentContent.type) {
+                1 -> {
+                    WBYApplication.postId = intentContent.data.toIntOrNull() ?: -1
+                    messageChannel?.invokeMethod("getReply", null, object : MethodChannel.Result {
+                        override fun success(result: Any?) {
 //                                TODO("Not yet implemented")
-                    WBYApplication.postId = -1
-                }
+//                            WBYApplication.postId = -1
+                        }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                        override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
 //                                TODO("Not yet implemented")
-                }
+                        }
 
-                override fun notImplemented() {
+                        override fun notImplemented() {
 //                                TODO("Not yet implemented")
-                }
+                        }
 
-            })
+                    })
+                }
+                2 -> {
+                    val data = Gson().fromJson(intentContent.data, WBYPushMessage::class.java)
+                    WBYApplication.url = data.url
+                    messageChannel?.invokeMethod("getWBYPushMessage", mapOf("title" to data.title, "url" to data.url), object : MethodChannel.Result {
+                        override fun success(result: Any?) {
+//                                TODO("Not yet implemented")
+                            Log.d("WBYDemo", "open wby push message success ?")
+                        }
+
+                        override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+//                                TODO("Not yet implemented")
+                            Log.d("WBYDemo", "open wby push message error ?")
+
+                        }
+
+                        override fun notImplemented() {
+//                                TODO("Not yet implemented")
+                            Log.d("WBYDemo", "open wby push message not implemented ?")
+
+                        }
+
+                    })
+                }
+                else -> {
+
+                }
+            }
         }
 
         super.onNewIntent(intent)
@@ -98,6 +149,7 @@ class MainActivity : FlutterFragmentActivity() {
                 when (call.method) {
                     "getPostId" -> {
                         result.success(WBYApplication.postId)
+                        WBYApplication.postId = -1
                     }
                     "cancelNotification" -> {
                         try {
@@ -108,6 +160,10 @@ class MainActivity : FlutterFragmentActivity() {
                             notificationManager?.cancel(it)
                         }
                         result.success("cancel success")
+                    }
+                    "getMessageUrl" -> {
+                        result.success(WBYApplication.url)
+                        WBYApplication.url = ""
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }
@@ -120,7 +176,6 @@ class MainActivity : FlutterFragmentActivity() {
         super.onCreate(savedInstanceState)
         WBYApplication.activity = WeakReference(this)
         UmengSdkPlugin.setContext(this)
-        notificationManager = NotificationManagerCompat.from(this)
         Log.i("UMLog", "UMConfigure.init@MainActivity")
 //        GlobalScope.launch {
 //            delay(5000)
@@ -128,13 +183,13 @@ class MainActivity : FlutterFragmentActivity() {
 //        }
     }
 
-    // 这么写没用，但是先留着，如果之后有厂商推送就有用了
-    override fun getInitialRoute(): String {
-        WBYApplication.postId.takeIf { it != -1 }?.let {
-            return "feedback/detail"
-        }
-        return super.getInitialRoute()
-    }
+//    // 这么写没用，但是先留着，如果之后有厂商推送就有用了
+//    override fun getInitialRoute(): String {
+//        WBYApplication.postId.takeIf { it != -1 }?.let {
+//            return "feedback/detail"
+//        }
+//        return super.getInitialRoute()
+//    }
 
     fun showDialog(data: String) {
         val builder = AlertDialog.Builder(this)
@@ -143,3 +198,8 @@ class MainActivity : FlutterFragmentActivity() {
         builder.show()
     }
 }
+
+data class IntentType(
+        val type: Int,
+        val data: String,
+)
