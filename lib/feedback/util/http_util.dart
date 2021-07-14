@@ -51,9 +51,8 @@ Future getToken(
         'password': CommonPreferences().password.value,
       },
     );
-    if (null != response.data['data']['token']) {
-      log('getToken大成功');
-      log(response.data.toString());
+    if (null != response.data['data'] &&
+        null != response.data['data']['token']) {
       CommonPreferences().feedbackToken.value = response.data['data']['token'];
       onSuccess(response.data['data']['token']);
     } else {
