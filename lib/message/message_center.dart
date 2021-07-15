@@ -70,7 +70,7 @@ class MessageRepository {
     var token = CommonPreferences().token.value;
     // debugPrint("get mails@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$token");
     var response = await Dio().get(
-      "https://api.twt.edu.cn/api/notification/message/user",
+      "https://api.twt.edu.cn/api/notification/history/user",
       options: Options(
         headers: {
           "DOMAIN": AuthDio.DOMAIN,

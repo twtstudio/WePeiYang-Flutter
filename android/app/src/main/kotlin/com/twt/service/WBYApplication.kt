@@ -25,6 +25,7 @@ class WBYApplication : FlutterApplication() {
         private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
         var postId: Int = -1
+        var url:String = ""
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -60,6 +61,7 @@ class WBYApplication : FlutterApplication() {
                             Gson().fromJson(data, BaseMessage::class.java)
                                     ?: BaseMessage(type = 0, data = "null")
                         } catch (e: Exception) {
+                            Log.d("WBYDemoException", data)
                             BaseMessage(type = 0, data = "null")
                         }
                         Log.d("WBYDemo", formData.toString())
@@ -111,6 +113,36 @@ class WBYApplication : FlutterApplication() {
                                     }
                                 }
 
+                            }
+                            2 -> {
+                                Log.d("WBYDemo", Gson().toJson(formData.data))
+                                val pushMessage = try {
+                                    Gson().fromJson(Gson().toJson(formData.data), WBYPushMessage::class.java)
+                                } catch (e: Exception) {
+                                    WBYPushMessage(title = "null", content = "null", url = "")
+                                }
+                                Log.d("WBYDemo", pushMessage.toString())
+
+                                activity?.get()?.let {
+                                    it.showNotification(pushMessage)
+                                    postId = -1
+                                    activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", null, object : MethodChannel.Result {
+                                        override fun success(result: Any?) {
+                                            Log.d("WBYDemo", "refreshFeedbackMessageCount")
+                                        }
+
+                                        override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                            Log.d("WBYDemo", "refreshFeedbackMessageCount error")
+
+                                        }
+
+                                        override fun notImplemented() {
+                                            Log.d("WBYDemo", "refreshFeedbackMessageCount notImplemented")
+
+                                        }
+
+                                    })
+                                }
                             }
                         }
 
@@ -165,8 +197,16 @@ data class BaseMessage(
         val data: Any,
 )
 
+interface MessageData
+
 data class FeedbackMessage(
         val title: String,
         val content: String,
         val question_id: Int,
-)
+):MessageData
+
+data class WBYPushMessage(
+        val title: String,
+        val content: String,
+        val url: String,
+):MessageData
