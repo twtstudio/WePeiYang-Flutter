@@ -7,10 +7,9 @@ import '../model/school/school_model.dart';
 /// [week] 需要第几周的日期
 /// [count] 需要6天还是7天的日期
 List<String> getWeekDayString(int termStart, int week, int count) {
-  var offset = 3600; // 加一个偏移量... 因为按照0点计算不保险
   var dayOfSeconds = 86400;
   // 每周开始的时间戳
-  var startUnixWithOffset = termStart + offset + (week - 1) * dayOfSeconds * 7;
+  var startUnixWithOffset = termStart + (week - 1) * dayOfSeconds * 7;
   List<String> list = [];
   for (var i = 0; i < count; i++) {
     // 选中周每天的date对象
