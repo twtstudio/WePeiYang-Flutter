@@ -27,6 +27,10 @@ class CommonPreferences {
   var account = PrefsBean<String>('account');
   var password = PrefsBean<String>('password');
   var captchaCookie = PrefsBean<String>('Cookie');
+  var realName = PrefsBean<String>('realName');
+  var department = PrefsBean<String>('department');
+  var stuType = PrefsBean<String>('stuType');
+  var major = PrefsBean<String>('major');
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
@@ -65,6 +69,9 @@ class CommonPreferences {
   var temporaryUpdateTime = PrefsBean<String>("temporaryUpdateTime","");
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus",0);
   var favorListState = PrefsBean<int>("favorListState",0);
+
+  /// 疫情提交时间
+  var reportTime = PrefsBean<String>('reportTime');
 
   List<String> getCookies() {
     var jSessionId = 'J' +

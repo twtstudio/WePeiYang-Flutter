@@ -52,6 +52,8 @@ dependencies:
   connectivity: 2.0.2
   badges: ^1.2.0
   webview_flutter: ^1.0.7
+  permission_handler: ^5.1.0+2
+  image_picker: 0.6.7+22
 
   umeng_sdk:
     path: plugins/umeng_sdk
@@ -138,6 +140,10 @@ flutter:
         - asset: assets/fonts/MicrosoftYaHei-Regular.ttf
         - asset: assets/fonts/MicrosoftYaHei-Light.ttf
         - asset: assets/fonts/MicrosoftYaHei-Bold.ttf
+
+    - family: Gilroy
+      fonts:
+        - asset: assets/fonts/Gilroy-HeavyItalic-8.otf
 
 flutter_intl:
   enabled: true

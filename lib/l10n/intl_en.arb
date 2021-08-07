@@ -180,5 +180,7 @@
   "feedback_rating": "",
   "feedback_anonymous": "",
   "feedback_official": "",
-  "feedback_profile": ""
+  "feedback_profile": "",
+
+  "report": ""
 }

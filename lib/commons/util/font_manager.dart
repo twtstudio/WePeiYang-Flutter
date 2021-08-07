@@ -9,4 +9,6 @@ class FontManager {
   static const YaHeiRegular = TextStyle(fontFamily: 'MicrosoftYaHei', fontWeight: FontWeight.normal);
   static const YaHeiLight = TextStyle(fontFamily: 'MicrosoftYaHei', fontWeight: FontWeight.w300);
   static const YaHeiBold = TextStyle(fontFamily: 'MicrosoftYaHei', fontWeight: FontWeight.bold);
+
+  static const Gilroy = TextStyle(fontFamily: 'Gilroy');
 }

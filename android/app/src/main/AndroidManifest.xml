@@ -5,7 +5,7 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,13 +14,32 @@
     <!--友盟需要的一些额外权限-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
-<!--    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <!--    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />-->
 
     <!--前台服务开启权限-->
-<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
+    <!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
     <!--弹出横幅通知的权限-->
-<!--    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
+    <!--    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
+
+    <!--用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!--用于访问网络，网络定位需要上网-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--用于读取手机当前的状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
 
     <application
@@ -67,6 +86,12 @@
         <meta-data
             android:name="PUSH_APPID"
             android:value="43HGFmIKsnAmjrjDLr60X4" />
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />
+
+        <service android:name="com.amap.api.location.APSService" />
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service

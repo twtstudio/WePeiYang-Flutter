@@ -5,6 +5,7 @@ import 'package:wei_pei_yang_demo/commons/res/color.dart';
 import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
 import 'package:wei_pei_yang_demo/lounge/service/images.dart';
 import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:wei_pei_yang_demo/urgent_report/report_router.dart';
 
 class CardBean {
   Widget icon;
@@ -16,6 +17,14 @@ class CardBean {
 
 class GlobalModel {
   GlobalModel._() {
+    cards.add(CardBean(
+        Icon(
+          Icons.report,
+          color: MyColors.darkGrey,
+          size: 25.0,
+        ),
+        S.current.report,
+        ReportRouter.main));
     cards.add(CardBean(
         Icon(
           Icons.event,
@@ -32,7 +41,8 @@ class GlobalModel {
         ),
         'GPA',
         GPARouter.gpa));
-    /// 别改变自习室的位置，确定下标为2，不然请去wpy_page最下面改一下index
+
+    /// 别改变自习室的位置，确定下标为3，不然请去wpy_page最下面改一下index
     cards.add(CardBean(
         ImageIcon(
           AssetImage(Images.building),

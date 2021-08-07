@@ -180,5 +180,7 @@
   "feedback_rating": "提问者评分:",
   "feedback_anonymous": "匿名",
   "feedback_official": "官方",
-  "feedback_profile": "个人中心"
+  "feedback_profile": "个人中心",
+
+  "report": "疫情汇报"
 }

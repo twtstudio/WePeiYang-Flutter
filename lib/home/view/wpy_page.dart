@@ -201,7 +201,7 @@ class SliverCardsWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (i != 2) {
+        if (i != 3) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
             child: Container(

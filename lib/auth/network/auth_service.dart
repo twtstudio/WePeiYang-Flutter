@@ -232,12 +232,17 @@ void login(String account, String password,
       /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
       prefs.clearTjuPrefs();
     }
+    log(result.toString());
     prefs.account.value = account;
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";
     prefs.userNumber.value = result['userNumber'] ?? "";
     prefs.phone.value = result['telephone'] ?? "";
     prefs.email.value = result['email'] ?? "";
+    prefs.realName.value = result['realname'] ?? "";
+    prefs.department.value = result['department'] ?? "";
+    prefs.major.value = result['major'] ?? "";
+    prefs.stuType.value = result['stuType'] ?? "";
     prefs.isLogin.value = true;
     onResult(result);
 

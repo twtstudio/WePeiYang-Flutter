@@ -163,6 +163,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "register_hint2" : MessageLookupByLibrary.simpleMessage("微北洋用户须知"),
     "reply" : MessageLookupByLibrary.simpleMessage("官方回复"),
     "reply_a_question" : MessageLookupByLibrary.simpleMessage("回复了问题"),
+    "report" : MessageLookupByLibrary.simpleMessage("疫情汇报"),
     "reset_ok" : MessageLookupByLibrary.simpleMessage("确认更改"),
     "reset_password" : MessageLookupByLibrary.simpleMessage("密码更改"),
     "reset_password_done" : MessageLookupByLibrary.simpleMessage("密码修改完成"),

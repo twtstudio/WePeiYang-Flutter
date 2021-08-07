@@ -79,7 +79,7 @@ class WeiPeiYangApp extends StatefulWidget {
   _WeiPeiYangAppState createState() => _WeiPeiYangAppState();
 }
 
-final messageChannel = MethodChannel('com.example.wei_pei_yang_demo/message');
+final messageChannel = MethodChannel('com.twt.service/message');
 
 class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
   @override
@@ -108,7 +108,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       });
       var id = await messageChannel?.invokeMethod<int>("getPostId");
       assert(() {
-        ToastProvider.success("$id");
+        // ToastProvider.success("$id");
       }());
       if (id != -1) {
         await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
