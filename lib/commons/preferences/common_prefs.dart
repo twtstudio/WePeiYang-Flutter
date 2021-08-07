@@ -38,7 +38,7 @@ class CommonPreferences {
   /// GPA & 课程表数据
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
-  var termStart = PrefsBean<int>('termStart', 1614528000);
+  var termStart = PrefsBean<int>('termStart', 1614556800);
   var termName = PrefsBean<String>('termName', '20212');
 
   ///办公网相关

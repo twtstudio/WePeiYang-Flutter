@@ -18,8 +18,8 @@ class ScheduleNotifier with ChangeNotifier {
 
   List<ScheduleCourse> get coursesWithNotify => _courses;
 
-  /// 每学期的开始时间
-  int get termStart => CommonPreferences().termStart.value;
+  /// 每学期的开始时间，由于后端接口问题，要减去8小时偏移量
+  int get termStart => CommonPreferences().termStart.value - 3600 * 8;
 
   /// 学期名
   String get termName => CommonPreferences().termName.value;
@@ -37,9 +37,11 @@ class ScheduleNotifier with ChangeNotifier {
 
   void quietResetWeek() => _selectedWeek = currentWeek;
 
+  static const weekOfSeconds = 604800;
+
   /// 手动计算当前周,不从办公网爬了
   int get currentWeek =>
-      ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / 604800)
+      ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / weekOfSeconds)
           .ceil();
 
   /// 一学期一共有多少周……总之25周肯定够用了
