@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/main.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class LogoutDialog extends Dialog {
   void _logout() {
     ToastProvider.success("退出登录成功");
     CommonPreferences().clearUserPrefs();
     Navigator.pushNamedAndRemoveUntil(
-        WeiPeiYangApp.navigatorState.currentContext,
+        WePeiYangApp.navigatorState.currentContext,
         AuthRouter.login,
         (route) => false);
   }

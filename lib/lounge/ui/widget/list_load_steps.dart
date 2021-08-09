@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
 import 'loading.dart';
 
 class ListLoadSteps<T extends ViewStateListModel> extends StatefulWidget {

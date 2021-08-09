@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=D:\flutter
-FLUTTER_APPLICATION_PATH=D:\AndroidProject\wei_pei_yang_demo\plugins\umeng_sdk
+FLUTTER_APPLICATION_PATH=D:\AndroidProject\we_pei_yang_flutter\plugins\umeng_sdk
 FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build\ios

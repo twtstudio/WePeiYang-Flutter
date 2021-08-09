@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' show Widget;
-import 'package:wei_pei_yang_demo/gpa/view/gpa_page.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_page.dart';
 
 class GPARouter {
   static String gpa = 'gpa/home';

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/schedule/view/wpy_course_display.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
 import '../model/home_model.dart';
 import 'drawer_page.dart';
-import '../../gpa/view/gpa_curve_detail.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/favour_list.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
 import 'package:flutter/services.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,

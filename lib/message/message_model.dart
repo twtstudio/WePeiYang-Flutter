@@ -1,4 +1,4 @@
-import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 class TotalMessageData {
   List<MessageDataItem> questions;

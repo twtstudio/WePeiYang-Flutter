@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/home/model/home_model.dart';
+import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import '../../main.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class SchedulePage extends StatefulWidget {
   /// 进入课程表页面后重设选中周并自动刷新数据
   SchedulePage() {
     var notifier = Provider.of<ScheduleNotifier>(
-        WeiPeiYangApp.navigatorState.currentContext);
+        WePeiYangApp.navigatorState.currentContext);
     notifier.quietResetWeek();
     notifier.refreshSchedule(hint: false);
   }

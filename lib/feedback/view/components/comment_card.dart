@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
-import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/official_logo.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/official_logo.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'blank_space.dart';
 

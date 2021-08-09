@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:wei_pei_yang_demo/lounge/service/net/api.dart';
+import 'package:we_pei_yang_flutter/lounge/service/net/api.dart';
 
 part 'view_state.dart';
 part 'view_state_list_model.dart';

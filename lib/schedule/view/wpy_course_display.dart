@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/schedule/extension/logic_extension.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
-import 'package:wei_pei_yang_demo/schedule/model/school/school_model.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override

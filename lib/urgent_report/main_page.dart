@@ -11,13 +11,13 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
-import 'package:wei_pei_yang_demo/main.dart';
-import 'package:wei_pei_yang_demo/urgent_report/base_page.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
 class ReportMainPage extends StatefulWidget {
   const ReportMainPage({Key key}) : super(key: key);

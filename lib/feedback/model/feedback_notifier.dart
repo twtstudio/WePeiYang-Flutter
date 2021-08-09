@@ -2,14 +2,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
-import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/message/message_model.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
+import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/message/message_model.dart';
 
 // TODO: Invoke this method when initialize [ProfilePage].
 extension PostListSortExtension on List<Post> {

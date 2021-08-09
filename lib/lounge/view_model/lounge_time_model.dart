@@ -1,12 +1,12 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/service/repository.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 
 class LoungeTimeModel extends ChangeNotifier {
   List<ClassTime> _classTime;

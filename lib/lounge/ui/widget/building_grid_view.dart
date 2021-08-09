@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
+import 'package:we_pei_yang_flutter/lounge/model/building.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 
 class BuildingGridView extends StatelessWidget {
   final List<Building> list;

@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:wei_pei_yang_demo/commons/new_network/spider_service.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/main.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:flutter/material.dart' show Navigator, required;
-import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
-import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart'
+import 'package:we_pei_yang_flutter/commons/new_network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/error_interceptor.dart'
     show WpyDioError;
 import 'package:dio/dio.dart' show Options, Response;
 import 'dart:convert' show utf8, base64Encode;
@@ -41,7 +41,7 @@ class AuthDio extends DioAbstract {
           break;
         case 40005:
           Navigator.pushNamedAndRemoveUntil(
-              WeiPeiYangApp.navigatorState.currentContext,
+              WePeiYangApp.navigatorState.currentContext,
               AuthRouter.login,
               (route) => false);
           throw WpyDioError(error: "登录失效，请重新登录");

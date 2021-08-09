@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/search_result_page.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 bool _homePostChanged = false;
 

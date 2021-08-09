@@ -1,4 +1,4 @@
-import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/dio_manager.dart';
 
 class AuditDio extends DioAbstract {
   @override

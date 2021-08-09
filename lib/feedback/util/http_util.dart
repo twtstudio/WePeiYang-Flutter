@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/new_network/dio_manager.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
-import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
-import 'package:wei_pei_yang_demo/feedback/model/tag.dart';
-import 'package:wei_pei_yang_demo/main.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
@@ -37,7 +37,7 @@ bool _rateLock = false;
 bool _deleteLock = false;
 
 FeedbackNotifier notifier = Provider.of<FeedbackNotifier>(
-    WeiPeiYangApp.navigatorState.currentContext,
+    WePeiYangApp.navigatorState.currentContext,
     listen: false);
 
 Future getToken(
@@ -102,7 +102,7 @@ Future getPosts(
         'tagList': '[$tagId]',
         'limits': '20',
         'token': Provider.of<FeedbackNotifier>(
-                WeiPeiYangApp.navigatorState.currentContext,
+                WePeiYangApp.navigatorState.currentContext,
                 listen: false)
             .token,
         'page': '$page',

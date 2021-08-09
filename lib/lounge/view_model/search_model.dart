@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/service/data_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 
 const String kSearchHistory = 'kSearchHistory';
 

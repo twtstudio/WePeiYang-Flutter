@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' show Widget;
-import 'package:wei_pei_yang_demo/auth/view/login/login_page.dart';
-import 'package:wei_pei_yang_demo/home/view/home_page.dart';
-import 'package:wei_pei_yang_demo/home/view/drawer_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/login_page.dart';
+import 'package:we_pei_yang_flutter/home/view/home_page.dart';
+import 'package:we_pei_yang_flutter/home/view/drawer_page.dart';
 
 class HomeRouter {
   static String home = 'home/home';

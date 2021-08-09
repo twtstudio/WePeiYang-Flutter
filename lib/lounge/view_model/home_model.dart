@@ -1,7 +1,7 @@
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:we_pei_yang_flutter/lounge/model/building.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 class BuildingDataModel extends ViewStateListModel {
   BuildingDataModel(this.timeModel) {

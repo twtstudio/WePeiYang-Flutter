@@ -8,19 +8,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_sdk/umeng_sdk.dart';
-import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/commons/local/local_model.dart';
-import 'package:wei_pei_yang_demo/commons/new_network/net_status_listener.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/lounge_providers.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/message/message_provider.dart';
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/net_status_listener.dart';
+import 'package:we_pei_yang_flutter/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 import 'commons/preferences/common_prefs.dart';
 import 'commons/util/app_analysis.dart';
@@ -38,7 +38,7 @@ void main() async {
   // await FlutterDownloader.initialize(debug: true);
   await CommonPreferences.initPrefs();
   await NetStatusListener.init();
-  runApp(WeiPeiYangApp());
+  runApp(WePeiYangApp());
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -60,7 +60,7 @@ FlutterError.onError = (FlutterErrorDetails details) async {
     WidgetsFlutterBinding.ensureInitialized();
     // await FlutterDownloader.initialize(debug: true);
     await CommonPreferences.initPrefs();
-    runApp(WeiPeiYangApp());
+    runApp(WePeiYangApp());
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -71,17 +71,17 @@ FlutterError.onError = (FlutterErrorDetails details) async {
   });
  */
 
-class WeiPeiYangApp extends StatefulWidget {
+class WePeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
 
   @override
-  _WeiPeiYangAppState createState() => _WeiPeiYangAppState();
+  _WePeiYangAppState createState() => _WePeiYangAppState();
 }
 
 final messageChannel = MethodChannel('com.twt.service/message');
 
-class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
+class _WePeiYangAppState extends State<WePeiYangApp> {
   @override
   void dispose() async {
     await HiveManager.instance.closeBoxes();
@@ -93,7 +93,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var baseContext =
-          WeiPeiYangApp.navigatorState.currentState.overlay.context;
+          WePeiYangApp.navigatorState.currentState.overlay.context;
       UpdateManager.init(context: baseContext);
       GlobalModel().init(baseContext);
       await HiveManager.init();
@@ -130,7 +130,7 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
             var baseContext =
-                WeiPeiYangApp.navigatorState.currentState.overlay.context;
+                WePeiYangApp.navigatorState.currentState.overlay.context;
             messageChannel
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
@@ -183,8 +183,8 @@ class _WeiPeiYangAppState extends State<WeiPeiYangApp> {
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'WeiPeiYangDemo',
-          navigatorKey: WeiPeiYangApp.navigatorState,
+          title: 'WePeiYangFlutter',
+          navigatorKey: WePeiYangApp.navigatorState,
           // theme: ThemeData(fontFamily: 'WeiYuanYaHei'),
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/model/feedback_notifier.dart';
-import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/http_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/post_card.dart';
-import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/loading.dart';
-import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
-import 'package:wei_pei_yang_demo/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/blank_space.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   @override

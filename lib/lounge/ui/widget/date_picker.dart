@@ -4,12 +4,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/service/repository.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 class TimeCheckWidget extends StatelessWidget {
   const TimeCheckWidget({

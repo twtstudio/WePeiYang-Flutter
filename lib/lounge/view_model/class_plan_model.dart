@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
 
 class ClassPlanModel extends ViewStateListModel {
   ClassPlanModel({this.room, this.timeModel}) {

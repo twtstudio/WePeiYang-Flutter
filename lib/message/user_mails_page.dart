@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/message/message_center.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/message/message_center.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class UserMailboxPage extends StatefulWidget {
   @override

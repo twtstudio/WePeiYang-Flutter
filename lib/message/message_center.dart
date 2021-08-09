@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
-import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/model/comment.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
-import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
-import 'package:wei_pei_yang_demo/message/message_model.dart';
-import 'package:wei_pei_yang_demo/message/user_mails_page.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/message/message_model.dart';
+import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
 import '../main.dart';
 

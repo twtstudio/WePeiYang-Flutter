@@ -1,9 +1,9 @@
 // import 'package:cookie_jar/cookie_jar.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:wei_pei_yang_demo/commons/new_network/error_interceptor.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/new_network/error_interceptor.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
 // import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'api.dart';

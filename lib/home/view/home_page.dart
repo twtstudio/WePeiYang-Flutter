@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wei_pei_yang_demo/auth/view/user/user_page.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
-import 'package:wei_pei_yang_demo/message/feedback_badge_widget.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/feedback/view/home_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
+import 'package:we_pei_yang_flutter/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
 import '../model/home_model.dart';
 import 'wpy_page.dart';
 

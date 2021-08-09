@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/view_state_model.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_delegate.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/search/search_delegate.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/search_model.dart';
 
 class SearchSuggestions extends StatelessWidget {
   final MySearchDelegate delegate;

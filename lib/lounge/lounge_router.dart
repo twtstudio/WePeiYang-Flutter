@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
-import 'package:wei_pei_yang_demo/lounge/model/area.dart';
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/building/areas_page.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/building/class_plan_page.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/building/classrooms_page.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/main/main_page.dart';
+import 'package:we_pei_yang_flutter/lounge/model/area.dart';
+import 'package:we_pei_yang_flutter/lounge/model/building.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/building/areas_page.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/building/class_plan_page.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/building/classrooms_page.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/main/main_page.dart';
 
 class LoungeRouter {
   static const String areas = 'lounge/areas';

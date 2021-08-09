@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/update/update_dialog.dart';
-import 'package:wei_pei_yang_demo/commons/update/common.dart';
-import 'package:wei_pei_yang_demo/commons/update/http.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
-import 'package:wei_pei_yang_demo/commons/update/version_data.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/update/common.dart';
+import 'package:we_pei_yang_flutter/commons/update/http.dart';
+import 'package:we_pei_yang_flutter/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class UpdatePrompter {
   /// 版本更新信息

@@ -1,19 +1,19 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/base_page.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/widget/list_load_steps.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/class_plan_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/favourite_model.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/service/data_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/base_page.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/list_load_steps.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/class_plan_model.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/favourite_model.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 class ClassPlanPage extends StatelessWidget {
   final Classroom room;

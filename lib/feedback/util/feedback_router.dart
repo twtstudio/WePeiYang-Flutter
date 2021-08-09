@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/image_view_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/new_post_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/official_comment_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/profile_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/search_page.dart';
-import 'package:wei_pei_yang_demo/feedback/view/search_result_page.dart';
-import 'package:wei_pei_yang_demo/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
+import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../../home/view/home_page.dart';
 

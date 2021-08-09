@@ -2,14 +2,14 @@ import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/gpa/view/gpa_curve_detail.dart' show GPACurve;
-import '../../main.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart' show GPACurve;
+import 'package:we_pei_yang_flutter/main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
 import 'package:flutter/services.dart';
-import 'package:wei_pei_yang_demo/auth/view/info/tju_rebind_dialog.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -36,7 +36,7 @@ class GPAPage extends StatefulWidget {
 class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
   _GPAPageState() {
-    Provider.of<GPANotifier>(WeiPeiYangApp.navigatorState.currentContext)
+    Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext)
         .refreshGPA(hint: false)
         .call();
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class ReportBasePage extends StatelessWidget {
   final Widget body;

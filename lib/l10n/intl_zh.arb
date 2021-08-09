@@ -108,7 +108,7 @@
   "setting": "设置",
   "setting_general": "通用",
   "setting_language": "系统语言",
-  "setting_language_hint": "请注意，只有WeiPeiyang应用程序级别内的文本将被更改。依赖外部资源的文本，如课程名称和校务转区的回复内容，将不被翻译。",
+  "setting_language_hint": "请注意，只有WePeiYang应用程序级别内的文本将被更改。依赖外部资源的文本，如课程名称和校务转区的回复内容，将不被翻译。",
   "setting_color": "调色板",
   "setting_color_hint": "给课表、GPA以及黄页自定义喜欢的颜色",
   "setting_gpa": "首页不显示GPA",

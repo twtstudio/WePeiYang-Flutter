@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:install_plugin/install_plugin.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:wei_pei_yang_demo/commons/update/version_data.dart';
+import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 
 class CommonUtils {
   CommonUtils._internal();

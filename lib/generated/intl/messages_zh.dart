@@ -181,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "setting_general" : MessageLookupByLibrary.simpleMessage("通用"),
     "setting_gpa" : MessageLookupByLibrary.simpleMessage("首页不显示GPA"),
     "setting_language" : MessageLookupByLibrary.simpleMessage("系统语言"),
-    "setting_language_hint" : MessageLookupByLibrary.simpleMessage("请注意，只有WeiPeiyang应用程序级别内的文本将被更改。依赖外部资源的文本，如课程名称和校务转区的回复内容，将不被翻译。"),
+    "setting_language_hint" : MessageLookupByLibrary.simpleMessage("请注意，只有WePeiYang应用程序级别内的文本将被更改。依赖外部资源的文本，如课程名称和校务转区的回复内容，将不被翻译。"),
     "setting_night_mode" : MessageLookupByLibrary.simpleMessage("开启夜猫子模式"),
     "setting_night_mode_hint" : MessageLookupByLibrary.simpleMessage("晚上9:00以后首页课表将展示第二天课程安排"),
     "setting_other_week" : MessageLookupByLibrary.simpleMessage("课表显示非本周课程"),

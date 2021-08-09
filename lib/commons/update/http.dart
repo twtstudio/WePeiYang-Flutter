@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 /// 网络请求工具类
 class HttpUtils {

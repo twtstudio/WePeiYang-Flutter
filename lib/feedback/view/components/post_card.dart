@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/feedback/model/post.dart';
-import 'package:wei_pei_yang_demo/feedback/util/color_util.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/screen_util.dart';
-import 'package:wei_pei_yang_demo/feedback/view/components/blank_space.dart';
-import 'package:wei_pei_yang_demo/message/feedback_banner_widget.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/blank_space.dart';
+import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 typedef GesturePressedCallback = void Function();
 

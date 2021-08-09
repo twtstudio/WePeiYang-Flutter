@@ -2,11 +2,11 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/feedback/view/detail_page.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 
 import 'message_center.dart';
 import 'message_provider.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/urgent_report/main_page.dart';
+import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 
 class ReportRouter {
   static const String main = 'report/main';

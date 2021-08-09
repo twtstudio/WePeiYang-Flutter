@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'logic_extension.dart';
 import '../model/school/school_model.dart';
 import '../view/course_dialog.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 final TextStyle activeNameStyle = FontManager.YaQiHei.copyWith(
     color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);

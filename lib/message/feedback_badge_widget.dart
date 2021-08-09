@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/message/message_provider.dart';
-import 'package:wei_pei_yang_demo/lounge/provider/provider_widget.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 
 enum FeedbackMessageType { detail_post, detail_favourite, home, mailbox }
 

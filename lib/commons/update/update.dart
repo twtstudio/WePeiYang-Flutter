@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/update/app_cache_manager.dart';
-import 'package:wei_pei_yang_demo/commons/update/common.dart';
-import 'package:wei_pei_yang_demo/commons/update/http.dart';
-import 'package:wei_pei_yang_demo/commons/update/update_parser.dart';
-import 'package:wei_pei_yang_demo/commons/update/update_prompter.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/update/app_cache_manager.dart';
+import 'package:we_pei_yang_flutter/commons/update/common.dart';
+import 'package:we_pei_yang_flutter/commons/update/http.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_parser.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_prompter.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 /// 版本更新管理
 class UpdateManager {

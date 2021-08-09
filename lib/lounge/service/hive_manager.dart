@@ -2,17 +2,17 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/util/toast_provider.dart';
-import 'package:wei_pei_yang_demo/lounge/service/data_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/service/repository.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/model/area.dart';
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/model/local_entry.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
-import 'package:wei_pei_yang_demo/lounge/model/temporary.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/lounge/service/data_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/service/repository.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/model/area.dart';
+import 'package:we_pei_yang_flutter/lounge/model/building.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/model/local_entry.dart';
+import 'package:we_pei_yang_flutter/lounge/model/search_entry.dart';
+import 'package:we_pei_yang_flutter/lounge/model/temporary.dart';
 
 /// key of [HiveManager._boxesKeys]
 const boxes = 'boxesKeys';

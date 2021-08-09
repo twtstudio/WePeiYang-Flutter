@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/auth/auth_router.dart';
-import 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-import 'package:wei_pei_yang_demo/gpa/gpa_router.dart';
-import 'package:wei_pei_yang_demo/home/home_router.dart';
-import 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
-import 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
-import 'package:wei_pei_yang_demo/urgent_report/report_router.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
+import 'package:we_pei_yang_flutter/home/home_router.dart';
+import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
+import 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
+import 'package:we_pei_yang_flutter/urgent_report/report_router.dart';
 
-export 'package:wei_pei_yang_demo/auth/auth_router.dart';
-export 'package:wei_pei_yang_demo/feedback/util/feedback_router.dart';
-export 'package:wei_pei_yang_demo/gpa/gpa_router.dart';
-export 'package:wei_pei_yang_demo/home/home_router.dart';
-export 'package:wei_pei_yang_demo/lounge/lounge_router.dart';
-export 'package:wei_pei_yang_demo/schedule/schedule_router.dart';
-export 'package:wei_pei_yang_demo/urgent_report/report_router.dart';
+export 'package:we_pei_yang_flutter/auth/auth_router.dart';
+export 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+export 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
+export 'package:we_pei_yang_flutter/home/home_router.dart';
+export 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
+export 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
+export 'package:we_pei_yang_flutter/urgent_report/report_router.dart';
 
 class RouterManager {
   static Map<String, Widget Function(Object arguments)> _routers = {};

@@ -1,4 +1,4 @@
-import 'package:wei_pei_yang_demo/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 import '../model/school/school_model.dart';
 

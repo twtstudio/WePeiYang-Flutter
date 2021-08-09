@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
-import 'package:wei_pei_yang_demo/lounge/service/images.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_result.dart';
-import 'package:wei_pei_yang_demo/lounge/ui/page/search/search_suggestion.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/search_model.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/model/search_entry.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/search/search_result.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/page/search/search_suggestion.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/search_model.dart';
 
 Future<T> customShowSearch<T>({
   @required BuildContext context,

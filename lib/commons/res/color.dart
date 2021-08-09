@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class MyColors {
   static final deepBlue = Color.fromRGBO(98, 103, 124, 1.0); //no.1

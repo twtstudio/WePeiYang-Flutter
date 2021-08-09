@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/lounge/model/building.dart';
-import 'package:wei_pei_yang_demo/lounge/service/net/login_api.dart';
-import 'package:wei_pei_yang_demo/lounge/service/net/open_api.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
-import 'package:wei_pei_yang_demo/lounge/view_model/lounge_time_model.dart';
+import 'package:we_pei_yang_flutter/lounge/model/building.dart';
+import 'package:we_pei_yang_flutter/lounge/service/net/login_api.dart';
+import 'package:we_pei_yang_flutter/lounge/service/net/open_api.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 import 'hive_manager.dart';
 

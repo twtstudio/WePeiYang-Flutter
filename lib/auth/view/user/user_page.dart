@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:wei_pei_yang_demo/auth/view/user/logout_dialog.dart';
-import 'package:wei_pei_yang_demo/commons/preferences/common_prefs.dart';
-import 'package:wei_pei_yang_demo/commons/res/color.dart';
-import 'package:wei_pei_yang_demo/commons/update/common.dart';
-import 'package:wei_pei_yang_demo/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/update/common.dart';
+import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:flutter/services.dart';
-import 'package:wei_pei_yang_demo/home/model/home_model.dart';
-import 'package:wei_pei_yang_demo/commons/util/router_manager.dart';
-import 'package:wei_pei_yang_demo/generated/l10n.dart';
-import 'package:wei_pei_yang_demo/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/home/model/home_model.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class UserPage extends StatefulWidget {
   @override

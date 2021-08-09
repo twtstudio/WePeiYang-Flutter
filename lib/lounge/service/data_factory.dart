@@ -1,7 +1,7 @@
-import 'package:wei_pei_yang_demo/lounge/model/classroom.dart';
-import 'package:wei_pei_yang_demo/lounge/model/search_entry.dart';
-import 'package:wei_pei_yang_demo/lounge/service/hive_manager.dart';
-import 'package:wei_pei_yang_demo/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/model/search_entry.dart';
+import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 
 class DataFactory {
   static List<String> splitPlan(String plan) {
