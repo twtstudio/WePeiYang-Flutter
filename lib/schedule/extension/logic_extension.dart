@@ -138,6 +138,7 @@ bool judgeActiveInDay(
 bool judgeActiveTomorrow(
     int week, int day, int weekCount, ScheduleCourse course) {
   int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
+  if (week + offset > weekCount) return false; // 如果后台一直不更新termStart, 这里有可能数组越界
   return (int.parse(course.arrange.day) == ((day + 1) % 7))
       ? getWeekStatus(weekCount, course)[week + offset]
       : false;

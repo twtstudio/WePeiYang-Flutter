@@ -37,15 +37,26 @@ class ScheduleNotifier with ChangeNotifier {
 
   void quietResetWeek() => _selectedWeek = currentWeek;
 
+  static const dayOfSeconds = 86400;
+
   static const weekOfSeconds = 604800;
 
   /// 手动计算当前周,不从办公网爬了
-  int get currentWeek =>
-      ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / weekOfSeconds)
-          .ceil();
+  int get currentWeek {
+    if (isBeforeTermStart) return 1; // 防止week为负数
+    var week = ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / weekOfSeconds)
+        .ceil();
+    if(week > _weekCount) week = _weekCount; // 如果后台一直不更新termStart, 这里要防止越界
+    return week;
+  }
 
-  /// 一学期一共有多少周……总之25周肯定够用了
-  int _weekCount = 25;
+  bool get isBeforeTermStart => DateTime.now().millisecondsSinceEpoch / 1000 < termStart;
+
+  /// 这个是专门给首页的课程用的，因为有夜猫子模式
+  bool get isOneDayBeforeTermStart => (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
+
+  /// 一学期一共有多少周……这个就先写死了
+  int _weekCount = 24;
 
   int get weekCount => _weekCount;
 
