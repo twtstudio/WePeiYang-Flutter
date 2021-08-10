@@ -58,14 +58,15 @@ class UpdatePrompter {
   }
 
   String getUpdateContent() {
-    String targetSize = '24.6mb';
-    // CommonUtils.getTargetSize(updateEntity.apkSize.toDouble());
-    String updateContent = "";
-    if (targetSize.isNotEmpty) {
-      updateContent += "新版本大小：$targetSize\n";
-    }
-    updateContent += updateEntity.content;
-    return updateContent;
+    // String targetSize = '24.6mb';
+    // // CommonUtils.getTargetSize(updateEntity.apkSize.toDouble());
+    // String updateContent = "";
+    // if (targetSize.isNotEmpty) {
+    //   updateContent += "新版本大小：$targetSize\n";
+    // }
+    // updateContent += updateEntity.content;
+    // return updateContent;
+    return updateEntity.content;
   }
 
   Future<void> onUpdate() async {

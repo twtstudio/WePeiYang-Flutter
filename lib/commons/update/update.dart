@@ -33,6 +33,9 @@ class UpdateManager {
               onInstall: (String filePath) {
                 CommonUtils.installAPP(filePath);
               }).show(baseContext, value);
+        else {
+          ToastProvider.success('已是最新版本');
+        }
       });
     }).catchError((onError) {
       // ToastProvider.error(onError.toString());
