@@ -59,7 +59,7 @@ class MessageRepository {
         "cancelNotification",
         {"id": questionId},
       );
-      ToastProvider.success("$result");
+      // ToastProvider.success("$result");
       // debugPrint("setQuestionRead");
     } catch (e) {
       // debugPrint(e.toString());

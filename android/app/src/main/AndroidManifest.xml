@@ -45,7 +45,7 @@
     <application
         android:name=".WBYApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="微北洋Alpha">
+        android:label="微北洋">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

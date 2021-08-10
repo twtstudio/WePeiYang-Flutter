@@ -20,7 +20,7 @@ class UpdateManager {
 
   static BuildContext baseContext;
 
-  static void checkUpdate() {
+  static void checkUpdate({bool showDialog = false}) {
     // searchLocalCache();
     // delAllTemporaryFile();
     String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
@@ -34,7 +34,7 @@ class UpdateManager {
                 CommonUtils.installAPP(filePath);
               }).show(baseContext, value);
         else {
-          ToastProvider.success('已是最新版本');
+          if (showDialog) ToastProvider.success('已是最新版本');
         }
       });
     }).catchError((onError) {

@@ -27,7 +27,7 @@ class FeedbackBannerWidget extends StatelessWidget {
           };
           result = ClipRect(
             child: Banner(
-              message: S.current.have_read,
+              message: S.current.not_read,
               location: BannerLocation.bottomEnd,
               child: builder(tap),
             ),
