@@ -175,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "searchHistory" : MessageLookupByLibrary.simpleMessage("历史记录"),
     "setting" : MessageLookupByLibrary.simpleMessage("设置"),
     "setting_color" : MessageLookupByLibrary.simpleMessage("调色板"),
-    "setting_color_hint" : MessageLookupByLibrary.simpleMessage("给课表、GPA以及黄页自定义喜欢的颜色"),
+    "setting_color_hint" : MessageLookupByLibrary.simpleMessage("给课表和GPA定义喜欢的颜色"),
     "setting_day_number" : MessageLookupByLibrary.simpleMessage("每周显示天数"),
     "setting_day_number_hint" : MessageLookupByLibrary.simpleMessage("课程表页面将会根据选择调整展示的天数。"),
     "setting_general" : MessageLookupByLibrary.simpleMessage("通用"),
