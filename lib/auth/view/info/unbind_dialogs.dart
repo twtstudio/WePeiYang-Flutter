@@ -92,7 +92,7 @@ class PhoneUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(S.current.not_bind,
+              child: Text(S.current.phone_unbind_hint,
                   textAlign: TextAlign.center,
                   style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),

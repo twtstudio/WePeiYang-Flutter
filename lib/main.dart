@@ -103,14 +103,11 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
         //   ToastProvider.success("token : $token");
         // }());
       }, onFailure: () {
-        assert(() {
-          ToastProvider.error("获取token失败");
-        }());
+        // assert(() {
+        //   ToastProvider.error("获取token失败");
+        // }());
       });
       var id = await messageChannel?.invokeMethod<int>("getPostId");
-      assert(() {
-        // ToastProvider.success("$id");
-      }());
       if (id != -1) {
         await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
       }

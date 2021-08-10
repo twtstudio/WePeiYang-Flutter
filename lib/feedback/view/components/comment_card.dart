@@ -96,14 +96,9 @@ class _CommentCardState extends State<CommentCard> {
                 if (official)
                   OfficialLogo()
                 else
-                  ClipOval(
-                    child: Image.asset(
-                      'assets/images/user_image.jpg',
-                      fit: BoxFit.cover,
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
+                  Icon(Icons.account_circle_rounded,
+                      size: 25,
+                      color: Color.fromRGBO(98, 103, 124, 1.0)),
                 if (!official) BlankSpace.width(5),
                 if (!official)
                   Expanded(

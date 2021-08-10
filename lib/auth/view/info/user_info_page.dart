@@ -74,10 +74,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Container(
                               height: 45,
                               padding: const EdgeInsets.only(right: 6),
-                              child: ClipOval(
-                                  child: Image(
-                                      image: AssetImage(
-                                          'assets/images/user_image.jpg'))),
+                              child: Icon(Icons.account_circle_rounded,
+                                  size: 35,
+                                  color: Color.fromRGBO(98, 103, 124, 1.0)),
                             )
                           ],
                         ),

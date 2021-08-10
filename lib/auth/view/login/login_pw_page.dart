@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -13,24 +14,26 @@ class LoginPwWidget extends StatefulWidget {
 class _LoginPwWidgetState extends State<LoginPwWidget> {
   String account = "";
   String password = "";
+  bool check = false;
 
   _login() async {
     _passwordFocus.unfocus();
-    if (account == "" || password == "") {
+    if (account == "" || password == "")
       ToastProvider.error("账号密码不能为空");
-      return;
-    }
-    login(account, password,
-        onResult: (result) {
-          if (result['telephone'] == null || result['email'] == null) {
-            Navigator.pushNamed(context, AuthRouter.addInfo);
-          } else {
-            ToastProvider.success("登录成功");
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          }
-        },
-        onFailure: (e) => ToastProvider.error(e.error));
+    else if (!check)
+      ToastProvider.error("请阅读用户须知");
+    else
+      login(account, password,
+          onResult: (result) {
+            if (result['telephone'] == null || result['email'] == null) {
+              Navigator.pushNamed(context, AuthRouter.addInfo);
+            } else {
+              ToastProvider.success("登录成功");
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+            }
+          },
+          onFailure: (e) => ToastProvider.error(e.error));
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -117,14 +120,45 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40, 15, 40, 60),
-            child: GestureDetector(
-              child: Text(S.current.forget_password,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 11,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline)),
-              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
+            padding: EdgeInsets.fromLTRB(40, 20, 40, 50),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  child: Text(S.current.forget_password,
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 11,
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline)),
+                  onTap: () =>
+                      Navigator.pushNamed(context, AuthRouter.findHome),
+                ),
+                Expanded(child: Text("")),
+                Container(
+                  child: Checkbox(
+                    value: this.check,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    activeColor: Color.fromRGBO(98, 103, 123, 1),
+                    onChanged: (bool val) =>
+                        this.setState(() => this.check = !this.check),
+                  ),
+                ),
+                Text(S.current.register_hint1,
+                    style: FontManager.YaHeiRegular.copyWith(
+                        color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11)),
+                GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) => RegisterDialog()),
+                  child: Text(S.current.register_hint2,
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 11,
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline)),
+                )
+              ],
             ),
           ),
           Container(

@@ -530,13 +530,11 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 Container(
                   child: Checkbox(
                     value: this.check,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
                     activeColor: Color.fromRGBO(98, 103, 123, 1),
-                    onChanged: (bool val) {
-                      // val 是布尔值
-                      this.setState(() {
-                        this.check = !this.check;
-                      });
-                    },
+                    onChanged: (bool val) =>
+                        this.setState(() => this.check = !this.check),
                   ),
                 ),
                 Text(S.current.register_hint1,
