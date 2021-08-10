@@ -26,12 +26,13 @@ class UpdateManager {
     String url = 'https://mobile-api.twt.edu.cn/api/app/latest-version/2';
     searchLocalCache();
     HttpUtils.get(url).then((response) {
-      UpdateParser.parseJson(response.toString())?.then((value) {
-        UpdatePrompter(
-            updateEntity: value,
-            onInstall: (String filePath) {
-              CommonUtils.installAPP(filePath);
-            }).show(baseContext, value);
+      UpdateParser.parseJson(response.toString()).then((value) {
+        if (value != null)
+          UpdatePrompter(
+              updateEntity: value,
+              onInstall: (String filePath) {
+                CommonUtils.installAPP(filePath);
+              }).show(baseContext, value);
       });
     }).catchError((onError) {
       // ToastProvider.error(onError.toString());

@@ -97,6 +97,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       UpdateManager.init(context: baseContext);
       GlobalModel().init(baseContext);
       await HiveManager.init();
+      // 获取feedback的token
       await getToken(onSuccess: (token) {
         // assert(() {
         //   ToastProvider.success("token : $token");
