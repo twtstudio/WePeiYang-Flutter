@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/message/message_center.dart';
+import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -275,18 +279,32 @@ class _MailItemState extends State<MailItem> {
   }
 }
 
-class MailPage extends StatelessWidget {
+class MailPage extends StatefulWidget {
   final String url;
   final String title;
 
   const MailPage({Key key, this.url, this.title}) : super(key: key);
 
   @override
+  _MailPageState createState() => _MailPageState();
+}
+
+class _MailPageState extends State<MailPage> {
+  double opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Enable hybrid composition.
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(title,
+        title: Text(widget.title,
             style: FontManager.YaHeiRegular.copyWith(
                 fontSize: 16, color: Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
@@ -301,8 +319,20 @@ class MailPage extends StatelessWidget {
               onTap: () => Navigator.pop(context)),
         ),
       ),
-      body: WebView(
-        initialUrl: url,
+      body: Opacity(
+        opacity: opacity,
+        child: WebView(
+          initialUrl: widget.url,
+          javascriptMode: JavascriptMode.unrestricted,
+          onPageFinished: (_){
+            setState(() {
+              opacity = 1.0;
+            });
+          },
+          onWebResourceError: (WebResourceError error){
+            ToastProvider.error('加载遇到了错误');
+          },
+        ),
       ),
     );
   }

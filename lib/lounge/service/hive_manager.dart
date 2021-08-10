@@ -158,8 +158,9 @@ class HiveManager {
         await LoungeRepository.updateLocalData(DateTime.now());
         await initBuildingName(false);
       } catch (e) {
-        ToastProvider.error(e.toString().split(':')[1].trim());
+        // ToastProvider.error(e.toString().split(':')[1].trim());
         // debugPrint("initBuildingName retry error ${e.toString()}");
+        // ToastProvider.error('初始化');
         throw e;
       }
     }

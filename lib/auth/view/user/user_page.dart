@@ -160,7 +160,7 @@ class _UserPageState extends State<UserPage> {
                       onTap: () {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
-                          UpdateManager.checkUpdate();
+                          UpdateManager.checkUpdate(showDialog: true);
                         });
                       },
                       splashFactory: InkRipple.splashFactory,

@@ -21,6 +21,7 @@ import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 
 import 'commons/preferences/common_prefs.dart';
 import 'commons/util/app_analysis.dart';
@@ -171,12 +172,13 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
                     return "success";
                     break;
                   default:
-                    // print("???????????????????????????????????????????");
+                  // print("???????????????????????????????????????????");
                 }
               });
             return messageProvider;
           },
-        )
+        ),
+        Provider.value(value: ReportDataModel()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(

@@ -85,7 +85,7 @@ class _SelfInformationState extends State<SelfInformation> {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 13),
       child: Container(
           height: 90,
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -100,15 +100,11 @@ class _SelfInformationState extends State<SelfInformation> {
                     children: [
                       Text(
                         name,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 5),
-                      Text(
-                        ", 你好",
-                        style: TextStyle(
-                          fontSize: 14
-                        ),
-                      ),
+                      Text(", 你好"),
                     ],
                   ),
                   SizedBox(width: 30),

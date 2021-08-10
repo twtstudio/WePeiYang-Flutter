@@ -362,7 +362,7 @@ class MainActivity : FlutterFragmentActivity() {
 
     """.trimIndent())
 
-                placeChannel?.invokeMethod("showResult", "定位失败")
+                placeChannel?.invokeMethod("showError", "定位失败,${location.locationDetail}")
 
                 locationClient.stopLocation()
             }

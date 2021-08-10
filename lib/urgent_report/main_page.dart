@@ -46,7 +46,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       placeChannel.invokeMethod("test");
     });
 
-    _checkTodayHasReportedOrNot();
+    _checkPageShowType();
   }
 
   _toReportPage() {
@@ -77,26 +77,37 @@ class _ReportMainPageState extends State<ReportMainPage> {
     );
   }
 
-  _checkTodayHasReportedOrNot() {
+  _checkPageShowType() {
     try {
-      var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
-      var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
-      var difference = lastDay.difference(DateTime.now()).inDays;
-      if (difference != 0) {
-        _toReportPage();
-      } else {
+      if (_checkTodayHasReportedOrNot()) {
+        // has reported
         _toListPage();
+      } else {
+        // no
+        _toReportPage();
       }
     } catch (e) {
       _toReportPage();
     }
   }
 
-  _reportButtonOnTap(c) {
+  bool _checkTodayHasReportedOrNot() {
+    var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
+    var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
+    var difference = lastDay.difference(DateTime.now()).inDays;
+    if (difference != 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  _reportButtonOnTap(BuildContext c) {
     var model = Provider.of<ReportDataModel>(c, listen: false);
     var unSelected = model.check();
     print('$unSelected');
-
+    unSelected = model.check();
+    print('$unSelected');
     if (unSelected.isEmpty) {
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
@@ -120,7 +131,8 @@ class _ReportMainPageState extends State<ReportMainPage> {
     }
   }
 
-  _showReportDialog() => showDialog<int>(
+  _showReportDialog({ReportDataModel model}) =>
+      showDialog<int>(
           // 传入 context
           context: context,
           // 构建 Dialog 的视图
@@ -135,7 +147,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
             break;
           case 1:
             setState(() {
-              _page = _Page.list;
+              _toListPage();
             });
             break;
           default:
@@ -174,32 +186,40 @@ class _ReportMainPageState extends State<ReportMainPage> {
             future: _getReportHistoryList(),
             builder: (_, snapshot) {
               if (snapshot.hasData) {
-                print(snapshot.data.length);
-                return ListView.builder(
-                  itemExtent: 150,
-                  itemCount: snapshot.data.length,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (_, index) {
-                    return _ReportListItem(data: snapshot.data[index]);
-                  },
-                );
+                if (snapshot.data.length == 0) {
+                  return Center(
+                    child: Text(
+                      '当前无填报记录，请新建填报记录',
+                      style: TextStyle(
+                        color: Color(0xff63677b),
+                      ),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemExtent: 150,
+                    itemCount: snapshot.data.length,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (_, index) {
+                      return _ReportListItem(data: snapshot.data[index]);
+                    },
+                  );
+                }
               } else {
                 return Container();
               }
             });
         break;
       default:
+        break;
     }
 
-    return Provider<ReportDataModel>.value(
-      value: ReportDataModel(),
-      child: ReportBasePage(
-          action: _action,
-          body: AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
-            child: body,
-          )),
-    );
+    return ReportBasePage(
+        action: _action,
+        body: AnimatedSwitcher(
+          duration: Duration(milliseconds: 500),
+          child: body,
+        ));
   }
 }
 
@@ -215,8 +235,8 @@ class _ReportResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var toList = _button('查看填报记录', 1, context);
-    var goBack = _button("返回", 0, context);
+    var rightButton = _button('查看填报记录', 1, context);
+    var leftButton = _button('返回', 0, context);
 
     return Material(
       type: MaterialType.transparency,
@@ -247,7 +267,7 @@ class _ReportResultDialog extends StatelessWidget {
                   padding: EdgeInsets.only(top: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [goBack, toList],
+                    children: [leftButton, rightButton],
                   ),
                 )
               ],
@@ -463,6 +483,8 @@ class _TodayTempState extends State<TodayTemp> {
 
   @override
   Widget build(BuildContext context) {
+    var textFieldWidth = MediaQuery.of(context).size.width * 0.654;
+
     return BackgroundColorListener(
       part: _ReportPart.temperature,
       builder: (_, backgroundColor, __) => Container(
@@ -476,11 +498,12 @@ class _TodayTempState extends State<TodayTemp> {
               "今日体温",
               style: TextStyle(
                 color: Color(0xff63677b),
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
             SizedBox(width: 15),
             Container(
+              width: textFieldWidth,
               padding: EdgeInsets.only(bottom: 5),
               decoration: BoxDecoration(
                 border: Border(
@@ -492,8 +515,7 @@ class _TodayTempState extends State<TodayTemp> {
               ),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 100,
+                  Expanded(
                     child: TextField(
                       buildCounter: null,
                       controller: _temperature,
@@ -503,6 +525,7 @@ class _TodayTempState extends State<TodayTemp> {
                         color: Color(0xff63677b),
                         fontSize: 12,
                       ),
+                      textAlign: TextAlign.center,
                       maxLines: 1,
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -533,10 +556,13 @@ class _TodayTempState extends State<TodayTemp> {
 //https://blog.csdn.net/oZhuiMeng123/article/details/105123273/
 // 限制小数位数
 class _MyNumberTextInputFormatter extends TextInputFormatter {
-  static const defaultDouble = 0.001;
+  static const defaultDouble = 0.1;
 
   ///允许的小数位数，-1代表不限制位数
   int digit;
+
+  ///允许的整数位数, -1代表不限制位数
+  static int integer = 2;
 
   _MyNumberTextInputFormatter({this.digit = -1});
 
@@ -557,6 +583,15 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
     }
   }
 
+  ///获取目前的整数位数
+  static int getValueInteger(String value) {
+    if (integer != -1) {
+      return value.split(".")[0].length;
+    } else {
+      return integer;
+    }
+  }
+
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
@@ -571,7 +606,8 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
     } else if (value != "" &&
             value != defaultDouble.toString() &&
             strToFloat(value, defaultDouble) == defaultDouble ||
-        getValueDigit(value) > digit) {
+        getValueDigit(value) > digit ||
+        getValueInteger(value) > integer) {
       value = oldValue.text;
       selectionIndex = oldValue.selection.end;
     }
@@ -649,6 +685,7 @@ class _PickImageState extends State<PickImage> {
 
   @override
   Widget build(BuildContext context) {
+    var imageWidth = MediaQuery.of(context).size.width * 0.296;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -657,7 +694,7 @@ class _PickImageState extends State<PickImage> {
           child: Text(
             '上传${widget.image.name}',
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 13,
               color: Color(0xff63677b),
             ),
           ),
@@ -670,16 +707,16 @@ class _PickImageState extends State<PickImage> {
           child: _image != null
               ? Image.file(
                   _image,
-                  width: 100,
-                  height: 100,
+                  width: imageWidth,
+                  height: imageWidth,
                   fit: BoxFit.fitHeight,
                 )
               : DottedBorder(
                   borderType: BorderType.Rect,
                   color: Color(0xffd0d1d6),
                   child: Container(
-                    width: 100,
-                    height: 100,
+                    width: imageWidth,
+                    height: imageWidth,
                     child: Icon(
                       Icons.add_circle,
                       size: 40,
@@ -771,6 +808,11 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             });
             return 'success';
             break;
+          case 'showError':
+            String result = await call.arguments;
+            ToastProvider.error(result);
+            return 'success';
+            break;
           default:
             break;
         }
@@ -780,38 +822,52 @@ class _CurrentPlaceState extends State<CurrentPlace> {
 
   @override
   Widget build(BuildContext context) {
+    var placeWidth = MediaQuery.of(context).size.width - 80;
+
+    var placeText = Container(
+      padding: EdgeInsets.only(top: 15, left: 3),
+      width: placeWidth,
+      child: Text(
+        currentPlace,
+        softWrap: true,
+        style: TextStyle(
+          fontSize: 13,
+          color: Color(0xff63677b),
+        ),
+      ),
+    );
+
+    var chosePlaceButton = RaisedButton(
+      elevation: 0,
+      padding: EdgeInsets.zero,
+      onPressed: _checkAllPermissions,
+      child: Row(
+        children: [
+          Text(
+            '选择地区',
+            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
+          ),
+          Icon(Icons.chevron_right, size: 20, color: Color(0xff63677b)),
+        ],
+      ),
+      color: Colors.transparent,
+    );
+
     return Padding(
       padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.place, size: 50, color: Color(0xff63677b)),
-              RaisedButton(
-                elevation: 0,
-                onPressed: _checkAllPermissions,
-                child: Text(
-                  '获取位置',
-                  style: TextStyle(color: Color(0xff63677b)),
-                ),
-                color: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                  side: BorderSide(color: Color(0xff63677b)),
-                ),
-              ),
-            ],
-          ),
+          SizedBox(width: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-            child: Text(
-              currentPlace,
-              style: TextStyle(
-                fontSize: 13,
-                color: Color(0xff63677b),
-              ),
-            ),
+            padding: const EdgeInsets.only(top: 15.0, right: 3),
+            child: Icon(Icons.place, size: 20, color: Color(0xff63677b)),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [if (currentPlace != '') placeText, chosePlaceButton],
           ),
         ],
       ),
@@ -843,10 +899,7 @@ class _CurrentStateState extends State<CurrentState> {
         children: [
           Text(
             "当前状态",
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff63677b)),
+            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
           ),
           ...states
               .map((state) => StateItem(
@@ -889,6 +942,8 @@ class StateItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var itemWidth = MediaQuery.of(context).size.width * 0.18;
+    var itemHeight = itemWidth * 0.371;
     return Container(
       child: Center(
         child: InkWell(
@@ -896,8 +951,8 @@ class StateItem extends StatelessWidget {
             onclick();
           },
           child: Container(
-            height: 25,
-            width: 60,
+            height: itemHeight,
+            width: itemWidth,
 // padding: EdgeInsets.all(2),
             decoration: isSelected
                 ? BoxDecoration(
@@ -914,7 +969,7 @@ class StateItem extends StatelessWidget {
               child: Text(
                 state.name,
                 style: TextStyle(
-                  fontSize: 10.5,
+                  fontSize: 13,
                   color: isSelected ? Colors.white : Color(0XFF62677B),
                 ),
               ),
@@ -926,19 +981,25 @@ class StateItem extends StatelessWidget {
   }
 }
 
-class ReportButton extends StatelessWidget {
-  final height = 50.0;
-  final width = 90.0;
-
+class ReportButton extends StatefulWidget {
   final VoidCallback onTap;
 
   ReportButton({this.onTap, Key key}) : super(key: key);
 
+  @override
+  _ReportButtonState createState() => _ReportButtonState();
+}
+
+class _ReportButtonState extends State<ReportButton> {
+  final height = 50.0;
+
+  final width = 90.0;
+
   bool _isCan = true;
 
   _buttonClick() {
-    if (onTap != null && _isCan) {
-      onTap();
+    if (widget.onTap != null && _isCan) {
+      widget.onTap();
       _isCan = false;
       // 500 毫秒内 不能多次点击
       Future.delayed(Duration(milliseconds: 500), () {
@@ -1015,7 +1076,7 @@ class ReportDataModel {
 
   List<_ReportPart> check() {
     return _ReportPart.values
-        .where((element) => !_data.containsKey(element))
+        .where((element) => !data.containsKey(element))
         .toList();
   }
 
