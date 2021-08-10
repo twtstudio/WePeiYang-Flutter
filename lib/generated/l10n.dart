@@ -95,6 +95,16 @@ class S {
     );
   }
 
+  /// `PeiYang-Wiki`
+  String get wiki {
+    return Intl.message(
+      'PeiYang-Wiki',
+      name: 'wiki',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// ``
   String get check_new {
     return Intl.message(

@@ -198,6 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknown_department" : MessageLookupByLibrary.simpleMessage(""),
     "up_load" : MessageLookupByLibrary.simpleMessage(""),
     "user_name" : MessageLookupByLibrary.simpleMessage(""),
+    "wiki" : MessageLookupByLibrary.simpleMessage("PeiYang-Wiki"),
     "wrong" : MessageLookupByLibrary.simpleMessage("")
   };
 }

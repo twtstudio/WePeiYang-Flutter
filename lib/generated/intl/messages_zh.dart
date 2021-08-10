@@ -198,6 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknown_department" : MessageLookupByLibrary.simpleMessage("未知部门"),
     "up_load" : MessageLookupByLibrary.simpleMessage("上拉加载"),
     "user_name" : MessageLookupByLibrary.simpleMessage("用户名"),
+    "wiki" : MessageLookupByLibrary.simpleMessage("北洋维基"),
     "wrong" : MessageLookupByLibrary.simpleMessage("出错了")
   };
 }

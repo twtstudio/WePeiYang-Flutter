@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -17,14 +15,8 @@ class CardBean {
 
 class GlobalModel {
   GlobalModel._() {
-    cards.add(CardBean(
-        Icon(
-          Icons.report,
-          color: MyColors.darkGrey,
-          size: 25.0,
-        ),
-        S.current.report,
-        ReportRouter.main));
+    cards.add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25.0),
+        S.current.report, ReportRouter.main));
     cards.add(CardBean(
         Icon(
           Icons.event,
@@ -51,6 +43,14 @@ class GlobalModel {
         ),
         S.current.lounge,
         LoungeRouter.main));
+    cards.add(CardBean(
+        ImageIcon(
+          AssetImage('assets/images/wiki.png'),
+          color: MyColors.darkGrey,
+          size: 25,
+        ),
+        'Wiki',
+        HomeRouter.wiki));
   }
 
   static final _instance = GlobalModel._();
