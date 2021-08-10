@@ -185,6 +185,7 @@ class MainActivity : FlutterFragmentActivity() {
                 when (call.method) {
                     "getLocation" -> {
                         locationClient.startLocation()
+//                        Toast.makeText(this@MainActivity, "place channel test", Toast.LENGTH_SHORT).show()
                     }
                     "test" -> {
 //                        Toast.makeText(this@MainActivity, "place channel test", Toast.LENGTH_SHORT).show()
@@ -195,6 +196,7 @@ class MainActivity : FlutterFragmentActivity() {
         }
         super.configureFlutterEngine(flutterEngine)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -250,6 +252,7 @@ class MainActivity : FlutterFragmentActivity() {
      * 定位监听
      */
     var locationListener = AMapLocationListener { location ->
+//        Toast.makeText(this@MainActivity, "location", Toast.LENGTH_SHORT).show()
         if (null != location) {
             val sb = StringBuffer()
             //errCode等于0代表定位成功，其他的为定位失败，具体的可以参照官网定位错误码说明
@@ -335,6 +338,7 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 val json = Gson().toJson(locationData)
                 Log.d("locationresult", json)
+//                Toast.makeText(this@MainActivity, json, Toast.LENGTH_SHORT).show()
                 // 发送到flutter
                 placeChannel?.invokeMethod("showResult", json)
 
