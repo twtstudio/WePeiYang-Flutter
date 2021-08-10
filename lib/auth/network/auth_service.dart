@@ -314,6 +314,7 @@ checkInfo1(String userNumber, String username,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
     await _dio.get("register/checking/$userNumber/$username");
+    onSuccess();
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
   }
@@ -328,6 +329,7 @@ checkInfo2(String idNumber, String email, String phone,
       'email': email,
       'phone': phone
     });
+    onSuccess();
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
   }
