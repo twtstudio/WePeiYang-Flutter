@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -18,7 +20,7 @@ TextEditingController _titleController;
 TextEditingController _bodyController;
 int _currentTagId;
 int _currentTagIndex;
-List<Asset> _resultList = List<Asset>();
+List<File> _resultList = List<File>();
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -467,29 +469,15 @@ class ImagesGridView extends StatefulWidget {
 }
 
 class _ImagesGridViewState extends State<ImagesGridView> {
-  List<ByteData> images = List<ByteData>();
   int maxImage = 3;
 
   Future<void> loadAssets() async {
     String error;
 
     try {
-      _resultList = await MultiImagePicker.pickImages(
-        selectedAssets: _resultList,
-        enableCamera: true,
-        maxImages: maxImage,
-        materialOptions: MaterialOptions(
-          actionBarTitle: S.current.feedback_gallery,
-          allViewTitle: S.current.feedback_all_photos,
-          actionBarColor: "#f7f7f8",
-          actionBarTitleColor: "#303c66",
-          lightStatusBar: true,
-          statusBarColor: '#f7f7f8',
-          startInAllView: false,
-          selectCircleStrokeColor: "#f7f7f8",
-          okButtonDrawable: "@drawable/ok",
-        ),
-      );
+      PickedFile pickedFile = await ImagePicker()
+          .getImage(source: ImageSource.gallery, imageQuality: 50);
+      _resultList.add(File(pickedFile.path));
     } on Exception catch (e) {
       error = e.toString();
       print('error:!!!!!!!!!!' + error);
@@ -499,12 +487,6 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
     if (!mounted) return;
-
-    images.clear();
-    for (var image in _resultList) {
-      var data = await image.getThumbByteData(300, 300);
-      images.add(data);
-    }
 
     setState(() {});
   }
@@ -522,8 +504,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
           mainAxisSpacing: 12,
         ),
         itemCount:
-            images.length == maxImage ? images.length : images.length + 1,
-        itemBuilder: (context, index) => index == images.length
+            _resultList.length == maxImage ? _resultList.length : _resultList.length + 1,
+        itemBuilder: (context, index) => index == _resultList.length
             ? _ImagePickerWidget(
                 onTap: loadAssets,
               )
@@ -550,10 +532,10 @@ class _ImagesGridViewState extends State<ImagesGridView> {
 
                   if (result == 'ok')
                     setState(() {
-                      images.removeAt(index);
+                      _resultList.removeAt(index);
                     });
                 },
-                child: _MyImage(image: images[index].buffer.asUint8List())),
+                child: _MyImage(image: _resultList[index])),
         physics: NeverScrollableScrollPhysics(),
       ),
     );
@@ -566,13 +548,13 @@ class _MyImage extends StatelessWidget {
     @required this.image,
   }) : super(key: key);
 
-  final Uint8List image;
+  final File image;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Image(
-        image: MemoryImage(image),
+      child: Image.file(
+        image,
         fit: BoxFit.cover,
       ),
     );

@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -391,7 +391,7 @@ Future sendPost(
     {@required title,
     @required content,
     @required tagId,
-    @required List<Asset> imgList,
+    @required List<File> imgList,
     @required void Function() onSuccess,
     @required void Function() onFailure,
     @required void Function() onUploadImageFailure}) async {
@@ -411,11 +411,10 @@ Future sendPost(
 
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {
-            ByteData byteData = await imgList[index].getByteData();
             FormData data = FormData.fromMap({
               'token': notifier.token,
               'newImg': MultipartFile.fromBytes(
-                byteData.buffer.asUint8List(),
+                imgList[index].readAsBytesSync(),
                 filename: 'p${response.data['data']['question_id']}i$index.jpg',
                 contentType: MediaType("image", "jpg"),
               ),
