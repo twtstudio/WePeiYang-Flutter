@@ -135,6 +135,9 @@ class HoursCounterWidget extends StatelessWidget {
     int totalHours = getTotalHours(notifier.coursesWithNotify);
     double totalWidth = GlobalModel().screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
+    if (leftWidth > totalWidth) leftWidth = totalWidth;
+    /// 如果学期还没开始，则不显示学时
+    if (notifier.isBeforeTermStart) leftWidth = 0;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(

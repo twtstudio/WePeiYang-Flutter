@@ -32,27 +32,29 @@ class TodayCoursesWidget extends StatelessWidget {
                   child: (todayCourses.length == 0)
                       ? Container()
                       : GestureDetector(
-                    onTap: () =>
-                        Navigator.pushNamed(
-                            context, ScheduleRouter.schedule),
-                    child: DefaultTextStyle(
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 12,
-                          color: Color.fromRGBO(100, 103, 122, 1.0)),
-                      child: Text.rich(TextSpan(children: [
-                        // TODO 这里的国际化
-                        TextSpan(text: (notifier.nightMode && DateTime
-                            .now()
-                            .hour >= 21) ? "明天" : "今天"),
-                        TextSpan(
-                            text: todayCourses.length.toString(),
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: "节课 "),
-                        TextSpan(text: ">", style: TextStyle(fontSize: 15))
-                      ])),
-                    ),
-                  ),
+                          onTap: () => Navigator.pushNamed(
+                              context, ScheduleRouter.schedule),
+                          child: DefaultTextStyle(
+                            style: FontManager.YaHeiRegular.copyWith(
+                                fontSize: 12,
+                                color: Color.fromRGBO(100, 103, 122, 1.0)),
+                            child: Text.rich(TextSpan(children: [
+                              // TODO 这里的国际化
+                              TextSpan(
+                                  text: (notifier.nightMode &&
+                                          DateTime.now().hour >= 21)
+                                      ? "明天"
+                                      : "今天"),
+                              TextSpan(
+                                  text: todayCourses.length.toString(),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text: "节课 "),
+                              TextSpan(
+                                  text: ">", style: TextStyle(fontSize: 15))
+                            ])),
+                          ),
+                        ),
                 )
               ],
             ),
@@ -65,14 +67,12 @@ class TodayCoursesWidget extends StatelessWidget {
 
   /// 获取今天（夜猫子则是明天）的课程列表
   List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
+    /// 如果学期还没开始，则不显示
+    if (notifier.isOneDayBeforeTermStart) return [];
     List<ScheduleCourse> todayCourses = [];
-    int today = DateTime
-        .now()
-        .weekday;
+    int today = DateTime.now().weekday;
     bool nightMode = notifier.nightMode;
-    if (DateTime
-        .now()
-        .hour < 21) nightMode = false;
+    if (DateTime.now().hour < 21) nightMode = false;
     bool flag;
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
