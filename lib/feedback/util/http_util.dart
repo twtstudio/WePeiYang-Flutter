@@ -16,9 +16,9 @@ import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = 'http://47.94.198.197:10805/api/user/';
+  // String baseUrl = 'http://47.94.198.197:10805/api/user/';
 
-  // String baseUrl =  'https://areas.twt.edu.cn/api/user/';
+  String baseUrl =  'https://areas.twt.edu.cn/api/user/';
 
   @override
   Map<String, String> headers = {};
