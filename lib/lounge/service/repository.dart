@@ -65,10 +65,11 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
+    dateTime = checkDateTimeAvailable(dateTime);
     if (!dateTime.isBefore22) {
       dateTime = dateTime.next;
     }
-    dateTime = checkDateTimeAvailable(dateTime);
+    // print('                  ${dateTime.toString()}');
     if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
       canLoadLocalData = !canLoadLocalData;
       // ToastProvider.running('加载数据需要一点时间');

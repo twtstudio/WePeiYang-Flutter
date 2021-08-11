@@ -1,4 +1,5 @@
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 class Time {
   static const monday = 'Monday';
@@ -22,7 +23,6 @@ class Time {
   // TODO: 暂时不知道学习开始时间怎么处理，所以就暂时搞个假的
   static DateTime semesterStart() {
     var firstDay = DateTime.tryParse(CommonPreferences().termStartDate.value);
-    print(firstDay);
     if (firstDay != null) {
       // 防止错误
       return firstDay.next.weekStart;
@@ -142,7 +142,7 @@ extension DateTimeExtension on DateTime {
 
   // error:   DateTime(2021,2,17,25,0).isToday => true  today: 17
   bool get isToday {
-    var now = DateTime.now();
+    var now = checkDateTimeAvailable(DateTime.now());
     if (!now.isBefore22) {
       now = now.next;
     }
@@ -159,7 +159,7 @@ extension DateTimeExtension on DateTime {
 
   bool get isThisWeek {
     var begin = DateTime(year).weekStart;
-    return _weekConversion(begin) == DateTime.now()._weekConversion(begin);
+    return _weekConversion(begin) == checkDateTimeAvailable(DateTime.now())._weekConversion(begin);
   }
 
   List<DateTime> get thisWeek => Time.week

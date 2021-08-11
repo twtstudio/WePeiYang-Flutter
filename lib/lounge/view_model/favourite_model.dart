@@ -27,6 +27,7 @@ class RoomFavouriteModel extends ChangeNotifier {
 
     try {
       List<String> remoteIds = await LoungeRepository.favouriteList;
+      print(remoteIds);
 
       if(remoteIds.isNotEmpty || localData.isNotEmpty){
         await instance.initBuildingName();
