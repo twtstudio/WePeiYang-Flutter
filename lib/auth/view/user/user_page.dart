@@ -18,7 +18,8 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(systemNavigationBarColor: Colors.white));
     final textStyle = FontManager.YaHeiRegular.copyWith(
         fontSize: 13,
         fontWeight: FontWeight.bold,

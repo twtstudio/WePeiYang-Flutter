@@ -65,7 +65,7 @@ class WPYPageState extends State<WPYPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.white,));
     return Material(
       child: Theme(
         data: ThemeData(accentColor: Colors.white),

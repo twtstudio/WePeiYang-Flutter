@@ -3,11 +3,13 @@ package com.twt.service
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.amap.api.location.AMapLocationClient
@@ -423,7 +425,3 @@ data class LocationData(
         val address: String,
         val time: Long,
 )
-
-fun sendLocationData(data: LocationData) {
-
-}
