@@ -240,8 +240,8 @@ class HiveManager {
 
   Stream<Building> get baseBuildingDataFromDisk async* {
     // print(_boxesKeys.keys.toList());
-    // debugPrint(
-    //     'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
+    debugPrint(
+        'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
     for (var key in _boxesKeys.keys) {
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
@@ -301,7 +301,7 @@ class HiveManager {
       await box.put(key, building);
       await _setBuildingDataRefreshTime(building.id, building.name,time);
     } else {
-      // print('box not exist :' + building.id);
+      print('box not exist :' + building.id);
     }
   }
 

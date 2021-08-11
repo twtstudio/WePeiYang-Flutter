@@ -62,22 +62,13 @@ class PageTitleWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: 0, bottom: 12),
           child: Consumer<LoungeTimeModel>(
-            builder: (_, model, __) => FutureBuilder(
-              future: model.dateTime.convertedWeekAndDay,
-              builder: (_, AsyncSnapshot<List<PlanDate>> snapshot) {
-                if (snapshot.hasData) {
-                  return Text(
-                    'WEEK ${snapshot.data.first.week}',
-                    style: FontManager.Texta.copyWith(
-                      color: Color(0xffcdced3),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              },
+            builder: (_, model, __) => Text(
+              'WEEK ${model.dateTime.convertedWeekAndDay.first.week}',
+              style: FontManager.Texta.copyWith(
+                color: Color(0xffcdced3),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

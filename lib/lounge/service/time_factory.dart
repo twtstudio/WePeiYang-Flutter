@@ -1,3 +1,5 @@
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+
 class Time {
   static const monday = 'Monday';
   static const tuesday = 'Tuesday';
@@ -18,9 +20,16 @@ class Time {
   ];
 
   // TODO: 暂时不知道学习开始时间怎么处理，所以就暂时搞个假的
-  static Future<DateTime> semesterStart() async {
-    var firstDay = DateTime(2021, 3, 1);
-    return firstDay.weekStart;
+  static DateTime semesterStart() {
+    var firstDay = DateTime.tryParse(CommonPreferences().termStartDate.value);
+    print(firstDay);
+    if (firstDay != null) {
+      // 防止错误
+      return firstDay.next.weekStart;
+    } else {
+      // 想想办法
+      return DateTime(2021, 8, 16);
+    }
   }
 
   static int _daysBetween(DateTime a, DateTime b, [bool ignoreTime = false]) {
@@ -118,8 +127,8 @@ class PlanDate {
 }
 
 extension DateTimeExtension on DateTime {
-  Future<List<PlanDate>> get convertedWeekAndDay async {
-    var start = await Time.semesterStart();
+  List<PlanDate> get convertedWeekAndDay {
+    var start = Time.semesterStart();
     return thisWeek
         .map((e) =>
             PlanDate(e._weekConversion(start), e._weekdayConversion(start)))

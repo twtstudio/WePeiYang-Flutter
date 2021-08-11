@@ -342,6 +342,7 @@ getSemesterInfo() async {
     var pref = CommonPreferences();
     pref.termStart.value = result['semesterStartTimestamp'];
     pref.termName.value = result['semesterName'];
+    pref.termStartDate.value = result['semesterStartAt'];
     // TODO: 这里留着下学期开学用
     // print("hahahhahahahahaahhahahahahahahahahahaha");
     // print(result);

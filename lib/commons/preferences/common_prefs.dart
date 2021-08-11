@@ -40,6 +40,7 @@ class CommonPreferences {
   var scheduleData = PrefsBean<String>('scheduleData');
   var termStart = PrefsBean<int>('termStart', 1614556800);
   var termName = PrefsBean<String>('termName', '20212');
+  var termStartDate = PrefsBean<String>('termStartDate','');
 
   ///办公网相关
   var isBindTju = PrefsBean<bool>('bindtju');

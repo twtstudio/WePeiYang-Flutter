@@ -43,12 +43,12 @@ class LoungeTimeModel extends ChangeNotifier {
       var current = Time.classOfDay(DateTime.now());
       // var current = Time.classOfDay(DateTime(2021, 4, 18, 22, 25));
       _classTime = [current.classTime];
-      _dateTime = current.date;
+      _dateTime = checkDateTimeAvailable(current.date);
     } else {
       preCs = [..._classTime];
       preD = DateTime.parse(_dateTime.toString());
       _classTime = schedule ?? _classTime;
-      _dateTime = date ?? _dateTime;
+      _dateTime = checkDateTimeAvailable(date) ?? _dateTime;
     }
     if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
@@ -70,7 +70,7 @@ class LoungeTimeModel extends ChangeNotifier {
               _state = ViewState.error;
               _dateTime = preD;
             } else {
-              _dateTime = localLastUpdateTime;
+              _dateTime = checkDateTimeAvailable(localLastUpdateTime);
               _state = ViewState.idle;
             }
           } else {
@@ -120,4 +120,13 @@ extension CampusExtension on Campus {
   String get id => ['1', '2'][this.index];
 
   String get name => [S.current.WJL, S.current.BYY][this.index];
+}
+
+DateTime checkDateTimeAvailable(DateTime dateTime) {
+   if(dateTime != null){
+     if (dateTime.isBefore(Time.semesterStart())) {
+       return Time.semesterStart();
+     }
+   }
+   return dateTime;
 }
