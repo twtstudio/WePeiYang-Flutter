@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -56,7 +55,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     child: InkWell(
                       onTap: () {
                         // TODO 修改头像
-                        ToastProvider.error('敬请期待');
                       },
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
