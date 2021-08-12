@@ -17,20 +17,22 @@ class TjuBindPage extends StatefulWidget {
 }
 
 class _TjuBindPageState extends State<TjuBindPage> {
-  var pref = CommonPreferences();
   String tjuuname = "";
   String tjupasswd = "";
   String captcha = "";
 
   TextEditingController nameController;
   TextEditingController pwController;
-  TextEditingController codeController = TextEditingController();
-  GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
+  TextEditingController codeController;
+  GlobalKey<CaptchaWidgetState> captchaKey;
   CaptchaWidget captchaWidget;
 
   @override
   void initState() {
     captchaWidget = CaptchaWidget(captchaKey);
+    codeController = TextEditingController();
+    captchaKey = GlobalKey();
+    var pref = CommonPreferences();
     if (pref.isBindTju.value) {
       super.initState();
       return;
@@ -73,7 +75,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
       Provider.of<GPANotifier>(context, listen: false)
           .refreshGPA(hint: false)
           .call();
-      setState(() {});
+      setState(() {
+        tjuuname = "";
+        tjupasswd = "";
+        nameController = null;
+        pwController = null;
+      });
     }, onFailure: (e) {
       ToastProvider.error(e.error);
       captchaKey.currentState.refresh();
@@ -84,7 +91,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   FocusNode _accountFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
 
-  Widget _detail(BuildContext context) {
+  Widget _detail(BuildContext context, CommonPreferences pref) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     double width = GlobalModel().screenWidth - 80;
@@ -311,7 +318,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     child: Image.asset('assets/images/twt_round.png')),
               ],
             ),
-            _detail(context)
+            _detail(context, pref)
           ],
         ),
       ),

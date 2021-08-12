@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                       Duration(seconds: 1)) {
                 //两次点击间隔超过1秒则重新计时
                 _lastPressedAt = DateTime.now();
-                ToastProvider.running('再次点击，推出应用');
+                ToastProvider.running('再按一次退出程序');
                 return false;
               }
             } else {
