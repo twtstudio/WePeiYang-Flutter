@@ -41,8 +41,12 @@ void main() async {
   await NetStatusListener.init();
   runApp(WePeiYangApp());
   if (Platform.isAndroid) {
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /// 这个逻辑之后重写，有大隐患，和他的实现有关
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.white,
     ));
   }
 }
@@ -237,12 +241,12 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _autoLogin(context);
     });
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
+        .copyWith(systemNavigationBarColor: Colors.white));
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-
     return Container(
       color: Colors.white,
       child: Center(

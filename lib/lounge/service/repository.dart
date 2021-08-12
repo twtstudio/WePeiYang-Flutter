@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/lounge/model/building.dart';
 import 'package:we_pei_yang_flutter/lounge/service/net/login_api.dart';
 import 'package:we_pei_yang_flutter/lounge/service/net/open_api.dart';
@@ -44,11 +45,11 @@ class LoungeRepository {
   static Stream<MapEntry<int, List<Building>>> _getWeekClassPlan(
       {@required DateTime dateTime}) async* {
     // debugPrint('????????????????? _getWeekClassPlan ?????????????????');
-    var thatWeek = await dateTime.convertedWeekAndDay;
-    var term = '20212';
+    var thatWeek = dateTime.convertedWeekAndDay;
+    var term = CommonPreferences().termName.value;
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week}/${weekday.day}';
-      // debugPrint('??????????????????' + 'getDayData/$requestDate');
+      debugPrint('??????????????????' + 'getDayData/$requestDate');
       var response = await openApi.get('getDayData/$requestDate');
       try {
         List<Building> buildings =
@@ -64,9 +65,11 @@ class LoungeRepository {
   }
 
   static updateLocalData(DateTime dateTime) async {
+    dateTime = checkDateTimeAvailable(dateTime);
     if (!dateTime.isBefore22) {
       dateTime = dateTime.next;
     }
+    // print('                  ${dateTime.toString()}');
     if (HiveManager.instance.shouldUpdateLocalData && canLoadLocalData) {
       canLoadLocalData = !canLoadLocalData;
       // ToastProvider.running('加载数据需要一点时间');

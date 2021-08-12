@@ -9,7 +9,7 @@ class DrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cards = GlobalModel().cards;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.white,));
     return Container(
       padding: const EdgeInsets.only(top: 65),
       child: GridView.count(

@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart' show GPACurve;
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart'
+    show GPACurve;
 import 'package:we_pei_yang_flutter/main.dart';
 import '../model/gpa_model.dart';
 import '../model/gpa_notifier.dart';
@@ -41,31 +42,34 @@ class _GPAPageState extends State<GPAPage> {
         .call();
   }
 
-  @override
-  void dispose() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(
-        builder: (context, notifier, _) => Scaffold(
-              appBar: GPAppBar(widget.gpaColors),
-              backgroundColor: widget.gpaColors[0],
-              body: Theme(
-                /// 修改scrollView滚动至头/尾时溢出的颜色
-                data: ThemeData(accentColor: Colors.white),
-                child: ListView(
-                  children: [
-                    RadarChartWidget(notifier, widget.gpaColors),
-                    GPAStatsWidget(notifier, widget.gpaColors),
-                    GPACurve(notifier, widget.gpaColors, isPreview: false),
-                    CourseListWidget(notifier, widget.gpaColors)
-                  ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: widget.gpaColors[0]),
+      child: Consumer<GPANotifier>(
+          builder: (context, notifier, _) => Scaffold(
+                appBar: GPAppBar(widget.gpaColors),
+                backgroundColor: widget.gpaColors[0],
+                body: Theme(
+                  /// 修改scrollView滚动至头/尾时溢出的颜色
+                  data: ThemeData(accentColor: Colors.white),
+                  child: ListView(
+                    children: [
+                      RadarChartWidget(notifier, widget.gpaColors),
+                      GPAStatsWidget(notifier, widget.gpaColors),
+                      GPACurve(notifier, widget.gpaColors, isPreview: false),
+                      CourseListWidget(notifier, widget.gpaColors)
+                    ],
+                  ),
                 ),
-              ),
-            ));
+              )),
+    );
   }
 }
 

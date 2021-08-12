@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/model/local_entry.dart';
 import 'package:we_pei_yang_flutter/lounge/model/search_entry.dart';
 import 'package:we_pei_yang_flutter/lounge/model/temporary.dart';
+import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
 /// key of [HiveManager._boxesKeys]
 const boxes = 'boxesKeys';
@@ -146,14 +147,15 @@ class HiveManager {
   }
 
   initBuildingName([bool first]) async {
-    // debugPrint("initBuildingName");
+    debugPrint("initBuildingName");
     if (_boxesKeys.isNotEmpty && !shouldUpdateLocalData) {
       for (var id in _boxesKeys.keys) {
         var building = await _buildingBoxes[id].get(baseRoom);
         _buildingName[id] = building.name;
         // print("building name : ${building.name}");
       }
-    } else if (shouldUpdateLocalData) {
+    } else if (shouldUpdateLocalData && first) {
+      print("shouldUpdateLocalData?????????????");
       try {
         await LoungeRepository.updateLocalData(DateTime.now());
         await initBuildingName(false);
@@ -193,8 +195,10 @@ class HiveManager {
           // print(e?.dateTime ?? "no date time error");
           bool isToday;
           try {
-            isToday =
-                e == null ? false : DateTime.parse(e?.dateTime ?? '').isToday;
+            isToday = e == null
+                ? false
+                : checkDateTimeAvailable(DateTime.parse(e?.dateTime ?? ''))
+                    .isToday;
           } catch (e) {
             isToday = false;
           }
@@ -220,10 +224,11 @@ class HiveManager {
   }
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
-    if (_temporaryDateTime == null ) {
-      if(CommonPreferences().temporaryUpdateTime.value != ""){
-        _temporaryDateTime = DateTime.parse(CommonPreferences().temporaryUpdateTime.value);
-      }else {
+    if (_temporaryDateTime == null) {
+      if (CommonPreferences().temporaryUpdateTime.value != "") {
+        _temporaryDateTime =
+            DateTime.parse(CommonPreferences().temporaryUpdateTime.value);
+      } else {
         return true;
       }
     }
@@ -236,12 +241,12 @@ class HiveManager {
     }
   }
 
-  bool get canloadLocalData => localDateLastUpdateTime != null ;
+  bool get canloadLocalData => localDateLastUpdateTime != null;
 
   Stream<Building> get baseBuildingDataFromDisk async* {
     // print(_boxesKeys.keys.toList());
-    // debugPrint(
-    //     'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
+    debugPrint(
+        'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
     for (var key in _boxesKeys.keys) {
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
@@ -261,7 +266,7 @@ class HiveManager {
 
   _writeInBox(Building building) async {
     var id = building.id;
-    // print(id);
+    print(id);
     if (_boxesKeys.values.contains(id)) {
       // print('building exist:' + id);
     } else {
@@ -282,15 +287,15 @@ class HiveManager {
     int day,
     DateTime time,
   ) async {
-    // print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     for (var building in buildings) {
-      // print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      await _writeThisWeekData(building, day,time);
+      print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      await _writeThisWeekData(building, day, time);
     }
   }
 
   /// 根据日期先判断时星期几，然后设置那天的教室安排
-  _writeThisWeekData(Building building, int day,DateTime time) async {
+  _writeThisWeekData(Building building, int day, DateTime time) async {
     var key = Time.week[day - 1];
     // TODO: 错误处理
     if (_buildingBoxes.containsKey(building.id)) {
@@ -299,14 +304,14 @@ class HiveManager {
         await box.delete(key);
       }
       await box.put(key, building);
-      await _setBuildingDataRefreshTime(building.id, building.name,time);
+      await _setBuildingDataRefreshTime(building.id, building.name, time);
     } else {
-      // print('box not exist :' + building.id);
+      print('box not exist :' + building.id);
     }
   }
 
   /// 记录最重要的本周数据的获取时间，以判断是否需要刷新数据
-  _setBuildingDataRefreshTime(String id, String name,DateTime time) async =>
+  _setBuildingDataRefreshTime(String id, String name, DateTime time) async =>
       await _boxesKeys.put(id, LocalEntry(id, name, time.toString()));
 
   clearLocalData() async {
