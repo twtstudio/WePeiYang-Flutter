@@ -18,7 +18,7 @@ class FeedbackDio extends DioAbstract {
   @override
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
 
-  String baseUrl =  'https://areas.twt.edu.cn/api/user/';
+  String baseUrl = 'https://areas.twt.edu.cn/api/user/';
 
   @override
   Map<String, String> headers = {};
@@ -46,10 +46,10 @@ Future getToken(
   try {
     Response response = await _client.post(
       'login',
-      queryParameters: {
+      formData: FormData.fromMap({
         'username': CommonPreferences().account.value,
         'password': CommonPreferences().password.value,
-      },
+      }),
     );
     if (null != response.data['data'] &&
         null != response.data['data']['token']) {

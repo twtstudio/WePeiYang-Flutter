@@ -131,7 +131,6 @@ class _PostCardState extends State<PostCard> {
                                 color: ColorUtil.boldTextColor,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
-                                height: 1,
                               ),
                             ),
                           ),
