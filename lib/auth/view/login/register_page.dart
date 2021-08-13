@@ -523,10 +523,12 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               ),
             ),
           ),
-          Padding(
-              padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.fromLTRB(25, 20, 40, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 Container(
                   child: Checkbox(
                     value: this.check,
@@ -539,7 +541,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 ),
                 Text(S.current.register_hint1,
                     style: FontManager.YaHeiRegular.copyWith(
-                        color: Color.fromRGBO(79, 88, 107, 1))),
+                        color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11)),
                 GestureDetector(
                   onTap: () => showDialog(
                       context: context,
@@ -547,11 +549,13 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                       builder: (BuildContext context) => RegisterDialog()),
                   child: Text(S.current.register_hint2,
                       style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 11,
                           color: Colors.blue,
-                          textBaseline: TextBaseline.alphabetic,
                           decoration: TextDecoration.underline)),
                 )
-              ])),
+              ],
+            ),
+          ),
           Expanded(child: Text("")),
           Row(
             children: [

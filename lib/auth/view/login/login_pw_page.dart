@@ -120,20 +120,38 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40, 20, 40, 50),
+            padding: EdgeInsets.fromLTRB(40, 15, 40, 25),
+            child: GestureDetector(
+              child: Text(S.current.forget_password,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      fontSize: 11,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline)),
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.findHome),
+            ),
+          ),
+          Container(
+              height: 50.0,
+              width: 400.0,
+              padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+              child: RaisedButton(
+                onPressed: _login,
+                color: Color.fromRGBO(53, 59, 84, 1.0),
+                splashColor: Color.fromRGBO(103, 110, 150, 1.0),
+                child: Text(S.current.login,
+                    style: FontManager.YaHeiRegular.copyWith(
+                        color: Colors.white, fontSize: 13)),
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0)),
+              )),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.fromLTRB(25, 20, 40, 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                GestureDetector(
-                  child: Text(S.current.forget_password,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 11,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline)),
-                  onTap: () =>
-                      Navigator.pushNamed(context, AuthRouter.findHome),
-                ),
-                Expanded(child: Text("")),
                 Container(
                   child: Checkbox(
                     value: this.check,
@@ -161,21 +179,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               ],
             ),
           ),
-          Container(
-              height: 50.0,
-              width: 400.0,
-              padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-              child: RaisedButton(
-                onPressed: _login,
-                color: Color.fromRGBO(53, 59, 84, 1.0),
-                splashColor: Color.fromRGBO(103, 110, 150, 1.0),
-                child: Text(S.current.login,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Colors.white, fontSize: 13)),
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
-              )),
         ],
       ),
     );
