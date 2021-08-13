@@ -254,12 +254,12 @@ Future postHitLike({
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response = await _client.post(
-          isLiked ? 'question/dislike' : 'question/like',
-          queryParameters: {
-            'id': '$id',
-            'token': notifier.token,
-          });
+      Response response =
+          await _client.post(isLiked ? 'question/dislike' : 'question/like',
+              formData: FormData.fromMap({
+                'id': '$id',
+                'token': notifier.token,
+              }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -285,10 +285,10 @@ Future postHitFavorite({
     try {
       Response response = await _client.post(
           isFavorite ? 'question/unfavorite' : 'question/favorite',
-          queryParameters: {
+          formData: FormData.fromMap({
             'question_id': id,
             'token': notifier.token,
-          });
+          }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -311,11 +311,12 @@ Future commentHitLike(
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response = await _client
-          .post(isLiked ? 'commit/dislike' : 'commit/like', queryParameters: {
-        'id': '$id',
-        'token': notifier.token,
-      });
+      Response response =
+          await _client.post(isLiked ? 'commit/dislike' : 'commit/like',
+              formData: FormData.fromMap({
+                'id': '$id',
+                'token': notifier.token,
+              }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -338,11 +339,12 @@ Future officialCommentHitLike(
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response = await _client
-          .post(isLiked ? 'answer/dislike' : 'answer/like', queryParameters: {
-        'id': '$id',
-        'token': notifier.token,
-      });
+      Response response =
+          await _client.post(isLiked ? 'answer/dislike' : 'answer/like',
+              formData: FormData.fromMap({
+                'id': '$id',
+                'token': notifier.token,
+              }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -367,11 +369,11 @@ Future sendComment(
     try {
       Response response = await _client.post(
         'commit/add/question',
-        queryParameters: {
+        formData: FormData.fromMap({
           'token': notifier.token,
           'question_id': id,
           'contain': content,
-        },
+        }),
       );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
@@ -398,13 +400,14 @@ Future sendPost(
   if (!_sendPostLock) {
     _sendPostLock = true;
     try {
-      Response response = await _client.post('question/add', queryParameters: {
-        'token': notifier.token,
-        'name': title,
-        'description': content,
-        'tagList': '[$tagId]',
-        'campus': 0,
-      });
+      Response response = await _client.post('question/add',
+          formData: FormData.fromMap({
+            'token': notifier.token,
+            'name': title,
+            'description': content,
+            'tagList': '[$tagId]',
+            'campus': 0,
+          }));
       if (0 == response.data['ErrorCode']) {
         // debugPrint(
         //     "send question success ${response.data['data']['question_id']}");
@@ -457,12 +460,12 @@ Future rate(
     try {
       Response response = await _client.post(
         'answer/commit',
-        queryParameters: {
+        formData: FormData.fromMap({
           'token': notifier.token,
           'answer_id': id,
           'score': rating.toInt(),
           'commit': '评分',
-        },
+        }),
       );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
@@ -487,10 +490,10 @@ Future deletePost(
     try {
       Response response = await _client.post(
         'question/delete',
-        queryParameters: {
+        formData: FormData.fromMap({
           'token': notifier.token,
           'question_id': id,
-        },
+        }),
       );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
