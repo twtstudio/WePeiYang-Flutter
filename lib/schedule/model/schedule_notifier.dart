@@ -56,11 +56,12 @@ class ScheduleNotifier with ChangeNotifier {
   bool get isOneDayBeforeTermStart => (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
 
   /// 一学期一共有多少周……这个就先写死了
-  int _weekCount = 24;
+  // TODO 怎么一学期有27周，看来还是得手动获取
+  int _weekCount = 27;
 
   int get weekCount => _weekCount;
 
-  /// 夜猫子模式
+  /// 夜猫子模式，这个变量的主要作用是通知widget更新
   bool _nightMode = true;
 
   set nightMode(bool value) {
@@ -69,8 +70,7 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   bool get nightMode {
-    /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
-    _nightMode = CommonPreferences().nightMode.value;
+    _nightMode = CommonPreferences().nightMode.value; /// 优先听缓存的
     return _nightMode;
   }
 

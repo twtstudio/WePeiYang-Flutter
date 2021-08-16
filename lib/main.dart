@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -34,9 +35,15 @@ import 'message/user_mails_page.dart';
 /// 2. 添加外部存储读写和摄像头使用权限，[MultiImagePicker]所需
 /// 3. 在资源文件夹添加完成图片选择图标
 
+/// 列一下各种东西的初始化：
+/// 1. run app 之前：
+/// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数
+/// [NetStatusListener.init]初始化网络状态监听，初次调用为WePeiYangApp的[initState]函数
+/// ...
+/// ...
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await FlutterDownloader.initialize(debug: true);
   await CommonPreferences.initPrefs();
   await NetStatusListener.init();
   runApp(WePeiYangApp());
@@ -63,7 +70,6 @@ FlutterError.onError = (FlutterErrorDetails details) async {
 
   runZoned<Future<Null>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // await FlutterDownloader.initialize(debug: true);
     await CommonPreferences.initPrefs();
     runApp(WePeiYangApp());
     if (Platform.isAndroid) {
