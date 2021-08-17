@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,6 @@ import 'commons/preferences/common_prefs.dart';
 import 'commons/util/app_analysis.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'home/model/home_model.dart';
-import 'message/user_mails_page.dart';
 
 /// 在醒目的地方写一下对android文件夹的修改
 /// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
@@ -37,10 +35,13 @@ import 'message/user_mails_page.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
-/// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数
-/// [NetStatusListener.init]初始化网络状态监听，初次调用为WePeiYangApp的[initState]函数
-/// ...
-/// ...
+/// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数之后
+/// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数之后
+/// 2. App build 前后：
+/// [GlobalModel.init]配置全局context
+/// [UpdateManager.init]配置更新应用的dio, 这个可以合并掉
+/// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
+/// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,12 +109,9 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       UpdateManager.init(context: baseContext);
       GlobalModel().init(baseContext);
       await HiveManager.init();
-      // 获取feedback的token
-      await getToken(onSuccess: (token) {
-        // assert(() {
-        //   ToastProvider.success("token : $token");
-        // }());
-      }, onFailure: () {
+
+      /// 获取feedback的token
+      await getToken(onFailure: () {
         // assert(() {
         //   ToastProvider.error("获取token失败");
         // }());
@@ -144,12 +142,8 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'showMessage':
-                    // print("*****************************************");
                     String content = await call.arguments;
-                    // print(
-                    //     "*******************$content + ${content != null && content.isNotEmpty}*****************");
                     if (content != null && content.isNotEmpty) {
-                      // print("????");
                       await showMessageDialog(
                         baseContext,
                         content,
@@ -166,12 +160,6 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
                     }
                     break;
                   case 'getReply':
-                    // print(
-                    //     "******************  get reply ***********************");
-                    // print(
-                    //     "******************  get reply ***********************");
-                    // print(
-                    //     "******************  get reply ***********************");
                     await Navigator.pushNamed(
                         baseContext, FeedbackRouter.detail);
                     return "success";
@@ -181,8 +169,6 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
                     await messageProvider.refreshFeedbackCount();
                     return "success";
                     break;
-                  default:
-                  // print("???????????????????????????????????????????");
                 }
               });
             return messageProvider;
@@ -195,7 +181,6 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
           debugShowCheckedModeBanner: false,
           title: 'WePeiYangFlutter',
           navigatorKey: WePeiYangApp.navigatorState,
-          // theme: ThemeData(fontFamily: 'WeiYuanYaHei'),
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],
           localizationsDelegates: [
@@ -244,9 +229,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoLogin(context);
     });
+    // TODO
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
         .copyWith(systemNavigationBarColor: Colors.white));
   }
@@ -265,6 +251,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
+    // TODO 这里也许要挪位置
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
@@ -276,8 +263,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Future.delayed(Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
-      /// 稍微显示一会启动页，不然它的意义是什么555
-      /// 用缓存中的数据自动登录，无论失败与否都进入主页
+      /// 如果登陆过的话，短暂显示启动页后尝试自动登录，无论成功与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then(
         (_) => login(
           prefs.account.value,

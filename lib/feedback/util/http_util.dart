@@ -41,7 +41,7 @@ FeedbackNotifier notifier = Provider.of<FeedbackNotifier>(
     listen: false);
 
 Future getToken(
-    {@required void Function(String token) onSuccess,
+    {void Function(String token) onSuccess,
     @required void Function() onFailure}) async {
   try {
     Response response = await _client.post(
