@@ -8,11 +8,11 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 final TextStyle activeNameStyle = FontManager.YaQiHei.copyWith(
-    color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold);
+    color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
 final TextStyle activeTeacherStyle =
     FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
 final TextStyle activeClassroomStyle =
-    FontManager.Texta.copyWith(color: Colors.white, fontSize: 9);
+    FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
 
 /// 返回本周需要上的课（亮色），可在wpy_page复用
 Widget getActiveCourseCard(BuildContext context, double height, double width,

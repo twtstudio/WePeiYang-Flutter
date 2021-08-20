@@ -343,12 +343,6 @@ getSemesterInfo() async {
     pref.termStart.value = result['semesterStartTimestamp'];
     pref.termName.value = result['semesterName'];
     pref.termStartDate.value = result['semesterStartAt'];
-    // TODO: 这里留着下学期开学用
-    // print("hahahhahahahahaahhahahahahahahahahahaha");
-    // print(result);
-    // print(result['semesterStartTimestamp']);
-    // print(result['semesterName']);
-    // print("dhsauodhaudhashdsahkdjshjdajdajshdjashjda");
   } on DioError catch (e) {
     log('获取学期信息失败\t$e\n\tMessage: ${e.message}');
   }

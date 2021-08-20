@@ -29,9 +29,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   void initState() {
+    captchaKey = GlobalKey();
     captchaWidget = CaptchaWidget(captchaKey);
     codeController = TextEditingController();
-    captchaKey = GlobalKey();
     var pref = CommonPreferences();
     if (pref.isBindTju.value) {
       super.initState();

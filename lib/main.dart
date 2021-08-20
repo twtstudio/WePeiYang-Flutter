@@ -43,6 +43,13 @@ import 'home/model/home_model.dart';
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
+
+/// 记录下修改内容
+/// 1. 修改默认termStart为08-16，去掉了8小时offset
+/// 2. 绑定办公网失败时，验证码会自动刷新
+/// 3. 点击title进入课表、gpa
+/// 4. 课程表稍微调大了一点字号
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CommonPreferences.initPrefs();

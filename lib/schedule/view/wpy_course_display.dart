@@ -15,26 +15,26 @@ class TodayCoursesWidget extends StatelessWidget {
       List<ScheduleCourse> todayCourses = _getTodayCourses(notifier);
       return Column(
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(25.0, 20.0, 0.0, 12.0),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(S.current.schedule,
-                    style: FontManager.YaQiHei.copyWith(
-                        fontSize: 16,
-                        color: Color.fromRGBO(100, 103, 122, 1.0),
-                        fontWeight: FontWeight.bold)),
-                Expanded(child: Text("")),
-                Padding(
-                  padding: const EdgeInsets.only(right: 25.0, top: 2),
-                  child: (todayCourses.length == 0)
-                      ? Container()
-                      : GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                              context, ScheduleRouter.schedule),
-                          child: DefaultTextStyle(
+          GestureDetector(
+            onTap: () =>
+                Navigator.pushNamed(context, ScheduleRouter.schedule),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(S.current.schedule,
+                      style: FontManager.YaQiHei.copyWith(
+                          fontSize: 16,
+                          color: Color.fromRGBO(100, 103, 122, 1.0),
+                          fontWeight: FontWeight.bold)),
+                  Expanded(child: Text("")),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25.0, top: 2),
+                    child: (todayCourses.length == 0)
+                        ? Container()
+                        : DefaultTextStyle(
                             style: FontManager.YaHeiRegular.copyWith(
                                 fontSize: 12,
                                 color: Color.fromRGBO(100, 103, 122, 1.0)),
@@ -54,12 +54,12 @@ class TodayCoursesWidget extends StatelessWidget {
                                   text: ">", style: TextStyle(fontSize: 15))
                             ])),
                           ),
-                        ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
-          _getDisplayWidget(todayCourses)
+          _getDisplayWidget(todayCourses, context)
         ],
       );
     });
@@ -87,52 +87,58 @@ class TodayCoursesWidget extends StatelessWidget {
   }
 
   /// 返回首页显示课程的widget
-  Widget _getDisplayWidget(List<ScheduleCourse> todayCourses) {
+  Widget _getDisplayWidget(
+      List<ScheduleCourse> todayCourses, BuildContext context) {
     if (todayCourses.length == 0) {
       // 如果今天没有课，就返回文字框
-      return Container(
-          height: 60,
-          margin: const EdgeInsets.symmetric(horizontal: 22),
-          decoration: BoxDecoration(
-              color: Color.fromRGBO(236, 238, 237, 1),
-              borderRadius: BorderRadius.circular(15)),
-          child: Center(
-            child: Text("NO COURSE TODAY",
-                style: FontManager.Texta.copyWith(
-                    color: Color.fromRGBO(207, 208, 212, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    letterSpacing: 0.5)),
-          ));
+      return GestureDetector(
+        onTap: () => Navigator.pushNamed(context, ScheduleRouter.schedule),
+        child: Container(
+            height: 60,
+            margin: const EdgeInsets.symmetric(horizontal: 22),
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(236, 238, 237, 1),
+                borderRadius: BorderRadius.circular(15)),
+            child: Center(
+              child: Text("NO COURSE TODAY",
+                  style: FontManager.Texta.copyWith(
+                      color: Color.fromRGBO(207, 208, 212, 1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      letterSpacing: 0.5)),
+            )),
+      );
     }
 
     /// 给本日课程排序
     todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
     return Container(
-      height: 180.0,
+      height: 185,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: todayCourses.length,
           itemBuilder: (context, i) {
-            return GestureDetector(
-              onTap: () =>
-                  Navigator.pushNamed(context, ScheduleRouter.schedule),
-              child: Container(
-                height: 180.0,
-                width: 150.0,
-                padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                child: Card(
-                  color: FavorColors.homeSchedule[i % 5],
-                  elevation: 2.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)),
+            return Container(
+              height: 185,
+              width: 140,
+              padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
+              child: Material(
+                color: FavorColors.homeSchedule[i % 5],
+                borderRadius: BorderRadius.circular(15),
+                elevation: 2,
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(context, ScheduleRouter.schedule),
+                  borderRadius: BorderRadius.circular(15),
+                  splashFactory: InkRipple.splashFactory,
+                  splashColor: Color.fromRGBO(179, 182, 191, 1),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Column(
                       children: <Widget>[
                         Container(
-                          height: 95.0,
+                          height: 95,
                           alignment: Alignment.centerLeft,
                           child: Text(todayCourses[i].courseName,
                               style: FontManager.YaHeiBold.copyWith(
@@ -142,7 +148,7 @@ class TodayCoursesWidget extends StatelessWidget {
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 5.0),
+                          padding: const EdgeInsets.only(top: 5),
                           child: Text(
                               getCourseTime(todayCourses[i].arrange.start,
                                   todayCourses[i].arrange.end),
@@ -151,7 +157,7 @@ class TodayCoursesWidget extends StatelessWidget {
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 15.0),
+                          padding: const EdgeInsets.only(top: 15),
                           child: Text(
                               replaceBuildingWord(todayCourses[i].arrange.room),
                               style: FontManager.Aspira.copyWith(

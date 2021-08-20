@@ -25,7 +25,7 @@ class CourseDialog extends Dialog {
       fontWeight: FontWeight.bold);
 
   static final teacherStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 13, color: Colors.white, decoration: TextDecoration.none);
+      fontSize: 15, color: Colors.white, decoration: TextDecoration.none);
 
   static final hintNameStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 10,
@@ -72,13 +72,13 @@ class CourseDialog extends Dialog {
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 35, 25, 35),
+            padding: const EdgeInsets.fromLTRB(20, 35, 20, 35),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(course.courseName, style: nameStyle),
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: 15),
                   child: Text(course.teacher, style: teacherStyle),
                 ),
                 Expanded(child: Text("")),

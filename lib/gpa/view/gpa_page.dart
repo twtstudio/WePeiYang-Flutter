@@ -51,7 +51,8 @@ class _GPAPageState extends State<GPAPage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: widget.gpaColors[0]),
+      value: SystemUiOverlayStyle.dark
+          .copyWith(systemNavigationBarColor: widget.gpaColors[0]),
       child: Consumer<GPANotifier>(
           builder: (context, notifier, _) => Scaffold(
                 appBar: GPAppBar(widget.gpaColors),
@@ -390,12 +391,12 @@ class GPAStatsWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          /// InkResponse provides splashes which can extend outside its bounds
+          /// "InkResponse provides splashes which can extend outside its bounds"
           InkResponse(
             onTap: () => notifier.typeWithNotify = 0,
             radius: 45,
 
-            /// defines a splash that spreads out more aggressively than the default
+            /// "defines a splash that spreads out more aggressively than the default"
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[

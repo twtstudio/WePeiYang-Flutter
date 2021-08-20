@@ -54,7 +54,7 @@ Future getToken(
     if (null != response.data['data'] &&
         null != response.data['data']['token']) {
       CommonPreferences().feedbackToken.value = response.data['data']['token'];
-      onSuccess(response.data['data']['token']);
+      if(onSuccess != null) onSuccess(response.data['data']['token']);
     } else {
       onFailure();
     }

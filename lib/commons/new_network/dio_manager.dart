@@ -16,7 +16,6 @@ abstract class DioAbstract {
   String baseUrl;
   Map<String, String> headers;
   List<InterceptorsWrapper> interceptors;
-
   Dio _dio;
 
   Dio get dio => _dio;
@@ -69,13 +68,12 @@ extension DioRequests on DioAbstract {
 }
 
 class CommonBody {
-  // ignore: non_constant_identifier_names
-  int error_code;
+  int errorCode;
   String message;
   Map result;
 
   CommonBody.fromJson(dynamic jsonData) {
-    error_code = jsonData['error_code'];
+    errorCode = jsonData['error_code'];
     message = jsonData['message'];
     result = jsonData['result'];
   }

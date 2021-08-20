@@ -39,7 +39,7 @@ class CommonPreferences {
   /// GPA & 课程表 & 学期信息
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
-  var termStart = PrefsBean<int>('termStart', 1614556800);
+  var termStart = PrefsBean<int>('termStart', 1629043200);
   var termName = PrefsBean<String>('termName', '20212');
   var termStartDate = PrefsBean<String>('termStartDate', '');
 
