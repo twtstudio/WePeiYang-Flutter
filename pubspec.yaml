@@ -138,7 +138,7 @@ flutter:
     - family: MicrosoftYaHei
       fonts:
         - asset: assets/fonts/MicrosoftYaHei-Regular.ttf
-        - asset: assets/fonts/MicrosoftYaHei-Light.ttf
+        - asset: assets/fonts/MicrosoftYaHei-Light.ttc
         - asset: assets/fonts/MicrosoftYaHei-Bold.ttf
 
     - family: Gilroy
