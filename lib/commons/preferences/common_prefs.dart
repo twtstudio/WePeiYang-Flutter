@@ -39,7 +39,7 @@ class CommonPreferences {
   /// GPA & 课程表 & 学期信息
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
-  var termStart = PrefsBean<int>('termStart', 1629043200);
+  var termStart = PrefsBean<int>('termStart', 1629043200); // 由于好奇心搜了一下，这个时间戳大概2038年才会范围溢出，懒得改了哈哈
   var termName = PrefsBean<String>('termName', '20212');
   var termStartDate = PrefsBean<String>('termStartDate', '');
 

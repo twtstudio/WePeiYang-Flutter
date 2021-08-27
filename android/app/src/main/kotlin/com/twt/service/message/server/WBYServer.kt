@@ -34,5 +34,4 @@ interface WBYServerAPI {
     ): WBYBaseData<Any>
 
     companion object : WBYServerAPI by WBYServer()
-
 }

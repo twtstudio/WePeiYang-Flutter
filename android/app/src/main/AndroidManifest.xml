@@ -110,5 +110,24 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <receiver
+            android:name=".widget.ScheduleWidgetProvider"
+            android:label="微北洋课程表">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.twt.appwidget.refresh" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/schedule_widget_provider" />
+        </receiver>
+
+<!--        <service-->
+<!--            android:name=".widget.WidgetService"-->
+<!--            android:permission="android.permission.BIND_REMOTEVIEWS" />-->
     </application>
 </manifest>

@@ -35,7 +35,7 @@ class LogoutDialog extends Dialog {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 20, bottom: 20),
               child: Text(S.current.logout_hint,
                   style: FontManager.YaHeiRegular.copyWith(
                       color: Color.fromRGBO(79, 88, 107, 1),

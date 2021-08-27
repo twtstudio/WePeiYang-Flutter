@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/commons/new_network/net_status_listener.dart
 import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -43,52 +44,33 @@ import 'home/model/home_model.dart';
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
-
-/// 记录下修改内容
-/// 1. 修改默认termStart为08-16，去掉了8小时offset
-/// 2. 绑定办公网失败时，验证码会自动刷新
-/// 3. 点击title进入课表、gpa
-/// 4. 课程表稍微调大了一点字号
-
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await CommonPreferences.initPrefs();
-  await NetStatusListener.init();
-  runApp(WePeiYangApp());
-  if (Platform.isAndroid) {
-    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /// 这个逻辑之后重写，有大隐患，和他的实现有关
-    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.white,
-    ));
-  }
-}
-
-// 全局捕获异常，想好了一半了
-/*
-FlutterError.onError = (FlutterErrorDetails details) async {
-    if (kDebugMode) {
-      FlutterError.dumpErrorToConsole(details);
-    } else {
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    }
+  /// 程序中的同步（sync）错误也交给zone处理
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    Zone.current.handleUncaughtError(details.exception, details.stack);
   };
 
-  runZoned<Future<Null>>(() async {
+  runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await CommonPreferences.initPrefs();
+    await NetStatusListener.init();
     runApp(WePeiYangApp());
     if (Platform.isAndroid) {
+      // TODO 这个逻辑之后重写，有大隐患，和他的实现有关
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.white,
       ));
     }
-  }, onError: (error, stackTrace) async {
-    await _reportError(error, stackTrace);
-  });
- */
+  }, (Object error, StackTrace stack) {
+    /// 这里是处理所有 unhandled sync & async error 的地方
+    Logger.reportError(error, stack);
+  }, zoneSpecification: ZoneSpecification(
+      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
+    /// 覆盖zone中的所有[print]和[debugPrint]，统一日志格式
+    Logger.reportPrint(parent, zone, line);
+  }));
+}
 
 class WePeiYangApp extends StatefulWidget {
   /// 用于全局获取当前context
@@ -239,7 +221,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoLogin(context);
     });
-    // TODO
+    // TODO 合并
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
         .copyWith(systemNavigationBarColor: Colors.white));
   }

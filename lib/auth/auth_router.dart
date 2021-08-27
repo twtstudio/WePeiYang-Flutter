@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dar
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/reset_nickname_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/user_info_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
@@ -51,6 +52,9 @@ class AuthRouter {
   static String mailbox = "user/mailbox";
   static String aboutTwt = "user/about_twt";
 
+  /// debug页面
+  static String debug = 'user/debug';
+
   static final Map<String, Widget Function(Object arguments)> routers = {
     login: (_) => LoginHomeWidget(),
     loginPw: (_) => LoginPwWidget(),
@@ -82,5 +86,6 @@ class AuthRouter {
     colorSetting: (_) => ColorSettingPage(),
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),
+    debug: (_) => DebugPage(),
   };
 }

@@ -20,12 +20,11 @@ import java.lang.ref.WeakReference
 
 class WBYApplication : FlutterApplication() {
     companion object {
-        const val TAG = "WBY"
         lateinit var appContext: Context
         private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
         var postId: Int = -1
-        var url:String = ""
+        var url: String = ""
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -51,7 +50,6 @@ class WBYApplication : FlutterApplication() {
                                 .setConstraints(constraints)
                                 .build()
                         workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
-
                     }
                     RECEIVE_MESSAGE_DATA -> {
                         val data = msg.obj.toString()
@@ -61,10 +59,10 @@ class WBYApplication : FlutterApplication() {
                             Gson().fromJson(data, BaseMessage::class.java)
                                     ?: BaseMessage(type = 0, data = "null")
                         } catch (e: Exception) {
-                            Log.d("WBYDemoException", data)
+                            Log.d("WBYException", data)
                             BaseMessage(type = 0, data = "null")
                         }
-                        Log.d("WBYDemo", formData.toString())
+                        Log.d("WBY", formData.toString())
                         when (formData.type) {
                             0 -> {
                                 activity?.get()?.messageChannel?.invokeMethod("showMessage", data, object : MethodChannel.Result {
@@ -82,13 +80,13 @@ class WBYApplication : FlutterApplication() {
                                 })
                             }
                             1 -> {
-                                Log.d("WBYDemo", Gson().toJson(formData.data))
+                                Log.d("WBY", Gson().toJson(formData.data))
                                 val feedbackMessage = try {
                                     Gson().fromJson(Gson().toJson(formData.data), FeedbackMessage::class.java)
                                 } catch (e: Exception) {
                                     FeedbackMessage(title = "null", content = "null", question_id = -1)
                                 }
-                                Log.d("WBYDemo", feedbackMessage.toString())
+                                Log.d("WBY", feedbackMessage.toString())
 
                                 feedbackMessage?.takeIf { it.question_id != -1 }?.let { message ->
                                     activity?.get()?.let {
@@ -96,56 +94,48 @@ class WBYApplication : FlutterApplication() {
                                         postId = -1
                                         activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", null, object : MethodChannel.Result {
                                             override fun success(result: Any?) {
-                                                Log.d("WBYDemo", "refreshFeedbackMessageCount")
+                                                Log.d("WBY", "refreshFeedbackMessageCount")
                                             }
 
                                             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                                                Log.d("WBYDemo", "refreshFeedbackMessageCount error")
-
+                                                Log.d("WBY", "refreshFeedbackMessageCount error")
                                             }
 
                                             override fun notImplemented() {
-                                                Log.d("WBYDemo", "refreshFeedbackMessageCount notImplemented")
-
+                                                Log.d("WBY", "refreshFeedbackMessageCount notImplemented")
                                             }
-
                                         })
                                     }
                                 }
-
                             }
                             2 -> {
-                                Log.d("WBYDemo", Gson().toJson(formData.data))
+                                Log.d("WBY", Gson().toJson(formData.data))
                                 val pushMessage = try {
                                     Gson().fromJson(Gson().toJson(formData.data), WBYPushMessage::class.java)
                                 } catch (e: Exception) {
                                     WBYPushMessage(title = "null", content = "null", url = "")
                                 }
-                                Log.d("WBYDemo", pushMessage.toString())
+                                Log.d("WBY", pushMessage.toString())
 
                                 activity?.get()?.let {
                                     it.showNotification(pushMessage)
                                     postId = -1
                                     activity?.get()?.messageChannel?.invokeMethod("refreshFeedbackMessageCount", null, object : MethodChannel.Result {
                                         override fun success(result: Any?) {
-                                            Log.d("WBYDemo", "refreshFeedbackMessageCount")
+                                            Log.d("WBY", "refreshFeedbackMessageCount")
                                         }
 
                                         override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                                            Log.d("WBYDemo", "refreshFeedbackMessageCount error")
-
+                                            Log.d("WBY", "refreshFeedbackMessageCount error")
                                         }
 
                                         override fun notImplemented() {
-                                            Log.d("WBYDemo", "refreshFeedbackMessageCount notImplemented")
-
+                                            Log.d("WBY", "refreshFeedbackMessageCount notImplemented")
                                         }
-
                                     })
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -181,13 +171,13 @@ class WBYApplication : FlutterApplication() {
     }
 
     private fun initSdk() {
-        Log.d(TAG, "initializing sdk...")
+        Log.d("WBY", "initializing sdk...")
         PushManager.getInstance().initialize(this)
         if (BuildConfig.DEBUG) {
             //切勿在 release 版本上开启调试日志
             PushManager.getInstance().setDebugLogger(this) { s -> Log.i("PUSH_LOG", s) }
         }
-//        PushManager.getInstance().turnOffPush(this)
+        // PushManager.getInstance().turnOffPush(this)
         // 之后改成登陆了才会打开推送
     }
 }
@@ -203,10 +193,10 @@ data class FeedbackMessage(
         val title: String,
         val content: String,
         val question_id: Int,
-):MessageData
+) : MessageData
 
 data class WBYPushMessage(
         val title: String,
         val content: String,
         val url: String,
-):MessageData
+) : MessageData

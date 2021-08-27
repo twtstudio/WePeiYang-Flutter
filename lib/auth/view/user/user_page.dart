@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -78,12 +79,19 @@ class _UserPageState extends State<UserPage> {
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                     )),
-                Container(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Text(CommonPreferences().userNumber.value,
-                        textAlign: TextAlign.center,
-                        style: FontManager.Texta.copyWith(
-                            color: MyColors.deepDust, fontSize: 15))),
+                // TODO 暂时先把debug入口放在这里
+                GestureDetector(
+                  onLongPress: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) => DebugDialog()),
+                  child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: Text(CommonPreferences().userNumber.value,
+                          textAlign: TextAlign.center,
+                          style: FontManager.Texta.copyWith(
+                              color: MyColors.deepDust, fontSize: 15))),
+                ),
                 NavigationWidget(),
                 Container(
                   height: 80,

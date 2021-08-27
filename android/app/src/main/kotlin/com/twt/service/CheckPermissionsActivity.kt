@@ -3,7 +3,6 @@ package com.twt.service
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,7 +12,6 @@ import android.provider.Settings
 import android.view.KeyEvent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import java.util.*
-
 
 /**
  * 继承了Activity，实现Android6.0的运行时权限检测
@@ -33,7 +31,7 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
     /**
      * 需要进行检测的权限数组
      */
-    protected var needPermissions = arrayOf(
+    private var needPermissions = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -71,7 +69,6 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
     }
 
     /**
-     *
      * @param permissions
      * @since 2.5.0
      */
@@ -82,8 +79,7 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
                 val needRequestPermissionList = findDeniedPermissions(permissions)
                 if (needRequestPermissionList.isNotEmpty()) {
                     val array = needRequestPermissionList.toTypedArray()
-                    val method = javaClass.getMethod("requestPermissions", *arrayOf<Class<*>?>(Array<String>::class.java,
-                            Int::class.javaPrimitiveType))
+                    val method = javaClass.getMethod("requestPermissions", Array<String>::class.java, Int::class.javaPrimitiveType)
                     method.invoke(this, array, PERMISSON_REQUESTCODE)
                 }
             }
@@ -99,7 +95,7 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
      * @since 2.5.0
      */
     private fun findDeniedPermissions(permissions: Array<String>): List<String> {
-        val needRequestPermissonList: MutableList<String> = ArrayList()
+        val needRequestPermissionList: MutableList<String> = ArrayList()
         if (Build.VERSION.SDK_INT >= 23
                 && applicationInfo.targetSdkVersion >= 23) {
             try {
@@ -113,13 +109,13 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
                                 && BACKGROUND_LOCATION_PERMISSION == perm) {
                             continue
                         }
-                        needRequestPermissonList.add(perm)
+                        needRequestPermissionList.add(perm)
                     }
                 }
             } catch (e: Throwable) {
             }
         }
-        return needRequestPermissonList
+        return needRequestPermissionList
     }
 
     /**
@@ -162,10 +158,8 @@ open class CheckPermissionsActivity : FlutterFragmentActivity() {
         builder.setMessage("当前应用缺少必要权限。\\n\\n请点击\\\"设置\\\"-\\\"权限\\\"-打开所需权限。")
 
         // 拒绝, 退出应用
-        builder.setNegativeButton("取消",
-                DialogInterface.OnClickListener { dialog, which -> finish() })
-        builder.setPositiveButton("设置",
-                DialogInterface.OnClickListener { dialog, which -> startAppSettings() })
+        builder.setNegativeButton("取消") { _, _ -> finish() }
+        builder.setPositiveButton("设置") { _, _ -> startAppSettings() }
         builder.setCancelable(false)
         builder.show()
     }

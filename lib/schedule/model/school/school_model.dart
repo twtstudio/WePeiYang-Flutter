@@ -65,7 +65,7 @@ class ScheduleCourse {
 }
 
 class Arrange {
-  String week; // 单双周、单周、双周
+  String week; // 单双周、单周、双周, useless
   String binStr; // 每周是否有课的二进制字符串
   String room; // 上课地点
   String start; // 第几节开始 (从1开始数)

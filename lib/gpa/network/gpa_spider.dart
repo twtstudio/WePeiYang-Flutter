@@ -12,10 +12,20 @@ import 'package:we_pei_yang_flutter/commons/new_network/error_interceptor.dart'
 void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
+  /// 判断是否为硕士研究生
+  /// 这里的stuType是天外天账号里的，所以本科生twt账号绑定研究生办公网会有问题
+  /// 将来可以在办公网绑定时就判断是不是研究生
+  bool isMaster = pref.stuType.value == "硕士研究生";
+
   try {
-    /// 如果学生有辅修，需要做一下谜之操作，不然无数据
-    if (pref.ids.value == "useless") {
-      /// 切换至主修
+    if (isMaster) {
+      /// 如果是研究生，切换至研究生成绩
+      await fetch(
+          "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+          cookieList: pref.getCookies(),
+          params: {'projectId': '22'});
+    } else if (pref.ids.value == "useless") {
+      /// 如果有复修，切换至主修成绩（其实是总成绩）
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
           cookieList: pref.getCookies(),
@@ -24,7 +34,7 @@ void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
         cookieList: pref.getCookies());
-    onResult(_data2GPABean(response.data.toString()));
+    onResult(_data2GPABean(response.data.toString(), isMaster));
     return;
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
@@ -35,7 +45,7 @@ const double _DELAYED = 999.0;
 const double _IGNORED = 999.0;
 
 /// 用请求到的html数据生成gpaBean对象
-GPABean _data2GPABean(String data) {
+GPABean _data2GPABean(String data, bool isMaster) {
   /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
   if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
   if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
@@ -43,14 +53,10 @@ GPABean _data2GPABean(String data) {
   /// 没评教赶快去评教啊喂
   if (data.contains("就差一个评教的距离啦")) return null;
 
-  bool isMaster = false;
-
   /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
-  var totalData = getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data) ??
-      () {
-        isMaster = true;
-        return getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
-      }.call();
+  var totalData = isMaster
+      ? getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data)
+      : getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
 
   List<double> thList = [];
   getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
@@ -90,7 +96,7 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
   List<String> list = [];
   data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
   double score = 0.0;
-  switch (isMaster ? list[8] : list[6]) {
+  switch (isMaster ? list[7] : list[6]) {
     case 'P':
       score = 100.0;
       break;
@@ -112,13 +118,13 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
       score = _IGNORED;
       break;
     default:
-      score = double.parse(isMaster ? list[8] : list[6]);
+      score = double.parse(isMaster ? list[7] : list[6]);
   }
   double credit = 0.0;
   if (score >= 60) credit = double.parse(list[5]);
 
   if (score != _DELAYED && score != _IGNORED) {
-    double gpa = double.parse(isMaster ? list[9] : list[8]);
+    double gpa = double.parse(list[8]);
     return GPACourse(isMaster ? list[3] : list[2], list[4], score, credit, gpa);
   } else {
     return null;

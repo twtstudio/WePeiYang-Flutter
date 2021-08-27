@@ -25,7 +25,7 @@ class CourseDialog extends Dialog {
       fontWeight: FontWeight.bold);
 
   static final teacherStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 15, color: Colors.white, decoration: TextDecoration.none);
+      fontSize: 14, color: Colors.white, decoration: TextDecoration.none);
 
   static final hintNameStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 10,

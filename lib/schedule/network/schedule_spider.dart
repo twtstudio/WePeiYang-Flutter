@@ -140,8 +140,10 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
       }
       if (!isAllWeek && isSingle) week = "单周";
       if (!isAllWeek && !isSingle) week = "双周";
-      arrangeList
-          .add(Arrange.spider(week, weekInfo, start, end, day, courseName));
+
+      /// arrange和下面course的courseName都需要trim(), 因为有 "流体力学（1）\s" 这种课
+      arrangeList.add(
+          Arrange.spider(week, weekInfo, start, end, day, courseName.trim()));
     }
   });
 
@@ -160,27 +162,28 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     var courseName = (names.length == 0)
         ? tdList[3]
         : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";
+    courseName = courseName.trim();
     var credit = double.parse(tdList[4]).toStringAsFixed(1);
     var teacher = tdList[5];
-    var campusList = getRegExpList(r'[\S]+', tdList[9]);
-    var campus = campusList.length > 0
-        ? campusList[0].replaceAll("校区", '').replaceAll("<br/>", '')
-        : ""; // 不会真的有课新老校区各上一节吧
+    var campus = "";
+    if (tr.contains("北洋园"))
+      campus = "北洋园";
+    else if (tr.contains("卫津路")) campus = "卫津路";
     List<String> weekStr = tdList[6].replaceAll(RegExp(r'\s'), '').split('-');
     Week week = Week(weekStr[0], weekStr[1]);
     var roomList = getRegExpList(r'[\S]+', tdList[8]);
     var roomIndex = 0;
 
-    /// 匹配arrange的课程名称来生成course对象，其中course的courseName通过分割空格来取mainName，arrange的courseName去掉所有空格
-    /// 之所以这么做是因为有两种比较特殊的课：(\s表示空格)
-    /// "体育D\s(体适能)"这门课，course中的名称为"体育D\s(体适能)"，arrange中的名称为"体育D"
-    /// "流体力学（1）\s"这门课，course中的名称为"流体力学（1）\s"，arrange中的名称为"流体力学（1）\s"
     arrangeList.forEach((arrange) {
-      var mainName =
-          courseName.contains(' ') ? courseName.split(' ').first : courseName;
-      if (arrange.courseName.trim() == mainName) {
-        arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
-        roomIndex += 2; // step为2用来跳过roomList匹配到的 “<br/>”
+      /// "体育D\s(体适能)"这门课，course中的名称为"体育D\s(体适能)"，arrange中的名称为"体育D"
+      if (arrange.courseName == courseName ||
+          courseName.contains(arrange.courseName)) {
+        /// 有些个别课没有教室信息，此时roomList.length = 2
+        if (roomList.length > roomIndex) {
+          arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
+          roomIndex += 2; // step为2用来跳过roomList匹配到的 “<br/>”
+        } else
+          arrange.room = "";
         courses.add(ScheduleCourse(classId, courseId, courseName, credit,
             teacher, campus, week, arrange));
       }
