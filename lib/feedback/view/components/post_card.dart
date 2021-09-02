@@ -262,7 +262,6 @@ class _PostCardState extends State<PostCard> {
                       behavior: HitTestBehavior.opaque,
                       child: Container(
                         // color: Colors.blue,
-                        width: 40,
                         height: 25,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

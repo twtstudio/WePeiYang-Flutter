@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -66,6 +66,9 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (official) {
+      print(comment.content);
+    }
     return DefaultTextStyle(
       style: FontManager.YaHeiRegular,
       child: Container(
@@ -138,9 +141,12 @@ class _CommentCardState extends State<CommentCard> {
               GestureDetector(
                 child: Text(
                   comment.content
+                      .replaceAll('<br>', '')
                       .replaceAll('<p>', '')
-                      .replaceAll('</p>', '\n')
-                      .replaceAll('<img.*?>', ''),
+                      .replaceAll(r'</p>', '\n')
+                      .replaceAll('<img.*?>', '')
+                      .replaceAll('<span>', '')
+                      .replaceAll(r'</span>', ''),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: FontManager.YaHeiRegular.copyWith(
@@ -150,12 +156,13 @@ class _CommentCardState extends State<CommentCard> {
                 onTap: onContentPressed,
               )
             else if (official && detail)
-              HtmlWidget(
-                comment.content,
-                textStyle: FontManager.YaHeiRegular.copyWith(
-                  color: ColorUtil.boldTextColor,
-                ),
-              )
+              // HtmlWidget(
+              //   comment.content.replaceAll('<br>', ''),
+              //   textStyle: FontManager.YaHeiRegular.copyWith(
+              //     color: ColorUtil.boldTextColor,
+              //   ),
+              // )
+              Html(data: comment.content)
             else
               Text(
                 comment.content,
@@ -220,6 +227,7 @@ class _CommentCardState extends State<CommentCard> {
                               ? ColorUtil.lightTextColor
                               : Colors.red,
                         ),
+                        BlankSpace.width(6),
                         Text(
                           comment.likeCount.toString(),
                           style: FontManager.YaHeiRegular.copyWith(

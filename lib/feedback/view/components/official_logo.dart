@@ -8,12 +8,12 @@ class OfficialLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      alignment: Alignment.center,
       child: Text(
         S.current.feedback_official,
         style: FontManager.YaHeiRegular.copyWith(
           fontSize: 12,
           color: Colors.white,
-          height: 1,
         ),
       ),
       decoration: BoxDecoration(
