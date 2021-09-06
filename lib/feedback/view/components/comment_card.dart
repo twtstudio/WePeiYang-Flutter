@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -44,8 +43,8 @@ class CommentCard extends StatefulWidget {
 
   CommentCard.detail(comment,
       {@required title,
-      void Function() onContentPressed,
-      void Function() onLikePressed}) {
+        void Function() onContentPressed,
+        void Function() onLikePressed}) {
     this.comment = comment;
     this.official = true;
     this.detail = true;
@@ -116,17 +115,17 @@ class _CommentCardState extends State<CommentCard> {
                   comment.createTime.substring(0, 10) +
                       '  ' +
                       (comment.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .startsWith('0')
+                          .substring(11)
+                          .split('.')[0]
+                          .startsWith('0')
                           ? comment.createTime
-                              .substring(12)
-                              .split('.')[0]
-                              .substring(0, 4)
+                          .substring(12)
+                          .split('.')[0]
+                          .substring(0, 4)
                           : comment.createTime
-                              .substring(11)
-                              .split('.')[0]
-                              .substring(0, 5)),
+                          .substring(11)
+                          .split('.')[0]
+                          .substring(0, 5)),
                   style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 12,
                     color: ColorUtil.lightTextColor,
@@ -245,3 +244,4 @@ class _CommentCardState extends State<CommentCard> {
     );
   }
 }
+
