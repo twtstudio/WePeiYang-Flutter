@@ -23,13 +23,13 @@
                 android:gravity="center_horizontal"
                 android:padding="6dp"
                 android:textColor="#ffffff"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 tools:text="2021/09/09  星期五" />
 
             <ImageView
                 android:id="@+id/widget_image_button"
-                android:layout_width="20dp"
-                android:layout_height="28dp"
+                android:layout_width="18dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="18dp"

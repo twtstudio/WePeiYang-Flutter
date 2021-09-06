@@ -31,14 +31,15 @@ class AuditCourse {
         case 2:
           weekType = "双周";
       }
-      var arrange = Arrange(
+      var arrange = Arrange.audit(
           weekType,
           "${it.building}楼${it.room}",
           it.startTime.toString(),
           (it.startTime - 1 + it.courseLength).toString(),
-          it.weekDay.toString());
-      courseList
-          .add(ScheduleCourse.audit(infoSample.teacher, week, courseName, arrange));
+          it.weekDay.toString(),
+          it.teacher);
+      courseList.add(
+          ScheduleCourse.audit(infoSample.teacher, week, courseName, arrange));
     });
     return courseList;
   }

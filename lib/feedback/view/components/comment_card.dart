@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_logo.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:simple_html_css/simple_html_css.dart';
 
 import 'blank_space.dart';
 
@@ -97,8 +99,7 @@ class _CommentCardState extends State<CommentCard> {
                   OfficialLogo()
                 else
                   Icon(Icons.account_circle_rounded,
-                      size: 25,
-                      color: Color.fromRGBO(98, 103, 124, 1.0)),
+                      size: 25, color: Color.fromRGBO(98, 103, 124, 1.0)),
                 if (!official) BlankSpace.width(5),
                 if (!official)
                   Expanded(
@@ -136,25 +137,19 @@ class _CommentCardState extends State<CommentCard> {
             BlankSpace.height(16),
             if (official && !detail)
               GestureDetector(
-                child: Text(
-                  comment.content
-                      .replaceAll('<p>', '')
-                      .replaceAll('</p>', '\n')
-                      .replaceAll('<img.*?>', ''),
-                  maxLines: 3,
+                child: RichText(
                   overflow: TextOverflow.ellipsis,
-                  style: FontManager.YaHeiRegular.copyWith(
-                    color: ColorUtil.boldTextColor,
-                  ),
+                  maxLines: 3,
+                  text: HTML.toTextSpan(context, comment.content,
+                      defaultTextStyle: FontManager.YaHeiRegular.copyWith(
+                        color: ColorUtil.boldTextColor,
+                      )),
                 ),
                 onTap: onContentPressed,
               )
             else if (official && detail)
-              HtmlWidget(
-                comment.content,
-                textStyle: FontManager.YaHeiRegular.copyWith(
-                  color: ColorUtil.boldTextColor,
-                ),
+              Html(
+                data: comment.content,
               )
             else
               Text(
@@ -220,6 +215,7 @@ class _CommentCardState extends State<CommentCard> {
                               ? ColorUtil.lightTextColor
                               : Colors.red,
                         ),
+                        Container(width: 5),
                         Text(
                           comment.likeCount.toString(),
                           style: FontManager.YaHeiRegular.copyWith(

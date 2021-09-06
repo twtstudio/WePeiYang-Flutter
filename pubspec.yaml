@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 4.0.3+62
+version: 4.0.4+63
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -37,7 +37,6 @@ dependencies:
   hive_generator: ^0.8.2
   path_provider: ^1.6.24
   async: ^2.4.2
-  flutter_widget_from_html: ^0.5.2+1
   dotted_border: ^1.0.7
   multi_image_picker: ^4.7.15
   flutter_rating_bar: ^3.2.0+1
@@ -54,6 +53,8 @@ dependencies:
   webview_flutter: ^1.0.7
   permission_handler: ^5.1.0+2
   image_picker: 0.6.7+22
+  flutter_html: ^1.0.0
+  simple_html_css: ^2.0.2
 
   umeng_sdk:
     path: plugins/umeng_sdk

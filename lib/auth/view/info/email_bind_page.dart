@@ -26,7 +26,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
           ToastProvider.success("邮箱绑定成功");
           setState(() {});
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   Widget _detail(BuildContext context) {
@@ -89,7 +89,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),

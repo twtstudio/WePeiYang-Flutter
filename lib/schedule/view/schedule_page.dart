@@ -100,14 +100,13 @@ class TitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(
         builder: (context, notifier, _) => Padding(
-              padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
               child: Row(
                 children: [
-                  Text('Schedule',
-                      style: FontManager.Aspira.copyWith(
+                  Text('课程表',
+                      style: FontManager.YaQiHei.copyWith(
                           color: titleColor,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold)),
+                          fontSize: 30)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
                     child: Text('WEEK ${notifier.currentWeek}',

@@ -2,6 +2,7 @@ package com.twt.service.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
@@ -9,6 +10,8 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
+import com.google.gson.Gson
+import com.twt.service.IntentType
 import com.twt.service.MainActivity
 import com.twt.service.R
 import java.text.SimpleDateFormat
@@ -21,7 +24,8 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == "com.twt.appwidget.refresh") {
+        if (intent.action == ACTION_APPWIDGET_UPDATE || intent.action == "com.twt.appwidget.refresh") {
+            Log.d("WBY", "on refreshing!!!")
             val name = ComponentName(context, ScheduleWidgetProvider::class.java)
             this@ScheduleWidgetProvider.onUpdate(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(name))
         }
@@ -29,7 +33,7 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        Log.d("WBY", "update!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+        Log.d("WBY", "on updating!!!")
         for (appWidgetId in appWidgetIds) {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val intent = Intent(context, MainActivity::class.java)
@@ -54,10 +58,13 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
             remoteViews.setEmptyView(R.id.widget_listview, R.id.widget_empty_view)
 
             // List部分的点击监听，点击后跳转至Flutter课程表页
-//            val startActivityIntent = Intent(context, MainActivity::class.java)
-//            val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//            remoteViews.setPendingIntentTemplate(R.id.widget_listview, startActivityPendingIntent)
+            val startActivityIntent = Intent(context, MainActivity::class.java)
+            val intentContent = IntentType(type = 3, data = "schedule")
+            startActivityIntent.data = Uri.parse(Gson().toJson(intentContent))
+            val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            remoteViews.setPendingIntentTemplate(R.id.widget_listview, startActivityPendingIntent)
 
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)

@@ -19,6 +19,7 @@ class PostCard extends StatefulWidget {
   GesturePressedCallback onFavoritePressed = () {};
   GesturePressedCallback onContentLongPressed = () {};
   bool showBanner;
+  bool singleLineTitle;
 
   @override
   State createState() {
@@ -46,6 +47,7 @@ class PostCard extends StatefulWidget {
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
     this.onContentLongPressed = onContentLongPressed;
+    this.singleLineTitle = true;
   }
 
   /// Card with top image.
@@ -62,6 +64,7 @@ class PostCard extends StatefulWidget {
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
     this.onContentLongPressed = onContentLongPressed;
+    this.singleLineTitle = true;
   }
 
   /// Card for DetailPage.
@@ -78,6 +81,7 @@ class PostCard extends StatefulWidget {
     this.onLikePressed = onLikePressed;
     this.onFavoritePressed = onFavoritePressed;
     this.onContentLongPressed = onContentLongPressed;
+    this.singleLineTitle = false;
   }
 }
 
@@ -125,11 +129,11 @@ class _PostCardState extends State<PostCard> {
                           Expanded(
                             child: Text(
                               post.title,
-                              maxLines: 1,
+                              maxLines: widget.singleLineTitle ? 1 : 3,
                               overflow: TextOverflow.ellipsis,
                               style: FontManager.YaHeiRegular.copyWith(
                                 color: ColorUtil.boldTextColor,
-                                fontSize: 16.0,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -154,6 +158,7 @@ class _PostCardState extends State<PostCard> {
                                       ? '#${post.tags[0].name}'
                                       : '#无标签',
                                   style: FontManager.YaHeiRegular.copyWith(
+                                      fontSize: 13,
                                       color: ColorUtil.lightTextColor),
                                 ),
                                 BlankSpace.height(5),
@@ -261,8 +266,6 @@ class _PostCardState extends State<PostCard> {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       child: Container(
-                        // color: Colors.blue,
-                        width: 40,
                         height: 25,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -295,7 +298,6 @@ class _PostCardState extends State<PostCard> {
                       Container(
                         width: 30,
                         height: 25,
-                        // color: Colors.red,
                         child: InkWell(
                           child: Icon(
                             post.isFavorite ? Icons.star : Icons.star_border,

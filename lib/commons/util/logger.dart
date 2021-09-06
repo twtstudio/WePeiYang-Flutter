@@ -7,8 +7,6 @@ class Logger {
   /// release模式下在内存中存储log信息
   static List<String> logs = List();
 
-  // static bool kDebugMode = false;
-
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
     String line = _getFormatTime() + ' | ' + str;
     if (kDebugMode) {

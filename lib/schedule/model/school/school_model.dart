@@ -25,7 +25,7 @@ class ScheduleCourse {
   String courseId = "";
   String courseName = "";
   String credit = "";
-  String teacher = "";
+  String teacher = ""; // 上这门课的所有老师（附带职称）
   String campus = "";
   Week week;
   Arrange arrange;
@@ -72,13 +72,16 @@ class Arrange {
   String end; // 第几节结束
   String day; // 周几 （1 -> 周一）
   String courseName; // 课程名称，仅供爬虫时对照用
+  String teacher; // 这个是具体上这节课的老师，不是上这门课的所有老师
 
   // TODO 这个是蹭课用的，记得补上binStr
-  Arrange(this.week, this.room, this.start, this.end, this.day);
+  Arrange.audit(this.week, this.room, this.start, this.end, this.day, this.teacher)
+      : binStr = '';
 
   /// 用这个构造方法需要自行补上room
-  Arrange.spider(
-      this.week, this.binStr, this.start, this.end, this.day, this.courseName);
+  Arrange.spider(this.week, this.binStr, this.start, this.end, this.day,
+      this.courseName, this.teacher)
+      : room = '';
 
   Arrange.fromJson(Map<String, dynamic> map)
       : week = map['week'],
@@ -87,7 +90,8 @@ class Arrange {
         start = map['start'],
         end = map['end'],
         day = map['day'],
-        courseName = map['courseName'];
+        courseName = map['courseName'],
+        teacher = map['teacher'];
 
   Map<String, dynamic> toJson() => {
         'week': week,
@@ -96,8 +100,12 @@ class Arrange {
         'start': start,
         'end': end,
         'day': day,
-        'courseName': courseName
+        'courseName': courseName,
+        'teacher': teacher
       };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Week {

@@ -31,22 +31,25 @@ class CommonPreferences {
   var department = PrefsBean<String>('department');
   var stuType = PrefsBean<String>('stuType');
   var major = PrefsBean<String>('major');
+  var feedbackToken = PrefsBean<String>("feedbackToken");
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
   /// 2. 进入 gpa / 课程表 页面时再尝试用缓存中办公网的cookie爬取最新数据
   ///
-  /// GPA & 课程表 & 学期信息
+  /// 办公网
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
-  var termStart = PrefsBean<int>('termStart', 1629043200); // 由于好奇心搜了一下，这个时间戳大概2038年才会范围溢出，懒得改了哈哈
-  var termName = PrefsBean<String>('termName', '20212');
-  var termStartDate = PrefsBean<String>('termStartDate', '');
-
-  /// 办公网
   var isBindTju = PrefsBean<bool>('bindtju');
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
+
+  /// 学期信息
+  // 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
+  // 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SharedPreferences.kt中的默认值
+  var termStart = PrefsBean<int>('termStart', 1629043200);
+  var termName = PrefsBean<String>('termName', '20212');
+  var termStartDate = PrefsBean<String>('termStartDate', '');
 
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
@@ -70,9 +73,6 @@ class CommonPreferences {
   var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
   var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
 
-  /// feedback token
-  var feedbackToken = PrefsBean<String>("feedbackToken");
-
   /// lounge temporary data update time
   var temporaryUpdateTime = PrefsBean<String>("temporaryUpdateTime", "");
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
@@ -80,6 +80,9 @@ class CommonPreferences {
 
   /// 疫情提交时间
   var reportTime = PrefsBean<String>('reportTime');
+
+  /// 上次更新的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
+  var updateTime = PrefsBean<String>('updateTime');
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {
@@ -92,6 +95,10 @@ class CommonPreferences {
     account.clear();
     password.clear();
     captchaCookie.clear();
+    realName.clear();
+    department.clear();
+    stuType.clear();
+    major.clear();
     feedbackToken.clear();
   }
 
@@ -102,10 +109,6 @@ class CommonPreferences {
     isBindTju.clear();
     tjuuname.clear();
     tjupasswd.clear();
-    gSessionId.clear();
-    garbled.clear();
-    semesterId.clear();
-    ids.clear();
   }
 }
 
@@ -120,7 +123,8 @@ class PrefsBean<T> with PreferencesUtil<T> {
   T get value => _getValue(_key) ?? _default;
 
   set value(T newValue) {
-    if (value == newValue) return;
+    // 这个判断不能加，因为不存储的话原生那边获取不到，除非原生那边也设置了默认值
+    // if (value == newValue) return;
     _setValue(newValue, _key);
   }
 

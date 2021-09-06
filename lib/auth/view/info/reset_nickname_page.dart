@@ -23,7 +23,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
           ToastProvider.success("更改用户名成功");
           Navigator.pop(context);
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   @override

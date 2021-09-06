@@ -178,7 +178,7 @@ class WBYApplication : FlutterApplication() {
             PushManager.getInstance().setDebugLogger(this) { s -> Log.i("PUSH_LOG", s) }
         }
         // PushManager.getInstance().turnOffPush(this)
-        // 之后改成登陆了才会打开推送
+        // 之后改成登录了才会打开推送
     }
 }
 

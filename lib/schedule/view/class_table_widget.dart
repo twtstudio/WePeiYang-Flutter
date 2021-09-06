@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -87,40 +88,14 @@ class CourseDisplayWidget extends StatefulWidget {
   _CourseDisplayWidgetState createState() => _CourseDisplayWidgetState();
 }
 
-class _CourseDisplayWidgetState extends State<CourseDisplayWidget>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation _animation;
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1200));
-    _animation = Tween(
-      begin: 0.15,
-      end: 1.0,
-    ).animate(_controller);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+class _CourseDisplayWidgetState extends State<CourseDisplayWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.notifier.coursesWithNotify.length == 0) return Container();
-    _controller.reset();
-    _controller.forward();
-    return FadeTransition(
-      opacity: _animation,
-      child: Container(
-        height: CourseDisplayWidget.singleCourseHeight * 12 + cardStep * 11,
-        child: Stack(
-          children: _generatePositioned(context),
-        ),
+    return Container(
+      height: CourseDisplayWidget.singleCourseHeight * 12 + cardStep * 11,
+      child: Stack(
+        children: _generatePositioned(context),
       ),
     );
   }

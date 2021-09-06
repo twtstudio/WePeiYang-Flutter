@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textColor="#4F586B"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:text="复变函数" />
 
     <LinearLayout
@@ -26,8 +26,9 @@
 
         <ImageView
             android:id="@+id/widget_course_location_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="2dp"
             android:src="@drawable/location"
             android:tint="#4F586B"/>
 
@@ -36,9 +37,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginBottom="2dp"
             android:gravity="center_vertical"
             android:textColor="#4F586B"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:text="33楼108" />
 
         <TextView
@@ -46,15 +48,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="2dp"
             android:gravity="end"
             android:textColor="#4F586B"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:text="第5-6节" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="#ff4f586b" />
 </LinearLayout>

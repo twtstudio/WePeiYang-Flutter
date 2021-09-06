@@ -87,7 +87,7 @@ class ScheduleNotifier with ChangeNotifier {
             json.encode(ScheduleBean(termStart, termName, courses));
         messageChannel?.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
       }, onFailure: (e) {
-        if (hint && onFailure == null) ToastProvider.error(e.error);
+        if (hint && onFailure == null) ToastProvider.error(e.error.toString());
         if (onFailure != null) onFailure();
       });
     };

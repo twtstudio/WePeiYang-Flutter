@@ -52,8 +52,8 @@ class GPAIntro extends StatelessWidget {
 
   GPAIntro(this.notifier);
 
-  static final textStyle = FontManager.Aspira.copyWith(
-      color: Color(0xffcdcdd3), fontWeight: FontWeight.bold, fontSize: 13);
+  static final textStyle = FontManager.YaHeiLight.copyWith(
+      color: Color(0xffcdcdd3), fontSize: 14);
 
   static final numStyle = FontManager.Montserrat.copyWith(
       color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 22);
@@ -77,7 +77,7 @@ class GPAIntro extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           child: Column(
             children: <Widget>[
-              Text('Total Weighted', style: textStyle),
+              Text('总加权', style: textStyle),
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(weighted, style: numStyle))
@@ -90,7 +90,7 @@ class GPAIntro extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           child: Column(
             children: <Widget>[
-              Text('Total GPA', style: textStyle),
+              Text('总GPA', style: textStyle),
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(grade, style: numStyle))
@@ -103,7 +103,7 @@ class GPAIntro extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           child: Column(
             children: <Widget>[
-              Text('Credit Earned', style: textStyle),
+              Text('总绩点', style: textStyle),
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(credit, style: numStyle))

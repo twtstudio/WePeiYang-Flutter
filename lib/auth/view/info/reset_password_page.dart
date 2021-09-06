@@ -42,7 +42,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
     resetPwByLogin(newPW1,
         onSuccess: () => ToastProvider.success("密码修改成功"),
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   @override
@@ -97,7 +97,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -129,7 +129,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -161,7 +161,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),

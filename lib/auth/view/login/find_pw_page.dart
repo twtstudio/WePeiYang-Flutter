@@ -96,7 +96,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   _verifyCaptcha() async {
@@ -110,7 +110,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     verifyOnReset(phone, code,
         onSuccess: () =>
             Navigator.pushNamed(context, AuthRouter.resetPw, arguments: phone),
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
@@ -155,7 +155,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -179,7 +179,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),

@@ -229,7 +229,7 @@ void login(String account, String password,
     var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
     if (prefs.account.value != account && prefs.account.value != "") {
-      /// 使用新账户登陆时，清除旧帐户的课程表和gpa缓存
+      /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
       prefs.clearTjuPrefs();
     }
     log(result.toString());

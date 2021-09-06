@@ -16,8 +16,7 @@ class TodayCoursesWidget extends StatelessWidget {
       return Column(
         children: [
           GestureDetector(
-            onTap: () =>
-                Navigator.pushNamed(context, ScheduleRouter.schedule),
+            onTap: () => Navigator.pushNamed(context, ScheduleRouter.schedule),
             child: Container(
               padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
               alignment: Alignment.centerLeft,
@@ -59,7 +58,7 @@ class TodayCoursesWidget extends StatelessWidget {
               ),
             ),
           ),
-          _getDisplayWidget(todayCourses, context)
+          _getDisplayWidget(notifier, todayCourses, context)
         ],
       );
     });
@@ -87,7 +86,7 @@ class TodayCoursesWidget extends StatelessWidget {
   }
 
   /// 返回首页显示课程的widget
-  Widget _getDisplayWidget(
+  Widget _getDisplayWidget(ScheduleNotifier notifier,
       List<ScheduleCourse> todayCourses, BuildContext context) {
     if (todayCourses.length == 0) {
       // 如果今天没有课，就返回文字框
@@ -100,11 +99,13 @@ class TodayCoursesWidget extends StatelessWidget {
                 color: Color.fromRGBO(236, 238, 237, 1),
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
-              child: Text("NO COURSE TODAY",
-                  style: FontManager.Texta.copyWith(
+              child: Text(
+                  (notifier.nightMode && DateTime.now().hour >= 21)
+                      ? "明天没有课哦"
+                      : "今天没有课哦",
+                  style: FontManager.YaHeiLight.copyWith(
                       color: Color.fromRGBO(207, 208, 212, 1),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 14,
                       letterSpacing: 0.5)),
             )),
       );

@@ -28,7 +28,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   _bind() async {
@@ -44,7 +44,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
           ToastProvider.success("手机号码绑定成功");
           setState(() {});
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   Widget _detail(BuildContext context) {
@@ -97,7 +97,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -122,7 +122,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),

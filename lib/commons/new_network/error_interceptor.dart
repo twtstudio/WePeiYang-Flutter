@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class ErrorInterceptor extends InterceptorsWrapper {
   /// * 办公网输错验证码 / 密码: [DioErrorType.RESPONSE]: Http status error [401]
@@ -21,8 +22,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
       return DioError(error: "办公网绑定失效，请重新绑定");
 
     /// More...
-    //TODO 这里加个debug开关
-    return DioError(error: "发生未知错误，请联系开发人员解决");
+    if (!kDebugMode) return DioError(error: "发生未知错误，请联系开发人员解决");
   }
 }
 

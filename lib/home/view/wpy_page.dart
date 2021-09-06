@@ -65,7 +65,9 @@ class WPYPageState extends State<WPYPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.white,));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      systemNavigationBarColor: Colors.white,
+    ));
     return Material(
       child: Theme(
         data: ThemeData(accentColor: Colors.white),
@@ -78,7 +80,8 @@ class WPYPageState extends State<WPYPage> {
                   delegate: _WPYHeader(onChanged: (_) {
                     setState(() {});
                   }),
-                  pinned: true, floating: true),
+                  pinned: true,
+                  floating: true),
             ),
 
             /// 功能跳转卡片
@@ -123,9 +126,9 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
         children: [
           Row(
             children: <Widget>[
-              Text("Hello",
+              Text(_getGreetText,
                   style: FontManager.YaQiHei.copyWith(
-                      fontSize: 35,
+                      fontSize: 30,
                       color: MyColors.deepBlue,
                       fontWeight: FontWeight.bold)),
               Expanded(child: Text('')), // 起填充作用
@@ -168,6 +171,16 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
+
+  String get _getGreetText {
+    int hour = DateTime.now().hour;
+    if (hour >= 5 && hour < 12)
+      return '早上好';
+    else if (hour >= 12 && hour < 17)
+      return '下午好';
+    else
+      return '晚上好';
+  }
 
   String _chineseWeekDay(int weekday) {
     switch (weekday) {

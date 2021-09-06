@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -154,9 +153,13 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
                     return "success";
                     break;
                   case 'refreshFeedbackMessageCount':
-                    log("refreshFeedbackMessageCount");
                     await messageProvider.refreshFeedbackCount();
                     return "success";
+                    break;
+                  case 'enterSchedulePage':
+                    await Navigator.pushNamed(
+                        baseContext, ScheduleRouter.schedule);
+                    return 'success';
                     break;
                 }
               });
@@ -240,11 +243,20 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
-    // TODO 这里也许要挪位置
+    var prefs = CommonPreferences();
+
+    /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
+    if (prefs.updateTime.value != "20210906") {
+      prefs.updateTime.value = "20210906";
+      prefs.clearTjuPrefs();
+      prefs.clearUserPrefs();
+      Navigator.pushReplacementNamed(context, AuthRouter.login);
+      return;
+    }
+    // TODO 这里也许要挪位置，不然读缓存失败的话都无法登陆
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
-    var prefs = CommonPreferences();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||
         prefs.password.value == "") {

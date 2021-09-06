@@ -105,6 +105,14 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     var startEnd = getRegExpList(r'(?<=unitCount\+)\w*', item);
     var start = (int.parse(startEnd.first) + 1).toString();
     var end = (int.parse(startEnd.last) + 1).toString();
+    var teacherData = getRegExpStr(r'(?<=actTeachers )[^]*?(?=\;)', item);
+    var teacherList = getRegExpList(r'(?<=name:")[^]*?(?=")', teacherData);
+    var teacher = '';
+    teacherList.forEach((t) {
+      teacher = teacher + t + ',';
+    });
+    if (teacher.endsWith(','))
+      teacher = teacher.substring(0, teacher.length - 1);
 
     /// 课程名称、课程星期分布的信息
     List<String> courseInfo =
@@ -112,25 +120,8 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     var courseName = courseInfo[3];
     var weekInfo = courseInfo[9];
 
-    /// 如果当前的信息与arrangeList数组中的都不相同，则代表arrange没有重复
-    /// （如果某一门课有多个老师上就会出现重复）
-    bool notContains = true;
-    arrangeList.forEach((e) {
-      if (e.day == day &&
-          e.start == start &&
-          e.end == end &&
-          e.courseName == courseName) {
-        String str = "";
-        for (int i = 0; i < weekInfo.length && i < e.binStr.length; i++)
-          str += (weekInfo[i] == '1' || e.binStr[i] == '1') ? '1' : '0';
-        e.binStr = str;
-        notContains = false;
-        return;
-      }
-    });
-    if (notContains) {
-      var week = "单双周";
-      bool isAllWeek = weekInfo.contains("11");
+    var week = "单双周";
+    if (!weekInfo.contains("11")) {
       bool isSingle = false;
       for (int i = 0; i < weekInfo.length; i++) {
         if (weekInfo[i] == '1') {
@@ -138,13 +129,20 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
           break;
         }
       }
-      if (!isAllWeek && isSingle) week = "单周";
-      if (!isAllWeek && !isSingle) week = "双周";
-
-      /// arrange和下面course的courseName都需要trim(), 因为有 "流体力学（1）\s" 这种课
-      arrangeList.add(
-          Arrange.spider(week, weekInfo, start, end, day, courseName.trim()));
+      week = isSingle ? '单周' : '双周';
     }
+
+    /// arrange和下面course的courseName都需要trim(), 因为有 "流体力学（1）\s" 这种课
+    var arrange = Arrange.spider(
+        week, weekInfo, start, end, day, courseName.trim(), teacher);
+
+    /// 如果当前的信息与arrangeList数组中的都不相同，则代表arrange没有重复
+    /// （如果某一门课有多个老师上就会出现重复）
+    bool notContains = true;
+    arrangeList.forEach((e) {
+      if (e.toString() == arrange.toString()) notContains = false;
+    });
+    if (notContains) arrangeList.add(arrange);
   });
 
   /// 下面的[?.]和[return]是本学期没有课程时的空判断
@@ -164,7 +162,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
         : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";
     courseName = courseName.trim();
     var credit = double.parse(tdList[4]).toStringAsFixed(1);
-    var teacher = tdList[5];
+    var teacherList = tdList[5].split(',');
     var campus = "";
     if (tr.contains("北洋园"))
       campus = "北洋园";
@@ -176,18 +174,30 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
 
     arrangeList.forEach((arrange) {
       /// "体育D\s(体适能)"这门课，course中的名称为"体育D\s(体适能)"，arrange中的名称为"体育D"
-      if (arrange.courseName == courseName ||
-          courseName.contains(arrange.courseName)) {
+      /// 不能像courseName.contains(arrange.courseName)这么写，否则就会把"机器学习"和"机器学习综合实践"这样的课算在一起
+      if (courseName == arrange.courseName ||
+          judgeSubtitle(courseName, arrange.courseName)) {
         /// 有些个别课没有教室信息，此时roomList.length = 2
         if (roomList.length > roomIndex) {
           arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
           roomIndex += 2; // step为2用来跳过roomList匹配到的 “<br/>”
         } else
           arrange.room = "";
+
+        /// 匹配老师的职称
+        var teacher = arrange.teacher;
+        teacherList.forEach((t) {
+          if (t.contains(teacher)) teacher = t;
+        });
         courses.add(ScheduleCourse(classId, courseId, courseName, credit,
             teacher, campus, week, arrange));
       }
     });
   });
   return courses;
+}
+
+bool judgeSubtitle(String s1, String s2) {
+  var titles = s1.split(' ');
+  return titles.length > 1 ? titles[0] == s2 : false;
 }

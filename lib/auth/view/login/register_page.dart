@@ -31,7 +31,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               'nickname': nickname,
             });
           },
-          onFailure: (e) => ToastProvider.error(e.error));
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
     }
   }
 
@@ -81,7 +81,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -107,7 +107,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -157,7 +157,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
         onSuccess: () {
           setState(() => isPress = true);
         },
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   _toNextPage() async {
@@ -185,7 +185,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               'code': code
             });
           },
-          onFailure: (e) => ToastProvider.error(e.error));
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
     }
   }
 
@@ -239,7 +239,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -266,7 +266,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -292,7 +292,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -317,7 +317,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
@@ -435,7 +435,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
             Navigator.pushNamedAndRemoveUntil(
                 context, AuthRouter.login, (route) => false);
           },
-          onFailure: (e) => ToastProvider.error(e.error));
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
     }
   }
 
@@ -487,7 +487,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -515,7 +515,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),

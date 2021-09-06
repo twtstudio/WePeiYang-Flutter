@@ -82,7 +82,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
         pwController = null;
       });
     }, onFailure: (e) {
-      ToastProvider.error(e.error);
+      ToastProvider.error(e.error.toString());
       captchaKey.currentState.refresh();
     });
     codeController.clear();
@@ -154,7 +154,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -186,7 +186,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   filled: true,
                   fillColor: Color.fromRGBO(235, 238, 243, 1),
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none)),
@@ -216,7 +216,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),

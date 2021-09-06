@@ -145,7 +145,7 @@ class GPANotifier with ChangeNotifier {
         notifyListeners();
         CommonPreferences().gpaData.value = json.encode(gpaBean);
       }, onFailure: (e) {
-        if (hint && onFailure == null) ToastProvider.error(e.error);
+        if (hint && onFailure == null) ToastProvider.error(e.error.toString());
         if (onFailure != null) onFailure();
       });
     };

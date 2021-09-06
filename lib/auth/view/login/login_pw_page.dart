@@ -33,7 +33,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   context, HomeRouter.home, (route) => false);
             }
           },
-          onFailure: (e) => ToastProvider.error(e.error));
+          onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   FocusNode _accountFocus = FocusNode();
@@ -82,7 +82,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -109,7 +109,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),

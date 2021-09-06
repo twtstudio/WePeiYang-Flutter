@@ -1,34 +1,26 @@
 package com.twt.service.widget
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import com.twt.service.MainActivity
 import com.twt.service.R
 
 class WidgetFactory(var mContext: Context, var courseList: List<Course>) : RemoteViewsService.RemoteViewsFactory {
     override fun getViewAt(position: Int): RemoteViews {
-        Log.d("WBY", "get view at $position")
         val remoteViews = RemoteViews(mContext.packageName, R.layout.widget_schedule_item)
         val course = courseList[position]
-        remoteViews.setTextColor(R.id.widget_course_title, 0xFF0000)
         remoteViews.setTextViewText(R.id.widget_course_title, course.courseName)
         remoteViews.setTextViewText(R.id.widget_course_location, course.room)
         remoteViews.setTextViewText(R.id.widget_course_time, course.time)
         
-        val startActivityIntent = Intent(mContext, MainActivity::class.java)
-        val startActivityPendingIntent = PendingIntent.getActivity(mContext, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        remoteViews.setOnClickPendingIntent(R.id.widget_listview, startActivityPendingIntent)
-
+        remoteViews.setOnClickFillInIntent(R.id.widget_schedule_item, Intent())
+        
         return remoteViews
     }
 
     override fun onCreate() {
-        Log.d("WBY", "widget factory on create!!!!")
-        Log.d("WBY", courseList.size.toString())
     }
 
     override fun onDataSetChanged() {

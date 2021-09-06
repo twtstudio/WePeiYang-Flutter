@@ -6,7 +6,6 @@ import android.widget.RemoteViewsService
 
 class WidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        Log.d("WBY", "widget service!!!!!")
         return WidgetFactory(this, readCourseList(this))
     }
 }

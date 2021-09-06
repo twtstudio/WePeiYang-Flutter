@@ -28,7 +28,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
     String phone = ModalRoute.of(context).settings.arguments;
     resetPwByPhone(phone, password1,
         onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
-        onFailure: (e) => ToastProvider.error(e.error));
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
   FocusNode _pwInput1 = FocusNode();
@@ -78,7 +78,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -106,7 +106,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 22),
+                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),

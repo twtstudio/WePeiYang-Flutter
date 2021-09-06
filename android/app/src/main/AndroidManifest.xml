@@ -5,11 +5,8 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
-    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--友盟需要的一些额外权限-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -111,23 +108,23 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-<!--        <receiver-->
-<!--            android:name=".widget.ScheduleWidgetProvider"-->
-<!--            android:label="微北洋课程表">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.twt.appwidget.refresh" />-->
-<!--            </intent-filter>-->
+        <receiver
+            android:name=".widget.ScheduleWidgetProvider"
+            android:label="微北洋课程表">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.twt.appwidget.refresh" />
+            </intent-filter>
 
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/schedule_widget_provider" />-->
-<!--        </receiver>-->
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/schedule_widget_provider" />
+        </receiver>
 
-<!--        <service-->
-<!--            android:name=".widget.WidgetService"-->
-<!--            android:permission="android.permission.BIND_REMOTEVIEWS" />-->
+        <service
+            android:name=".widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 </manifest>
