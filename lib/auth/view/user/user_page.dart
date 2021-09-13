@@ -6,10 +6,10 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -256,7 +256,7 @@ class _NavigationState extends State<NavigationWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 140,
-      width: GlobalModel().screenWidth - 40,
+      width: WePeiYangApp.screenWidth - 40,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Card(
         elevation: 1.8,

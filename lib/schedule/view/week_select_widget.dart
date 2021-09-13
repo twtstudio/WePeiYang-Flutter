@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
@@ -20,7 +20,7 @@ class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   Widget build(BuildContext context) {
     var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
     var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
-    double offset = GlobalModel().screenWidth / 4 - canvasWidth - 25;
+    double offset = WePeiYangApp.screenWidth / 4 - canvasWidth - 25;
     if (offset < 0) offset = 0;
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       int current =

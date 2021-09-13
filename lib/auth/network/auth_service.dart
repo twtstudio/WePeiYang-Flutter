@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:we_pei_yang_flutter/commons/new_network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:flutter/material.dart' show Navigator, required;
-import 'package:we_pei_yang_flutter/commons/new_network/dio_manager.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/error_interceptor.dart'
+import 'package:we_pei_yang_flutter/commons/network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
 import 'package:dio/dio.dart' show Options, Response;
 import 'dart:convert' show utf8, base64Encode;

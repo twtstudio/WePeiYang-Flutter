@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -55,7 +55,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double width = GlobalModel().screenWidth - 80;
+    double width = WePeiYangApp.screenWidth - 80;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

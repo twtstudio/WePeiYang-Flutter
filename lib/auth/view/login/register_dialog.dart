@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class RegisterDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
     var textColor = Color.fromRGBO(98, 103, 124, 1);
     return Container(
-        width: GlobalModel().screenWidth - 70,
+        width: WePeiYangApp.screenWidth - 70,
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(
-            horizontal: 30, vertical: GlobalModel().screenHeight / 10),
+            horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

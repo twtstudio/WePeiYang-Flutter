@@ -94,7 +94,8 @@ class _DetailPageState extends State<DetailPage> {
             post = p;
             log("image : ${p.toJson()}");
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-              await Provider.of<MessageProvider>(context,listen: false).setFeedbackQuestionRead(p.id);
+              await Provider.of<MessageProvider>(context, listen: false)
+                  .setFeedbackQuestionRead(p.id);
             });
           },
           onFailure: () {

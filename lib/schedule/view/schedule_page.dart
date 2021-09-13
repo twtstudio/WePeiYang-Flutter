@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import '../../main.dart';
 import 'class_table_widget.dart';
 import 'week_select_widget.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -132,7 +131,7 @@ class HoursCounterWidget extends StatelessWidget {
     int currentHours = getCurrentHours(notifier.currentWeek,
         DateTime.now().weekday, notifier.coursesWithNotify);
     int totalHours = getTotalHours(notifier.coursesWithNotify);
-    double totalWidth = GlobalModel().screenWidth - 2 * 15;
+    double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;
     /// 如果学期还没开始，则不显示学时

@@ -4,12 +4,13 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_sdk/umeng_sdk.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/net_status_listener.dart';
+import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -22,23 +23,15 @@ import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
-
-import 'commons/preferences/common_prefs.dart';
-import 'commons/util/app_analysis.dart';
-import 'gpa/model/gpa_notifier.dart';
-import 'home/model/home_model.dart';
-
-/// 在醒目的地方写一下对android文件夹的修改
-/// 1. 在 AndroidManifest.xml 中添加了 android:screenOrientation ="portrait" 强制竖屏
-/// 2. 添加外部存储读写和摄像头使用权限，[MultiImagePicker]所需
-/// 3. 在资源文件夹添加完成图片选择图标
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/app_analysis.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
 /// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数之后
-/// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数之后
+/// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
 /// 2. App build 前后：
-/// [GlobalModel.init]配置全局context
 /// [UpdateManager.init]配置更新应用的dio, 这个可以合并掉
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
@@ -72,6 +65,9 @@ void main() async {
 }
 
 class WePeiYangApp extends StatefulWidget {
+  static double screenWidth;
+  static double screenHeight;
+
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
 
@@ -94,8 +90,10 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var baseContext =
           WePeiYangApp.navigatorState.currentState.overlay.context;
+      var size = MediaQuery.of(baseContext).size;
+      WePeiYangApp.screenWidth = size.width;
+      WePeiYangApp.screenHeight = size.height;
       UpdateManager.init(context: baseContext);
-      GlobalModel().init(baseContext);
       await HiveManager.init();
 
       /// 获取feedback的token

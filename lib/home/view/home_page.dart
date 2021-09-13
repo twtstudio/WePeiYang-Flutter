@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
-import '../model/home_model.dart';
 import 'wpy_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = GlobalModel().screenWidth / 3;
+    double width = WePeiYangApp.screenWidth / 3;
     var currentStyle = TextStyle(
         fontSize: 12, color: MyColors.deepBlue, fontWeight: FontWeight.w800);
     var otherStyle = TextStyle(

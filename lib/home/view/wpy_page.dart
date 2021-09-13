@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
-import '../model/home_model.dart';
-import 'drawer_page.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
@@ -24,43 +23,30 @@ class WPYPage extends StatefulWidget {
 
 class WPYPageState extends State<WPYPage> {
   ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
-
-  FToast _fToast;
+  List<CardBean> cards;
 
   @override
   void initState() {
     super.initState();
-    _fToast = FToast();
-    _fToast.init(context);
-  }
+    cards = List()
+      ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
+          S.current.report, ReportRouter.main))
+      ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
+          S.current.schedule, ScheduleRouter.schedule))
+      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
+          'GPA', GPARouter.gpa))
 
-  showToast({Widget custom}) {
-    Widget toast = custom ??
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25.0),
-            color: Colors.greenAccent,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Icon(Icons.check),
-              // SizedBox(
-              //   width: 12.0,
-              // ),
-              Text("正在加载数据，请稍后"),
-            ],
-          ),
-        );
-
-    _fToast.removeQueuedCustomToasts();
-
-    // _fToast.showToast(
-    //   child: toast,
-    //   gravity: ToastGravity.CENTER,
-    //   toastDuration: Duration(seconds: 1),
-    // );
+      /// 别改变自习室的位置，确定下标为3，不然请去wpy_page最下面改一下index
+      ..add(CardBean(
+          ImageIcon(AssetImage(Images.building),
+              color: Color(0xffcecfd4), size: 20),
+          S.current.lounge,
+          LoungeRouter.main))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/wiki.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Wiki',
+          HomeRouter.wiki));
   }
 
   @override
@@ -85,7 +71,7 @@ class WPYPageState extends State<WPYPage> {
             ),
 
             /// 功能跳转卡片
-            SliverCardsWidget(GlobalModel().cards),
+            SliverCardsWidget(cards),
 
             /// 当天课程
             SliverToBoxAdapter(child: TodayCoursesWidget()),
@@ -231,11 +217,8 @@ class SliverCardsWidget extends StatelessWidget {
                 .canNotGoIntoLounge,
             builder: (_, bool absorbing, __) => GestureDetector(
               onTap: () {
-                // print("absorbing : $absorbing");
                 if (absorbing) {
-                  context.findAncestorStateOfType<WPYPageState>().showToast(
-                        custom: null,
-                      );
+                  ToastProvider.running("正在加载数据，请稍后");
                 } else {
                   Navigator.pushNamed(context, cards[i].route);
                 }
@@ -259,4 +242,33 @@ class SliverCardsWidget extends StatelessWidget {
       ),
     );
   }
+
+  Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
+    return Card(
+      elevation: 0.3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          bean.icon,
+          Container(height: 5),
+          Center(
+            child: Text(bean.label,
+                style: FontManager.YaQiHei.copyWith(
+                    color: textColor ?? MyColors.darkGrey,
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.bold)),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CardBean {
+  Widget icon;
+  String label;
+  String route;
+
+  CardBean(this.icon, this.label, this.route);
 }

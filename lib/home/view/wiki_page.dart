@@ -3,6 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
+// ignore: must_be_immutable
 class WikiPage extends StatelessWidget {
   static const URL = "https://wiki.tjubot.cn/";
   WebViewController _controller;

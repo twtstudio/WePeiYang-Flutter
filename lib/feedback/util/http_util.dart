@@ -4,9 +4,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -409,9 +408,6 @@ Future sendPost(
             'campus': 0,
           }));
       if (0 == response.data['ErrorCode']) {
-        // debugPrint(
-        //     "send question success ${response.data['data']['question_id']}");
-
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {
             FormData data = FormData.fromMap({

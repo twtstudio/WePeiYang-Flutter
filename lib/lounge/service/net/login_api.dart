@@ -1,13 +1,9 @@
-// import 'package:cookie_jar/cookie_jar.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/error_interceptor.dart';
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-
-// import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'api.dart';
-// import '../storage_manager.dart';
 
 final Http loginApi = Http();
 
@@ -32,15 +28,6 @@ class Http extends BaseHttp {
 
 /// 玩Android API
 class ApiInterceptor extends InterceptorsWrapper {
-
-  @override
-  Future onRequest(RequestOptions options) {
-    // debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
-    //     ' queryParameters: ${options.queryParameters}');
-    // debugPrint('---api-request--->data--->${options.data}');
-    return super.onRequest(options);
-  }
-
   @override
   onResponse(Response response) async {
     final String data = response.data.toString();
@@ -48,7 +35,6 @@ class ApiInterceptor extends InterceptorsWrapper {
     final Map<dynamic, dynamic> _map =
         isCompute ? await compute(parseData, data) : parseData(data);
     ResponseData respData = ResponseData.fromJson(_map);
-    // print(respData.toJson());
     if (respData.success) {
       response.data = respData.data;
       return loginApi.resolve(response);

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -94,7 +95,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   Widget _detail(BuildContext context, CommonPreferences pref) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    double width = GlobalModel().screenWidth - 80;
+    double width = WePeiYangApp.screenWidth - 80;
     if (pref.isBindTju.value)
       return Column(children: [
         Container(

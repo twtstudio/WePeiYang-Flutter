@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class FindPwDialog extends Dialog {
   static final _hintStyle = FontManager.YaHeiRegular.copyWith(
@@ -15,7 +15,7 @@ class FindPwDialog extends Dialog {
     return Center(
       child: Container(
         height: 150,
-        width: GlobalModel().screenWidth - 40,
+        width: WePeiYangApp.screenWidth - 40,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

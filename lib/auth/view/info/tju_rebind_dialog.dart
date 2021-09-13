@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/new_network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'tju_bind_page.dart' show CaptchaWidget, CaptchaWidgetState;
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -101,7 +101,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   Widget build(BuildContext context) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    double width = GlobalModel().screenWidth - 120;
+    double width = WePeiYangApp.screenWidth - 120;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

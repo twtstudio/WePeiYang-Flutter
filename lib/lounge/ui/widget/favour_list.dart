@@ -2,12 +2,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/service/data_factory.dart';
-import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 import 'package:we_pei_yang_flutter/lounge/view_model/favourite_model.dart';
@@ -90,9 +90,7 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
                   // print("==================================================");
                   // print("==================================================");
                   if (absorbing) {
-                    context.findAncestorStateOfType<WPYPageState>().showToast(
-                          custom: null,
-                        );
+                    ToastProvider.running("正在加载数据，请稍后");
                   } else {
                     Navigator.pushNamed(context, LoungeRouter.main).then((_) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -130,7 +128,8 @@ class FavourListWidget extends StatelessWidget {
             child: Text(
               // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
               S.current.notHaveLoungeFavour,
-              style: FontManager.YaQiHei.copyWith(color: Color(0xffcdcdd3), fontSize: 12),
+              style: FontManager.YaQiHei.copyWith(
+                  color: Color(0xffcdcdd3), fontSize: 12),
             ),
           ),
         ),
@@ -171,7 +170,8 @@ class FavourListWidget extends StatelessWidget {
             child: Text(
               // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
               "未获取到数据",
-              style: FontManager.YaQiHei.copyWith(color: Color(0xffcdcdd3), fontSize: 12),
+              style: FontManager.YaQiHei.copyWith(
+                  color: Color(0xffcdcdd3), fontSize: 12),
             ),
           ),
         ),

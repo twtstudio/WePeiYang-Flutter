@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'dart:math';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -245,7 +245,7 @@ class _GPACurveState extends State<GPACurve>
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
 
   _initPoints(List<Point<double>> points, List<double> list) {
-    var width = GlobalModel().screenWidth;
+    var width = WePeiYangApp.screenWidth;
     var step = width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
