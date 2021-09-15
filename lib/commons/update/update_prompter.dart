@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
-import 'package:we_pei_yang_flutter/commons/update/http.dart';
-import 'package:we_pei_yang_flutter/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+
+typedef InstallCallback = Function(String filePath);
 
 class UpdatePrompter {
   /// 版本更新信息
@@ -30,8 +31,6 @@ class UpdatePrompter {
     String updateContent = getUpdateContent();
     if (Platform.isAndroid) {
       _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
-      // debugPrint("apkfile path:");
-      // debugPrint(_apkFile.path);
     }
     if (_apkFile != null && _apkFile.existsSync()) {
       _dialog = UpdateDialog.showUpdate(
@@ -74,31 +73,23 @@ class UpdatePrompter {
       doInstall();
       return;
     }
-
-    HttpUtils.downloadFile(updateEntity.path, _apkFile.path,
+    UpdateService.downloadApk(updateEntity.path, _apkFile.path,
         onReceiveProgress: (int count, int total) {
       _progress = count.toDouble() / total;
-      if (_progress <= 1.0001) {
-        _dialog.update(_progress);
-      }
-    }).then((value) async {
+      if (_progress <= 1.0001) _dialog.update(_progress);
+    }).then((_) async {
       var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
-      // debugPrint(path);
-      // debugPrint(updateEntity.path);
       var newPath = _apkFile.absolute.parent.path + "/" + path;
-      // debugPrint(newPath);
       await _apkFile.rename(newPath).then((_) => doInstall(newPath));
-    }).catchError((value) {
+    }).catchError((_) {
       ToastProvider.error("下载失败！");
       _dialog.dismiss();
-      // debugPrint(value.toString());
     });
   }
 
   /// 安装
   void doInstall([String path]) {
     _dialog.dismiss();
-    // debugPrint("abcdefg   ${_apkFile.absolute.path}");
     onInstall.call(path ?? _apkFile.absolute.path);
   }
 }

@@ -28,6 +28,9 @@ extension PostListSortExtension on List<Post> {
     base.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
     return [...match, ...base];
   }
+
+  List<Post> sortNormal() =>
+      this..sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
 }
 
 class FeedbackNotifier with ChangeNotifier {

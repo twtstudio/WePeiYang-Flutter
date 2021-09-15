@@ -1,6 +1,13 @@
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-
 import '../model/school/school_model.dart';
+
+/// 解决首页今日课程、课程表课程名称显示不全的问题（课程dialog不调用此函数）
+String formatText(String text) {
+  if (text.length > 13)
+    return text.substring(0, 13) + "...";
+  else
+    return text;
+}
 
 /// 生成一周内的日期，格式为 “MM/dd”，用0填充空位
 /// [termStart] 本学期开始时间的时间戳

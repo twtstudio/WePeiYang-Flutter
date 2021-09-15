@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/home/model/home_model.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -95,7 +94,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
   Widget _detail(BuildContext context, CommonPreferences pref) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    double width = WePeiYangApp.screenWidth - 80;
     if (pref.isBindTju.value)
       return Column(children: [
         Container(
@@ -204,31 +202,30 @@ class _TjuBindPageState extends State<TjuBindPage> {
           padding: const EdgeInsets.fromLTRB(30, 20, 30, 35),
           child: Row(
             children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 55,
-                  maxWidth: width - 120,
-                ),
-                child: TextField(
-                  controller: codeController,
-                  decoration: InputDecoration(
-                      hintText: S.current.captcha,
-                      hintStyle: hintStyle,
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none)),
-                  onChanged: (input) => setState(() => captcha = input),
-                ),
-              ),
-              Container(
+              Expanded(
+                child: SizedBox(
                   height: 55,
                   width: 120,
-                  margin: const EdgeInsets.only(left: 20),
-                  alignment: Alignment.centerRight,
+                  child: TextField(
+                    controller: codeController,
+                    decoration: InputDecoration(
+                        hintText: S.current.captcha,
+                        hintStyle: hintStyle,
+                        filled: true,
+                        fillColor: Color.fromRGBO(235, 238, 243, 1),
+                        isCollapsed: true,
+                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none)),
+                    onChanged: (input) => setState(() => captcha = input),
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                  height: 55,
+                  width: 120,
                   child: captchaWidget)
             ],
           ),

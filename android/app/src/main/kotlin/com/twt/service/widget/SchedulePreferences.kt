@@ -40,7 +40,8 @@ fun readCourseList(context: Context): List<Course> {
         val list = obj.getJSONArray("courses")
         for (i in 0 until list.length()) {
             val scheduleCourse = list.getJSONObject(i)
-            val courseName = scheduleCourse.getString("courseName")
+            var courseName = scheduleCourse.getString("courseName")
+            if (courseName.length > 15) courseName = courseName.substring(0, 15) + "..."
             val arrange = scheduleCourse.getJSONObject("arrange")
             var room = arrange.getString("room").replace("-", "楼")
             if (room == "") room = "————"
@@ -54,8 +55,6 @@ fun readCourseList(context: Context): List<Course> {
             if (flag1 && flag2) courseList.add(Course(courseName, room, time))
         }
     }
-//    Log.d("WBY", courseList.size.toString())
-//    if (courseList.size > 0) Log.d("WBY", courseList[0].courseName)
     courseList.sortWith { a, b -> a.time.compareTo(b.time) }
     return courseList
 }

@@ -44,7 +44,7 @@ Widget getQuietCourseCard(double height, double width, ScheduleCourse course) {
                 Icon(Icons.lock, color: quiteFrontColor, size: 15),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text(course.courseName,
+                  child: Text(formatText(course.courseName),
                       style: quietNameStyle, textAlign: TextAlign.center),
                 ),
                 Text(S.current.not_this_week,
@@ -111,7 +111,7 @@ class AnimatedCourseState extends State<AnimatedCourse>
             child: Column(
               children: [
                 Expanded(child: Text("")),
-                Text(widget.courses[0].courseName,
+                Text(formatText(widget.courses[0].courseName),
                     style: activeNameStyle, textAlign: TextAlign.center),
                 Padding(
                   padding: const EdgeInsets.only(top: 2),

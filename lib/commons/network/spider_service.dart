@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' show required, BuildContext;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_manager.dart'
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart'
     show OnSuccess, OnFailure;
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie

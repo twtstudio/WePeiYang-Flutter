@@ -12,7 +12,11 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
-class SchedulePage extends StatefulWidget {
+class SchedulePage extends StatelessWidget {
+  /// 星期栏是否收缩
+  final ValueNotifier<bool> isShrink =
+      ValueNotifier<bool>(CommonPreferences().scheduleShrink.value);
+
   /// 进入课程表页面后重设选中周并自动刷新数据
   SchedulePage() {
     var notifier = Provider.of<ScheduleNotifier>(
@@ -21,11 +25,6 @@ class SchedulePage extends StatefulWidget {
     notifier.refreshSchedule(hint: false);
   }
 
-  @override
-  _SchedulePageState createState() => _SchedulePageState();
-}
-
-class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     var titleColor = FavorColors.scheduleTitleColor();
@@ -37,10 +36,7 @@ class _SchedulePageState extends State<SchedulePage> {
         children: [
           TitleWidget(titleColor),
           WeekSelectWidget(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-            child: ClassTableWidget(),
-          ),
+          ClassTableWidget(titleColor),
           HoursCounterWidget(titleColor)
         ],
       ),
@@ -63,25 +59,43 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           child: Icon(Icons.arrow_back, color: titleColor, size: 32),
           onTap: () => Navigator.pop(context)),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 18),
-          child: GestureDetector(
-              child: Icon(Icons.autorenew, color: titleColor, size: 28),
-              onTap: () {
-                if (CommonPreferences().isBindTju.value) {
-                  Provider.of<ScheduleNotifier>(context, listen: false)
-                      .refreshSchedule(onFailure: () {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) => TjuRebindDialog());
-                  }).call();
-                } else {
-                  ToastProvider.error("请绑定办公网");
-                  Navigator.pushNamed(context, AuthRouter.tjuBind);
-                }
-              }),
+        ValueListenableBuilder(
+          valueListenable:
+              context.findAncestorWidgetOfExactType<SchedulePage>().isShrink,
+          builder: (_, value, __) {
+            return IconButton(
+              icon: Icon(
+                  value ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  color: titleColor,
+                  size: 35),
+              onPressed: () {
+                var notifier = context
+                    .findAncestorWidgetOfExactType<SchedulePage>()
+                    .isShrink;
+                notifier.value = !value;
+                CommonPreferences().scheduleShrink.value = !value;
+              },
+            );
+          },
         ),
+        IconButton(
+          icon: Icon(Icons.autorenew, color: titleColor, size: 28),
+          onPressed: () {
+            if (CommonPreferences().isBindTju.value) {
+              Provider.of<ScheduleNotifier>(context, listen: false)
+                  .refreshSchedule(onFailure: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => TjuRebindDialog());
+              }).call();
+            } else {
+              ToastProvider.error("请绑定办公网");
+              Navigator.pushNamed(context, AuthRouter.tjuBind);
+            }
+          },
+        ),
+        SizedBox(width: 10),
       ],
     );
   }
@@ -104,8 +118,7 @@ class TitleWidget extends StatelessWidget {
                 children: [
                   Text('课程表',
                       style: FontManager.YaQiHei.copyWith(
-                          color: titleColor,
-                          fontSize: 30)),
+                          color: titleColor, fontSize: 30)),
                   Padding(
                     padding: const EdgeInsets.only(left: 8, top: 12),
                     child: Text('WEEK ${notifier.currentWeek}',
@@ -134,6 +147,7 @@ class HoursCounterWidget extends StatelessWidget {
     double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;
+
     /// 如果学期还没开始，则不显示学时
     if (notifier.isBeforeTermStart) leftWidth = 0;
     return Padding(

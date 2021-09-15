@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
@@ -6,7 +7,6 @@ import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
-import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -54,39 +54,34 @@ class WPYPageState extends State<WPYPage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       systemNavigationBarColor: Colors.white,
     ));
-    return Material(
-      child: Theme(
-        data: ThemeData(accentColor: Colors.white),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            /// 自定义标题栏
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 30.0),
-              sliver: SliverPersistentHeader(
-                  delegate: _WPYHeader(onChanged: (_) {
-                    setState(() {});
-                  }),
-                  pinned: true,
-                  floating: true),
-            ),
-
-            /// 功能跳转卡片
-            SliverCardsWidget(cards),
-
-            /// 当天课程
-            SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-            /// GPA曲线及信息展示
-            SliverToBoxAdapter(child: GPAPreview()),
-
-            SliverToBoxAdapter(
-                child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: LoungeFavourWidget(title: S.current.lounge, init: true),
-            ))
-          ],
+    return CustomScrollView(
+      slivers: <Widget>[
+        /// 自定义标题栏
+        SliverPadding(
+          padding: const EdgeInsets.only(top: 30),
+          sliver: SliverPersistentHeader(
+              delegate: _WPYHeader(onChanged: (_) {
+                setState(() {});
+              }),
+              pinned: true,
+              floating: true),
         ),
-      ),
+
+        /// 功能跳转卡片
+        SliverCardsWidget(cards),
+
+        /// 当天课程
+        SliverToBoxAdapter(child: TodayCoursesWidget()),
+
+        /// GPA曲线及信息展示
+        SliverToBoxAdapter(child: GPAPreview()),
+
+        SliverToBoxAdapter(
+            child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+          child: LoungeFavourWidget(title: S.current.lounge, init: true),
+        ))
+      ],
     );
   }
 }
@@ -190,25 +185,22 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 
 class SliverCardsWidget extends StatelessWidget {
   final List<CardBean> cards;
+  final ScrollController controller = ScrollController();
 
   SliverCardsWidget(this.cards);
 
   @override
   Widget build(BuildContext context) {
     Widget cardList = ListView.builder(
+      controller: controller,
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      padding: const EdgeInsets.only(left: 15),
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (i != 3) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
-            child: Container(
-              height: 90.0,
-              width: 125.0,
-              padding: const EdgeInsets.symmetric(horizontal: 3.0),
-              child: generateCard(context, cards[i]),
-            ),
+            child: generateCard(context, cards[i]),
           );
         } else {
           return ValueListenableBuilder(
@@ -223,12 +215,7 @@ class SliverCardsWidget extends StatelessWidget {
                   Navigator.pushNamed(context, cards[i].route);
                 }
               },
-              child: Container(
-                height: 90.0,
-                width: 125.0,
-                padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: generateCard(context, cards[i]),
-              ),
+              child: generateCard(context, cards[i]),
             ),
           );
         }
@@ -236,30 +223,54 @@ class SliverCardsWidget extends StatelessWidget {
     );
 
     return SliverToBoxAdapter(
-      child: Container(
-        height: 90.0,
-        child: cardList,
+      child: SizedBox(
+        height: 90,
+        width: double.infinity,
+        child: Row(
+          children: [
+            Expanded(child: cardList),
+            SizedBox(
+              height: 90,
+              width: 45,
+              child: Center(
+                child: IconButton(
+                    icon: Icon(Icons.arrow_forward_ios_sharp,
+                        color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
+                    onPressed: () {
+                      controller.animateTo(controller.offset + 125,
+                          duration: Duration(milliseconds: 250),
+                          curve: Curves.linear);
+                    }),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
-    return Card(
-      elevation: 0.3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          bean.icon,
-          Container(height: 5),
-          Center(
-            child: Text(bean.label,
-                style: FontManager.YaQiHei.copyWith(
-                    color: textColor ?? MyColors.darkGrey,
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.bold)),
-          )
-        ],
+    return Container(
+      width: 125,
+      height: 90,
+      child: Card(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            bean.icon,
+            Container(height: 5),
+            Center(
+              child: Text(bean.label,
+                  style: FontManager.YaQiHei.copyWith(
+                      color: textColor ?? MyColors.darkGrey,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold)),
+            )
+          ],
+        ),
       ),
     );
   }

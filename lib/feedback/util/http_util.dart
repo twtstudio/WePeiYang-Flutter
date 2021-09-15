@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';

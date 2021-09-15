@@ -2,7 +2,7 @@ import 'package:dio/dio.dart' show DioError, Response;
 import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_manager.dart'
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart'
     show OnResult, OnFailure;
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;

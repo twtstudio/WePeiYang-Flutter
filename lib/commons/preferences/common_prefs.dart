@@ -43,6 +43,7 @@ class CommonPreferences {
   var isBindTju = PrefsBean<bool>('bindtju');
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
+  var scheduleShrink = PrefsBean<bool>('scheduleShrink');
 
   /// 学期信息
   // 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈

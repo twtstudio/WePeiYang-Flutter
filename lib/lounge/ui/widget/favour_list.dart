@@ -128,8 +128,8 @@ class FavourListWidget extends StatelessWidget {
             child: Text(
               // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
               S.current.notHaveLoungeFavour,
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color(0xffcdcdd3), fontSize: 12),
+              style: FontManager.YaHeiLight.copyWith(
+                  color: Color(0xffcdcdd3), fontSize: 14),
             ),
           ),
         ),

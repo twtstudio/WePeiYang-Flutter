@@ -395,9 +395,15 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                               ),
                               contents,
                               versionText,
+                              SizedBox(height: 3),
+                              Text("注：更新前请连接校园网！", style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF62677b),
+                                fontWeight: FontWeight.bold
+                              ))
                             ],
                           ),
-                          SizedBox(height: 15),
+                          SizedBox(height: 8),
                           Divider(
                             height: 3,
                             thickness: 3,

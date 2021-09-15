@@ -42,13 +42,13 @@ class TodayCoursesWidget extends StatelessWidget {
                               TextSpan(
                                   text: (notifier.nightMode &&
                                           DateTime.now().hour >= 21)
-                                      ? "明天"
-                                      : "今天"),
+                                      ? "明天 "
+                                      : "今天 "),
                               TextSpan(
                                   text: todayCourses.length.toString(),
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text: "节课 "),
+                              TextSpan(text: " 节课 "),
                               TextSpan(
                                   text: ">", style: TextStyle(fontSize: 15))
                             ])),
@@ -141,7 +141,7 @@ class TodayCoursesWidget extends StatelessWidget {
                         Container(
                           height: 95,
                           alignment: Alignment.centerLeft,
-                          child: Text(todayCourses[i].courseName,
+                          child: Text(formatText(todayCourses[i].courseName),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
                                   color: Colors.white,

@@ -42,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
             Provider.of<MessageProvider>(context, listen: false).feedbackQs ==
                     null
-                ? list
+                ? list.sortNormal()
                 : list.sortWithMessage(
                     Provider.of<MessageProvider>(context, listen: false)
                         .feedbackQs));
@@ -269,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         notifier.clearProfilePostList();
                         _currentTab = _CurrentTab.myPosts;
                         getMyPosts(onSuccess: (list) {
-                          notifier.addProfilePosts(list);
+                          notifier.addProfilePosts(list.sortNormal());
                         }, onFailure: () {
                           ToastProvider.error(
                               S.current.feedback_get_post_error);
@@ -314,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         notifier.clearProfilePostList();
                         _currentTab = _CurrentTab.myFavorite;
                         getFavoritePosts(onSuccess: (list) {
-                          notifier.addProfilePosts(list);
+                          notifier.addProfilePosts(list.sortNormal());
                         }, onFailure: () {
                           ToastProvider.error(
                               S.current.feedback_get_post_error);

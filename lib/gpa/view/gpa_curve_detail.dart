@@ -90,7 +90,7 @@ class GPAIntro extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           child: Column(
             children: <Widget>[
-              Text('总GPA', style: textStyle),
+              Text('总绩点', style: textStyle),
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(grade, style: numStyle))
@@ -103,7 +103,7 @@ class GPAIntro extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           child: Column(
             children: <Widget>[
-              Text('总绩点', style: textStyle),
+              Text('总学分', style: textStyle),
               Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(credit, style: numStyle))

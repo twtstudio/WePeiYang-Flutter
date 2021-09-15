@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/schedule/view/schedule_page.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -10,92 +11,114 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 const double cubeSideLength = 6;
 const double spacingLength = 4;
 
-class WeekSelectWidget extends StatefulWidget {
-  @override
-  _WeekSelectWidgetState createState() => _WeekSelectWidgetState();
-}
+class WeekSelectWidget extends StatelessWidget {
+  final canvasWidth = cubeSideLength * 6 + spacingLength * 5;
+  final canvasHeight = cubeSideLength * 5 + spacingLength * 4;
 
-class _WeekSelectWidgetState extends State<WeekSelectWidget> {
   @override
   Widget build(BuildContext context) {
-    var canvasWidth = cubeSideLength * 6 + spacingLength * 5;
-    var canvasHeight = cubeSideLength * 5 + spacingLength * 4;
     double offset = WePeiYangApp.screenWidth / 4 - canvasWidth - 25;
     if (offset < 0) offset = 0;
-    return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      int current =
-          Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
-      if (current == 1) current++;
-      return Container(
-        height: 90,
-        child: ListView.builder(
-            itemCount: notifier.weekCount,
-            scrollDirection: Axis.horizontal,
-            controller: ScrollController(
-                initialScrollOffset:
-                    (current - 2) * (canvasWidth + 25 + offset)),
-            itemBuilder: (context, i) {
-              /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
-              return Padding(
-                padding: EdgeInsets.only(left: offset),
-                child: Stack(
-                  children: [
-                    Column(
+    return ValueListenableBuilder(
+      valueListenable:
+          context.findAncestorWidgetOfExactType<SchedulePage>().isShrink,
+      builder: (_, isShrink, __) {
+        return Consumer<ScheduleNotifier>(builder: (_, notifier, __) {
+          int current =
+              Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
+          if (current == 1) current++;
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            height: isShrink ? 45 : 90,
+            child: ListView.builder(
+                itemCount: notifier.weekCount,
+                scrollDirection: Axis.horizontal,
+                controller: ScrollController(
+                    initialScrollOffset:
+                        (current - 2) * (canvasWidth + 25 + offset)),
+                itemBuilder: (_, i) {
+                  /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
+                  return Padding(
+                    padding: EdgeInsets.only(left: offset),
+                    child: Stack(
                       children: [
-                        Container(
-                          height: canvasHeight + 20,
+                        getContent(context, notifier, i, isShrink),
+
+                        /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
+                        SizedBox(
+                          height: isShrink ? 45 : canvasHeight + 25,
                           width: canvasWidth + 25,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: i + 1 == notifier.selectedWeekWithNotify
-                                  ? Color.fromRGBO(245, 245, 245, 1)
-                                  : null,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: CustomPaint(
-                            painter: _WeekSelectPainter(getBoolMatrix(
-                                i + 1,
-                                notifier.weekCount,
-                                notifier.coursesWithNotify,
-                                false)),
-                            size: Size(canvasWidth, canvasHeight),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              radius: 5000,
+                              splashColor: Color.fromRGBO(255, 255, 255, 0.85),
+                              highlightColor: Colors.transparent,
+                              onTap: () =>
+                                  notifier.selectedWeekWithNotify = i + 1,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text('WEEK ${i + 1}',
-                              style: FontManager.Aspira.copyWith(
-                                  color:
-                                      (notifier.selectedWeekWithNotify == i + 1)
-                                          ? Colors.black
-                                          : Color.fromRGBO(200, 200, 200, 1),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold)),
                         )
                       ],
                     ),
-                    Container(
-                      height: 75,
-                      width: canvasWidth + 25,
+                  );
+                }),
+          );
+        });
+      },
+    );
+  }
 
-                      /// 加上material使inkwell能在list中显示出来
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          radius: 5000,
-                          splashColor: Color.fromRGBO(255, 255, 255, 0.85),
-                          highlightColor: Colors.transparent,
-                          onTap: () {
-                            notifier.selectedWeekWithNotify = i + 1;
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }),
+  Widget getContent(
+      BuildContext context, ScheduleNotifier notifier, int i, bool isShrink) {
+    if (isShrink) {
+      return Container(
+        height: 45,
+        width: canvasWidth + 25,
+        decoration: BoxDecoration(
+            color: i + 1 == notifier.selectedWeekWithNotify
+                ? Color.fromRGBO(245, 245, 245, 1)
+                : null,
+            borderRadius: BorderRadius.circular(5)),
+        child: Center(
+          child: Text('WEEK ${i + 1}',
+              style: FontManager.Aspira.copyWith(
+                  color: (notifier.selectedWeekWithNotify == i + 1)
+                      ? Colors.black
+                      : Color.fromRGBO(200, 200, 200, 1),
+                  fontSize: isShrink ? 12 : 11,
+                  fontWeight: FontWeight.bold)),
+        ),
       );
-    });
+    } else {
+      return Column(
+        children: [
+          Container(
+            height: canvasHeight + 20,
+            width: canvasWidth + 25,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: i + 1 == notifier.selectedWeekWithNotify
+                    ? Color.fromRGBO(245, 245, 245, 1)
+                    : null,
+                borderRadius: BorderRadius.circular(5)),
+            child: CustomPaint(
+              painter: _WeekSelectPainter(getBoolMatrix(i + 1,
+                  notifier.weekCount, notifier.coursesWithNotify, false)),
+              size: Size(canvasWidth, canvasHeight),
+            ),
+          ),
+          SizedBox(height: 3),
+          Text('WEEK ${i + 1}',
+              style: FontManager.Aspira.copyWith(
+                  color: (notifier.selectedWeekWithNotify == i + 1)
+                      ? Colors.black
+                      : Color.fromRGBO(200, 200, 200, 1),
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold))
+        ],
+      );
+    }
   }
 }
 

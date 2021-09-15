@@ -108,10 +108,10 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
             height: 25,
-            margin: const EdgeInsets.only(right: 8),
+            margin: const EdgeInsets.only(right: 5),
             child: Image.asset('assets/images/tju_error.png'),
           ),
-          Text(S.current.wrong + " !",
+          Text(S.current.wrong + "！",
               style: FontManager.YaQiHei.copyWith(
                   color: Color.fromRGBO(79, 88, 107, 1),
                   fontWeight: FontWeight.bold,

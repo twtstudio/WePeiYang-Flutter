@@ -182,19 +182,20 @@ class _UserPageState extends State<UserPage> {
                             child: Icon(Icons.update,
                                 color: Color.fromRGBO(98, 103, 122, 1)),
                           ),
-                          Container(
-                              width: 100,
-                              child:
-                                  Text(S.current.check_new, style: textStyle)),
+                          Text(S.current.check_new, style: textStyle),
+                          Expanded(child: Text("")),
                           FutureBuilder(
                             future: CommonUtils.getVersion(),
                             builder: (_, AsyncSnapshot<String> snapshot) {
                               if (snapshot.hasData) {
-                                return Text(
-                                  "${S.current.current_version}: ${snapshot.data}",
-                                  style: FontManager.YaHeiLight.copyWith(
-                                    color: Color(0xffcfd0d5),
-                                    fontSize: 11,
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 26),
+                                  child: Text(
+                                    "${S.current.current_version}: ${snapshot.data}",
+                                    style: FontManager.YaHeiLight.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 11,
+                                    ),
                                   ),
                                 );
                               } else {

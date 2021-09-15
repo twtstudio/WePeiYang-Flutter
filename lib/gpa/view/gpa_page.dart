@@ -496,7 +496,6 @@ class _CourseListState extends State<CourseListWidget> {
                         child: InkWell(
                           splashFactory: InkRipple.splashFactory,
                           borderRadius: BorderRadius.circular(12),
-                          onTap: () {},
                           child: Row(
                             children: [
                               Padding(

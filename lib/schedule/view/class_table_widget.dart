@@ -14,20 +14,25 @@ const double cardStep = 6;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class ClassTableWidget extends StatelessWidget {
+  final Color titleColor;
+
+  ClassTableWidget(this.titleColor);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       var width = WePeiYangApp.screenWidth - 15 * 2;
       var dayCount = CommonPreferences().dayNumber.value;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
-      return Column(
-        children: [
-          WeekDisplayWidget(cardWidth, notifier, dayCount),
-          Padding(
-            padding: const EdgeInsets.only(top: cardStep),
-            child: CourseDisplayWidget(cardWidth, notifier, dayCount),
-          )
-        ],
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+        child: Column(
+          children: [
+            WeekDisplayWidget(cardWidth, notifier, dayCount, titleColor),
+            SizedBox(height: cardStep),
+            CourseDisplayWidget(cardWidth, notifier, dayCount)
+          ],
+        ),
       );
     });
   }
@@ -37,37 +42,41 @@ class WeekDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final ScheduleNotifier notifier;
   final int dayCount;
+  final Color titleColor;
 
-  WeekDisplayWidget(this.cardWidth, this.notifier, this.dayCount);
+  WeekDisplayWidget(
+      this.cardWidth, this.notifier, this.dayCount, this.titleColor);
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: _generateCards(
-            cardWidth,
-            getWeekDayString(
-                notifier.termStart, notifier.selectedWeekWithNotify, dayCount)),
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
-
-  List<Widget> _generateCards(double width, List<String> dates) {
-    List<Widget> list = [];
-    dates.forEach((element) {
-      list.add(_getCard(width, element));
-    });
-    return list;
+  Widget build(BuildContext context) {
+    List<String> dates = getWeekDayString(
+        notifier.termStart, notifier.selectedWeekWithNotify, dayCount);
+    var now = DateTime.now();
+    var month = now.month.toString();
+    var day = now.day.toString();
+    var nowDate =
+        "${month.length < 2 ? '0' + month : month}/${day.length < 2 ? '0' + day : day}";
+    return Row(
+      children: dates
+          .map((date) => _getCard(cardWidth, date, nowDate == date))
+          .toList(),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    );
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(double width, String date) => Container(
+  Widget _getCard(double width, String date, bool deepColor) => Container(
         height: 28,
         width: width,
         decoration: BoxDecoration(
-            color: Color.fromRGBO(236, 238, 237, 1),
+            color: deepColor ? titleColor : Color.fromRGBO(236, 238, 237, 1.0),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
               style: FontManager.Aspira.copyWith(
-                  color: Color.fromRGBO(200, 200, 200, 1),
+                  color: deepColor
+                      ? Colors.white
+                      : Color.fromRGBO(200, 200, 200, 1),
                   fontSize: 10,
                   fontWeight: FontWeight.bold)),
         ),

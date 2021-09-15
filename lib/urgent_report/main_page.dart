@@ -944,35 +944,29 @@ class StateItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var itemWidth = MediaQuery.of(context).size.width * 0.18;
     var itemHeight = itemWidth * 0.371;
-    return Container(
-      child: Center(
-        child: InkWell(
-          onTap: () {
-            onclick();
-          },
-          child: Container(
-            height: itemHeight,
-            width: itemWidth,
-// padding: EdgeInsets.all(2),
-            decoration: isSelected
-                ? BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(12.5)),
-                    color: Color(0XFF62677B))
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.5),
-                    border: Border.all(
-                      color: Color(0XFF62677B),
-                      width: 1,
-                    )),
-            child: Center(
-              child: Text(
-                state.name,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: isSelected ? Colors.white : Color(0XFF62677B),
-                ),
-              ),
+    return InkWell(
+      onTap: onclick,
+      borderRadius: BorderRadius.circular(12.5),
+      child: Container(
+        height: itemHeight,
+        width: itemWidth,
+        decoration: isSelected
+            ? BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(12.5),
+                color: Color(0XFF62677B))
+            : BoxDecoration(
+                borderRadius: BorderRadius.circular(12.5),
+                border: Border.all(
+                  color: Color(0XFF62677B),
+                  width: 1,
+                )),
+        child: Center(
+          child: Text(
+            state.name,
+            style: TextStyle(
+              fontSize: 13,
+              color: isSelected ? Colors.white : Color(0XFF62677B),
             ),
           ),
         ),
@@ -1016,24 +1010,17 @@ class _ReportButtonState extends State<ReportButton> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FlatButton(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(height / 2)),
             onPressed: _buttonClick,
-            child: Container(
-              height: height,
-              width: width,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(height / 2),
-                ),
-                color: Color(0XFF62677B),
-              ),
-              child: Center(
-                child: Text(
-                  '提交',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
+            color: Color(0XFF62677B),
+            height: height,
+            minWidth: width,
+            child: Center(
+              child: Text(
+                '提交',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
                 ),
               ),
             ),
