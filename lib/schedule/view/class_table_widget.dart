@@ -106,7 +106,6 @@ class CourseDisplayWidget extends StatelessWidget {
       height: singleCourseHeight * 12 + cardStep * 11,
       child: Stack(
         children: [
-          ..._generatePositioned(context),
           Positioned(
             left: 0,
             top: 4 * singleCourseHeight + 3 * cardStep,
@@ -121,6 +120,7 @@ class CourseDisplayWidget extends StatelessWidget {
               Expanded(child: Divider()),
             ]),
           ),
+          ..._generatePositioned(context),
         ],
       ),
     );
