@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
-import 'package:we_pei_yang_flutter/lounge/service/net/api.dart';
 import 'error_interceptor.dart';
 import 'net_check_interceptor.dart';
 

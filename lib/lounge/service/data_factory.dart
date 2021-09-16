@@ -5,19 +5,13 @@ import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 
 class DataFactory {
   static List<String> splitPlan(String plan) {
-    // print('plan: ' + plan);
     var result1 = plan.split(RegExp(r'0+'));
-    // print(result1);
     var result2 = plan.split(RegExp(r'1+'));
-    // print(result2);
-    // print(result1.length == result2.length);
     if (result1.first == '') {
       var r = result1;
       result1 = result2;
       result2 = r;
     }
-    // print(result1);
-    // print(result2);
     int length = (result1.length + result2.length - 1) ~/ 2 * 2;
 
     List<String> preResult = [];
@@ -93,7 +87,6 @@ class DataFactory {
     Map<String, String> orderedQueries = {};
 
     for (var q in queries) {
-      // print('q: ' + q + '=' + RegExp(r'^[1-9][0-9]$').hasMatch(q).toString());
       if (RegExp(r'[A-Za-z]').hasMatch(q)) {
         if (orderedQueries['aName'] == null) {
           orderedQueries['aName'] = q.toUpperCase();
@@ -120,10 +113,6 @@ class DataFactory {
         }
       }
     }
-
-    // print('queries : ' + queries.toString());
-    // print('orderedQueries : ' + orderedQueries.toString());
-
     return orderedQueries;
   }
 
@@ -144,7 +133,6 @@ class DataFactory {
 
   static String getRoomTitle(Classroom r) {
     if (r.bName == '') {
-      print("r.bid: ${r.bId}");
       r.bName = HiveManager.instance.getBuildingNameById(r.bId);
     }
     if (r.aId == '-1') {
@@ -155,7 +143,6 @@ class DataFactory {
   }
 
   static ResultType getResultType(ResultEntry first) {
-    // var bExist = first.building != null ? true : false;
     var aExist = first.area != null;
     var cExist = first.room != null;
 

@@ -207,8 +207,6 @@ Future getComments({
       }
       for (Map<String, dynamic> json in commentResponse.data['data']) {
         commentList.add(Comment.fromJson(json));
-        print(json.toString());
-        print(commentList.length);
       }
       onSuccess(officialCommentList, commentList);
     } else {

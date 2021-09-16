@@ -36,8 +36,6 @@ class LoungeTimeModel extends ChangeNotifier {
   }) async {
     List<ClassTime> preCs;
     DateTime preD;
-    // debugPrint(
-    //     '++++++++++++++++ lounge time model change time +++++++++++++++++++');
     _state = ViewState.busy;
     if (_classTime == null && _dateTime == null) {
       var current = Time.classOfDay(DateTime.now());
@@ -53,8 +51,6 @@ class LoungeTimeModel extends ChangeNotifier {
     if (!init) {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        // print(
-        //     "===============    notifyListeners  ${_state.toString()} ===============");
         notifyListeners();
         try {
           await LoungeRepository.setLoungeData(model: this);
@@ -62,7 +58,6 @@ class LoungeTimeModel extends ChangeNotifier {
           notifyListeners();
         } catch (_) {
           ToastProvider.error("加载数据失败");
-          // print("preD : ${preD.toString()}");
           if (HiveManager.instance.shouldUpdateLocalData) {
             var localLastUpdateTime =
                 HiveManager.instance.localDateLastUpdateTime;
@@ -84,11 +79,9 @@ class LoungeTimeModel extends ChangeNotifier {
               !HiveManager.instance.shouldUpdateLocalData) ||
           !HiveManager.instance
               .shouldUpdateTemporaryData(dateTime: _dateTime)) {
-        // ToastProvider.success("虽然没有网络连接，但是我有本地数据");
         _state = ViewState.idle;
         notifyListeners();
       } else {
-        // print("preD ${preD.toString()}");
         if (!_dateTime.isTheSameDay(preD)) {
           ToastProvider.error("没有网络连接");
           _classTime = preCs;

@@ -478,7 +478,6 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       _resultList.add(File(pickedFile.path));
     } on Exception catch (e) {
       error = e.toString();
-      print('error:!!!!!!!!!!' + error);
     }
 
     // If the widget was removed from the tree while the asynchronous platform

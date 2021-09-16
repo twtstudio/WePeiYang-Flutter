@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/single_child_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_center.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 class FeedbackBannerWidget extends StatelessWidget {

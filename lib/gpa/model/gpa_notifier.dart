@@ -46,8 +46,8 @@ class GPANotifier with ChangeNotifier {
 
   String typeName() {
     if (_type == 0) return "加权";
-    if (_type == 1) return "GPA";
-    if (_type == 2) return "绩点";
+    if (_type == 1) return "绩点";
+    if (_type == 2) return "学分";
     return "Error";
   }
 

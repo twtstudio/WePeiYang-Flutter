@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/view_state_model.dart';

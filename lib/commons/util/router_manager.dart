@@ -15,6 +15,7 @@ export 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 export 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
 export 'package:we_pei_yang_flutter/urgent_report/report_router.dart';
 
+/// WePeiYangApp Route统一管理
 class RouterManager {
   static Map<String, Widget Function(Object arguments)> _routers = {};
 

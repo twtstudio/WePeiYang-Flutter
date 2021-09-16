@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
@@ -27,16 +26,12 @@ class ClassPlanModel extends ViewStateListModel {
     if (timeModel.state == ViewState.error) {
       setError(Exception('refresh data error when change date'), null);
     } else if (timeModel.state == ViewState.idle) {
-      // debugPrint('++++++++++++++++ class plan model get data +++++++++++++++++++');
       super.refresh();
     }
   }
 
   @override
   Future<List> loadData() async {
-
-    // await Future.delayed(Duration(seconds: 1));
-
     _plans.clear();
     var plan = await HiveManager.instance
         .getRoomPlans(r: room, dateTime: timeModel.dateTime);

@@ -66,7 +66,6 @@ class Time {
 
   static Current classOfDay(DateTime date) {
     var h = date.hour;
-    // print(date);
     if (h < 10) {
       return Current(date, ClassTime.am_1);
     } else if (h < 12) {

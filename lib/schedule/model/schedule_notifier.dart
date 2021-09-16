@@ -84,7 +84,7 @@ class ScheduleNotifier with ChangeNotifier {
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
         CommonPreferences().scheduleData.value =
-            json.encode(ScheduleBean(termStart, termName, courses));
+            json.encode(ScheduleBean(termStart, termName, courses)); // 刷新本地缓存
         messageChannel?.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
       }, onFailure: (e) {
         if (hint && onFailure == null) ToastProvider.error(e.error.toString());

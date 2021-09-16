@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 //加载缓存
@@ -16,8 +15,6 @@ searchLocalCache() async {
 
 // 循环计算文件的大小（递归）
 Future<double> _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
-  // print(file.path);
-  // print(file.uri);
   if (file is File) {
     int length = await file.length();
     return double.parse(length.toString());
@@ -48,7 +45,6 @@ Future<Null> delAllTemporaryFile() async {
   Directory tempDir = await getExternalStorageDirectory();
   final List<FileSystemEntity> children = tempDir.listSync();
   for (var child in children) {
-    // debugPrint(child.path);
     if (child.path.endsWith("gtpush")) continue;
     if (child is Directory) {
       var delete = true;
@@ -56,7 +52,6 @@ Future<Null> delAllTemporaryFile() async {
       var dirName = child.path.substring(
           child.path.lastIndexOf("/") + 1,
           child.path.length);
-      // debugPrint("dirName : $dirName");
       if (reg.hasMatch(dirName)) {
         for (var apk in child.listSync()) {
           if (apk.path.endsWith('apk')) {
@@ -65,11 +60,9 @@ Future<Null> delAllTemporaryFile() async {
         }
       }
       if (delete) {
-        // debugPrint("delete Directory : ${child.path}");
         await _delDir(child);
       }
     } else {
-      // debugPrint("delete other : ${child.path}");
       await child.delete();
     }
   }
@@ -90,7 +83,6 @@ String _renderSize(double value) {
   if (size == '0.00') {
     return '0M';
   }
-  // print('size:${size == 0}\n ==SIZE${size}');
   return size + unitArr[index];
 }
 

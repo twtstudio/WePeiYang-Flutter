@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/service/repository.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
@@ -92,34 +91,6 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     super.dispose();
   }
 
-  _showToast() {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: Colors.greenAccent,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Icon(Icons.check),
-          // SizedBox(
-          //   width: 12.0,
-          // ),
-          Text(S.current.pleaseWaiting),
-        ],
-      ),
-    );
-
-    _fToast.removeQueuedCustomToasts();
-
-    // _fToast.showToast(
-    //   child: toast,
-    //   gravity: ToastGravity.CENTER,
-    //   toastDuration: Duration(seconds: 1),
-    // );
-  }
-
   void updateGroupValue(ClassTime v) {
     setState(() {
       currentTime.contains(v) ? currentTime.remove(v) : currentTime.add(v);
@@ -137,98 +108,91 @@ class _BottomDatePickerState extends State<BottomDatePicker>
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
-          GestureDetector(
-            onTap: () {
-              if (cannotTap) {
-                _showToast();
-              }
-            },
-            child: AbsorbPointer(
-              absorbing: cannotTap,
-              child: TableCalendar(
-                locale: Intl.getCurrentLocale(),
-                calendarController: _calendarController,
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                initialCalendarFormat: CalendarFormat.month,
-                formatAnimation: FormatAnimation.slide,
-                availableGestures: AvailableGestures.horizontalSwipe,
-                headerStyle: HeaderStyle(
-                  centerHeaderTitle: true,
-                  formatButtonVisible: false,
-                  headerMargin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                ),
-                calendarStyle: CalendarStyle(outsideDaysVisible: true),
-                builders:
-                    CalendarBuilders(selectedDayBuilder: (context, date, _) {
-                  return FadeTransition(
-                    opacity: Tween(begin: 0.0, end: 1.0)
-                        .animate(_animationController),
-                    child: Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0XFF62677B),
-                        ),
-                        width: 35,
-                        height: 35,
-                        child: Center(
-                          child: Text(
-                            '${date.day}',
-                            style:
-                                FontManager.YaHeiRegular.copyWith(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }, todayDayBuilder: (context, date, _) {
-                  return Center(
+          AbsorbPointer(
+            absorbing: cannotTap,
+            child: TableCalendar(
+              locale: Intl.getCurrentLocale(),
+              calendarController: _calendarController,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              initialCalendarFormat: CalendarFormat.month,
+              formatAnimation: FormatAnimation.slide,
+              availableGestures: AvailableGestures.horizontalSwipe,
+              headerStyle: HeaderStyle(
+                centerHeaderTitle: true,
+                formatButtonVisible: false,
+                headerMargin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+              ),
+              calendarStyle: CalendarStyle(outsideDaysVisible: true),
+              builders:
+                  CalendarBuilders(selectedDayBuilder: (context, date, _) {
+                return FadeTransition(
+                  opacity: Tween(begin: 0.0, end: 1.0)
+                      .animate(_animationController),
+                  child: Center(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0XFF62677B),
-                          width: 1,
-                        ),
                         shape: BoxShape.circle,
+                        color: Color(0XFF62677B),
                       ),
                       width: 35,
                       height: 35,
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style: FontManager.YaHeiRegular.copyWith(
-                            fontSize: 16,
-                            color: Color(0XFF62677B),
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              FontManager.YaHeiRegular.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
-                  );
-                }, dowWeekdayBuilder: (context, date) {
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 13),
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          date.substring(1, 2),  // 为了去掉 周一 的 周
+                  ),
+                );
+              }, todayDayBuilder: (context, date, _) {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Color(0XFF62677B),
+                        width: 1,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    width: 35,
+                    height: 35,
+                    child: Center(
+                      child: Text(
+                        '${date.day}',
+                        style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 16,
+                          color: Color(0XFF62677B),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  );
-                }),
-                onDaySelected: (date, events, holidays) async {
-                  _fToast.removeCustomToast();
-                  _fToast.removeQueuedCustomToasts();
-                  _animationController.forward(from: 0.0);
-                  await model.setTime(date: date).then((_) {
-                    if (mounted) {
-                      _calendarController.setSelectedDay(model.dateTime);
-                    }
-                  });
-                },
-                initialSelectedDay: model.dateTime,
-              ),
+                  ),
+                );
+              }, dowWeekdayBuilder: (context, date) {
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 13),
+                  child: Container(
+                    child: Center(
+                      child: Text(
+                        date.substring(1, 2),  // 为了去掉 周一 的 周
+                      ),
+                    ),
+                  ),
+                );
+              }),
+              onDaySelected: (date, events, holidays) async {
+                _fToast.removeCustomToast();
+                _fToast.removeQueuedCustomToasts();
+                _animationController.forward(from: 0.0);
+                await model.setTime(date: date).then((_) {
+                  if (mounted) {
+                    _calendarController.setSelectedDay(model.dateTime);
+                  }
+                });
+              },
+              initialSelectedDay: model.dateTime,
             ),
           ),
           Padding(

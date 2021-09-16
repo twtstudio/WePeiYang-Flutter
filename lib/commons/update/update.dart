@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/update/app_cache_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_prompter.dart';
@@ -20,7 +19,7 @@ class UpdateManager {
   static void checkUpdate({bool showDialog = false}) {
     // searchLocalCache();
     // delAllTemporaryFile();
-    searchLocalCache();
+    // searchLocalCache();
     UpdateService.checkUpdate(onResult: (version) {
       UpdatePrompter(
               updateEntity: version,

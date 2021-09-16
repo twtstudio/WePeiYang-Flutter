@@ -35,16 +35,13 @@ class CommonUtils {
           .listSync()
           .where((element) => element.path.endsWith(version.version))
           .toList();
-      // debugPrint(matchDirs.length.toString());
       var children = (matchDirs.first as Directory).listSync();
-      // debugPrint(children.first.absolute.path);
       if (children.length > 0 && children.first.absolute.path.endsWith('apk')) {
         return children.first.absolute.path;
       } else {
         return "$dirPath/${version.version}/$apkName.temporary";
       }
     } catch (e) {
-      // debugPrint(e.toString());
       return "$dirPath/${version.version}/$apkName.temporary";
     }
   }

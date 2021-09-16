@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/service/data_factory.dart';
 import 'package:we_pei_yang_flutter/lounge/service/repository.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
@@ -67,18 +66,15 @@ class HiveManager {
       _instance._temporaryData = await Hive.openBox<Buildings>(temporary);
       _instance._boxesKeys = await Hive.openBox<LocalEntry>(boxes);
       _instance._favourList = await Hive.openBox<Classroom>(favourList);
-      // print('_favourList init finish');
       for (var key in _instance._boxesKeys.keys) {
         var e = await Hive.boxExists(key);
         if (e) {
           _instance._buildingBoxes[key] = await Hive.openLazyBox<Building>(key);
         } else {
-          // print('box disappear:' + key);
         }
       }
       return _instance;
     });
-    // print('hive init finish');
   }
 
   static HiveManager get instance {

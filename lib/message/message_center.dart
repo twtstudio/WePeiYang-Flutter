@@ -5,7 +5,6 @@ import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -44,31 +43,21 @@ class MessageRepository {
     } catch (e) {
       data = null;
     }
-    // debugPrint('getAllMessages');
-    // debugPrint(token);
-    // debugPrint("$data");
     return data;
   }
 
   static setQuestionRead(int questionId) async {
     var token = CommonPreferences().feedbackToken.value;
-    try {
-      await messageApi.post("question",
-          queryParameters: {"token": token, "question_id": questionId});
-      var result = await messageChannel.invokeMethod<String>(
-        "cancelNotification",
-        {"id": questionId},
-      );
-      // ToastProvider.success("$result");
-      // debugPrint("setQuestionRead");
-    } catch (e) {
-      // debugPrint(e.toString());
-    }
+    await messageApi.post("question",
+        queryParameters: {"token": token, "question_id": questionId});
+    await messageChannel.invokeMethod<String>(
+      "cancelNotification",
+      {"id": questionId},
+    );
   }
 
   static Future<UserMessages> getUserMails(int page) async {
     var token = CommonPreferences().token.value;
-    // debugPrint("get mails@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$token");
     var response = await Dio().get(
       "https://api.twt.edu.cn/api/notification/history/user",
       options: Options(

@@ -350,11 +350,8 @@ class _MessagesListState extends State<MessagesList>
             onTapDown: items[i].visible.isOne
                 ? () async {
                     try {
-                      // print("校务消息 setFeedbackQuestionRead");
                       await MessageRepository.setQuestionRead(items[i].post.id);
-                    } catch (e, stack) {
-                      // debugPrint(
-                      //     "校务消息 setFeedbackQuestionRead ${e.toString()} : ${stack.toString()}");
+                    } catch (e) {
                       ToastProvider.error("设置问题已读失败");
                     }
                   }

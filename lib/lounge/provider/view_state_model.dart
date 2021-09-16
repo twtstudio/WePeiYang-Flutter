@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:we_pei_yang_flutter/lounge/service/net/api.dart';
 
 part 'view_state.dart';
 part 'view_state_list_model.dart';
@@ -20,9 +18,7 @@ class ViewStateModel with ChangeNotifier {
   /// FooModel():super(viewState:ViewState.busy);
   /// viewState = idle but data = empty
   ViewStateModel({ViewState viewState})
-      : _viewState = viewState ?? ViewState.idle {
-    // debugPrint('ViewStateModel---constructor--->$runtimeType');
-  }
+      : _viewState = viewState ?? ViewState.idle;
 
   /// ViewState
   ViewState get viewState => _viewState;
@@ -81,18 +77,7 @@ class ViewStateModel with ChangeNotifier {
       } else {
         // dio将原error重新套了一层
         e = e.error;
-        if (e is UnAuthorizedException) {
-          stackTrace = null;
-          errorType = ViewStateErrorType.unauthorizedError;
-        } else if (e is NotSuccessException) {
-          stackTrace = null;
-          message = e.message;
-        } else if (e is SocketException) {
-          errorType = ViewStateErrorType.networkTimeOutError;
-          message = e.message;
-        } else {
-          message = e.toString();
-        }
+        message = e.toString();
       }
     }
     viewState = ViewState.error;
@@ -101,7 +86,6 @@ class ViewStateModel with ChangeNotifier {
       message: message,
       errorMessage: e.toString(),
     );
-    // printErrorStack(e, stackTrace);
     onError(viewStateError);
   }
 
@@ -117,7 +101,6 @@ class ViewStateModel with ChangeNotifier {
         message ??= viewStateError.message;
       }
       Future.microtask(() {
-        // showToast(message, context: context);
         Fluttertoast.showToast(
             msg: message,
             backgroundColor: Colors.blue,
@@ -142,7 +125,6 @@ class ViewStateModel with ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    // debugPrint('view_state_model dispose -->$runtimeType');
     super.dispose();
   }
 }

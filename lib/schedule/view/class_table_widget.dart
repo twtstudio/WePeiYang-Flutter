@@ -30,7 +30,8 @@ class ClassTableWidget extends StatelessWidget {
           children: [
             WeekDisplayWidget(cardWidth, notifier, dayCount, titleColor),
             SizedBox(height: cardStep),
-            CourseDisplayWidget(cardWidth, notifier, dayCount)
+            CourseDisplayWidget(
+                width, cardWidth, notifier, dayCount, titleColor)
           ],
         ),
       );
@@ -83,65 +84,79 @@ class WeekDisplayWidget extends StatelessWidget {
       );
 }
 
-class CourseDisplayWidget extends StatefulWidget {
+class CourseDisplayWidget extends StatelessWidget {
+  final double width;
   final double cardWidth;
   final ScheduleNotifier notifier;
   final int dayCount;
+  final Color titleColor;
 
-  CourseDisplayWidget(this.cardWidth, this.notifier, this.dayCount);
+  CourseDisplayWidget(this.width, this.cardWidth, this.notifier, this.dayCount,
+      this.titleColor);
 
   /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
-  static const double singleCourseHeight = 65;
+  final double singleCourseHeight = 65;
 
-  @override
-  _CourseDisplayWidgetState createState() => _CourseDisplayWidgetState();
-}
+  /// "午休"提示栏的高度
+  final double middleStep = 40;
 
-class _CourseDisplayWidgetState extends State<CourseDisplayWidget> {
   @override
   Widget build(BuildContext context) {
-    if (widget.notifier.coursesWithNotify.length == 0) return Container();
-    return Container(
-      height: CourseDisplayWidget.singleCourseHeight * 12 + cardStep * 11,
+    return SizedBox(
+      height: singleCourseHeight * 12 + cardStep * 11,
       child: Stack(
-        children: _generatePositioned(context),
+        children: [
+          ..._generatePositioned(context),
+          Positioned(
+            left: 0,
+            top: 4 * singleCourseHeight + 3 * cardStep,
+            width: width,
+            height: middleStep,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Expanded(child: Divider()),
+              Text("午休",
+                  style: FontManager.YaQiHei.copyWith(
+                      color: titleColor.withAlpha(70), fontSize: 13)),
+              Expanded(child: Divider()),
+            ]),
+          ),
+        ],
       ),
     );
   }
 
   List<Widget> _generatePositioned(BuildContext context) {
+    if (notifier.coursesWithNotify.length == 0) return List();
     int dayNumber = CommonPreferences().dayNumber.value;
     List<Positioned> list = [];
     List<List<List<ScheduleCourse>>> merged =
-        getMergedCourses(widget.notifier, dayNumber);
+        getMergedCourses(notifier, dayNumber);
     for (int i = 0; i < dayNumber; i++) {
       int day = i + 1;
       merged[i].forEach((courses) {
         int start = int.parse(courses[0].arrange.start);
         int end = int.parse(courses[0].arrange.end);
-        double top = (start == 1)
-            ? 0
-            : (start - 1) * (CourseDisplayWidget.singleCourseHeight + cardStep);
-        double left =
-            (day == 1) ? 0 : (day - 1) * (widget.cardWidth + cardStep);
+        double top =
+            (start == 1) ? 0 : (start - 1) * (singleCourseHeight + cardStep);
+        double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
         double height =
-            (end - start + 1) * CourseDisplayWidget.singleCourseHeight +
-                (end - start) * cardStep;
+            (end - start + 1) * singleCourseHeight + (end - start) * cardStep;
+
+        /// 绕开"午休"栏
+        if (start > 4) top += middleStep;
+        if (start <= 4 && end > 4) height += middleStep;
         list.add(Positioned(
             top: top,
             left: left,
             height: height,
-            width: widget.cardWidth,
-            child: _judgeChild(context, height, courses)));
+            width: cardWidth,
+            child: judgeActiveInWeek(notifier.selectedWeekWithNotify,
+                    notifier.weekCount, courses[0])
+                ? getActiveCourseCard(context, height, cardWidth, courses)
+                : getQuietCourseCard(height, cardWidth, courses[0])));
       });
     }
     return list;
   }
-
-  Widget _judgeChild(
-          BuildContext context, double height, List<ScheduleCourse> courses) =>
-      judgeActiveInWeek(widget.notifier.selectedWeekWithNotify,
-              widget.notifier.weekCount, courses[0])
-          ? getActiveCourseCard(context, height, widget.cardWidth, courses)
-          : getQuietCourseCard(height, widget.cardWidth, courses[0]);
 }

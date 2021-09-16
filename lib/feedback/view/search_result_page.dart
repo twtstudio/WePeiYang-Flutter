@@ -118,7 +118,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(tagId);
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, true);
@@ -184,7 +183,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
                             SliverList(
                               delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                                  print(notifier.homePostList[index].title);
                                   return notifier.homePostList[index]
                                                   .topImgUrl !=
                                               '' &&

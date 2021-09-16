@@ -37,7 +37,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(Duration(seconds: 1));
@@ -105,9 +104,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
   _reportButtonOnTap(BuildContext c) {
     var model = Provider.of<ReportDataModel>(c, listen: false);
     var unSelected = model.check();
-    print('$unSelected');
     unSelected = model.check();
-    print('$unSelected');
     if (unSelected.isEmpty) {
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
@@ -131,7 +128,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
     }
   }
 
-  _showReportDialog({ReportDataModel model}) =>
+  _showReportDialog() =>
       showDialog<int>(
           // 传入 context
           context: context,
@@ -469,16 +466,13 @@ class _TodayTempState extends State<TodayTemp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _temperature = TextEditingController();
-    _temperature.addListener(() {});
   }
 
   _reportTemperature() {
     Provider.of<ReportDataModel>(context, listen: false)
         .add(_ReportPart.temperature, _temperature.text);
-    // ToastProvider.success(_temperature.text);
   }
 
   @override
@@ -658,30 +652,8 @@ class _PickImageState extends State<PickImage> {
     var _bytes = await pickedFile.readAsBytes();
     Provider.of<ReportDataModel>(context, listen: false)
         .add(widget.image.key, _bytes);
-    // ToastProvider.success('report ${widget.image.name} image');
   }
 
-// void _showPicker(context) {
-//   showModalBottomSheet(
-//       context: context,
-//       builder: (BuildContext bc) {
-//         return SafeArea(
-//           child: Container(
-//             child: new Wrap(
-//               children: <Widget>[
-//                 new ListTile(
-//                     leading: new Icon(Icons.photo_library),
-//                     title: new Text('Photo Library'),
-//                     onTap: () {
-//                       _imgFromGallery();
-//                       Navigator.of(context).pop();
-//                     }),
-//               ],
-//             ),
-//           ),
-//         );
-//       });
-// }
 
   @override
   Widget build(BuildContext context) {
@@ -739,30 +711,9 @@ class CurrentPlace extends StatefulWidget {
 
 class _CurrentPlaceState extends State<CurrentPlace> {
   String currentPlace = "";
-  String status = "";
 
   _checkAllPermissions() async {
-    bool isShown = await Permission.contacts.shouldShowRequestRationale;
-
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.location,
-      Permission.locationAlways,
-      Permission.locationWhenInUse
-    ].request();
-
-    if (statuses[Permission.location].isGranted) {
-      // ToastProvider.success("location");
-      status = "location";
-      setState(() {});
-    } else if (statuses[Permission.locationAlways].isGranted) {
-      // ToastProvider.success("locationAlways");
-      status = "locationAlways";
-      setState(() {});
-    } else if (statuses[Permission.locationWhenInUse].isGranted) {
-      // ToastProvider.success("locationWhenInUse");
-      status = "locationWhenInUse";
-      setState(() {});
-    } else {}
+    await Permission.contacts.shouldShowRequestRationale;
 
     if (await Permission.location.isDenied) {
       ToastProvider.success("location is denied");
@@ -791,30 +742,24 @@ class _CurrentPlaceState extends State<CurrentPlace> {
 
   @override
   void initState() {
-// TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-// checkAllPermissions();
       placeChannel.setMethodCallHandler((call) async {
         switch (call.method) {
           case 'showResult':
             String preJson = await call.arguments;
             Map<String, dynamic> json = jsonDecode(preJson);
-            print("$json");
             LocationData data = LocationData.fromJson(json);
             _reportLocation(data);
             setState(() {
               currentPlace = data.address;
             });
             return 'success';
-            break;
           case 'showError':
             String result = await call.arguments;
             ToastProvider.error(result);
             return 'success';
-            break;
           default:
-            break;
         }
       });
     });
@@ -1039,16 +984,6 @@ enum _ReportPart {
   currentState,
 }
 
-extension _RReportPart on _ReportPart {
-  String get name => [
-        'temperature',
-        'healthCode',
-        'itineraryCode',
-        'currentLocation',
-        'currentState'
-      ][this.index];
-}
-
 class ReportDataModel {
   final Map<_ReportPart, dynamic> _data = {};
 
@@ -1093,7 +1028,7 @@ class ReportDataModel {
         'curStatus': state.index,
         'temperature': _data[_ReportPart.temperature],
       });
-      var response = await Dio().post(
+      await Dio().post(
         "https://api.twt.edu.cn/api/returnSchool/record",
         options: Options(
           headers: {
@@ -1104,9 +1039,6 @@ class ReportDataModel {
         ),
         data: data,
       );
-      print('1111111111111111111111111111111111111111111111111111');
-      print(response.data);
-      print('1111111111111111111111111111111111111111111111111111');
       return true;
     } catch (e) {
       return false;
@@ -1171,8 +1103,6 @@ class BackgroundColorListener extends StatelessWidget {
 Future<List<_ReportItem>> _getReportHistoryList() async {
   try {
     var token = CommonPreferences().token.value;
-    print(token);
-    print(AuthDio.ticket);
     var response = await Dio().get(
       "https://api.twt.edu.cn/api/returnSchool/record",
       options: Options(
@@ -1186,7 +1116,6 @@ Future<List<_ReportItem>> _getReportHistoryList() async {
     var data = _ReportList.fromJson(response.data);
     return data.result;
   } catch (e) {
-    print(e.toString());
     return null;
   }
 }

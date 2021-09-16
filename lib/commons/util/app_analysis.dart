@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:umeng_sdk/umeng_sdk.dart';
 
+/// 友盟SDK统计用户路径
 class AppAnalysis extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {

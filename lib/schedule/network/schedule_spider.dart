@@ -89,9 +89,6 @@ Future<Response> getDetailSchedule(String ids) {
 
 /// 用请求到的html数据生成schedule对象
 List<ScheduleCourse> _data2ScheduleCourses(String data) {
-  // TODO 之前grj的账号好像有问题？
-  // if (!data.contains("课程列表")) throw DioError();
-
   /// 判断会话是否过期
   if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
 
@@ -161,6 +158,8 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
         ? tdList[3]
         : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";
     courseName = courseName.trim();
+
+    /// 整理其余的Course信息，并与Arrange匹配
     var credit = double.parse(tdList[4]).toStringAsFixed(1);
     var teacherList = tdList[5].split(',');
     var campus = "";
@@ -197,6 +196,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
   return courses;
 }
 
+/// 判断s1的格式是否为 "${s2} ${某subtitle}"
 bool judgeSubtitle(String s1, String s2) {
   var titles = s1.split(' ');
   return titles.length > 1 ? titles[0] == s2 : false;
