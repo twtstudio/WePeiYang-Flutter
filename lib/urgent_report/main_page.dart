@@ -102,6 +102,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
   }
 
   _reportButtonOnTap(BuildContext c) {
+    ToastProvider.running('上传中');
     var model = Provider.of<ReportDataModel>(c, listen: false);
     var unSelected = model.check();
     unSelected = model.check();
@@ -114,7 +115,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
           CommonPreferences().reportTime.value = DateTime.now().toString();
           _showReportDialog();
         } else {
-          ToastProvider.error('上传出错');
+          ToastProvider.error('上传失败');
         }
       });
     } else {
@@ -128,8 +129,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
     }
   }
 
-  _showReportDialog() =>
-      showDialog<int>(
+  _showReportDialog() => showDialog<int>(
           // 传入 context
           context: context,
           // 构建 Dialog 的视图
@@ -654,7 +654,6 @@ class _PickImageState extends State<PickImage> {
         .add(widget.image.key, _bytes);
   }
 
-
   @override
   Widget build(BuildContext context) {
     var imageWidth = MediaQuery.of(context).size.width * 0.296;
@@ -715,21 +714,32 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   _checkAllPermissions() async {
     await Permission.contacts.shouldShowRequestRationale;
 
+    await [
+      Permission.location,
+      Permission.locationAlways,
+      Permission.locationWhenInUse
+    ].request();
+
     if (await Permission.location.isDenied) {
-      ToastProvider.success("location is denied");
+      ToastProvider.error("位置权限未启用");
+      return;
     }
     if (await Permission.location.isLimited) {
-      ToastProvider.success("location is limited");
+      ToastProvider.error("位置权限未启用"); // iOS
+      return;
     }
     if (await Permission.location.isPermanentlyDenied) {
-      ToastProvider.success("location is permanentlyDenied");
+      ToastProvider.error("位置权限被禁用");
       openAppSettings();
+      return;
     }
     if (await Permission.location.isRestricted) {
-      ToastProvider.success("location is restricted");
+      ToastProvider.error("位置权限被禁用"); // iOS
+      return;
     }
     if (await Permission.location.isUndetermined) {
-      ToastProvider.success("location is undetermined");
+      ToastProvider.error("位置权限未启用");
+      return;
     }
 
     placeChannel.invokeMethod("getLocation");
@@ -756,8 +766,8 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             });
             return 'success';
           case 'showError':
-            String result = await call.arguments;
-            ToastProvider.error(result);
+            // String result = await call.arguments;
+            ToastProvider.error("获取位置信息失败");
             return 'success';
           default:
         }
@@ -955,7 +965,8 @@ class _ReportButtonState extends State<ReportButton> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FlatButton(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(height / 2)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(height / 2)),
             onPressed: _buttonClick,
             color: Color(0XFF62677B),
             height: height,
