@@ -29,7 +29,7 @@ class ReportBasePage extends StatelessWidget {
                 centerTitle: true,
                 automaticallyImplyLeading: false,
                 title: Text(
-                  '防疫信息填报',
+                  '健康信息填报',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 leading: FlatButton(

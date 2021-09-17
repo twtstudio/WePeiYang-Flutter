@@ -79,7 +79,7 @@ class CommonPreferences {
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
   var favorListState = PrefsBean<int>("favorListState", 0);
 
-  /// 疫情提交时间
+  /// 健康信息提交时间
   var reportTime = PrefsBean<String>('reportTime');
 
   /// 上次更新的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
