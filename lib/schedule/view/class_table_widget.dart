@@ -103,7 +103,7 @@ class CourseDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: singleCourseHeight * 12 + cardStep * 11,
+      height: singleCourseHeight * 12 + cardStep * 11 + middleStep,
       child: Stack(
         children: [
           Positioned(
