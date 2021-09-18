@@ -93,7 +93,6 @@ class SearchBarWidget extends StatelessWidget {
                 aId: result.aId,
                 bName: result.bName,
               ));
-              // print('you tap class:' + result.toJson().toString());
               Navigator.of(context).pushNamed(
                 LoungeRouter.plan,
                 arguments: Classroom(

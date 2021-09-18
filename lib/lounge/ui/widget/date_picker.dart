@@ -76,8 +76,6 @@ class _BottomDatePickerState extends State<BottomDatePicker>
         AnimationController(duration: Duration(milliseconds: 200), vsync: this)
           ..forward();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // print(Time.classOfDay(DateTime.now()).timeRange);
-      // updateGroupValue(Time.classOfDay(DateTime.now()));
       model.classTime.forEach((v) {
         updateGroupValue(v);
       });

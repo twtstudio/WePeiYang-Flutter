@@ -58,9 +58,7 @@ class _LoadingState extends State<Loading>
     );
 
     controller.addListener(() {
-      setState(() {
-        //print(animation_1.value);
-      });
+      setState(() {});
     });
 
     controller.repeat();

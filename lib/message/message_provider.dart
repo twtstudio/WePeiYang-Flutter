@@ -27,7 +27,6 @@ class MessageProvider extends ChangeNotifier {
 
   refreshFeedbackCount() async {
     var result = await MessageRepository.getAllMessages() ?? TotalMessageData();
-    // print("FeedbackmessageCount ${result.questions?.length ?? -1}");
     _feedbackQuestions =
         result.questions?.where((element) => element.isOwner)?.toList() ?? [];
     _feedbackFavourites =
@@ -35,20 +34,18 @@ class MessageProvider extends ChangeNotifier {
     _feedbackMessageList =
         result.questions?.map((e) => e.questionId)?.toList() ?? [];
     _classifiedMessageCount = result.classifiedMessageCount;
-    // print("SETFEEDBACKSUCCESS");
     notifyListeners();
   }
 
   setFeedbackQuestionRead(int messageId) async {
-    // print("SETFEEDBACK setFeedbackQuestionRead $messageId");
     await MessageRepository.setQuestionRead(messageId);
     await refreshFeedbackCount();
-    // print("SETFEEDBACKSUCCESS");
   }
 
-  bool inMessageList(int questionId) => questionId == null
-      ? false
-      : _feedbackMessageList?.contains(questionId) ?? false;
+  bool inMessageList(int questionId) =>
+      questionId == null
+          ? false
+          : _feedbackMessageList?.contains(questionId) ?? false;
 
   bool isMessageEmptyOfType(FeedbackMessageType type) {
     if (isEmpty) return true;
@@ -72,16 +69,11 @@ class MessageProvider extends ChangeNotifier {
 }
 
 showMessageDialog(BuildContext context, String data) async {
-  // print("&&&&&&&&&&&&&&&&&&&&&&&&&&&$data&&&&&&&&&&&&&&&&&&&&&&&");
-  try {
     await showDialog<String>(
       context: context,
       barrierDismissible: false,
       builder: (_) => MessageDialog(data),
     );
-  } catch (e) {
-    // print("??//////////$e");
-  }
 }
 
 extension IntExtension on int {

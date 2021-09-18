@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
+import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'wpy_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,8 +30,14 @@ class _HomePageState extends State<HomePage> {
       ..add(FeedbackHomePage())
       // ..add(DrawerPage())
       ..add(UserPage());
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       UpdateManager.checkUpdate();
+      var hasReport = await getTodayHasReported();
+      if (hasReport) {
+        CommonPreferences().reportTime.value = DateTime.now().toString();
+      } else {
+        CommonPreferences().reportTime.value = "";
+      }
     });
   }
 

@@ -84,11 +84,6 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
                   .canNotGoIntoLounge,
               builder: (_, bool absorbing, __) => GestureDetector(
                 onTap: () {
-                  // print("==================================================");
-                  // print("==================================================");
-                  // print("absorbing : $absorbing");
-                  // print("==================================================");
-                  // print("==================================================");
                   if (absorbing) {
                     ToastProvider.running("正在加载数据，请稍后");
                   } else {
@@ -143,12 +138,8 @@ class FavourListWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: model.favourList.map(
               (classroom) {
-                // print('classroom: ' + classroom.toJson().toString());
                 var plan = model.classPlan[classroom.id];
                 if (plan != null) {
-                  // debugPrint(
-                  //     '------------------------- favourite room -------------------------');
-                  // debugPrint(classroom.toJson().toString());
                   var current = Time.week[model.currentDay - 1];
                   var currentPlan = plan[current]?.join() ?? '';
                   var isIdle = Time.availableNow(currentPlan, model.classTime);
@@ -203,7 +194,6 @@ class FavourListCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: InkWell(
         onTap: () {
-          // print('you tap class:' + room.name);
           Navigator.of(context).pushNamed(
             LoungeRouter.plan,
             arguments: room,

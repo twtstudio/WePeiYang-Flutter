@@ -25,9 +25,6 @@ class MessageRepository {
     });
     FeedbackDetailMessages messages =
         FeedbackDetailMessages.fromJson(response.data);
-    // debugPrint("getDetailMessages");
-    // debugPrint(CommonPreferences().feedbackToken.value);
-    // debugPrint(response.data.toString());
     return messages;
   }
 
@@ -68,10 +65,7 @@ class MessageRepository {
         },
       ),
     );
-    // debugPrint(
-    //     "${response.data.toString()}@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     var messages = UserMessages.fromJson(response.data);
-    // debugPrint(messages.mails.length.toString());
     return messages;
   }
 }
@@ -90,14 +84,6 @@ class MessageServer extends DioForNative {
 }
 
 class ApiInterceptor extends InterceptorsWrapper {
-  @override
-  onRequest(RequestOptions options) async {
-    // debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' +
-    //     ' queryParameters: ${options.queryParameters}');
-//    debugPrint('---api-request--->data--->${options.data}');
-    return options;
-  }
-
   @override
   onResponse(Response response) async {
     final String data = response.data.toString();

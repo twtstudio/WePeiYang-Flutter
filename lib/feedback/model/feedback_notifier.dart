@@ -88,8 +88,6 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   addComments(List<Comment> officialCommentList, List<Comment> commentList) {
-    print(officialCommentList);
-    print(commentList);
     _officialCommentList.addAll(officialCommentList);
     _commentList.addAll(commentList);
     notifyListeners();

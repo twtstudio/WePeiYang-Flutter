@@ -100,13 +100,11 @@ class HiveManager {
     await _temporaryData.put(temporary, null);
     _temporaryDateTime = dateTime;
     CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
-    // debugPrint("++++++++++++++++++++      set temporaryUpdateTime ${dateTime.toString()}     +++++++++++++++++++++");
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
 
   Future<Classroom> addFavourite({String id, Classroom clearRoom}) async {
-    // print(_favourList.keys.toList());
     if (clearRoom == null) {
       Classroom room;
       try {
@@ -135,30 +133,21 @@ class HiveManager {
         ),
       ),
     );
-    // for (var r in rCs) {
-    //   debugPrint(r.toJson().toString());
-    // }
     assert(rCs.length == 1);
     return rCs.first;
   }
 
   initBuildingName([bool first]) async {
-    debugPrint("initBuildingName");
     if (_boxesKeys.isNotEmpty && !shouldUpdateLocalData) {
       for (var id in _boxesKeys.keys) {
         var building = await _buildingBoxes[id].get(baseRoom);
         _buildingName[id] = building.name;
-        // print("building name : ${building.name}");
       }
     } else if (shouldUpdateLocalData && first) {
-      print("shouldUpdateLocalData?????????????");
       try {
         await LoungeRepository.updateLocalData(DateTime.now());
         await initBuildingName(false);
       } catch (e) {
-        // ToastProvider.error(e.toString().split(':')[1].trim());
-        // debugPrint("initBuildingName retry error ${e.toString()}");
-        // ToastProvider.error('初始化');
         throw e;
       }
     }
@@ -188,7 +177,6 @@ class HiveManager {
   bool get shouldUpdateLocalData => _boxesKeys.isEmpty
       ? true
       : !_boxesKeys.values.map((e) {
-          // print(e?.dateTime ?? "no date time error");
           bool isToday;
           try {
             isToday = e == null
@@ -198,7 +186,6 @@ class HiveManager {
           } catch (e) {
             isToday = false;
           }
-          // print("isToday : $isToday");
           return isToday;
         }).reduce((v, e) => v && e);
 
@@ -228,7 +215,6 @@ class HiveManager {
         return true;
       }
     }
-    // debugPrint("shouldUpdateTemporaryData ${_temporaryDateTime.toString()}");
     if (_temporaryDateTime.isTheSameWeek(dateTime) &&
         _temporaryData.containsKey(temporary)) {
       return false;
@@ -240,9 +226,6 @@ class HiveManager {
   bool get canloadLocalData => localDateLastUpdateTime != null;
 
   Stream<Building> get baseBuildingDataFromDisk async* {
-    // print(_boxesKeys.keys.toList());
-    debugPrint(
-        'baseBuildingDataFromDisk :' + _boxesKeys.keys.toList().toString());
     for (var key in _boxesKeys.keys) {
       if (_buildingBoxes.containsKey(key)) {
         var building = await _buildingBoxes[key].get(baseRoom);
@@ -262,18 +245,14 @@ class HiveManager {
 
   _writeInBox(Building building) async {
     var id = building.id;
-    print(id);
     if (_boxesKeys.values.contains(id)) {
       // print('building exist:' + id);
     } else {
       var box = await Hive.openLazyBox<Building>(id);
       await box.put(baseRoom, building);
       _buildingBoxes[id] = box;
-      // print('box created finish :' + id);
-      // print(box.path);
       await _boxesKeys.put(building.id, null);
       _buildingName[id] = building.name;
-      // print("building name : ${building.name}");
     }
   }
 
@@ -283,9 +262,7 @@ class HiveManager {
     int day,
     DateTime time,
   ) async {
-    print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     for (var building in buildings) {
-      print('writedataindisk !!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       await _writeThisWeekData(building, day, time);
     }
   }
@@ -328,8 +305,6 @@ class HiveManager {
       {@required Classroom r, @required DateTime dateTime}) async {
     Map<String, List<String>> _plans = {};
     var id = r.bId;
-    // print('get class plans id: ' + id);
-    // debugPrint("getRoomPlans ${r.id} ${dateTime.toString()}");
     await getBuildingPlanData(id: id, time: dateTime).forEach((plan) {
       var day = plan.key;
       var building = plan.value;
@@ -339,8 +314,6 @@ class HiveManager {
       var room = area.classrooms[r.id];
       if (room == null) return;
       _plans[day] = DataFactory.splitPlan(room.status);
-      // print('???????????splitplan');
-      // print( DataFactory.splitPlan(room.status));
     });
     return _plans;
   }
@@ -364,7 +337,6 @@ class HiveManager {
 
       var ifNotUpdate = updateTime?.isTheSameWeek(time) ?? false;
 
-      // print("updateTime : ${updateTime.toString()}    ifNotUpdate : $ifNotUpdate");
       if (_temporaryData.isEmpty || !ifNotUpdate) {
         await LoungeRepository.updateTemporaryData(time);
       }
@@ -399,9 +371,6 @@ class HiveManager {
     var hasA = aName != null;
     var hasB = bName != null ? true : rBs.isNotEmpty;
     var hasC = cName != null;
-    // print('formatQueries');
-    // print(formatQueries);
-    // print('$aName   $bName   $cName   $hasA   $hasB   $hasC');
 
     if (hasB) {
       for (var b in rBs) {
@@ -460,7 +429,6 @@ class HiveManager {
                   .where((element) => element.name == cName)
                   .map((e) => MapEntry(building, e)))));
           for (var r in rCs) {
-            // print(r.value.toJson());
             yield ResultEntry(
               building: r.key,
               area: Area(id: r.value.aId),

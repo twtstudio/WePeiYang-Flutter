@@ -89,13 +89,9 @@ class PageTitleWidget extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.zero),
               ),
               onPressed: () async {
-                // debugPrint(favouriteModel.isIdle.toString());
                 if (favouriteModel.isIdle ||
                     favouriteModel.isEmpty ||
                     favouriteModel.isError) {
-                  // debugPrint(
-                  //     '========================== add favourite room ==========================');
-                  // debugPrint(room.toJson().toString());
                   await addFavourites(context,
                       room: room, model: favouriteModel);
                 }
@@ -337,7 +333,6 @@ class CourseDisplayWidget extends StatelessWidget {
         ),
       ),
     );
-    // return Container();
   }
 
   List<Widget> _generatePositioned(
@@ -351,10 +346,7 @@ class CourseDisplayWidget extends StatelessWidget {
     var d = 1;
     for (var wd in Time.week.getRange(0, dayCount)) {
       var index = 1;
-      // print(wd);
-      // print(plan[wd].toString());
       for (var c in plan[wd]) {
-        // print(wd);
         int day = d;
         int start = index;
         index = index + c.length;

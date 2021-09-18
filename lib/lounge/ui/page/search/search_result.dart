@@ -232,7 +232,6 @@ class ResultAreasGridView extends StatelessWidget {
           Container(
             child: InkWell(
               onTap: () {
-                // print(entry.area.toJson());
                 Navigator.of(context).pushNamed(
                   LoungeRouter.classrooms,
                   arguments: [

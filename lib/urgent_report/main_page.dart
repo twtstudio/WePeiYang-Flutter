@@ -52,9 +52,10 @@ class _ReportMainPageState extends State<ReportMainPage> {
     _page = _Page.report;
     _action = FlatButton(
       minWidth: 40,
-      onPressed: () => setState(() {
-        _toListPage();
-      }),
+      onPressed: () =>
+          setState(() {
+            _toListPage();
+          }),
       child: Icon(
         Icons.list,
         color: Colors.white,
@@ -66,9 +67,10 @@ class _ReportMainPageState extends State<ReportMainPage> {
     _page = _Page.list;
     _action = FlatButton(
       minWidth: 40,
-      onPressed: () => setState(() {
-        _toReportPage();
-      }),
+      onPressed: () =>
+          setState(() {
+            _toReportPage();
+          }),
       child: Icon(
         Icons.add,
         color: Colors.white,
@@ -91,13 +93,19 @@ class _ReportMainPageState extends State<ReportMainPage> {
   }
 
   bool _checkTodayHasReportedOrNot() {
-    var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
-    var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
-    var difference = lastDay.difference(DateTime.now()).inDays;
-    if (difference != 0) {
+    try {
+      var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
+      var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
+      var difference = lastDay
+          .difference(DateTime.now())
+          .inDays;
+      if (difference != 0) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (_) {
       return false;
-    } else {
-      return true;
     }
   }
 
@@ -113,6 +121,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       model.report().then((value) {
         if (value) {
           CommonPreferences().reportTime.value = DateTime.now().toString();
+          ToastProvider.success('上传成功');
           _showReportDialog();
         } else {
           ToastProvider.error('上传失败');
@@ -133,13 +142,20 @@ class _ReportMainPageState extends State<ReportMainPage> {
     }
   }
 
-  _showReportDialog() => showDialog<int>(
-          // 传入 context
+  _showReportDialog() =>
+      showDialog<int>(
+        // 传入 context
           context: context,
           // 构建 Dialog 的视图
           builder: (_) {
-            var width = MediaQuery.of(context).size.width * 0.8;
-            var height = MediaQuery.of(context).size.height * 0.17;
+            var width = MediaQuery
+                .of(context)
+                .size
+                .width * 0.8;
+            var height = MediaQuery
+                .of(context)
+                .size
+                .height * 0.17;
             return _ReportResultDialog(width: width, height: height);
           }).then((value) {
         switch (value) {
@@ -164,23 +180,24 @@ class _ReportMainPageState extends State<ReportMainPage> {
       case _Page.report:
         body = Center(
             child: ListView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            TodayTemp(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              physics: NeverScrollableScrollPhysics(),
               children: [
-                PickImage(image: _Image.healthCode),
-                PickImage(image: _Image.itineraryCode),
+                TodayTemp(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    PickImage(image: _Image.healthCode),
+                    PickImage(image: _Image.itineraryCode),
+                  ],
+                ),
+                CurrentPlace(),
+                CurrentState(),
+                Builder(
+                  builder: (c) =>
+                      ReportButton(onTap: () => _reportButtonOnTap(c)),
+                )
               ],
-            ),
-            CurrentPlace(),
-            CurrentState(),
-            Builder(
-              builder: (c) => ReportButton(onTap: () => _reportButtonOnTap(c)),
-            )
-          ],
-        ));
+            ));
         break;
       case _Page.list:
         body = FutureBuilder<List<_ReportItem>>(
@@ -197,12 +214,13 @@ class _ReportMainPageState extends State<ReportMainPage> {
                     ),
                   );
                 } else {
+                  var list = snapshot.data.reversed.toList();
                   return ListView.builder(
                     itemExtent: 150,
-                    itemCount: snapshot.data.length,
+                    itemCount: list.length,
                     physics: BouncingScrollPhysics(),
                     itemBuilder: (_, index) {
-                      return _ReportListItem(data: snapshot.data[index]);
+                      return _ReportListItem(data: list[index]);
                     },
                   );
                 }
@@ -279,7 +297,8 @@ class _ReportResultDialog extends StatelessWidget {
     );
   }
 
-  Widget _button(String name, int popType, BuildContext c) => FlatButton(
+  Widget _button(String name, int popType, BuildContext c) =>
+      FlatButton(
         onPressed: () {
           Navigator.pop(c, popType);
         },
@@ -314,7 +333,10 @@ class _ReportListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width;
     var cardWidth = width * 0.88;
     var codeWidth = width * 0.18;
     var codeHeight = codeWidth * 0.371;
@@ -418,7 +440,7 @@ class _ReportListItem extends StatelessWidget {
       child: Card(
         elevation: 0.2,
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Center(
@@ -438,7 +460,8 @@ class _ReportListItem extends StatelessWidget {
     );
   }
 
-  Widget _code(String name, Color c, double h, double w) => Container(
+  Widget _code(String name, Color c, double h, double w) =>
+      Container(
         height: h,
         width: w,
         decoration: BoxDecoration(
@@ -481,72 +504,78 @@ class _TodayTempState extends State<TodayTemp> {
 
   @override
   Widget build(BuildContext context) {
-    var textFieldWidth = MediaQuery.of(context).size.width * 0.654;
+    var textFieldWidth = MediaQuery
+        .of(context)
+        .size
+        .width * 0.654;
 
     return BackgroundColorListener(
       part: _ReportPart.temperature,
-      builder: (_, backgroundColor, __) => Container(
-        color: backgroundColor,
-        padding: const EdgeInsets.only(top: 40.0, bottom: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "今日体温",
-              style: TextStyle(
-                color: Color(0xff63677b),
-                fontSize: 13,
-              ),
-            ),
-            SizedBox(width: 15),
-            Container(
-              width: textFieldWidth,
-              padding: EdgeInsets.only(bottom: 5),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width: 0.6, //宽度
-                    color: Color(0xff63677b), //边框颜色
+      builder: (_, backgroundColor, __) =>
+          Container(
+            color: backgroundColor,
+            padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "今日体温",
+                  style: TextStyle(
+                    color: Color(0xff63677b),
+                    fontSize: 13,
                   ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      buildCounter: null,
-                      controller: _temperature,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      style: FontManager.YaHeiRegular.copyWith(
-                        color: Color(0xff63677b),
-                        fontSize: 12,
+                SizedBox(width: 15),
+                Container(
+                  width: textFieldWidth,
+                  padding: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        width: 0.6, //宽度
+                        color: Color(0xff63677b), //边框颜色
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        isCollapsed: true,
-                      ),
-                      inputFormatters: [_MyNumberTextInputFormatter(digit: 1)],
-                      onChanged: (result) => _reportTemperature(),
                     ),
                   ),
-                  Container(width: 3),
-                  Text(
-                    "℃",
-                    style: FontManager.YaHeiRegular.copyWith(
-                      color: Color(0xff63677b),
-                      fontSize: 12,
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          buildCounter: null,
+                          controller: _temperature,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          style: FontManager.YaHeiRegular.copyWith(
+                            color: Color(0xff63677b),
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isCollapsed: true,
+                          ),
+                          inputFormatters: [
+                            _MyNumberTextInputFormatter(digit: 1)
+                          ],
+                          onChanged: (result) => _reportTemperature(),
+                        ),
+                      ),
+                      Container(width: 3),
+                      Text(
+                        "℃",
+                        style: FontManager.YaHeiRegular.copyWith(
+                          color: Color(0xff63677b),
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
     );
   }
 }
@@ -591,8 +620,8 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
   }
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue) {
     String value = newValue.text;
     int selectionIndex = newValue.selection.end;
     if (value == ".") {
@@ -602,8 +631,8 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
       value = "-";
       selectionIndex++;
     } else if (value != "" &&
-            value != defaultDouble.toString() &&
-            strToFloat(value, defaultDouble) == defaultDouble ||
+        value != defaultDouble.toString() &&
+        strToFloat(value, defaultDouble) == defaultDouble ||
         getValueDigit(value) > digit ||
         getValueInteger(value) > integer) {
       value = oldValue.text;
@@ -660,7 +689,10 @@ class _PickImageState extends State<PickImage> {
 
   @override
   Widget build(BuildContext context) {
-    var imageWidth = MediaQuery.of(context).size.width * 0.296;
+    var imageWidth = MediaQuery
+        .of(context)
+        .size
+        .width * 0.296;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -681,24 +713,24 @@ class _PickImageState extends State<PickImage> {
           },
           child: _image != null
               ? Image.file(
-                  _image,
-                  width: imageWidth,
-                  height: imageWidth,
-                  fit: BoxFit.fitHeight,
-                )
+            _image,
+            width: imageWidth,
+            height: imageWidth,
+            fit: BoxFit.fitHeight,
+          )
               : DottedBorder(
-                  borderType: BorderType.Rect,
-                  color: Color(0xffd0d1d6),
-                  child: Container(
-                    width: imageWidth,
-                    height: imageWidth,
-                    child: Icon(
-                      Icons.add_circle,
-                      size: 40,
-                      color: Color(0xffd0d1d6),
-                    ),
-                  ),
-                ),
+            borderType: BorderType.Rect,
+            color: Color(0xffd0d1d6),
+            child: Container(
+              width: imageWidth,
+              height: imageWidth,
+              child: Icon(
+                Icons.add_circle,
+                size: 40,
+                color: Color(0xffd0d1d6),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -770,7 +802,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             });
             return 'success';
           case 'showError':
-            // String result = await call.arguments;
+          // String result = await call.arguments;
             ToastProvider.error("获取位置信息失败");
             return 'success';
           default:
@@ -781,7 +813,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
 
   @override
   Widget build(BuildContext context) {
-    var placeWidth = MediaQuery.of(context).size.width - 80;
+    var placeWidth = MediaQuery
+        .of(context)
+        .size
+        .width - 80;
 
     var placeText = Container(
       padding: EdgeInsets.only(top: 15, left: 3),
@@ -861,14 +896,15 @@ class _CurrentStateState extends State<CurrentState> {
             style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
           ),
           ...states
-              .map((state) => StateItem(
-                    state: state,
-                    isSelected: currentState == state,
-                    onclick: () async {
-                      _updateGroupValue(state);
-                      _reportCurrentState();
-                    },
-                  ))
+              .map((state) =>
+              StateItem(
+                state: state,
+                isSelected: currentState == state,
+                onclick: () async {
+                  _updateGroupValue(state);
+                  _reportCurrentState();
+                },
+              ))
               .toList()
         ],
       ),
@@ -901,7 +937,10 @@ class StateItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var itemWidth = MediaQuery.of(context).size.width * 0.18;
+    var itemWidth = MediaQuery
+        .of(context)
+        .size
+        .width * 0.18;
     var itemHeight = itemWidth * 0.371;
     return InkWell(
       onTap: onclick,
@@ -911,15 +950,15 @@ class StateItem extends StatelessWidget {
         width: itemWidth,
         decoration: isSelected
             ? BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(12.5),
-                color: Color(0XFF62677B))
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(12.5),
+            color: Color(0XFF62677B))
             : BoxDecoration(
-                borderRadius: BorderRadius.circular(12.5),
-                border: Border.all(
-                  color: Color(0XFF62677B),
-                  width: 1,
-                )),
+            borderRadius: BorderRadius.circular(12.5),
+            border: Border.all(
+              color: Color(0XFF62677B),
+              width: 1,
+            )),
         child: Center(
           child: Text(
             state.name,
@@ -1032,18 +1071,24 @@ class ReportDataModel {
         'latitude': location.latitude,
         'healthCodeScreenshot': MultipartFile.fromBytes(
           _data[_ReportPart.healthCode],
-          filename: 'h${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
+          filename: 'h${DateTime
+              .now()
+              .millisecondsSinceEpoch}code$id.jpg',
           contentType: MediaType('image', 'jpg'),
         ),
         'travelCodeScreenshot': MultipartFile.fromBytes(
           _data[_ReportPart.itineraryCode],
-          filename: 't${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
+          filename: 't${DateTime
+              .now()
+              .millisecondsSinceEpoch}code$id.jpg',
           contentType: MediaType('image', 'jpg'),
         ),
         'curStatus': state.index,
         'temperature': _data[_ReportPart.temperature],
       });
-      await Dio().post(
+      var dio = Dio()
+        ..interceptors.add(LogInterceptor(responseBody: true));
+      var result = await dio.post(
         "https://api.twt.edu.cn/api/returnSchool/record",
         options: Options(
           headers: {
@@ -1054,7 +1099,8 @@ class ReportDataModel {
         ),
         data: data,
       );
-      return true;
+      var responseData = _ReportState.fromJson(result.data);
+      return responseData.errorCode == 0 ? true : false ;
     } catch (e) {
       return false;
     }
@@ -1072,16 +1118,15 @@ class LocationData {
   final String address;
   final int time;
 
-  LocationData(
-      {this.longitude,
-      this.latitude,
-      this.nation,
-      this.province,
-      this.city,
-      this.cityCode,
-      this.district,
-      this.address,
-      this.time});
+  LocationData({this.longitude,
+    this.latitude,
+    this.nation,
+    this.province,
+    this.city,
+    this.cityCode,
+    this.district,
+    this.address,
+    this.time});
 
   factory LocationData.fromJson(Map<String, dynamic> json) {
     return LocationData(
@@ -1135,6 +1180,50 @@ Future<List<_ReportItem>> _getReportHistoryList() async {
   }
 }
 
+Future<bool> getTodayHasReported() async {
+  try {
+    var token = CommonPreferences().token.value;
+    var response = await Dio().get(
+      "https://api.twt.edu.cn/api/returnSchool/status",
+      options: Options(
+        headers: {
+          "DOMAIN": AuthDio.DOMAIN,
+          "ticket": AuthDio.ticket,
+          "token": token,
+        },
+      ),
+    );
+    var data = _ReportState.fromJson(response.data);
+    return data.result == 1 ? true : false;
+  } catch (e) {
+    return false;
+  }
+}
+
+// TODO: 上传数据的接口返回类型和这个相似，只是result为null，先用这个代替
+class _ReportState {
+  final int errorCode;
+  final String message;
+  final int result;
+
+  _ReportState({this.errorCode, this.message, this.result});
+
+  factory _ReportState.fromJson(Map<String, dynamic> json) {
+    return _ReportState(
+      errorCode: json['error_code'],
+      message: json['message'],
+      result: json['result'],
+    );
+  }
+
+  Map toJson() =>
+      {
+        "errorCode": errorCode,
+        "message": message,
+        "result": result,
+      };
+}
+
 class _ReportList {
   final int errorCode;
   final String message;
@@ -1166,18 +1255,17 @@ class _ReportItem {
   final String travelCode;
   final int state;
 
-  _ReportItem(
-      {this.longitude,
-      this.latitude,
-      this.province,
-      this.city,
-      this.district,
-      this.address,
-      this.time,
-      this.temperature,
-      this.healthCode,
-      this.travelCode,
-      this.state});
+  _ReportItem({this.longitude,
+    this.latitude,
+    this.province,
+    this.city,
+    this.district,
+    this.address,
+    this.time,
+    this.temperature,
+    this.healthCode,
+    this.travelCode,
+    this.state});
 
   factory _ReportItem.fromJson(Map<String, dynamic> json) {
     return _ReportItem(
@@ -1194,4 +1282,19 @@ class _ReportItem {
       state: json['curStatus'],
     );
   }
+
+  Map toJson() =>
+      {
+        "longitude": longitude,
+        "latitude": latitude,
+        "province": province,
+        "city": city,
+        "district": district,
+        "address": address,
+        "time": time,
+        "temperature": temperature,
+        "healthCode": healthCode,
+        "travelCode": travelCode,
+        "state": state,
+      };
 }

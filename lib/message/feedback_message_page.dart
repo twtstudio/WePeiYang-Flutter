@@ -122,7 +122,6 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
                   }).toList(),
                   controller: _tabController,
                   onTap: (index) {
-                    // debugPrint("tap $index");
                     currentIndex.value = _tabController.index;
                   },
                   indicator: CustomIndicator(
@@ -176,7 +175,6 @@ class _MessageTabState extends State<MessageTab> {
     Widget tab = ValueListenableBuilder(
       valueListenable: pageState.currentIndex,
       builder: (_, int current, __) {
-        // debugPrint("tap current : $current current type ${widget.type.index}");
         return Text(
           widget.type.name,
           style: TextStyle(
@@ -239,7 +237,6 @@ class _MessagesListState extends State<MessagesList>
 
   onRefresh({bool refreshCount = true}) async {
     if (widget == null) return;
-    // debugPrint("onrefresh !!!!!!!!!!! ${widget.type.name}");
     // monitor network fetch
     try {
       var result = await MessageRepository.getDetailMessages(widget.type, 0);
@@ -262,9 +259,6 @@ class _MessagesListState extends State<MessagesList>
   }
 
   _onLoading() async {
-    // monitor network fetch
-    // await Future.delayed(Duration(milliseconds: 1000));
-    // debugPrint("type ${widget.type.name}");
     try {
       var result = await MessageRepository.getDetailMessages(
           widget.type, items.length ~/ 10 + 2);
@@ -287,11 +281,9 @@ class _MessagesListState extends State<MessagesList>
   @override
   void initState() {
     super.initState();
-    // debugPrint(widget.type.index.toString());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       var list = await MessageRepository.getDetailMessages(widget.type, 0);
       items.addAll(list.data.where((element) {
-        // debugPrint((element.type).toString());
         return element.type == widget.type.index;
       }));
       if (mounted) {
@@ -307,7 +299,6 @@ class _MessagesListState extends State<MessagesList>
               ),
             );
       }
-      // debugPrint('item length : ${items.length}');
     });
   }
 
@@ -344,7 +335,6 @@ class _MessagesListState extends State<MessagesList>
       child: ListView.separated(
         physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
-          // print(i);
           return MessageItem(
             data: items[i],
             onTapDown: items[i].visible.isOne
