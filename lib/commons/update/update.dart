@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/commons/update/update_prompter.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
+import 'app_cache_manager.dart';
+
 /// 版本更新管理
 class UpdateManager {
   ///全局初始化
@@ -17,9 +19,7 @@ class UpdateManager {
   static BuildContext baseContext;
 
   static void checkUpdate({bool showDialog = false}) {
-    // searchLocalCache();
-    // delAllTemporaryFile();
-    // searchLocalCache();
+    searchLocalCache();
     UpdateService.checkUpdate(onResult: (version) {
       UpdatePrompter(
               updateEntity: version,

@@ -48,7 +48,6 @@ void main() async {
     await NetStatusListener.init();
     runApp(WePeiYangApp());
     if (Platform.isAndroid) {
-      // TODO 这个逻辑之后重写，有大隐患，和他的实现有关
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.white,

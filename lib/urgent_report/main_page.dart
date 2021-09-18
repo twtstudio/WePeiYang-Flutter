@@ -102,11 +102,11 @@ class _ReportMainPageState extends State<ReportMainPage> {
   }
 
   _reportButtonOnTap(BuildContext c) {
-    ToastProvider.running('上传中');
     var model = Provider.of<ReportDataModel>(c, listen: false);
     var unSelected = model.check();
     unSelected = model.check();
     if (unSelected.isEmpty) {
+      ToastProvider.running('上传中');
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
@@ -119,13 +119,17 @@ class _ReportMainPageState extends State<ReportMainPage> {
         }
       });
     } else {
-      unSelected.forEach((element) {
-        _partBackgroundColor[element.index].value = Colors.transparent;
-      });
-      List.generate(_ReportPart.values.length, (index) {
-        if (!unSelected.map((e) => e.index).toList().contains(index))
+      ToastProvider.error('请检查所填内容是否完整');
+      /**
+       * TODO: 未填写的项目底色变红
+       * unSelected.forEach((element) {
+          _partBackgroundColor[element.index].value = Colors.red;
+          });
+          List.generate(_ReportPart.values.length, (index) {
+          if (!unSelected.map((e) => e.index).toList().contains(index))
           _partBackgroundColor[index].value = Colors.transparent;
-      });
+          });
+       */
     }
   }
 

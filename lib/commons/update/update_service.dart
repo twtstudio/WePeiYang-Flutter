@@ -26,5 +26,5 @@ class UpdateService {
           {ProgressCallback onReceiveProgress}) =>
       _dio.download(urlPath, savePath,
           onReceiveProgress: onReceiveProgress,
-          options: Options(sendTimeout: 25000, receiveTimeout: 25000));
+          options: Options(sendTimeout: 25000, receiveTimeout: 300000));
 }

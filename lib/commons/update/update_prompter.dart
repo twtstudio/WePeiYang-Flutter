@@ -31,6 +31,7 @@ class UpdatePrompter {
     String updateContent = getUpdateContent();
     if (Platform.isAndroid) {
       _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
+      print("??????????  ${_apkFile.path}");
     }
     if (_apkFile != null && _apkFile.existsSync()) {
       _dialog = UpdateDialog.showUpdate(
@@ -73,6 +74,8 @@ class UpdatePrompter {
       doInstall();
       return;
     }
+    _dialog.update(0);
+    var time1 = DateTime.now().millisecondsSinceEpoch;
     UpdateService.downloadApk(updateEntity.path, _apkFile.path,
         onReceiveProgress: (int count, int total) {
       _progress = count.toDouble() / total;
@@ -80,9 +83,13 @@ class UpdatePrompter {
     }).then((_) async {
       var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
       var newPath = _apkFile.absolute.parent.path + "/" + path;
+      print("new path: $newPath");
       await _apkFile.rename(newPath).then((_) => doInstall(newPath));
-    }).catchError((_) {
-      ToastProvider.error("下载失败！");
+    }).catchError((e) {
+      print(e.toString());
+      var time2 = DateTime.now().millisecondsSinceEpoch;
+      print("use time: ${time2-time1}");
+      ToastProvider.error("下载失败！请确保网络通畅");
       _dialog.dismiss();
     });
   }

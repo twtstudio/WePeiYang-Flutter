@@ -396,11 +396,11 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                               contents,
                               versionText,
                               SizedBox(height: 3),
-                              Text("注：更新前请连接校园网！", style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF62677b),
-                                fontWeight: FontWeight.bold
-                              ))
+                              Text("注：更新前请连接校园网！",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF62677b),
+                                      fontWeight: FontWeight.bold))
                             ],
                           ),
                           SizedBox(height: 8),
@@ -412,13 +412,23 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                           SizedBox(height: 5),
                           widget.progress < 0
                               ? updateButton
-                              : NumberProgress(
-                                  value: widget.progress,
-                                  backgroundColor:
-                                      widget.progressBackgroundColor,
-                                  valueColor: widget.themeColor,
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                ),
+                              : widget.progress == 0
+                                  ? Text(
+                                      "请稍等",
+                                      style: TextStyle(
+                                        fontSize: widget.buttonTextSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF62677b),
+                                      ),
+                                    )
+                                  : NumberProgress(
+                                      value: widget.progress,
+                                      backgroundColor:
+                                          widget.progressBackgroundColor,
+                                      valueColor: widget.themeColor,
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                    ),
                           SizedBox(height: 10),
                         ],
                       ),
