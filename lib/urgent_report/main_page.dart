@@ -180,7 +180,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       case _Page.report:
         body = Center(
             child: ListView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               children: [
                 TodayTemp(),
                 Row(
