@@ -14,7 +14,7 @@ class FindPwDialog extends Dialog {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 180,
+        height: 160,
         width: WePeiYangApp.screenWidth - 40,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(

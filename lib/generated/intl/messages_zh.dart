@@ -111,7 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forget_password" : MessageLookupByLibrary.simpleMessage("忘记密码"),
     "has_bind_phone" : MessageLookupByLibrary.simpleMessage("账号已绑定手机号"),
     "has_not_bind_hint1" : MessageLookupByLibrary.simpleMessage("您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群："),
-    "has_not_bind_hint2" : MessageLookupByLibrary.simpleMessage("\n1群群号：738068756\n2群群号：738064793\n3群群号：337647539"),
+    "has_not_bind_hint2" : MessageLookupByLibrary.simpleMessage("2群群号：738064793\n3群群号：337647539"),
     "has_not_bind_phone" : MessageLookupByLibrary.simpleMessage("账号未绑定手机号"),
     "have_read" : MessageLookupByLibrary.simpleMessage("已读"),
     "have_replied" : MessageLookupByLibrary.simpleMessage("已回复"),
