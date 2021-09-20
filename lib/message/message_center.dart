@@ -39,6 +39,7 @@ class MessageRepository {
       data = TotalMessageData.fromJson(response.data);
     } catch (e) {
       data = null;
+      print(e.toString());
     }
     return data;
   }
@@ -77,9 +78,11 @@ class MessageServer extends DioForNative {
     options.connectTimeout = 3000;
     options.receiveTimeout = 3000;
     options.responseType = ResponseType.plain;
-    options.baseUrl = 'http://47.94.198.197:10805/api/user/message/';
+    // options.baseUrl = 'http://47.94.198.197:10805/api/user/message/';
+    options.baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
     options.headers = {"Connection": "close"};
     interceptors.add(ApiInterceptor());
+    interceptors.add(LogInterceptor());
   }
 }
 

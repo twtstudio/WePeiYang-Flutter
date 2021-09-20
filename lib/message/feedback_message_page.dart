@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:simple_html_css/simple_html_css.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 import 'message_center.dart';
 import 'message_provider.dart';
@@ -18,7 +20,8 @@ enum MessageType {
 }
 
 extension MessageTypeExtension on MessageType {
-  String get name => [S.current.like, S.current.comment, S.current.reply][this.index];
+  String get name =>
+      [S.current.like, S.current.comment, S.current.reply][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -490,14 +493,14 @@ class MessageItem extends StatelessWidget {
                 color: Color(0xffacaeba),
               ),
             if (data.comment != null)
-              Text(
-                data.comment.content ?? "",
+              RichText(
+                overflow: TextOverflow.ellipsis,
                 maxLines: 2,
-                softWrap: true,
-                style: TextStyle(
-                  color: Color(0xff363c54),
-                  fontSize: 13,
-                ),
+                text: HTML.toTextSpan(context, data.comment.content ?? "",
+                    defaultTextStyle: FontManager.YaHeiRegular.copyWith(
+                      color: Color(0xff363c54),
+                      fontSize: 13,
+                    )),
               ),
             Padding(
               padding: EdgeInsets.only(top: 10),
@@ -564,7 +567,7 @@ class MessageItem extends StatelessWidget {
       //   ),
       // );
       messageWrapper = Badge(
-        position: BadgePosition.topEnd(end: -2,top: -14),
+        position: BadgePosition.topEnd(end: -2, top: -14),
         padding: EdgeInsets.all(5),
         badgeContent: Text(""),
         child: questionItem,
