@@ -25,6 +25,7 @@ class WBYApplication : FlutterApplication() {
         var activity: WeakReference<MainActivity>? = null
         var postId: Int = -1
         var url: String = ""
+        var tempCid = ""
 
         fun sendMessage(msg: Message) = handler.sendMessage(msg)
 
@@ -39,6 +40,7 @@ class WBYApplication : FlutterApplication() {
                 when (msg.what) {
                     RECEIVE_CLIENT_ID -> {
                         val cId = msg.obj.toString()
+                        tempCid = cId
                         val workManager = WorkManager.getInstance(appContext)
                         val constraints = Constraints.Builder()
                                 .setRequiredNetworkType(NetworkType.CONNECTED)

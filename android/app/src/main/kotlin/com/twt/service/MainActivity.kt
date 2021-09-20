@@ -74,6 +74,9 @@ class MainActivity : FlutterFragmentActivity() {
                         result.success(WBYApplication.postId)
                         WBYApplication.postId = -1
                     }
+                    "getCid" -> {
+                        result.success(WBYApplication.tempCid)
+                    }
                     "cancelNotification" -> {
                         try {
                             call.argument<Int>("id")

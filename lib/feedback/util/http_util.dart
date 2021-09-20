@@ -43,11 +43,13 @@ Future getToken(
     {void Function(String token) onSuccess,
     @required void Function() onFailure}) async {
   try {
+    var cid = await messageChannel.invokeMethod<String>("getCid");
     Response response = await _client.post(
       'login',
       formData: FormData.fromMap({
         'username': CommonPreferences().account.value,
         'password': CommonPreferences().password.value,
+        'cid':cid,
       }),
     );
     if (null != response.data['data'] &&
