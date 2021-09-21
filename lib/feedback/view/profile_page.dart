@@ -99,9 +99,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   },
                                   onLikePressed: () {
                                     postHitLike(
-                                      id: notifier.homePostList[index].id,
+                                      id: notifier.profilePostList[index].id,
                                       isLiked:
-                                          notifier.homePostList[index].isLiked,
+                                          notifier.profilePostList[index].isLiked,
                                       onSuccess: () {
                                         notifier
                                             .changeProfilePostLikeState(index);
@@ -158,13 +158,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   },
                                   onLikePressed: () {
                                     postHitLike(
-                                      id: notifier.homePostList[index].id,
+                                      id: notifier.profilePostList[index].id,
                                       isLiked:
-                                          notifier.homePostList[index].isLiked,
+                                          notifier.profilePostList[index].isLiked,
                                       onSuccess: () {
                                         notifier
                                             .changeProfilePostLikeState(index);
-                                      },
+                                     },
                                       onFailure: () {
                                         ToastProvider.error(
                                             S.current.feedback_like_error);
