@@ -88,6 +88,10 @@ class _NewPostPageState extends State<NewPostPage> {
                                 ToastProvider.error(
                                     S.current.feedback_post_error);
                               },
+                              onSensitive: (String msg) {
+                                print(msg);
+                                ToastProvider.error(msg);
+                              },
                               onUploadImageFailure: () {
                                 ToastProvider.error(
                                     S.current.feedback_upload_image_error);
@@ -500,8 +504,9 @@ class _ImagesGridViewState extends State<ImagesGridView> {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
-        itemCount:
-            _resultList.length == maxImage ? _resultList.length : _resultList.length + 1,
+        itemCount: _resultList.length == maxImage
+            ? _resultList.length
+            : _resultList.length + 1,
         itemBuilder: (context, index) => index == _resultList.length
             ? _ImagePickerWidget(
                 onTap: loadAssets,

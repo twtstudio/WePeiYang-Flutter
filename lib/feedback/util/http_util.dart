@@ -49,13 +49,13 @@ Future getToken(
       formData: FormData.fromMap({
         'username': CommonPreferences().account.value,
         'password': CommonPreferences().password.value,
-        'cid':cid,
+        'cid': cid,
       }),
     );
     if (null != response.data['data'] &&
         null != response.data['data']['token']) {
       CommonPreferences().feedbackToken.value = response.data['data']['token'];
-      if(onSuccess != null) onSuccess(response.data['data']['token']);
+      if (onSuccess != null) onSuccess(response.data['data']['token']);
     } else {
       onFailure();
     }
@@ -395,6 +395,7 @@ Future sendPost(
     @required List<File> imgList,
     @required void Function() onSuccess,
     @required void Function() onFailure,
+    @required void Function(String msg) onSensitive,
     @required void Function() onUploadImageFailure}) async {
   if (!_sendPostLock) {
     _sendPostLock = true;
@@ -434,8 +435,11 @@ Future sendPost(
         } else {
           onSuccess();
         }
-      } else {
-        onFailure();
+      } else if (2 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg']);
+      }
+      else if(10 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg'] + '\n' + response.data['data']['bad_word_list'].toSet().toList().toString());
       }
       _sendPostLock = false;
     } on DioError catch (e) {
