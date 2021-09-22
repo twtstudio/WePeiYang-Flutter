@@ -55,6 +55,7 @@ dependencies:
   image_picker: 0.6.7+22
   flutter_html: ^1.0.0
   simple_html_css: ^2.0.2
+  image_gallery_saver: ^1.6.8
 
   umeng_sdk:
     path: plugins/umeng_sdk

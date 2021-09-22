@@ -1,36 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 
-class ImageViewPage extends StatelessWidget {
-  final String url;
+class ImageViewPage extends StatefulWidget {
+  @override
+  _ImageViewPageState createState() => _ImageViewPageState();
+}
 
-  ImageViewPage(this.url);
+class _ImageViewPageState extends State<ImageViewPage> {
+  List<String> urlList;
+  int urlListLength = 0;
+  int indexNow = 0;
+  int tempSelect;
+
+  @override
+  void initState() {
+    super.initState();
+    tempSelect = indexNow + 1;
+  }
 
   @override
   Widget build(BuildContext context) {
+    dynamic obj = ModalRoute.of(context).settings.arguments;
+    urlList = obj['urlList'];
+    urlListLength = obj['urlListLength'];
+    indexNow = obj['indexNow'];
+
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
       },
       child: Container(
-        color: Colors.black,
-        child: PhotoView(
-          loadingBuilder: (context, event) => Center(
-            child: Container(
-              width: 20.0,
-              height: 20.0,
-              child: CircularProgressIndicator(
-                value: event == null
-                    ? 0
-                    : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+          child: PhotoViewGallery.builder(
+              loadingBuilder: (context, event) => Center(
+                  child: Container(
+                      width: 20.0,
+                      height: 20.0,
+                      child: CircularProgressIndicator(
+                        value: event == null
+                            ? 0
+                            : event.cumulativeBytesLoaded /
+                                event.expectedTotalBytes,
+                      ))),
+              scrollPhysics: const BouncingScrollPhysics(),
+              builder: (BuildContext context, int index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: NetworkImage(urlList[index]),
+                  maxScale: PhotoViewComputedScale.contained * 8.0,
+                  minScale: PhotoViewComputedScale.contained * 1.0,
+                  initialScale: PhotoViewComputedScale.contained,
+                );
+              },
+              scrollDirection: Axis.horizontal,
+              itemCount: urlListLength,
+              backgroundDecoration: BoxDecoration(color: Colors.black),
+              pageController: PageController(
+                initialPage: indexNow,
               ),
-            ),
-          ),
-          imageProvider: NetworkImage(
-            url,
-          ),
-        ),
-      ),
+              onPageChanged: (index) => setState(() {
+                    tempSelect = index + 1;
+                  }))),
     );
   }
 }

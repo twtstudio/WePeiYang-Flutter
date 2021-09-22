@@ -29,7 +29,7 @@ class FeedbackRouter {
     officialComment: (args) => OfficialCommentPage(args),
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
-    imageView: (url) => ImageViewPage(url),
+    imageView: (_) => ImageViewPage(),
     mailbox: (_) => FeedbackMessagePage(),
   };
 }
