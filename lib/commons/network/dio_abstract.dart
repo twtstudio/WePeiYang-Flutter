@@ -18,6 +18,7 @@ abstract class DioAbstract {
   Map<String, String> headers;
   List<InterceptorsWrapper> interceptors = List();
   ResponseType responseType = ResponseType.json;
+  bool responseBody = false;
   Dio _dio;
 
   Dio get dio => _dio;
@@ -34,7 +35,7 @@ abstract class DioAbstract {
       ..interceptors.add(NetCheckInterceptor())
       ..interceptors.addAll(interceptors)
       ..interceptors.add(ErrorInterceptor())
-      ..interceptors.add(LogInterceptor());
+      ..interceptors.add(LogInterceptor(responseBody: responseBody));
   }
 }
 

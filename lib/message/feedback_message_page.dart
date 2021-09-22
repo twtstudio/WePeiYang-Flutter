@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
-import 'message_center.dart';
+import 'message_service.dart';
 import 'message_provider.dart';
 
 enum MessageType {
@@ -242,7 +242,7 @@ class _MessagesListState extends State<MessagesList>
     if (widget == null) return;
     // monitor network fetch
     try {
-      var result = await MessageRepository.getDetailMessages(widget.type, 0);
+      var result = await MessageService.getDetailMessages(widget.type, 0);
       items.clear();
       items.addAll(
           result.data.where((element) => element.type == widget.type.index));
@@ -263,7 +263,7 @@ class _MessagesListState extends State<MessagesList>
 
   _onLoading() async {
     try {
-      var result = await MessageRepository.getDetailMessages(
+      var result = await MessageService.getDetailMessages(
           widget.type, items.length ~/ 10 + 2);
       items.addAll(
           result.data.where((element) => element.type == widget.type.index));
@@ -285,7 +285,7 @@ class _MessagesListState extends State<MessagesList>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var list = await MessageRepository.getDetailMessages(widget.type, 0);
+      var list = await MessageService.getDetailMessages(widget.type, 0);
       items.addAll(list.data.where((element) {
         return element.type == widget.type.index;
       }));
@@ -343,7 +343,7 @@ class _MessagesListState extends State<MessagesList>
             onTapDown: items[i].visible.isOne
                 ? () async {
                     try {
-                      await MessageRepository.setQuestionRead(items[i].post.id);
+                      await MessageService.setQuestionRead(items[i].post.id);
                     } catch (e) {
                       ToastProvider.error("设置问题已读失败");
                     }

@@ -99,11 +99,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       var difference = lastDay
           .difference(DateTime.now())
           .inDays;
-      if (difference != 0) {
-        return false;
-      } else {
-        return true;
-      }
+      return difference == 0;
     } catch (_) {
       return false;
     }

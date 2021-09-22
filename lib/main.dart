@@ -16,7 +16,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
@@ -168,7 +168,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'WePeiYangFlutter',
+          title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],

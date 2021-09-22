@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/rating_card.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';

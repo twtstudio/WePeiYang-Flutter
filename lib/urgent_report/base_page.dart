@@ -72,7 +72,6 @@ class _SelfInformationState extends State<SelfInformation> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     name = CommonPreferences().realName.value;
     id = 'ID: ${CommonPreferences().userNumber.value}';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_center.dart';
+import 'package:we_pei_yang_flutter/message/message_service.dart';
 import 'package:we_pei_yang_flutter/message/message_dialog.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 
@@ -26,7 +26,7 @@ class MessageProvider extends ChangeNotifier {
   String get messageData => _messageData;
 
   refreshFeedbackCount() async {
-    var result = await MessageRepository.getAllMessages() ?? TotalMessageData();
+    var result = await MessageService.getAllMessages() ?? TotalMessageData();
     _feedbackQuestions =
         result.questions?.where((element) => element.isOwner)?.toList() ?? [];
     _feedbackFavourites =
@@ -38,7 +38,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   setFeedbackQuestionRead(int messageId) async {
-    await MessageRepository.setQuestionRead(messageId);
+    await MessageService.setQuestionRead(messageId);
     await refreshFeedbackCount();
   }
 

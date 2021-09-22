@@ -14,19 +14,12 @@ import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
-  @override
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
-
+  @override
   String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-
-  @override
-  Map<String, String> headers = {};
-
-  @override
-  List<InterceptorsWrapper> interceptors = [];
 }
 
-final _client = FeedbackDio();
+final feedbackDio = FeedbackDio();
 
 bool _hitLikeLock = false;
 bool _hitFavoriteLock = false;
@@ -44,18 +37,18 @@ Future getToken(
     @required void Function() onFailure}) async {
   try {
     var cid = await messageChannel.invokeMethod<String>("getCid");
-    Response response = await _client.post(
+    Response response = await feedbackDio.post(
       'login',
       formData: FormData.fromMap({
         'username': CommonPreferences().account.value,
         'password': CommonPreferences().password.value,
-        'cid':cid,
+        'cid': cid,
       }),
     );
     if (null != response.data['data'] &&
         null != response.data['data']['token']) {
       CommonPreferences().feedbackToken.value = response.data['data']['token'];
-      if(onSuccess != null) onSuccess(response.data['data']['token']);
+      if (onSuccess != null) onSuccess(response.data['data']['token']);
     } else {
       onFailure();
     }
@@ -69,7 +62,7 @@ Future getTags(token,
     {@required void Function(List<Tag> tagList) onSuccess,
     @required void Function() onFailure}) async {
   try {
-    Response response = await _client.get('tag/get/all', queryParameters: {
+    Response response = await feedbackDio.get('tag/get/all', queryParameters: {
       'token': token,
     });
     if (0 == response.data['ErrorCode'] &&
@@ -96,7 +89,7 @@ Future getPosts(
     @required void Function(List<Post> list, int totalPage) onSuccess,
     @required onFailure}) async {
   try {
-    Response response = await _client.get(
+    Response response = await feedbackDio.get(
       'question/search',
       queryParameters: {
         'searchString': keyword ?? '',
@@ -130,7 +123,7 @@ Future getMyPosts({
 }) async {
   try {
     log("notifier.token ${notifier.token}");
-    Response response = await _client.get(
+    Response response = await feedbackDio.get(
       'question/get/myQuestion',
       queryParameters: {
         'limits': 0,
@@ -160,7 +153,7 @@ Future getPostById({
   @required void Function() onFailure,
 }) async {
   try {
-    Response response = await _client.get(
+    Response response = await feedbackDio.get(
       'question/get/byId',
       queryParameters: {
         'id': id,
@@ -189,11 +182,11 @@ Future getComments({
 }) async {
   try {
     Response officialCommentResponse =
-        await _client.get('question/get/answer', queryParameters: {
+        await feedbackDio.get('question/get/answer', queryParameters: {
       'question_id': '$id',
       'token': notifier.token,
     });
-    Response commentResponse = await _client.get(
+    Response commentResponse = await feedbackDio.get(
       'question/get/commit',
       queryParameters: {
         'question_id': '$id',
@@ -225,7 +218,7 @@ Future getFavoritePosts({
   @required void Function() onFailure,
 }) async {
   try {
-    Response response = await _client.get(
+    Response response = await feedbackDio.get(
       'favorite/get/all',
       queryParameters: {'token': notifier.token},
     );
@@ -253,12 +246,12 @@ Future postHitLike({
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response =
-          await _client.post(isLiked ? 'question/dislike' : 'question/like',
-              formData: FormData.fromMap({
-                'id': '$id',
-                'token': notifier.token,
-              }));
+      Response response = await feedbackDio.post(
+          isLiked ? 'question/dislike' : 'question/like',
+          formData: FormData.fromMap({
+            'id': '$id',
+            'token': notifier.token,
+          }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -282,7 +275,7 @@ Future postHitFavorite({
   if (!_hitFavoriteLock) {
     _hitFavoriteLock = true;
     try {
-      Response response = await _client.post(
+      Response response = await feedbackDio.post(
           isFavorite ? 'question/unfavorite' : 'question/favorite',
           formData: FormData.fromMap({
             'question_id': id,
@@ -311,7 +304,7 @@ Future commentHitLike(
     _hitLikeLock = true;
     try {
       Response response =
-          await _client.post(isLiked ? 'commit/dislike' : 'commit/like',
+          await feedbackDio.post(isLiked ? 'commit/dislike' : 'commit/like',
               formData: FormData.fromMap({
                 'id': '$id',
                 'token': notifier.token,
@@ -339,7 +332,7 @@ Future officialCommentHitLike(
     _hitLikeLock = true;
     try {
       Response response =
-          await _client.post(isLiked ? 'answer/dislike' : 'answer/like',
+          await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
               formData: FormData.fromMap({
                 'id': '$id',
                 'token': notifier.token,
@@ -366,7 +359,7 @@ Future sendComment(
   if (!_sendCommentLock) {
     _sendCommentLock = true;
     try {
-      Response response = await _client.post(
+      Response response = await feedbackDio.post(
         'commit/add/question',
         formData: FormData.fromMap({
           'token': notifier.token,
@@ -399,7 +392,7 @@ Future sendPost(
   if (!_sendPostLock) {
     _sendPostLock = true;
     try {
-      Response response = await _client.post('question/add',
+      Response response = await feedbackDio.post('question/add',
           formData: FormData.fromMap({
             'token': notifier.token,
             'name': title,
@@ -420,7 +413,7 @@ Future sendPost(
               'question_id': response.data['data']['question_id'],
             });
             Response uploadImgResponse =
-                await _client.post('image/add', formData: data);
+                await feedbackDio.post('image/add', formData: data);
             if (0 != uploadImgResponse.data['ErrorCode']) {
               onUploadImageFailure();
               log(response.data['data'].toString());
@@ -454,7 +447,7 @@ Future rate(
   if (!_rateLock) {
     _rateLock = true;
     try {
-      Response response = await _client.post(
+      Response response = await feedbackDio.post(
         'answer/commit',
         formData: FormData.fromMap({
           'token': notifier.token,
@@ -484,7 +477,7 @@ Future deletePost(
   if (!_deleteLock) {
     _deleteLock = true;
     try {
-      Response response = await _client.post(
+      Response response = await feedbackDio.post(
         'question/delete',
         formData: FormData.fromMap({
           'token': notifier.token,

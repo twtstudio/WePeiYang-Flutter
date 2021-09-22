@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/message/message_center.dart';
+import 'package:we_pei_yang_flutter/message/message_service.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -53,7 +53,7 @@ class _UserMailListState extends State<UserMailList> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _messages = await MessageRepository.getUserMails(0);
+      _messages = await MessageService.getUserMails(0);
       setState(() {});
     });
   }

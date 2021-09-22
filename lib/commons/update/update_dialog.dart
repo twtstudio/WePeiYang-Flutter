@@ -257,54 +257,15 @@ class _UpdateWidgetState extends State<UpdateWidget> {
   @override
   Widget build(BuildContext context) {
     double dialogWidth = getFitWidth(context) * 0.7;
-    // double dialogHeight = dialogWidth * 0.82;
-    List<Widget> contentList = [];
+    String versionDetail = '更新内容:';
+    int index = 0;
     widget.version.content.split("-").forEach((item) {
       if (item.isNotEmpty) {
-        contentList.add(Text(
-          "${contentList.length + 1}.${item.trim()}",
-          style: TextStyle(
-            fontSize: 12,
-            color: Color(0xFF62677b),
-          ),
-        ));
+        versionDetail =
+            versionDetail + '\n' + (index > 0 ? '$index. ' : '') + item.trim();
       }
+      index++;
     });
-    Widget contents = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: contentList,
-    );
-
-    Widget versionText = Row(
-      children: [
-        Text(
-          "版本：",
-          style: TextStyle(
-            fontSize: 12,
-            color: Color(0xFF62677b),
-          ),
-        ),
-        FutureBuilder(
-          future: CommonUtils.getVersion(),
-          builder: (_, AsyncSnapshot<String> snapshot) {
-            Widget versionText;
-            if (snapshot.hasData) {
-              versionText = Text(
-                // widget.updateContent,
-                "${snapshot.data} => ${widget.version.version}",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF62677b),
-                ),
-              );
-            } else {
-              versionText = Container();
-            }
-            return versionText;
-          },
-        ),
-      ],
-    );
 
     Widget updateButton = FractionallySizedBox(
       widthFactor: 1,
@@ -334,8 +295,6 @@ class _UpdateWidgetState extends State<UpdateWidget> {
           children: <Widget>[
             Container(
               width: dialogWidth,
-              // constraints: BoxConstraints(minHeight: dialogHeight),
-              // height: dialogHeight,
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
@@ -383,25 +342,39 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                             ),
                           ),
                           SizedBox(height: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "更新内容",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF62677b),
+                          DefaultTextStyle(
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF62677b),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(versionDetail),
+                                SizedBox(height: 3),
+                                Row(
+                                  children: [
+                                    Text("版本: "),
+                                    FutureBuilder(
+                                      future: CommonUtils.getVersion(),
+                                      builder:
+                                          (_, AsyncSnapshot<String> snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text(
+                                              "${snapshot.data} => ${widget.version.version}");
+                                        } else {
+                                          return Container();
+                                        }
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              contents,
-                              versionText,
-                              SizedBox(height: 3),
-                              Text("注：更新前请连接校园网！",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF62677b),
-                                      fontWeight: FontWeight.bold))
-                            ],
+                                SizedBox(height: 3),
+                                Text("注：更新前请连接校园网！",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold))
+                              ],
+                            ),
                           ),
                           SizedBox(height: 8),
                           Divider(

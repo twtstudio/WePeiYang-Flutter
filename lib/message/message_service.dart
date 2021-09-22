@@ -1,41 +1,36 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:dio/native_imp.dart';
 import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
-import '../main.dart';
-
-class MessageRepository {
+class MessageService {
   static Future<FeedbackDetailMessages> getDetailMessages(
       MessageType type, int page) async {
     var token = CommonPreferences().feedbackToken.value;
-    var response = await messageApi.get("get", queryParameters: {
+    var response = await messageDio.get("get", queryParameters: {
       "token": token,
       "limits": 10,
       "page": page,
       "type": type.index
     });
-    FeedbackDetailMessages messages =
-        FeedbackDetailMessages.fromJson(response.data);
-    return messages;
+    return FeedbackDetailMessages.fromJson(response.data);
   }
 
   static Future<TotalMessageData> getAllMessages() async {
     var token = CommonPreferences().feedbackToken.value;
     TotalMessageData data;
     try {
-      var response = await messageApi.get(
-        "qid",
-        queryParameters: {"token": token},
-      );
+      var response =
+          await messageDio.get("qid", queryParameters: {"token": token});
       data = TotalMessageData.fromJson(response.data);
     } catch (e) {
       data = null;
@@ -46,44 +41,44 @@ class MessageRepository {
 
   static setQuestionRead(int questionId) async {
     var token = CommonPreferences().feedbackToken.value;
-    await messageApi.post("question",
+    await messageDio.post("question",
         queryParameters: {"token": token, "question_id": questionId});
-    await messageChannel.invokeMethod<String>(
-      "cancelNotification",
-      {"id": questionId},
-    );
+    await messageChannel
+        .invokeMethod<String>("cancelNotification", {"id": questionId});
   }
 
   static Future<UserMessages> getUserMails(int page) async {
-    var token = CommonPreferences().token.value;
-    var response = await Dio().get(
-      "https://api.twt.edu.cn/api/notification/history/user",
-      options: Options(
-        headers: {
-          "DOMAIN": AuthDio.DOMAIN,
-          "ticket": AuthDio.ticket,
-          "token": token,
-        },
-      ),
-    );
+    var response = await userDio
+        .get('https://api.twt.edu.cn/api/notification/history/user');
     var messages = UserMessages.fromJson(response.data);
     return messages;
   }
 }
 
-final messageApi = MessageServer();
+final userDio = UserNotificationDio();
+final messageDio = MessageDio();
 
-class MessageServer extends DioForNative {
-  MessageServer() {
-    options.connectTimeout = 3000;
-    options.receiveTimeout = 3000;
-    options.responseType = ResponseType.plain;
-    // options.baseUrl = 'http://47.94.198.197:10805/api/user/message/';
-    options.baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
-    options.headers = {"Connection": "close"};
-    interceptors.add(ApiInterceptor());
-    interceptors.add(LogInterceptor());
-  }
+class UserNotificationDio extends DioAbstract {
+  @override
+  Map<String, String> headers = {
+    "DOMAIN": AuthDio.DOMAIN,
+    "ticket": AuthDio.ticket,
+    "token": CommonPreferences().token.value
+  };
+}
+
+class MessageDio extends DioAbstract {
+  @override
+  String baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
+
+  @override
+  Map<String, String> headers = {"Connection": "close"};
+
+  @override
+  List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
+
+  @override
+  ResponseType responseType = ResponseType.plain;
 }
 
 class ApiInterceptor extends InterceptorsWrapper {
@@ -96,31 +91,10 @@ class ApiInterceptor extends InterceptorsWrapper {
     FeedbackMessageBaseData respData = FeedbackMessageBaseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return messageApi.resolve(response);
+      return messageDio.dio.resolve(response);
     } else {
-      /// TODO: 不知道开放接口会返回什么错误信息
-      // if (respData.code == 2) {
-      //   // 如果cookie过期,需要清除本地存储的登录信息
-      //   // StorageManager.localStorage.deleteItem(UserModel.keyUser);
-      //   throw const UnAuthorizedException(); // 需要登录
-      // } else {
-      //   throw NotSuccessException.fromRespData(respData);
-      // }
-      throw NotSuccessException.fromRespData(respData);
+      throw WpyDioError(error: respData.message);
     }
-  }
-}
-
-class NotSuccessException implements Exception {
-  String message;
-
-  NotSuccessException.fromRespData(FeedbackMessageBaseData respData) {
-    message = respData.message;
-  }
-
-  @override
-  String toString() {
-    return 'NotExpectedException{respData: $message}';
   }
 }
 
@@ -177,13 +151,4 @@ class FeedbackMessageItem {
         : Comment.fromJson(json['contain']);
     post = Post.fromJson(json['question'] ?? '');
   }
-
-  Map get json => {
-        "id": id,
-        "type": type,
-        "createdAt": createdAt,
-        "updatedAt": updatedAt,
-        "contain": comment.toJson(),
-        "question": post.toJson(),
-      };
 }

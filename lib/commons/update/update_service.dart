@@ -6,13 +6,13 @@ class UpdateDio extends DioAbstract {
   ResponseType responseType = ResponseType.plain;
 }
 
-final _dio = UpdateDio();
+final updateDio = UpdateDio();
 
 class UpdateService {
   static void checkUpdate(
       {OnResult onResult, OnSuccess onSuccess, OnFailure onFailure}) async {
     try {
-      var response = await _dio
+      var response = await updateDio
           .get('https://mobile-api.twt.edu.cn/api/app/latest-version/2');
       var version = await UpdateManager.parseJson(response.data.toString());
       if (version == null && onSuccess != null) onSuccess();
@@ -24,7 +24,7 @@ class UpdateService {
 
   static Future<Response> downloadApk(String urlPath, String savePath,
           {ProgressCallback onReceiveProgress}) =>
-      _dio.download(urlPath, savePath,
+      updateDio.download(urlPath, savePath,
           onReceiveProgress: onReceiveProgress,
           options: Options(sendTimeout: 25000, receiveTimeout: 300000));
 }
