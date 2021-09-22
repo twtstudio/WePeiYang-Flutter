@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId "com.twt.service"
         multiDexEnabled true
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -88,7 +88,7 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
         }

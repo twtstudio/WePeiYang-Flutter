@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:image_pickers/image_pickers.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -30,6 +32,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
       onTap: () {
         Navigator.pop(context);
       },
+      onLongPress: () {
+        showSaveImageBottomSheet(context);
+      },
       child: Container(
           child: PhotoViewGallery.builder(
               loadingBuilder: (context, event) => Center(
@@ -58,8 +63,29 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 initialPage: indexNow,
               ),
               onPageChanged: (index) => setState(() {
-                    tempSelect = index + 1;
+                    tempSelect = index;
                   }))),
+    );
+  }
+
+  void showSaveImageBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget> [
+            ListTile(
+              title: Text('保存图片', style: TextStyle(fontWeight: FontWeight.bold),),
+              onTap: () {
+                ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                ToastProvider.success('已保存到手机相册');
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      }
     );
   }
 }
