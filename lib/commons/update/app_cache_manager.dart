@@ -4,7 +4,9 @@ import 'package:path_provider/path_provider.dart';
 //加载缓存
 searchLocalCache() async {
   Directory tempDir = await getExternalStorageDirectory();
-  double value = await _getTotalSizeOfFilesInDir(tempDir);
+  await _getTotalSizeOfFilesInDir(tempDir);
+  // TODO 应用内更新 调试用
+  // double value = await _getTotalSizeOfFilesInDir(tempDir);
   /*tempDir.list(followLinks: false,recursive: true).listen((file){
           //打印每个缓存文件的路径
         print(file.path);
@@ -68,23 +70,24 @@ Future<Null> delAllTemporaryFile() async {
   }
 }
 
+// TODO 应用内更新 调试用
 // 计算大小
-String _renderSize(double value) {
-  if (null == value) {
-    return '';
-  }
-  List<String> unitArr = List()..add('B')..add('K')..add('M')..add('G');
-  int index = 0;
-  while (value > 1024) {
-    index++;
-    value = value / 1024;
-  }
-  String size = value.toStringAsFixed(2);
-  if (size == '0.00') {
-    return '0M';
-  }
-  return size + unitArr[index];
-}
+// String _renderSize(double value) {
+//   if (null == value) {
+//     return '';
+//   }
+//   List<String> unitArr = List()..add('B')..add('K')..add('M')..add('G');
+//   int index = 0;
+//   while (value > 1024) {
+//     index++;
+//     value = value / 1024;
+//   }
+//   String size = value.toStringAsFixed(2);
+//   if (size == '0.00') {
+//     return '0M';
+//   }
+//   return size + unitArr[index];
+// }
 
 void clearCache() async {
   Directory tempDir = await getExternalStorageDirectory();

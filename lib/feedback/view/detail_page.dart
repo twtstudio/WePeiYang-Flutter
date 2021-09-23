@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +8,7 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -92,7 +90,6 @@ class _DetailPageState extends State<DetailPage> {
           id: id,
           onSuccess: (Post p) {
             post = p;
-            log("image : ${p.toJson()}");
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
               await Provider.of<MessageProvider>(context, listen: false)
                   .setFeedbackQuestionRead(p.id);
@@ -212,11 +209,6 @@ class _DetailPageState extends State<DetailPage> {
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
-                              log('index: $index');
-                              if (index >=
-                                  notifier.officialCommentList.length) {
-                                log('comment: ${notifier.commentList[index - notifier.officialCommentList.length]}');
-                              }
                               return index < notifier.officialCommentList.length
                                   ? CommentCard.official(
                                       notifier.officialCommentList[index],
@@ -348,7 +340,14 @@ class _DetailPageState extends State<DetailPage> {
                             onSuccess: () {
                               _textEditingController.text = '';
                               post.commentCount++;
+                              setState(() {
+                                _commentLengthIndicator = '0/200';
+                              });
                               _onRefresh();
+                              /// 刷新输入框字数
+                            },
+                            onSensitive: (String msg) {
+                              ToastProvider.error(msg);
                             },
                             onFailure: () {
                               ToastProvider.error(
@@ -358,11 +357,6 @@ class _DetailPageState extends State<DetailPage> {
                         ToastProvider.error(
                             S.current.feedback_empty_comment_error);
                       }
-
-                      /// 刷新输入框字数
-                      setState(() {
-                        _commentLengthIndicator = '0/200';
-                      });
                     },
                   ),
                 ],

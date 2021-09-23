@@ -182,6 +182,7 @@
   "feedback_anonymous": "",
   "feedback_official": "",
   "feedback_profile": "",
+  "feedback_set_all_read":"",
 
   "report": ""
 }

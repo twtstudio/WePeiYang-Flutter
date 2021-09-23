@@ -5,9 +5,9 @@ import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
-final loginApi = LoginDio();
+final loginDio = LoginDio();
 
-final openApi = OpenDio();
+final openDio = OpenDio();
 
 class LoginDio extends DioAbstract {
   @override
@@ -48,7 +48,7 @@ class ApiInterceptor extends InterceptorsWrapper {
     var respData = ResponseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return loginApi.dio.resolve(response);
+      return loginDio.dio.resolve(response);
     } else {
       throw WpyDioError(error: respData.message);
     }

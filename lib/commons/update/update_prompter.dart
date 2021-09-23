@@ -24,48 +24,26 @@ class UpdatePrompter {
   UpdatePrompter({@required this.updateEntity, @required this.onInstall});
 
   void show(BuildContext context, Version version) async {
-    if (_dialog != null && _dialog.isShowing()) {
+    if (_dialog != null && _dialog.isShowing) {
       return;
     }
-    String title = "是否升级到${updateEntity.version}版本？";
-    String updateContent = getUpdateContent();
     if (Platform.isAndroid) {
       _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
     }
     if (_apkFile != null && _apkFile.existsSync()) {
       _dialog = UpdateDialog.showUpdate(
         context,
-        title: title,
-        updateContent: updateContent,
         updateButtonText: "安装",
-        extraHeight: 10,
         onUpdate: doInstall,
         version: version,
       );
     } else {
       _dialog = UpdateDialog.showUpdate(
         context,
-        title: title,
-        updateContent: updateContent,
-        extraHeight: 10,
-        enableIgnore: true,
-        onIgnore: () => Navigator.pop(context),
         onUpdate: onUpdate,
         version: version,
       );
     }
-  }
-
-  String getUpdateContent() {
-    // String targetSize = '24.6mb';
-    // // CommonUtils.getTargetSize(updateEntity.apkSize.toDouble());
-    // String updateContent = "";
-    // if (targetSize.isNotEmpty) {
-    //   updateContent += "新版本大小：$targetSize\n";
-    // }
-    // updateContent += updateEntity.content;
-    // return updateContent;
-    return updateEntity.content;
   }
 
   Future<void> onUpdate() async {

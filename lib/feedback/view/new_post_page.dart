@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -89,7 +89,6 @@ class _NewPostPageState extends State<NewPostPage> {
                                     S.current.feedback_post_error);
                               },
                               onSensitive: (String msg) {
-                                print(msg);
                                 ToastProvider.error(msg);
                               },
                               onUploadImageFailure: () {

@@ -1816,6 +1816,16 @@ class S {
   }
 
   /// ``
+  String get feedback_set_all_read {
+    return Intl.message(
+      '',
+      name: 'feedback_set_all_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get report {
     return Intl.message(
       '',

@@ -99,11 +99,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       var difference = lastDay
           .difference(DateTime.now())
           .inDays;
-      if (difference != 0) {
-        return false;
-      } else {
-        return true;
-      }
+      return difference == 0;
     } catch (_) {
       return false;
     }
@@ -1099,7 +1095,7 @@ class ReportDataModel {
         ),
         data: data,
       );
-      var responseData = _ReportState.fromJson(result.data);
+      var responseData = ReportState.fromJson(result.data);
       return responseData.errorCode == 0 ? true : false ;
     } catch (e) {
       return false;
@@ -1193,7 +1189,7 @@ Future<bool> getTodayHasReported() async {
         },
       ),
     );
-    var data = _ReportState.fromJson(response.data);
+    var data = ReportState.fromJson(response.data);
     return data.result == 1 ? true : false;
   } catch (e) {
     return false;
@@ -1201,15 +1197,15 @@ Future<bool> getTodayHasReported() async {
 }
 
 // TODO: 上传数据的接口返回类型和这个相似，只是result为null，先用这个代替
-class _ReportState {
+class ReportState {
   final int errorCode;
   final String message;
   final int result;
 
-  _ReportState({this.errorCode, this.message, this.result});
+  ReportState({this.errorCode, this.message, this.result});
 
-  factory _ReportState.fromJson(Map<String, dynamic> json) {
-    return _ReportState(
+  factory ReportState.fromJson(Map<String, dynamic> json) {
+    return ReportState(
       errorCode: json['error_code'],
       message: json['message'],
       result: json['result'],

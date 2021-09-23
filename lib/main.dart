@@ -11,12 +11,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
-import 'package:we_pei_yang_flutter/commons/update/update.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/util/http_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
@@ -32,7 +31,6 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 /// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数之后
 /// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
 /// 2. App build 前后：
-/// [UpdateManager.init]配置更新应用的dio, 这个可以合并掉
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
@@ -92,7 +90,6 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       var size = MediaQuery.of(baseContext).size;
       WePeiYangApp.screenWidth = size.width;
       WePeiYangApp.screenHeight = size.height;
-      UpdateManager.init(context: baseContext);
       await HiveManager.init();
 
       /// 获取feedback的token
@@ -168,7 +165,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'WePeiYangFlutter',
+          title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
           navigatorObservers: [AppAnalysis()],

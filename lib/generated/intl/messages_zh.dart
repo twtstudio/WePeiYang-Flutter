@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_search_history" : MessageLookupByLibrary.simpleMessage("历史记录"),
     "feedback_search_result" : MessageLookupByLibrary.simpleMessage("搜索结果"),
     "feedback_search_tag" : MessageLookupByLibrary.simpleMessage("标签搜索"),
+    "feedback_set_all_read" : MessageLookupByLibrary.simpleMessage("确定要设置所有消息已读吗？"),
     "feedback_submit" : MessageLookupByLibrary.simpleMessage("提交"),
     "feedback_upload_image_error" : MessageLookupByLibrary.simpleMessage("校务专区图片上传失败"),
     "feedback_write_comment" : MessageLookupByLibrary.simpleMessage("写评论…"),

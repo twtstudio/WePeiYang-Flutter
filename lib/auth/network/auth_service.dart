@@ -41,7 +41,7 @@ class AuthDio extends DioAbstract {
           Navigator.pushNamedAndRemoveUntil(
               WePeiYangApp.navigatorState.currentContext,
               AuthRouter.login,
-                  (route) => false);
+              (route) => false);
           throw WpyDioError(error: "登录失效，请重新登录");
         case 50005:
           throw WpyDioError(error: "学号和身份证号不匹配");
@@ -87,13 +87,13 @@ class AuthDio extends DioAbstract {
   ];
 }
 
-final _dio = AuthDio();
+final authDio = AuthDio();
 
 /// 注册或完善信息时获取短信验证码
 getCaptchaOnRegister(String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    var response = await _dio
+    var response = await authDio
         .post("register/phone/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
@@ -111,7 +111,7 @@ getCaptchaOnInfo(String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
     var response =
-    await _dio.post("user/phone/msg", queryParameters: {"phone": phone});
+        await authDio.post("user/phone/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
       CommonPreferences().captchaCookie.value =
@@ -127,7 +127,7 @@ getCaptchaOnInfo(String phone,
 getCaptchaOnReset(String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    var response = await _dio
+    var response = await authDio
         .post("password/reset/msg", queryParameters: {"phone": phone});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
@@ -144,7 +144,7 @@ getCaptchaOnReset(String phone,
 verifyOnReset(String phone, String code,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    var response = await _dio.post("password/reset/verify",
+    var response = await authDio.post("password/reset/verify",
         queryParameters: {"phone": phone, "code": code});
     var cookie = response.headers.map['set-cookie'];
     if (cookie != null) {
@@ -161,7 +161,7 @@ verifyOnReset(String phone, String code,
 resetPwByPhone(String phone, String password,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.post("password/reset",
+    await authDio.post("password/reset",
         queryParameters: {"phone": phone, "password": password});
     onSuccess();
   } on DioError catch (e) {
@@ -173,7 +173,7 @@ resetPwByPhone(String phone, String password,
 resetPwByLogin(String password,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio
+    await authDio
         .put("password/person/reset", queryParameters: {"password": password});
     CommonPreferences().password.value = password;
     onSuccess();
@@ -187,7 +187,7 @@ register(String userNumber, String nickname, String phone, String verifyCode,
     String password, String email, String idNumber,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.post("register", queryParameters: {
+    await authDio.post("register", queryParameters: {
       "userNumber": userNumber,
       "nickname": nickname,
       "phone": phone,
@@ -206,7 +206,7 @@ register(String userNumber, String nickname, String phone, String verifyCode,
 void login(String account, String password,
     {@required OnResult onResult, OnFailure onFailure}) async {
   try {
-    var result = await _dio.postRst("auth/common",
+    var result = await authDio.postRst("auth/common",
         queryParameters: {"account": account, "password": password});
     var prefs = CommonPreferences();
     prefs.token.value = result['token'] ?? "";
@@ -214,7 +214,6 @@ void login(String account, String password,
       /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
       prefs.clearTjuPrefs();
     }
-    log(result.toString());
     prefs.account.value = account;
     prefs.password.value = password;
     prefs.nickname.value = result['nickname'] ?? "";
@@ -239,7 +238,7 @@ void login(String account, String password,
 addInfo(String telephone, String verifyCode, String email,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.put("user/single", queryParameters: {
+    await authDio.put("user/single", queryParameters: {
       "telephone": telephone,
       "verifyCode": verifyCode,
       "email": email
@@ -257,7 +256,7 @@ addInfo(String telephone, String verifyCode, String email,
 changePhone(String phone, String code,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.put("user/single/phone",
+    await authDio.put("user/single/phone",
         queryParameters: {'phone': phone, 'code': code});
     CommonPreferences().phone.value = phone;
     onSuccess();
@@ -270,7 +269,7 @@ changePhone(String phone, String code,
 changeEmail(String email,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.put("user/single/email", queryParameters: {'email': email});
+    await authDio.put("user/single/email", queryParameters: {'email': email});
     CommonPreferences().email.value = email;
     onSuccess();
   } on DioError catch (e) {
@@ -282,7 +281,7 @@ changeEmail(String email,
 changeNickname(String username,
     {@required void Function() onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio
+    await authDio
         .put("user/single/username", queryParameters: {'username': username});
     CommonPreferences().nickname.value = username;
     onSuccess();
@@ -295,7 +294,7 @@ changeNickname(String username,
 checkInfo1(String userNumber, String username,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.get("register/checking/$userNumber/$username");
+    await authDio.get("register/checking/$userNumber/$username");
     onSuccess();
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
@@ -306,7 +305,7 @@ checkInfo1(String userNumber, String username,
 checkInfo2(String idNumber, String email, String phone,
     {@required OnSuccess onSuccess, OnFailure onFailure}) async {
   try {
-    await _dio.post("register/checking", queryParameters: {
+    await authDio.post("register/checking", queryParameters: {
       'idNumber': idNumber,
       'email': email,
       'phone': phone
@@ -320,7 +319,7 @@ checkInfo2(String idNumber, String email, String phone,
 /// 获得当前学期信息，在用户 手动/自动 登录后被调用
 getSemesterInfo() async {
   try {
-    var result = await _dio.getRst("semester");
+    var result = await authDio.getRst("semester");
     var pref = CommonPreferences();
     pref.termStart.value = result['semesterStartTimestamp'];
     pref.termName.value = result['semesterName'];

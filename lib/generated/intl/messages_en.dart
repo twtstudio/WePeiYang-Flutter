@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_search_history" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_search_result" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_search_tag" : MessageLookupByLibrary.simpleMessage(""),
+    "feedback_set_all_read" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_submit" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_upload_image_error" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_write_comment" : MessageLookupByLibrary.simpleMessage(""),

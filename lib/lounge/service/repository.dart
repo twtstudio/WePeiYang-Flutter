@@ -13,7 +13,7 @@ class LoungeRepository {
   static bool canLoadTemporaryData = true;
 
   static Future<List<Building>> get _getBaseBuildingList async {
-    var response = await openApi.get('getBuildingList');
+    var response = await openDio.get('getBuildingList');
 
     List<Building> buildings =
         response.data.map<Building>((b) => Building.fromMap(b)).toList();
@@ -21,7 +21,7 @@ class LoungeRepository {
   }
 
   static Future<List<String>> get favouriteList async {
-    var response = await loginApi.get('getCollections');
+    var response = await loginDio.get('getCollections');
     var pre = Map<String, List<dynamic>>.from(response.data).values;
     if (pre.length == 0) {
       return <String>[];
@@ -30,10 +30,10 @@ class LoungeRepository {
     }
   }
 
-  static collect({String id}) async => await loginApi
+  static collect({String id}) async => await loginDio
       .post('addCollection', queryParameters: {'classroom_id': id});
 
-  static unCollect({String id}) async => await loginApi
+  static unCollect({String id}) async => await loginDio
       .post('deleteCollection', queryParameters: {'classroom_id': id});
 
   /// 从网络上获取一周的全部数据
@@ -43,7 +43,7 @@ class LoungeRepository {
     var term = CommonPreferences().termName.value;
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week}/${weekday.day}';
-      var response = await openApi.get('getDayData/$requestDate');
+      var response = await openDio.get('getDayData/$requestDate');
       try {
         List<Building> buildings =
             response.data.map<Building>((b) => Building.fromMap(b)).toList();
