@@ -355,6 +355,11 @@ class _DetailPageState extends State<DetailPage> {
                         ToastProvider.error(
                             S.current.feedback_empty_comment_error);
                       }
+
+                      /// 刷新输入框字数
+                      setState(() {
+                        _commentLengthIndicator = '0/200';
+                      });
                     },
                   ),
                 ],
