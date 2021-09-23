@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/message/feedback_set_read_all.dart';
 
 import 'blank_space.dart';
 
@@ -41,7 +42,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 title: Text(S.current.feedback_profile),
                 centerTitle: true,
-                actions: [FeedbackMailbox()],
+                actions: [FeedbackReadAllButton(),FeedbackMailbox()],
               ),
               SliverToBoxAdapter(
                 child: BlankSpace.height(23),

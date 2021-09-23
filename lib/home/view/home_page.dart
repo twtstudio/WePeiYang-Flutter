@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
-import 'package:we_pei_yang_flutter/commons/update/update.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';

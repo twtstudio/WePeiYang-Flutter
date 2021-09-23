@@ -53,6 +53,17 @@ class MessageService {
     var messages = UserMessages.fromJson(response.data);
     return messages;
   }
+
+  static Future<bool> setFeedbackMessageReadAll() async {
+    try {
+      await messageDio.post("readAll",
+          formData: FormData.fromMap(
+              {"token": CommonPreferences().feedbackToken.value}));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 final userDio = UserNotificationDio();
@@ -78,6 +89,7 @@ class MessageDio extends DioAbstract {
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
 
   @override
+  // 这里不能改，因为下面手动解析的字符串
   ResponseType responseType = ResponseType.plain;
 }
 
