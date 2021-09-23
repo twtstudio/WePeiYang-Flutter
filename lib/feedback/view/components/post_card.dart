@@ -208,7 +208,11 @@ class _PostCardState extends State<PostCard> {
                             onTap: () {
                               Navigator.pushNamed(
                                   context, FeedbackRouter.imageView,
-                                  arguments: post.imgUrlList[i]);
+                                  arguments: {
+                                    "urlList": post.imgUrlList,
+                                    "urlListLength": post.imgUrlList.length,
+                                    "indexNow": i
+                                  });
                             },
                             child: FadeInImage.memoryNetwork(
                                 fit: BoxFit.cover,
