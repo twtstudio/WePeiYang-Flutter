@@ -141,7 +141,6 @@ class FeedbackNotifier with ChangeNotifier {
       await getToken(
         onSuccess: (token) {
           _token = token;
-          log("token: $token");
           CommonPreferences().feedbackToken.value = token;
           initTags(onSuccess, onFailure);
         },

@@ -17,6 +17,9 @@ class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   String baseUrl = 'https://areas.twt.edu.cn/api/user/';
+
+  @override
+  bool responseBody = true;
 }
 
 final feedbackDio = FeedbackDio();
@@ -37,7 +40,7 @@ Future getToken(
     @required void Function() onFailure}) async {
   try {
     var cid = await messageChannel.invokeMethod<String>("getCid");
-    Response response = await feedbackDio.post(
+    var response = await feedbackDio.post(
       'login',
       formData: FormData.fromMap({
         'username': CommonPreferences().account.value,
@@ -62,7 +65,7 @@ Future getTags(token,
     {@required void Function(List<Tag> tagList) onSuccess,
     @required void Function() onFailure}) async {
   try {
-    Response response = await feedbackDio.get('tag/get/all', queryParameters: {
+    var response = await feedbackDio.get('tag/get/all', queryParameters: {
       'token': token,
     });
     if (0 == response.data['ErrorCode'] &&
@@ -73,7 +76,6 @@ Future getTags(token,
       }
       onSuccess(tagList);
     } else {
-      log(response.data.toString());
       onFailure();
     }
   } on DioError catch (e) {
@@ -89,7 +91,7 @@ Future getPosts(
     @required void Function(List<Post> list, int totalPage) onSuccess,
     @required onFailure}) async {
   try {
-    Response response = await feedbackDio.get(
+    var response = await feedbackDio.get(
       'question/search',
       queryParameters: {
         'searchString': keyword ?? '',
@@ -122,8 +124,7 @@ Future getMyPosts({
   @required void Function() onFailure,
 }) async {
   try {
-    log("notifier.token ${notifier.token}");
-    Response response = await feedbackDio.get(
+    var response = await feedbackDio.get(
       'question/get/myQuestion',
       queryParameters: {
         'limits': 0,
@@ -138,7 +139,6 @@ Future getMyPosts({
       }
       onSuccess(list);
     } else {
-      log("${response.data.toString()}");
       onFailure();
     }
   } on DioError catch (e) {
@@ -153,7 +153,7 @@ Future getPostById({
   @required void Function() onFailure,
 }) async {
   try {
-    Response response = await feedbackDio.get(
+    var response = await feedbackDio.get(
       'question/get/byId',
       queryParameters: {
         'id': id,
@@ -161,7 +161,7 @@ Future getPostById({
       },
     );
     if (0 == response.data['ErrorCode']) {
-      Post post = Post.fromJson(response.data['data']);
+      var post = Post.fromJson(response.data['data']);
       onSuccess(post);
     } else {
       onFailure();
@@ -181,12 +181,12 @@ Future getComments({
   @required void Function() onFailure,
 }) async {
   try {
-    Response officialCommentResponse =
+    var officialCommentResponse =
         await feedbackDio.get('question/get/answer', queryParameters: {
       'question_id': '$id',
       'token': notifier.token,
     });
-    Response commentResponse = await feedbackDio.get(
+    var commentResponse = await feedbackDio.get(
       'question/get/commit',
       queryParameters: {
         'question_id': '$id',
@@ -218,7 +218,7 @@ Future getFavoritePosts({
   @required void Function() onFailure,
 }) async {
   try {
-    Response response = await feedbackDio.get(
+    var response = await feedbackDio.get(
       'favorite/get/all',
       queryParameters: {'token': notifier.token},
     );
@@ -246,12 +246,12 @@ Future postHitLike({
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response = await feedbackDio.post(
-          isLiked ? 'question/dislike' : 'question/like',
-          formData: FormData.fromMap({
-            'id': '$id',
-            'token': notifier.token,
-          }));
+      var response =
+          await feedbackDio.post(isLiked ? 'question/dislike' : 'question/like',
+              formData: FormData.fromMap({
+                'id': '$id',
+                'token': notifier.token,
+              }));
       if (0 == response.data['ErrorCode']) {
         onSuccess();
       } else {
@@ -275,7 +275,7 @@ Future postHitFavorite({
   if (!_hitFavoriteLock) {
     _hitFavoriteLock = true;
     try {
-      Response response = await feedbackDio.post(
+      var response = await feedbackDio.post(
           isFavorite ? 'question/unfavorite' : 'question/favorite',
           formData: FormData.fromMap({
             'question_id': id,
@@ -303,7 +303,7 @@ Future commentHitLike(
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response =
+      var response =
           await feedbackDio.post(isLiked ? 'commit/dislike' : 'commit/like',
               formData: FormData.fromMap({
                 'id': '$id',
@@ -331,7 +331,7 @@ Future officialCommentHitLike(
   if (!_hitLikeLock) {
     _hitLikeLock = true;
     try {
-      Response response =
+      var response =
           await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
               formData: FormData.fromMap({
                 'id': '$id',
@@ -355,11 +355,12 @@ Future sendComment(
     {@required id,
     @required content,
     @required void Function() onSuccess,
-    @required void Function() onFailure}) async {
+    @required void Function() onFailure,
+    @required void Function(String msg) onSensitive}) async {
   if (!_sendCommentLock) {
     _sendCommentLock = true;
     try {
-      Response response = await feedbackDio.post(
+      var response = await feedbackDio.post(
         'commit/add/question',
         formData: FormData.fromMap({
           'token': notifier.token,
@@ -369,8 +370,13 @@ Future sendComment(
       );
       if (0 == response.data['ErrorCode']) {
         onSuccess();
-      } else {
-        onFailure();
+      } else if (2 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg']);
+        /// 含有敏感词
+      } else if (10 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg'] +
+            '\n' +
+            response.data['data']['bad_word_list'].toSet().toList().toString());
       }
       _sendCommentLock = false;
     } on DioError catch (e) {
@@ -393,7 +399,7 @@ Future sendPost(
   if (!_sendPostLock) {
     _sendPostLock = true;
     try {
-      Response response = await feedbackDio.post('question/add',
+      var response = await feedbackDio.post('question/add',
           formData: FormData.fromMap({
             'token': notifier.token,
             'name': title,
@@ -404,7 +410,7 @@ Future sendPost(
       if (0 == response.data['ErrorCode']) {
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {
-            FormData data = FormData.fromMap({
+            var data = FormData.fromMap({
               'token': notifier.token,
               'newImg': MultipartFile.fromBytes(
                 imgList[index].readAsBytesSync(),
@@ -413,12 +419,10 @@ Future sendPost(
               ),
               'question_id': response.data['data']['question_id'],
             });
-            Response uploadImgResponse =
+            var uploadImgResponse =
                 await feedbackDio.post('image/add', formData: data);
             if (0 != uploadImgResponse.data['ErrorCode']) {
               onUploadImageFailure();
-              log(response.data['data'].toString());
-              log(uploadImgResponse.data.toString());
             }
             if (0 == uploadImgResponse.data['ErrorCode'] &&
                 index == imgList.length - 1) {
@@ -428,11 +432,14 @@ Future sendPost(
         } else {
           onSuccess();
         }
+        /// 发问题 & 评论过快
       } else if (2 == response.data['ErrorCode']) {
         onSensitive(response.data['msg']);
-      }
-      else if(10 == response.data['ErrorCode']) {
-        onSensitive(response.data['msg'] + '\n' + response.data['data']['bad_word_list'].toSet().toList().toString());
+        /// 含有敏感词
+      } else if (10 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg'] +
+            '\n' +
+            response.data['data']['bad_word_list'].toSet().toList().toString());
       }
       _sendPostLock = false;
     } on DioError catch (e) {
@@ -451,7 +458,7 @@ Future rate(
   if (!_rateLock) {
     _rateLock = true;
     try {
-      Response response = await feedbackDio.post(
+      var response = await feedbackDio.post(
         'answer/commit',
         formData: FormData.fromMap({
           'token': notifier.token,
@@ -481,7 +488,7 @@ Future deletePost(
   if (!_deleteLock) {
     _deleteLock = true;
     try {
-      Response response = await feedbackDio.post(
+      var response = await feedbackDio.post(
         'question/delete',
         formData: FormData.fromMap({
           'token': notifier.token,

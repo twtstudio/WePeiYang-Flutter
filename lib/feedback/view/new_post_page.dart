@@ -89,7 +89,6 @@ class _NewPostPageState extends State<NewPostPage> {
                                     S.current.feedback_post_error);
                               },
                               onSensitive: (String msg) {
-                                print(msg);
                                 ToastProvider.error(msg);
                               },
                               onUploadImageFailure: () {
