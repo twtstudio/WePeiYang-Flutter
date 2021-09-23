@@ -388,6 +388,7 @@ Future sendPost(
     @required List<File> imgList,
     @required void Function() onSuccess,
     @required void Function() onFailure,
+    @required void Function(String msg) onSensitive,
     @required void Function() onUploadImageFailure}) async {
   if (!_sendPostLock) {
     _sendPostLock = true;
@@ -427,8 +428,11 @@ Future sendPost(
         } else {
           onSuccess();
         }
-      } else {
-        onFailure();
+      } else if (2 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg']);
+      }
+      else if(10 == response.data['ErrorCode']) {
+        onSensitive(response.data['msg'] + '\n' + response.data['data']['bad_word_list'].toSet().toList().toString());
       }
       _sendPostLock = false;
     } on DioError catch (e) {

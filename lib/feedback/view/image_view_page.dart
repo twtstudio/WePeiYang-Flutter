@@ -18,7 +18,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   @override
   void initState() {
     super.initState();
-    tempSelect = indexNow + 1;
+    tempSelect = indexNow;
   }
 
   @override
@@ -51,7 +51,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
                   imageProvider: NetworkImage(urlList[index]),
-                  maxScale: PhotoViewComputedScale.contained * 8.0,
+                  maxScale: PhotoViewComputedScale.contained * 5.0,
                   minScale: PhotoViewComputedScale.contained * 1.0,
                   initialScale: PhotoViewComputedScale.contained,
                 );
@@ -76,13 +76,16 @@ class _ImageViewPageState extends State<ImageViewPage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget> [
             ListTile(
-              title: Text('保存图片', style: TextStyle(fontWeight: FontWeight.bold),),
-              onTap: () {
-                ImagePickers.saveImageToGallery(urlList[tempSelect]);
-                ToastProvider.success('已保存到手机相册');
-                Navigator.pop(context);
-              },
-            )
+              title: Text(
+                  '保存图片',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                onTap: () {
+                  ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                  ToastProvider.success('已保存到手机相册');
+                  Navigator.pop(context);
+                },
+              )
           ],
         );
       }

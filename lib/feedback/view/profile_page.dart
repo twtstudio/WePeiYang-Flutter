@@ -122,7 +122,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                               id: notifier
                                                   .profilePostList[index].id,
                                               onSuccess: () {
-                                                setState(() {});
+                                                setState(() {
+                                                  notifier.removeProfilePost(index);
+                                                });
                                                 Navigator.pop(context);
                                                 ToastProvider.success(S.current
                                                     .feedback_delete_success);
@@ -183,7 +185,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 id: notifier
                                                     .profilePostList[index].id,
                                                 onSuccess: () {
-                                                  setState(() {});
+                                                  setState(() {
+                                                    notifier.removeProfilePost(index);
+                                                  });
                                                   Navigator.pop(context);
                                                   ToastProvider.success(S
                                                       .current
