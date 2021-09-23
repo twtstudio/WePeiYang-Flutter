@@ -254,6 +254,9 @@ class _DetailPageState extends State<DetailPage> {
                                   : CommentCard(
                                       notifier.commentList[index -
                                           notifier.officialCommentList.length],
+                                      index -
+                                          notifier.officialCommentList.length +
+                                          1,
                                       onLikePressed: () {
                                         commentHitLike(
                                           id: notifier
