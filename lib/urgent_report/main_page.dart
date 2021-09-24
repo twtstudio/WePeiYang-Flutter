@@ -38,13 +38,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(Duration(seconds: 1));
-      messageChannel.invokeMethod("test");
-      Future.delayed(Duration(seconds: 3));
-      placeChannel.invokeMethod("test");
-    });
-
     _checkPageShowType();
   }
 

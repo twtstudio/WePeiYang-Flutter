@@ -141,6 +141,12 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                     footer: ClassicFooter(),
                     enablePullUp: currentPage != totalPage,
                     onLoading: _onLoading,
+                    enableTwoLevel: true,
+                    onTwoLevel: () async {
+                      await Navigator.pushNamed(context, FeedbackRouter.web);
+                      await Future.delayed(Duration(milliseconds: 300));
+                      _refreshController.twoLevelComplete();
+                    },
                     child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
