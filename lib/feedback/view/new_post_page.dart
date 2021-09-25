@@ -74,7 +74,7 @@ class _NewPostPageState extends State<NewPostPage> {
                           if (_titleController.text.isNotEmpty &&
                               _bodyController.text.isNotEmpty &&
                               _currentTagId != null) {
-                            sendPost(
+                            FeedbackService.sendPost(
                               title: _titleController.text,
                               content: _bodyController.text,
                               tagId: _currentTagId,

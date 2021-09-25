@@ -92,7 +92,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
       ToastProvider.error("手机号码不能为空");
       return;
     }
-    getCaptchaOnReset(phone,
+    AuthService.getCaptchaOnReset(phone,
         onSuccess: () {
           setState(() => isPress = true);
         },
@@ -107,7 +107,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
       ToastProvider.error("短信验证码不能为空");
       return;
     }
-    verifyOnReset(phone, code,
+    AuthService.verifyOnReset(phone, code,
         onSuccess: () =>
             Navigator.pushNamed(context, AuthRouter.resetPw, arguments: phone),
         onFailure: (e) => ToastProvider.error(e.error.toString()));

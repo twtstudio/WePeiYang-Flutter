@@ -74,7 +74,7 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                     comment,
                     title: title,
                     onLikePressed: () {
-                      officialCommentHitLike(
+                      FeedbackService.officialCommentHitLike(
                         id: notifier.officialCommentList[index].id,
                         isLiked: notifier.officialCommentList[index].isLiked,
                         onSuccess: () {
@@ -92,7 +92,7 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                     child: RatingCard(
                       initialRating: comment.rating == -1 ? 5 : comment.rating,
                       onRatingChanged: (rating) {
-                        rate(
+                        FeedbackService.rate(
                           id: comment.id,
                           rating: rating * 2,
                           onSuccess: () {

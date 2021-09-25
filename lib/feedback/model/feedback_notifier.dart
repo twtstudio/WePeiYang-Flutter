@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -8,7 +6,6 @@ import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 
 // TODO: Invoke this method when initialize [ProfilePage].
@@ -138,14 +135,14 @@ class FeedbackNotifier with ChangeNotifier {
   Future<void> initHomePostList(onSuccess, onFailure) async {
     clearHomePostList();
     if (CommonPreferences().feedbackToken.value == "") {
-      await getToken(
-        onSuccess: (token) {
+      await FeedbackService.getToken(
+        onResult: (token) {
           _token = token;
           CommonPreferences().feedbackToken.value = token;
           initTags(onSuccess, onFailure);
         },
-        onFailure: () {
-          ToastProvider.error('校务专区登录失败, 请刷新');
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
         },
       );
     } else {
@@ -155,25 +152,25 @@ class FeedbackNotifier with ChangeNotifier {
   }
 
   Future<void> initTags(onSuccess, onError) async {
-    await getTags(
+    await FeedbackService.getTags(
       _token,
-      onSuccess: (list) {
+      onResult: (list) {
         _tagList.clear();
         _tagList.addAll(list);
-        getPosts(
+        FeedbackService.getPosts(
           tagId: '',
           page: '1',
           onSuccess: (postList, totalPage) {
             _homePostList.addAll(postList);
             onSuccess(totalPage);
           },
-          onFailure: () {
-            ToastProvider.error(S.current.feedback_get_post_error);
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
           },
         );
       },
-      onFailure: () {
-        ToastProvider.error('校务专区获取标签失败, 请刷新');
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
       },
     );
   }

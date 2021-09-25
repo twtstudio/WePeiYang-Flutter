@@ -5,10 +5,6 @@ import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
-final loginDio = LoginDio();
-
-final openDio = OpenDio();
-
 class LoginDio extends DioAbstract {
   @override
   String baseUrl = 'https://selfstudy.twt.edu.cn/';
@@ -37,6 +33,10 @@ class OpenDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
 }
+
+final loginDio = LoginDio();
+
+final openDio = OpenDio();
 
 class ApiInterceptor extends InterceptorsWrapper {
   @override

@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'error_interceptor.dart';
 import 'net_check_interceptor.dart';
 
-export 'package:dio/src/interceptor.dart' show InterceptorsWrapper;
 export 'package:dio/dio.dart';
+export 'package:dio/src/interceptor.dart' show InterceptorsWrapper;
 export 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();
-typedef OnResult = void Function(dynamic data);
+typedef OnResult<T> = void Function(T data);
 typedef OnFailure = void Function(DioError e);
 
 abstract class DioAbstract {
@@ -43,37 +44,78 @@ extension DioRequests on DioAbstract {
   /// 普通的[get]、[post]、[put]与[download]方法，返回[Response]
   Future<Response<dynamic>> get(String path,
       {Map<String, dynamic> queryParameters}) {
-    return dio.get(path, queryParameters: queryParameters);
+    return dio
+        .get(path, queryParameters: queryParameters)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
   }
 
   Future<Response<dynamic>> post(String path,
       {Map<String, dynamic> queryParameters, FormData formData}) {
-    return dio.post(path, queryParameters: queryParameters, data: formData);
+    return dio
+        .post(path, queryParameters: queryParameters, data: formData)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
   }
 
   Future<Response<dynamic>> put(String path,
       {Map<String, dynamic> queryParameters}) {
-    return dio.put(path, queryParameters: queryParameters);
+    return dio
+        .put(path, queryParameters: queryParameters)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
   }
 
   Future<Response<dynamic>> download(String urlPath, String savePath,
       {ProgressCallback onReceiveProgress, Options options}) {
-    return dio.download(urlPath, savePath,
-        onReceiveProgress: onReceiveProgress, options: options);
+    return dio
+        .download(urlPath, savePath,
+            onReceiveProgress: onReceiveProgress, options: options)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
   }
 
   /// twt后台包装的[get]与[post]方法，返回[CommonBody.result]
   Future<Map> getRst(String path, {Map<String, dynamic> queryParameters}) {
     return dio
         .get(path, queryParameters: queryParameters)
-        .then((value) => CommonBody.fromJson(value.data).result);
+        .then((value) => CommonBody.fromJson(value.data).result)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
   }
 
   Future<Map> postRst(String path,
       {Map<String, dynamic> queryParameters, FormData formData}) {
     return dio
         .post(path, queryParameters: queryParameters, data: formData)
-        .then((value) => CommonBody.fromJson(value.data).result);
+        .then((value) => CommonBody.fromJson(value.data).result)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      return error;
+    });
+  }
+}
+
+mixin AsyncTimer {
+  static Map<String, int> _map = {};
+
+  static bool checkTime(String fun, {int millisecond = 1500}) {
+    var now = DateTime.now().millisecondsSinceEpoch;
+    if (!_map.containsKey(fun) || (now - _map[fun] >= millisecond)) {
+      _map[fun] = now;
+      return true;
+    }
+    return false;
   }
 }
 

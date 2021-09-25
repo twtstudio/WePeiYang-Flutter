@@ -53,7 +53,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   _onRefresh() {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
-    getPosts(
+    FeedbackService.getPosts(
       tagId: tagId,
       page: currentPage,
       keyword: keyword,
@@ -62,8 +62,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
         Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
         _refreshController.refreshCompleted();
       },
-      onFailure: () {
-        ToastProvider.error(S.current.feedback_get_post_error);
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
         _refreshController.refreshFailed();
       },
     );
@@ -72,7 +72,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      getPosts(
+      FeedbackService.getPosts(
         tagId: tagId,
         page: currentPage,
         keyword: keyword,
@@ -81,8 +81,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
           Provider.of<FeedbackNotifier>(context, listen: false).addHomePosts(list);
           _refreshController.refreshCompleted();
         },
-        onFailure: () {
-          ToastProvider.error(S.current.feedback_get_post_error);
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
           _refreshController.loadFailed();
         },
       );
@@ -97,7 +97,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     currentPage = 1;
     Provider.of<FeedbackNotifier>(context, listen: false).clearHomePostList();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getPosts(
+      FeedbackService.getPosts(
         tagId: tagId,
         page: currentPage,
         keyword: keyword,
@@ -108,8 +108,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
             status = SearchPageStatus.idle;
           });
         },
-        onFailure: () {
-          ToastProvider.error(S.current.feedback_get_post_error);
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
         },
       );
     });
@@ -201,7 +201,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            postHitLike(
+                                            FeedbackService.postHitLike(
                                               id: notifier.homePostList[index].id,
                                               isLiked: notifier.homePostList[index].isLiked,
                                               onSuccess: () {
@@ -226,7 +226,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            postHitLike(
+                                            FeedbackService.postHitLike(
                                               id: notifier.homePostList[index].id,
                                               isLiked: notifier.homePostList[index].isLiked,
                                               onSuccess: () {

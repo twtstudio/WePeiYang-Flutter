@@ -40,7 +40,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ToastProvider.error("旧密码输入错误");
       return;
     }
-    resetPwByLogin(newPW1,
+    AuthService.resetPwByLogin(newPW1,
         onSuccess: () => ToastProvider.success("密码修改成功"),
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }

@@ -8,7 +8,8 @@ import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
 
 /// 发送请求，获取html中的schedule数据
-void getScheduleCourses({OnResult onResult, OnFailure onFailure}) async {
+void getScheduleCourses(
+    {OnResult<List<ScheduleCourse>> onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
   try {

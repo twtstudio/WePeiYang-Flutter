@@ -93,11 +93,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
       await HiveManager.init();
 
       /// 获取feedback的token
-      await getToken(onFailure: () {
-        // assert(() {
-        //   ToastProvider.error("获取token失败");
-        // }());
-      });
+      await FeedbackService.getToken();
       var id = await messageChannel?.invokeMethod<int>("getPostId");
       if (id != -1) {
         await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
@@ -260,7 +256,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     } else {
       /// 如果登陆过的话，短暂显示启动页后尝试自动登录，无论成功与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then(
-        (_) => login(
+        (_) => AuthService.login(
           prefs.account.value,
           prefs.password.value,
           onResult: (_) {

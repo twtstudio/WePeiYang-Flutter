@@ -89,7 +89,7 @@ class MessageDio extends DioAbstract {
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
 
   @override
-  // 这里不能改，因为下面手动解析的字符串
+  /// 这里不能改，因为下面手动解析的字符串
   ResponseType responseType = ResponseType.plain;
 }
 

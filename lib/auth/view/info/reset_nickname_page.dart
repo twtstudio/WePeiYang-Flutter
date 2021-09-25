@@ -18,7 +18,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
       ToastProvider.error("用户名不能为空");
       return;
     }
-    changeNickname(nickname,
+    AuthService.changeNickname(nickname,
         onSuccess: () {
           ToastProvider.success("更改用户名成功");
           Navigator.pop(context);

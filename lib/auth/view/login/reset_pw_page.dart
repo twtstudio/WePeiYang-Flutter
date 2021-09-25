@@ -26,7 +26,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       return;
     }
     String phone = ModalRoute.of(context).settings.arguments;
-    resetPwByPhone(phone, password1,
+    AuthService.resetPwByPhone(phone, password1,
         onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }

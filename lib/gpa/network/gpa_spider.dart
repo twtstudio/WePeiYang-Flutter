@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
 
 /// 发送请求，获取html中的gpa数据
-void getGPABean({@required OnResult onResult, OnFailure onFailure}) async {
+void getGPABean({@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
   /// 判断是否为硕士研究生

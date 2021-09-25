@@ -58,7 +58,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
   _onLoading() {
     if (currentPage != totalPage) {
       currentPage++;
-      getPosts(
+      FeedbackService.getPosts(
         tagId: '',
         page: currentPage,
         onSuccess: (list, page) {
@@ -67,7 +67,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
               .addHomePosts(list);
           _refreshController.loadComplete();
         },
-        onFailure: () {
+        onFailure: (_) {
           _refreshController.loadFailed();
         },
       );
@@ -234,7 +234,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            postHitLike(
+                                            FeedbackService.postHitLike(
                                               id: notifier
                                                   .homePostList[index].id,
                                               isLiked: notifier
@@ -263,7 +263,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                     PostOrigin.home));
                                           },
                                           onLikePressed: () {
-                                            postHitLike(
+                                            FeedbackService.postHitLike(
                                               id: notifier
                                                   .homePostList[index].id,
                                               isLiked: notifier

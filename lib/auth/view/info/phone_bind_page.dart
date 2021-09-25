@@ -24,7 +24,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
       ToastProvider.error("手机号码不能为空");
       return;
     }
-    getCaptchaOnInfo(phone,
+    AuthService.getCaptchaOnInfo(phone,
         onSuccess: () {
           setState(() => isPress = true);
         },
@@ -39,7 +39,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
       ToastProvider.error("短信验证码不能为空");
       return;
     }
-    changePhone(phone, code,
+    AuthService.changePhone(phone, code,
         onSuccess: () {
           ToastProvider.success("手机号码绑定成功");
           setState(() {});

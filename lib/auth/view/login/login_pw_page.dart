@@ -23,7 +23,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
     else if (!check)
       ToastProvider.error("请阅读用户须知");
     else
-      login(account, password,
+      AuthService.login(account, password,
           onResult: (result) {
             if (result['telephone'] == null || result['email'] == null) {
               Navigator.pushNamed(context, AuthRouter.addInfo);

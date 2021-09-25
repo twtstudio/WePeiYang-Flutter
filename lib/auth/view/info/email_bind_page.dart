@@ -21,7 +21,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
       ToastProvider.error("邮箱不能为空");
       return;
     }
-    changeEmail(email,
+    AuthService.changeEmail(email,
         onSuccess: () {
           ToastProvider.success("邮箱绑定成功");
           setState(() {});

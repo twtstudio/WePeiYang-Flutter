@@ -22,7 +22,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     else if (nickname == "")
       ToastProvider.error("用户名不能为空");
     else {
-      checkInfo1(userNum, nickname,
+      AuthService.checkInfo1(userNum, nickname,
           onSuccess: () {
             _userNumFocus.unfocus();
             _nicknameFocus.unfocus();
@@ -153,7 +153,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       ToastProvider.error("手机号码不能为空");
       return;
     }
-    getCaptchaOnRegister(phone,
+    AuthService.getCaptchaOnRegister(phone,
         onSuccess: () {
           setState(() => isPress = true);
         },
@@ -170,7 +170,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
     else if (code == "")
       ToastProvider.error("短信验证码不能为空");
     else {
-      checkInfo2(idNum, email, phone,
+      AuthService.checkInfo2(idNum, email, phone,
           onSuccess: () {
             _idNumFocus.unfocus();
             _emailFocus.unfocus();
@@ -428,7 +428,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (!check)
       ToastProvider.error("请阅读用户须知");
     else {
-      register(widget.userNum, widget.nickname, widget.phone, widget.code,
+      AuthService.register(widget.userNum, widget.nickname, widget.phone, widget.code,
           password1, widget.email, widget.idNum,
           onSuccess: () {
             ToastProvider.success("注册成功");

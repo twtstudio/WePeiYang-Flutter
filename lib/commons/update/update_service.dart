@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/commons/update/app_cache_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 /// 版本更新管理
-class UpdateManager {
+class UpdateManager{
   static void checkUpdate({bool showDialog = false}) {
     searchLocalCache();
     UpdateService.checkUpdate(onResult: (version) {
@@ -33,9 +33,10 @@ class UpdateDio extends DioAbstract {
 
 final updateDio = UpdateDio();
 
-class UpdateService {
+class UpdateService with AsyncTimer{
   static checkUpdate(
-      {OnResult onResult, OnSuccess onSuccess, OnFailure onFailure}) async {
+      {OnResult<Version> onResult, OnSuccess onSuccess, OnFailure onFailure}) async {
+    if (!AsyncTimer.checkTime('checkUpdate')) return;
     try {
       var response = await updateDio
           .get('https://mobile-api.twt.edu.cn/api/app/latest-version/2');

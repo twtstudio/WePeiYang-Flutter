@@ -22,7 +22,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       ToastProvider.error("手机号码不能为空");
       return;
     }
-    getCaptchaOnRegister(phone,
+    AuthService.getCaptchaOnRegister(phone,
         onSuccess: () {
           setState(() => isPress = true);
         },
@@ -37,7 +37,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
     else if (code == "")
       ToastProvider.error("短信验证码不能为空");
     else {
-      addInfo(phone, code, email,
+      AuthService.addInfo(phone, code, email,
           onSuccess: () {
             ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(

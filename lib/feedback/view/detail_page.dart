@@ -61,7 +61,7 @@ class _DetailPageState extends State<DetailPage> {
 
   _onRefresh() {
     Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
-    getComments(
+    FeedbackService.getComments(
       id: post.id,
       onSuccess: (officialCommentList, commentList) {
         Provider.of<FeedbackNotifier>(context, listen: false)
@@ -70,8 +70,8 @@ class _DetailPageState extends State<DetailPage> {
           status = DetailPageStatus.idle;
         });
       },
-      onFailure: () {
-        ToastProvider.error(S.current.feedback_get_comment_error);
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
       },
     );
     _refreshController.refreshCompleted();
@@ -86,17 +86,17 @@ class _DetailPageState extends State<DetailPage> {
       if (post == null) {
         origin = PostOrigin.mailbox;
         var id = await messageChannel.invokeMethod<int>("getPostId");
-        await getPostById(
+        await FeedbackService.getPostById(
           id: id,
-          onSuccess: (Post p) {
+          onResult: (Post p) {
             post = p;
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
               await Provider.of<MessageProvider>(context, listen: false)
                   .setFeedbackQuestionRead(p.id);
             });
           },
-          onFailure: () {
-            ToastProvider.error('初始化问题信息失败');
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
             setState(() {
               status = DetailPageStatus.error;
             });
@@ -104,7 +104,7 @@ class _DetailPageState extends State<DetailPage> {
           },
         );
       }
-      await getComments(
+      await FeedbackService.getComments(
         id: post.id,
         onSuccess: (officialCommentList, commentList) {
           Provider.of<FeedbackNotifier>(context, listen: false) // ??
@@ -113,8 +113,8 @@ class _DetailPageState extends State<DetailPage> {
             status = DetailPageStatus.idle;
           });
         },
-        onFailure: () {
-          ToastProvider.error(S.current.feedback_get_comment_error);
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
         },
       );
     });
@@ -159,7 +159,7 @@ class _DetailPageState extends State<DetailPage> {
                           child: PostCard.detail(
                             post,
                             onLikePressed: () {
-                              postHitLike(
+                              FeedbackService.postHitLike(
                                 id: post.id,
                                 isLiked: post.isLiked,
                                 onSuccess: () {
@@ -186,7 +186,7 @@ class _DetailPageState extends State<DetailPage> {
                               );
                             },
                             onFavoritePressed: () {
-                              postHitFavorite(
+                              FeedbackService.postHitFavorite(
                                 id: post.id,
                                 isFavorite: post.isFavorite,
                                 onSuccess: () {
@@ -225,7 +225,7 @@ class _DetailPageState extends State<DetailPage> {
                                         );
                                       },
                                       onLikePressed: () {
-                                        officialCommentHitLike(
+                                        FeedbackService.officialCommentHitLike(
                                           id: notifier
                                               .officialCommentList[index].id,
                                           isLiked: notifier
@@ -247,7 +247,7 @@ class _DetailPageState extends State<DetailPage> {
                                       notifier.commentList[index -
                                           notifier.officialCommentList.length],
                                       onLikePressed: () {
-                                        commentHitLike(
+                                        FeedbackService.commentHitLike(
                                           id: notifier
                                               .commentList[index -
                                                   notifier.officialCommentList
@@ -331,7 +331,7 @@ class _DetailPageState extends State<DetailPage> {
                     icon: Icon(Icons.send),
                     onPressed: () async {
                       if (_textEditingController.text.isNotEmpty) {
-                        sendComment(
+                        FeedbackService.sendComment(
                             id: post.id,
                             content: _textEditingController.text,
                             onSuccess: () {
@@ -341,6 +341,7 @@ class _DetailPageState extends State<DetailPage> {
                                 _commentLengthIndicator = '0/200';
                               });
                               _onRefresh();
+
                               /// 刷新输入框字数
                             },
                             onSensitive: (String msg) {

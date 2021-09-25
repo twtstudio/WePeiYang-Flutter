@@ -148,7 +148,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                             if (post.isSolved == 1)
                               Text(
-                                '已解决',
+                                '官方已回复',
                                 style: FontManager.YaHeiRegular.copyWith(
                                     color: ColorUtil.boldTextColor,
                                     fontSize: 12),

@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Provider.of<FeedbackNotifier>(context, listen: false)
           .clearProfilePostList();
-      await getMyPosts(onSuccess: (list) {
+      await FeedbackService.getMyPosts(onResult: (list) {
         Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
             Provider.of<MessageProvider>(context, listen: false).feedbackQs ==
                     null
@@ -46,8 +46,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 : list.sortWithMessage(
                     Provider.of<MessageProvider>(context, listen: false)
                         .feedbackQs));
-      }, onFailure: () {
-        ToastProvider.error(S.current.feedback_get_post_error);
+      }, onFailure: (e) {
+        ToastProvider.error(e.error.toString());
       });
     });
     super.initState();
@@ -98,10 +98,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                   onLikePressed: () {
-                                    postHitLike(
+                                    FeedbackService.postHitLike(
                                       id: notifier.profilePostList[index].id,
-                                      isLiked:
-                                          notifier.profilePostList[index].isLiked,
+                                      isLiked: notifier
+                                          .profilePostList[index].isLiked,
                                       onSuccess: () {
                                         notifier
                                             .changeProfilePostLikeState(index);
@@ -118,12 +118,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         context: context,
                                         builder: (context) => ProfileDialog(
                                           onConfirm: () {
-                                            deletePost(
+                                            FeedbackService.deletePost(
                                               id: notifier
                                                   .profilePostList[index].id,
                                               onSuccess: () {
                                                 setState(() {
-                                                  notifier.removeProfilePost(index);
+                                                  notifier
+                                                      .removeProfilePost(index);
                                                 });
                                                 Navigator.pop(context);
                                                 ToastProvider.success(S.current
@@ -159,14 +160,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                   onLikePressed: () {
-                                    postHitLike(
+                                    FeedbackService.postHitLike(
                                       id: notifier.profilePostList[index].id,
-                                      isLiked:
-                                          notifier.profilePostList[index].isLiked,
+                                      isLiked: notifier
+                                          .profilePostList[index].isLiked,
                                       onSuccess: () {
                                         notifier
                                             .changeProfilePostLikeState(index);
-                                     },
+                                      },
                                       onFailure: () {
                                         ToastProvider.error(
                                             S.current.feedback_like_error);
@@ -181,12 +182,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                           context: context,
                                           builder: (context) => ProfileDialog(
                                             onConfirm: () {
-                                              deletePost(
+                                              FeedbackService.deletePost(
                                                 id: notifier
                                                     .profilePostList[index].id,
                                                 onSuccess: () {
                                                   setState(() {
-                                                    notifier.removeProfilePost(index);
+                                                    notifier.removeProfilePost(
+                                                        index);
                                                   });
                                                   Navigator.pop(context);
                                                   ToastProvider.success(S
@@ -272,11 +274,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (_currentTab == _CurrentTab.myFavorite) {
                         notifier.clearProfilePostList();
                         _currentTab = _CurrentTab.myPosts;
-                        getMyPosts(onSuccess: (list) {
+                        FeedbackService.getMyPosts(onResult: (list) {
                           notifier.addProfilePosts(list.sortNormal());
-                        }, onFailure: () {
-                          ToastProvider.error(
-                              S.current.feedback_get_post_error);
+                        }, onFailure: (e) {
+                          ToastProvider.error(e.error.toString());
                         });
                       }
                     },
@@ -317,7 +318,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (_currentTab == _CurrentTab.myPosts) {
                         notifier.clearProfilePostList();
                         _currentTab = _CurrentTab.myFavorite;
-                        getFavoritePosts(onSuccess: (list) {
+                        FeedbackService.getFavoritePosts(onSuccess: (list) {
                           notifier.addProfilePosts(list.sortNormal());
                         }, onFailure: () {
                           ToastProvider.error(
