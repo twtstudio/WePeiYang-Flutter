@@ -17,6 +17,7 @@ class CommentCard extends StatefulWidget {
   Comment comment;
   bool official;
   bool detail;
+  int commentFloor;
   String title;
   void Function() onContentPressed = () {};
   void Function() onLikePressed = () {};
@@ -25,9 +26,8 @@ class CommentCard extends StatefulWidget {
   _CommentCardState createState() => _CommentCardState(
       comment, official, detail, onContentPressed, title, onLikePressed);
 
-  CommentCard(comment,
+  CommentCard(this.comment, this.commentFloor,
       {void Function() onContentPressed, void Function() onLikePressed}) {
-    this.comment = comment;
     this.official = false;
     this.detail = false;
     this.onContentPressed = onContentPressed;
@@ -202,6 +202,15 @@ class _CommentCardState extends State<CommentCard> {
                         ),
                       ],
                     ),
+                  if (!official)
+                    Text(
+                      '${widget.commentFloor}' + '楼 ',
+                      style: FontManager.YaHeiRegular.copyWith(
+                        fontSize: 12,
+                        color: ColorUtil.lightTextColor,
+                      ),
+                    ),
+
                   Spacer(),
                   // Like count.
                   ButtonTheme(

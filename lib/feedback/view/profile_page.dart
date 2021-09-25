@@ -28,10 +28,15 @@ enum _CurrentTab {
   myFavorite,
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  _CurrentTab _currentTab = _CurrentTab.myPosts;
+extension _CurrentTabb on _CurrentTab {
+  _CurrentTab get change {
+    var next = (this.index + 1) % 2;
+    return _CurrentTab.values[next];
+  }
+}
 
-  bool _deleteLock = false;
+class _ProfilePageState extends State<ProfilePage> {
+  ValueNotifier<_CurrentTab> _currentTab = ValueNotifier(_CurrentTab.myPosts);
 
   @override
   void initState() {
@@ -41,11 +46,11 @@ class _ProfilePageState extends State<ProfilePage> {
       await FeedbackService.getMyPosts(onResult: (list) {
         Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
             Provider.of<MessageProvider>(context, listen: false).feedbackQs ==
-                    null
+                null
                 ? list.sortNormal()
                 : list.sortWithMessage(
-                    Provider.of<MessageProvider>(context, listen: false)
-                        .feedbackQs));
+                Provider.of<MessageProvider>(context, listen: false)
+                    .feedbackQs));
       }, onFailure: (e) {
         ToastProvider.error(e.error.toString());
       });
@@ -55,307 +60,235 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget body = Consumer<FeedbackNotifier>(
+      builder: (context, notifier, widget) {
+        ProfileTabButton myPost = ProfileTabButton(
+          type: _CurrentTab.myPosts,
+          img: 'lib/feedback/assets/img/my_post.png',
+          text: S.current.feedback_my_post,
+          onTap: () {
+            notifier.clearProfilePostList();
+            FeedbackService.getMyPosts(onResult: (list) {
+              notifier.addProfilePosts(list.sortNormal());
+            }, onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
+          },
+        );
+
+        ProfileTabButton myFavor = ProfileTabButton(
+          type: _CurrentTab.myFavorite,
+          img: 'lib/feedback/assets/img/my_favorite.png',
+          text: S.current.feedback_my_favorite,
+          onTap: () {
+            notifier.clearProfilePostList();
+            FeedbackService.getFavoritePosts(onSuccess: (list) {
+              notifier.addProfilePosts(list.sortNormal());
+            }, onFailure: () {
+              ToastProvider.error(S.current.feedback_get_post_error);
+            });
+          },
+        );
+
+        Widget tabs = Container(
+          height: 140.0,
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+          child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [myPost, myFavor],
+              ),
+            ),
+          ),
+        );
+
+        Widget appBar = SliverToBoxAdapter(
+          child: ProfileHeader(
+            child: SliverToBoxAdapter(
+              child: tabs,
+            ),
+          ),
+        );
+
+        Widget blankBeyondList =
+        SliverToBoxAdapter(child: BlankSpace.height(5));
+
+        Widget list = SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (context, index) {
+              Function goToDetailPage = () {
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.detail,
+                  arguments: DetailPageArgs(notifier.profilePostList[index],
+                      index, PostOrigin.profile),
+                );
+              };
+
+              Function hitLike = () {
+                FeedbackService.postHitLike(
+                  id: notifier.profilePostList[index].id,
+                  isLiked: notifier.profilePostList[index].isLiked,
+                  onSuccess: () {
+                    notifier.changeProfilePostLikeState(index);
+                  },
+                  onFailure: () {
+                    ToastProvider.error(S.current.feedback_like_error);
+                  },
+                );
+              };
+
+              Function deletePostOnLongPressed = () {
+                if (_currentTab.value == _CurrentTab.myPosts)
+                  showDialog(
+                    context: context,
+                    builder: (context) => ProfileDialog(
+                      onConfirm: () {
+                        FeedbackService.deletePost(
+                          id: notifier.profilePostList[index].id,
+                          onSuccess: () {
+                            notifier.removeProfilePost(index);
+                            Navigator.pop(context);
+                            ToastProvider.success(
+                                S.current.feedback_delete_success);
+                          },
+                          onFailure: () {
+                            ToastProvider.error(
+                                S.current.feedback_delete_error);
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+              };
+
+              Widget postWithImage = PostCard.image(
+                notifier.profilePostList[index],
+                onContentPressed: goToDetailPage,
+                onLikePressed: hitLike,
+                onContentLongPressed: deletePostOnLongPressed,
+                showBanner: true,
+              );
+
+              Widget postWithoutImage = PostCard(
+                notifier.profilePostList[index],
+                onContentPressed: goToDetailPage,
+                onLikePressed: hitLike,
+                onContentLongPressed: deletePostOnLongPressed,
+                showBanner: true,
+              );
+
+              return notifier.profilePostList[index].topImgUrl != '' &&
+                  notifier.profilePostList[index].topImgUrl != null
+                  ? postWithImage
+                  : postWithoutImage;
+            },
+            childCount: notifier.profilePostList.length,
+          ),
+        );
+
+        return ScrollConfiguration(
+          behavior: CustomScrollBehavior(),
+          child: CustomScrollView(
+            slivers: [appBar, blankBeyondList, list],
+          ),
+        );
+      },
+    );
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
       body: DefaultTextStyle(
         style: FontManager.YaHeiRegular,
-        child: Consumer<FeedbackNotifier>(
-          builder: (context, notifier, widget) {
-            return ScrollConfiguration(
-              behavior: ScrollBehavior(),
-              child: GlowingOverscrollIndicator(
-                showLeading: true,
-                showTrailing: false,
-                color: Color.fromRGBO(0, 0, 0, 0),
-                axisDirection: AxisDirection.down,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: ProfileHeader(
-                        child: SliverToBoxAdapter(
-                          child: _tabs(),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(child: BlankSpace.height(5)),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return notifier.profilePostList[index].topImgUrl !=
-                                      '' &&
-                                  notifier.profilePostList[index].topImgUrl !=
-                                      null
-                              ? PostCard.image(
-                                  notifier.profilePostList[index],
-                                  onContentPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      FeedbackRouter.detail,
-                                      arguments: DetailPageArgs(
-                                          notifier.profilePostList[index],
-                                          index,
-                                          PostOrigin.profile),
-                                    );
-                                  },
-                                  onLikePressed: () {
-                                    FeedbackService.postHitLike(
-                                      id: notifier.profilePostList[index].id,
-                                      isLiked: notifier
-                                          .profilePostList[index].isLiked,
-                                      onSuccess: () {
-                                        notifier
-                                            .changeProfilePostLikeState(index);
-                                      },
-                                      onFailure: () {
-                                        ToastProvider.error(
-                                            S.current.feedback_like_error);
-                                      },
-                                    );
-                                  },
-                                  onContentLongPressed: () {
-                                    if (_currentTab == _CurrentTab.myPosts) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => ProfileDialog(
-                                          onConfirm: () {
-                                            FeedbackService.deletePost(
-                                              id: notifier
-                                                  .profilePostList[index].id,
-                                              onSuccess: () {
-                                                setState(() {
-                                                  notifier
-                                                      .removeProfilePost(index);
-                                                });
-                                                Navigator.pop(context);
-                                                ToastProvider.success(S.current
-                                                    .feedback_delete_success);
-                                              },
-                                              onFailure: () {
-                                                ToastProvider.error(S.current
-                                                    .feedback_delete_error);
-                                                Navigator.pop(context);
-                                              },
-                                            );
-                                          },
-                                          onCancel: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  showBanner: true,
-                                )
-                              : PostCard(
-                                  notifier.profilePostList[index],
-                                  onContentPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      FeedbackRouter.detail,
-                                      arguments: DetailPageArgs(
-                                        notifier.profilePostList[index],
-                                        index,
-                                        PostOrigin.profile,
-                                      ),
-                                    );
-                                  },
-                                  onLikePressed: () {
-                                    FeedbackService.postHitLike(
-                                      id: notifier.profilePostList[index].id,
-                                      isLiked: notifier
-                                          .profilePostList[index].isLiked,
-                                      onSuccess: () {
-                                        notifier
-                                            .changeProfilePostLikeState(index);
-                                      },
-                                      onFailure: () {
-                                        ToastProvider.error(
-                                            S.current.feedback_like_error);
-                                      },
-                                    );
-                                  },
-                                  onContentLongPressed: () {
-                                    if (_currentTab == _CurrentTab.myPosts) {
-                                      if (!_deleteLock) {
-                                        _deleteLock = true;
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => ProfileDialog(
-                                            onConfirm: () {
-                                              FeedbackService.deletePost(
-                                                id: notifier
-                                                    .profilePostList[index].id,
-                                                onSuccess: () {
-                                                  setState(() {
-                                                    notifier.removeProfilePost(
-                                                        index);
-                                                  });
-                                                  Navigator.pop(context);
-                                                  ToastProvider.success(S
-                                                      .current
-                                                      .feedback_delete_success);
-                                                },
-                                                onFailure: () {
-                                                  ToastProvider.error(S.current
-                                                      .feedback_delete_error);
-                                                  Navigator.pop(context);
-                                                },
-                                              );
-                                            },
-                                            onCancel: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ).then((value) {
-                                          _deleteLock = false;
-                                        });
-                                      }
-                                    }
-                                  },
-                                  showBanner: true,
-                                );
-                        },
-                        childCount: notifier.profilePostList.length,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+        child: body,
       ),
     );
   }
-
-  Container _tabs() => Container(
-        height: 140.0,
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-        child: Card(
-          elevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                // My posts tab.
-                Expanded(
-                  child: InkWell(
-                    child: Column(
-                      children: [
-                        FeedbackBadgeWidget(
-                          child: Image.asset(
-                            'lib/feedback/assets/img/my_post.png',
-                            height: 30,
-                          ),
-                          type: FeedbackMessageType.detail_post,
-                        ),
-                        BlankSpace.height(5),
-                        Text(
-                          S.current.feedback_my_post,
-                          style: FontManager.YaHeiRegular.copyWith(
-                              height: 1, color: ColorUtil.lightTextColor),
-                        ),
-                        BlankSpace.height(5),
-                        ClipOval(
-                          child: Container(
-                            width: 5,
-                            height: 5,
-                            color: _currentTab == _CurrentTab.myPosts
-                                ? ColorUtil.mainColor
-                                : Colors.white,
-                          ),
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                    onTap: () {
-                      if (_currentTab == _CurrentTab.myFavorite) {
-                        notifier.clearProfilePostList();
-                        _currentTab = _CurrentTab.myPosts;
-                        FeedbackService.getMyPosts(onResult: (list) {
-                          notifier.addProfilePosts(list.sortNormal());
-                        }, onFailure: (e) {
-                          ToastProvider.error(e.error.toString());
-                        });
-                      }
-                    },
-                  ),
-                ),
-                // My favorite posts tab.
-                Expanded(
-                  child: InkWell(
-                    child: Column(
-                      children: [
-                        FeedbackBadgeWidget(
-                          type: FeedbackMessageType.detail_favourite,
-                          child: Image.asset(
-                            'lib/feedback/assets/img/my_favorite.png',
-                            height: 30,
-                          ),
-                        ),
-                        BlankSpace.height(5),
-                        Text(
-                          S.current.feedback_my_favorite,
-                          style: FontManager.YaHeiRegular.copyWith(
-                              height: 1, color: ColorUtil.lightTextColor),
-                        ),
-                        BlankSpace.height(5),
-                        ClipOval(
-                          child: Container(
-                            width: 5,
-                            height: 5,
-                            color: _currentTab == _CurrentTab.myFavorite
-                                ? ColorUtil.mainColor
-                                : Colors.white,
-                          ),
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                    onTap: () {
-                      if (_currentTab == _CurrentTab.myPosts) {
-                        notifier.clearProfilePostList();
-                        _currentTab = _CurrentTab.myFavorite;
-                        FeedbackService.getFavoritePosts(onSuccess: (list) {
-                          notifier.addProfilePosts(list.sortNormal());
-                        }, onFailure: () {
-                          ToastProvider.error(
-                              S.current.feedback_get_post_error);
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
 }
 
-class FeedbackMailbox extends StatefulWidget {
+class ProfileTabButton extends StatefulWidget {
+  final _CurrentTab type;
+  final VoidCallback onTap;
+  final String text;
+  final String img;
+
+  const ProfileTabButton({Key key, this.type, this.onTap, this.text, this.img})
+      : super(key: key);
+
   @override
-  _FeedbackMailboxState createState() => _FeedbackMailboxState();
+  _ProfileTabButtonState createState() => _ProfileTabButtonState();
 }
 
-class _FeedbackMailboxState extends State<FeedbackMailbox> {
+class _ProfileTabButtonState extends State<ProfileTabButton> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Center(
-        child: FeedbackBadgeWidget(
-          type: FeedbackMessageType.mailbox,
-          child: InkWell(
-            child: Icon(Icons.mail_outline),
-            onTap: () {
-              Navigator.pushNamed(context, FeedbackRouter.mailbox);
-            },
-          ),
+    var currentType =
+        context.findAncestorStateOfType<_ProfilePageState>()._currentTab;
+
+    return Expanded(
+      child: InkWell(
+        child: Column(
+          children: [
+            FeedbackBadgeWidget(
+              type: FeedbackMessageType.detail_favourite,
+              child: Image.asset(
+                widget.img,
+                height: 30,
+              ),
+            ),
+            BlankSpace.height(5),
+            Text(
+              widget.text,
+              style: FontManager.YaHeiRegular.copyWith(
+                  height: 1, color: ColorUtil.lightTextColor),
+            ),
+            BlankSpace.height(5),
+            ClipOval(
+              child: Container(
+                width: 5,
+                height: 5,
+                color: currentType.value == widget.type
+                    ? ColorUtil.mainColor
+                    : Colors.white,
+              ),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
         ),
+        onTap: () {
+          if (currentType.value == widget.type.change) {
+            currentType.value = widget.type;
+            widget.onTap();
+          }
+        },
       ),
     );
+  }
+}
+
+class CustomScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return GlowingOverscrollIndicator(
+      child: child,
+      showLeading: false,
+      showTrailing: true,
+      color: Color(0XFF62677B),
+      axisDirection: AxisDirection.down,
+    );
+  }
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return ClampingScrollPhysics();
   }
 }

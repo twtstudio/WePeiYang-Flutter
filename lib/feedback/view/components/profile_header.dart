@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
+import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_set_read_all.dart';
 
 import 'blank_space.dart';
@@ -42,7 +43,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 title: Text(S.current.feedback_profile),
                 centerTitle: true,
-                actions: [FeedbackReadAllButton(),FeedbackMailbox()],
+                actions: [FeedbackReadAllButton(), FeedbackMailbox()],
               ),
               SliverToBoxAdapter(
                 child: BlankSpace.height(23),
@@ -69,6 +70,27 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class FeedbackMailbox extends StatefulWidget {
+  @override
+  _FeedbackMailboxState createState() => _FeedbackMailboxState();
+}
+
+class _FeedbackMailboxState extends State<FeedbackMailbox> {
+  @override
+  Widget build(BuildContext context) {
+    return FeedbackBadgeWidget(
+      type: FeedbackMessageType.mailbox,
+      child: Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: IconButton(
+            icon: Icon(Icons.mail_outline),
+            onPressed: () =>
+                Navigator.pushNamed(context, FeedbackRouter.mailbox)),
       ),
     );
   }

@@ -2,10 +2,17 @@ package com.twt.service
 
 import android.app.AlertDialog
 import android.app.PendingIntent
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.os.SystemClock
+import android.provider.MediaStore
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -20,12 +27,18 @@ import com.twt.service.widget.ScheduleWidgetProvider
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.time.milliseconds
 
 class MainActivity : FlutterFragmentActivity() {
     var messageChannel: MethodChannel? = null
     var placeChannel: MethodChannel? = null
+    private var imgSaveChannel: BasicMessageChannel<String>? = null
     lateinit var locationClient: AMapLocationClient
     private val notificationManager: NotificationManagerCompat by lazy {
         NotificationManagerCompat.from(this)
@@ -97,9 +110,6 @@ class MainActivity : FlutterFragmentActivity() {
                         }
                         sendBroadcast(intent)
                     }
-                    "test" -> {
-//                        Toast.makeText(this@MainActivity, "message channel test", Toast.LENGTH_SHORT).show()
-                    }
                     else -> result.error("-1", "cannot find method", null)
                 }
             }
@@ -109,16 +119,51 @@ class MainActivity : FlutterFragmentActivity() {
                 when (call.method) {
                     "getLocation" -> {
                         locationClient.startLocation()
-//                        Toast.makeText(this@MainActivity, "place channel test", Toast.LENGTH_SHORT).show()
-                    }
-                    "test" -> {
-//                        Toast.makeText(this@MainActivity, "place channel test", Toast.LENGTH_SHORT).show()
                     }
                     else -> result.error("-1", "cannot find method", null)
                 }
             }
         }
+        imgSaveChannel = BasicMessageChannel<String>(flutterEngine.dartExecutor.binaryMessenger, "com.twt.service/saveBase64Img", StringCodec.INSTANCE).apply {
+            setMessageHandler { message, reply ->
+                message?.let {
+                    try {
+                        savePictureToAlbum(it)
+                        reply.reply("success")
+                    } catch (e: Exception) {
+                        reply.reply(null)
+                    }
+                }
+            }
+        }
         super.configureFlutterEngine(flutterEngine)
+    }
+
+    private fun savePictureToAlbum(filePath: String) {
+        val file = File(filePath)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {//Android Q把文件插入到系统图库
+            val values = ContentValues()
+            values.put(MediaStore.Images.Media.DESCRIPTION, "This is an qr image")
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            values.put(MediaStore.Images.Media.TITLE, "Image.jpg")
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/微北洋")
+
+            val external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val resolver = this.contentResolver
+            val uri = resolver.insert(external, values)
+            uri?.let {
+                file.inputStream().use { input ->
+                    resolver.openOutputStream(it).use { output ->
+                        output?.let {
+                            input.copyTo(it)
+                        }
+                    }
+                }
+            }
+
+        }
     }
 
     fun showNotification(data: MessageData) {
@@ -257,7 +302,7 @@ class MainActivity : FlutterFragmentActivity() {
      * 定位监听
      */
     var locationListener = AMapLocationListener { location ->
-        Utils.getLocationStr(location,onSuccess = {
+        Utils.getLocationStr(location, onSuccess = {
             // 定位成功
             val locationData = with(it) {
                 LocationData(longitude, latitude, country, province, city, cityCode, district, address, time)
@@ -267,7 +312,7 @@ class MainActivity : FlutterFragmentActivity() {
             // 发送到flutter
             placeChannel?.invokeMethod("showResult", json)
             locationClient.stopLocation()
-        },onError = {
+        }, onError = {
             placeChannel?.invokeMethod("showError", "定位失败,${it.locationDetail}")
             locationClient.stopLocation()
         })
