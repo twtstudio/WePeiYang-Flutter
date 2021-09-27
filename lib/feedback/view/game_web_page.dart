@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:webview_flutter/platform_interface.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:webview_flutter/platform_interface.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class GameWebPage extends StatefulWidget {
   const GameWebPage({Key key}) : super(key: key);
@@ -19,7 +19,6 @@ class GameWebPage extends StatefulWidget {
 
 class _GameWebPageState extends State<GameWebPage> {
   double opacity = 0.0;
-  WebViewController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +49,6 @@ class _GameWebPageState extends State<GameWebPage> {
             setState(() {
               opacity = 1.0;
             });
-          },
-          onWebViewCreated: (controller) {
-            _controller = controller;
           },
           onWebResourceError: (WebResourceError error) {
             ToastProvider.error('加载遇到了错误');

@@ -141,12 +141,12 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                     footer: ClassicFooter(),
                     enablePullUp: currentPage != totalPage,
                     onLoading: _onLoading,
-                    enableTwoLevel: true,
-                    onTwoLevel: () async {
-                      await Navigator.pushNamed(context, FeedbackRouter.web);
-                      await Future.delayed(Duration(milliseconds: 300));
-                      _refreshController.twoLevelComplete();
-                    },
+                    // enableTwoLevel: true,
+                    // onTwoLevel: () async {
+                    //   await Navigator.pushNamed(context, FeedbackRouter.web);
+                    //   await Future.delayed(Duration(milliseconds: 300));
+                    //   _refreshController.twoLevelComplete();
+                    // },
                     child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
@@ -250,9 +250,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                     .changeHomePostLikeState(
                                                         index);
                                               },
-                                              onFailure: () {
-                                                ToastProvider.error(S.current
-                                                    .feedback_like_error);
+                                              onFailure: (e) {
+                                                ToastProvider.error(e.error.toString());
                                               },
                                             );
                                           },
@@ -279,9 +278,8 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
                                                     .changeHomePostLikeState(
                                                         index);
                                               },
-                                              onFailure: () {
-                                                ToastProvider.error(S.current
-                                                    .feedback_like_error);
+                                              onFailure: (e) {
+                                                ToastProvider.error(e.error.toString());
                                               },
                                             );
                                           },

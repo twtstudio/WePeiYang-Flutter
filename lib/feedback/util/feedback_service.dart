@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
@@ -54,7 +52,7 @@ class FeedbackService with AsyncTimer {
             response.data['data']['token'];
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
-        if (onFailure != null) onFailure(DioError(error: '校务专区登录失败, 请刷新'));
+        throw DioError(error: '校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
       if (onFailure != null) onFailure(e);
@@ -77,7 +75,7 @@ class FeedbackService with AsyncTimer {
         }
         onResult(tagList);
       } else {
-        onFailure(DioError(error: '校务专区获取标签失败, 请刷新'));
+        throw DioError(error: '校务专区获取标签失败, 请刷新');
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -111,7 +109,7 @@ class FeedbackService with AsyncTimer {
         }
         onSuccess(list, response.data['data']['last_page']);
       } else {
-        onFailure(DioError(error: S.current.feedback_get_post_error));
+        throw DioError(error: S.current.feedback_get_post_error);
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -138,7 +136,7 @@ class FeedbackService with AsyncTimer {
         }
         onResult(list);
       } else {
-        onFailure(DioError(error: S.current.feedback_get_post_error));
+        throw DioError(error: S.current.feedback_get_post_error);
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -162,7 +160,7 @@ class FeedbackService with AsyncTimer {
         var post = Post.fromJson(response.data['data']);
         onResult(post);
       } else {
-        onFailure(DioError(error: '初始化问题信息失败'));
+        throw DioError(error: '初始化问题信息失败');
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -203,7 +201,7 @@ class FeedbackService with AsyncTimer {
         }
         onSuccess(officialCommentList, commentList);
       } else {
-        onFailure(DioError(error: S.current.feedback_get_comment_error));
+        throw DioError(error: S.current.feedback_get_comment_error);
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -211,8 +209,8 @@ class FeedbackService with AsyncTimer {
   }
 
   static getFavoritePosts({
-    @required void Function(List<Post> list) onSuccess,
-    @required void Function() onFailure,
+    @required OnResult<List<Post>> onResult,
+    @required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
@@ -224,21 +222,20 @@ class FeedbackService with AsyncTimer {
         for (Map<String, dynamic> json in response.data['data']) {
           list.add(Post.fromJson(json));
         }
-        onSuccess(list);
+        onResult(list);
       } else {
-        onFailure();
+        throw DioError(error: S.current.feedback_get_post_error);
       }
     } on DioError catch (e) {
-      log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-      onFailure();
+      onFailure(e);
     }
   }
 
   static postHitLike({
     @required id,
     @required bool isLiked,
-    @required void Function() onSuccess,
-    @required void Function() onFailure,
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
   }) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
@@ -252,12 +249,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_like_error);
         }
         _hitLikeLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _hitLikeLock = false;
       }
     }
@@ -266,8 +262,8 @@ class FeedbackService with AsyncTimer {
   static postHitFavorite({
     @required id,
     @required bool isFavorite,
-    @required void Function() onSuccess,
-    @required void Function() onFailure,
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
   }) async {
     if (!_hitFavoriteLock) {
       _hitFavoriteLock = true;
@@ -281,12 +277,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_favorite_error);
         }
         _hitFavoriteLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _hitFavoriteLock = false;
       }
     }
@@ -295,8 +290,8 @@ class FeedbackService with AsyncTimer {
   static commentHitLike(
       {@required id,
       @required bool isLiked,
-      @required void Function() onSuccess,
-      @required void Function() onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       try {
@@ -309,12 +304,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_like_error);
         }
         _hitLikeLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _hitLikeLock = false;
       }
     }
@@ -323,8 +317,8 @@ class FeedbackService with AsyncTimer {
   static officialCommentHitLike(
       {@required id,
       @required bool isLiked,
-      @required void Function() onSuccess,
-      @required void Function() onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_hitLikeLock) {
       _hitLikeLock = true;
       try {
@@ -337,12 +331,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_like_error);
         }
         _hitLikeLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _hitLikeLock = false;
       }
     }
@@ -351,9 +344,8 @@ class FeedbackService with AsyncTimer {
   static sendComment(
       {@required id,
       @required content,
-      @required void Function() onSuccess,
-      @required void Function() onFailure,
-      @required void Function(String msg) onSensitive}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_sendCommentLock) {
       _sendCommentLock = true;
       try {
@@ -368,21 +360,21 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else if (2 == response.data['ErrorCode']) {
-          onSensitive(response.data['msg']);
+          throw DioError(error: response.data['msg']);
 
           /// 含有敏感词
         } else if (10 == response.data['ErrorCode']) {
-          onSensitive(response.data['msg'] +
-              '\n' +
-              response.data['data']['bad_word_list']
-                  .toSet()
-                  .toList()
-                  .toString());
+          throw DioError(
+              error: response.data['msg'] +
+                  '\n' +
+                  response.data['data']['bad_word_list']
+                      .toSet()
+                      .toList()
+                      .toString());
         }
         _sendCommentLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _sendCommentLock = false;
       }
     }
@@ -393,10 +385,8 @@ class FeedbackService with AsyncTimer {
       @required content,
       @required tagId,
       @required List<File> imgList,
-      @required void Function() onSuccess,
-      @required void Function() onFailure,
-      @required void Function(String msg) onSensitive,
-      @required void Function() onUploadImageFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_sendPostLock) {
       _sendPostLock = true;
       try {
@@ -424,7 +414,7 @@ class FeedbackService with AsyncTimer {
               var uploadImgResponse =
                   await feedbackDio.post('image/add', formData: data);
               if (0 != uploadImgResponse.data['ErrorCode']) {
-                onUploadImageFailure();
+                throw DioError(error: S.current.feedback_upload_image_error);
               }
               if (0 == uploadImgResponse.data['ErrorCode'] &&
                   index == imgList.length - 1) {
@@ -437,21 +427,21 @@ class FeedbackService with AsyncTimer {
 
           /// 发问题 & 评论过快
         } else if (2 == response.data['ErrorCode']) {
-          onSensitive(response.data['msg']);
+          throw DioError(error: response.data['msg']);
 
           /// 含有敏感词
         } else if (10 == response.data['ErrorCode']) {
-          onSensitive(response.data['msg'] +
-              '\n' +
-              response.data['data']['bad_word_list']
-                  .toSet()
-                  .toList()
-                  .toString());
+          throw DioError(
+              error: response.data['msg'] +
+                  '\n' +
+                  response.data['data']['bad_word_list']
+                      .toSet()
+                      .toList()
+                      .toString());
         }
         _sendPostLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _sendPostLock = false;
       }
     }
@@ -460,8 +450,8 @@ class FeedbackService with AsyncTimer {
   static rate(
       {@required id,
       @required rating,
-      @required void Function() onSuccess,
-      @required void Function() onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_rateLock) {
       _rateLock = true;
       try {
@@ -477,12 +467,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_rating_error);
         }
         _rateLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _rateLock = false;
       }
     }
@@ -490,8 +479,8 @@ class FeedbackService with AsyncTimer {
 
   static deletePost(
       {@required id,
-      @required void Function() onSuccess,
-      @required void Function() onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     if (!_deleteLock) {
       _deleteLock = true;
       try {
@@ -505,12 +494,11 @@ class FeedbackService with AsyncTimer {
         if (0 == response.data['ErrorCode']) {
           onSuccess();
         } else {
-          onFailure();
+          throw DioError(error: S.current.feedback_delete_error);
         }
         _deleteLock = false;
       } on DioError catch (e) {
-        log('校务专区网络问题\t$e\n\tMessage: ${e.message}');
-        onFailure();
+        onFailure(e);
         _deleteLock = false;
       }
     }

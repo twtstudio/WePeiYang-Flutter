@@ -84,16 +84,10 @@ class _NewPostPageState extends State<NewPostPage> {
                                     S.current.feedback_post_success);
                                 Navigator.pop(context);
                               },
-                              onFailure: () {
-                                ToastProvider.error(
-                                    S.current.feedback_post_error);
-                              },
-                              onSensitive: (String msg) {
-                                ToastProvider.error(msg);
-                              },
-                              onUploadImageFailure: () {
-                                ToastProvider.error(
-                                    S.current.feedback_upload_image_error);
+                              onFailure: (e) {
+                                ToastProvider.error(e.error.toString());
+                                // ToastProvider.error(
+                                //     S.current.feedback_post_error);
                               },
                             );
                           } else {

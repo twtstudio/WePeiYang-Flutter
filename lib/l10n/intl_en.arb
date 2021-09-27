@@ -173,6 +173,7 @@
   "feedback_error": "",
   "feedback_like_error": "",
   "feedback_comment_error": "",
+  "feedback_favorite_error": "",
   "feedback_empty_comment_error": "",
   "feedback_get_comment_error": "",
   "feedback_no_post": "",

@@ -1726,6 +1726,16 @@ class S {
   }
 
   /// ``
+  String get feedback_favorite_error {
+    return Intl.message(
+      '',
+      name: 'feedback_favorite_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get feedback_empty_comment_error {
     return Intl.message(
       '',

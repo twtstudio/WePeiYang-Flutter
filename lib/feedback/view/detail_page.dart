@@ -179,9 +179,8 @@ class _DetailPageState extends State<DetailPage> {
                                     notifier.changeProfilePostLikeState(index);
                                   }
                                 },
-                                onFailure: () {
-                                  ToastProvider.error(
-                                      S.current.feedback_like_error);
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
                                 },
                               );
                             },
@@ -201,7 +200,9 @@ class _DetailPageState extends State<DetailPage> {
                                         .changeProfilePostFavoriteState(index);
                                   }
                                 },
-                                onFailure: () {},
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
+                                },
                               );
                             },
                           ),
@@ -236,9 +237,9 @@ class _DetailPageState extends State<DetailPage> {
                                                 .changeOfficialCommentLikeState(
                                                     index);
                                           },
-                                          onFailure: () {
+                                          onFailure: (e) {
                                             ToastProvider.error(
-                                                S.current.feedback_like_error);
+                                                e.error.toString());
                                           },
                                         );
                                       },
@@ -267,9 +268,9 @@ class _DetailPageState extends State<DetailPage> {
                                                     notifier.officialCommentList
                                                         .length);
                                           },
-                                          onFailure: () {
+                                          onFailure: (e) {
                                             ToastProvider.error(
-                                                S.current.feedback_like_error);
+                                                e.error.toString());
                                           },
                                         );
                                       },
@@ -347,12 +348,8 @@ class _DetailPageState extends State<DetailPage> {
 
                               /// 刷新输入框字数
                             },
-                            onSensitive: (String msg) {
-                              ToastProvider.error(msg);
-                            },
-                            onFailure: () {
-                              ToastProvider.error(
-                                  S.current.feedback_comment_error);
+                            onFailure: (e) {
+                              ToastProvider.error(e.error.toString());
                             });
                       } else {
                         ToastProvider.error(

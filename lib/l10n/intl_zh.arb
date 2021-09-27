@@ -173,6 +173,7 @@
   "feedback_error": "错误！请重试",
   "feedback_like_error": "校务专区点赞失败，请重试",
   "feedback_comment_error": "校务专区评论失败，请重试",
+  "feedback_favorite_error": "校务专区收藏失败，请重试",
   "feedback_empty_comment_error": "评论不能为空",
   "feedback_get_comment_error": "校务专区获取评论失败, 请刷新",
   "feedback_no_post": "未检索到相关问题",

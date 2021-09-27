@@ -33,10 +33,12 @@ class WPYPageState extends State<WPYPage> {
           S.current.report, ReportRouter.main))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
+      ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
+          "重开模拟器", FeedbackRouter.web))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
-      /// 别改变自习室的位置，确定下标为3，不然请去wpy_page最下面改一下index
+      /// 别改变自习室的位置，确定下标为4，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
               color: Color(0xffcecfd4), size: 20),
@@ -197,7 +199,7 @@ class SliverCardsWidget extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15),
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (i != 3) {
+        if (i != 4) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
             child: generateCard(context, cards[i]),

@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_empty_keyword" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_enter_title" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_error" : MessageLookupByLibrary.simpleMessage(""),
+    "feedback_favorite_error" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_gallery" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_get_comment_error" : MessageLookupByLibrary.simpleMessage(""),
     "feedback_get_post_error" : MessageLookupByLibrary.simpleMessage(""),

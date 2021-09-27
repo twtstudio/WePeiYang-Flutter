@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_empty_keyword" : MessageLookupByLibrary.simpleMessage("关键词不能为空"),
     "feedback_enter_title" : MessageLookupByLibrary.simpleMessage("输入标题"),
     "feedback_error" : MessageLookupByLibrary.simpleMessage("错误！请重试"),
+    "feedback_favorite_error" : MessageLookupByLibrary.simpleMessage("校务专区收藏失败，请重试"),
     "feedback_gallery" : MessageLookupByLibrary.simpleMessage("图库"),
     "feedback_get_comment_error" : MessageLookupByLibrary.simpleMessage("校务专区获取评论失败, 请刷新"),
     "feedback_get_post_error" : MessageLookupByLibrary.simpleMessage("校务专区获取帖子失败，请重试"),

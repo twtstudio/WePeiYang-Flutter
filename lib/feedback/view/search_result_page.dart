@@ -178,8 +178,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   onSuccess: () {
                     notifier.changeHomePostLikeState(index);
                   },
-                  onFailure: () {
-                    ToastProvider.error(S.current.feedback_like_error);
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
                   },
                 );
               };

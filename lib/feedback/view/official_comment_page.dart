@@ -80,8 +80,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                         onSuccess: () {
                           notifier.changeOfficialCommentLikeState(index);
                         },
-                        onFailure: () {
-                          ToastProvider.error(S.current.feedback_like_error);
+                        onFailure: (e) {
+                          ToastProvider.error(e.error.toString());
                         },
                       );
                     },
@@ -100,9 +100,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
                             ToastProvider.success(
                                 S.current.feedback_rating_success);
                           },
-                          onFailure: () {
-                            ToastProvider.error(
-                                S.current.feedback_rating_error);
+                          onFailure: (e) {
+                            ToastProvider.error(e.error.toString());
                           },
                         );
                       },

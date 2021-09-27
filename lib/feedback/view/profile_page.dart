@@ -46,11 +46,11 @@ class _ProfilePageState extends State<ProfilePage> {
       await FeedbackService.getMyPosts(onResult: (list) {
         Provider.of<FeedbackNotifier>(context, listen: false).addProfilePosts(
             Provider.of<MessageProvider>(context, listen: false).feedbackQs ==
-                null
+                    null
                 ? list.sortNormal()
                 : list.sortWithMessage(
-                Provider.of<MessageProvider>(context, listen: false)
-                    .feedbackQs));
+                    Provider.of<MessageProvider>(context, listen: false)
+                        .feedbackQs));
       }, onFailure: (e) {
         ToastProvider.error(e.error.toString());
       });
@@ -82,10 +82,10 @@ class _ProfilePageState extends State<ProfilePage> {
           text: S.current.feedback_my_favorite,
           onTap: () {
             notifier.clearProfilePostList();
-            FeedbackService.getFavoritePosts(onSuccess: (list) {
+            FeedbackService.getFavoritePosts(onResult: (list) {
               notifier.addProfilePosts(list.sortNormal());
-            }, onFailure: () {
-              ToastProvider.error(S.current.feedback_get_post_error);
+            }, onFailure: (e) {
+              ToastProvider.error(e.error.toString());
             });
           },
         );
@@ -115,11 +115,11 @@ class _ProfilePageState extends State<ProfilePage> {
         );
 
         Widget blankBeyondList =
-        SliverToBoxAdapter(child: BlankSpace.height(5));
+            SliverToBoxAdapter(child: BlankSpace.height(5));
 
         Widget list = SliverList(
           delegate: SliverChildBuilderDelegate(
-                (context, index) {
+            (context, index) {
               Function goToDetailPage = () {
                 Navigator.pushNamed(
                   context,
@@ -136,8 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   onSuccess: () {
                     notifier.changeProfilePostLikeState(index);
                   },
-                  onFailure: () {
-                    ToastProvider.error(S.current.feedback_like_error);
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
                   },
                 );
               };
@@ -156,9 +156,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ToastProvider.success(
                                 S.current.feedback_delete_success);
                           },
-                          onFailure: () {
-                            ToastProvider.error(
-                                S.current.feedback_delete_error);
+                          onFailure: (e) {
+                            ToastProvider.error(e.error.toString());
                             Navigator.pop(context);
                           },
                         );
@@ -187,7 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
               );
 
               return notifier.profilePostList[index].topImgUrl != '' &&
-                  notifier.profilePostList[index].topImgUrl != null
+                      notifier.profilePostList[index].topImgUrl != null
                   ? postWithImage
                   : postWithoutImage;
             },
