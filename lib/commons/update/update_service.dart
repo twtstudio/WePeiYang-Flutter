@@ -36,16 +36,17 @@ final updateDio = UpdateDio();
 class UpdateService with AsyncTimer{
   static checkUpdate(
       {OnResult<Version> onResult, OnSuccess onSuccess, OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('checkUpdate')) return;
-    try {
-      var response = await updateDio
-          .get('https://mobile-api.twt.edu.cn/api/app/latest-version/2');
-      var version = await parseJson(response.data.toString());
-      if (version == null && onSuccess != null) onSuccess();
-      if (version != null && onResult != null) onResult(version);
-    } on DioError catch (e) {
-      if (onFailure != null) onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('checkUpdate', () async {
+      try {
+        var response = await updateDio
+            .get('https://mobile-api.twt.edu.cn/api/app/latest-version/2');
+        var version = await parseJson(response.data.toString());
+        if (version == null && onSuccess != null) onSuccess();
+        if (version != null && onResult != null) onResult(version);
+      } on DioError catch (e) {
+        if (onFailure != null) onFailure(e);
+      }
+    });
   }
 
   static Future<Response> downloadApk(String urlPath, String savePath,
