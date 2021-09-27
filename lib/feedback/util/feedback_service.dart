@@ -16,9 +16,6 @@ class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-
-  @override
-  bool responseBody = true;
 }
 
 final feedbackDio = FeedbackDio();

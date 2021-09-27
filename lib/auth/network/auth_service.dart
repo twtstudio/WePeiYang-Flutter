@@ -89,242 +89,258 @@ class AuthService with AsyncTimer {
   /// 注册或完善信息时获取短信验证码
   static getCaptchaOnRegister(String phone,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('getCaptchaOnRegister')) return;
-    try {
-      var response =
-          await authDio.post("register/phone/msg", queryParameters: {"phone": phone});
-      var cookie = response.headers.map['set-cookie'];
-      if (cookie != null) {
-        CommonPreferences().captchaCookie.value =
-            getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    AsyncTimer.runRepeatChecked('getCaptchaOnRegister', () async {
+      try {
+        var response = await authDio
+            .post("register/phone/msg", queryParameters: {"phone": phone});
+        var cookie = response.headers.map['set-cookie'];
+        if (cookie != null) {
+          CommonPreferences().captchaCookie.value =
+              getRegExpStr(r'\S+(?=\;)', cookie[0]);
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
       }
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    });
   }
 
   /// 在用户界面更新信息时获取短信验证码
   static getCaptchaOnInfo(String phone,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('getCaptchaOnInfo')) return;
-    try {
-      var response = await authDio
-          .post("user/phone/msg", queryParameters: {"phone": phone});
-      var cookie = response.headers.map['set-cookie'];
-      if (cookie != null) {
-        CommonPreferences().captchaCookie.value =
-            getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
+      try {
+        var response = await authDio
+            .post("user/phone/msg", queryParameters: {"phone": phone});
+        var cookie = response.headers.map['set-cookie'];
+        if (cookie != null) {
+          CommonPreferences().captchaCookie.value =
+              getRegExpStr(r'\S+(?=\;)', cookie[0]);
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
       }
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    });
   }
 
   /// 修改密码时获取短信验证码
   static getCaptchaOnReset(String phone,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('getCaptchaOnReset')) return;
-    try {
-      var response = await authDio
-          .post("password/reset/msg", queryParameters: {"phone": phone});
-      var cookie = response.headers.map['set-cookie'];
-      if (cookie != null) {
-        CommonPreferences().captchaCookie.value =
-            getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    AsyncTimer.runRepeatChecked('getCaptchaOnReset', () async {
+      try {
+        var response = await authDio
+            .post("password/reset/msg", queryParameters: {"phone": phone});
+        var cookie = response.headers.map['set-cookie'];
+        if (cookie != null) {
+          CommonPreferences().captchaCookie.value =
+              getRegExpStr(r'\S+(?=\;)', cookie[0]);
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
       }
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    });
   }
 
   /// 修改密码时认证短信验证码
   static verifyOnReset(String phone, String code,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('verifyOnReset')) return;
-    try {
-      var response = await authDio.post("password/reset/verify",
-          queryParameters: {"phone": phone, "code": code});
-      var cookie = response.headers.map['set-cookie'];
-      if (cookie != null) {
-        CommonPreferences().captchaCookie.value =
-            getRegExpStr(r'\S+(?=\;)', cookie[0]);
+    AsyncTimer.runRepeatChecked('verifyOnReset', () async {
+      try {
+        var response = await authDio.post("password/reset/verify",
+            queryParameters: {"phone": phone, "code": code});
+        var cookie = response.headers.map['set-cookie'];
+        if (cookie != null) {
+          CommonPreferences().captchaCookie.value =
+              getRegExpStr(r'\S+(?=\;)', cookie[0]);
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
       }
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    });
   }
 
   /// 忘记密码时，使用手机号修改密码
   static resetPwByPhone(String phone, String password,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('resetPwByPhone')) return;
-    try {
-      await authDio.post("password/reset",
-          queryParameters: {"phone": phone, "password": password});
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('resetPwByPhone', () async {
+      try {
+        await authDio.post("password/reset",
+            queryParameters: {"phone": phone, "password": password});
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 登录状态下修改密码
   static resetPwByLogin(String password,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('resetPwByLogin')) return;
-    try {
-      await authDio.put("password/person/reset",
-          queryParameters: {"password": password});
-      CommonPreferences().password.value = password;
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('resetPwByLogin', () async {
+      try {
+        await authDio.put("password/person/reset",
+            queryParameters: {"password": password});
+        CommonPreferences().password.value = password;
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 注册
   static register(String userNumber, String nickname, String phone,
       String verifyCode, String password, String email, String idNumber,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('register')) return;
-    try {
-      await authDio.post("register", queryParameters: {
-        "userNumber": userNumber,
-        "nickname": nickname,
-        "phone": phone,
-        "verifyCode": verifyCode,
-        "password": password,
-        "email": email,
-        "idNumber": idNumber
-      });
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('register', () async {
+      try {
+        await authDio.post("register", queryParameters: {
+          "userNumber": userNumber,
+          "nickname": nickname,
+          "phone": phone,
+          "verifyCode": verifyCode,
+          "password": password,
+          "email": email,
+          "idNumber": idNumber
+        });
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 使用学号/昵称/邮箱登录
   static login(String account, String password,
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('login')) return;
-    try {
-      var result = await authDio.postRst("auth/common",
-          queryParameters: {"account": account, "password": password});
-      var prefs = CommonPreferences();
-      prefs.token.value = result['token'] ?? "";
-      if (prefs.account.value != account && prefs.account.value != "") {
-        /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
-        prefs.clearTjuPrefs();
-      }
-      prefs.account.value = account;
-      prefs.password.value = password;
-      prefs.nickname.value = result['nickname'] ?? "";
-      prefs.userNumber.value = result['userNumber'] ?? "";
-      prefs.phone.value = result['telephone'] ?? "";
-      prefs.email.value = result['email'] ?? "";
-      prefs.realName.value = result['realname'] ?? "";
-      prefs.department.value = result['department'] ?? "";
-      prefs.major.value = result['major'] ?? "";
-      prefs.stuType.value = result['stuType'] ?? "";
-      prefs.isLogin.value = true;
-      onResult(result);
+    AsyncTimer.runRepeatChecked('login', () async {
+      try {
+        var result = await authDio.postRst("auth/common",
+            queryParameters: {"account": account, "password": password});
+        var prefs = CommonPreferences();
+        prefs.token.value = result['token'] ?? "";
+        if (prefs.account.value != account && prefs.account.value != "") {
+          /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
+          prefs.clearTjuPrefs();
+        }
+        prefs.account.value = account;
+        prefs.password.value = password;
+        prefs.nickname.value = result['nickname'] ?? "";
+        prefs.userNumber.value = result['userNumber'] ?? "";
+        prefs.phone.value = result['telephone'] ?? "";
+        prefs.email.value = result['email'] ?? "";
+        prefs.realName.value = result['realname'] ?? "";
+        prefs.department.value = result['department'] ?? "";
+        prefs.major.value = result['major'] ?? "";
+        prefs.stuType.value = result['stuType'] ?? "";
+        prefs.isLogin.value = true;
+        onResult(result);
 
-      /// 登录成功后尝试更新学期信息
-      getSemesterInfo();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+        /// 登录成功后尝试更新学期信息
+        await getSemesterInfo();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 补全信息（手机号和邮箱）
   static addInfo(String telephone, String verifyCode, String email,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('addInfo')) return;
-    try {
-      await authDio.put("user/single", queryParameters: {
-        "telephone": telephone,
-        "verifyCode": verifyCode,
-        "email": email
-      });
-      var prefs = CommonPreferences();
-      prefs.phone.value = telephone;
-      prefs.email.value = email;
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('addInfo', () async {
+      try {
+        await authDio.put("user/single", queryParameters: {
+          "telephone": telephone,
+          "verifyCode": verifyCode,
+          "email": email
+        });
+        var prefs = CommonPreferences();
+        prefs.phone.value = telephone;
+        prefs.email.value = email;
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 单独修改手机号
   static changePhone(String phone, String code,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('changePhone')) return;
-    try {
-      await authDio.put("user/single/phone",
-          queryParameters: {'phone': phone, 'code': code});
-      CommonPreferences().phone.value = phone;
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('changePhone', () async {
+      try {
+        await authDio.put("user/single/phone",
+            queryParameters: {'phone': phone, 'code': code});
+        CommonPreferences().phone.value = phone;
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 单独修改邮箱
   static changeEmail(String email,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('changeEmail')) return;
-    try {
-      await authDio.put("user/single/email", queryParameters: {'email': email});
-      CommonPreferences().email.value = email;
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('changeEmail', () async {
+      try {
+        await authDio.put(
+            "user/single/email", queryParameters: {'email': email});
+        CommonPreferences().email.value = email;
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 单独修改用户名
   static changeNickname(String username,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('changeNickname')) return;
-    try {
-      await authDio
-          .put("user/single/username", queryParameters: {'username': username});
-      CommonPreferences().nickname.value = username;
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('changeNickname', () async {
+      try {
+        await authDio
+            .put(
+            "user/single/username", queryParameters: {'username': username});
+        CommonPreferences().nickname.value = username;
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 检测学号和用户名是否重复
   static checkInfo1(String userNumber, String username,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('checkInfo1')) return;
-    try {
-      await authDio.get("register/checking/$userNumber/$username");
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('checkInfo1', () async {
+      try {
+        await authDio.get("register/checking/$userNumber/$username");
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 检测身份证、邮箱、手机号是否重复（其实手机号不用查重，获取验证码时已经查重过了）
   static checkInfo2(String idNumber, String email, String phone,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
-    if (!AsyncTimer.checkTime('checkInfo2')) return;
-    try {
-      await authDio.post("register/checking", queryParameters: {
-        'idNumber': idNumber,
-        'email': email,
-        'phone': phone
-      });
-      onSuccess();
-    } on DioError catch (e) {
-      onFailure(e);
-    }
+    AsyncTimer.runRepeatChecked('checkInfo2', () async {
+      try {
+        await authDio.post("register/checking", queryParameters: {
+          'idNumber': idNumber,
+          'email': email,
+          'phone': phone
+        });
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   /// 获得当前学期信息，在用户 手动/自动 登录后被调用
