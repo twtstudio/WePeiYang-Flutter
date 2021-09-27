@@ -33,6 +33,15 @@ extension _CurrentTabb on _CurrentTab {
     var next = (this.index + 1) % 2;
     return _CurrentTab.values[next];
   }
+
+  FeedbackMessageType get messageType {
+    switch (this.index) {
+      case 0:
+        return FeedbackMessageType.detail_post;
+      case 1:
+        return FeedbackMessageType.detail_favourite;
+    }
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -117,82 +126,91 @@ class _ProfilePageState extends State<ProfilePage> {
         Widget blankBeyondList =
             SliverToBoxAdapter(child: BlankSpace.height(5));
 
-        Widget list = SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              Function goToDetailPage = () {
-                Navigator.pushNamed(
-                  context,
-                  FeedbackRouter.detail,
-                  arguments: DetailPageArgs(notifier.profilePostList[index],
-                      index, PostOrigin.profile),
-                );
-              };
-
-              Function hitLike = () {
-                FeedbackService.postHitLike(
-                  id: notifier.profilePostList[index].id,
-                  isLiked: notifier.profilePostList[index].isLiked,
-                  onSuccess: () {
-                    notifier.changeProfilePostLikeState(index);
-                  },
-                  onFailure: (e) {
-                    ToastProvider.error(e.error.toString());
-                  },
-                );
-              };
-
-              Function deletePostOnLongPressed = () {
-                if (_currentTab.value == _CurrentTab.myPosts)
-                  showDialog(
-                    context: context,
-                    builder: (context) => ProfileDialog(
-                      onConfirm: () {
-                        FeedbackService.deletePost(
-                          id: notifier.profilePostList[index].id,
-                          onSuccess: () {
-                            notifier.removeProfilePost(index);
-                            Navigator.pop(context);
-                            ToastProvider.success(
-                                S.current.feedback_delete_success);
-                          },
-                          onFailure: (e) {
-                            ToastProvider.error(e.error.toString());
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
-                      onCancel: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+        Widget list;
+        if (notifier.profilePostList.length.isZero) {
+          Widget emptyText =
+              Text("暂无提问", style: TextStyle(color: Color(0xff62677b)));
+          list = SliverToBoxAdapter(
+            child: SizedBox(height: 200, child: Center(child: emptyText)),
+          );
+        } else {
+          list = SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                Function goToDetailPage = () {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.detail,
+                    arguments: DetailPageArgs(notifier.profilePostList[index],
+                        index, PostOrigin.profile),
                   );
-              };
+                };
 
-              Widget postWithImage = PostCard.image(
-                notifier.profilePostList[index],
-                onContentPressed: goToDetailPage,
-                onLikePressed: hitLike,
-                onContentLongPressed: deletePostOnLongPressed,
-                showBanner: true,
-              );
+                Function hitLike = () {
+                  FeedbackService.postHitLike(
+                    id: notifier.profilePostList[index].id,
+                    isLiked: notifier.profilePostList[index].isLiked,
+                    onSuccess: () {
+                      notifier.changeProfilePostLikeState(index);
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
+                  );
+                };
 
-              Widget postWithoutImage = PostCard(
-                notifier.profilePostList[index],
-                onContentPressed: goToDetailPage,
-                onLikePressed: hitLike,
-                onContentLongPressed: deletePostOnLongPressed,
-                showBanner: true,
-              );
+                Function deletePostOnLongPressed = () {
+                  if (_currentTab.value == _CurrentTab.myPosts)
+                    showDialog(
+                      context: context,
+                      builder: (context) => ProfileDialog(
+                        onConfirm: () {
+                          FeedbackService.deletePost(
+                            id: notifier.profilePostList[index].id,
+                            onSuccess: () {
+                              notifier.removeProfilePost(index);
+                              Navigator.pop(context);
+                              ToastProvider.success(
+                                  S.current.feedback_delete_success);
+                            },
+                            onFailure: (e) {
+                              ToastProvider.error(e.error.toString());
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                        onCancel: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                };
 
-              return notifier.profilePostList[index].topImgUrl != '' &&
-                      notifier.profilePostList[index].topImgUrl != null
-                  ? postWithImage
-                  : postWithoutImage;
-            },
-            childCount: notifier.profilePostList.length,
-          ),
-        );
+                Widget postWithImage = PostCard.image(
+                  notifier.profilePostList[index],
+                  onContentPressed: goToDetailPage,
+                  onLikePressed: hitLike,
+                  onContentLongPressed: deletePostOnLongPressed,
+                  showBanner: true,
+                );
+
+                Widget postWithoutImage = PostCard(
+                  notifier.profilePostList[index],
+                  onContentPressed: goToDetailPage,
+                  onLikePressed: hitLike,
+                  onContentLongPressed: deletePostOnLongPressed,
+                  showBanner: true,
+                );
+
+                return notifier.profilePostList[index].topImgUrl != '' &&
+                        notifier.profilePostList[index].topImgUrl != null
+                    ? postWithImage
+                    : postWithoutImage;
+              },
+              childCount: notifier.profilePostList.length,
+            ),
+          );
+        }
 
         return ScrollConfiguration(
           behavior: CustomScrollBehavior(),
@@ -237,7 +255,7 @@ class _ProfileTabButtonState extends State<ProfileTabButton> {
         child: Column(
           children: [
             FeedbackBadgeWidget(
-              type: FeedbackMessageType.detail_favourite,
+              type: widget.type.messageType,
               child: Image.asset(
                 widget.img,
                 height: 30,

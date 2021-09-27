@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -83,14 +84,20 @@ class FeedbackMailbox extends StatefulWidget {
 class _FeedbackMailboxState extends State<FeedbackMailbox> {
   @override
   Widget build(BuildContext context) {
-    return FeedbackBadgeWidget(
-      type: FeedbackMessageType.mailbox,
-      child: Padding(
-        padding: EdgeInsets.only(right: 10),
-        child: IconButton(
-            icon: Icon(Icons.mail_outline),
-            onPressed: () =>
-                Navigator.pushNamed(context, FeedbackRouter.mailbox)),
+    return Padding(
+      padding: EdgeInsets.only(right: 10),
+      child: SizedBox(
+        width: 45,
+        child: InkResponse(
+          onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
+          radius: 40,
+          child: Center(
+            child: FeedbackBadgeWidget(
+              type: FeedbackMessageType.mailbox,
+              child: Icon(Icons.mail_outline),
+            ),
+          ),
+        ),
       ),
     );
   }
