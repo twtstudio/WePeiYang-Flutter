@@ -11,8 +11,6 @@ import 'package:simple_html_css/simple_html_css.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-import 'blank_space.dart';
-
 // ignore: must_be_immutable
 class CommentCard extends StatefulWidget {
   Comment comment;
@@ -79,12 +77,13 @@ class _CommentCardState extends State<CommentCard> {
           ToastProvider.success('复制评论成功');
         },
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          padding: EdgeInsets.fromLTRB(20, 8, 2, 8),
+          margin: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BlankSpace.height(8),
+              SizedBox(height: 8),
               if (detail)
                 Text(
                   title,
@@ -94,21 +93,21 @@ class _CommentCardState extends State<CommentCard> {
                     color: ColorUtil.boldTextColor,
                   ),
                 ),
-              if (detail) BlankSpace.height(8),
+              if (detail) SizedBox(height: 8),
               if (detail)
                 Divider(
                   height: 0.6,
                   color: Color(0xffacaeba),
                 ),
-              if (detail) BlankSpace.height(8),
+              if (detail) SizedBox(height: 8),
               Row(
                 children: [
                   if (official)
                     OfficialLogo()
                   else
                     Icon(Icons.account_circle_rounded,
-                        size: 25, color: Color.fromRGBO(98, 103, 124, 1.0)),
-                  if (!official) BlankSpace.width(5),
+                        size: 20, color: Color.fromRGBO(98, 103, 124, 1.0)),
+                  if (!official) SizedBox(height: 8),
                   if (!official)
                     Expanded(
                       child: Text(
@@ -116,7 +115,7 @@ class _CommentCardState extends State<CommentCard> {
                         maxLines: 1,
                         overflow: TextOverflow.clip,
                         style: FontManager.YaHeiRegular.copyWith(
-                            fontSize: 14, color: ColorUtil.lightTextColor),
+                            fontSize: 12, color: ColorUtil.lightTextColor),
                       ),
                     ),
                   Spacer(),
@@ -140,9 +139,10 @@ class _CommentCardState extends State<CommentCard> {
                       color: ColorUtil.lightTextColor,
                     ),
                   ),
+                  SizedBox(width: 18)
                 ],
               ),
-              BlankSpace.height(16),
+              SizedBox(height: 16),
               if (official && !detail)
                 GestureDetector(
                   child: RichText(
@@ -166,98 +166,51 @@ class _CommentCardState extends State<CommentCard> {
                     color: ColorUtil.boldTextColor,
                   ),
                 ),
-              BlankSpace.height(8),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (official && comment.rating == -1)
-                    Text(
-                      S.current.feedback_no_rating,
-                      style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12,
-                        color: ColorUtil.lightTextColor,
-                      ),
-                    ),
-                  if (official && comment.rating != -1)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          S.current.feedback_rating,
-                          style: FontManager.YaHeiRegular.copyWith(
-                            fontSize: 12,
-                            color: ColorUtil.lightTextColor,
-                          ),
-                        ),
-                        RatingBar.builder(
-                          itemBuilder: (context, index) => Icon(
-                            Icons.star,
-                            color: ColorUtil.mainColor,
-                          ),
-                          allowHalfRating: true,
-                          glow: false,
-                          initialRating: (comment.rating.toDouble() / 2),
-                          itemCount: 5,
-                          itemSize: 16,
-                          ignoreGestures: true,
-                          unratedColor: ColorUtil.lightTextColor,
-                          onRatingUpdate: (_) {},
-                        ),
-                      ],
-                    ),
-                  if (!official)
-                    Text(
-                      '${widget.commentFloor}' + '楼 ',
-                      style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12,
-                        color: ColorUtil.lightTextColor,
-                      ),
-                    ),
-
+                  ...bottomLeadingWidget,
                   Spacer(),
-                  // Like count.
-                  ButtonTheme(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 6.0),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    minWidth: 0,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        height: 25,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LikeButton(
-                              likeBuilder: (bool isLiked){
-                                return Icon(
-                                  !comment.isLiked
-                                      ? Icons.thumb_up_outlined
-                                      : Icons.thumb_up,
-                                  size: 16,
-                                  color: !comment.isLiked
-                                      ? ColorUtil.lightTextColor
-                                      : Colors.red,);
-                              },
-                              onTap: (value) async {
-                                Future.delayed(Duration(seconds: 4));
-                                onLikePressed();
-                                return !value;
-                              },
-                              circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                              bubblesColor: BubblesColor(
-                                dotPrimaryColor: Color(0xff33b5e5),
-                                dotSecondaryColor: Color(0xff0099cc),
-                              ),
-
-                            ),
-                            Text(
-                              comment.likeCount.toString(),
-                              style: FontManager.YaHeiRegular.copyWith(
-                                  fontSize: 14,
-                                  color: ColorUtil.lightTextColor),
-                            ),
-                          ],
-                        ),
+                  SizedBox(
+                    height: 40,
+                    child: LikeButton(
+                      likeBuilder: (bool isLiked) {
+                        if (comment.isLiked) {
+                          return Icon(
+                            Icons.thumb_up,
+                            size: 16,
+                            color: Colors.redAccent,
+                          );
+                        } else {
+                          return Icon(
+                            Icons.thumb_up_outlined,
+                            size: 16,
+                            color: ColorUtil.lightTextColor,
+                          );
+                        }
+                      },
+                      onTap: (value) async {
+                        Future.delayed(Duration(seconds: 4));
+                        onLikePressed();
+                        return !value;
+                      },
+                      circleColor: CircleColor(
+                          start: Colors.black12, end: Colors.redAccent),
+                      bubblesColor: BubblesColor(
+                        dotPrimaryColor: Colors.redAccent,
+                        dotSecondaryColor: Colors.redAccent,
                       ),
+                      animationDuration: Duration(milliseconds: 600),
+                      padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: 30,
+                    child: Text(
+                      comment.likeCount.toString(),
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 14, color: ColorUtil.lightTextColor),
                     ),
                   ),
                 ],
@@ -275,9 +228,55 @@ class _CommentCardState extends State<CommentCard> {
                   spreadRadius: 3),
             ],
           ),
-          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         ),
       ),
     );
+  }
+
+  List<Widget> get bottomLeadingWidget {
+    if (official && comment.rating == -1)
+      return [
+        Text(
+          S.current.feedback_no_rating,
+          style: FontManager.YaHeiRegular.copyWith(
+            fontSize: 12,
+            color: ColorUtil.lightTextColor,
+          ),
+        )
+      ];
+    else if (official && comment.rating != -1)
+      return [
+        Text(
+          S.current.feedback_rating,
+          style: FontManager.YaHeiRegular.copyWith(
+            fontSize: 12,
+            color: ColorUtil.lightTextColor,
+          ),
+        ),
+        RatingBar.builder(
+          itemBuilder: (context, index) => Icon(
+            Icons.star,
+            color: ColorUtil.mainColor,
+          ),
+          allowHalfRating: true,
+          glow: false,
+          initialRating: (comment.rating.toDouble() / 2),
+          itemCount: 5,
+          itemSize: 16,
+          ignoreGestures: true,
+          unratedColor: ColorUtil.lightTextColor,
+          onRatingUpdate: (_) {},
+        ),
+      ];
+    else
+      return [
+        Text(
+          '${widget.commentFloor}' + '楼 ',
+          style: FontManager.YaHeiRegular.copyWith(
+            fontSize: 12,
+            color: ColorUtil.lightTextColor,
+          ),
+        )
+      ];
   }
 }

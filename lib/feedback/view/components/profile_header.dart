@@ -8,8 +8,6 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_set_read_all.dart';
 
-import 'blank_space.dart';
-
 class ProfileHeader extends StatelessWidget {
   final Widget child;
 
@@ -47,7 +45,7 @@ class ProfileHeader extends StatelessWidget {
                 actions: [FeedbackReadAllButton(), FeedbackMailbox()],
               ),
               SliverToBoxAdapter(
-                child: BlankSpace.height(23),
+                child: SizedBox(height: 23),
               ),
               SliverToBoxAdapter(
                 child: Text(CommonPreferences().nickname.value,

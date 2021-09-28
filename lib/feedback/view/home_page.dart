@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/blank_space.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -367,7 +366,7 @@ class HomeErrorContainer extends StatelessWidget {
               color: ColorUtil.lightTextColor,
             ),
           ),
-          BlankSpace.height(16),
+          SizedBox(height: 16),
           FloatingActionButton(
             child: Icon(Icons.refresh),
             heroTag: 'error_btn',

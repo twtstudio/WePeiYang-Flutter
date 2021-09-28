@@ -5,8 +5,9 @@ import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/blank_space.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
+import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 typedef GesturePressedCallback = void Function();
 
@@ -37,10 +38,10 @@ class PostCard extends StatefulWidget {
   /// Card without top image and content images.
   PostCard(post,
       {GesturePressedCallback onContentPressed,
-        GesturePressedCallback onLikePressed,
-        GesturePressedCallback onFavoritePressed,
-        GesturePressedCallback onContentLongPressed,
-        this.showBanner = false}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = false;
@@ -54,10 +55,10 @@ class PostCard extends StatefulWidget {
   /// Card with top image.
   PostCard.image(post,
       {GesturePressedCallback onContentPressed,
-        GesturePressedCallback onLikePressed,
-        GesturePressedCallback onFavoritePressed,
-        GesturePressedCallback onContentLongPressed,
-        this.showBanner = false}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = true;
     this.enableImgList = false;
@@ -71,10 +72,10 @@ class PostCard extends StatefulWidget {
   /// Card for DetailPage.
   PostCard.detail(post,
       {GesturePressedCallback onContentPressed,
-        GesturePressedCallback onLikePressed,
-        GesturePressedCallback onFavoritePressed,
-        GesturePressedCallback onContentLongPressed,
-        this.showBanner = false}) {
+      GesturePressedCallback onLikePressed,
+      GesturePressedCallback onFavoritePressed,
+      GesturePressedCallback onContentLongPressed,
+      this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
     this.enableImgList = true;
@@ -110,256 +111,270 @@ class _PostCardState extends State<PostCard> {
       style: FontManager.YaHeiRegular,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-        child: FeedbackBannerWidget(
-          showBanner: widget.showBanner ?? false,
-          questionId: post.id,
-          builder: (tap) => Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BlankSpace.height(5),
-                      Row(
-                        children: [
-                          // Post title.
-                          Expanded(
-                            child: Text(
-                              post.title,
-                              maxLines: widget.singleLineTitle ? 1 : 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: FontManager.YaHeiRegular.copyWith(
-                                color: ColorUtil.boldTextColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+        child: GestureDetector(
+          onLongPress: () {
+            ClipboardData data = new ClipboardData(text: post.content);
+            Clipboard.setData(data);
+            ToastProvider.success('复制提问成功');
+          },
+          child: FeedbackBannerWidget(
+            showBanner: widget.showBanner ?? false,
+            questionId: post.id,
+            builder: (tap) => Container(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            // Post title.
+                            Expanded(
+                              child: Text(
+                                post.title,
+                                maxLines: widget.singleLineTitle ? 1 : 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: FontManager.YaHeiRegular.copyWith(
+                                  color: ColorUtil.boldTextColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          if (post.isSolved == 1)
-                            Text(
-                              '已解决',
-                              style: FontManager.YaHeiRegular.copyWith(
-                                  color: ColorUtil.boldTextColor, fontSize: 12),
-                            ),
-                        ],
-                      ),
-                      BlankSpace.height(5),
-                      // Tag.
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  (post.tags?.length ?? 0) > 0
-                                      ? '#${post.tags[0].name}'
-                                      : '#无标签',
-                                  style: FontManager.YaHeiRegular.copyWith(
-                                      fontSize: 13,
-                                      color: ColorUtil.lightTextColor),
-                                ),
-                                BlankSpace.height(5),
-                                Text(
-                                  post.content,
-                                  maxLines: enableImgList ? null : 2,
-                                  overflow: enableImgList
-                                      ? null
-                                      : TextOverflow.ellipsis,
-                                  style: FontManager.YaHeiRegular.copyWith(
+                            if (post.isSolved == 1)
+                              Text(
+                                '官方已回复',
+                                style: FontManager.YaHeiRegular.copyWith(
                                     color: ColorUtil.boldTextColor,
+                                    fontSize: 12),
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        // Tag.
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    (post.tags?.length ?? 0) > 0
+                                        ? '#${post.tags[0].name}'
+                                        : '#无标签',
+                                    style: FontManager.YaHeiRegular.copyWith(
+                                        fontSize: 13,
+                                        color: ColorUtil.lightTextColor),
                                   ),
-                                ),
-                              ],
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                                  SizedBox(height: 5),
+                                  Text(
+                                    post.content,
+                                    maxLines: enableImgList ? null : 2,
+                                    overflow: enableImgList
+                                        ? null
+                                        : TextOverflow.ellipsis,
+                                    style: FontManager.YaHeiRegular.copyWith(
+                                      color: ColorUtil.boldTextColor,
+                                    ),
+                                  ),
+                                ],
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                              ),
+                            ),
+                            if (enableTopImg) SizedBox(width: 10),
+                            // Thumbnail when top image enabled.
+                            if (enableTopImg)
+                              Image.network(
+                                post.topImgUrl,
+                                width: 80,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () async {
+                      onContentPressed();
+                      await tap?.call();
+                    },
+                    onLongPress: onContentLongPressed,
+                  ),
+                  if (enableImgList && post.imgUrlList.length != 0)
+                    SizedBox(height: 10),
+                  // Image list.
+                  if (enableImgList && post.imgUrlList.length != 0)
+                    Row(
+                      children: [
+                        for (int i = 0; i < post.imgUrlList.length; i++)
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.imageView,
+                                    arguments: {
+                                      "urlList": post.imgUrlList,
+                                      "urlListLength": post.imgUrlList.length,
+                                      "indexNow": i
+                                    });
+                              },
+                              child: FadeInImage.memoryNetwork(
+                                  fit: BoxFit.cover,
+                                  height: 200 -
+                                      (post.thumbImgUrlList.length) * 40.0,
+                                  placeholder: ScreenUtil.kTransparentImage,
+                                  image: post.thumbImgUrlList[i]),
                             ),
                           ),
-                          if (enableTopImg) BlankSpace.width(10),
-                          // Thumbnail when top image enabled.
-                          if (enableTopImg)
-                            Image.network(
-                              post.topImgUrl,
-                              width: 80,
-                              height: 60,
-                              fit: BoxFit.cover,
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  onTap: () async {
-                    onContentPressed();
-                    await tap?.call();
-                  },
-                  onLongPress: onContentLongPressed,
-                ),
-                if (enableImgList && post.imgUrlList.length != 0)
-                  BlankSpace.height(10),
-                // Image list.
-                if (enableImgList && post.imgUrlList.length != 0)
+                      ],
+                    ),
+                  if (enableImgList) SizedBox(height: 10),
+
                   Row(
                     children: [
-                      for (int i = 0; i < post.imgUrlList.length; i++)
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, FeedbackRouter.imageView,
-                                  arguments: {
-                                    "urlList": post.imgUrlList,
-                                    "urlListLength": post.imgUrlList.length,
-                                    "indexNow": i
-                                  });
-                            },
-                            child: FadeInImage.memoryNetwork(
-                                fit: BoxFit.cover,
-                                height:
-                                200 - (post.thumbImgUrlList.length) * 40.0,
-                                placeholder: ScreenUtil.kTransparentImage,
-                                image: post.thumbImgUrlList[i]),
+                      // Time.
+                      if (enableImgList)
+                        Text(
+                          post.createTime.substring(0, 10) +
+                              '  ' +
+                              (post.createTime
+                                      .substring(11)
+                                      .split('.')[0]
+                                      .startsWith('0')
+                                  ? post.createTime
+                                      .substring(12)
+                                      .split('.')[0]
+                                      .substring(0, 4)
+                                  : post.createTime
+                                      .substring(11)
+                                      .split('.')[0]
+                                      .substring(0, 5)),
+                          style: FontManager.YaHeiRegular.copyWith(
+                            color: ColorUtil.lightTextColor,
                           ),
                         ),
-                    ],
-                  ),
-                if (enableImgList) BlankSpace.height(10),
-                Row(
-                  children: [
-                    // Time.
-                    if (enableImgList)
+                      if (enableImgList) Spacer(),
+                      // Comment count
+                      ClipOval(
+                        child: InkWell(
+                          child: Icon(
+                            Icons.message_outlined,
+                            size: 16,
+                            color: ColorUtil.lightTextColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 6),
                       Text(
-                        post.createTime.substring(0, 10) +
-                            '  ' +
-                            (post.createTime
-                                .substring(11)
-                                .split('.')[0]
-                                .startsWith('0')
-                                ? post.createTime
-                                .substring(12)
-                                .split('.')[0]
-                                .substring(0, 4)
-                                : post.createTime
-                                .substring(11)
-                                .split('.')[0]
-                                .substring(0, 5)),
+                        post.commentCount.toString(),
                         style: FontManager.YaHeiRegular.copyWith(
-                          color: ColorUtil.lightTextColor,
-                        ),
+                            fontSize: 14, color: ColorUtil.lightTextColor),
                       ),
-                    if (enableImgList) Spacer(),
-                    // Comment count
-                    ClipOval(
-                      child: InkWell(
-                        child: Icon(
-                          Icons.message_outlined,
-                          size: 16,
-                          color: ColorUtil.lightTextColor,
-                        ),
-                      ),
-                    ),
-                    BlankSpace.width(6),
-                    Text(
-                      post.commentCount.toString(),
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 14, color: ColorUtil.lightTextColor),
-                    ),
-                    BlankSpace.width(8),
-                    // Like count.
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        height: 25,
+                      SizedBox(width: 5),
+                      // Like count.
+                      SizedBox(
+                        height: 40,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             LikeButton(
-                              likeBuilder: (bool isLiked){
-                                return Icon(
-                                  !post.isLiked
-                                      ? Icons.thumb_up_outlined
-                                      : Icons.thumb_up,
-                                  size: 16,
-                                  color: !post.isLiked
-                                      ? ColorUtil.lightTextColor
-                                      : Colors.red,);
+                              likeBuilder: (bool isLiked) {
+                                if (post.isLiked) {
+                                  return Icon(
+                                    Icons.thumb_up,
+                                    size: 16,
+                                    color: Colors.redAccent,
+                                  );
+                                } else {
+                                  return Icon(
+                                    Icons.thumb_up_outlined,
+                                    size: 16,
+                                    color: ColorUtil.lightTextColor,
+                                  );
+                                }
                               },
                               onTap: (value) async {
                                 Future.delayed(Duration(seconds: 4));
                                 onLikePressed();
                                 return !value;
                               },
-                              circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                              circleColor: CircleColor(
+                                  start: Colors.black12, end: Colors.redAccent),
                               bubblesColor: BubblesColor(
-                                dotPrimaryColor: Color(0xff33b5e5),
-                                dotSecondaryColor: Color(0xff0099cc),
+                                dotPrimaryColor: Colors.redAccent,
+                                dotSecondaryColor: Colors.redAccent,
                               ),
-
+                              animationDuration: Duration(milliseconds: 600),
+                              padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
                             ),
-                            Text(
-                              post.likeCount.toString(),
-                              style: FontManager.YaHeiRegular.copyWith(
-                                  fontSize: 14,
-                                  color: ColorUtil.lightTextColor),
+                                Text(
+                                  post.likeCount.toString(),
+                                  style: FontManager.YaHeiRegular.copyWith(
+                                      fontSize: 14,
+                                      color: ColorUtil.lightTextColor),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (!enableImgList) Spacer(),
-                    if (enableImgList) BlankSpace.width(5),
-                    // Favorite.
-                    if (enableImgList)
-                      Container(
-                        width: 30,
-                        height: 25,
-                        child: InkWell(
-                          child: Icon(
-                            post.isFavorite ? Icons.star : Icons.star_border,
-                            size: 20,
-                            color: post.isFavorite
-                                ? Colors.amber
-                                : ColorUtil.lightTextColor,
                           ),
-                          onTap: onFavoritePressed,
-                        ),
+                          if (!enableImgList) Spacer(),
+                          if (enableImgList) SizedBox(width: 5),
+                          // Favorite.
+                          if (enableImgList)
+                            Container(
+                              width: 30,
+                              height: 25,
+                              child: InkWell(
+                                child: Icon(
+                                  post.isFavorite ? Icons.star : Icons
+                                      .star_border,
+                                  size: 20,
+                                  color: post.isFavorite
+                                      ? Colors.amber
+                                      : ColorUtil.lightTextColor,
+                                ),
+                                onTap: onFavoritePressed,
+                              ),
+                            ),
+                          if (!enableImgList)
+                            Text(
+                              post.createTime.substring(0, 10) +
+                                  '  ' +
+                                  (post.createTime
+                                      .substring(11)
+                                      .split('.')[0]
+                                      .startsWith('0')
+                                      ? post.createTime
+                                      .substring(12)
+                                      .split('.')[0]
+                                      .substring(0, 4)
+                                      : post.createTime
+                                      .substring(11)
+                                      .split('.')[0]
+                                      .substring(0, 5)),
+                              style: FontManager.YaHeiRegular.copyWith(
+                                color: ColorUtil.lightTextColor,
+                              ),
+                            ),
+                        ],
                       ),
-                    if (!enableImgList)
-                      Text(
-                        post.createTime.substring(0, 10) +
-                            '  ' +
-                            (post.createTime
-                                .substring(11)
-                                .split('.')[0]
-                                .startsWith('0')
-                                ? post.createTime
-                                .substring(12)
-                                .split('.')[0]
-                                .substring(0, 4)
-                                : post.createTime
-                                .substring(11)
-                                .split('.')[0]
-                                .substring(0, 5)),
-                        style: FontManager.YaHeiRegular.copyWith(
-                          color: ColorUtil.lightTextColor,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 5,
-                    color: Color.fromARGB(64, 236, 237, 239),
-                    offset: Offset(0, 0),
-                    spreadRadius: 3),
-              ],
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          blurRadius: 5,
+                          color: Color.fromARGB(64, 236, 237, 239),
+                          offset: Offset(0, 0),
+                          spreadRadius: 3),
+                    ],
+                  ),
             ),
           ),
         ),
