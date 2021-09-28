@@ -16,17 +16,12 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int tempSelect;
 
   @override
-  void initState() {
-    super.initState();
-    tempSelect = indexNow;
-  }
-
-  @override
   Widget build(BuildContext context) {
     dynamic obj = ModalRoute.of(context).settings.arguments;
     urlList = obj['urlList'];
     urlListLength = obj['urlListLength'];
     indexNow = obj['indexNow'];
+    tempSelect = indexNow;
 
     return GestureDetector(
       onTap: () {

@@ -166,6 +166,7 @@ class _CommentCardState extends State<CommentCard> {
                     color: ColorUtil.boldTextColor,
                   ),
                 ),
+              BlankSpace.height(8),
               Row(
                 children: [
                   if (official && comment.rating == -1)

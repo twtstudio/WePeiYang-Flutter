@@ -48,7 +48,7 @@ extension DioRequests on DioAbstract {
         .get(path, queryParameters: queryParameters)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 
@@ -58,7 +58,7 @@ extension DioRequests on DioAbstract {
         .post(path, queryParameters: queryParameters, data: formData)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 
@@ -68,7 +68,7 @@ extension DioRequests on DioAbstract {
         .put(path, queryParameters: queryParameters)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 
@@ -79,7 +79,7 @@ extension DioRequests on DioAbstract {
             onReceiveProgress: onReceiveProgress, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 
@@ -90,7 +90,7 @@ extension DioRequests on DioAbstract {
         .then((value) => CommonBody.fromJson(value.data).result)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 
@@ -101,21 +101,21 @@ extension DioRequests on DioAbstract {
         .then((value) => CommonBody.fromJson(value.data).result)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
-      return error;
+      throw error;
     });
   }
 }
 
 mixin AsyncTimer {
-  static Map<String, int> _map = {};
+  static Map<String, bool> _map = {};
 
-  static bool checkTime(String fun, {int millisecond = 1500}) {
-    var now = DateTime.now().millisecondsSinceEpoch;
-    if (!_map.containsKey(fun) || (now - _map[fun] >= millisecond)) {
-      _map[fun] = now;
-      return true;
-    }
-    return false;
+  static Future<void> runRepeatChecked<R>(
+      String key, Future<void> body()) async {
+    if (!_map.containsKey(key)) _map[key] = true;
+    if (!_map[key]) return;
+    _map[key] = false;
+    await body();
+    _map[key] = true;
   }
 }
 
