@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -218,25 +219,43 @@ class _CommentCardState extends State<CommentCard> {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     minWidth: 0,
                     child: GestureDetector(
-                      onTap: onLikePressed,
-                      child: Row(
-                        children: [
-                          Icon(
-                            !comment.isLiked
-                                ? Icons.thumb_up_outlined
-                                : Icons.thumb_up,
-                            size: 16,
-                            color: !comment.isLiked
-                                ? ColorUtil.lightTextColor
-                                : Colors.red,
-                          ),
-                          Container(width: 5),
-                          Text(
-                            comment.likeCount.toString(),
-                            style: FontManager.YaHeiRegular.copyWith(
-                                fontSize: 14, color: ColorUtil.lightTextColor),
-                          ),
-                        ],
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        height: 25,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LikeButton(
+                              likeBuilder: (bool isLiked){
+                                return Icon(
+                                  !comment.isLiked
+                                      ? Icons.thumb_up_outlined
+                                      : Icons.thumb_up,
+                                  size: 16,
+                                  color: !comment.isLiked
+                                      ? ColorUtil.lightTextColor
+                                      : Colors.red,);
+                              },
+                              onTap: (value) async {
+                                Future.delayed(Duration(seconds: 4));
+                                onLikePressed();
+                                return !value;
+                              },
+                              circleColor: CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                              bubblesColor: BubblesColor(
+                                dotPrimaryColor: Color(0xff33b5e5),
+                                dotSecondaryColor: Color(0xff0099cc),
+                              ),
+
+                            ),
+                            Text(
+                              comment.likeCount.toString(),
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  fontSize: 14,
+                                  color: ColorUtil.lightTextColor),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
