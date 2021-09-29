@@ -23,7 +23,7 @@ import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/app_analysis.dart';
+import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 列一下各种东西的初始化：
@@ -64,6 +64,7 @@ void main() async {
 class WePeiYangApp extends StatefulWidget {
   static double screenWidth;
   static double screenHeight;
+  static double paddingTop;
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
@@ -87,9 +88,10 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var baseContext =
           WePeiYangApp.navigatorState.currentState.overlay.context;
-      var size = MediaQuery.of(baseContext).size;
-      WePeiYangApp.screenWidth = size.width;
-      WePeiYangApp.screenHeight = size.height;
+      var mediaQueryData = MediaQuery.of(baseContext);
+      WePeiYangApp.screenWidth = mediaQueryData.size.width;
+      WePeiYangApp.screenHeight = mediaQueryData.size.height;
+      WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       await HiveManager.init();
 
       /// 获取feedback的token
@@ -141,16 +143,13 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
                     await Navigator.pushNamed(
                         baseContext, FeedbackRouter.detail);
                     return "success";
-                    break;
                   case 'refreshFeedbackMessageCount':
                     await messageProvider.refreshFeedbackCount();
                     return "success";
-                    break;
                   case 'enterSchedulePage':
                     await Navigator.pushNamed(
                         baseContext, ScheduleRouter.schedule);
                     return 'success';
-                    break;
                 }
               });
             return messageProvider;
@@ -164,7 +163,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [AppAnalysis()],
+          navigatorObservers: [AppRouteAnalysis()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,

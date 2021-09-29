@@ -64,7 +64,7 @@ Color generateColor(ScheduleCourse course) {
   return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
 }
 
-// TODO animate重做
+// TODO animation重做
 class AnimatedCourse extends StatefulWidget {
   final List<ScheduleCourse> courses;
   final double width;

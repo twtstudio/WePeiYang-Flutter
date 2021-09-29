@@ -11,8 +11,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 TextEditingController _titleController;
 TextEditingController _bodyController;
@@ -60,7 +60,9 @@ class _NewPostPageState extends State<NewPostPage> {
                 TitleInputField(),
                 _divider(),
                 BodyInputField(),
+                SizedBox(height: 10),
                 ImagesGridView(),
+                SizedBox(height: 10),
                 TagView(),
                 _divider(),
                 // Submit.
@@ -227,7 +229,7 @@ class _TabGridViewState extends State<TabGridView>
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-          maxHeight: ScreenUtil.screenHeight - ScreenUtil.paddingTop),
+          maxHeight: WePeiYangApp.screenHeight - WePeiYangApp.paddingTop),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -464,94 +466,62 @@ class ImagesGridView extends StatefulWidget {
 }
 
 class _ImagesGridViewState extends State<ImagesGridView> {
-  int maxImage = 3;
+  static const maxImage = 3;
 
-  Future<void> loadAssets() async {
-    String error;
-
-    try {
-      PickedFile pickedFile = await ImagePicker()
-          .getImage(source: ImageSource.gallery, imageQuality: 50);
-      _resultList.add(File(pickedFile.path));
-    } on Exception catch (e) {
-      error = e.toString();
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
+  loadAssets() async {
+    PickedFile pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    _resultList.add(File(pickedFile.path));
     if (!mounted) return;
-
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.5,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-        ),
-        itemCount: _resultList.length == maxImage
-            ? _resultList.length
-            : _resultList.length + 1,
-        itemBuilder: (context, index) => index == _resultList.length
-            ? _ImagePickerWidget(
-                onTap: loadAssets,
-              )
-            : InkWell(
-                onLongPress: () async {
-                  var result = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title:
-                                Text(S.current.feedback_delete_dialog_content),
-                            actions: [
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop('cancel');
-                                  },
-                                  child: Text(S.current.feedback_cancel)),
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop('ok');
-                                  },
-                                  child: Text(S.current.feedback_ok)),
-                            ],
-                          ));
-
-                  if (result == 'ok')
-                    setState(() {
-                      _resultList.removeAt(index);
-                    });
-                },
-                child: _MyImage(image: _resultList[index])),
-        physics: NeverScrollableScrollPhysics(),
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1.5,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
-    );
-  }
-}
+      itemCount: _resultList.length == maxImage
+          ? _resultList.length
+          : _resultList.length + 1,
+      itemBuilder: (context, index) => index == _resultList.length
+          ? _ImagePickerWidget(onTap: loadAssets)
+          : InkWell(
+              onLongPress: () async {
+                var result = await showDialog<String>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: Text(S.current.feedback_delete_dialog_content),
+                          actions: [
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop('cancel');
+                                },
+                                child: Text(S.current.feedback_cancel)),
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop('ok');
+                                },
+                                child: Text(S.current.feedback_ok)),
+                          ],
+                        ));
 
-class _MyImage extends StatelessWidget {
-  const _MyImage({
-    Key key,
-    @required this.image,
-  }) : super(key: key);
-
-  final File image;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Image.file(
-        image,
-        fit: BoxFit.cover,
-      ),
+                if (result == 'ok')
+                  setState(() {
+                    _resultList.removeAt(index);
+                  });
+              },
+              child: Image.file(
+                _resultList[index],
+                fit: BoxFit.cover,
+              ),
+            ),
+      physics: NeverScrollableScrollPhysics(),
     );
   }
 }
@@ -568,28 +538,26 @@ class _ImagePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        child: DottedBorder(
-          borderType: BorderType.Rect,
-          color: Color(0xffb5b7c5),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_circle_sharp,
-                  color: Color(0xffb5b7c5),
+      child: DottedBorder(
+        borderType: BorderType.Rect,
+        color: Color(0xffb5b7c5),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_circle_sharp,
+                color: Color(0xffb5b7c5),
+              ),
+              Text(
+                S.current.feedback_add_image,
+                style: FontManager.YaHeiRegular.copyWith(
+                  color: Color(0xffd0d1d6),
+                  fontSize: 12,
                 ),
-                Text(
-                  S.current.feedback_add_image,
-                  style: FontManager.YaHeiRegular.copyWith(
-                    color: Color(0xffd0d1d6),
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -600,7 +568,7 @@ class _ImagePickerWidget extends StatelessWidget {
 class _BasePage extends StatelessWidget {
   final Widget body;
 
-  const _BasePage({this.body, Key key}) : super(key: key);
+  const _BasePage({this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -614,42 +582,33 @@ class _BasePage extends StatelessWidget {
       },
       child: Container(
         color: Color(0xfff7f7f8),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(35),
-              child: AppBar(
-                centerTitle: true,
-                title: Text(
-                  S.current.feedback_new_post,
-                  style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 18,
-                    color: Color(0xff303c66),
-                  ),
+        padding: const EdgeInsets.only(top: 10),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(35),
+            child: AppBar(
+              centerTitle: true,
+              title: Text(
+                S.current.feedback_new_post,
+                style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 18,
+                  color: Color(0xff303c66),
                 ),
-                brightness: Brightness.light,
-                elevation: 0,
-                leading: IconButton(
-                  padding: EdgeInsets.zero,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Color(0XFF62677B),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                backgroundColor: Colors.transparent,
               ),
-            ),
-            body: Container(
-              child: body,
+              brightness: Brightness.light,
+              elevation: 0,
+              leading: IconButton(
+                padding: EdgeInsets.zero,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                icon: Icon(Icons.arrow_back, color: Color(0XFF62677B)),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              backgroundColor: Colors.transparent,
             ),
           ),
+          body: body,
         ),
       ),
     );

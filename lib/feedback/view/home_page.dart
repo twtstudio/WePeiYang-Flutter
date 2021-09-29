@@ -7,11 +7,11 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
@@ -104,7 +104,6 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Provider.of<MessageProvider>(context, listen: false)
@@ -128,7 +127,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage> {
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+              padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
               child: Consumer<FeedbackNotifier>(
                 builder: (BuildContext context, notifier, Widget child) {
                   return SmartRefresher(
@@ -329,10 +328,10 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => AppBar().preferredSize.height;
+  double get maxExtent => kToolbarHeight;
 
   @override
-  double get minExtent => AppBar().preferredSize.height;
+  double get minExtent => kToolbarHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

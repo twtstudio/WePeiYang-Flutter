@@ -1,10 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -227,7 +228,7 @@ class _PostCardState extends State<PostCard> {
                                   fit: BoxFit.cover,
                                   height: 200 -
                                       (post.thumbImgUrlList.length) * 40.0,
-                                  placeholder: ScreenUtil.kTransparentImage,
+                                  placeholder: kTransparentImage,
                                   image: post.thumbImgUrlList[i]),
                             ),
                           ),
@@ -312,69 +313,68 @@ class _PostCardState extends State<PostCard> {
                               animationDuration: Duration(milliseconds: 600),
                               padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
                             ),
-                                Text(
-                                  post.likeCount.toString(),
-                                  style: FontManager.YaHeiRegular.copyWith(
-                                      fontSize: 14,
-                                      color: ColorUtil.lightTextColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (!enableImgList) Spacer(),
-                          if (enableImgList) SizedBox(width: 5),
-                          // Favorite.
-                          if (enableImgList)
-                            Container(
-                              width: 30,
-                              height: 25,
-                              child: InkWell(
-                                child: Icon(
-                                  post.isFavorite ? Icons.star : Icons
-                                      .star_border,
-                                  size: 20,
-                                  color: post.isFavorite
-                                      ? Colors.amber
-                                      : ColorUtil.lightTextColor,
-                                ),
-                                onTap: onFavoritePressed,
-                              ),
-                            ),
-                          if (!enableImgList)
                             Text(
-                              post.createTime.substring(0, 10) +
-                                  '  ' +
-                                  (post.createTime
+                              post.likeCount.toString(),
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  fontSize: 14,
+                                  color: ColorUtil.lightTextColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (!enableImgList) Spacer(),
+                      if (enableImgList) SizedBox(width: 5),
+                      // Favorite.
+                      if (enableImgList)
+                        Container(
+                          width: 30,
+                          height: 25,
+                          child: InkWell(
+                            child: Icon(
+                              post.isFavorite ? Icons.star : Icons.star_border,
+                              size: 20,
+                              color: post.isFavorite
+                                  ? Colors.amber
+                                  : ColorUtil.lightTextColor,
+                            ),
+                            onTap: onFavoritePressed,
+                          ),
+                        ),
+                      if (!enableImgList)
+                        Text(
+                          post.createTime.substring(0, 10) +
+                              '  ' +
+                              (post.createTime
                                       .substring(11)
                                       .split('.')[0]
                                       .startsWith('0')
-                                      ? post.createTime
+                                  ? post.createTime
                                       .substring(12)
                                       .split('.')[0]
                                       .substring(0, 4)
-                                      : post.createTime
+                                  : post.createTime
                                       .substring(11)
                                       .split('.')[0]
                                       .substring(0, 5)),
-                              style: FontManager.YaHeiRegular.copyWith(
-                                color: ColorUtil.lightTextColor,
-                              ),
-                            ),
-                        ],
-                      ),
+                          style: FontManager.YaHeiRegular.copyWith(
+                            color: ColorUtil.lightTextColor,
+                          ),
+                        ),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 5,
-                          color: Color.fromARGB(64, 236, 237, 239),
-                          offset: Offset(0, 0),
-                          spreadRadius: 3),
-                    ],
-                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 5,
+                      color: Color.fromARGB(64, 236, 237, 239),
+                      offset: Offset(0, 0),
+                      spreadRadius: 3),
+                ],
+              ),
             ),
           ),
         ),
@@ -382,3 +382,70 @@ class _PostCardState extends State<PostCard> {
     );
   }
 }
+
+final Uint8List kTransparentImage = Uint8List.fromList(<int>[
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE
+]);

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-// TODO 手动调用位置：全局页面跳转、ToastProvider、dio request & response(可重写log interceptor)
 class Logger {
   /// release模式下在内存中存储log信息
   static List<String> logs = List();
@@ -40,7 +39,7 @@ class Logger {
     logs = newList;
   }
 
-  // TODO
+  // TODO 上传到服务器
   static Future<void> uploadLogs() async {}
 
   static String _getFormatTime() {

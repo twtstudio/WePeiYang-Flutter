@@ -79,7 +79,6 @@ class _UserPageState extends State<UserPage> {
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                     )),
-                // TODO 暂时先把debug入口放在这里
                 GestureDetector(
                   onLongPress: () => showDialog(
                       context: context,

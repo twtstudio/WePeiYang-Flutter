@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -101,6 +102,9 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               ),
               child: TextField(
                 focusNode: _nicknameFocus,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]|[0-9]'))
+                ],
                 decoration: InputDecoration(
                     hintText: S.current.user_name,
                     hintStyle: _hintStyle,
@@ -428,8 +432,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (!check)
       ToastProvider.error("请阅读用户须知");
     else {
-      AuthService.register(widget.userNum, widget.nickname, widget.phone, widget.code,
-          password1, widget.email, widget.idNum,
+      AuthService.register(widget.userNum, widget.nickname, widget.phone,
+          widget.code, password1, widget.email, widget.idNum,
           onSuccess: () {
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(

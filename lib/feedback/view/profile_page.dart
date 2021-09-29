@@ -39,6 +39,8 @@ extension _CurrentTabb on _CurrentTab {
         return FeedbackMessageType.detail_post;
       case 1:
         return FeedbackMessageType.detail_favourite;
+      default:
+        return FeedbackMessageType.detail_post;
     }
   }
 }
@@ -99,14 +101,14 @@ class _ProfilePageState extends State<ProfilePage> {
         );
 
         Widget tabs = Container(
-          height: 140.0,
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+          height: 140,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: Card(
             elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [myPost, myFavor],
               ),
@@ -122,16 +124,14 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         );
 
-        Widget blankBeyondList = SliverToBoxAdapter(
-          child: SizedBox(height: 5),
-        );
-
         Widget list;
         if (notifier.profilePostList.length.isZero) {
-          Widget emptyText =
-              Text("暂无提问", style: TextStyle(color: Color(0xff62677b)));
           list = SliverToBoxAdapter(
-            child: SizedBox(height: 200, child: Center(child: emptyText)),
+            child: Container(
+                height: 200,
+                alignment: Alignment.center,
+                child:
+                    Text("暂无提问", style: TextStyle(color: Color(0xff62677b)))),
           );
         } else {
           list = SliverList(
@@ -150,12 +150,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   FeedbackService.postHitLike(
                     id: notifier.profilePostList[index].id,
                     isLiked: notifier.profilePostList[index].isLiked,
-                    onSuccess: () {
-                      notifier.changeProfilePostLikeState(index);
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    },
+                    onSuccess: () => notifier.changeProfilePostLikeState(index),
+                    onFailure: (e) => ToastProvider.error(e.error.toString()),
                   );
                 };
 
@@ -179,9 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                           );
                         },
-                        onCancel: () {
-                          Navigator.pop(context);
-                        },
+                        onCancel: () => Navigator.pop(context),
                       ),
                     );
                 };
@@ -215,7 +209,11 @@ class _ProfilePageState extends State<ProfilePage> {
         return ScrollConfiguration(
           behavior: CustomScrollBehavior(),
           child: CustomScrollView(
-            slivers: [appBar, blankBeyondList, list],
+            slivers: [
+              appBar,
+              SliverToBoxAdapter(child: SizedBox(height: 5)),
+              list
+            ],
           ),
         );
       },
@@ -256,10 +254,7 @@ class _ProfileTabButtonState extends State<ProfileTabButton> {
           children: [
             FeedbackBadgeWidget(
               type: widget.type.messageType,
-              child: Image.asset(
-                widget.img,
-                height: 30,
-              ),
+              child: Image.asset(widget.img, height: 30),
             ),
             SizedBox(height: 5),
             Text(
@@ -305,7 +300,6 @@ class CustomScrollBehavior extends ScrollBehavior {
   }
 
   @override
-  ScrollPhysics getScrollPhysics(BuildContext context) {
-    return ClampingScrollPhysics();
-  }
+  ScrollPhysics getScrollPhysics(BuildContext context) =>
+      ClampingScrollPhysics();
 }

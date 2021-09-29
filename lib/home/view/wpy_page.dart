@@ -132,7 +132,6 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           (distance - shrinkOffset > 25)
               ? Align(
                   alignment: Alignment.centerLeft,
-                  // TODO 这里的国际化
                   child: Text(
                       "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
                       style: FontManager.YaQiHei.copyWith(

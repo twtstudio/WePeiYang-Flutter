@@ -9,23 +9,36 @@ import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   String baseUrl = 'https://areas.twt.edu.cn/api/user/';
+
+  @override
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onResponse: (Response response) {
+      var code = response?.data['ErrorCode'] ?? 0;
+      switch (code) {
+        case 0: // 成功
+          return response;
+        case 10: // 含有敏感词，需要把敏感词也展示出来
+          throw WpyDioError(
+              error: response.data['msg'] +
+                  '\n' +
+                  response.data['data']['bad_word_list']
+                      .toSet()
+                      .toList()
+                      .toString());
+        default: // 其他错误
+          throw WpyDioError(error: response.data['msg']);
+      }
+    })
+  ];
 }
 
 final feedbackDio = FeedbackDio();
-
-bool _hitLikeLock = false;
-bool _hitFavoriteLock = false;
-bool _sendCommentLock = false;
-bool _sendPostLock = false;
-bool _rateLock = false;
-bool _deleteLock = false;
 
 FeedbackNotifier notifier = Provider.of<FeedbackNotifier>(
     WePeiYangApp.navigatorState.currentContext,
@@ -43,8 +56,8 @@ class FeedbackService with AsyncTimer {
           'cid': cid,
         }),
       );
-      if (null != response.data['data'] &&
-          null != response.data['data']['token']) {
+      if (response.data['data'] != null &&
+          response.data['data']['token'] != null) {
         CommonPreferences().feedbackToken.value =
             response.data['data']['token'];
         if (onResult != null) onResult(response.data['data']['token']);
@@ -63,8 +76,7 @@ class FeedbackService with AsyncTimer {
       var response = await feedbackDio.get('tag/get/all', queryParameters: {
         'token': token,
       });
-      if (0 == response.data['ErrorCode'] &&
-          0 != response.data['data'][0]['children'].length) {
+      if (response.data['data'][0]['children'].length != 0) {
         List<Tag> tagList = List();
         for (Map<String, dynamic> json in response.data['data'][0]
             ['children']) {
@@ -99,15 +111,11 @@ class FeedbackService with AsyncTimer {
           'page': '$page',
         },
       );
-      if (0 == response.data['ErrorCode']) {
-        List<Post> list = List();
-        for (Map<String, dynamic> json in response.data['data']['data']) {
-          list.add(Post.fromJson(json));
-        }
-        onSuccess(list, response.data['data']['last_page']);
-      } else {
-        throw DioError(error: S.current.feedback_get_post_error);
+      List<Post> list = List();
+      for (Map<String, dynamic> json in response.data['data']['data']) {
+        list.add(Post.fromJson(json));
       }
+      onSuccess(list, response.data['data']['last_page']);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -126,15 +134,11 @@ class FeedbackService with AsyncTimer {
           'page': 1,
         },
       );
-      if (0 == response.data['ErrorCode']) {
-        List<Post> list = List();
-        for (Map<String, dynamic> json in response.data['data']) {
-          list.add(Post.fromJson(json));
-        }
-        onResult(list);
-      } else {
-        throw DioError(error: S.current.feedback_get_post_error);
+      List<Post> list = List();
+      for (Map<String, dynamic> json in response.data['data']) {
+        list.add(Post.fromJson(json));
       }
+      onResult(list);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -153,12 +157,8 @@ class FeedbackService with AsyncTimer {
           'token': notifier.token,
         },
       );
-      if (0 == response.data['ErrorCode']) {
-        var post = Post.fromJson(response.data['data']);
-        onResult(post);
-      } else {
-        throw DioError(error: '初始化问题信息失败');
-      }
+      var post = Post.fromJson(response.data['data']);
+      onResult(post);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -185,21 +185,15 @@ class FeedbackService with AsyncTimer {
           'token': notifier.token,
         },
       );
-      if (0 == officialCommentResponse.data['ErrorCode'] &&
-          0 == commentResponse.data['ErrorCode']) {
-        List<Comment> officialCommentList = List();
-        List<Comment> commentList = List();
-        for (Map<String, dynamic> json
-            in officialCommentResponse.data['data']) {
-          officialCommentList.add(Comment.fromJson(json));
-        }
-        for (Map<String, dynamic> json in commentResponse.data['data']) {
-          commentList.add(Comment.fromJson(json));
-        }
-        onSuccess(officialCommentList, commentList);
-      } else {
-        throw DioError(error: S.current.feedback_get_comment_error);
+      List<Comment> officialCommentList = List();
+      List<Comment> commentList = List();
+      for (Map<String, dynamic> json in officialCommentResponse.data['data']) {
+        officialCommentList.add(Comment.fromJson(json));
       }
+      for (Map<String, dynamic> json in commentResponse.data['data']) {
+        commentList.add(Comment.fromJson(json));
+      }
+      onSuccess(officialCommentList, commentList);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -214,15 +208,11 @@ class FeedbackService with AsyncTimer {
         'favorite/get/all',
         queryParameters: {'token': notifier.token},
       );
-      if (0 == response.data['ErrorCode']) {
-        List<Post> list = List();
-        for (Map<String, dynamic> json in response.data['data']) {
-          list.add(Post.fromJson(json));
-        }
-        onResult(list);
-      } else {
-        throw DioError(error: S.current.feedback_get_post_error);
+      List<Post> list = List();
+      for (Map<String, dynamic> json in response.data['data']) {
+        list.add(Post.fromJson(json));
       }
+      onResult(list);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -234,26 +224,18 @@ class FeedbackService with AsyncTimer {
     @required OnSuccess onSuccess,
     @required OnFailure onFailure,
   }) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
+    AsyncTimer.runRepeatChecked('postHitLike', () async {
       try {
-        var response = await feedbackDio.post(
-            isLiked ? 'question/dislike' : 'question/like',
+        await feedbackDio.post(isLiked ? 'question/dislike' : 'question/like',
             formData: FormData.fromMap({
               'id': '$id',
               'token': notifier.token,
             }));
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_like_error);
-        }
-        _hitLikeLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _hitLikeLock = false;
       }
-    }
+    });
   }
 
   static postHitFavorite({
@@ -262,26 +244,19 @@ class FeedbackService with AsyncTimer {
     @required OnSuccess onSuccess,
     @required OnFailure onFailure,
   }) async {
-    if (!_hitFavoriteLock) {
-      _hitFavoriteLock = true;
+    AsyncTimer.runRepeatChecked('postHitFavorite', () async {
       try {
-        var response = await feedbackDio.post(
+        await feedbackDio.post(
             isFavorite ? 'question/unfavorite' : 'question/favorite',
             formData: FormData.fromMap({
               'question_id': id,
               'token': notifier.token,
             }));
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_favorite_error);
-        }
-        _hitFavoriteLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _hitFavoriteLock = false;
       }
-    }
+    });
   }
 
   static commentHitLike(
@@ -289,26 +264,18 @@ class FeedbackService with AsyncTimer {
       @required bool isLiked,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
+    AsyncTimer.runRepeatChecked('commentHitLike', () async {
       try {
-        var response =
-            await feedbackDio.post(isLiked ? 'commit/dislike' : 'commit/like',
-                formData: FormData.fromMap({
-                  'id': '$id',
-                  'token': notifier.token,
-                }));
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_like_error);
-        }
-        _hitLikeLock = false;
+        await feedbackDio.post(isLiked ? 'commit/dislike' : 'commit/like',
+            formData: FormData.fromMap({
+              'id': '$id',
+              'token': notifier.token,
+            }));
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _hitLikeLock = false;
       }
-    }
+    });
   }
 
   static officialCommentHitLike(
@@ -316,26 +283,18 @@ class FeedbackService with AsyncTimer {
       @required bool isLiked,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_hitLikeLock) {
-      _hitLikeLock = true;
+    AsyncTimer.runRepeatChecked('officialCommentHitLike', () async {
       try {
-        var response =
-            await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
-                formData: FormData.fromMap({
-                  'id': '$id',
-                  'token': notifier.token,
-                }));
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_like_error);
-        }
-        _hitLikeLock = false;
+        await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
+            formData: FormData.fromMap({
+              'id': '$id',
+              'token': notifier.token,
+            }));
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _hitLikeLock = false;
       }
-    }
+    });
   }
 
   static sendComment(
@@ -343,10 +302,9 @@ class FeedbackService with AsyncTimer {
       @required content,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_sendCommentLock) {
-      _sendCommentLock = true;
+    AsyncTimer.runRepeatChecked('sendComment', () async {
       try {
-        var response = await feedbackDio.post(
+        await feedbackDio.post(
           'commit/add/question',
           formData: FormData.fromMap({
             'token': notifier.token,
@@ -354,27 +312,11 @@ class FeedbackService with AsyncTimer {
             'contain': content,
           }),
         );
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else if (2 == response.data['ErrorCode']) {
-          throw DioError(error: response.data['msg']);
-
-          /// 含有敏感词
-        } else if (10 == response.data['ErrorCode']) {
-          throw DioError(
-              error: response.data['msg'] +
-                  '\n' +
-                  response.data['data']['bad_word_list']
-                      .toSet()
-                      .toList()
-                      .toString());
-        }
-        _sendCommentLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _sendCommentLock = false;
       }
-    }
+    });
   }
 
   static sendPost(
@@ -384,8 +326,7 @@ class FeedbackService with AsyncTimer {
       @required List<File> imgList,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_sendPostLock) {
-      _sendPostLock = true;
+    AsyncTimer.runRepeatChecked('sendPost', () async {
       try {
         var response = await feedbackDio.post('question/add',
             formData: FormData.fromMap({
@@ -395,53 +336,25 @@ class FeedbackService with AsyncTimer {
               'tagList': '[$tagId]',
               'campus': 0,
             }));
-        if (0 == response.data['ErrorCode']) {
-          if (imgList.isNotEmpty) {
-            for (int index = 0; index < imgList.length; index++) {
-              var data = FormData.fromMap({
-                'token': notifier.token,
-                'newImg': MultipartFile.fromBytes(
-                  imgList[index].readAsBytesSync(),
-                  filename:
-                      'p${response.data['data']['question_id']}i$index.jpg',
-                  contentType: MediaType("image", "jpg"),
-                ),
-                'question_id': response.data['data']['question_id'],
-              });
-              var uploadImgResponse =
-                  await feedbackDio.post('image/add', formData: data);
-              if (0 != uploadImgResponse.data['ErrorCode']) {
-                throw DioError(error: S.current.feedback_upload_image_error);
-              }
-              if (0 == uploadImgResponse.data['ErrorCode'] &&
-                  index == imgList.length - 1) {
-                onSuccess();
-              }
-            }
-          } else {
-            onSuccess();
+        if (imgList.isNotEmpty) {
+          for (int index = 0; index < imgList.length; index++) {
+            var data = FormData.fromMap({
+              'token': notifier.token,
+              'newImg': MultipartFile.fromBytes(
+                imgList[index].readAsBytesSync(),
+                filename: 'p${response.data['data']['question_id']}i$index.jpg',
+                contentType: MediaType("image", "jpg"),
+              ),
+              'question_id': response.data['data']['question_id'],
+            });
+            await feedbackDio.post('image/add', formData: data);
           }
-
-          /// 发问题 & 评论过快
-        } else if (2 == response.data['ErrorCode']) {
-          throw DioError(error: response.data['msg']);
-
-          /// 含有敏感词
-        } else if (10 == response.data['ErrorCode']) {
-          throw DioError(
-              error: response.data['msg'] +
-                  '\n' +
-                  response.data['data']['bad_word_list']
-                      .toSet()
-                      .toList()
-                      .toString());
         }
-        _sendPostLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _sendPostLock = false;
       }
-    }
+    });
   }
 
   static rate(
@@ -449,10 +362,9 @@ class FeedbackService with AsyncTimer {
       @required rating,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_rateLock) {
-      _rateLock = true;
+    AsyncTimer.runRepeatChecked('rate', () async {
       try {
-        var response = await feedbackDio.post(
+        await feedbackDio.post(
           'answer/commit',
           formData: FormData.fromMap({
             'token': notifier.token,
@@ -461,43 +373,30 @@ class FeedbackService with AsyncTimer {
             'commit': '评分',
           }),
         );
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_rating_error);
-        }
-        _rateLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _rateLock = false;
       }
-    }
+    });
   }
 
   static deletePost(
       {@required id,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    if (!_deleteLock) {
-      _deleteLock = true;
+    AsyncTimer.runRepeatChecked('deletePost', () async {
       try {
-        var response = await feedbackDio.post(
+        await feedbackDio.post(
           'question/delete',
           formData: FormData.fromMap({
             'token': notifier.token,
             'question_id': id,
           }),
         );
-        if (0 == response.data['ErrorCode']) {
-          onSuccess();
-        } else {
-          throw DioError(error: S.current.feedback_delete_error);
-        }
-        _deleteLock = false;
+        onSuccess();
       } on DioError catch (e) {
         onFailure(e);
-        _deleteLock = false;
       }
-    }
+    });
   }
 }
