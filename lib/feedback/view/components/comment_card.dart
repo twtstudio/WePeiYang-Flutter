@@ -198,7 +198,7 @@ class _CommentCardState extends State<CommentCard> {
                           start: Colors.black12, end: Colors.redAccent),
                       bubblesColor: BubblesColor(
                         dotPrimaryColor: Colors.redAccent,
-                        dotSecondaryColor: Colors.redAccent,
+                        dotSecondaryColor: Colors.pinkAccent,
                       ),
                       animationDuration: Duration(milliseconds: 600),
                       padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),

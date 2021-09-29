@@ -9,38 +9,30 @@ import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-typedef GesturePressedCallback = void Function();
-
 // ignore: must_be_immutable
 class PostCard extends StatefulWidget {
   Post post;
   bool enableTopImg;
   bool enableImgList;
-  GesturePressedCallback onContentPressed = () {};
-  GesturePressedCallback onLikePressed = () {};
-  GesturePressedCallback onFavoritePressed = () {};
-  GesturePressedCallback onContentLongPressed = () {};
+  void Function() onContentPressed = () {};
+  void Function() onLikePressed = () {};
+  void Function() onFavoritePressed = () {};
+  void Function() onContentLongPressed = () {};
   bool showBanner;
   bool singleLineTitle;
 
   @override
   State createState() {
-    return _PostCardState(
-        this.post,
-        this.enableTopImg,
-        this.enableImgList,
-        this.onContentPressed,
-        this.onLikePressed,
-        this.onFavoritePressed,
-        this.onContentLongPressed);
+    return _PostCardState(post, enableTopImg, enableImgList, onContentPressed,
+        onLikePressed, onFavoritePressed, onContentLongPressed);
   }
 
   /// Card without top image and content images.
-  PostCard(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+  PostCard(this.post,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
@@ -54,10 +46,10 @@ class PostCard extends StatefulWidget {
 
   /// Card with top image.
   PostCard.image(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = true;
@@ -71,10 +63,10 @@ class PostCard extends StatefulWidget {
 
   /// Card for DetailPage.
   PostCard.detail(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
@@ -91,10 +83,10 @@ class _PostCardState extends State<PostCard> {
   final Post post;
   final bool enableTopImg;
   final bool enableImgList;
-  final GesturePressedCallback onContentPressed;
-  final GesturePressedCallback onLikePressed;
-  final GesturePressedCallback onFavoritePressed;
-  final GesturePressedCallback onContentLongPressed;
+  final void Function() onContentPressed;
+  final void Function() onLikePressed;
+  final void Function() onFavoritePressed;
+  final void Function() onContentLongPressed;
 
   _PostCardState(
       this.post,
@@ -312,69 +304,84 @@ class _PostCardState extends State<PostCard> {
                               animationDuration: Duration(milliseconds: 600),
                               padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
                             ),
-                                Text(
-                                  post.likeCount.toString(),
-                                  style: FontManager.YaHeiRegular.copyWith(
-                                      fontSize: 14,
-                                      color: ColorUtil.lightTextColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (!enableImgList) Spacer(),
-                          if (enableImgList) SizedBox(width: 5),
-                          // Favorite.
-                          if (enableImgList)
-                            Container(
-                              width: 30,
-                              height: 25,
-                              child: InkWell(
-                                child: Icon(
-                                  post.isFavorite ? Icons.star : Icons
-                                      .star_border,
-                                  size: 20,
-                                  color: post.isFavorite
-                                      ? Colors.amber
-                                      : ColorUtil.lightTextColor,
-                                ),
-                                onTap: onFavoritePressed,
-                              ),
-                            ),
-                          if (!enableImgList)
                             Text(
-                              post.createTime.substring(0, 10) +
-                                  '  ' +
-                                  (post.createTime
+                              post.likeCount.toString(),
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  fontSize: 14,
+                                  color: ColorUtil.lightTextColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (!enableImgList) Spacer(),
+                      if (enableImgList) SizedBox(width: 5),
+                      // Favorite.
+                      if (enableImgList)
+                        LikeButton(
+                          likeBuilder: (bool isLiked) {
+                            if (post.isFavorite) {
+                              return Icon(
+                                Icons.star,
+                                size: 19,
+                                color: Colors.amberAccent,
+                              );
+                            } else {
+                              return Icon(
+                                Icons.star_border_outlined,
+                                size: 19,
+                                color: ColorUtil.lightTextColor,
+                              );
+                            }
+                          },
+                          onTap: (value) async {
+                            Future.delayed(Duration(seconds: 4));
+                            onFavoritePressed();
+                            return !value;
+                          },
+                          circleColor: CircleColor(
+                              start: Colors.black12, end: Colors.yellow),
+                          bubblesColor: BubblesColor(
+                            dotPrimaryColor: Colors.amber,
+                            dotSecondaryColor: Colors.amberAccent,
+                          ),
+                          animationDuration: Duration(milliseconds: 600),
+                          padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+                        ),
+                      if (!enableImgList)
+                        Text(
+                          post.createTime.substring(0, 10) +
+                              '  ' +
+                              (post.createTime
                                       .substring(11)
                                       .split('.')[0]
                                       .startsWith('0')
-                                      ? post.createTime
+                                  ? post.createTime
                                       .substring(12)
                                       .split('.')[0]
                                       .substring(0, 4)
-                                      : post.createTime
+                                  : post.createTime
                                       .substring(11)
                                       .split('.')[0]
                                       .substring(0, 5)),
-                              style: FontManager.YaHeiRegular.copyWith(
-                                color: ColorUtil.lightTextColor,
-                              ),
-                            ),
-                        ],
-                      ),
+                          style: FontManager.YaHeiRegular.copyWith(
+                            color: ColorUtil.lightTextColor,
+                          ),
+                        ),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 5,
-                          color: Color.fromARGB(64, 236, 237, 239),
-                          offset: Offset(0, 0),
-                          spreadRadius: 3),
-                    ],
-                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 5,
+                      color: Color.fromARGB(64, 236, 237, 239),
+                      offset: Offset(0, 0),
+                      spreadRadius: 3),
+                ],
+              ),
             ),
           ),
         ),

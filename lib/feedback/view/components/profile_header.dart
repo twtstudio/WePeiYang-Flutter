@@ -88,7 +88,7 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
         width: 45,
         child: InkResponse(
           onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
-          radius: 40,
+          radius: 25,
           child: Center(
             child: FeedbackBadgeWidget(
               type: FeedbackMessageType.mailbox,
