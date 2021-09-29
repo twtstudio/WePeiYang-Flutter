@@ -10,14 +10,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-class GameWebPage extends StatefulWidget {
-  const GameWebPage({Key key}) : super(key: key);
+class RestartSchoolDaysGamePage extends StatefulWidget {
+  const RestartSchoolDaysGamePage({Key key}) : super(key: key);
 
   @override
-  _GameWebPageState createState() => _GameWebPageState();
+  _RestartSchoolDaysGamePageState createState() =>
+      _RestartSchoolDaysGamePageState();
 }
 
-class _GameWebPageState extends State<GameWebPage> {
+class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
   double opacity = 0.0;
 
   @override

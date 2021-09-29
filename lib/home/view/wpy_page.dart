@@ -34,7 +34,7 @@ class WPYPageState extends State<WPYPage> {
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
-          "重开模拟器", FeedbackRouter.web))
+          "重开模拟器", HomeRouter.restartGame))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
