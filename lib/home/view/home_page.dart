@@ -38,6 +38,8 @@ class _HomePageState extends State<HomePage> {
       } else {
         CommonPreferences().reportTime.value = "";
       }
+      // 检查当前是否有未处理的事件
+      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
     });
   }
 

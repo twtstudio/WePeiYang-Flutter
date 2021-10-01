@@ -401,6 +401,17 @@ class _DetailPageState extends State<DetailPage> {
               }
             },
           ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.share_outlined,
+                color: Color(0xff62677b),
+              ),
+              onPressed: () {
+                shareChannel.invokeMethod("shareToQQ",{"summary":"校务专区问题详情","title" : post.title,"id":post.id});
+              },
+            )
+          ],
           title: Text(
             S.current.feedback_detail,
             style: FontManager.YaHeiRegular.copyWith(
@@ -418,3 +429,5 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 }
+
+var shareChannel = MethodChannel("com.twt.service/share");
