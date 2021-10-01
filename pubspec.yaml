@@ -57,7 +57,7 @@ dependencies:
   simple_html_css: ^2.0.2
   image_gallery_saver: ^1.6.8
   image_pickers: ^1.1.0
-
+  like_button: ^0.1.9
   umeng_sdk:
     path: plugins/umeng_sdk
 

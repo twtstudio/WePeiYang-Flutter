@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/game_web_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
@@ -21,8 +20,6 @@ class FeedbackRouter {
   static String searchResult = 'feedback/search_result';
   static String mailbox = 'feedback/mailbox';
   static String imageView = 'feedback/image_view';
-  static String web = 'feedback/web_view';
-
   static final Map<String, Widget Function(Object arguments)> routers = {
     home: (_) => HomePage(),
     profile: (_) => ProfilePage(),
@@ -33,6 +30,5 @@ class FeedbackRouter {
     searchResult: (args) => SearchResultPage(args),
     imageView: (_) => ImageViewPage(),
     mailbox: (_) => FeedbackMessagePage(),
-    web: (_) => GameWebPage(),
   };
 }

@@ -9,6 +9,7 @@ class ToastProvider {
     Color backgroundColor: Colors.green,
     Color textColor: Colors.white,
   }) {
+    print('ToastProvider success: $msg');
     Fluttertoast.showToast(
         msg: msg,
         backgroundColor: backgroundColor,
@@ -18,6 +19,7 @@ class ToastProvider {
   }
 
   static error(String msg, {ToastGravity gravity = ToastGravity.BOTTOM}) {
+    print('ToastProvider error: $msg');
     Fluttertoast.showToast(
         msg: msg,
         backgroundColor: Color.fromRGBO(53, 53, 53, 1),
@@ -27,6 +29,7 @@ class ToastProvider {
   }
 
   static running(String msg, {ToastGravity gravity = ToastGravity.BOTTOM}) {
+    print('ToastProvider running: $msg');
     Fluttertoast.showToast(
       msg: msg,
       backgroundColor: Colors.blue,

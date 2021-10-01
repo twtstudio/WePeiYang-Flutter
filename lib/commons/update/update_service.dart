@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
@@ -9,7 +10,7 @@ import 'package:we_pei_yang_flutter/commons/update/app_cache_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 /// 版本更新管理
-class UpdateManager{
+class UpdateManager {
   static void checkUpdate({bool showDialog = false}) {
     searchLocalCache();
     UpdateService.checkUpdate(onResult: (version) {
@@ -33,18 +34,22 @@ class UpdateDio extends DioAbstract {
 
 final updateDio = UpdateDio();
 
-class UpdateService with AsyncTimer{
+class UpdateService with AsyncTimer {
   static checkUpdate(
-      {OnResult<Version> onResult, OnSuccess onSuccess, OnFailure onFailure}) async {
+      {@required OnResult<Version> onResult,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkUpdate', () async {
       try {
         var response = await updateDio
             .get('https://mobile-api.twt.edu.cn/api/app/latest-version/2');
         var version = await parseJson(response.data.toString());
-        if (version == null && onSuccess != null) onSuccess();
-        if (version != null && onResult != null) onResult(version);
+        if (version == null)
+          onSuccess();
+        else
+          onResult(version);
       } on DioError catch (e) {
-        if (onFailure != null) onFailure(e);
+        onFailure(e);
       }
     });
   }

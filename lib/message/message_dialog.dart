@@ -7,7 +7,6 @@ class MessageDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Material(
       type: MaterialType.transparency,
       child: Center(

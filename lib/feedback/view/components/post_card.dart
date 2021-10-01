@@ -1,46 +1,39 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/blank_space.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-
-typedef GesturePressedCallback = void Function();
 
 // ignore: must_be_immutable
 class PostCard extends StatefulWidget {
   Post post;
   bool enableTopImg;
   bool enableImgList;
-  GesturePressedCallback onContentPressed = () {};
-  GesturePressedCallback onLikePressed = () {};
-  GesturePressedCallback onFavoritePressed = () {};
-  GesturePressedCallback onContentLongPressed = () {};
+  void Function() onContentPressed = () {};
+  void Function() onLikePressed = () {};
+  void Function() onFavoritePressed = () {};
+  void Function() onContentLongPressed = () {};
   bool showBanner;
   bool singleLineTitle;
 
   @override
   State createState() {
-    return _PostCardState(
-        this.post,
-        this.enableTopImg,
-        this.enableImgList,
-        this.onContentPressed,
-        this.onLikePressed,
-        this.onFavoritePressed,
-        this.onContentLongPressed);
+    return _PostCardState(post, enableTopImg, enableImgList, onContentPressed,
+        onLikePressed, onFavoritePressed, onContentLongPressed);
   }
 
   /// Card without top image and content images.
-  PostCard(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+  PostCard(this.post,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
@@ -54,10 +47,10 @@ class PostCard extends StatefulWidget {
 
   /// Card with top image.
   PostCard.image(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = true;
@@ -71,10 +64,10 @@ class PostCard extends StatefulWidget {
 
   /// Card for DetailPage.
   PostCard.detail(post,
-      {GesturePressedCallback onContentPressed,
-      GesturePressedCallback onLikePressed,
-      GesturePressedCallback onFavoritePressed,
-      GesturePressedCallback onContentLongPressed,
+      {void Function() onContentPressed,
+      void Function() onLikePressed,
+      void Function() onFavoritePressed,
+      void Function() onContentLongPressed,
       this.showBanner = false}) {
     this.post = post;
     this.enableTopImg = false;
@@ -91,10 +84,10 @@ class _PostCardState extends State<PostCard> {
   final Post post;
   final bool enableTopImg;
   final bool enableImgList;
-  final GesturePressedCallback onContentPressed;
-  final GesturePressedCallback onLikePressed;
-  final GesturePressedCallback onFavoritePressed;
-  final GesturePressedCallback onContentLongPressed;
+  final void Function() onContentPressed;
+  final void Function() onLikePressed;
+  final void Function() onFavoritePressed;
+  final void Function() onContentLongPressed;
 
   _PostCardState(
       this.post,
@@ -130,7 +123,7 @@ class _PostCardState extends State<PostCard> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        BlankSpace.height(5),
+                        SizedBox(height: 5),
                         Row(
                           children: [
                             // Post title.
@@ -155,7 +148,7 @@ class _PostCardState extends State<PostCard> {
                               ),
                           ],
                         ),
-                        BlankSpace.height(5),
+                        SizedBox(height: 5),
                         // Tag.
                         Row(
                           children: [
@@ -170,7 +163,7 @@ class _PostCardState extends State<PostCard> {
                                         fontSize: 13,
                                         color: ColorUtil.lightTextColor),
                                   ),
-                                  BlankSpace.height(5),
+                                  SizedBox(height: 5),
                                   Text(
                                     post.content,
                                     maxLines: enableImgList ? null : 2,
@@ -185,7 +178,7 @@ class _PostCardState extends State<PostCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                               ),
                             ),
-                            if (enableTopImg) BlankSpace.width(10),
+                            if (enableTopImg) SizedBox(width: 10),
                             // Thumbnail when top image enabled.
                             if (enableTopImg)
                               Image.network(
@@ -205,7 +198,7 @@ class _PostCardState extends State<PostCard> {
                     onLongPress: onContentLongPressed,
                   ),
                   if (enableImgList && post.imgUrlList.length != 0)
-                    BlankSpace.height(10),
+                    SizedBox(height: 10),
                   // Image list.
                   if (enableImgList && post.imgUrlList.length != 0)
                     Row(
@@ -227,13 +220,14 @@ class _PostCardState extends State<PostCard> {
                                   fit: BoxFit.cover,
                                   height: 200 -
                                       (post.thumbImgUrlList.length) * 40.0,
-                                  placeholder: ScreenUtil.kTransparentImage,
+                                  placeholder: kTransparentImage,
                                   image: post.thumbImgUrlList[i]),
                             ),
                           ),
                       ],
                     ),
-                  if (enableImgList) BlankSpace.height(10),
+                  if (enableImgList) SizedBox(height: 10),
+
                   Row(
                     children: [
                       // Time.
@@ -268,59 +262,91 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ),
                       ),
-                      BlankSpace.width(6),
+                      SizedBox(width: 6),
                       Text(
                         post.commentCount.toString(),
                         style: FontManager.YaHeiRegular.copyWith(
                             fontSize: 14, color: ColorUtil.lightTextColor),
                       ),
-                      BlankSpace.width(8),
+                      SizedBox(width: 5),
                       // Like count.
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          height: 25,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                !post.isLiked
-                                    ? Icons.thumb_up_outlined
-                                    : Icons.thumb_up,
-                                size: 16,
-                                color: !post.isLiked
-                                    ? ColorUtil.lightTextColor
-                                    : Colors.red,
+                      SizedBox(
+                        height: 40,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LikeButton(
+                              likeBuilder: (bool isLiked) {
+                                if (post.isLiked) {
+                                  return Icon(
+                                    Icons.thumb_up,
+                                    size: 16,
+                                    color: Colors.redAccent,
+                                  );
+                                } else {
+                                  return Icon(
+                                    Icons.thumb_up_outlined,
+                                    size: 16,
+                                    color: ColorUtil.lightTextColor,
+                                  );
+                                }
+                              },
+                              onTap: (value) async {
+                                Future.delayed(Duration(seconds: 4));
+                                onLikePressed();
+                                return !value;
+                              },
+                              circleColor: CircleColor(
+                                  start: Colors.black12, end: Colors.redAccent),
+                              bubblesColor: BubblesColor(
+                                dotPrimaryColor: Colors.redAccent,
+                                dotSecondaryColor: Colors.redAccent,
                               ),
-                              BlankSpace.width(6),
-                              Text(
-                                post.likeCount.toString(),
-                                style: FontManager.YaHeiRegular.copyWith(
-                                    fontSize: 14,
-                                    color: ColorUtil.lightTextColor),
-                              ),
-                            ],
-                          ),
+                              animationDuration: Duration(milliseconds: 600),
+                              padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+                            ),
+                            Text(
+                              post.likeCount.toString(),
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  fontSize: 14,
+                                  color: ColorUtil.lightTextColor),
+                            ),
+                          ],
                         ),
-                        onTap: onLikePressed,
                       ),
                       if (!enableImgList) Spacer(),
-                      if (enableImgList) BlankSpace.width(5),
+                      if (enableImgList) SizedBox(width: 5),
                       // Favorite.
                       if (enableImgList)
-                        Container(
-                          width: 30,
-                          height: 25,
-                          child: InkWell(
-                            child: Icon(
-                              post.isFavorite ? Icons.star : Icons.star_border,
-                              size: 20,
-                              color: post.isFavorite
-                                  ? Colors.amber
-                                  : ColorUtil.lightTextColor,
-                            ),
-                            onTap: onFavoritePressed,
+                        LikeButton(
+                          likeBuilder: (bool isLiked) {
+                            if (post.isFavorite) {
+                              return Icon(
+                                Icons.star,
+                                size: 19,
+                                color: Colors.amberAccent,
+                              );
+                            } else {
+                              return Icon(
+                                Icons.star_border_outlined,
+                                size: 19,
+                                color: ColorUtil.lightTextColor,
+                              );
+                            }
+                          },
+                          onTap: (value) async {
+                            Future.delayed(Duration(seconds: 4));
+                            onFavoritePressed();
+                            return !value;
+                          },
+                          circleColor: CircleColor(
+                              start: Colors.black12, end: Colors.yellow),
+                          bubblesColor: BubblesColor(
+                            dotPrimaryColor: Colors.amber,
+                            dotSecondaryColor: Colors.amberAccent,
                           ),
+                          animationDuration: Duration(milliseconds: 600),
+                          padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
                         ),
                       if (!enableImgList)
                         Text(
@@ -364,3 +390,70 @@ class _PostCardState extends State<PostCard> {
     );
   }
 }
+
+final Uint8List kTransparentImage = Uint8List.fromList(<int>[
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE
+]);

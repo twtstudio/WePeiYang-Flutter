@@ -38,7 +38,6 @@ class TodayCoursesWidget extends StatelessWidget {
                                 fontSize: 12,
                                 color: Color.fromRGBO(100, 103, 122, 1.0)),
                             child: Text.rich(TextSpan(children: [
-                              // TODO 这里的国际化
                               TextSpan(
                                   text: (notifier.nightMode &&
                                           DateTime.now().hour >= 21)

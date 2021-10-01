@@ -34,7 +34,6 @@ class MessageService {
       data = TotalMessageData.fromJson(response.data);
     } catch (e) {
       data = null;
-      print(e.toString());
     }
     return data;
   }

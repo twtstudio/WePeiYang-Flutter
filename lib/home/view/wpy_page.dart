@@ -34,7 +34,7 @@ class WPYPageState extends State<WPYPage> {
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
-          "重开模拟器", FeedbackRouter.web))
+          "重开模拟器", HomeRouter.restartGame))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
@@ -132,7 +132,6 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
           (distance - shrinkOffset > 25)
               ? Align(
                   alignment: Alignment.centerLeft,
-                  // TODO 这里的国际化
                   child: Text(
                       "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
                       style: FontManager.YaQiHei.copyWith(

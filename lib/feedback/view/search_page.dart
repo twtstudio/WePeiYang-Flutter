@@ -5,9 +5,9 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/screen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 bool _homePostChanged = false;
 
@@ -48,13 +48,13 @@ class _SearchPageState extends State<SearchPage> {
         style: FontManager.YaHeiRegular,
         child: Scaffold(
           body: Padding(
-            padding: EdgeInsets.only(top: ScreenUtil.paddingTop),
+            padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                    height: AppBar().preferredSize.height,
+                    height: kToolbarHeight,
                     child: Row(
                       children: [
                         Expanded(

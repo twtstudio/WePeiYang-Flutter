@@ -82,6 +82,7 @@ class FeedbackNotifier with ChangeNotifier {
   clearCommentList() {
     _officialCommentList.clear();
     _commentList.clear();
+    notifyListeners();
   }
 
   addComments(List<Comment> officialCommentList, List<Comment> commentList) {

@@ -11,9 +11,9 @@ class OfficialLogo extends StatelessWidget {
       child: Text(
         S.current.feedback_official,
         style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 12,
+          fontSize: 10,
           color: Colors.white,
-          height: 1,
+          height: 1.4,
         ),
       ),
       decoration: BoxDecoration(

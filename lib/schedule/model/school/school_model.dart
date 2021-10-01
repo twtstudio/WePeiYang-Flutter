@@ -74,7 +74,7 @@ class Arrange {
   String courseName; // 课程名称，仅供爬虫时对照用
   String teacher; // 这个是具体上这节课的老师，不是上这门课的所有老师
 
-  // TODO 这个是蹭课用的，记得补上binStr
+  /// 这个是蹭课用的，记得补上binStr
   Arrange.audit(this.week, this.room, this.start, this.end, this.day, this.teacher)
       : binStr = '';
 
