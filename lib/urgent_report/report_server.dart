@@ -9,10 +9,10 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 import 'main_page.dart';
 
-class ReportDataModel with AsyncTimer {
+class ReportDataModel {
   final Map<ReportPart, dynamic> _data = {};
 
-  UnmodifiableMapView get data => UnmodifiableMapView(_data);
+  UnmodifiableMapView<ReportPart, dynamic> get data => UnmodifiableMapView(_data);
 
   void add(ReportPart k, dynamic v) {
     _data[k] = v;
@@ -30,15 +30,25 @@ class ReportDataModel with AsyncTimer {
         .where((element) => !data.containsKey(element))
         .toList();
   }
+}
 
-  Future<void> report({@required Function onResult, @required OnFailure onFailure}) async {
+final reportDio = ReportDio();
+
+class ReportDio extends DioAbstract with AsyncTimer {
+  @override
+  String baseUrl = "https://api.twt.edu.cn/api/returnSchool/";
+
+  Future<void> report(
+      {@required UnmodifiableMapView<ReportPart, dynamic> data,
+      @required Function onResult,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked("report", () async {
       try {
         var token = CommonPreferences().token.value;
         var id = CommonPreferences().userNumber.value;
-        var location = _data[ReportPart.currentLocation] as LocationData;
-        var state = _data[ReportPart.currentState] as LocationState;
-        FormData data = FormData.fromMap({
+        var location = data[ReportPart.currentLocation] as LocationData;
+        var state = data[ReportPart.currentState] as LocationState;
+        FormData formData = FormData.fromMap({
           'provinceName': location.province,
           'cityName': location.city,
           'regionName': location.district,
@@ -46,26 +56,20 @@ class ReportDataModel with AsyncTimer {
           'longitude': location.longitude,
           'latitude': location.latitude,
           'healthCodeScreenshot': MultipartFile.fromBytes(
-            _data[ReportPart.healthCode],
-            filename: 'h${DateTime
-                .now()
-                .millisecondsSinceEpoch}code$id.jpg',
+            data[ReportPart.healthCode],
+            filename: 'h${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
             contentType: MediaType('image', 'jpg'),
           ),
           'travelCodeScreenshot': MultipartFile.fromBytes(
-            _data[ReportPart.itineraryCode],
-            filename: 't${DateTime
-                .now()
-                .millisecondsSinceEpoch}code$id.jpg',
+            data[ReportPart.itineraryCode],
+            filename: 't${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
             contentType: MediaType('image', 'jpg'),
           ),
           'curStatus': state.index,
-          'temperature': _data[ReportPart.temperature],
+          'temperature': data[ReportPart.temperature],
         });
-        var dio = Dio()
-          ..interceptors.add(LogInterceptor(responseBody: true));
         var result = await dio.post(
-          "https://api.twt.edu.cn/api/returnSchool/record",
+          "record",
           options: Options(
             headers: {
               "DOMAIN": AuthDio.DOMAIN,
@@ -73,25 +77,24 @@ class ReportDataModel with AsyncTimer {
               "token": token,
             },
           ),
-          data: data,
+          data: formData,
         );
         var responseData = ReportState.fromJson(result.data);
-        if (responseData.errorCode == 0 ? true : false){
+        if (responseData.errorCode == 0 ? true : false) {
           onResult();
-        }else {
+        } else {
           onFailure(Exception(responseData.message));
         }
-      } on DioError catch (e)  {
+      } on DioError catch (e) {
         onFailure(e);
       }
     });
   }
 
-
-  static Future<List<ReportItem>> getReportHistoryList() async {
+  Future<List<ReportItem>> getReportHistoryList() async {
     try {
       var token = CommonPreferences().token.value;
-      var response = await Dio().get(
+      var response = await dio.get(
         "https://api.twt.edu.cn/api/returnSchool/record",
         options: Options(
           headers: {
@@ -108,10 +111,10 @@ class ReportDataModel with AsyncTimer {
     }
   }
 
-  static Future<bool> getTodayHasReported() async {
+  Future<bool> getTodayHasReported() async {
     try {
       var token = CommonPreferences().token.value;
-      var response = await Dio().get(
+      var response = await dio.get(
         "https://api.twt.edu.cn/api/returnSchool/status",
         options: Options(
           headers: {
@@ -127,7 +130,6 @@ class ReportDataModel with AsyncTimer {
       return false;
     }
   }
-
 }
 
 class LocationData {
@@ -141,28 +143,27 @@ class LocationData {
   String address;
   int time;
 
-  LocationData({this.longitude,
-    this.latitude,
-    this.nation,
-    this.province,
-    this.city,
-    this.cityCode,
-    this.district,
-    this.address,
-    this.time});
+  LocationData(
+      {this.longitude,
+      this.latitude,
+      this.nation,
+      this.province,
+      this.city,
+      this.cityCode,
+      this.district,
+      this.address,
+      this.time});
 
-  LocationData.onlyAddress(String address){
-    this.latitude = null;
-    this.longitude = null;
-    this.nation = null;
-    this.province = null;
-    this.city = null;
-    this.cityCode = null;
-    this.district = null;
+  LocationData.onlyAddress(String address) {
+    this.latitude = 0;
+    this.longitude = 0;
+    this.nation = "";
+    this.province = "";
+    this.city = "";
+    this.cityCode = "";
+    this.district = "";
     this.address = address;
-    this.time = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    this.time = DateTime.now().millisecondsSinceEpoch;
   }
 
   factory LocationData.fromJson(Map<String, dynamic> json) {
@@ -196,8 +197,7 @@ class ReportState {
     );
   }
 
-  Map toJson() =>
-      {
+  Map toJson() => {
         "errorCode": errorCode,
         "message": message,
         "result": result,
@@ -235,17 +235,18 @@ class ReportItem {
   final String travelCode;
   final int state;
 
-  ReportItem({this.longitude,
-    this.latitude,
-    this.province,
-    this.city,
-    this.district,
-    this.address,
-    this.time,
-    this.temperature,
-    this.healthCode,
-    this.travelCode,
-    this.state});
+  ReportItem(
+      {this.longitude,
+      this.latitude,
+      this.province,
+      this.city,
+      this.district,
+      this.address,
+      this.time,
+      this.temperature,
+      this.healthCode,
+      this.travelCode,
+      this.state});
 
   factory ReportItem.fromJson(Map<String, dynamic> json) {
     return ReportItem(
@@ -263,8 +264,7 @@ class ReportItem {
     );
   }
 
-  Map toJson() =>
-      {
+  Map toJson() => {
         "longitude": longitude,
         "latitude": latitude,
         "province": province,

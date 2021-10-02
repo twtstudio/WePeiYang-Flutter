@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -110,24 +110,28 @@ class _ReportMainPageState extends State<ReportMainPage> {
     }
   }
 
-  _reportButtonOnTap(BuildContext c) {
-    var model = Provider.of<ReportDataModel>(c, listen: false);
+  _reportButtonOnTap() {
+    var model = Provider.of<ReportDataModel>(context, listen: false);
     var unSelected = model.check();
     unSelected = model.check();
-    if (unSelected.isEmpty) {
+    LocationData locationData = model.data[ReportPart.currentLocation];
+    if (unSelected.isEmpty && locationData.address.isNotEmpty) {
       ToastProvider.running('上传中');
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
-      model.report(onResult: () {
-        CommonPreferences().reportTime.value = DateTime.now().toString();
-        ToastProvider.success('上传成功');
-        clearAll.value = !clearAll.value;
-        model.clearAll();
-        _showReportDialog();
-      }, onFailure: (e) {
-        ToastProvider.success('上传失败: ${e.error.toString()}');
-      });
+      reportDio.report(
+          data: model.data,
+          onResult: () {
+            CommonPreferences().reportTime.value = DateTime.now().toString();
+            ToastProvider.success('上传成功');
+            clearAll.value = !clearAll.value;
+            model.clearAll();
+            _showReportDialog();
+          },
+          onFailure: (e) {
+            ToastProvider.error('上传失败:${e.error.toString()}');
+          });
     } else {
       ToastProvider.error('请检查所填内容是否完整');
       /**
@@ -187,7 +191,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
             CurrentPlace(),
             CurrentState(),
             Builder(
-              builder: (c) => ReportButton(onTap: () => _reportButtonOnTap(c)),
+              builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
             ),
             SizedBox(height: 40),
           ],
@@ -195,7 +199,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
         break;
       case _Page.list:
         body = FutureBuilder<List<ReportItem>>(
-            future: ReportDataModel.getReportHistoryList(),
+            future: reportDio.getReportHistoryList(),
             builder: (_, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data.length == 0) {
@@ -751,38 +755,45 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   bool canInputAddress = false;
   TextEditingController _controller = TextEditingController();
 
-  _checkAllPermissions() async {
-    await Permission.contacts.shouldShowRequestRationale;
+  _allowLocationPermission() async {
+    switch (await LocationPermissions().requestPermissions()) {
+      case PermissionStatus.granted:
+        return true;
+      default:
+        _inputLocationBySelf();
+        return false;
+    }
+  }
 
-    await [
-      Permission.location,
-      Permission.locationAlways,
-      Permission.locationWhenInUse
-    ].request();
+  _inputLocationBySelf() {
+    _allowInputAddress();
+    ToastProvider.error("请手动填写您当前所在位置");
+  }
 
-    if (await Permission.location.isDenied) {
-      ToastProvider.error("位置权限未启用");
-      return;
+  _checkLocationPermissions() async {
+    switch (await LocationPermissions().checkPermissionStatus()) {
+      case PermissionStatus.denied:
+        if (!await _allowLocationPermission()) return;
+        break;
+      case PermissionStatus.granted:
+        // continue
+        break;
+      default:
+        _inputLocationBySelf();
+        return;
     }
-    if (await Permission.location.isLimited) {
-      ToastProvider.error("位置权限未启用"); // iOS
-      return;
+    switch (await LocationPermissions().checkServiceStatus()) {
+      case ServiceStatus.disabled:
+        ToastProvider.error("请打开手机定位服务或手动填写");
+        _allowInputAddress();
+        break;
+      case ServiceStatus.enabled:
+        placeChannel.invokeMethod("getLocation");
+        break;
+      default:
+        _inputLocationBySelf();
+        return;
     }
-    if (await Permission.location.isPermanentlyDenied) {
-      ToastProvider.error("位置权限被禁用");
-      openAppSettings();
-      return;
-    }
-    if (await Permission.location.isRestricted) {
-      ToastProvider.error("位置权限被禁用"); // iOS
-      return;
-    }
-    if (await Permission.location.isUndetermined) {
-      ToastProvider.error("位置权限未启用");
-      return;
-    }
-
-    placeChannel.invokeMethod("getLocation");
   }
 
   _reportLocation(LocationData data) {
@@ -817,13 +828,17 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           case 'showError':
             // String result = await call.arguments;
             ToastProvider.error("获取位置信息失败");
-            setState(() {
-              canInputAddress = true;
-            });
+            _allowInputAddress();
             return 'success';
           default:
         }
       });
+    });
+  }
+
+  _allowInputAddress() {
+    setState(() {
+      canInputAddress = true;
     });
   }
 
@@ -832,7 +847,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     var placeWidth = MediaQuery.of(context).size.width * 0.72;
 
     Widget placeText = Container(
-      padding: EdgeInsets.only(left: 4, top: 13),
+      padding: EdgeInsets.only(left: 4, top: 15),
       width: placeWidth,
       child: TextField(
           controller: _controller,
@@ -844,9 +859,14 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           style: FontManager.YaHeiRegular.copyWith(
             color: Color(0xff626774),
             fontWeight: FontWeight.normal,
-            fontSize: 16,
+            fontSize: 15,
           ),
           decoration: InputDecoration(
+              hintText: "点击此处填写当前位置",
+              hintStyle: TextStyle(
+                  color: Color(0x9f626774),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15),
               isCollapsed: true,
               isDense: true,
               // contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
@@ -861,7 +881,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     var chosePlaceButton = RaisedButton(
       elevation: 0,
       padding: EdgeInsets.zero,
-      onPressed: _checkAllPermissions,
+      onPressed: _checkLocationPermissions,
       child: Row(
         children: [
           Text(

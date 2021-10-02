@@ -50,7 +50,7 @@ dependencies:
   connectivity: 2.0.2
   badges: ^1.2.0
   webview_flutter: ^1.0.7
-  permission_handler: ^5.1.0+2
+#  permission_handler: ^5.1.0+2
   image_picker: 0.6.7+22
   flutter_html: ^1.0.0
   simple_html_css: ^2.0.2
@@ -58,6 +58,7 @@ dependencies:
   image_pickers: ^1.1.0
   like_button: ^0.1.9
   screenshot: 0.3.0
+  location_permissions: ^3.0.0
   umeng_sdk:
     path: plugins/umeng_sdk
 
