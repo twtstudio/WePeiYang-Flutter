@@ -55,12 +55,12 @@ class ReportDio extends DioAbstract with AsyncTimer {
           'address': location.address,
           'longitude': location.longitude,
           'latitude': location.latitude,
-          'healthCodeScreenshot': MultipartFile.fromBytes(
+          'healthCodeScreenshot': MultipartFile.fromFileSync(
             data[ReportPart.healthCode],
             filename: 'h${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
             contentType: MediaType('image', 'jpg'),
           ),
-          'travelCodeScreenshot': MultipartFile.fromBytes(
+          'travelCodeScreenshot': MultipartFile.fromFileSync(
             data[ReportPart.itineraryCode],
             filename: 't${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
             contentType: MediaType('image', 'jpg'),

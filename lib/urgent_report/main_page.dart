@@ -493,10 +493,22 @@ class _TodayTempState extends State<TodayTemp> {
           .findAncestorStateOfType<_ReportMainPageState>()
           .clearAll
           .addListener(() {
-        setState(() {
-          _temperature.text = "";
-        });
+        _setText("");
       });
+      _initTemperatureData();
+    });
+  }
+
+  _initTemperatureData() {
+    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    if (data.containsKey(ReportPart.temperature)) {
+      _setText(data[ReportPart.temperature]);
+    }
+  }
+
+  _setText(String value) {
+    setState(() {
+      _temperature.text = value;
     });
   }
 
@@ -670,18 +682,15 @@ class _PickImageState extends State<PickImage> {
     PickedFile pickedFile = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 50);
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        _reportImage(pickedFile);
-      }
-    });
+    if (pickedFile != null) {
+      _setImg(File(pickedFile.path));
+      _reportImage(pickedFile);
+    }
   }
 
   _reportImage(PickedFile pickedFile) async {
-    var _bytes = await pickedFile.readAsBytes();
     Provider.of<ReportDataModel>(context, listen: false)
-        .add(widget.image.key, _bytes);
+        .add(widget.image.key, pickedFile.path);
   }
 
   @override
@@ -692,10 +701,22 @@ class _PickImageState extends State<PickImage> {
           .findAncestorStateOfType<_ReportMainPageState>()
           .clearAll
           .addListener(() {
-        setState(() {
-          _image = null;
-        });
+        _setImg(null);
       });
+      _initFileData();
+    });
+  }
+
+  _initFileData() {
+    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    if (data.containsKey(widget.image.key)) {
+      _setImg(File(data[widget.image.key]));
+    }
+  }
+
+  _setImg(File value) {
+    setState(() {
+      _image = value;
     });
   }
 
@@ -804,16 +825,16 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   @override
   void initState() {
     super.initState();
+    print("initstate000000000000000000000000000000000000000000");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
           .clearAll
           .addListener(() {
-        setState(() {
-          canInputAddress = false;
-          _controller.text = "";
-        });
+        canInputAddress = false;
+        _setLocation("");
       });
+      _initLocationData();
       placeChannel.setMethodCallHandler((call) async {
         switch (call.method) {
           case 'showResult':
@@ -821,9 +842,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             Map<String, dynamic> json = jsonDecode(preJson);
             LocationData data = LocationData.fromJson(json);
             _reportLocation(data);
-            setState(() {
-              _controller.text = data.address;
-            });
+            _setLocation(data.address);
             return 'success';
           case 'showError':
             // String result = await call.arguments;
@@ -833,6 +852,20 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           default:
         }
       });
+    });
+  }
+
+  _initLocationData() {
+    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    if (data.containsKey(ReportPart.currentLocation)) {
+      LocationData location = data[ReportPart.currentLocation];
+      _setLocation(location.address);
+    }
+  }
+
+  _setLocation(String value) {
+    setState(() {
+      _controller.text = value;
     });
   }
 
@@ -940,10 +973,22 @@ class _CurrentStateState extends State<CurrentState> {
           .findAncestorStateOfType<_ReportMainPageState>()
           .clearAll
           .addListener(() {
-        setState(() {
-          currentState = null;
-        });
+        _setState(null);
       });
+      _initStateData();
+    });
+  }
+
+  _initStateData() {
+    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    if (data.containsKey(ReportPart.currentState)) {
+      _setState(data[ReportPart.currentState]);
+    }
+  }
+
+  _setState(LocationState value) {
+    setState(() {
+      currentState = value;
     });
   }
 
