@@ -310,23 +310,23 @@ class _ReportResultDialog extends StatelessWidget {
       );
 }
 
-String tryParseMonthAndDay(String text) {
-  try {
-    var date = DateTime.parse(text);
-    var month = date.month.toString();
-    var day = date.day.toString();
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-    return '$month/$day';
-  } catch (e) {
-    return '00/00';
-  }
-}
-
 class _ReportListItem extends StatelessWidget {
   final ReportItem data;
 
   const _ReportListItem({this.data, Key key}) : super(key: key);
+
+  String _tryParseMonthAndDay(String text) {
+    try {
+      var date = DateTime.parse(text);
+      var month = date.month.toString();
+      var day = date.day.toString();
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+      return '$month/$day';
+    } catch (e) {
+      return '00/00';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -339,14 +339,30 @@ class _ReportListItem extends StatelessWidget {
     var cardH = (width - cardWidth) / 2;
     var cardV = cardH / 2;
 
-    var monthAndDay = tryParseMonthAndDay(data.time);
+    var monthAndDay = _tryParseMonthAndDay(data.time);
+
+    var iconBetweenText = iconWidth * 0.64;
+    var iconDifference = 2;
+    var linePadding = iconWidth * 0.705;
+    var codeColumnRightPadding = width * 0.1;
+    var informColumnLeftPadding = width * 0.1;
+    var avoidOverflow = 15;
+    var locationWidth = cardWidth -
+        codeColumnRightPadding -
+        informColumnLeftPadding -
+        codeWidth -
+        iconWidth -
+        iconBetweenText -
+        avoidOverflow;
+    var datetimeLeftPadding = informColumnLeftPadding;
 
     var backgroundDatetime = Align(
-      alignment: Alignment.center,
-      child: Container(
-        // color: Colors.green,
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(left: datetimeLeftPadding),
         child: Text(
           monthAndDay,
+          maxLines: 1,
           style: FontManager.Gilroy.copyWith(
               color: Color(0xffD9DEEA),
               fontWeight: FontWeight.w800,
@@ -355,9 +371,73 @@ class _ReportListItem extends StatelessWidget {
       ),
     );
 
-    var iconBetweenText = iconWidth * 0.64;
-    var iconDifference = 2;
-    var linePadding = iconWidth * 0.705;
+    var healthCode = data.healthCode != null
+        ? _code('健康码', Color(0xc14caf50), codeHeight, codeWidth)
+        : SizedBox.shrink();
+    var travelCode = data.travelCode != null
+        ? _code('行程码', Color(0xc14caf50), codeHeight, codeWidth)
+        : SizedBox.shrink();
+
+    var codeColumn = Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [healthCode, travelCode],
+    );
+
+    Widget temperature = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/images/account/thermometer.png',
+          height: iconWidth,
+          color: Color(0xff4f586b),
+        ),
+        SizedBox(width: iconBetweenText),
+        Text(data.temperature + "℃"),
+      ],
+    );
+
+    Widget location = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/images/account/direction2.png',
+          width: iconWidth - iconDifference,
+          color: Color(0xff4f586b),
+        ),
+        SizedBox(width: iconBetweenText + iconDifference),
+        SizedBox(
+          width: locationWidth,
+          child: Text(
+            data.address,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+          ),
+        )
+      ],
+    );
+
+    Widget state = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(width: iconWidth + iconBetweenText),
+        Text(LocationState.values[data.state].name),
+      ],
+    );
+
+    var informationColumn = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        temperature,
+        SizedBox(height: linePadding),
+        location,
+        SizedBox(height: linePadding / 2),
+        state,
+      ],
+    );
 
     var surfaceInformation = Align(
       alignment: Alignment.center,
@@ -366,54 +446,15 @@ class _ReportListItem extends StatelessWidget {
           color: Color(0xff63677b),
           fontSize: 11,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/account/thermometer.png',
-                  height: iconWidth,
-                  color: Color(0xff4f586b),
-                ),
-                SizedBox(width: iconBetweenText),
-                Text(data.temperature + "℃"),
-              ],
-            ),
-            SizedBox(height: linePadding),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/account/direction2.png',
-                  width: iconWidth - iconDifference,
-                  color: Color(0xff4f586b),
-                ),
-                SizedBox(width: iconBetweenText + iconDifference),
-                SizedBox(
-                  width: 150,
-                  child: Text(
-                    data.address,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: true,
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: linePadding / 2),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: iconWidth + iconBetweenText),
-                Text(LocationState.values[data.state].name),
-              ],
-            )
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: informColumnLeftPadding,
+            right: codeColumnRightPadding,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [informationColumn, codeColumn],
+          ),
         ),
       ),
     );
@@ -422,34 +463,14 @@ class _ReportListItem extends StatelessWidget {
       children: [backgroundDatetime, surfaceInformation],
     );
 
-    var healthCode = data.healthCode != null
-        ? _code('健康码', Colors.green, codeHeight, codeWidth)
-        : SizedBox.shrink();
-    var travelCode = data.travelCode != null
-        ? _code('行程码', Colors.green, codeHeight, codeWidth)
-        : SizedBox.shrink();
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: cardH, vertical: cardV),
       child: Card(
         elevation: 0.2,
+        margin: EdgeInsets.zero,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Center(
-            child: Row(
-              children: [
-                Expanded(child: textStack),
-                SizedBox(width: 5),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [healthCode, travelCode],
-                ),
-              ],
-            ),
-          ),
-        ),
+        child: Expanded(child: textStack),
       ),
     );
   }
@@ -500,7 +521,7 @@ class _TodayTempState extends State<TodayTemp> {
   }
 
   _initTemperatureData() {
-    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    var data = Provider.of<ReportDataModel>(context, listen: false).data;
     if (data.containsKey(ReportPart.temperature)) {
       _setText(data[ReportPart.temperature]);
     }
@@ -708,7 +729,7 @@ class _PickImageState extends State<PickImage> {
   }
 
   _initFileData() {
-    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    var data = Provider.of<ReportDataModel>(context, listen: false).data;
     if (data.containsKey(widget.image.key)) {
       _setImg(File(data[widget.image.key]));
     }
@@ -825,7 +846,6 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   @override
   void initState() {
     super.initState();
-    print("initstate000000000000000000000000000000000000000000");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
@@ -856,7 +876,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   }
 
   _initLocationData() {
-    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    var data = Provider.of<ReportDataModel>(context, listen: false).data;
     if (data.containsKey(ReportPart.currentLocation)) {
       LocationData location = data[ReportPart.currentLocation];
       _setLocation(location.address);
@@ -980,7 +1000,7 @@ class _CurrentStateState extends State<CurrentState> {
   }
 
   _initStateData() {
-    var data = Provider.of<ReportDataModel>(context,listen: false).data;
+    var data = Provider.of<ReportDataModel>(context, listen: false).data;
     if (data.containsKey(ReportPart.currentState)) {
       _setState(data[ReportPart.currentState]);
     }
