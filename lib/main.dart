@@ -70,37 +70,91 @@ class WePeiYangApp extends StatefulWidget {
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
 
   @override
-  _WePeiYangAppState createState() => _WePeiYangAppState();
+  WePeiYangAppState createState() => WePeiYangAppState();
 }
 
 final messageChannel = MethodChannel('com.twt.service/message');
 
-class _WePeiYangAppState extends State<WePeiYangApp> {
+class IntentEvent {
+  static const FeedbackPostPage = 1;
+  static const WBYPushOnlyText = 2;
+  static const WBYPushHtml = 3;
+  static const SchedulePage = 4;
+  static const NoSuchEvent = -1;
+}
+
+var pageStack = <String>[];
+
+class WePeiYangAppState extends State<WePeiYangApp>
+    with WidgetsBindingObserver {
+
   @override
   void dispose() async {
     await HiveManager.instance.closeBoxes();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
           WePeiYangApp.navigatorState.currentState.overlay.context;
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
-      await HiveManager.init();
+      HiveManager.init();
+      FeedbackService.getToken();
+    });
+  }
 
-      /// 获取feedback的token
-      await FeedbackService.getToken();
-      var id = await messageChannel?.invokeMethod<int>("getPostId");
-      if (id != -1) {
-        await Navigator.pushNamed(baseContext, FeedbackRouter.detail);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("WBYINTENT ${state.toString()}");
+    if (state == AppLifecycleState.resumed) {
+      checkEventList();
+    }
+  }
+
+  checkEventList() async {
+    var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
+    await messageChannel?.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+      print("WBYINTENT ${eventMap.toString()}");
+      switch (eventMap['event']) {
+        case IntentEvent.FeedbackPostPage:
+          // TODO: 传入id ,等更新完项目之后
+          Navigator.pushNamed(baseContext, FeedbackRouter.detail);
+          break;
+        case IntentEvent.WBYPushOnlyText:
+          String content = eventMap['data'];
+          showDialog(content);
+          break;
+        case IntentEvent.WBYPushHtml:
+          break;
+        case IntentEvent.SchedulePage:
+          print("IntentEvent.SchedulePage");
+          if (!pageStack.contains(ScheduleRouter.schedule)) {
+            Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
+          }
+          break;
+        default:
       }
     });
+  }
+
+  showDialog(String content) {
+    if (content != null && content.isNotEmpty) {
+      showMessageDialog(
+        WePeiYangApp.navigatorState.currentState.overlay.context,
+        content,
+      );
+    } else {
+      throw PlatformException(
+          code: 'error', message: '失败', details: 'content is null');
+    }
   }
 
   @override
@@ -116,40 +170,17 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
-            var baseContext =
-                WePeiYangApp.navigatorState.currentState.overlay.context;
             messageChannel
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
-                  case 'showMessage':
-                    String content = await call.arguments;
-                    if (content != null && content.isNotEmpty) {
-                      await showMessageDialog(
-                        baseContext,
-                        content,
-                      );
-                      assert(() {
-                        ToastProvider.success(content);
-                      }());
-                      return "success";
-                    } else {
-                      throw PlatformException(
-                          code: 'error',
-                          message: '失败',
-                          details: 'content is null');
-                    }
-                    break;
-                  case 'getReply':
-                    await Navigator.pushNamed(
-                        baseContext, FeedbackRouter.detail);
-                    return "success";
                   case 'refreshFeedbackMessageCount':
                     await messageProvider.refreshFeedbackCount();
                     return "success";
-                  case 'enterSchedulePage':
-                    await Navigator.pushNamed(
-                        baseContext, ScheduleRouter.schedule);
-                    return 'success';
+                    break;
+                  case 'showMessageDialogOnlyText':
+                    String content = call.arguments['data'];
+                    showDialog(content);
+                    break;
                 }
               });
             return messageProvider;
@@ -163,7 +194,7 @@ class _WePeiYangAppState extends State<WePeiYangApp> {
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [AppRouteAnalysis()],
+          navigatorObservers: [AppRouteAnalysis(),PageStackObserver()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -242,7 +273,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
-    // TODO 这里也许要挪位置，不然读缓存失败的话都无法登陆
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
@@ -269,5 +299,53 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         ),
       );
     }
+  }
+}
+
+class PageStackObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (route.settings.name != null) {
+      pageStack.add(route.settings.name);
+    }
+    print("pageStack:didPush ${pageStack.toString()}");
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (route.settings.name != null) {
+      pageStack.remove(route.settings.name);
+    }
+    print("pageStack:didPop ${pageStack.toString()}");
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (route.settings.name != null) {
+      pageStack.remove(route.settings.name);
+    }
+    print("pageStack:didStartUserGesture ${pageStack.toString()}");
+
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    if (oldRoute.settings.name != null) {
+      pageStack.remove(oldRoute.settings.name);
+    }
+    if (newRoute.settings.name != null) {
+      pageStack.add(newRoute.settings.name);
+    }
+    print("pageStack:didReplace ${pageStack.toString()}");
+
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (route.settings.name != null) {
+      pageStack.remove(route.settings.name);
+    }
+    print("pageStack:didRemove ${pageStack.toString()}");
+
   }
 }

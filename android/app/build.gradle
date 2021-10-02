@@ -86,11 +86,12 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
         }
     }
+
 }
 
 flutter {
@@ -126,6 +127,12 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.3.1"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.tencent.tauth:qqopensdk:3.52.0'
+    implementation 'com.amap.api:location:5.4.0'
+
+//    implementation  'com.umeng.umsdk:common:9.4.0'//基础组件库，必选
+//    implementation  'com.umeng.umsdk:asms:1.2.3'//基础组件库，必选
+//    implementation 'com.umeng.umsdk:link:1.1.0'//集成智能超链SDK，必选
 
 //    implementation "com.jakewharton.timber:timber:4.7.1"
 }
