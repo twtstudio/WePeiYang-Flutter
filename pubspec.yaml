@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 4.0.8+68
+version: 4.0.9+69
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -38,7 +38,6 @@ dependencies:
   path_provider: ^1.6.24
   async: ^2.4.2
   dotted_border: ^1.0.7
-  multi_image_picker: ^4.7.15
   flutter_rating_bar: ^3.2.0+1
   flutter_localizations:
     sdk: flutter
@@ -58,6 +57,7 @@ dependencies:
   image_gallery_saver: ^1.6.8
   image_pickers: ^1.1.0
   like_button: ^0.1.9
+  screenshot: 0.3.0
   umeng_sdk:
     path: plugins/umeng_sdk
 

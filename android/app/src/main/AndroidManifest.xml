@@ -91,9 +91,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="mobile.twt.edu.cn"
-                    android:pathPrefix="/feedback"
-                    android:scheme="https" />
+                    android:host="weipeiyang.app"
+                    android:pathPrefix="/mailbox"
+                    android:scheme="twtstudio" />
             </intent-filter>
         </activity>
 
@@ -167,7 +167,7 @@
         </receiver>
 
         <provider
-            android:name=".QQProvider"
+            android:name=".share.QQProvider"
             android:authorities="com.twt.service.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

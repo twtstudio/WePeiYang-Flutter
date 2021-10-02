@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import 'wpy_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       ..add(UserPage());
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       UpdateManager.checkUpdate();
-      var hasReport = await getTodayHasReported();
+      var hasReport = await ReportDataModel.getTodayHasReported();
       if (hasReport) {
         CommonPreferences().reportTime.value = DateTime.now().toString();
       } else {

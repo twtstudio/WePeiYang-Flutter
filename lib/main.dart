@@ -4,27 +4,28 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_sdk/umeng_sdk.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+
+import 'feedback/view/detail_page.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -87,7 +88,6 @@ var pageStack = <String>[];
 
 class WePeiYangAppState extends State<WePeiYangApp>
     with WidgetsBindingObserver {
-
   @override
   void dispose() async {
     await HiveManager.instance.closeBoxes();
@@ -126,7 +126,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           // TODO: 传入id ,等更新完项目之后
-          Navigator.pushNamed(baseContext, FeedbackRouter.detail);
+          Navigator.pushNamed(baseContext, FeedbackRouter.detail,
+              arguments: DetailPageArgs(
+                  Post.nullExceptId(eventMap['data']), null, null));
           break;
         case IntentEvent.WBYPushOnlyText:
           String content = eventMap['data'];
@@ -166,6 +168,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ...loungeProviders,
+        // ...feedbackProviders,
         ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
         ChangeNotifierProvider(
           create: (context) {
@@ -194,7 +197,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [AppRouteAnalysis(),PageStackObserver()],
+          navigatorObservers: [AppRouteAnalysis(), PageStackObserver()],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -273,6 +276,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
+
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
@@ -325,7 +329,6 @@ class PageStackObserver extends NavigatorObserver {
       pageStack.remove(route.settings.name);
     }
     print("pageStack:didStartUserGesture ${pageStack.toString()}");
-
   }
 
   @override
@@ -337,7 +340,6 @@ class PageStackObserver extends NavigatorObserver {
       pageStack.add(newRoute.settings.name);
     }
     print("pageStack:didReplace ${pageStack.toString()}");
-
   }
 
   @override
@@ -346,6 +348,5 @@ class PageStackObserver extends NavigatorObserver {
       pageStack.remove(route.settings.name);
     }
     print("pageStack:didRemove ${pageStack.toString()}");
-
   }
 }

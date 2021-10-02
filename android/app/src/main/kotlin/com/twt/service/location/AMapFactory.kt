@@ -1,4 +1,4 @@
-package com.twt.service
+package com.twt.service.location
 
 import android.content.Context
 import android.text.TextUtils

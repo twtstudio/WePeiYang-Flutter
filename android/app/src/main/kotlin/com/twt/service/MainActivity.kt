@@ -15,6 +15,8 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.umeng_sdk.UmengSdkPlugin
 import com.google.gson.Gson
 import com.tencent.tauth.Tencent
+import com.twt.service.location.AMapFactory
+import com.twt.service.share.QQFactory
 import com.twt.service.widget.ScheduleWidgetProvider
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -30,11 +32,18 @@ class MainActivity : FlutterFragmentActivity() {
         const val APP_AUTHORITIES = "com.twt.service.FileProvider"
     }
 
-    var messageChannel: MethodChannel? = null
+    lateinit var messageChannel: MethodChannel
     lateinit var placeChannel: MethodChannel
-    var shareChannel: MethodChannel? = null
-    val mTencent by lazy { Tencent.createInstance(APP_ID, this@MainActivity, APP_AUTHORITIES) }
-    private var imgSaveChannel: BasicMessageChannel<String>? = null
+    lateinit var shareChannel: MethodChannel
+    val mTencent: Tencent? by lazy {
+        Tencent.createInstance(
+            APP_ID,
+            this,
+            APP_AUTHORITIES
+        )
+    }
+//    val WXapi by lazy { WXAPIFactory.createWXAPI(this@MainActivity, "", false) }
+    private lateinit var imgSaveChannel: BasicMessageChannel<String>
     private val locationClient by lazy { AMapFactory.init(placeChannel, applicationContext) }
     private val notificationManager: NotificationManagerCompat by lazy {
         NotificationManagerCompat.from(this)
@@ -188,14 +197,14 @@ class MainActivity : FlutterFragmentActivity() {
                         updateWidget()
                     }
                     "getLastEvent" -> {
-                        with(WBYApplication.eventList){
+                        with(WBYApplication.eventList) {
                             val event = last()
-                            if (size > 1){
+                            if (size > 1) {
                                 removeLast()
                             }
-                            Log.d("WBYINTENT",size.toString())
-                            if (event.type!=-1){
-                                Log.d("WBYINTENT",event.toString())
+                            Log.d("WBYINTENT", size.toString())
+                            if (event.type != -1) {
+                                Log.d("WBYINTENT", event.toString())
                                 result.success(
                                     mapOf(
                                         "event" to event.type,
@@ -250,6 +259,14 @@ class MainActivity : FlutterFragmentActivity() {
                             result.success("success")
                         } catch (e: Exception) {
                             result.error("-1", "cannot share to qq", null)
+                        }
+                    }
+                    "shareImgToQQ" -> {
+                        try {
+                            QQFactory.shareImg(call)
+                            result.success("success")
+                        } catch (e: Exception) {
+                            result.error("-1", "cannot share img to wx", null)
                         }
                     }
                     else -> result.error("-1", "cannot find method", null)
