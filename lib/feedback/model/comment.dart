@@ -42,7 +42,7 @@ class Comment with ChangeNotifier {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['contain'] = this.content;
     data['user_id'] = this.userId;
@@ -54,5 +54,13 @@ class Comment with ChangeNotifier {
     data['adminname'] = this.adminName;
     data['is_liked'] = this.isLiked;
     return data;
+  }
+
+  changeLikeStatus() {
+    if (isLiked)
+      likeCount -= 1;
+    else
+      likeCount += 1;
+    isLiked = !isLiked;
   }
 }
