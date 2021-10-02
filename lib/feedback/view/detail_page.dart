@@ -50,7 +50,7 @@ class _DetailPageState extends State<DetailPage> {
   PostOrigin origin;
   DetailPageStatus status;
   String _commentLengthIndicator;
-  List<Comment> officialCommentList, commentList;
+  List<Comment> _officialCommentList, _commentList;
 
   var _refreshController = RefreshController(initialRefresh: false);
   var _textEditingController = TextEditingController();
@@ -60,14 +60,14 @@ class _DetailPageState extends State<DetailPage> {
   _onRefresh() {
     ToastProvider.running("刷新评论中");
     setState(() {
-      officialCommentList.clear();
-      commentList.clear();
+      _officialCommentList.clear();
+      _commentList.clear();
     });
     FeedbackService.getComments(
       id: post.id,
       onSuccess: (officialComments, comments) {
-        officialCommentList.addAll(officialComments);
-        commentList.addAll(comments);
+        _officialCommentList = officialComments;
+        _commentList = comments;
         setState(() => status = DetailPageStatus.idle);
       },
       onFailure: (e) => ToastProvider.error(e.error.toString()),
@@ -117,22 +117,22 @@ class _DetailPageState extends State<DetailPage> {
       context,
       FeedbackRouter.officialComment,
       arguments: OfficialCommentPageArgs(
-        officialCommentList[index],
+        _officialCommentList[index],
         post.title,
         index,
         post.isOwner,
       ),
     ).then((officialComment) {
-      setState(() => officialCommentList[index] = officialComment);
+      setState(() => _officialCommentList[index] = officialComment);
     });
   }
 
   _onOfficialCommentLiked(int index) {
     FeedbackService.officialCommentHitLike(
-      id: officialCommentList[index].id,
-      isLiked: officialCommentList[index].isLiked,
+      id: _officialCommentList[index].id,
+      isLiked: _officialCommentList[index].isLiked,
       onSuccess: () {
-        setState(() => officialCommentList[index].changeLikeStatus());
+        setState(() => _officialCommentList[index].changeLikeStatus());
       },
       onFailure: (e) => ToastProvider.error(e.error.toString()),
     );
@@ -140,11 +140,11 @@ class _DetailPageState extends State<DetailPage> {
 
   _onCommentLiked(int index) {
     FeedbackService.commentHitLike(
-      id: commentList[index - officialCommentList.length].id,
-      isLiked: commentList[index - officialCommentList.length].isLiked,
+      id: _commentList[index - _officialCommentList.length].id,
+      isLiked: _commentList[index - _officialCommentList.length].isLiked,
       onSuccess: () {
         setState(() {
-          commentList[index - officialCommentList.length].changeLikeStatus();
+          _commentList[index - _officialCommentList.length].changeLikeStatus();
         });
       },
       onFailure: (e) => ToastProvider.error(e.error.toString()),
@@ -156,8 +156,8 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
     status = DetailPageStatus.loading;
     _commentLengthIndicator = '0/200';
-    officialCommentList = List();
-    commentList = List();
+    _officialCommentList = List();
+    _commentList = List();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
       if (post == null) {
@@ -182,8 +182,8 @@ class _DetailPageState extends State<DetailPage> {
       await FeedbackService.getComments(
         id: post.id,
         onSuccess: (officialComments, comments) {
-          officialCommentList.addAll(officialComments);
-          commentList.addAll(comments);
+          _officialCommentList = officialComments;
+          _commentList = comments;
           setState(() => status = DetailPageStatus.idle);
         },
         onFailure: (e) => ToastProvider.error(e.error.toString()),
@@ -218,7 +218,8 @@ class _DetailPageState extends State<DetailPage> {
               onRefresh: _onRefresh,
               enablePullUp: false,
               child: ListView.builder(
-                itemCount: officialCommentList.length + commentList.length + 1,
+                itemCount:
+                    _officialCommentList.length + _commentList.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return PostCard.detail(
@@ -228,9 +229,9 @@ class _DetailPageState extends State<DetailPage> {
                     );
                   }
                   index--;
-                  if (index < officialCommentList.length) {
+                  if (index < _officialCommentList.length) {
                     return CommentCard.official(
-                      officialCommentList[index],
+                      _officialCommentList[index],
                       onContentPressed: () {
                         _onOfficialCommentPressed(index);
                       },
@@ -240,8 +241,8 @@ class _DetailPageState extends State<DetailPage> {
                     );
                   } else {
                     return CommentCard(
-                      commentList[index - officialCommentList.length],
-                      index - officialCommentList.length + 1,
+                      _commentList[index - _officialCommentList.length],
+                      index - _officialCommentList.length + 1,
                       onLikePressed: () {
                         _onCommentLiked(index);
                       },
@@ -345,7 +346,11 @@ class _DetailPageState extends State<DetailPage> {
                 color: Color(0xff62677b),
               ),
               onPressed: () {
-                shareChannel.invokeMethod("shareToQQ",{"summary":"校务专区问题详情","title" : post.title,"id":post.id});
+                shareChannel.invokeMethod("shareToQQ", {
+                  "summary": "校务专区问题详情",
+                  "title": post.title,
+                  "id": post.id
+                });
               },
             )
           ],

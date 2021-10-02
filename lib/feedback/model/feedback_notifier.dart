@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
