@@ -470,7 +470,7 @@ class _ReportListItem extends StatelessWidget {
         margin: EdgeInsets.zero,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: Expanded(child: textStack),
+        child: textStack,
       ),
     );
   }
