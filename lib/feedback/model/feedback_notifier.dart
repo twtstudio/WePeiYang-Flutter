@@ -34,8 +34,6 @@ class FeedbackNotifier with ChangeNotifier {
   List<Tag> _tagList = List();
   List<Post> _homePostList = List();
   List<Post> _profilePostList = List();
-  List<Comment> _officialCommentList = List();
-  List<Comment> _commentList = List();
   List<String> _searchHistoryList = List();
   String _token;
 
@@ -44,10 +42,6 @@ class FeedbackNotifier with ChangeNotifier {
   List<Post> get homePostList => _homePostList;
 
   List<Post> get profilePostList => _profilePostList;
-
-  List<Comment> get officialCommentList => _officialCommentList;
-
-  List<Comment> get commentList => _commentList;
 
   List<String> get searchHistoryList => _searchHistoryList;
 
@@ -79,23 +73,6 @@ class FeedbackNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  clearCommentList() {
-    _officialCommentList.clear();
-    _commentList.clear();
-    notifyListeners();
-  }
-
-  addComments(List<Comment> officialCommentList, List<Comment> commentList) {
-    _officialCommentList.addAll(officialCommentList);
-    _commentList.addAll(commentList);
-    notifyListeners();
-  }
-
-  updateRating(double rating, index) {
-    _officialCommentList[index].rating = (rating * 2).toInt();
-    notifyListeners();
-  }
-
   addHomePosts(List<Post> posts) {
     _homePostList.addAll(posts);
     notifyListeners();
@@ -106,28 +83,6 @@ class FeedbackNotifier with ChangeNotifier {
       _profilePostList[index].isFavorite = false;
     } else {
       _profilePostList[index].isFavorite = true;
-    }
-    notifyListeners();
-  }
-
-  changeCommentLikeState(index) {
-    if (_commentList[index].isLiked) {
-      _commentList[index].likeCount--;
-      _commentList[index].isLiked = false;
-    } else {
-      _commentList[index].likeCount++;
-      _commentList[index].isLiked = true;
-    }
-    notifyListeners();
-  }
-
-  changeOfficialCommentLikeState(index) {
-    if (_officialCommentList[index].isLiked) {
-      _officialCommentList[index].likeCount--;
-      _officialCommentList[index].isLiked = false;
-    } else {
-      _officialCommentList[index].likeCount++;
-      _officialCommentList[index].isLiked = true;
     }
     notifyListeners();
   }

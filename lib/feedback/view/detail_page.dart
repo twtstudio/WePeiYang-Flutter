@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
@@ -26,6 +26,14 @@ enum DetailPageStatus {
 
 enum PostOrigin { home, profile, favorite, mailbox }
 
+class DetailPageArgs {
+  final Post post;
+  final int index;
+  final PostOrigin origin;
+
+  DetailPageArgs(this.post, this.index, this.origin);
+}
+
 class DetailPage extends StatefulWidget {
   final DetailPageArgs args;
 
@@ -36,21 +44,13 @@ class DetailPage extends StatefulWidget {
       _DetailPageState(this.args?.post, this.args?.index, this.args?.origin);
 }
 
-class DetailPageArgs {
-  final Post post;
-  final int index;
-  final PostOrigin origin;
-
-  DetailPageArgs(this.post, this.index, this.origin);
-}
-
 class _DetailPageState extends State<DetailPage> {
-  Post post;
   final int commentIndex;
+  Post post;
   PostOrigin origin;
-
-  String _commentLengthIndicator;
   DetailPageStatus status;
+  String _commentLengthIndicator;
+  List<Comment> officialCommentList, commentList;
 
   var _refreshController = RefreshController(initialRefresh: false);
   var _textEditingController = TextEditingController();
@@ -58,12 +58,16 @@ class _DetailPageState extends State<DetailPage> {
   _DetailPageState(this.post, this.commentIndex, this.origin);
 
   _onRefresh() {
-    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    ToastProvider.running("刷新评论中");
+    setState(() {
+      officialCommentList.clear();
+      commentList.clear();
+    });
     FeedbackService.getComments(
       id: post.id,
-      onSuccess: (officialCommentList, commentList) {
-        Provider.of<FeedbackNotifier>(context, listen: false)
-            .addComments(officialCommentList, commentList);
+      onSuccess: (officialComments, comments) {
+        officialCommentList.addAll(officialComments);
+        commentList.addAll(comments);
         setState(() => status = DetailPageStatus.idle);
       },
       onFailure: (e) => ToastProvider.error(e.error.toString()),
@@ -71,7 +75,7 @@ class _DetailPageState extends State<DetailPage> {
     _refreshController.refreshCompleted();
   }
 
-  _onPressLike() {
+  _onPostLike() {
     FeedbackService.postHitLike(
       id: post.id,
       isLiked: post.isLiked,
@@ -79,21 +83,18 @@ class _DetailPageState extends State<DetailPage> {
         if (origin == PostOrigin.home) {
           notifier.changeHomePostLikeState(commentIndex);
         } else if (origin == PostOrigin.mailbox) {
-          setState(() {
-            post.isLiked ? post.likeCount-- : post.likeCount++;
-            post.isLiked = !post.isLiked;
-          });
+          post.isLiked ? post.likeCount-- : post.likeCount++;
+          post.isLiked = !post.isLiked;
         } else {
           notifier.changeProfilePostLikeState(commentIndex);
         }
+        setState(() {});
       },
-      onFailure: (e) {
-        ToastProvider.error(e.error.toString());
-      },
+      onFailure: (e) => ToastProvider.error(e.error.toString()),
     );
   }
 
-  _onPressFavorite() {
+  _onPostFavorite() {
     FeedbackService.postHitFavorite(
       id: post.id,
       isFavorite: post.isFavorite,
@@ -101,10 +102,50 @@ class _DetailPageState extends State<DetailPage> {
         if (origin == PostOrigin.home) {
           notifier.changeHomePostFavoriteState(commentIndex);
         } else if (origin == PostOrigin.mailbox) {
-          setState(() => post.isFavorite = !post.isFavorite);
+          post.isFavorite = !post.isFavorite;
         } else {
           notifier.changeProfilePostFavoriteState(commentIndex);
         }
+        setState(() {});
+      },
+      onFailure: (e) => ToastProvider.error(e.error.toString()),
+    );
+  }
+
+  _onOfficialCommentPressed(int index) {
+    Navigator.pushNamed(
+      context,
+      FeedbackRouter.officialComment,
+      arguments: OfficialCommentPageArgs(
+        officialCommentList[index],
+        post.title,
+        index,
+        post.isOwner,
+      ),
+    ).then((officialComment) {
+      setState(() => officialCommentList[index] = officialComment);
+    });
+  }
+
+  _onOfficialCommentLiked(int index) {
+    FeedbackService.officialCommentHitLike(
+      id: officialCommentList[index].id,
+      isLiked: officialCommentList[index].isLiked,
+      onSuccess: () {
+        setState(() => officialCommentList[index].changeLikeStatus());
+      },
+      onFailure: (e) => ToastProvider.error(e.error.toString()),
+    );
+  }
+
+  _onCommentLiked(int index) {
+    FeedbackService.commentHitLike(
+      id: commentList[index - officialCommentList.length].id,
+      isLiked: commentList[index - officialCommentList.length].isLiked,
+      onSuccess: () {
+        setState(() {
+          commentList[index - officialCommentList.length].changeLikeStatus();
+        });
       },
       onFailure: (e) => ToastProvider.error(e.error.toString()),
     );
@@ -115,7 +156,8 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
     status = DetailPageStatus.loading;
     _commentLengthIndicator = '0/200';
-    Provider.of<FeedbackNotifier>(context, listen: false).clearCommentList();
+    officialCommentList = List();
+    commentList = List();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
       if (post == null) {
@@ -139,9 +181,9 @@ class _DetailPageState extends State<DetailPage> {
       }
       await FeedbackService.getComments(
         id: post.id,
-        onSuccess: (officialCommentList, commentList) {
-          Provider.of<FeedbackNotifier>(context, listen: false) // ??
-              .addComments(officialCommentList, commentList);
+        onSuccess: (officialComments, comments) {
+          officialCommentList.addAll(officialComments);
+          commentList.addAll(comments);
           setState(() => status = DetailPageStatus.idle);
         },
         onFailure: (e) => ToastProvider.error(e.error.toString()),
@@ -168,86 +210,45 @@ class _DetailPageState extends State<DetailPage> {
       body = Column(
         children: [
           Expanded(
-            child: Consumer<FeedbackNotifier>(
-              builder: (context, notifier, widget) {
-                return SmartRefresher(
-                    physics: BouncingScrollPhysics(),
-                    controller: _refreshController,
-                    header: ClassicHeader(),
-                    enablePullDown: true,
-                    onRefresh: _onRefresh,
-                    enablePullUp: false,
-                    child: ListView.builder(
-                        itemCount: notifier.officialCommentList.length +
-                            notifier.commentList.length +
-                            1,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return PostCard.detail(
-                              post,
-                              onLikePressed: _onPressLike,
-                              onFavoritePressed: _onPressFavorite,
-                            );
-                          }
-                          index--;
-                          if (index < notifier.officialCommentList.length) {
-                            return CommentCard.official(
-                              notifier.officialCommentList[index],
-                              onContentPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  FeedbackRouter.officialComment,
-                                  arguments: OfficialCommentPageArgs(
-                                    notifier.officialCommentList[index],
-                                    post.title,
-                                    index,
-                                    post.isOwner,
-                                  ),
-                                );
-                              },
-                              onLikePressed: () {
-                                FeedbackService.officialCommentHitLike(
-                                  id: notifier.officialCommentList[index].id,
-                                  isLiked: notifier
-                                      .officialCommentList[index].isLiked,
-                                  onSuccess: () {
-                                    notifier
-                                        .changeOfficialCommentLikeState(index);
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(e.error.toString());
-                                  },
-                                );
-                              },
-                            );
-                          } else {
-                            return CommentCard(
-                              notifier.commentList[
-                                  index - notifier.officialCommentList.length],
-                              index - notifier.officialCommentList.length + 1,
-                              onLikePressed: () {
-                                FeedbackService.commentHitLike(
-                                  id: notifier
-                                      .commentList[index -
-                                          notifier.officialCommentList.length]
-                                      .id,
-                                  isLiked: notifier
-                                      .commentList[index -
-                                          notifier.officialCommentList.length]
-                                      .isLiked,
-                                  onSuccess: () {
-                                    notifier.changeCommentLikeState(index -
-                                        notifier.officialCommentList.length);
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(e.error.toString());
-                                  },
-                                );
-                              },
-                            );
-                          }
-                        }));
-              },
+            child: SmartRefresher(
+              physics: BouncingScrollPhysics(),
+              controller: _refreshController,
+              header: ClassicHeader(),
+              enablePullDown: true,
+              onRefresh: _onRefresh,
+              enablePullUp: false,
+              child: ListView.builder(
+                itemCount: officialCommentList.length + commentList.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return PostCard.detail(
+                      post,
+                      onLikePressed: _onPostLike,
+                      onFavoritePressed: _onPostFavorite,
+                    );
+                  }
+                  index--;
+                  if (index < officialCommentList.length) {
+                    return CommentCard.official(
+                      officialCommentList[index],
+                      onContentPressed: () {
+                        _onOfficialCommentPressed(index);
+                      },
+                      onLikePressed: () {
+                        _onOfficialCommentLiked(index);
+                      },
+                    );
+                  } else {
+                    return CommentCard(
+                      commentList[index - officialCommentList.length],
+                      index - officialCommentList.length + 1,
+                      onLikePressed: () {
+                        _onCommentLiked(index);
+                      },
+                    );
+                  }
+                },
+              ),
             ),
           ),
           Row(
