@@ -4,12 +4,11 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/rating_card.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class OfficialCommentPageArgs {
-  // TODO: Actually it is not necessary to pass the param 'comment', cuz the comment can be accessed using 'index' and notifier.(ﾟ∀。 )
   final Comment comment;
   final String title;
   final int index;
@@ -59,20 +58,8 @@ class _OfficialCommentPageState extends State<OfficialCommentPage> {
         ),
         body: ListView(
           children: [
-            CommentCard.detail(
-              widget.comment,
-              title: widget.title,
-              onLikePressed: () {
-                FeedbackService.officialCommentHitLike(
-                  id: widget.comment.id,
-                  isLiked: widget.comment.isLiked,
-                  onSuccess: () {
-                    setState(() => widget.comment.changeLikeStatus());
-                  },
-                  onFailure: (e) => ToastProvider.error(e.error.toString()),
-                );
-              },
-            ),
+            OfficialReplyCard.detail(
+                comment: widget.comment, title: widget.title),
             if (widget.isOwner)
               RatingCard(
                 initialRating:

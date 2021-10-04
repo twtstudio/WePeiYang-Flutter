@@ -3,6 +3,7 @@ import 'package:image_pickers/image_pickers.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -80,7 +81,19 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   ToastProvider.success('已保存到手机相册');
                   Navigator.pop(context);
                 },
-              )
+              ),
+            ListTile(
+              title: Text(
+                '分享图片到QQ',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () async {
+                var path = await ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                await shareChannel.invokeMethod("shareImgToQQ",{"imageUrl":path});
+                ToastProvider.success('分享成功');
+                Navigator.pop(context);
+              },
+            )
           ],
         );
       }

@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pages = List<Widget>();
   int _currentIndex = 0;
   DateTime _lastPressedAt;
+  TabController _tabController;
 
   @override
   void initState() {
@@ -31,6 +32,17 @@ class _HomePageState extends State<HomePage> {
       ..add(FeedbackHomePage())
       // ..add(DrawerPage())
       ..add(UserPage());
+    _tabController = TabController(
+      length: pages.length,
+      vsync: ScrollableState(),
+      initialIndex: 0,
+    )..addListener(() {
+        if (_tabController.index != _tabController.previousIndex) {
+          setState(() {
+            _currentIndex = _tabController.index;
+          });
+        }
+      });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       UpdateManager.checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
@@ -80,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        onPressed: () => setState(() => _currentIndex = 0),
+        onPressed: () => _tabController.animateTo(0),
       ),
     );
 
@@ -115,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        onPressed: () => setState(() => _currentIndex = 1),
+        onPressed: () => _tabController.animateTo(1),
       ),
     );
 
@@ -179,7 +191,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        onPressed: () => setState(() => _currentIndex = 2),
+        onPressed: () => _tabController.animateTo(2),
       ),
     );
 
@@ -190,7 +202,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _currentIndex == 2
+      value: _tabController.index == 2
           ? SystemUiOverlayStyle.light
               .copyWith(systemNavigationBarColor: Colors.white)
           : SystemUiOverlayStyle.dark
@@ -199,7 +211,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {
-            if (_currentIndex == 0) {
+            if (_tabController.index == 0) {
               if (_lastPressedAt == null ||
                   DateTime.now().difference(_lastPressedAt) >
                       Duration(seconds: 1)) {
@@ -209,16 +221,15 @@ class _HomePageState extends State<HomePage> {
                 return false;
               }
             } else {
-              setState(() {
-                _currentIndex = 0;
-              });
+              _tabController.animateTo(0);
               return false;
             }
             return true;
           },
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 200),
-            child: pages[_currentIndex],
+          child: TabBarView(
+            controller: _tabController,
+            physics: NeverScrollableScrollPhysics(),
+            children: pages,
           ),
         ),
       ),

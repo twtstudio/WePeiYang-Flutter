@@ -130,6 +130,8 @@ dependencies {
     implementation 'com.tencent.tauth:qqopensdk:3.52.0'
     implementation 'com.amap.api:location:5.4.0'
 
+//    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
+
 //    implementation  'com.umeng.umsdk:common:9.4.0'//基础组件库，必选
 //    implementation  'com.umeng.umsdk:asms:1.2.3'//基础组件库，必选
 //    implementation 'com.umeng.umsdk:link:1.1.0'//集成智能超链SDK，必选

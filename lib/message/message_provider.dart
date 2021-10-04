@@ -6,9 +6,9 @@ import 'package:we_pei_yang_flutter/message/message_model.dart';
 
 class MessageProvider extends ChangeNotifier {
 
-  List<MessageDataItem> _feedbackQuestions;
-  List<MessageDataItem> _feedbackFavourites;
-  List<int> _feedbackMessageList;
+  List<MessageDataItem> _feedbackQuestions = [];
+  List<MessageDataItem> _feedbackFavourites = [];
+  List<int> _feedbackMessageList = [];
   String _messageData;
   ClassifiedCount _classifiedMessageCount;
 

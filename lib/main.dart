@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'dart:io' show HttpClient, HttpOverrides, Platform, SecurityContext, X509Certificate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,7 +14,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/model/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -25,7 +24,7 @@ import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
-import 'feedback/view/detail_page.dart';
+import 'feedback/model/feedback_providers.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -36,6 +35,10 @@ import 'feedback/view/detail_page.dart';
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
+  // debugPaintSizeEnabled = true;
+
   /// 程序中的同步（sync）错误也交给zone处理
   FlutterError.onError = (FlutterErrorDetails details) async {
     Zone.current.handleUncaughtError(details.exception, details.stack);
@@ -127,8 +130,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         case IntentEvent.FeedbackPostPage:
           // TODO: 传入id ,等更新完项目之后
           Navigator.pushNamed(baseContext, FeedbackRouter.detail,
-              arguments: DetailPageArgs(
-                  Post.nullExceptId(eventMap['data']), null, null));
+              arguments: Post.nullExceptId(eventMap['data']));
           break;
         case IntentEvent.WBYPushOnlyText:
           String content = eventMap['data'];
@@ -168,8 +170,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ...loungeProviders,
-        // ...feedbackProviders,
-        ChangeNotifierProvider(create: (context) => FeedbackNotifier()),
+        ...feedbackProviders,
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
@@ -348,5 +349,15 @@ class PageStackObserver extends NavigatorObserver {
       pageStack.remove(route.settings.name);
     }
     print("pageStack:didRemove ${pageStack.toString()}");
+  }
+}
+
+// 证书问题 暂时这样写
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+      (X509Certificate cert, String host, int port) => true;
   }
 }

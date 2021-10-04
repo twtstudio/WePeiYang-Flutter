@@ -79,6 +79,8 @@ class CommonPreferences {
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
   var favorListState = PrefsBean<int>("favorListState", 0);
 
+  var feedbackSearchHistory = PrefsBean<List<String>>("feedbackSearchHistory",[]);
+
   /// 健康信息提交时间
   var reportTime = PrefsBean<String>('reportTime');
 

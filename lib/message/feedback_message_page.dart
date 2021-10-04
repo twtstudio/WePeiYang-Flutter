@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 
 import 'message_service.dart';
 import 'message_provider.dart';
@@ -221,12 +221,6 @@ class MessagesList extends StatefulWidget {
 
   MessagesList({Key key, this.type}) : super(key: key);
 
-  refresh() {
-    // _state.onRefresh(refreshCount: false);
-  }
-
-  // _MessagesListState _state = _MessagesListState();
-
   @override
   _MessagesListState createState() => _MessagesListState();
 }
@@ -234,8 +228,8 @@ class MessagesList extends StatefulWidget {
 class _MessagesListState extends State<MessagesList>
     with AutomaticKeepAliveClientMixin {
   List<FeedbackMessageItem> items = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
 
   onRefresh({bool refreshCount = true}) async {
     if (widget == null) return;
@@ -307,6 +301,46 @@ class _MessagesListState extends State<MessagesList>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    Widget child;
+
+    if (_refreshController.isRefresh) {
+      child = Center(
+        child: Loading(),
+      );
+    } else if (items.isEmpty) {
+      child = Center(
+        child: Text("无未读消息"),
+      );
+    } else {
+      child = ListView.separated(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (c, i) {
+          return MessageItem(
+            data: items[i],
+            onTapDown: items[i].visible.isOne
+                ? () async {
+                    try {
+                      await MessageService.setQuestionRead(items[i].post.id);
+                    } catch (e) {
+                      ToastProvider.error("设置问题已读失败");
+                    }
+                  }
+                : null,
+            type: widget.type,
+          );
+        },
+        separatorBuilder: (_, __) => Divider(
+          indent: 20,
+          endIndent: 20,
+          thickness: 1,
+          height: 3,
+          color: Color(0xffacaeba),
+        ),
+        itemCount: items.length,
+      );
+    }
+
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -334,32 +368,7 @@ class _MessagesListState extends State<MessagesList>
       controller: _refreshController,
       onRefresh: onRefresh,
       onLoading: _onLoading,
-      child: ListView.separated(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (c, i) {
-          return MessageItem(
-            data: items[i],
-            onTapDown: items[i].visible.isOne
-                ? () async {
-                    try {
-                      await MessageService.setQuestionRead(items[i].post.id);
-                    } catch (e) {
-                      ToastProvider.error("设置问题已读失败");
-                    }
-                  }
-                : null,
-            type: widget.type,
-          );
-        },
-        separatorBuilder: (_, __) => Divider(
-          indent: 20,
-          endIndent: 20,
-          thickness: 1,
-          height: 3,
-          color: Color(0xffacaeba),
-        ),
-        itemCount: items.length,
-      ),
+      child: child,
     );
   }
 
@@ -581,7 +590,7 @@ class MessageItem extends StatelessWidget {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
-            arguments: DetailPageArgs(data.post, 0, PostOrigin.mailbox),
+            arguments: data.post,
           ).then((_) => context
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
