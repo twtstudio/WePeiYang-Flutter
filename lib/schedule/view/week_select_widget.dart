@@ -28,7 +28,7 @@ class WeekSelectWidget extends StatelessWidget {
               Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
           if (current == 1) current++;
           return AnimatedContainer(
-            duration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             height: isShrink ? 45 : 90,
             child: ListView.builder(
                 itemCount: notifier.weekCount,

@@ -153,8 +153,8 @@ class CourseDisplayWidget extends StatelessWidget {
             width: cardWidth,
             child: judgeActiveInWeek(notifier.selectedWeekWithNotify,
                     notifier.weekCount, courses[0])
-                ? getActiveCourseCard(context, height, cardWidth, courses)
-                : getQuietCourseCard(height, cardWidth, courses[0])));
+                ? AnimatedActiveCourse(courses, width, height)
+                : getQuietCourse(height, cardWidth, courses[0])));
       });
     }
     return list;
