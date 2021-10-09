@@ -20,6 +20,7 @@ import com.twt.service.WBYApplication
 import io.flutter.embedding.android.FlutterFragmentActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -37,17 +38,20 @@ class MyViewModel : ViewModel() {
     var progress = 0.0
     var downLoadId: Long? = null
     private lateinit var mFileName: String
-    var flowCoroutine: Job? = null
+    private val directory by lazy {
+        WBYApplication.activity?.get()?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+    }
 
     fun downloadApk(url: String, version: String, context: MainActivity) {
         kotlin.runCatching {
-            flowCoroutine = viewModelScope.launch {
+            viewModelScope.launch {
                 downloadProgress.collect {
                     if (it.success) {
                         context.updateEventSink?.let { event ->
                             event.success(it.progress)
                             if (it.progress == 1.0) {
                                 event.endOfStream()
+                                cancel()
                             }
                         }
                     } else {
@@ -79,7 +83,6 @@ class MyViewModel : ViewModel() {
             }
         }.onFailure {
             Log.d("WBYDOWNLOAD", "Handle $it")
-            flowCoroutine?.cancel()
             endUpdateStreamWithError(-1, "start download apk error", context)
         }
     }
@@ -97,13 +100,14 @@ class MyViewModel : ViewModel() {
     }
 
     private fun checkApkHasDownload(version: String): Boolean {
-        WBYApplication.activity?.get()?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.let {
+        directory?.let {
             it.listFiles()?.let { files ->
                 for (file in files) {
-                    Log.d("WBYDOWNLOAD", file.path)
+                    if(file.name.endsWith(".temporary")){
+                        file.delete()
+                    }
                 }
             }
-            Log.d("WBYDOWNLOAD", "see files ${it.path}")
             val apkPath = it.path + File.separator + version + "wby.apk"
             val apkFile = File(apkPath)
             return apkFile.exists()
@@ -120,6 +124,7 @@ class MyViewModel : ViewModel() {
     ) {
         mDownloadManager = manager
         mFileName = version + "wby.apk"
+        Log.d("WBYDOWNLOAD", "$mFileName + [[[[[")
         mDownloadReceiver = CompleteReceiver().also {
             context.registerReceiver(
                 it,
@@ -140,16 +145,17 @@ class MyViewModel : ViewModel() {
             setDestinationInExternalFilesDir(
                 context,
                 Environment.DIRECTORY_DOWNLOADS,
-                mFileName,
+                "$mFileName.temporary",
             )
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
         downLoadId = manager.enqueue(request)
+        Log.d("WBYDOWNLOAD", downLoadId.toString())
     }
 
     private fun installAPK(context: Context, fileName: String? = null) {
         try {
-            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.let {
+            directory?.let {
                 val name = fileName ?: mFileName
                 val path = it.path + File.separator + name
                 val file = File(path)
@@ -191,25 +197,32 @@ class MyViewModel : ViewModel() {
                 if (completeDownloadId == downLoadId) {
                     context.contentResolver.unregisterContentObserver(mDownloadObserver)
                     context.unregisterReceiver(mDownloadReceiver)
-                    flowCoroutine?.cancel()
                     val myDownloadQuery = DownloadManager.Query()
                     myDownloadQuery.setFilterById(downLoadId!!)
-                    getStatus(mDownloadManager.query(myDownloadQuery))
+                    Log.d("WBYDOWNLOAD", "!!!!!!!!!!!!!!")
+                    getStatus(mDownloadManager.query(myDownloadQuery), context)
                 }
             } catch (e: Exception) {
-                flowCoroutine?.cancel()
                 failure("handling error on receive broadcast")
             }
         }
 
-        private fun getStatus(cursor: Cursor?){
+        private fun getStatus(cursor: Cursor?, context: Context) {
             cursor?.let {
                 if (it.moveToFirst()) {
                     getProgress(it)
                     when (status(it)) {
                         DownloadManager.STATUS_SUCCESSFUL -> {
-                            Log.d("WBYDOWNLOAD", "finish")
-                            success()
+                            Log.d("WBYDOWNLOAD", "Successful---")
+                            directory?.let { directory ->
+                                val from = File(directory, "$mFileName.temporary")
+                                val to = File(directory, mFileName)
+                                if (from.renameTo(to)) {
+                                    Log.d("WBYDOWNLOAD", "Successful")
+                                    success()
+                                    installAPK(context)
+                                }
+                            }
                         }
                         DownloadManager.STATUS_FAILED -> {
                             Log.d("WBYDOWNLOAD", "failed")
@@ -217,10 +230,11 @@ class MyViewModel : ViewModel() {
                         }
                         DownloadManager.STATUS_PAUSED -> {
                             Log.d("WBYDOWNLOAD", "paused")
-
+                        }
+                        else -> {
+                            Log.d("WBYDOWNLOAD", "???")
                         }
                     }
-
                 }
                 it.close()
             }
@@ -250,6 +264,7 @@ class MyViewModel : ViewModel() {
     }
 
     private fun getProgress(cursor: Cursor) {
+        Log.d("WBYDOWNLOAD", totalSize(cursor).toString())
         progress = currentSize(cursor) / totalSize(cursor)
     }
 
@@ -269,6 +284,7 @@ class MyViewModel : ViewModel() {
 
     private fun success() {
         viewModelScope.launch {
+            Log.d("WBYDOWNLOAD", "$progress]]]]]")
             _downloadProgress.emit(DownloadProgress(true, progress))
         }
     }

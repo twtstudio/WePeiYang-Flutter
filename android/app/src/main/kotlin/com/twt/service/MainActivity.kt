@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.umeng_sdk.UmengSdkPlugin
 import com.google.gson.Gson
 import com.tencent.tauth.Tencent
@@ -24,6 +25,8 @@ import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -76,10 +79,13 @@ class MainActivity : FlutterFragmentActivity() {
         updateWidget()
         handleIntent()
 
-//        lifecycleScope.launch {
-//            delay(4000)
+        lifecycleScope.launch {
+            delay(4000)
 //            showNotification(FeedbackMessage(title = "test", content = "测试", question_id = 70))
-//        }
+//            val url = "https://mobile-api.twt.edu.cn/storage/android_apk/1caf1a12fa5dbe0f7d4be5b28bb3da2d.apk"
+//            val version = "v4.0.9-68"
+//            model.downloadApk(url, version, this@MainActivity)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

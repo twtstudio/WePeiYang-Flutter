@@ -35,14 +35,16 @@ class UpdatePrompter {
     _dialog.update(0);
     var arguments = {
       'url': updateEntity.path,
-      'version': "${updateEntity.path}-${updateEntity.versionCode}"
+      'version': "${updateEntity.version}-${updateEntity.versionCode}"
     };
     eventChannel.receiveBroadcastStream(arguments).listen(
       (progress) {
+        print("WBYDOWNLOAD $progress");
         _dialog.update(progress);
       },
       onError: (_) {
         ToastProvider.error("下载失败！请确保网络通畅");
+        print("下载失败！请确保网络通畅");
         _dialog.dismiss();
       },
       cancelOnError: true,
