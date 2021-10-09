@@ -10,11 +10,13 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.umeng_sdk.UmengSdkPlugin
 import com.google.gson.Gson
 import com.tencent.tauth.Tencent
+import com.twt.service.download.MyViewModel
 import com.twt.service.location.AMapFactory
 import com.twt.service.share.QQFactory
 import com.twt.service.widget.ScheduleWidgetProvider
@@ -29,12 +31,10 @@ import java.util.*
 class MainActivity : FlutterFragmentActivity() {
     companion object {
         const val APP_ID = "1104743406"
-        const val APP_AUTHORITIES = "com.twt.service.FileProvider"
+        const val APP_AUTHORITIES = "com.twt.service.qqprovider"
     }
 
-    lateinit var messageChannel: MethodChannel
-    lateinit var placeChannel: MethodChannel
-    lateinit var shareChannel: MethodChannel
+    var messageChannel: MethodChannel? = null
     val mTencent: Tencent? by lazy {
         Tencent.createInstance(
             APP_ID,
@@ -42,12 +42,20 @@ class MainActivity : FlutterFragmentActivity() {
             APP_AUTHORITIES
         )
     }
-//    val WXapi by lazy { WXAPIFactory.createWXAPI(this@MainActivity, "", false) }
+
+    private val model: MyViewModel by viewModels()
+
+    //    val WXapi by lazy { WXAPIFactory.createWXAPI(this@MainActivity, "", false) }
+    private lateinit var shareChannel: MethodChannel
     private lateinit var imgSaveChannel: BasicMessageChannel<String>
+    private lateinit var placeChannel: MethodChannel
+    private lateinit var updateChannel: EventChannel
     private val locationClient by lazy { AMapFactory.init(placeChannel, applicationContext) }
     private val notificationManager: NotificationManagerCompat by lazy {
         NotificationManagerCompat.from(this)
     }
+
+    var updateEventSink: EventChannel.EventSink? = null
 
     override fun onPause() {
         super.onPause()
@@ -67,6 +75,11 @@ class MainActivity : FlutterFragmentActivity() {
         UmengSdkPlugin.setContext(this)
         updateWidget()
         handleIntent()
+
+//        lifecycleScope.launch {
+//            delay(4000)
+//            showNotification(FeedbackMessage(title = "test", content = "测试", question_id = 70))
+//        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -166,13 +179,6 @@ class MainActivity : FlutterFragmentActivity() {
         ).apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
-
-                    // TODO: delete
-                    "getPostId" -> {
-                        result.success(WBYApplication.postId)
-                        WBYApplication.postId = -1
-                    }
-
                     "getCid" -> {
                         result.success(WBYApplication.tempCid)
                     }
@@ -186,13 +192,6 @@ class MainActivity : FlutterFragmentActivity() {
                         }
                         result.success("cancel success")
                     }
-
-                    // TODO: delete
-                    "getMessageUrl" -> {
-                        result.success(WBYApplication.url)
-                        WBYApplication.url = ""
-                    }
-
                     "refreshScheduleWidget" -> {
                         updateWidget()
                     }
@@ -231,7 +230,7 @@ class MainActivity : FlutterFragmentActivity() {
                 }
             }
         }
-        imgSaveChannel = BasicMessageChannel<String>(
+        imgSaveChannel = BasicMessageChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "com.twt.service/saveBase64Img",
             StringCodec.INSTANCE
@@ -272,6 +271,32 @@ class MainActivity : FlutterFragmentActivity() {
                     else -> result.error("-1", "cannot find method", null)
                 }
             }
+        }
+        updateChannel = EventChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "com.twt.service/update"
+        ).apply {
+            setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                    updateEventSink = events
+
+                    (arguments as? Map<*, *>)?.let {
+                        val url = it["url"].toString()
+                        val version = it["version"].toString()
+                        if (url != "null" && version != "null") {
+                            model.downloadApk(url, version, this@MainActivity)
+                        } else {
+                            events?.error("-1", "not have enough arguments", null)
+                            events?.endOfStream()
+                        }
+                    }
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    updateEventSink = null
+                }
+
+            })
         }
         super.configureFlutterEngine(flutterEngine)
     }
@@ -364,10 +389,6 @@ class MainActivity : FlutterFragmentActivity() {
         builder.setTitle(data)
         builder.show()
     }
-
-    /**
-     * 定位监听
-     */
 }
 
 data class IntentType(
@@ -380,4 +401,5 @@ enum class IntentEvent(val type: Int) {
     WBYPushOnlyText(2),
     WBYPushHtml(3),
     SchedulePage(4),
+    DownloadApk(5),
 }

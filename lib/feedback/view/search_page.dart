@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -20,13 +20,28 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   ValueNotifier<List<String>> _searchHistoryList;
+  SharedPreferences _prefs;
+
+  _addHistory(){
+    _prefs.setStringList('feedback_search_history', _searchHistoryList.value);
+  }
 
   @override
   void initState() {
     _searchHistoryList =
-        ValueNotifier(CommonPreferences().feedbackSearchHistory.value);
-    print(
-        "333333333333333333333333333  ${CommonPreferences().feedbackSearchHistory.value}");
+        ValueNotifier([])
+          ..addListener(() {
+            _addHistory();
+          });
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _prefs = await SharedPreferences.getInstance();
+      if (_prefs.getStringList('feedback_search_history') == null) {
+        _addHistory();
+      } else {
+        _searchHistoryList.value = _prefs.getStringList('feedback_search_history');
+      }
+    });
     super.initState();
   }
 
@@ -34,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     var searchBar = SearchBar(
       onSubmitted: (text) {
-        _searchHistoryList.add(text);
+        _searchHistoryList.unequalAdd(text);
         Navigator.pushNamed(
           context,
           FeedbackRouter.searchResult,
@@ -139,6 +154,7 @@ class _SearchPageState extends State<SearchPage> {
             );
 
         return ListView.builder(
+          padding: EdgeInsets.zero,
           itemCount: list.length,
           shrinkWrap: true,
           itemBuilder: (_, index) {
@@ -171,7 +187,7 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     var tagsWrap = Consumer<FbTagsProvider>(
-      builder: (context, provider, widget) {
+      builder: (_, provider, __) {
         return Wrap(
           spacing: 6,
           runSpacing: 6,
@@ -224,26 +240,27 @@ class _SearchPageState extends State<SearchPage> {
 
   showClearDialog() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(S.current.feedback_clear_history),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(S.current.feedback_cancel),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              FlatButton(
-                child: Text(S.current.feedback_ok),
-                onPressed: () {
-                  _searchHistoryList.clear();
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(S.current.feedback_clear_history),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(S.current.feedback_cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text(S.current.feedback_ok),
+              onPressed: () {
+                _searchHistoryList.clear();
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

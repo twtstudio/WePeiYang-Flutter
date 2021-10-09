@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
@@ -80,6 +80,9 @@ class UserNotificationDio extends DioAbstract {
 class MessageDio extends DioAbstract {
   @override
   String baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
+
+  // @override
+  // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
 
   @override
   Map<String, String> headers = {"Connection": "close"};

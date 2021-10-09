@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+typedef LikeCallback = void Function(bool, int);
+
 class NCommentCard extends StatefulWidget {
   final Comment comment;
   final int commentFloor;
-  final VoidCallback onLikePressed;
+  final LikeCallback likeSuccessCallback;
 
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard({this.comment, this.commentFloor, this.onLikePressed});
+  NCommentCard({this.comment, this.commentFloor, this.likeSuccessCallback});
 }
 
 class _NCommentCardState extends State<NCommentCard> {
@@ -47,7 +49,6 @@ class _NCommentCardState extends State<NCommentCard> {
             color: ColorUtil.lightTextColor,
           ),
         ),
-        SizedBox(width: 18)
       ],
     );
 
@@ -68,15 +69,17 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
-      onLikePressed: (boolNotifier) async {
-        widget.onLikePressed?.call();
-        FeedbackService.commentHitLike(
+      onLikePressed: (isLiked, count,success,failure) async {
+        await FeedbackService.commentHitLike(
           id: widget.comment.id,
           isLiked: widget.comment.isLiked,
-          onSuccess: null,
+          onSuccess: () {
+            widget.likeSuccessCallback?.call(!isLiked, count);
+            success.call();
+          },
           onFailure: (e) {
-            boolNotifier.value = boolNotifier.value;
             ToastProvider.error(e.error.toString());
+            failure.call();
           },
         );
       },
@@ -107,7 +110,7 @@ class _NCommentCardState extends State<NCommentCard> {
         copy: widget.comment.content,
         toast: '复制评论成功',
         child: Container(
-          padding: EdgeInsets.fromLTRB(20, 8, 2, 8),
+          padding: EdgeInsets.fromLTRB(20, 8, 15, 8),
           margin: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
           child: body,
           decoration: BoxDecoration(

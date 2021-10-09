@@ -1,25 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/update/common.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 typedef InstallCallback = Function(String filePath);
 
 class UpdatePrompter {
-  /// 版本更新信息
   final Version updateEntity;
 
   final InstallCallback onInstall;
 
   UpdateDialog _dialog;
-
-  double _progress = 0.0;
-
-  File _apkFile;
 
   UpdatePrompter({@required this.updateEntity, @required this.onInstall});
 
@@ -27,48 +21,33 @@ class UpdatePrompter {
     if (_dialog != null && _dialog.isShowing) {
       return;
     }
-    if (Platform.isAndroid) {
-      _apkFile = await CommonUtils.getApkFileWithTemporaryName(updateEntity);
-    }
-    if (_apkFile != null && _apkFile.existsSync()) {
-      _dialog = UpdateDialog.showUpdate(
-        context,
-        updateButtonText: "安装",
-        onUpdate: doInstall,
-        version: version,
-      );
-    } else {
-      _dialog = UpdateDialog.showUpdate(
-        context,
-        onUpdate: onUpdate,
-        version: version,
-      );
-    }
+    _dialog = UpdateDialog.showUpdate(
+      context,
+      onUpdate: onUpdate,
+      version: version,
+    );
   }
 
   Future<void> onUpdate() async {
     if (Platform.isIOS) {
-      doInstall();
       return;
     }
     _dialog.update(0);
-    UpdateService.downloadApk(updateEntity.path, _apkFile.path,
-        onReceiveProgress: (int count, int total) {
-      _progress = count.toDouble() / total;
-      if (_progress <= 1.0001) _dialog.update(_progress);
-    }).then((_) async {
-      var path = CommonUtils.getApkNameByDownloadUrl(updateEntity.path);
-      var newPath = _apkFile.absolute.parent.path + "/" + path;
-      await _apkFile.rename(newPath).then((_) => doInstall(newPath));
-    }).catchError((_) {
-      ToastProvider.error("下载失败！请确保网络通畅");
-      _dialog.dismiss();
-    });
-  }
-
-  /// 安装
-  void doInstall([String path]) {
-    _dialog.dismiss();
-    onInstall.call(path ?? _apkFile.absolute.path);
+    var arguments = {
+      'url': updateEntity.path,
+      'version': "${updateEntity.path}-${updateEntity.versionCode}"
+    };
+    eventChannel.receiveBroadcastStream(arguments).listen(
+      (progress) {
+        _dialog.update(progress);
+      },
+      onError: (_) {
+        ToastProvider.error("下载失败！请确保网络通畅");
+        _dialog.dismiss();
+      },
+      cancelOnError: true,
+    );
   }
 }
+
+const eventChannel = EventChannel('com.twt.service/update');

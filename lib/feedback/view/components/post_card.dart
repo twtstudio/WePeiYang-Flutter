@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/collect_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
@@ -15,11 +15,15 @@ import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 enum PostCardType { simple, detail }
 
-class PostCard extends StatelessWidget {
+typedef HitLikeCallback = void Function(bool, int);
+
+typedef HitCollectCallback = void Function(bool);
+
+class PostCard extends StatefulWidget {
   final Post post;
   final VoidCallback onContentPressed;
-  final VoidCallback onLikePressed;
-  final VoidCallback onFavoritePressed;
+  final HitLikeCallback onLikePressed;
+  final HitCollectCallback onFavoritePressed;
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
@@ -31,7 +35,9 @@ class PostCard extends StatelessWidget {
     this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
-  }) : type = PostCardType.simple;
+    Key key,
+  })  : type = PostCardType.simple,
+        super(key: key);
 
   /// Card for DetailPage.
   PostCard.detail(
@@ -44,11 +50,20 @@ class PostCard extends StatelessWidget {
   }) : type = PostCardType.detail;
 
   @override
+  _PostCardState createState() => _PostCardState(this.post);
+}
+
+class _PostCardState extends State<PostCard> {
+  Post post;
+
+  _PostCardState(this.post);
+
+  @override
   Widget build(BuildContext context) {
     var title = Expanded(
       child: Text(
         post.title,
-        maxLines: type == PostCardType.detail ? 3 : 1,
+        maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
         style: FontManager.YaHeiRegular.copyWith(
           color: ColorUtil.boldTextColor,
@@ -78,8 +93,9 @@ class PostCard extends StatelessWidget {
 
     var content = Text(
       post.content,
-      maxLines: type == PostCardType.detail ? null : 2,
-      overflow: type == PostCardType.detail ? null : TextOverflow.ellipsis,
+      maxLines: widget.type == PostCardType.detail ? null : 2,
+      overflow:
+          widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
       style: FontManager.YaHeiRegular.copyWith(
         color: ColorUtil.boldTextColor,
       ),
@@ -98,7 +114,8 @@ class PostCard extends StatelessWidget {
       ),
     ));
 
-    if (type == PostCardType.simple && (post.topImgUrl?.isNotEmpty ?? false)) {
+    if (widget.type == PostCardType.simple &&
+        (post.topImgUrl?.isNotEmpty ?? false)) {
       rowList.addAll([
         SizedBox(width: 10),
         Image.network(
@@ -124,25 +141,31 @@ class PostCard extends StatelessWidget {
             ],
           ),
           onTap: () async {
-            onContentPressed?.call();
+            widget.onContentPressed?.call();
             await tap?.call();
 
             Navigator.pushNamed(
               context,
               FeedbackRouter.detail,
               arguments: post,
-            );
+            ).then((p) {
+              setState(() {
+                post = p;
+              });
+            });
           },
-          onLongPress: onContentLongPressed,
+          onLongPress: widget.onContentLongPressed,
         );
 
     var collectButton = CollectWidget(
       onCollectPressed: (boolNotifier) async {
-        onFavoritePressed?.call();
         FeedbackService.postHitFavorite(
           id: post.id,
-          isFavorite: post.isLiked,
-          onSuccess: null,
+          isFavorite: post.isFavorite,
+          onSuccess: () {
+            widget.onFavoritePressed?.call(boolNotifier.value);
+            post.isFavorite = !post.isFavorite;
+          },
           onFailure: (e) {
             boolNotifier.value = boolNotifier.value;
             ToastProvider.error(e.error.toString());
@@ -178,19 +201,21 @@ class PostCard extends StatelessWidget {
 
     var likeWidget = LikeWidget(
       count: post.likeCount,
-      onLikePressed: (boolNotifier) async {
-        onLikePressed?.call();
-
-        FeedbackService.postHitLike(
+      onLikePressed: (isLiked, likeCount, success, failure) async {
+        await FeedbackService.postHitLike(
           id: post.id,
           isLiked: post.isLiked,
-          onSuccess: null,
+          onSuccess: () {
+            widget.onLikePressed?.call(!isLiked, likeCount);
+            post.isLiked = !isLiked;
+            post.likeCount = likeCount;
+            success.call();
+          },
           onFailure: (e) {
-            boolNotifier.value = boolNotifier.value;
             ToastProvider.error(e.error.toString());
+            failure.call();
           },
         );
-        return true;
       },
       isLiked: post.isLiked,
     );
@@ -205,7 +230,7 @@ class PostCard extends StatelessWidget {
     List<Widget> bottomList = [];
     List<Widget> imagesWidget = [];
 
-    switch (type) {
+    switch (widget.type) {
       case PostCardType.simple:
         bottomList.addAll([
           ...commentAndLike,
@@ -256,7 +281,7 @@ class PostCard extends StatelessWidget {
     );
 
     var body = FeedbackBannerWidget(
-      showBanner: showBanner,
+      showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),

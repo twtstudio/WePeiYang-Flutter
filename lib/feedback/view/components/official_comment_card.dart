@@ -5,9 +5,9 @@ import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/official_logo.dart';
@@ -15,12 +15,15 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 enum Official { detail, reply }
 
+typedef LikeCallback = void Function(bool, int);
+typedef ContentPressedCallback = void Function(void Function(Comment));
+
 class OfficialReplyCard extends StatefulWidget {
   final Comment comment;
   final String title;
   final Official type;
-  final VoidCallback onContentPressed;
-  final VoidCallback onLikePressed;
+  final ContentPressedCallback onContentPressed;
+  final LikeCallback onLikePressed;
 
   OfficialReplyCard.detail({
     this.comment,
@@ -58,29 +61,28 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             color: ColorUtil.lightTextColor,
           ),
         ),
-        SizedBox(width: 18)
       ],
     );
 
-
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
-      onLikePressed: (boolNotifier) async {
-        widget.onLikePressed?.call();
-        FeedbackService.officialCommentHitLike(
+      onLikePressed: (isLiked, count, success, failure) async {
+        await FeedbackService.officialCommentHitLike(
           id: widget.comment.id,
           isLiked: widget.comment.isLiked,
-          onSuccess: null,
+          onSuccess: () {
+            widget.onLikePressed?.call(!isLiked, count);
+            success.call();
+          },
           onFailure: (e) {
-            boolNotifier.value = boolNotifier.value;
             ToastProvider.error(e.error.toString());
+            failure.call();
           },
         );
         return true;
       },
       isLiked: widget.comment.isLiked,
     );
-
 
     Widget starWidget;
     if (widget.comment.rating == -1) {
@@ -118,7 +120,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     }
 
     var bottomWidget = Row(
-      children: [starWidget, likeWidget],
+      children: [starWidget, Spacer(), likeWidget],
     );
 
     switch (widget.type) {
@@ -155,16 +157,16 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
 
         break;
       case Official.reply:
-        var comment = GestureDetector(
-          child: RichText(
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
-            text: HTML.toTextSpan(context, widget.comment.content,
-                defaultTextStyle: FontManager.YaHeiRegular.copyWith(
-                  color: ColorUtil.boldTextColor,
-                )),
+        var comment = RichText(
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+          text: HTML.toTextSpan(
+            context,
+            widget.comment.content,
+            defaultTextStyle: FontManager.YaHeiRegular.copyWith(
+              color: ColorUtil.boldTextColor,
+            ),
           ),
-          onTap: widget.onContentPressed,
         );
 
         column.addAll([
@@ -179,31 +181,49 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         break;
     }
 
-    Column list = Column(
+    Widget list = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: column,
     );
 
+    list = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: list,
+    );
+
+    var decoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+            blurRadius: 5,
+            color: Color.fromARGB(64, 236, 237, 239),
+            offset: Offset(0, 0),
+            spreadRadius: 3),
+      ],
+    );
+
     return DefaultTextStyle(
       style: FontManager.YaHeiRegular,
-      child: ClipCopy(
-        copy: widget.comment.content,
-        toast: '复制评论成功',
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 8, 2, 8),
-          margin: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
-          child: list,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 5,
-                  color: Color.fromARGB(64, 236, 237, 239),
-                  offset: Offset(0, 0),
-                  spreadRadius: 3),
-            ],
+      child: InkWell(
+        onTap: () {
+          widget.onContentPressed?.call((comment) {
+            setState(() {
+              widget.comment.isLiked = comment.isLiked;
+              widget.comment.likeCount = comment.likeCount;
+              widget.comment.rating = comment.rating;
+            });
+          });
+        },
+        child: ClipCopy(
+          copy: widget.comment.content,
+          toast: '复制评论成功',
+          child: Container(
+            padding: EdgeInsets.fromLTRB(2, 8, 2, 8),
+            margin: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
+            child: list,
+            decoration: decoration,
           ),
         ),
       ),

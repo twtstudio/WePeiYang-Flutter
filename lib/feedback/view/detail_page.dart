@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -15,6 +16,7 @@ import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 import 'components/post_card.dart';
+import 'official_comment_page.dart';
 
 enum DetailPageStatus {
   loading,
@@ -44,7 +46,6 @@ class _DetailPageState extends State<DetailPage> {
   _DetailPageState(this.post);
 
   _onRefresh() {
-    ToastProvider.running("刷新评论中");
     _initPostAndComments(
       onSuccess: (comments) {
         _commentList = comments;
@@ -81,16 +82,25 @@ class _DetailPageState extends State<DetailPage> {
       if (post.title == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
-          status = DetailPageStatus.idle;
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
         }, onFail: () {
-          status = DetailPageStatus.error;
+          setState(() {
+            status = DetailPageStatus.error;
+          });
         });
       } else {
+        _getOfficialComment();
         _getComments(onSuccess: (comments) {
           _commentList.addAll(comments);
-          status = DetailPageStatus.idle;
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
         }, onFail: () {
-          status = DetailPageStatus.idle;
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
         });
       }
     });
@@ -124,7 +134,6 @@ class _DetailPageState extends State<DetailPage> {
         ToastProvider.error(e.error.toString());
         success = false;
         onFail?.call();
-        setState(() => status = DetailPageStatus.error);
         return;
       },
     );
@@ -157,8 +166,8 @@ class _DetailPageState extends State<DetailPage> {
         setState(() {});
       },
       onFailure: (e) {
-        onFail?.call();
         ToastProvider.error(e.error.toString());
+        onFail?.call();
       },
     );
   }
@@ -182,19 +191,44 @@ class _DetailPageState extends State<DetailPage> {
         itemCount: _officialCommentList.length + _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return PostCard.detail(post);
+            return PostCard.detail(
+              post,
+              onLikePressed: (isLike, likeCount) {
+                post.isLiked = isLike;
+                post.likeCount = likeCount;
+              },
+              onFavoritePressed: (isCollect) {
+                post.isFavorite = isCollect;
+              },
+            );
           }
           index--;
-          if (index == 0) {
-            print(_commentList[0].toJson());
-          }
           if (index < _officialCommentList.length) {
+            var data = _officialCommentList[index];
             return OfficialReplyCard.reply(
-                comment: _officialCommentList[index]);
+              comment: data,
+              onContentPressed: (refresh) async {
+                var comment = await Navigator.of(context).pushNamed(
+                  FeedbackRouter.officialComment,
+                  arguments: OfficialCommentPageArgs(
+                    comment: data,
+                    title: post.title,
+                    isOwner: post.isOwner,
+                  ),
+                );
+                data = comment as Comment;
+                refresh?.call(data);
+              },
+            );
           } else {
+            var data = _commentList[index - _officialCommentList.length];
             return NCommentCard(
-              comment: _commentList[index - _officialCommentList.length],
+              comment: data,
               commentFloor: index - _officialCommentList.length + 1,
+              likeSuccessCallback: (isLiked, count) {
+                data.isLiked = isLiked;
+                data.likeCount = count;
+              },
             );
           }
         },
@@ -214,7 +248,7 @@ class _DetailPageState extends State<DetailPage> {
         ),
       );
 
-      var inputField = CommentInputField();
+      var inputField = CommentInputField(postId: post.id);
 
       body = Column(
         children: [mainList, inputField],
@@ -223,16 +257,17 @@ class _DetailPageState extends State<DetailPage> {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
     }
 
-    var shareButton = IconButton(
-      icon: Icon(
-        Icons.share_outlined,
-        color: Color(0xff62677b),
-      ),
-      onPressed: () {
-        shareChannel.invokeMethod("shareToQQ",
-            {"summary": "校务专区问题详情", "title": post.title, "id": post.id});
-      },
-    );
+    // TODO: 分享问题到qq
+    // var shareButton = IconButton(
+    //   icon: Icon(
+    //     Icons.share_outlined,
+    //     color: Color(0xff62677b),
+    //   ),
+    //   onPressed: () {
+    //     shareChannel.invokeMethod("shareToQQ",
+    //         {"summary": "校务专区问题详情", "title": post.title, "id": post.id});
+    //   },
+    // );
 
     var appBar = AppBar(
       backgroundColor: Colors.white,
@@ -240,7 +275,7 @@ class _DetailPageState extends State<DetailPage> {
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
       ),
-      actions: [shareButton],
+      // actions: [shareButton],
       title: Text(
         S.current.feedback_detail,
         style: FontManager.YaHeiRegular.copyWith(
@@ -253,9 +288,15 @@ class _DetailPageState extends State<DetailPage> {
       brightness: Brightness.light,
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: body,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, post);
+        return true;
+      },
+      child: Scaffold(
+        appBar: appBar,
+        body: body,
+      ),
     );
   }
 }
@@ -274,16 +315,19 @@ class CommentInputField extends StatefulWidget {
 class _CommentInputFieldState extends State<CommentInputField> {
   var _textEditingController = TextEditingController();
   String _commentLengthIndicator = '0/200';
+  var _focusNode = FocusNode();
 
   @override
   void dispose() {
     _textEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
+      focusNode: _focusNode,
       controller: _textEditingController,
       maxLength: 200,
       decoration: InputDecoration(
@@ -311,7 +355,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
       },
       enabled: true,
       minLines: 1,
-      maxLines: 3,
+      maxLines: 10,
     );
 
     inputField = Expanded(
@@ -324,10 +368,9 @@ class _CommentInputFieldState extends State<CommentInputField> {
     Widget commitButton = IconButton(
       icon: Icon(Icons.send),
       onPressed: () async {
+        _focusNode.unfocus();
         if (_textEditingController.text.isNotEmpty) {
           _sendComment();
-        } else {
-          ToastProvider.error(S.current.feedback_empty_comment_error);
         }
       },
     );
@@ -346,10 +389,9 @@ class _CommentInputFieldState extends State<CommentInputField> {
       content: _textEditingController.text,
       onSuccess: () {
         _textEditingController.text = '';
-        // post.commentCount++;
-        /// 刷新输入框字数
         setState(() => _commentLengthIndicator = '0/200');
-        context.findAncestorStateOfType<_DetailPageState>()._onRefresh();
+        // TODO: 暂时没想到什么好的办法来更新评论
+        ToastProvider.success("评论成功");
       },
       onFailure: (e) => ToastProvider.error(
         e.error.toString(),

@@ -62,9 +62,9 @@ object QQFactory {
                 putString(QQShare.SHARE_TO_QQ_SUMMARY, data.summary)
                 putString(QQShare.SHARE_TO_QQ_IMAGE_URL, data.imageUrl)
             } else {
-                putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, data.imageUrl);
+                putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, data.imageUrl)
             }
-            putString(QQShare.SHARE_TO_QQ_APP_NAME, data.appName);
+            putString(QQShare.SHARE_TO_QQ_APP_NAME, data.appName)
             putString(QQShare.SHARE_TO_QQ_TITLE, data.title)
             putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, data.type)
             putInt(QQShare.SHARE_TO_QQ_EXT_INT, data.mExtraFlag)
@@ -90,7 +90,7 @@ object QQFactory {
 
         override fun onWarning(code: Int) {
             if (code == Constants.ERROR_NO_AUTHORITY) {
-                WBYApplication.activity?.get()?.alertDialog("onWarning: 请授权手Q访问分享的文件的读取权限!")
+                WBYApplication.activity?.get()?.alertDialog("onWarning: 请授权QQ访问分享的文件的读取权限")
             }
         }
     }

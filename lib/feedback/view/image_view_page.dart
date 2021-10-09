@@ -70,33 +70,33 @@ class _ImageViewPageState extends State<ImageViewPage> {
       builder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget> [
+          children: <Widget>[
             ListTile(
               title: Text(
-                  '保存图片',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                onTap: () {
-                  ImagePickers.saveImageToGallery(urlList[tempSelect]);
-                  ToastProvider.success('已保存到手机相册');
-                  Navigator.pop(context);
-                },
+                '保存图片',
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
+              onTap: () {
+                ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                ToastProvider.success('已保存到手机相册');
+                Navigator.pop(context);
+              },
+            ),
             ListTile(
               title: Text(
                 '分享图片到QQ',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               onTap: () async {
-                var path = await ImagePickers.saveImageToGallery(urlList[tempSelect]);
-                await shareChannel.invokeMethod("shareImgToQQ",{"imageUrl":path});
-                ToastProvider.success('分享成功');
-                Navigator.pop(context);
+                var path =
+                    await ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                await shareChannel
+                    .invokeMethod("shareImgToQQ", {"imageUrl": path});
               },
             )
           ],
         );
-      }
+      },
     );
   }
 }

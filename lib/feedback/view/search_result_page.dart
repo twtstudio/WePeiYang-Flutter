@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 
@@ -139,36 +139,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
       primary: true,
     );
 
-    Widget noPostPage = Center(
-      child: Text(
-        S.current.feedback_no_post,
-        style: FontManager.YaHeiRegular.copyWith(
-          color: ColorUtil.lightTextColor,
-        ),
-      ),
-    );
-
-    Widget hasPostPage = SmartRefresher(
-      controller: _refreshController,
-      header: ClassicHeader(),
-      enablePullDown: true,
-      onRefresh: _onRefresh,
-      footer: ClassicFooter(),
-      enablePullUp: true,
-      onLoading: _onLoading,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          Widget post = PostCard.simple(
-            _list[index],
-            showBanner: true,
-          );
-
-          return post;
-        },
-        itemCount: _list.length,
-      ),
-    );
-
     Widget body;
 
     switch (status) {
@@ -177,9 +147,32 @@ class _SearchResultPageState extends State<SearchResultPage> {
         break;
       case SearchPageStatus.idle:
         if (_list.isNotEmpty) {
-          body = hasPostPage;
+          body = SmartRefresher(
+            controller: _refreshController,
+            header: ClassicHeader(),
+            enablePullDown: true,
+            onRefresh: _onRefresh,
+            footer: ClassicFooter(),
+            enablePullUp: true,
+            onLoading: _onLoading,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                Widget post = PostCard.simple(_list[index]);
+
+                return post;
+              },
+              itemCount: _list.length,
+            ),
+          );
         } else {
-          body = noPostPage;
+          body = Center(
+            child: Text(
+              S.current.feedback_no_post,
+              style: FontManager.YaHeiRegular.copyWith(
+                color: ColorUtil.lightTextColor,
+              ),
+            ),
+          );
         }
         break;
       case SearchPageStatus.error:

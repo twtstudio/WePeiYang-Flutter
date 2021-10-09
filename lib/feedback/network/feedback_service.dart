@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/feedback/model/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
-import 'package:we_pei_yang_flutter/feedback/model/tag.dart';
+import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
@@ -223,7 +223,7 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static postHitLike({
+  static Future<void> postHitLike({
     @required id,
     @required bool isLiked,
     @required OnSuccess onSuccess,
@@ -264,7 +264,7 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static commentHitLike(
+  static Future<void> commentHitLike(
       {@required id,
       @required bool isLiked,
       @required OnSuccess onSuccess,

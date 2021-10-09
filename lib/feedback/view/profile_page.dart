@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
@@ -146,14 +146,8 @@ class _ProfilePageState extends State<ProfilePage> {
     var list = ExpandablePageView(
       controller: _tabController,
       children: [
-        Container(
-            color: Colors.green,
-            child:
-                _PostList(key: PageStorageKey(0), type: _CurrentTab.myPosts)),
-        Container(
-            color: Colors.blue,
-            child:
-                _PostList(key: PageStorageKey(1), type: _CurrentTab.myCollect))
+        _PostList(key: PageStorageKey(0), type: _CurrentTab.myPosts),
+        _PostList(key: PageStorageKey(1), type: _CurrentTab.myCollect)
       ],
     );
 
@@ -238,32 +232,39 @@ class _PostListState extends State<_PostList> {
 
   _deletePostOnLongPressed(int index) {
     if (widget.type == _CurrentTab.myPosts)
-      showDialog(
+      showDialog<bool>(
         context: context,
         builder: (context) => ProfileDialog(
-          onConfirm: () {
-            FeedbackService.deletePost(
-              id: _postList[index].id,
-              onSuccess: () {
-                _postList.removeAt(index);
-                Navigator.pop(context);
-                ToastProvider.success(S.current.feedback_delete_success);
-                Provider.of<MessageProvider>(context,listen: false).refreshFeedbackCount();
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-                Navigator.pop(context);
-              },
-            );
-          },
-          onCancel: () => Navigator.pop(context),
+          onConfirm: () => Navigator.pop(context, true),
+          onCancel: () => Navigator.pop(context, false),
         ),
-      ).then((_) => setState(() {}));
+      ).then((confirm) {
+        if (confirm) {
+          FeedbackService.deletePost(
+            id: _postList[index].id,
+            onSuccess: () {
+              _postList.removeAt(index);
+              ToastProvider.success(S.current.feedback_delete_success);
+              Provider.of<MessageProvider>(context, listen: false)
+                  .refreshFeedbackCount();
+              setState(() {
+                print("setstate");
+                _postList = List.from(_postList);
+              });
+              print(_postList.first.title);
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
+          );
+        }
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget child;
+    print("build");
     if (_postList.length.isZero) {
       child = Container(
           height: 200,
@@ -279,9 +280,9 @@ class _PostListState extends State<_PostList> {
             _postList[index],
             onContentLongPressed: () => _deletePostOnLongPressed(index),
             showBanner: true,
+            key: ValueKey(_postList[index].id),
           );
-
-          return Container(color: Colors.red, child: post);
+          return post;
         },
         itemCount: _postList.length,
       );

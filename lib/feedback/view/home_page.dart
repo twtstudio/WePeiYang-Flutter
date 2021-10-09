@@ -5,10 +5,10 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/model/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -31,18 +31,27 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin {
   int currentPage = 1, _totalPage = 1;
   FeedbackHomePageStatus status;
+
   // search bar position
-  List<Post> _postList = [Post.nullExceptId(-1)];
+  List<Post> _postList = [];
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  _onRefresh() {
-    status = FeedbackHomePageStatus.loading;
+  _onRefresh([AnimationController controller]) {
     currentPage = 1;
-    _initPostList(onSuccess: () {
-      _refreshController.refreshCompleted();
-    }, onError: () {
+    FeedbackService.getToken(onResult: (_) {
+      Provider.of<FbTagsProvider>(context, listen: false).initTags();
+      _initPostList(onSuccess: () {
+        controller?.dispose();
+        _refreshController.refreshCompleted();
+      }, onError: () {
+        controller?.stop();
+        _refreshController.refreshFailed();
+      });
+    }, onFailure: (e) {
+      ToastProvider.error(e.error.toString());
+      controller?.stop();
       _refreshController.refreshFailed();
     });
   }
@@ -74,11 +83,10 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
       page: '1',
       onSuccess: (postList, totalPage) {
         _postList.clear();
-        _postList.add(Post.nullExceptId(-1));
         _postList.addAll(postList);
+        print(postList.first.toJson());
         _totalPage = totalPage;
         onSuccess?.call();
-        print(_postList[1].toJson());
         setState(() {
           status = FeedbackHomePageStatus.idle;
         });
@@ -161,6 +169,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
           if (index == 0) {
             return searchBar;
           }
+          index--;
           return PostCard.simple(_postList[index]);
         },
         itemCount: _postList.length,
@@ -185,7 +194,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
               padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
               child: listView,
             ),
-            if (_postList.length == 1) Loading(),
+            if (status == FeedbackHomePageStatus.loading) Loading(),
             if (status == FeedbackHomePageStatus.error)
               HomeErrorContainer(_onRefresh),
           ],
@@ -221,40 +230,72 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class HomeErrorContainer extends StatelessWidget {
-  final void Function() onPressed;
+class HomeErrorContainer extends StatefulWidget {
+  final void Function(AnimationController) onPressed;
 
   HomeErrorContainer(this.onPressed);
 
   @override
+  _HomeErrorContainerState createState() => _HomeErrorContainerState();
+}
+
+class _HomeErrorContainerState extends State<HomeErrorContainer>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation animation;
+
+  @override
+  void initState() {
+    super.initState();
+    controller =
+        AnimationController(duration: const Duration(seconds: 3), vsync: this);
+    animation = Tween(begin: 0.0, end: 1.0).animate(controller);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var errorImg = Image.asset(
+      'lib/feedback/assets/img/error.png',
+      height: 192,
+      fit: BoxFit.cover,
+    );
+
+    var errorText = Text(
+      S.current.feedback_error,
+      style: FontManager.YaHeiRegular.copyWith(
+        color: ColorUtil.lightTextColor,
+      ),
+    );
+
+    var retryButton = FloatingActionButton(
+      child: RotationTransition(
+        alignment: Alignment.center,
+        turns: animation,
+        child: Icon(Icons.refresh),
+      ),
+      heroTag: 'error_btn',
+      backgroundColor: ColorUtil.mainColor,
+      onPressed: () {
+        if (!controller.isAnimating) {
+          controller.repeat();
+          widget.onPressed?.call(controller);
+        }
+      },
+      mini: true,
+    );
+
+    var paddingBox = SizedBox(height: 16);
+
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Image.asset(
-              'lib/feedback/assets/img/error.png',
-              height: 192,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Text(
-            S.current.feedback_error,
-            style: FontManager.YaHeiRegular.copyWith(
-              color: ColorUtil.lightTextColor,
-            ),
-          ),
-          SizedBox(height: 16),
-          FloatingActionButton(
-            child: Icon(Icons.refresh),
-            heroTag: 'error_btn',
-            backgroundColor: ColorUtil.mainColor,
-            onPressed: onPressed,
-            mini: true,
-          ),
+          errorImg,
+          paddingBox,
+          errorText,
+          paddingBox,
+          retryButton,
         ],
       ),
     );

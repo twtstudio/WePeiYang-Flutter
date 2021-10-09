@@ -3,9 +3,10 @@ import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
-typedef NotifierCallback = void Function(ValueNotifier<bool>);
+typedef NotifierCallback = Future<void> Function(
+    bool, int, Function onSuccess, Function onFailure);
 
-class LikeWidget extends StatelessWidget {
+class LikeWidget extends StatefulWidget {
   final int count;
   final bool isLiked;
   final NotifierCallback onLikePressed;
@@ -18,11 +19,16 @@ class LikeWidget extends StatelessWidget {
         isLikedNotifier = ValueNotifier(isLiked);
 
   @override
+  _LikeWidgetState createState() => _LikeWidgetState();
+}
+
+class _LikeWidgetState extends State<LikeWidget> {
+  @override
   Widget build(BuildContext context) {
     var likeButton = SizedBox(
       height: 40,
       child: ValueListenableBuilder(
-        valueListenable: isLikedNotifier,
+        valueListenable: widget.isLikedNotifier,
         builder: (_, value, __) {
           return LikeButton(
             likeBuilder: (bool isLiked) {
@@ -41,12 +47,21 @@ class LikeWidget extends StatelessWidget {
               }
             },
             onTap: (value) async {
-              onLikePressed(isLikedNotifier);
               if (value) {
-                countNotifier.value = countNotifier.value - 1;
+                widget.countNotifier.value = widget.countNotifier.value - 1;
               } else {
-                countNotifier.value = countNotifier.value + 1;
+                widget.countNotifier.value = widget.countNotifier.value + 1;
               }
+              widget.onLikePressed(value, widget.countNotifier.value, () {
+                widget.isLikedNotifier.value = !value;
+              }, () {
+                if (value) {
+                  widget.countNotifier.value = widget.countNotifier.value + 1;
+                } else {
+                  widget.countNotifier.value = widget.countNotifier.value - 1;
+                }
+                setState(() {});
+              });
               return !value;
             },
             isLiked: value,
@@ -64,7 +79,7 @@ class LikeWidget extends StatelessWidget {
     );
 
     var likeCount = ValueListenableBuilder(
-        valueListenable: countNotifier,
+        valueListenable: widget.countNotifier,
         builder: (_, value, __) {
           return Text(
             value.toString(),

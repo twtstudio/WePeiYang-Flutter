@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_router.dart';
 
 export 'package:we_pei_yang_flutter/auth/auth_router.dart';
-export 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+export 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 export 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 export 'package:we_pei_yang_flutter/home/home_router.dart';
 export 'package:we_pei_yang_flutter/lounge/lounge_router.dart';

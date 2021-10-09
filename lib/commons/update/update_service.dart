@@ -1,18 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_prompter.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-import 'package:we_pei_yang_flutter/commons/update/app_cache_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 /// 版本更新管理
 class UpdateManager {
   static void checkUpdate({bool showDialog = false}) {
-    searchLocalCache();
     UpdateService.checkUpdate(onResult: (version) {
       UpdatePrompter(
           updateEntity: version,
@@ -53,12 +51,6 @@ class UpdateService with AsyncTimer {
       }
     });
   }
-
-  static Future<Response> downloadApk(String urlPath, String savePath,
-          {ProgressCallback onReceiveProgress}) =>
-      updateDio.download(urlPath, savePath,
-          onReceiveProgress: onReceiveProgress,
-          options: Options(sendTimeout: 25000, receiveTimeout: 300000));
 }
 
 /// 解析器

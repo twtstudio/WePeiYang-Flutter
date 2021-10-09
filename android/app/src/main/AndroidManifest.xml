@@ -168,12 +168,22 @@
 
         <provider
             android:name=".share.QQProvider"
-            android:authorities="com.twt.service.fileprovider"
+            android:authorities="com.twt.service.qqprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+        </provider>
+
+        <provider
+            android:name=".download.InstallProvider"
+            android:authorities="com.twt.service.apkprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/download_path" />
         </provider>
 
         <service

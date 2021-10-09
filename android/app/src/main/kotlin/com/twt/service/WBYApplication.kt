@@ -9,9 +9,9 @@ import android.os.Looper
 import android.os.Message
 import android.util.Log
 import androidx.work.*
-import com.twt.service.message.server.PushCIdWorker
 import com.google.gson.Gson
 import com.igexin.sdk.PushManager
+import com.twt.service.message.server.PushCIdWorker
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 import io.flutter.app.FlutterApplication
@@ -23,10 +23,6 @@ class WBYApplication : FlutterApplication() {
         lateinit var appContext: Context
         private val handler = MyHandler()
         var activity: WeakReference<MainActivity>? = null
-
-        // TODO: 之后删除
-        var postId: Int = -1
-        var url: String = ""
 
         var tempCid = ""
         var eventList = mutableListOf<Event>().apply { add(Event(-1, "null")) }
@@ -129,32 +125,7 @@ class WBYApplication : FlutterApplication() {
                                 }
                                 Log.d("WBY", pushMessage.toString())
 
-                                activity?.get()?.let {
-                                    it.showNotification(pushMessage)
-//                                    it.messageChannel?.invokeMethod(
-//                                        "showMessageDialogOnlyText",
-//                                        mapOf("data" to data),
-//                                        object : MethodChannel.Result {
-//                                            override fun success(result: Any?) {
-//                                                Log.d("WBY", "refreshFeedbackMessageCount")
-//                                            }
-//
-//                                            override fun error(
-//                                                errorCode: String?,
-//                                                errorMessage: String?,
-//                                                errorDetails: Any?
-//                                            ) {
-//                                                Log.d("WBY", "refreshFeedbackMessageCount error")
-//                                            }
-//
-//                                            override fun notImplemented() {
-//                                                Log.d(
-//                                                    "WBY",
-//                                                    "refreshFeedbackMessageCount notImplemented"
-//                                                )
-//                                            }
-//                                        })
-                                }
+                                activity?.get()?.showNotification(pushMessage)
                             }
                             MessageType.ReceiveWBYPushMessageOnlyText.type -> {
                                 eventList.add(Event(IntentEvent.WBYPushOnlyText.type, data))

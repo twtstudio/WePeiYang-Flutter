@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:simple_html_css/simple_html_css.dart';
@@ -289,11 +289,9 @@ class _MessagesListState extends State<MessagesList>
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
             .refresh
-            .addListener(
-              () => onRefresh(
-                refreshCount: false,
-              ),
-            );
+            .addListener(() => onRefresh(
+                  refreshCount: false,
+                ));
       }
     });
   }
