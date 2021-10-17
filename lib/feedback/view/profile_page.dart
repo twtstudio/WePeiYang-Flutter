@@ -88,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
           _tabController
               .animateToPage(
                 0,
-                duration: Duration(seconds: 1),
+                duration: Duration(milliseconds: 300),
                 curve: Curves.ease,
               )
               .then((value) => tap = false);
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
           _tabController
               .animateToPage(
                 1,
-                duration: Duration(seconds: 1),
+                duration: Duration(milliseconds: 300),
                 curve: Curves.ease,
               )
               .then((value) => tap = false);

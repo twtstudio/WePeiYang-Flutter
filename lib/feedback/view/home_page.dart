@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -21,31 +19,21 @@ class FeedbackHomePage extends StatefulWidget {
   _FeedbackHomePageState createState() => _FeedbackHomePageState();
 }
 
-enum FeedbackHomePageStatus {
-  loading,
-  idle,
-  error,
-}
-
 class _FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin {
-  int currentPage = 1, _totalPage = 1;
-  FeedbackHomePageStatus status;
-
-  // search bar position
-  List<Post> _postList = [];
+  FbHomeListModel _listProvider;
+  FbTagsProvider _tagsProvider;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
   _onRefresh([AnimationController controller]) {
-    currentPage = 1;
     FeedbackService.getToken(onResult: (_) {
-      Provider.of<FbTagsProvider>(context, listen: false).initTags();
-      _initPostList(onSuccess: () {
+      _tagsProvider.initTags();
+      _listProvider.initPostList(success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
-      }, onError: () {
+      }, failure: (_) {
         controller?.stop();
         _refreshController.refreshFailed();
       });
@@ -57,76 +45,29 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onLoading() {
-    if (currentPage != _totalPage) {
-      currentPage++;
-      FeedbackService.getPosts(
-        tagId: '',
-        page: currentPage,
-        onSuccess: (list, page) {
-          _totalPage = page;
-          _postList.addAll(list);
+    if (_listProvider.isLastPage) {
+      _refreshController.loadNoData();
+    } else {
+      _listProvider.getNextPage(
+        success: () {
           _refreshController.loadComplete();
-          setState(() {});
         },
-        onFailure: (_) {
+        failure: (e) {
           _refreshController.loadFailed();
         },
       );
-    } else {
-      _refreshController.loadNoData();
-    }
-  }
-
-  _initPostList({Function onSuccess, Function onError}) {
-    FeedbackService.getPosts(
-      tagId: '',
-      page: '1',
-      onSuccess: (postList, totalPage) {
-        _postList.clear();
-        _postList.addAll(postList);
-        print(postList.first.toJson());
-        _totalPage = totalPage;
-        onSuccess?.call();
-        setState(() {
-          status = FeedbackHomePageStatus.idle;
-        });
-      },
-      onFailure: (e) {
-        ToastProvider.error(e.error.toString());
-        onError?.call();
-        setState(() {
-          status = FeedbackHomePageStatus.error;
-        });
-      },
-    );
-  }
-
-  _checkTokenAndGetPostList() async {
-    if (CommonPreferences().feedbackToken.value == "") {
-      await FeedbackService.getToken(
-        onResult: (token) {
-          CommonPreferences().feedbackToken.value = token;
-          _initPostList();
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-          setState(() {
-            status = FeedbackHomePageStatus.error;
-          });
-        },
-      );
-    } else {
-      _initPostList();
     }
   }
 
   @override
   void initState() {
-    currentPage = 1;
-    status = FeedbackHomePageStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<FbTagsProvider>(context, listen: false).initTags();
-      _checkTokenAndGetPostList();
+      _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
+      _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
+      _tagsProvider.initTags();
+      _listProvider.checkTokenAndGetPostList(failure: (e) {
+        ToastProvider.error(e.error.toString());
+      });
     });
     super.initState();
   }
@@ -153,27 +94,49 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
       },
     );
 
-    var listView = SmartRefresher(
-      physics: BouncingScrollPhysics(),
-      controller: _refreshController,
-      header: ClassicHeader(),
-      enablePullDown: true,
-      onRefresh: _onRefresh,
-      footer: ClassicFooter(),
-      enablePullUp: currentPage != _totalPage,
-      onLoading: _onLoading,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return searchBar;
-          }
-          index--;
-          return PostCard.simple(_postList[index]);
-        },
-        itemCount: _postList.length,
-      ),
+    var listView = Consumer<FbHomeListModel>(builder: (_, model, __) {
+      return SmartRefresher(
+        physics: BouncingScrollPhysics(),
+        controller: _refreshController,
+        header: ClassicHeader(),
+        enablePullDown: true,
+        onRefresh: _onRefresh,
+        footer: ClassicFooter(),
+        enablePullUp: !model.isLastPage,
+        onLoading: _onLoading,
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return searchBar;
+            }
+            index--;
+            final post = model.homeList[index];
+            return PostCard.simple(
+              post,
+              key: ValueKey(post.id),
+            );
+          },
+          itemCount: model.homeList.length,
+        ),
+      );
+    });
+
+    var body = Consumer<FbHomeStatusNotifier>(
+      builder: (_, status, __) {
+        return Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
+              child: listView,
+            ),
+            if (status.isLoading) Loading(),
+            if (status.isError) HomeErrorContainer(_onRefresh),
+          ],
+        );
+      },
     );
 
     return Scaffold(
@@ -187,18 +150,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
       ),
       body: DefaultTextStyle(
         style: FontManager.YaHeiRegular,
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
-              child: listView,
-            ),
-            if (status == FeedbackHomePageStatus.loading) Loading(),
-            if (status == FeedbackHomePageStatus.error)
-              HomeErrorContainer(_onRefresh),
-          ],
-        ),
+        child: body,
       ),
     );
   }

@@ -13,10 +13,8 @@ class UpdateManager {
   static void checkUpdate({bool showDialog = false}) {
     UpdateService.checkUpdate(onResult: (version) {
       UpdatePrompter(
-          updateEntity: version,
-          onInstall: (filePath) =>
-              CommonUtils.installAPP(filePath)).show(
-          WePeiYangApp.navigatorState.currentState.overlay.context, version);
+        updateEntity: version,
+      ).show(WePeiYangApp.navigatorState.currentState.overlay.context, version);
     }, onSuccess: () {
       if (showDialog) ToastProvider.success('已是最新版本');
     }, onFailure: (_) {

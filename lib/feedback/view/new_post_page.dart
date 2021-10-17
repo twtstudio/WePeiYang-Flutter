@@ -15,16 +15,6 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-class NewPostProvider {
-  String title = "";
-  String content = "";
-  Tag tag;
-
-  List<File> imgList = [];
-
-  bool get check => title.isNotEmpty && content.isNotEmpty && tag?.id != -1;
-}
-
 class NewPostPage extends StatefulWidget {
   @override
   _NewPostPageState createState() => _NewPostPageState();

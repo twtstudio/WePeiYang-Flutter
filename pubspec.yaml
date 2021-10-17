@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 4.0.9+69
+version: 4.0.99+70
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -44,20 +44,16 @@ dependencies:
   intl: ^0.16.1
   http_parser: ^3.1.4
   package_info: ^0.4.1
-  install_plugin: ^2.0.1
-  flutter_update_dialog: ^0.0.1
   photo_view: ^0.10.3
   connectivity: 2.0.2
   badges: ^1.2.0
   webview_flutter: ^1.0.7
-#  permission_handler: ^5.1.0+2
   image_picker: 0.6.7+22
   flutter_html: ^1.0.0
   simple_html_css: ^2.0.2
-  image_gallery_saver: ^1.6.8
-  image_pickers: ^1.1.0
+  image_pickers: ^1.1.0 # 可以被原生替代
   like_button: ^0.1.9
-  screenshot: 0.3.0
+  screenshot: 0.3.0  # 还没用到
   location_permissions: ^3.0.0
   umeng_sdk:
     path: plugins/umeng_sdk

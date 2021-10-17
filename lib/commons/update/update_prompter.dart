@@ -11,11 +11,9 @@ typedef InstallCallback = Function(String filePath);
 class UpdatePrompter {
   final Version updateEntity;
 
-  final InstallCallback onInstall;
-
   UpdateDialog _dialog;
 
-  UpdatePrompter({@required this.updateEntity, @required this.onInstall});
+  UpdatePrompter({@required this.updateEntity});
 
   void show(BuildContext context, Version version) async {
     if (_dialog != null && _dialog.isShowing) {
