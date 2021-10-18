@@ -58,8 +58,6 @@ class FbHomeStatusNotifier extends ChangeNotifier {
   }
 }
 
-extension PostListEx on Map<int, Post> {}
-
 class FbHomeListModel extends ChangeNotifier {
   // map default is LinkedHashMap
   Map<int, Post> _homeList = {};

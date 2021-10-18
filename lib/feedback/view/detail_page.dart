@@ -183,9 +183,32 @@ class _DetailPageState extends State<DetailPage> {
     Widget body;
 
     if (status == DetailPageStatus.loading) {
-      body = Center(
-        child: Loading(),
-      );
+      if(post.title == null){
+        body = Center(
+          child: Loading(),
+        );
+      }else {
+        body = ListView(
+          children: [
+            PostCard.detail(
+              post,
+              onLikePressed: (isLike, likeCount) {
+                post.isLiked = isLike;
+                post.likeCount = likeCount;
+              },
+              onFavoritePressed: (isCollect) {
+                post.isFavorite = isCollect;
+              },
+            ),
+            SizedBox(
+              height: 100,
+              child: Center(
+                child: Loading(),
+              ),
+            )
+          ],
+        );
+      }
     } else if (status == DetailPageStatus.idle) {
       Widget mainList = ListView.builder(
         itemCount: _officialCommentList.length + _commentList.length + 1,
@@ -273,7 +296,7 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: Colors.white,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Navigator.pop(context, post),
       ),
       // actions: [shareButton],
       title: Text(

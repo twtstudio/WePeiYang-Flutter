@@ -1,5 +1,6 @@
 package com.twt.service.download
 
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
@@ -20,7 +22,6 @@ import com.twt.service.WBYApplication
 import io.flutter.embedding.android.FlutterFragmentActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -41,19 +42,23 @@ class MyViewModel : ViewModel() {
     private val directory by lazy {
         WBYApplication.activity?.get()?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
     }
+    private lateinit var resultFile: File
+    private lateinit var flowJob: Job
+
+    fun stopStream() {
+        WBYApplication.activity?.get()?.updateEventSink?.let { event ->
+            event.endOfStream()
+            flowJob.cancel()
+        }
+    }
+
 
     fun downloadApk(url: String, version: String, context: MainActivity) {
         kotlin.runCatching {
-            viewModelScope.launch {
+            flowJob = viewModelScope.launch {
                 downloadProgress.collect {
                     if (it.success) {
-                        context.updateEventSink?.let { event ->
-                            event.success(it.progress)
-                            if (it.progress == 1.0) {
-                                event.endOfStream()
-                                cancel()
-                            }
-                        }
+                        context.updateEventSink?.success(it.progress)
                     } else {
                         endUpdateStreamWithError(
                             -1,
@@ -65,14 +70,12 @@ class MyViewModel : ViewModel() {
             }
 
             if (checkApkHasDownload(version)) {
-                Log.d("WBYDOWNLOAD", "has current apk")
                 installAPK(context, version + "wby.apk")
             } else {
                 // 清除之前下载的所有apk文件
                 FileManager.clearDownloadDirectory(context)
                 // 再重新下载最新版apk
                 val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-                    Log.d("WBYDOWNLOAD", "Handle $exception in CoroutineExceptionHandler")
                     endUpdateStreamWithError(-1, "start download error", context)
                 }
                 viewModelScope.launch(coroutineExceptionHandler) {
@@ -82,7 +85,6 @@ class MyViewModel : ViewModel() {
                 }
             }
         }.onFailure {
-            Log.d("WBYDOWNLOAD", "Handle $it")
             endUpdateStreamWithError(-1, "start download apk error", context)
         }
     }
@@ -103,7 +105,7 @@ class MyViewModel : ViewModel() {
         directory?.let {
             it.listFiles()?.let { files ->
                 for (file in files) {
-                    if(file.name.endsWith(".temporary")){
+                    if (file.name.endsWith(".temporary")) {
                         file.delete()
                     }
                 }
@@ -124,7 +126,6 @@ class MyViewModel : ViewModel() {
     ) {
         mDownloadManager = manager
         mFileName = version + "wby.apk"
-        Log.d("WBYDOWNLOAD", "$mFileName + [[[[[")
         mDownloadReceiver = CompleteReceiver().also {
             context.registerReceiver(
                 it,
@@ -138,7 +139,6 @@ class MyViewModel : ViewModel() {
                 it
             )
         }
-        Log.d("WBYDOWNLOAD", "start")
         val request = DownloadManager.Request(Uri.parse(url)).apply {
             setTitle("微北洋")
             setDescription("File is downloading...")
@@ -150,7 +150,6 @@ class MyViewModel : ViewModel() {
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
         downLoadId = manager.enqueue(request)
-        Log.d("WBYDOWNLOAD", downLoadId.toString())
     }
 
     private fun installAPK(context: Context, fileName: String? = null) {
@@ -158,31 +157,71 @@ class MyViewModel : ViewModel() {
             directory?.let {
                 val name = fileName ?: mFileName
                 val path = it.path + File.separator + name
-                val file = File(path)
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
-                        val apkUri = FileProvider.getUriForFile(
-                            context,
-                            "com.twt.service.apkprovider",
-                            file,
-                        )
-                        //添加这一句表示对目标应用临时授权该Uri所代表的文件
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        setDataAndType(apkUri, "application/vnd.android.package-archive")
-                    } else {
-                        setDataAndType(
-                            Uri.fromFile(file),
-                            "application/vnd.android.package-archive"
-                        )
-                    }
-                }
+                resultFile = File(path)
 
-                context.startActivity(intent)
+                WBYApplication.activity?.get()?.let { activity ->
+                    installApkWithSdkVersion(activity, context)
+                }
             }
         } catch (e: Exception) {
             failure("handling error when install apk")
+        }
+    }
+
+    private fun installApkWithSdkVersion(activity: MainActivity, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (canRequestPackageInstalls(activity)) {
+                installApkAfterN(context)
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
+                        data = Uri.parse("package:" + activity.packageName)
+                    }
+                    activity.startForResult.launch(intent)
+                } else {
+                    // TODO: 想个办法解决
+                    Log.d("WBYDOWNLOAD", "VERSION.SDK_INT < O")
+                }
+            }
+        } else {
+            installApkBeforeN(context)
+        }
+    }
+
+    private fun installApkBeforeN(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        val uri = Uri.fromFile(resultFile)
+        intent.setDataAndType(uri, "application/vnd.android.package-archive")
+        WBYApplication.activity?.get()?.startForResult.let {
+            if (it == null) {
+                context.startActivity(intent)
+            } else {
+                it.launch(intent)
+            }
+        }
+    }
+
+    fun installApkAfterN(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
+            val apkUri = FileProvider.getUriForFile(
+                context,
+                "com.twt.service.apkprovider",
+                resultFile,
+            )
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            setDataAndType(apkUri, "application/vnd.android.package-archive")
+        }
+        WBYApplication.activity?.get()?.startForResult.let {
+            if (it == null) {
+                context.startActivity(intent)
+            } else {
+                it.launch(intent)
+            }
         }
     }
 
@@ -199,7 +238,6 @@ class MyViewModel : ViewModel() {
                     context.unregisterReceiver(mDownloadReceiver)
                     val myDownloadQuery = DownloadManager.Query()
                     myDownloadQuery.setFilterById(downLoadId!!)
-                    Log.d("WBYDOWNLOAD", "!!!!!!!!!!!!!!")
                     getStatus(mDownloadManager.query(myDownloadQuery), context)
                 }
             } catch (e: Exception) {
@@ -213,26 +251,17 @@ class MyViewModel : ViewModel() {
                     getProgress(it)
                     when (status(it)) {
                         DownloadManager.STATUS_SUCCESSFUL -> {
-                            Log.d("WBYDOWNLOAD", "Successful---")
                             directory?.let { directory ->
                                 val from = File(directory, "$mFileName.temporary")
                                 val to = File(directory, mFileName)
                                 if (from.renameTo(to)) {
-                                    Log.d("WBYDOWNLOAD", "Successful")
                                     success()
                                     installAPK(context)
                                 }
                             }
                         }
                         DownloadManager.STATUS_FAILED -> {
-                            Log.d("WBYDOWNLOAD", "failed")
                             failure("download apk fail")
-                        }
-                        DownloadManager.STATUS_PAUSED -> {
-                            Log.d("WBYDOWNLOAD", "paused")
-                        }
-                        else -> {
-                            Log.d("WBYDOWNLOAD", "???")
                         }
                     }
                 }
@@ -264,7 +293,6 @@ class MyViewModel : ViewModel() {
     }
 
     private fun getProgress(cursor: Cursor) {
-        Log.d("WBYDOWNLOAD", totalSize(cursor).toString())
         progress = currentSize(cursor) / totalSize(cursor)
     }
 
@@ -284,13 +312,13 @@ class MyViewModel : ViewModel() {
 
     private fun success() {
         viewModelScope.launch {
-            Log.d("WBYDOWNLOAD", "$progress]]]]]")
             _downloadProgress.emit(DownloadProgress(true, progress))
         }
     }
 
     private fun failure(errorDetail: String) {
         viewModelScope.launch {
+            Log.d("WBYDOWNLOAD", errorDetail)
             _downloadProgress.emit(
                 DownloadProgress(
                     false,
@@ -299,6 +327,11 @@ class MyViewModel : ViewModel() {
                 )
             )
         }
+    }
+
+    private fun canRequestPackageInstalls(activity: Activity): Boolean {
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.O ||
+                activity.packageManager.canRequestPackageInstalls()
     }
 }
 

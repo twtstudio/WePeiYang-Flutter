@@ -22,6 +22,7 @@ class UpdatePrompter {
     _dialog = UpdateDialog.showUpdate(
       context,
       onUpdate: onUpdate,
+      onInstall: onInstall,
       version: version,
     );
   }
@@ -37,12 +38,34 @@ class UpdatePrompter {
     };
     eventChannel.receiveBroadcastStream(arguments).listen(
       (progress) {
-        print("WBYDOWNLOAD $progress");
         _dialog.update(progress);
       },
       onError: (_) {
-        ToastProvider.error("下载失败！请确保网络通畅");
-        print("下载失败！请确保网络通畅");
+        ToastProvider.error("下载失败");
+        _dialog.dismiss();
+      },
+      onDone: (){
+        _dialog.dismiss();
+      },
+      cancelOnError: true,
+    );
+
+
+  }
+
+  Future<void> onInstall() async {
+    var arguments = {
+      'url': updateEntity.path,
+      'version': "${updateEntity.version}-${updateEntity.versionCode}"
+    };
+    _dialog.update(1);
+    eventChannel.receiveBroadcastStream(arguments).listen(
+      (_) {},
+      onError: (_) {
+        ToastProvider.error("安装失败");
+        _dialog.dismiss();
+      },
+      onDone: (){
         _dialog.dismiss();
       },
       cancelOnError: true,

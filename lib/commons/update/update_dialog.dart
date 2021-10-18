@@ -52,12 +52,12 @@ class UpdateDialog {
 
   UpdateDialog(BuildContext context,
       {@required VoidCallback onUpdate,
-      String updateButtonText,
+      @required VoidCallback onInstall,
       Version version}) {
     _context = context;
     _widget = UpdateWidget(
       onUpdate: onUpdate,
-      updateButtonText: updateButtonText ?? '点击更新',
+      onInstall: onInstall,
       version: version,
     );
   }
@@ -66,13 +66,13 @@ class UpdateDialog {
   static UpdateDialog showUpdate(
     BuildContext context, {
     @required VoidCallback onUpdate,
-    String updateButtonText,
+    @required VoidCallback onInstall,
     Version version,
   }) {
     UpdateDialog dialog = UpdateDialog(
       context,
       onUpdate: onUpdate,
-      updateButtonText: updateButtonText,
+      onInstall: onInstall,
       version: version,
     );
     dialog.show();
@@ -84,15 +84,21 @@ class UpdateWidget extends StatefulWidget {
   /// 更新事件
   final VoidCallback onUpdate;
 
+  final VoidCallback onInstall;
+
   /// 更新按钮内容
   final String updateButtonText;
+
+  final String installButtonText;
 
   final Version version;
 
   UpdateWidget({
     @required this.onUpdate,
     this.updateButtonText = '点击更新',
+    this.installButtonText = '安装',
     this.version,
+    this.onInstall,
   });
 
   final _UpdateWidgetState _state = _UpdateWidgetState();
@@ -153,6 +159,19 @@ class _UpdateWidgetState extends State<UpdateWidget> {
         child: Text(widget.updateButtonText, style: normalStyle),
         color: Colors.transparent,
         onPressed: widget.onUpdate,
+      ),
+    );
+
+    var installButton = FractionallySizedBox(
+      widthFactor: 1,
+      child: RaisedButton(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        elevation: 0,
+        highlightElevation: 0,
+        child: Text(widget.installButtonText, style: normalStyle),
+        color: Colors.transparent,
+        onPressed: widget.onInstall,
       ),
     );
 
@@ -227,7 +246,9 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                             ? updateButton
                             : progress == 0
                                 ? Center(child: Text("请稍等", style: normalStyle))
-                                : NumberProgress(progress),
+                                : progress >= 1.0
+                                    ? installButton
+                                    : NumberProgress(progress),
                         SizedBox(height: 10),
                       ],
                     ),

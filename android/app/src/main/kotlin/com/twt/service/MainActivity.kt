@@ -1,5 +1,6 @@
 package com.twt.service
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.ContentValues
@@ -10,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -46,6 +48,15 @@ class MainActivity : FlutterFragmentActivity() {
         )
     }
 
+    val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                model.installApkAfterN(this)
+            } else {
+                model.stopStream()
+            }
+        }
+
     private val model: MyViewModel by viewModels()
 
     //    val WXapi by lazy { WXAPIFactory.createWXAPI(this@MainActivity, "", false) }
@@ -79,13 +90,14 @@ class MainActivity : FlutterFragmentActivity() {
         updateWidget()
         handleIntent()
 
-        lifecycleScope.launch {
-            delay(4000)
+//        lifecycleScope.launch {
+//            delay(4000)
 //            showNotification(FeedbackMessage(title = "test", content = "测试", question_id = 70))
 //            val url = "https://mobile-api.twt.edu.cn/storage/android_apk/1caf1a12fa5dbe0f7d4be5b28bb3da2d.apk"
 //            val version = "v4.0.9-68"
 //            model.downloadApk(url, version, this@MainActivity)
-        }
+//        }
+
     }
 
     override fun onNewIntent(intent: Intent) {
