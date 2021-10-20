@@ -28,7 +28,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             if (result['telephone'] == null || result['email'] == null) {
               Navigator.pushNamed(context, AuthRouter.addInfo);
             } else {
-              ToastProvider.success("登录成功");
               Navigator.pushNamedAndRemoveUntil(
                   context, HomeRouter.home, (route) => false);
             }

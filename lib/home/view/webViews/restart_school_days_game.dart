@@ -64,7 +64,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                     List<Directory> tempDir =
                         await getExternalStorageDirectories(
                             type: StorageDirectory.pictures);
-                    var newImg = new File(
+                    var newImg = File(
                         "${tempDir.first.path}/人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg")
                       ..writeAsBytesSync(bytes);
                     var channel = BasicMessageChannel(

@@ -9,7 +9,7 @@ class TotalMessageData {
   static TotalMessageData fromJson(Map<String, dynamic> map) {
     if (map == null) return null;
     TotalMessageData total = TotalMessageData();
-    total.questions = List()
+    total.questions = []
       ..addAll((map['question_list'] as List ?? [])
           .map<MessageDataItem>((m) => MessageDataItem.fromJson(m)));
     total.classifiedMessageCount =

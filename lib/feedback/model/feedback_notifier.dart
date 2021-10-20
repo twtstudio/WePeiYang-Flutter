@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class FbTagsProvider {
-  List<Tag> tagList = List();
+  List<Tag> tagList = [];
 
   Future<void> initTags() async {
     await FeedbackService.getTags(

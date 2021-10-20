@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:umeng_sdk/umeng_sdk.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
@@ -163,7 +163,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
-    UmengSdk.setPageCollectionModeManual();
+    UmengCommonSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),

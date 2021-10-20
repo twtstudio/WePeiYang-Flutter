@@ -28,7 +28,7 @@ class WPYPageState extends State<WPYPage> {
   @override
   void initState() {
     super.initState();
-    cards = List()
+    cards = []
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),

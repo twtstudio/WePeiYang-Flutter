@@ -98,8 +98,8 @@ class _MailItemState extends State<MailItem> {
           if (widget.data.url != "") {
             Navigator.push(
               context,
-              new MaterialPageRoute(
-                builder: (context) => new MailPage(
+              MaterialPageRoute(
+                builder: (context) => MailPage(
                   url: widget.data.url,
                   title: widget.data.title,
                 ),

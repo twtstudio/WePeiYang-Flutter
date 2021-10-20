@@ -8,7 +8,7 @@ class ScheduleBean {
   ScheduleBean.fromJson(Map<String, dynamic> map)
       : termStart = map['termStart'],
         termName = map['termName'],
-        courses = List()
+        courses = []
           ..addAll((map['courses'] as List ?? [])
               .map((e) => ScheduleCourse.fromJson(e)));
 

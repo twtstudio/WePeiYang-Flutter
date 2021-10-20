@@ -1,7 +1,6 @@
 package com.twt.service.widget
 
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViewsService
 
 class WidgetService : RemoteViewsService() {

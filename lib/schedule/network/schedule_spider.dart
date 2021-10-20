@@ -21,7 +21,7 @@ void getScheduleCourses(
     }
 
     /// 学生有辅修的情况：
-    var scheduleList = List<ScheduleCourse>();
+    var scheduleList = <ScheduleCourse>[];
     var idsValue = "";
 
     /// 获取semester.id

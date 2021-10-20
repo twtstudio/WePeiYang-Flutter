@@ -18,7 +18,7 @@ class ClipCopy extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        ClipboardData data = new ClipboardData(text: copy);
+        ClipboardData data = ClipboardData(text: copy);
         Clipboard.setData(data);
         ToastProvider.success(toast);
       },

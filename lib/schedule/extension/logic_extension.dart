@@ -66,8 +66,8 @@ List<List<bool>> getBoolMatrix(
 List<List<List<ScheduleCourse>>> getMergedCourses(
     ScheduleNotifier notifier, int dayNumber) {
   List<ScheduleCourse> courses = notifier.coursesWithNotify;
-  List<List<List<ScheduleCourse>>> result = List();
-  for (int i = 0; i < dayNumber; i++) result.add(List());
+  List<List<List<ScheduleCourse>>> result = [];
+  for (int i = 0; i < dayNumber; i++) result.add([]);
   courses.forEach((course) {
     int day = int.parse(course.arrange.day);
     if (day > dayNumber) return; // 这里return起到continue的作用
@@ -113,7 +113,7 @@ List<List<List<ScheduleCourse>>> getMergedCourses(
         }
       }
     });
-    if (!hasMerged) result[day - 1].add(List()..add(course));
+    if (!hasMerged) result[day - 1].add([]..add(course));
   });
   return result;
 }

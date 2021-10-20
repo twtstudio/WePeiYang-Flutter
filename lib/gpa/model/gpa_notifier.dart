@@ -61,7 +61,7 @@ class GPANotifier with ChangeNotifier {
 
   /// 获取曲线上的数据
   List<double> get curveDataWithNotify {
-    var doubles = List<double>();
+    var doubles = <double>[];
     if (_type == 0) for (var i in _gpaStats) doubles.add(i.weighted);
     if (_type == 1) for (var i in _gpaStats) doubles.add(i.gpa);
     if (_type == 2) for (var i in _gpaStats) doubles.add(i.credits);
@@ -70,7 +70,7 @@ class GPANotifier with ChangeNotifier {
 
   /// 获取当前学年的course detail
   List<GPACourse> get coursesWithNotify {
-    if (_gpaStats.length == 0) return List();
+    if (_gpaStats.length == 0) return [];
     return _gpaStats[_index].courses;
   }
 

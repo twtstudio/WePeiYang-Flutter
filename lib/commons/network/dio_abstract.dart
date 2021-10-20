@@ -4,7 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'error_interceptor.dart';
 import 'net_check_interceptor.dart';
 
-export 'package:dio/dio.dart';
+export 'package:dio/dio.dart' show DioError, ResponseType;
 export 'package:dio/src/interceptor.dart' show InterceptorsWrapper;
 export 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
@@ -17,7 +17,7 @@ typedef OnFailure = void Function(DioError e);
 abstract class DioAbstract {
   String baseUrl;
   Map<String, String> headers;
-  List<InterceptorsWrapper> interceptors = List();
+  List<InterceptorsWrapper> interceptors = [];
   ResponseType responseType = ResponseType.json;
   bool responseBody = false;
   Dio _dio;

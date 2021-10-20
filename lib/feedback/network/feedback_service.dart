@@ -18,21 +18,23 @@ class FeedbackDio extends DioAbstract {
 
   @override
   List<InterceptorsWrapper> interceptors = [
-    InterceptorsWrapper(onResponse: (Response response) {
+    InterceptorsWrapper(onResponse: (response, handler) {
       var code = response?.data['ErrorCode'] ?? 0;
       switch (code) {
         case 0: // 成功
-          return response;
+          return handler.next(response);
         case 10: // 含有敏感词，需要把敏感词也展示出来
-          throw WpyDioError(
-              error: response.data['msg'] +
-                  '\n' +
-                  response.data['data']['bad_word_list']
-                      .toSet()
-                      .toList()
-                      .toString());
+          return handler.reject(
+              WpyDioError(
+                  error: response.data['msg'] +
+                      '\n' +
+                      response.data['data']['bad_word_list']
+                          .toSet()
+                          .toList()
+                          .toString()),
+              true);
         default: // 其他错误
-          throw WpyDioError(error: response.data['msg']);
+          return handler.reject(WpyDioError(error: response.data['msg']), true);
       }
     })
   ];
@@ -58,7 +60,7 @@ class FeedbackService with AsyncTimer {
             response.data['data']['token'];
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
-        throw DioError(error: '校务专区登录失败, 请刷新');
+        throw WpyDioError(error: '校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
       if (onFailure != null) onFailure(e);
@@ -73,14 +75,14 @@ class FeedbackService with AsyncTimer {
         'token': token,
       });
       if (response.data['data'][0]['children'].length != 0) {
-        List<Tag> tagList = List();
+        List<Tag> tagList = [];
         for (Map<String, dynamic> json in response.data['data'][0]
             ['children']) {
           tagList.add(Tag.fromJson(json));
         }
         onResult(tagList);
       } else {
-        throw DioError(error: '校务专区获取标签失败, 请刷新');
+        throw WpyDioError(error: '校务专区获取标签失败, 请刷新');
       }
     } on DioError catch (e) {
       onFailure(e);
@@ -104,7 +106,7 @@ class FeedbackService with AsyncTimer {
           'page': '$page',
         },
       );
-      List<Post> list = List();
+      List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['data']) {
         list.add(Post.fromJson(json));
       }
@@ -127,7 +129,7 @@ class FeedbackService with AsyncTimer {
           'page': 1,
         },
       );
-      List<Post> list = List();
+      List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']) {
         list.add(Post.fromJson(json));
       }
@@ -168,7 +170,7 @@ class FeedbackService with AsyncTimer {
         'question_id': '$id',
         'token': CommonPreferences().feedbackToken.value,
       });
-      List<Comment> officialCommentList = List();
+      List<Comment> officialCommentList = [];
       for (Map<String, dynamic> json in officialCommentResponse.data['data']) {
         officialCommentList.add(Comment.fromJson(json));
       }
@@ -194,7 +196,7 @@ class FeedbackService with AsyncTimer {
           'page': page,
         },
       );
-      List<Comment> commentList = List();
+      List<Comment> commentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']['data']) {
         commentList.add(Comment.fromJson(json));
       }
@@ -213,7 +215,7 @@ class FeedbackService with AsyncTimer {
         'favorite/get/all',
         queryParameters: {'token': CommonPreferences().feedbackToken.value},
       );
-      List<Post> list = List();
+      List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']) {
         list.add(Post.fromJson(json));
       }

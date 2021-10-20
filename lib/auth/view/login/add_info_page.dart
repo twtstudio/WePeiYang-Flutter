@@ -39,7 +39,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
     else {
       AuthService.addInfo(phone, code, email,
           onSuccess: () {
-            ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },

@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
@@ -215,7 +215,7 @@ class ReportList {
     return ReportList(
       errorCode: json['error_code'],
       message: json['message'],
-      result: List()
+      result: []
         ..addAll(
             (json['result'] as List ?? []).map((e) => ReportItem.fromJson(e))),
     );

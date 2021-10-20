@@ -127,7 +127,7 @@ class CourseDisplayWidget extends StatelessWidget {
   }
 
   List<Widget> _generatePositioned(BuildContext context) {
-    if (notifier.coursesWithNotify.length == 0) return List();
+    if (notifier.coursesWithNotify.length == 0) return [];
     int dayNumber = CommonPreferences().dayNumber.value;
     List<Positioned> list = [];
     List<List<List<ScheduleCourse>>> merged =

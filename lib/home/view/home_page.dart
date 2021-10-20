@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   /// bottomNavigationBar对应的分页
-  List<Widget> pages = List<Widget>();
+  List<Widget> pages = <Widget>[];
   int _currentIndex = 0;
   DateTime _lastPressedAt;
   TabController _tabController;

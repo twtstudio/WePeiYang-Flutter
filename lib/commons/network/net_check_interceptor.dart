@@ -4,9 +4,9 @@ import 'net_status_listener.dart';
 
 class NetCheckInterceptor extends InterceptorsWrapper {
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(options, handler) async {
     if (NetStatusListener().hasNetwork())
-      return options;
+      return handler.next(options);
     else
       throw WpyDioError(error: "网络未连接");
   }

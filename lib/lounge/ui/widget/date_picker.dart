@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -16,37 +15,35 @@ class TimeCheckWidget extends StatelessWidget {
   }) : super(key: key);
 
   _modalBottomSheetMenu(BuildContext context) async {
-    await initializeDateFormatting()
-        .then((value) async => await showModalBottomSheet(
-            backgroundColor: Colors.transparent,
-            context: context,
-            isScrollControlled: true,
-            builder: (context) {
-              return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(10.0),
-                          topRight: const Radius.circular(10.0))),
-                  child: BottomDatePicker());
-            }));
+    await initializeDateFormatting();
+    await showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DecoratedBox(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(10.0),
+                      topRight: const Radius.circular(10.0))),
+              child: BottomDatePicker());
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Builder(
-        builder: (_) => InkWell(
-          onTap: () async => await _modalBottomSheetMenu(context),
-          child: Row(
-            children: [
-              Icon(
-                Icons.date_range_rounded,
-                size: 25,
-                color: Color(0XFF62677B),
-              ),
-            ],
-          ),
+    return Builder(
+      builder: (_) => InkWell(
+        onTap: () async => await _modalBottomSheetMenu(context),
+        child: Row(
+          children: [
+            Icon(
+              Icons.date_range_rounded,
+              size: 25,
+              color: Color(0XFF62677B),
+            ),
+          ],
         ),
       ),
     );
@@ -60,18 +57,14 @@ class BottomDatePicker extends StatefulWidget {
 
 class _BottomDatePickerState extends State<BottomDatePicker>
     with TickerProviderStateMixin {
-  CalendarController _calendarController;
   AnimationController _animationController;
   List<ClassTime> currentTime = [];
   LoungeTimeModel model;
-  FToast _fToast;
+  DateTime _focusedDay;
 
   @override
   void initState() {
     super.initState();
-    _calendarController = CalendarController();
-    _fToast = FToast();
-    _fToast.init(context);
     _animationController =
         AnimationController(duration: Duration(milliseconds: 200), vsync: this)
           ..forward();
@@ -84,7 +77,6 @@ class _BottomDatePickerState extends State<BottomDatePicker>
 
   @override
   void dispose() {
-    _calendarController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -101,7 +93,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
     var cannotTap = !(LoungeRepository.canLoadLocalData == true &&
         LoungeRepository.canLoadTemporaryData == true);
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: ListView(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -109,23 +101,26 @@ class _BottomDatePickerState extends State<BottomDatePicker>
           AbsorbPointer(
             absorbing: cannotTap,
             child: TableCalendar(
+              firstDay: DateTime.utc(2010, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
               locale: Intl.getCurrentLocale(),
-              calendarController: _calendarController,
               startingDayOfWeek: StartingDayOfWeek.monday,
-              initialCalendarFormat: CalendarFormat.month,
-              formatAnimation: FormatAnimation.slide,
+              calendarFormat: CalendarFormat.month,
+              // formatAnimation: FormatAnimation.slide,
               availableGestures: AvailableGestures.horizontalSwipe,
               headerStyle: HeaderStyle(
-                centerHeaderTitle: true,
+                titleCentered: true,
                 formatButtonVisible: false,
-                headerMargin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                headerMargin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
               ),
               calendarStyle: CalendarStyle(outsideDaysVisible: true),
-              builders:
-                  CalendarBuilders(selectedDayBuilder: (context, date, _) {
+
+              calendarBuilders:
+                  CalendarBuilders(selectedBuilder: (context, date, _) {
                 return FadeTransition(
-                  opacity: Tween(begin: 0.0, end: 1.0)
-                      .animate(_animationController),
+                  opacity:
+                      Tween(begin: 0.0, end: 1.0).animate(_animationController),
                   child: Center(
                     child: Container(
                       decoration: BoxDecoration(
@@ -137,21 +132,18 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                       child: Center(
                         child: Text(
                           '${date.day}',
-                          style:
-                              FontManager.YaHeiRegular.copyWith(color: Colors.white),
+                          style: FontManager.YaHeiRegular.copyWith(
+                              color: Colors.white),
                         ),
                       ),
                     ),
                   ),
                 );
-              }, todayDayBuilder: (context, date, _) {
+              }, todayBuilder: (context, date, _) {
                 return Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0XFF62677B),
-                        width: 1,
-                      ),
+                      border: Border.all(color: Color(0XFF62677B), width: 1),
                       shape: BoxShape.circle,
                     ),
                     width: 35,
@@ -168,29 +160,21 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                     ),
                   ),
                 );
-              }, dowWeekdayBuilder: (context, date) {
+              }, dowBuilder: (context, date) {
                 return Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 13),
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        date.substring(1, 2),  // 为了去掉 周一 的 周
-                      ),
-                    ),
+                  padding: const EdgeInsets.only(bottom: 13),
+                  child: Center(
+                    child: Text(dateTimeToNum(date)),
                   ),
                 );
               }),
-              onDaySelected: (date, events, holidays) async {
-                _fToast.removeCustomToast();
-                _fToast.removeQueuedCustomToasts();
+              onDaySelected: (selectedDay, focusedDay) async {
                 _animationController.forward(from: 0.0);
-                await model.setTime(date: date).then((_) {
-                  if (mounted) {
-                    _calendarController.setSelectedDay(model.dateTime);
-                  }
-                });
+                await model.setTime(date: selectedDay);
+                if (mounted) _focusedDay = focusedDay;
               },
-              initialSelectedDay: model.dateTime,
+              onPageChanged: (focusedDay) => _focusedDay = focusedDay,
+              // initialSelectedDay: model.dateTime,
             ),
           ),
           Padding(
@@ -214,7 +198,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
           ),
           Row(
             children: [
-              Expanded(child: SizedBox()),
+              Spacer(),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
@@ -226,15 +210,17 @@ class _BottomDatePickerState extends State<BottomDatePicker>
                   ),
                 ),
               ),
-              SizedBox(
-                width: 20,
-              )
+              SizedBox(width: 20)
             ],
           )
         ],
       ),
     );
   }
+
+  static const num = ['一', '二', '三', '四', '五', '六', '日'];
+
+  String dateTimeToNum(DateTime date) => num[date.weekday - 1];
 }
 
 class TimeItem extends StatelessWidget {
@@ -251,34 +237,30 @@ class TimeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: InkWell(
-          onTap: () {
-            onclick();
-          },
-          child: Container(
-            height: 45,
-            width: 130,
-            padding: EdgeInsets.all(5),
-            decoration: isChecked
-                ? BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(22.5)),
-                    color: Color(0XFF62677B))
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(22.5),
-                    border: Border.all(
-                      color: Color(0XFF62677B),
-                      width: 1,
-                    )),
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isChecked ? Colors.white : Color(0XFF62677B),
-                ),
+    return Center(
+      child: InkWell(
+        onTap: onclick,
+        child: Container(
+          height: 45,
+          width: 130,
+          padding: const EdgeInsets.all(5),
+          decoration: isChecked
+              ? BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(22.5),
+                  color: Color(0XFF62677B))
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(22.5),
+                  border: Border.all(
+                    color: Color(0XFF62677B),
+                    width: 1,
+                  )),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 14,
+                color: isChecked ? Colors.white : Color(0XFF62677B),
               ),
             ),
           ),

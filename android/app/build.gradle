@@ -29,6 +29,10 @@ Properties pro = new Properties()
 pro.load(project.rootProject.file('local.properties').newDataInputStream())
 print(pro.getProperty('keyAlias'))
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 android {
     compileSdkVersion 30
 
@@ -81,14 +85,14 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false//删除无用代码
-            shrinkResources false//删除无用资源
+            minifyEnabled false   // 删除无用代码
+            shrinkResources false // 删除无用资源
         }
 
         debug {
             signingConfig signingConfigs.release
-            minifyEnabled false//删除无用代码
-            shrinkResources false//删除无用资源
+            minifyEnabled false   // 删除无用代码
+            shrinkResources false // 删除无用资源
         }
     }
 
@@ -132,9 +136,9 @@ dependencies {
 
 //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
 
-//    implementation  'com.umeng.umsdk:common:9.4.0'//基础组件库，必选
-//    implementation  'com.umeng.umsdk:asms:1.2.3'//基础组件库，必选
-//    implementation 'com.umeng.umsdk:link:1.1.0'//集成智能超链SDK，必选
+//    implementation  'com.umeng.umsdk:common:9.4.0'  // 基础组件库，必选
+//    implementation  'com.umeng.umsdk:asms:1.2.3'    // 基础组件库，必选
+//    implementation 'com.umeng.umsdk:link:1.1.0'     // 集成智能超链SDK，必选
 
 //    implementation "com.jakewharton.timber:timber:4.7.1"
 }

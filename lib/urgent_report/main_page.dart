@@ -668,9 +668,9 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
       value = oldValue.text;
       selectionIndex = oldValue.selection.end;
     }
-    return new TextEditingValue(
+    return TextEditingValue(
       text: value,
-      selection: new TextSelection.collapsed(offset: selectionIndex),
+      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
@@ -700,18 +700,18 @@ class _PickImageState extends State<PickImage> {
   File _image;
 
   _imgFromGallery() async {
-    PickedFile pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile xFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
 
-    if (pickedFile != null) {
-      _setImg(File(pickedFile.path));
-      _reportImage(pickedFile);
+    if (xFile != null) {
+      _setImg(File(xFile.path));
+      _reportImage(xFile);
     }
   }
 
-  _reportImage(PickedFile pickedFile) async {
+  _reportImage(XFile file) async {
     Provider.of<ReportDataModel>(context, listen: false)
-        .add(widget.image.key, pickedFile.path);
+        .add(widget.image.key, file.path);
   }
 
   @override

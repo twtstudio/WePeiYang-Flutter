@@ -510,11 +510,11 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    PickedFile pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile xFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
     Provider.of<NewPostProvider>(context, listen: false)
         .imgList
-        .add(File(pickedFile.path));
+        .add(File(xFile.path));
     if (!mounted) return;
     setState(() {});
   }

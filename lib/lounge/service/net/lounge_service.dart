@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
@@ -18,10 +17,11 @@ class LoginDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     ApiInterceptor(),
-    InterceptorsWrapper(onRequest: (Options options) {
+    InterceptorsWrapper(onRequest: (options, handler) {
       var pref = CommonPreferences();
       options.headers['token'] = pref.token.value;
       options.headers['Cookie'] = pref.captchaCookie.value;
+      return handler.next(options);
     })
   ];
 }
@@ -40,7 +40,7 @@ final openDio = OpenDio();
 
 class ApiInterceptor extends InterceptorsWrapper {
   @override
-  onResponse(Response response) async {
+  onResponse(response, handler) async {
     final String data = response.data.toString();
     final bool isCompute = data.length > 10 * 1024;
     final Map<dynamic, dynamic> _map =
@@ -48,9 +48,9 @@ class ApiInterceptor extends InterceptorsWrapper {
     var respData = ResponseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return loginDio.dio.resolve(response);
+      return handler.resolve(response);
     } else {
-      throw WpyDioError(error: respData.message);
+      return handler.reject(WpyDioError(error: respData.message), true);
     }
   }
 }

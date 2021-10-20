@@ -199,9 +199,9 @@ class _RadarChartPainter extends CustomPainter {
   double inner;
   double middle;
   double slice;
-  List<Offset> outerPoints = List();
-  List<Offset> innerPoints = List();
-  List<Offset> middlePoints = List();
+  List<Offset> outerPoints = [];
+  List<Offset> innerPoints = [];
+  List<Offset> middlePoints = [];
 
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
