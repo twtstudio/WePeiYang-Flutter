@@ -159,7 +159,7 @@ class _SearchPageState extends State<SearchPage> {
           shrinkWrap: true,
           itemBuilder: (_, index) {
             var searchArgument = SearchResultPageArgs(
-              list[index],
+              list[list.length - index - 1],
               '',
               S.current.feedback_search_result,
             );
@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
                   Navigator.pop(context);
                 });
               },
-              child: historyItem(list[index]),
+              child: historyItem(list[list.length - index - 1]),
             );
           },
           physics: NeverScrollableScrollPhysics(),
@@ -255,6 +255,8 @@ class _SearchPageState extends State<SearchPage> {
               child: Text(S.current.feedback_ok),
               onPressed: () {
                 _searchHistoryList.clear();
+                _addHistory();
+                setState(() { });
                 Navigator.pop(context);
               },
             ),
