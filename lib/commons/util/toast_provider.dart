@@ -23,7 +23,6 @@ class ToastProvider with AsyncTimer {
   }
 
   static error(String msg, {ToastGravity gravity = ToastGravity.BOTTOM}) {
-    print("msg $msg");
     AsyncTimer.runRepeatChecked(msg, () async {
       print('ToastProvider error: $msg');
       await Fluttertoast.showToast(

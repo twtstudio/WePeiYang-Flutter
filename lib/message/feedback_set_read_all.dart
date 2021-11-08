@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
@@ -38,7 +39,7 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
 
 final _hintStyle = FontManager.YaQiHei.copyWith(
     fontSize: 15,
-    color: Color.fromRGBO(98, 103, 123, 1),
+    color: ColorUtil.boldTextColor,
     fontWeight: FontWeight.bold,
     decoration: TextDecoration.none);
 
@@ -75,7 +76,7 @@ class ReadAllDialog extends Dialog {
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
-                Container(width: 30),
+                SizedBox(width: 30),
                 GestureDetector(
                   onTap: () => Navigator.pop(context, true),
                   child: Container(

@@ -1656,10 +1656,20 @@ class S {
   }
 
   /// ``
-  String get feedback_delete_dialog_content {
+  String get feedback_delete_question_content {
     return Intl.message(
       '',
-      name: 'feedback_delete_dialog_content',
+      name: 'feedback_delete_question_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_delete_image_content {
+    return Intl.message(
+      '',
+      name: 'feedback_delete_image_content',
       desc: '',
       args: [],
     );

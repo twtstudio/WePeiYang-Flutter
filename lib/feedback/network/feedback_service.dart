@@ -94,13 +94,15 @@ class FeedbackService with AsyncTimer {
       @required void Function(List<Post> list, int totalPage) onSuccess,
       @required OnFailure onFailure}) async {
     try {
+      var pref = CommonPreferences();
       var response = await feedbackDio.get(
         'question/search',
         queryParameters: {
+          'searchType': pref.feedbackSearchType.value,
           'searchString': keyword ?? '',
           'tagList': '[$tagId]',
           'limits': '20',
-          'token': CommonPreferences().feedbackToken.value,
+          'token': pref.feedbackToken.value,
           'page': '$page',
         },
       );
@@ -328,6 +330,7 @@ class FeedbackService with AsyncTimer {
       {@required title,
       @required content,
       @required tagId,
+      @required campus,
       @required List<File> imgList,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
@@ -339,7 +342,7 @@ class FeedbackService with AsyncTimer {
               'name': title,
               'description': content,
               'tagList': '[$tagId]',
-              'campus': 0,
+              'campus': campus,
             }));
         if (imgList.isNotEmpty) {
           for (int index = 0; index < imgList.length; index++) {

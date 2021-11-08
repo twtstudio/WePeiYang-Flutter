@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:io' show HttpClient, HttpOverrides, Platform, SecurityContext, X509Certificate;
+import 'dart:io'
+    show HttpClient, HttpOverrides, Platform, SecurityContext, X509Certificate;
 
+import 'package:flutter/foundation.dart' show TextTreeRenderer, DiagnosticsTreeStyle;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -38,14 +39,20 @@ void main() async {
   // HttpOverrides.global = MyHttpOverrides();
 
   // debugPaintSizeEnabled = true;
-
-  /// 程序中的同步（sync）错误也交给zone处理
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    Zone.current.handleUncaughtError(details.exception, details.stack);
-  };
-
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    /// 程序中的同步（sync）错误也交给zone处理
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      /// 生成错误信息
+      String text = TextTreeRenderer(
+              wrapWidth: FlutterError.wrapWidth,
+              wrapWidthProperties: FlutterError.wrapWidth,
+              maxDescendentsTruncatableNode: 5)
+          .render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.flat))
+          .trimRight();
+      Zone.current.handleUncaughtError(text, null);
+    };
     await CommonPreferences.initPrefs();
     await NetStatusListener.init();
     runApp(WePeiYangApp());
@@ -116,7 +123,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("WBYINTENT ${state.toString()}");
     if (state == AppLifecycleState.resumed) {
       checkEventList();
     }
@@ -125,7 +131,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   checkEventList() async {
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
     await messageChannel?.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
-      print("WBYINTENT ${eventMap.toString()}");
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           // TODO: 传入id ,等更新完项目之后
@@ -139,7 +144,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         case IntentEvent.WBYPushHtml:
           break;
         case IntentEvent.SchedulePage:
-          print("IntentEvent.SchedulePage");
           if (!pageStack.contains(ScheduleRouter.schedule)) {
             Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
           }
@@ -358,6 +362,6 @@ class MyHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext context) {
     return super.createHttpClient(context)
       ..badCertificateCallback =
-      (X509Certificate cert, String host, int port) => true;
+          (X509Certificate cert, String host, int port) => true;
   }
 }

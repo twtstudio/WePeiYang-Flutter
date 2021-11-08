@@ -45,7 +45,6 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
           return widget.child;
         } else {
           var str = widget.type.messageCount(model);
-          print("---------${widget.type.toString()}---${widget.type.messageCount(model)}");
           var padding = str.isEmpty ? 5.0 : 4.0;
           return Badge(
             padding: EdgeInsets.all(padding),

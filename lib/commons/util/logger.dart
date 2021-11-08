@@ -24,7 +24,7 @@ class Logger {
       '----------------------------------------------------------------------'
     ];
     if (kDebugMode) {
-      for (String line in lines) print(line);
+      for (String line in lines) debugPrint(line);
     } else {
       checkList();
       logs.addAll(lines);

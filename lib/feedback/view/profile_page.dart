@@ -235,6 +235,7 @@ class _PostListState extends State<_PostList> {
       showDialog<bool>(
         context: context,
         builder: (context) => ProfileDialog(
+          post: _postList[index],
           onConfirm: () => Navigator.pop(context, true),
           onCancel: () => Navigator.pop(context, false),
         ),
@@ -248,10 +249,8 @@ class _PostListState extends State<_PostList> {
               Provider.of<MessageProvider>(context, listen: false)
                   .refreshFeedbackCount();
               setState(() {
-                print("setstate");
                 _postList = List.from(_postList);
               });
-              print(_postList.first.title);
             },
             onFailure: (e) {
               ToastProvider.error(e.error.toString());
@@ -264,7 +263,6 @@ class _PostListState extends State<_PostList> {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    print("build");
     if (_postList.length.isZero) {
       child = Container(
           height: 200,

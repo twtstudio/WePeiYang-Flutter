@@ -21,6 +21,9 @@ class NewPostPage extends StatefulWidget {
 }
 
 class _NewPostPageState extends State<NewPostPage> {
+  // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
+  ValueNotifier campusNotifier = ValueNotifier<int>(0);
+
   Divider _divider() {
     return const Divider(
       height: 0.6,
@@ -32,7 +35,7 @@ class _NewPostPageState extends State<NewPostPage> {
   Widget build(BuildContext context) {
     Widget body = ListView(
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         TitleInputField(),
         _divider(),
@@ -41,8 +44,10 @@ class _NewPostPageState extends State<NewPostPage> {
         ImagesGridView(),
         SizedBox(height: 10),
         TagView(),
+        CampusSelector(campusNotifier),
+        SizedBox(height: 10),
         _divider(),
-        SubmitButton(),
+        SubmitButton(campusNotifier),
       ],
     );
 
@@ -75,9 +80,9 @@ class _NewPostPageState extends State<NewPostPage> {
 }
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({
-    Key key,
-  }) : super(key: key);
+  final ValueNotifier notifier;
+
+  const SubmitButton(this.notifier, {Key key}) : super(key: key);
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
@@ -87,6 +92,7 @@ class SubmitButton extends StatelessWidget {
         content: dataModel.content,
         tagId: dataModel.tag.id,
         imgList: dataModel.imgList,
+        campus: notifier.value,
         onSuccess: () {
           ToastProvider.success(S.current.feedback_post_success);
           Navigator.pop(context);
@@ -312,6 +318,70 @@ class _TabGridViewState extends State<TabGridView>
       );
 }
 
+class CampusSelector extends StatefulWidget {
+  final ValueNotifier notifier;
+
+  CampusSelector(this.notifier);
+
+  @override
+  _CampusSelectorState createState() => _CampusSelectorState();
+}
+
+class _CampusSelectorState extends State<CampusSelector> {
+  static const texts = ["不区分", "卫津路", "北洋园"];
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.notifier,
+      builder: (context, value, _) {
+        return SizedBox(
+          height: 32,
+          child: ListView.builder(
+            itemCount: 3,
+            scrollDirection: Axis.horizontal,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 32,
+                width: (WePeiYangApp.screenWidth - 80) / 3,
+                child: ElevatedButton(
+                  child: Text(
+                    texts[index],
+                    style: FontManager.YaHeiRegular.copyWith(
+                      color:
+                          value == index ? Colors.white : ColorUtil.mainColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: _judgeBorder(index)),
+                      primary:
+                          value == index ? ColorUtil.mainColor : Colors.white),
+                  onPressed: () {
+                    widget.notifier.value = index;
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  BorderRadius _judgeBorder(int index) {
+    if (index == 0)
+      return BorderRadius.horizontal(left: Radius.circular(5));
+    else if (index == 1)
+      return BorderRadius.zero;
+    else
+      return BorderRadius.horizontal(right: Radius.circular(5));
+  }
+}
+
 class ConfirmButton extends StatelessWidget {
   final VoidCallback onPressed;
 
@@ -449,9 +519,6 @@ class _ContentInputFieldState extends State<ContentInputField> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO
-    print("ContentInputField");
-
     Widget inputField = TextField(
       controller: _contentController,
       keyboardType: TextInputType.multiline,
@@ -523,7 +590,12 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(S.current.feedback_delete_dialog_content),
+        titleTextStyle:  FontManager.YaHeiRegular.copyWith(
+            color: Color.fromRGBO(79, 88, 107, 1),
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            decoration: TextDecoration.none),
+        title: Text(S.current.feedback_delete_image_content),
         actions: [
           FlatButton(
               onPressed: () {

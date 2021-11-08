@@ -36,8 +36,6 @@ class CollectWidget extends StatelessWidget {
             }
           },
           onTap: (value) async {
-            print("------collectButton $value--------");
-
             onCollectPressed?.call(isLiked);
             return !value;
           },

@@ -91,6 +91,19 @@ class _PostCardState extends State<PostCard> {
           fontSize: 13, color: ColorUtil.lightTextColor),
     );
 
+    var campus = post.campus > 0
+        ? Container(
+            decoration: BoxDecoration(
+              color: ColorUtil.mainColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.fromLTRB(5, 4, 5, 4),
+            child: Text(const ['', '卫津路', '北洋园'][post.campus],
+                style: FontManager.YaHeiRegular.copyWith(
+                    fontSize: 13, color: Colors.white)),
+          )
+        : Container();
+
     var content = Text(
       post.content,
       maxLines: widget.type == PostCardType.detail ? null : 2,
@@ -106,8 +119,8 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          tag,
-          SizedBox(height: 5),
+          Row(children: [tag, SizedBox(width: 8), campus]),
+          SizedBox(height: 8),
           content,
         ],
         crossAxisAlignment: CrossAxisAlignment.start,

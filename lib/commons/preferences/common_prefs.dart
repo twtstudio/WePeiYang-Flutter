@@ -31,7 +31,13 @@ class CommonPreferences {
   var department = PrefsBean<String>('department');
   var stuType = PrefsBean<String>('stuType');
   var major = PrefsBean<String>('major');
+
+  /// 校务专区
   var feedbackToken = PrefsBean<String>("feedbackToken");
+  var feedbackSearchHistory =
+      PrefsBean<List<String>>("feedbackSearchHistory", []);
+  // 1 -> 按时间排序; 2 -> 按热度排序
+  var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
@@ -46,8 +52,8 @@ class CommonPreferences {
   var scheduleShrink = PrefsBean<bool>('scheduleShrink');
 
   /// 学期信息
-  // 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
-  // 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SharedPreferences.kt中的默认值
+  /// 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
+  /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SharedPreferences.kt中的默认值
   var termStart = PrefsBean<int>('termStart', 1629043200);
   var termName = PrefsBean<String>('termName', '20212');
   var termStartDate = PrefsBean<String>('termStartDate', '');
@@ -79,12 +85,10 @@ class CommonPreferences {
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
   var favorListState = PrefsBean<int>("favorListState", 0);
 
-  var feedbackSearchHistory = PrefsBean<List<String>>("feedbackSearchHistory",[]);
-
   /// 健康信息提交时间
   var reportTime = PrefsBean<String>('reportTime');
 
-  /// 上次更新的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
+  /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   var updateTime = PrefsBean<String>('updateTime');
 
   /// 清除天外天账号系统缓存
