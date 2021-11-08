@@ -345,6 +345,7 @@ class FeedbackService with AsyncTimer {
               'campus': campus,
             }));
         if (imgList.isNotEmpty) {
+          // TODO 这里之后改成一起调用吧，一个个上传太慢了
           for (int index = 0; index < imgList.length; index++) {
             var data = FormData.fromMap({
               'token': CommonPreferences().feedbackToken.value,

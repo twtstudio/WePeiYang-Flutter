@@ -32,7 +32,7 @@ class NewPostProvider {
 
   List<File> imgList = [];
 
-  bool get check => title.isNotEmpty && content.isNotEmpty && tag?.id != -1;
+  bool get check => title.isNotEmpty && content.isNotEmpty && tag != null;
 }
 
 enum FbHomePageStatus {
