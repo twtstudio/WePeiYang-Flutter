@@ -88,19 +88,20 @@ class _PostCardState extends State<PostCard> {
     var tag = Text(
       (post.tags?.length ?? 0) > 0 ? '#${post.tags[0].name}' : '#无标签',
       style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 13, color: ColorUtil.lightTextColor),
+          fontSize: 14, color: ColorUtil.lightTextColor),
     );
 
     var campus = post.campus > 0
         ? Container(
             decoration: BoxDecoration(
-              color: ColorUtil.mainColor,
-              borderRadius: BorderRadius.circular(10),
+              color: ColorUtil.backgroundColor,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: ColorUtil.mainColor)
             ),
-            padding: const EdgeInsets.fromLTRB(5, 4, 5, 4),
+            padding: const EdgeInsets.fromLTRB(2, 2, 2, 1),
             child: Text(const ['', '卫津路', '北洋园'][post.campus],
                 style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 13, color: Colors.white)),
+                    fontSize: 10, color: ColorUtil.mainColor)),
           )
         : Container();
 
@@ -154,18 +155,19 @@ class _PostCardState extends State<PostCard> {
             ],
           ),
           onTap: () async {
-            widget.onContentPressed?.call();
-            await tap?.call();
-
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: post,
-            ).then((p) {
-              setState(() {
-                post = p;
+            if (widget.type == PostCardType.simple) {
+              widget.onContentPressed?.call();
+              await tap?.call();
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              ).then((p) {
+                setState(() {
+                  post = p;
+                });
               });
-            });
+            }
           },
           onLongPress: widget.onContentLongPressed,
         );

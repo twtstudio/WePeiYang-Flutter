@@ -5,10 +5,12 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
 
 import 'wpy_page.dart';
 
@@ -20,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   /// bottomNavigationBar对应的分页
   List<Widget> pages = List<Widget>();
+  Widget feedBackWidget;
   int _currentIndex = 0;
   DateTime _lastPressedAt;
   TabController _tabController;
@@ -64,6 +67,82 @@ class _HomePageState extends State<HomePage> {
     var otherStyle = TextStyle(
         fontSize: 12, color: MyColors.deepDust, fontWeight: FontWeight.w800);
 
+    if (_currentIndex != 1) {
+      feedBackWidget = Container(
+        height: 70,
+        width: width,
+        child: RaisedButton(
+          elevation: 0.0,
+          shape: RoundedRectangleBorder(),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          highlightElevation: 0,
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FeedbackBadgeWidget(
+                type: FeedbackMessageType.home,
+                child: InkWell(
+                  child: Container(
+                      width: 20,
+                      height: 20,
+                      child: Image(
+                        image: AssetImage('assets/images/icon_feedback.png'),
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text('校务',
+                    style: _currentIndex == 1 ? currentStyle : otherStyle),
+              ),
+            ],
+          ),
+          onPressed: () => _tabController.animateTo(1),
+        ),
+      );
+    } else {
+      feedBackWidget = Container(
+        height: 70,
+        width: width,
+        child: RaisedButton(
+          elevation: 0.0,
+          shape: RoundedRectangleBorder(),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          highlightElevation: 0,
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FeedbackBadgeWidget(
+                type: FeedbackMessageType.home,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    child: Image(
+                      image:
+                          AssetImage('assets/images/icon_feedback_active.png'),
+                    ),
+                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text('校务',
+                    style: _currentIndex == 1 ? currentStyle : otherStyle),
+              ),
+            ],
+          ),
+          onPressed: () {
+            _tabController.animateTo(1);
+            ToastProvider.success('回顶成功');
+
+          },
+        ),
+      );
+    }
+
     var homePage = Container(
       height: 70,
       width: width,
@@ -96,72 +175,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    var feedBackPage = Container(
-      height: 70,
-      width: width,
-      child: RaisedButton(
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        highlightElevation: 0,
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FeedbackBadgeWidget(
-              type: FeedbackMessageType.home,
-              child: Container(
-                width: 20,
-                height: 20,
-                child: Image(
-                    image: _currentIndex == 1
-                        ? AssetImage('assets/images/icon_feedback_active.png')
-                        : AssetImage('assets/images/icon_feedback.png')),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Text('校务',
-                  style: _currentIndex == 1 ? currentStyle : otherStyle),
-            ),
-          ],
-        ),
-        onPressed: () => _tabController.animateTo(1),
-      ),
-    );
-
-    // var casesPage = Container(
-    //   height: 70,
-    //   width: width,
-    //   child: RaisedButton(
-    //     elevation: 0.0,
-    //     shape: RoundedRectangleBorder(),
-    //     color: Colors.white,
-    //     splashColor: Colors.transparent,
-    //     highlightColor: Colors.transparent,
-    //     highlightElevation: 0,
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Container(
-    //           width: 20,
-    //           height: 20,
-    //           child: Image(
-    //               image: _currentIndex == 2
-    //                   ? AssetImage('assets/images/icon_action_active.png')
-    //                   : AssetImage('assets/images/icon_action.png')),
-    //         ),
-    //         Padding(
-    //           padding: const EdgeInsets.only(top: 3),
-    //           child: Text('抽屉',
-    //               style: _currentIndex == 2 ? currentStyle : otherStyle),
-    //         ),
-    //       ],
-    //     ),
-    //     onPressed: () => setState(() => _currentIndex = 2),
-    //   ),
-    // );
+    var feedBackPage = feedBackWidget;
 
     var selfPage = Container(
       height: 70,

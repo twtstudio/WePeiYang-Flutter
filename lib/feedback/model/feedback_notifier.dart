@@ -35,6 +35,10 @@ class NewPostProvider {
   bool get check => title.isNotEmpty && content.isNotEmpty && tag != null;
 }
 
+// class ReloadProvider with ChangeNotifier{
+//
+// }
+
 enum FbHomePageStatus {
   loading,
   idle,
