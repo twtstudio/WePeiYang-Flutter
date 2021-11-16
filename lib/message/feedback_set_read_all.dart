@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
-
-import 'message_service.dart';
+import 'package:we_pei_yang_flutter/message/message_service.dart';
 
 class FeedbackReadAllButton extends StatefulWidget {
   const FeedbackReadAllButton({Key key}) : super(key: key);
@@ -38,55 +38,54 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
 
 final _hintStyle = FontManager.YaQiHei.copyWith(
     fontSize: 15,
-    color: Color.fromRGBO(98, 103, 123, 1),
+    color: ColorUtil.boldTextColor,
     fontWeight: FontWeight.bold,
     decoration: TextDecoration.none);
 
 class ReadAllDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: 120,
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(S.current.feedback_set_all_read,
-                  textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context, false),
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
-                  ),
+    return Container(
+      height: 120,
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color.fromRGBO(237, 240, 244, 1)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+            child: Text(S.current.feedback_set_all_read,
+                textAlign: TextAlign.center,
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Color.fromRGBO(79, 88, 107, 1),
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    decoration: TextDecoration.none)),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pop(context, false),
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Text(S.current.cancel, style: _hintStyle),
                 ),
-                Container(width: 30),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context, true),
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
+              ),
+              SizedBox(width: 30),
+              GestureDetector(
+                onTap: () => Navigator.pop(context, true),
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Text(S.current.ok, style: _hintStyle),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

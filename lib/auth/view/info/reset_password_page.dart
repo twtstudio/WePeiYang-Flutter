@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -78,11 +79,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            SizedBox(height: 20),
             Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(S.current.password1, style: titleStyle)),
+            SizedBox(height: 15),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -97,7 +100,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                      contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -110,11 +113,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
             Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(S.current.password2, style: titleStyle)),
+            SizedBox(height: 15),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -129,7 +134,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                      contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -142,11 +147,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
             Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(S.current.password3, style: titleStyle)),
+            SizedBox(height: 15),
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: 55,
@@ -161,7 +168,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       filled: true,
                       fillColor: Color.fromRGBO(235, 238, 243, 1),
                       isCollapsed: true,
-                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                      contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none)),
@@ -170,8 +177,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 ),
               ),
             ),
+            SizedBox(height: 15),
             Padding(
-              padding: EdgeInsets.fromLTRB(30, 15, 30, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: GestureDetector(
                 child: Text(S.current.forget_password,
                     style: FontManager.YaHeiRegular.copyWith(
@@ -182,17 +190,25 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             Container(
                 height: 50,
                 width: 400,
-                margin: EdgeInsets.fromLTRB(30, 20, 30, 0),
-                child: RaisedButton(
+                margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                child: ElevatedButton(
                   onPressed: _reset,
-                  color: Color.fromRGBO(53, 59, 84, 1),
-                  splashColor: Color.fromRGBO(103, 110, 150, 1),
                   child: Text(S.current.reset_ok,
                       style: FontManager.YaHeiRegular.copyWith(
                           color: Colors.white, fontSize: 13)),
-                  elevation: 5.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(5),
+                    overlayColor:
+                        MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Color.fromRGBO(103, 110, 150, 1);
+                      return Color.fromRGBO(53, 59, 84, 1);
+                    }),
+                    backgroundColor: MaterialStateProperty.all(
+                        Color.fromRGBO(53, 59, 84, 1)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                  ),
                 )),
           ],
         ),

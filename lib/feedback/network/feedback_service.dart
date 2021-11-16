@@ -1,14 +1,14 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 class FeedbackDio extends DioAbstract {
   // @override
@@ -96,13 +96,15 @@ class FeedbackService with AsyncTimer {
       @required void Function(List<Post> list, int totalPage) onSuccess,
       @required OnFailure onFailure}) async {
     try {
+      var pref = CommonPreferences();
       var response = await feedbackDio.get(
         'question/search',
         queryParameters: {
+          'searchType': pref.feedbackSearchType.value,
           'searchString': keyword ?? '',
           'tagList': '[$tagId]',
           'limits': '20',
-          'token': CommonPreferences().feedbackToken.value,
+          'token': pref.feedbackToken.value,
           'page': '$page',
         },
       );
@@ -330,6 +332,7 @@ class FeedbackService with AsyncTimer {
       {@required title,
       @required content,
       @required tagId,
+      @required campus,
       @required List<File> imgList,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
@@ -341,9 +344,10 @@ class FeedbackService with AsyncTimer {
               'name': title,
               'description': content,
               'tagList': '[$tagId]',
-              'campus': 0,
+              'campus': campus,
             }));
         if (imgList.isNotEmpty) {
+          // TODO 这里之后改成一起调用吧，一个个上传太慢了
           for (int index = 0; index < imgList.length; index++) {
             var data = FormData.fromMap({
               'token': CommonPreferences().feedbackToken.value,
@@ -398,6 +402,28 @@ class FeedbackService with AsyncTimer {
           formData: FormData.fromMap({
             'token': CommonPreferences().feedbackToken.value,
             'question_id': id,
+          }),
+        );
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static reportQuestion(
+      {@required id,
+        @required reason,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('reportQuestion', () async {
+      try {
+        await feedbackDio.post(
+          'question/complain',
+          formData: FormData.fromMap({
+            'token': CommonPreferences().feedbackToken.value,
+            'question_id': id,
+            'reason': reason,
           }),
         );
         onSuccess?.call();

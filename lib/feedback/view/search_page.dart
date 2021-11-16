@@ -22,24 +22,24 @@ class _SearchPageState extends State<SearchPage> {
   ValueNotifier<List<String>> _searchHistoryList;
   SharedPreferences _prefs;
 
-  _addHistory(){
+  _addHistory() {
     _prefs.setStringList('feedback_search_history', _searchHistoryList.value);
   }
 
   @override
   void initState() {
-    _searchHistoryList =
-        ValueNotifier([])
-          ..addListener(() {
-            _addHistory();
-          });
+    _searchHistoryList = ValueNotifier([])
+      ..addListener(() {
+        _addHistory();
+      });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _prefs = await SharedPreferences.getInstance();
       if (_prefs.getStringList('feedback_search_history') == null) {
         _addHistory();
       } else {
-        _searchHistoryList.value = _prefs.getStringList('feedback_search_history');
+        _searchHistoryList.value =
+            _prefs.getStringList('feedback_search_history');
       }
     });
     super.initState();
@@ -159,7 +159,7 @@ class _SearchPageState extends State<SearchPage> {
           shrinkWrap: true,
           itemBuilder: (_, index) {
             var searchArgument = SearchResultPageArgs(
-              list[index],
+              list[list.length - index - 1],
               '',
               S.current.feedback_search_result,
             );
@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
                   Navigator.pop(context);
                 });
               },
-              child: historyItem(list[index]),
+              child: historyItem(list[list.length - index - 1]),
             );
           },
           physics: NeverScrollableScrollPhysics(),
@@ -245,16 +245,18 @@ class _SearchPageState extends State<SearchPage> {
         return AlertDialog(
           title: Text(S.current.feedback_clear_history),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(S.current.feedback_cancel),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(S.current.feedback_ok),
               onPressed: () {
-                _searchHistoryList.clear();
+                _searchHistoryList.value.clear();
+                _addHistory();
+                setState(() {});
                 Navigator.pop(context);
               },
             ),

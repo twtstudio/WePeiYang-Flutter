@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Color, Colors;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 
@@ -23,7 +23,6 @@ class ToastProvider with AsyncTimer {
   }
 
   static error(String msg, {ToastGravity gravity = ToastGravity.BOTTOM}) {
-    print("msg $msg");
     AsyncTimer.runRepeatChecked(msg, () async {
       print('ToastProvider error: $msg');
       await Fluttertoast.showToast(

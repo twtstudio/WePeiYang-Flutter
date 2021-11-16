@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/home/model/home_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -96,40 +97,45 @@ class _TjuBindPageState extends State<TjuBindPage> {
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     if (pref.isBindTju.value)
       return Column(children: [
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(0, 50, 0, 60),
-          child: Text("${S.current.bind_account}: ${pref.tjuuname.value}",
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Color.fromRGBO(79, 88, 107, 1))),
-        ),
-        Container(
+        SizedBox(height: 50),
+        Text("${S.current.bind_account}: ${pref.tjuuname.value}",
+            style: FontManager.YaHeiRegular.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Color.fromRGBO(79, 88, 107, 1))),
+        SizedBox(height: 60),
+        SizedBox(
           height: 50,
           width: 120,
-          child: RaisedButton(
+          child: ElevatedButton(
             onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: true,
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
-            color: Color.fromRGBO(79, 88, 107, 1),
-            splashColor: MyColors.brightBlue,
             child: Text(S.current.unbind,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Colors.white, fontSize: 13)),
-            elevation: 3.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(3),
+              overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+                if (states.contains(MaterialState.pressed))
+                  return MyColors.brightBlue;
+                return Color.fromRGBO(79, 88, 107, 1);
+              }),
+              backgroundColor:
+                  MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30))),
+            ),
           ),
         ),
       ]);
     else {
       return Column(children: [
-        Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(60, 20, 60, 10),
+        SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 60),
           child: Text(
             S.current.tju_bind_hint,
             textAlign: TextAlign.center,
@@ -137,8 +143,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
           ),
         ),
+        SizedBox(height: 30),
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: 55,
@@ -169,8 +176,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
           ),
         ),
+        SizedBox(height: 20),
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: 55,
@@ -198,8 +206,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
           ),
         ),
+        SizedBox(height: 20),
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 20, 30, 35),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
             children: [
               Expanded(
@@ -223,27 +232,33 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 ),
               ),
               SizedBox(width: 20),
-              SizedBox(
-                  height: 55,
-                  width: 120,
-                  child: captchaWidget)
+              SizedBox(height: 55, width: 120, child: captchaWidget)
             ],
           ),
         ),
+        SizedBox(height: 35),
         Container(
-            height: 50.0,
-            width: 400.0,
-            padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-            child: RaisedButton(
+            height: 50,
+            width: 400,
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: ElevatedButton(
               onPressed: _bind,
-              color: Color.fromRGBO(53, 59, 84, 1.0),
-              splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text(S.current.bind,
                   style: FontManager.YaHeiRegular.copyWith(
                       color: Colors.white, fontSize: 13)),
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(5),
+                overlayColor:
+                    MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.pressed))
+                    return Color.fromRGBO(103, 110, 150, 1);
+                  return Color.fromRGBO(53, 59, 84, 1);
+                }),
+                backgroundColor:
+                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30))),
+              ),
             )),
       ]);
     }
@@ -261,7 +276,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
@@ -278,42 +293,32 @@ class _TjuBindPageState extends State<TjuBindPage> {
                           fontWeight: FontWeight.bold,
                           fontSize: 28)),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
-                      child: Text(
-                          pref.isBindTju.value
-                              ? S.current.is_bind
-                              : S.current.not_bind,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ],
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
+                  child: Text(
+                      pref.isBindTju.value
+                          ? S.current.is_bind
+                          : S.current.not_bind,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
 
-            /// 已绑定/未绑定时三个图标的高度不一样，所以加个container控制一下
-            Container(height: pref.isBindTju.value ? 20 : 1),
+            /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
+            SizedBox(height: pref.isBindTju.value ? 20 : 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                    height: 50,
-                    width: 50,
-                    child: Image.asset('assets/images/tju_work.png')),
-                Container(
-                    height: 25,
-                    width: 25,
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Image.asset('assets/images/bind.png')),
-                Container(
-                    height: 50,
-                    width: 50,
-                    child: Image.asset('assets/images/twt_round.png')),
+                Image.asset('assets/images/tju_work.png',
+                    height: 50, width: 50),
+                SizedBox(width: 20),
+                Image.asset('assets/images/bind.png', height: 25, width: 25),
+                SizedBox(width: 20),
+                Image.asset('assets/images/twt_round.png',
+                    height: 50, width: 50),
               ],
             ),
             _detail(context, pref)
@@ -343,9 +348,9 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
 
   @override
   void initState() {
+    super.initState();
     index = GlobalModel().captchaIndex;
     GlobalModel().increase();
-    super.initState();
   }
 
   @override

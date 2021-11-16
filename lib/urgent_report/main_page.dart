@@ -1,15 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
-
+import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:location_permissions/location_permissions.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -59,29 +57,23 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   _toReportPage() {
     _page = _Page.report;
-    _action = FlatButton(
-      minWidth: 40,
+    _action = IconButton(
       onPressed: () => setState(() {
         _toListPage();
       }),
-      child: Icon(
-        Icons.list,
-        color: Colors.white,
-      ),
+      iconSize: 40,
+      icon: Icon(Icons.list, color: Colors.white),
     );
   }
 
   _toListPage() {
     _page = _Page.list;
-    _action = FlatButton(
-      minWidth: 40,
+    _action = IconButton(
       onPressed: () => setState(() {
         _toReportPage();
       }),
-      child: Icon(
-        Icons.add,
-        color: Colors.white,
-      ),
+      iconSize: 40,
+      icon: Icon(Icons.add, color: Colors.white),
     );
   }
 
@@ -206,9 +198,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
                   return Center(
                     child: Text(
                       '当前无填报记录，请新建填报记录',
-                      style: TextStyle(
-                        color: Color(0xff63677b),
-                      ),
+                      style: TextStyle(color: Color(0xff63677b)),
                     ),
                   );
                 } else {
@@ -267,7 +257,7 @@ class _ReportResultDialog extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Color(0xfffbfbfb),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -280,12 +270,10 @@ class _ReportResultDialog extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [leftButton, rightButton],
-                  ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [leftButton, rightButton],
                 )
               ],
             ),
@@ -295,7 +283,7 @@ class _ReportResultDialog extends StatelessWidget {
     );
   }
 
-  Widget _button(String name, int popType, BuildContext c) => FlatButton(
+  Widget _button(String name, int popType, BuildContext c) => TextButton(
         onPressed: () {
           Navigator.pop(c, popType);
         },
@@ -356,18 +344,16 @@ class _ReportListItem extends StatelessWidget {
         avoidOverflow;
     var datetimeLeftPadding = informColumnLeftPadding;
 
-    var backgroundDatetime = Align(
+    var backgroundDatetime = Container(
       alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.only(left: datetimeLeftPadding),
-        child: Text(
-          monthAndDay,
-          maxLines: 1,
-          style: FontManager.Gilroy.copyWith(
-              color: Color(0xffD9DEEA),
-              fontWeight: FontWeight.w800,
-              fontSize: 60),
-        ),
+      padding: EdgeInsets.only(left: datetimeLeftPadding),
+      child: Text(
+        monthAndDay,
+        maxLines: 1,
+        style: FontManager.Gilroy.copyWith(
+            color: Color(0xffD9DEEA),
+            fontWeight: FontWeight.w800,
+            fontSize: 60),
       ),
     );
 
@@ -442,10 +428,7 @@ class _ReportListItem extends StatelessWidget {
     var surfaceInformation = Align(
       alignment: Alignment.center,
       child: DefaultTextStyle(
-        style: TextStyle(
-          color: Color(0xff63677b),
-          fontSize: 11,
-        ),
+        style: TextStyle(color: Color(0xff63677b), fontSize: 11),
         child: Padding(
           padding: EdgeInsets.only(
             left: informColumnLeftPadding,
@@ -468,9 +451,9 @@ class _ReportListItem extends StatelessWidget {
       child: Card(
         elevation: 0.2,
         margin: EdgeInsets.zero,
+        child: textStack,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        child: textStack,
       ),
     );
   }
@@ -480,18 +463,13 @@ class _ReportListItem extends StatelessWidget {
         width: w,
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(
-            Radius.circular(30 / 2),
-          ),
+          borderRadius: BorderRadius.circular(30 / 2),
           color: c,
         ),
         child: Center(
           child: Text(
             name,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.white,
-            ),
+            style: TextStyle(fontSize: 10, color: Colors.white),
           ),
         ),
       );
@@ -546,22 +524,19 @@ class _TodayTempState extends State<TodayTemp> {
       part: ReportPart.temperature,
       builder: (_, backgroundColor, __) => Container(
         color: backgroundColor,
-        padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+        padding: const EdgeInsets.only(top: 40, bottom: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "今日体温",
-              style: TextStyle(
-                color: Color(0xff63677b),
-                fontSize: 13,
-              ),
+              style: TextStyle(color: Color(0xff63677b), fontSize: 13),
             ),
             SizedBox(width: 15),
             Container(
               width: textFieldWidth,
-              padding: EdgeInsets.only(bottom: 5),
+              padding: const EdgeInsets.only(bottom: 5),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -592,7 +567,7 @@ class _TodayTempState extends State<TodayTemp> {
                       onChanged: (result) => _reportTemperature(),
                     ),
                   ),
-                  Container(width: 3),
+                  SizedBox(width: 3),
                   Text(
                     "℃",
                     style: FontManager.YaHeiRegular.copyWith(
@@ -610,8 +585,8 @@ class _TodayTempState extends State<TodayTemp> {
   }
 }
 
-//https://blog.csdn.net/oZhuiMeng123/article/details/105123273/
-// 限制小数位数
+/// https://blog.csdn.net/oZhuiMeng123/article/details/105123273/
+/// 限制小数位数
 class _MyNumberTextInputFormatter extends TextInputFormatter {
   static const defaultDouble = 0.1;
 
@@ -748,15 +723,12 @@ class _PickImageState extends State<PickImage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
+          height: 50,
           alignment: Alignment.center,
           child: Text(
             '上传${widget.image.name}',
-            style: TextStyle(
-              fontSize: 13,
-              color: Color(0xff63677b),
-            ),
+            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
           ),
-          height: 50,
         ),
         GestureDetector(
           onTap: () {
@@ -772,14 +744,11 @@ class _PickImageState extends State<PickImage> {
               : DottedBorder(
                   borderType: BorderType.Rect,
                   color: Color(0xffd0d1d6),
-                  child: Container(
+                  child: SizedBox(
                     width: imageWidth,
                     height: imageWidth,
-                    child: Icon(
-                      Icons.add_circle,
-                      size: 40,
-                      color: Color(0xffd0d1d6),
-                    ),
+                    child: Icon(Icons.add_circle,
+                        size: 40, color: Color(0xffd0d1d6)),
                   ),
                 ),
         ),
@@ -900,7 +869,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     var placeWidth = MediaQuery.of(context).size.width * 0.72;
 
     Widget placeText = Container(
-      padding: EdgeInsets.only(left: 4, top: 15),
+      padding: const EdgeInsets.only(left: 4, top: 15),
       width: placeWidth,
       child: TextField(
           controller: _controller,
@@ -931,10 +900,13 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           }),
     );
 
-    var chosePlaceButton = RaisedButton(
-      elevation: 0,
-      padding: EdgeInsets.zero,
+    var chosePlaceButton = ElevatedButton(
       onPressed: _checkLocationPermissions,
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all(0),
+        padding: MaterialStateProperty.all(EdgeInsets.zero),
+        backgroundColor: MaterialStateProperty.all(Colors.transparent),
+      ),
       child: Row(
         children: [
           Text(
@@ -944,18 +916,17 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           Icon(Icons.chevron_right, size: 20, color: Color(0xff63677b)),
         ],
       ),
-      color: Colors.transparent,
     );
 
     return Padding(
-      padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+      padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(width: 10),
           Padding(
-            padding: const EdgeInsets.only(top: 15.0, right: 3),
+            padding: const EdgeInsets.only(top: 15, right: 3),
             child: Icon(Icons.place, size: 20, color: Color(0xff63677b)),
           ),
           Column(
@@ -1079,10 +1050,7 @@ class StateItem extends StatelessWidget {
                 color: Color(0XFF62677B))
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(12.5),
-                border: Border.all(
-                  color: Color(0XFF62677B),
-                  width: 1,
-                )),
+                border: Border.all(color: Color(0XFF62677B), width: 1)),
         child: Center(
           child: Text(
             state.name,
@@ -1107,32 +1075,29 @@ class ReportButton extends StatefulWidget {
 }
 
 class _ReportButtonState extends State<ReportButton> {
-  final height = 50.0;
-  final width = 90.0;
+  static const height = 50.0;
+  static const width = 90.0;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0),
+      padding: const EdgeInsets.only(top: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FlatButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(height / 2)),
+          ElevatedButton(
             onPressed: widget.onTap,
-            color: Color(0XFF62677B),
-            height: height,
-            minWidth: width,
             child: Center(
               child: Text(
                 '提交',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.white),
               ),
             ),
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(height / 2))),
+                backgroundColor: MaterialStateProperty.all(Color(0XFF62677B)),
+                minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
         ],
       ),

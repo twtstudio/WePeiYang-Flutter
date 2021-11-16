@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override
@@ -31,8 +32,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  FocusNode _pwInput1 = FocusNode();
-  FocusNode _pwInput2 = FocusNode();
+  final FocusNode _pwInput1 = FocusNode();
+  final FocusNode _pwInput2 = FocusNode();
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
@@ -54,16 +55,16 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text(S.current.find_password_title,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -78,7 +79,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -91,8 +92,9 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -106,7 +108,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -115,7 +117,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
               ),
             ),
           ),
-          Expanded(child: Text("")),
+          Spacer(),
           Container(
             height: 50,
             alignment: Alignment.bottomRight,

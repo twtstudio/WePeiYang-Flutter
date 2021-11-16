@@ -1,16 +1,16 @@
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart'
-    show GPACurve;
+
 import 'package:we_pei_yang_flutter/main.dart';
-import '../model/gpa_model.dart';
-import '../model/gpa_notifier.dart';
-import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -154,28 +154,26 @@ class _RadarChartState extends State<RadarChartWidget> {
     if (_list.length < 3)
       return Container(
         height: 350,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 65),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
-                child: Icon(Icons.assessment,
-                    size: 150, color: widget.gpaColors[2]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Text(
-                    "Radar & Rose chart is not available with semesters of less than three courses.",
-                    style: FontManager.Texta.copyWith(
-                        color: widget.gpaColors[2], fontSize: 13)),
-              )
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: 65),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
+              child:
+                  Icon(Icons.assessment, size: 150, color: widget.gpaColors[2]),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Text(
+                  "Radar & Rose chart is not available with semesters of less than three courses.",
+                  style: FontManager.Texta.copyWith(
+                      color: widget.gpaColors[2], fontSize: 13)),
+            )
+          ],
         ),
       );
     else
-      return Container(
+      return SizedBox(
         height: 350,
         child: CustomPaint(
           painter: _RadarChartPainter(_list, widget.gpaColors),
@@ -358,17 +356,15 @@ class _RadarChartPainter extends CustomPainter {
 
 class GPAStatsWidget extends StatelessWidget {
   final GPANotifier notifier;
-  final List<Color> gpaColors;
+  static var textStyle;
+  static var numStyle;
 
-  GPAStatsWidget(this.notifier, this.gpaColors) {
+  GPAStatsWidget(this.notifier, List<Color> gpaColors) {
     textStyle = FontManager.Aspira.copyWith(
         color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13);
     numStyle = FontManager.Montserrat.copyWith(
         color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
   }
-
-  static var textStyle;
-  static var numStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -381,7 +377,7 @@ class GPAStatsWidget extends StatelessWidget {
       credits = notifier.currentDataWithNotify[2].toString();
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+      padding: const EdgeInsets.all(30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -395,30 +391,24 @@ class GPAStatsWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text('Weighted', style: textStyle),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(weighted, style: numStyle),
-                )
+                SizedBox(height: 8),
+                Text(weighted, style: numStyle)
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 6), // 加点padding让gpa尽量居中
-            child: InkResponse(
-              onTap: () => notifier.typeWithNotify = 1,
-              radius: 45,
-              splashFactory: InkRipple.splashFactory,
-              child: Column(
-                children: <Widget>[
-                  Text('GPA', style: textStyle),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(gpa, style: numStyle),
-                  )
-                ],
-              ),
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 1,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('GPA', style: textStyle),
+                SizedBox(height: 8),
+                Text(gpa, style: numStyle)
+              ],
             ),
           ),
+          SizedBox(width: 6),
           InkResponse(
             onTap: () => notifier.typeWithNotify = 2,
             radius: 45,
@@ -426,10 +416,8 @@ class GPAStatsWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text('Credits', style: textStyle),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(credits, style: numStyle),
-                )
+                SizedBox(height: 8),
+                Text(credits, style: numStyle)
               ],
             ),
           ),
@@ -480,14 +468,14 @@ class _CourseListState extends State<CourseListWidget> {
                               fontWeight: FontWeight.bold))
                     ]))),
           ),
-          Container(
+          SizedBox(
             height: cardHeight * courses.length,
             child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: courses.length,
                 itemBuilder: (context, i) => Container(
                       height: cardHeight,
-                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
+                      padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
                       child: Card(
                         color: widget.gpaColors[3],
                         elevation: 0,
@@ -498,11 +486,10 @@ class _CourseListState extends State<CourseListWidget> {
                           borderRadius: BorderRadius.circular(12),
                           child: Row(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(15, 0, 10, 0),
-                                child: Icon(Icons.assignment_turned_in,
-                                    color: widget.gpaColors[2], size: 25),
-                              ),
+                              SizedBox(width: 15),
+                              Icon(Icons.assignment_turned_in,
+                                  color: widget.gpaColors[2], size: 25),
+                              SizedBox(width: 10),
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -515,9 +502,9 @@ class _CourseListState extends State<CourseListWidget> {
                                                   fontSize: 14,
                                                   color: widget.gpaColors[1])),
                                     ),
+                                    SizedBox(height: 2),
                                     Container(
                                       alignment: Alignment.centerLeft,
-                                      padding: const EdgeInsets.only(top: 2),
                                       child: Text(
                                           "${courses[i].classType} / ${courses[i].credit} Credits",
                                           style:
@@ -528,14 +515,13 @@ class _CourseListState extends State<CourseListWidget> {
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10, right: 18),
-                                child: Text('${courses[i].score.round()}',
-                                    style: FontManager.Montserrat.copyWith(
-                                        fontSize: 26,
-                                        color: widget.gpaColors[1],
-                                        fontWeight: FontWeight.bold)),
-                              )
+                              SizedBox(width: 10),
+                              Text('${courses[i].score.round()}',
+                                  style: FontManager.Montserrat.copyWith(
+                                      fontSize: 26,
+                                      color: widget.gpaColors[1],
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(width: 18)
                             ],
                           ),
                         ),

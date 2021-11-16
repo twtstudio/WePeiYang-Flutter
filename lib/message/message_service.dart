@@ -1,13 +1,13 @@
-import 'dart:convert';
-
+import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show compute;
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
@@ -90,9 +90,8 @@ class MessageDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
 
-  @override
-
   /// 这里不能改，因为下面手动解析的字符串
+  @override
   ResponseType responseType = ResponseType.plain;
 }
 

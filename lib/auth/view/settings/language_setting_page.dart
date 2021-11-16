@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LanguageSettingPage extends StatelessWidget {
-  Widget _judgeLanguage(String value) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 22),
-      child: Icon(
-        Icons.check,
-      ),
-    );
-  }
+  Widget _judgeLanguage(String value) => Padding(
+        padding: const EdgeInsets.only(right: 22),
+        child: Icon(Icons.check),
+      );
 
   @override
   Widget build(BuildContext context) {
     var hintTextStyle = FontManager.YaHeiRegular.copyWith(
         fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
     var mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 18.0,
+      fontSize: 18,
       color: Color.fromRGBO(98, 103, 122, 1),
     );
     return Scaffold(
@@ -32,7 +29,7 @@ class LanguageSettingPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -58,10 +55,11 @@ class LanguageSettingPage extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: model.localeValueList.length,
-              itemBuilder: (_, index) => Container(
+              itemBuilder: (_, index) => SizedBox(
                 height: 80,
                 child: Card(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(9)),
@@ -76,19 +74,19 @@ class LanguageSettingPage extends StatelessWidget {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Container(
+                              SizedBox(
                                   width: 150,
                                   child: Text(LocaleModel.localeName(index),
                                       style: mainTextStyle)),
-                              Container(
+                              SizedBox(height: 3),
+                              SizedBox(
                                   width: 150,
                                   height: 20,
                                   child: Text(LocaleModel.localeName(index),
-                                      style: hintTextStyle),
-                                  padding: const EdgeInsets.only(top: 3))
+                                      style: hintTextStyle))
                             ],
                           ),
-                          Expanded(child: Container()),
+                          Spacer(),
                           if (CommonPreferences().language.value == index)
                             _judgeLanguage(LocaleModel.localeName(index))
                         ],

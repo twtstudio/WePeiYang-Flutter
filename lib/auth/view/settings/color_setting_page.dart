@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ColorSettingPage extends StatefulWidget {
   @override
@@ -56,7 +56,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     fontSize: 28)),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(35, 20, 35, 20),
+            margin: const EdgeInsets.fromLTRB(35, 20, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_color_hint,
                 style: FontManager.YaHeiRegular.copyWith(
@@ -67,10 +67,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             alignment: Alignment.centerLeft,
             child: Text('GPA', style: titleTextStyle),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               color: Color.fromRGBO(127, 139, 89, 1),
               shape: RoundedRectangleBorder(
@@ -86,10 +86,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                       child: getText("#7f8b59", Colors.white, 'green', 0))),
             ),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(238, 237, 237, 1),
                 shape: RoundedRectangleBorder(
@@ -105,10 +105,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child: getText("#9d7b83",
                             Color.fromRGBO(157, 123, 131, 1), 'light', 0)))),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(173, 141, 146, 1),
                 shape: RoundedRectangleBorder(
@@ -124,10 +124,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child: getText("#ad8d92",
                             Color.fromRGBO(247, 247, 248, 1), 'pink', 0)))),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(71, 83, 95, 1),
                 shape: RoundedRectangleBorder(
@@ -148,10 +148,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             alignment: Alignment.centerLeft,
             child: Text(S.current.schedule, style: titleTextStyle),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(113, 118, 137, 1),
                 shape: RoundedRectangleBorder(
@@ -167,10 +167,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child:
                             getText("blue ashes", Colors.white, 'blue', 1)))),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(83, 89, 78, 1),
                 shape: RoundedRectangleBorder(
@@ -186,10 +186,10 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child:
                             getText("sap green", Colors.white, 'green', 1)))),
           ),
-          Container(
+          SizedBox(
             height: 75,
             child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
                 color: Color.fromRGBO(196, 148, 125, 1),
                 shape: RoundedRectangleBorder(
@@ -205,7 +205,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child: getText(
                             "earth yellow", Colors.white, 'brown', 1)))),
           ),
-          Container(height: 40)
+          SizedBox(height: 40)
         ],
       ),
     );

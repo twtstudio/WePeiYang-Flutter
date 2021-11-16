@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart' show required, BuildContext;
+import 'package:flutter/services.dart' show EventChannel;
 import 'package:we_pei_yang_flutter/commons/update/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -28,9 +27,7 @@ class UpdatePrompter {
   }
 
   Future<void> onUpdate() async {
-    if (Platform.isIOS) {
-      return;
-    }
+    if (Platform.isIOS) return;
     _dialog.update(0);
     var arguments = {
       'url': updateEntity.path,
@@ -44,13 +41,11 @@ class UpdatePrompter {
         ToastProvider.error("下载失败");
         _dialog.dismiss();
       },
-      onDone: (){
+      onDone: () {
         _dialog.dismiss();
       },
       cancelOnError: true,
     );
-
-
   }
 
   Future<void> onInstall() async {
@@ -65,7 +60,7 @@ class UpdatePrompter {
         ToastProvider.error("安装失败");
         _dialog.dismiss();
       },
-      onDone: (){
+      onDone: () {
         _dialog.dismiss();
       },
       cancelOnError: true,

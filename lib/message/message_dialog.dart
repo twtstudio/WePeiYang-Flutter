@@ -9,18 +9,15 @@ class MessageDialog extends Dialog {
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              shape: BoxShape.rectangle,
-              color: Colors.white),
-          height: 200,
-          width: 200,
-          child: Center(
-            child: Text(data),
-          ),
-        ),
+      child: Container(
+        height: 200,
+        width: 200,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.rectangle,
+            color: Colors.white),
+        child: Center(child: Text(data)),
       ),
     );
   }

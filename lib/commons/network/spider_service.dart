@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required, BuildContext;
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart'
     show OnSuccess, OnFailure;
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
 /// 这里出现一个分支：辅修生最后获取classes.tju.edu的cookie的时候，不会返回semester.id和ids
@@ -87,7 +88,7 @@ Future<Response<dynamic>> fetch(String url,
     if (cookieTmp != "") cookieTmp += '; ';
     cookieTmp += string;
   });
-  BaseOptions options = BaseOptions(
+  var options = BaseOptions(
       connectTimeout: 10000,
       receiveTimeout: 10000,
       headers: {"Cookie": cookieTmp});

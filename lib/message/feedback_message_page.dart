@@ -1,17 +1,18 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:simple_html_css/simple_html_css.dart';
+
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
-import 'package:simple_html_css/simple_html_css.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-
-import 'message_service.dart';
-import 'message_provider.dart';
+import 'package:we_pei_yang_flutter/message/message_service.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 enum MessageType {
   favor,
@@ -63,7 +64,8 @@ class FeedbackMessagePage extends StatefulWidget {
   _FeedbackMessagePageState createState() => _FeedbackMessagePageState();
 }
 
-class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
+class _FeedbackMessagePageState extends State<FeedbackMessagePage>
+    with TickerProviderStateMixin {
   final List<MessageType> types = MessageType.values;
 
   TabController _tabController;
@@ -74,8 +76,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-        length: types.length, vsync: ScrollableState(), initialIndex: 2);
+    _tabController =
+        TabController(length: types.length, vsync: this, initialIndex: 2);
   }
 
   onRefresh() {
@@ -90,30 +92,27 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 30,
             brightness: Brightness.light,
+            backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text(
               S.current.feedback_message,
-              style: TextStyle(
-                color: Color(0xff303c66),
-                fontSize: 16,
+              style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: ColorUtil.boldTextColor,
               ),
             ),
-            leading: FlatButton(
-              padding: EdgeInsets.all(0),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: 25, color: Color(0XFF62677B)),
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Icon(
-                Icons.arrow_back,
-                size: 25,
-                color: Color(0XFF62677B),
-              ),
             ),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -133,14 +132,13 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
                       color: Color(0xff303c66),
                     ),
                   ),
-                  labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 10),
                   isScrollable: true,
                   labelColor: Colors.red,
                   unselectedLabelColor: Colors.black,
                 ),
               ),
             ),
-            backgroundColor: Colors.transparent,
           ),
         ),
       ),
@@ -191,7 +189,7 @@ class _MessageTabState extends State<MessageTab> {
     );
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Consumer<MessageProvider>(builder: (_, model, __) {
         var count = widget.type.getMessageCount(model);
         if (count.isZero) {
@@ -199,14 +197,11 @@ class _MessageTabState extends State<MessageTab> {
         } else {
           return Center(
             child: Badge(
+              child: tab,
               badgeContent: Text(
                 count.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 7,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 7),
               ),
-              child: tab,
             ),
           );
         }
@@ -215,7 +210,6 @@ class _MessageTabState extends State<MessageTab> {
   }
 }
 
-// ignore: must_be_immutable
 class MessagesList extends StatefulWidget {
   final MessageType type;
 
@@ -357,8 +351,8 @@ class _MessagesListState extends State<MessagesList>
           } else {
             body = Text(S.current.no_more_data);
           }
-          return Container(
-            height: 55.0,
+          return SizedBox(
+            height: 55,
             child: Center(child: body),
           );
         },
@@ -393,10 +387,7 @@ class MessageItem extends StatelessWidget {
           child: Center(
             child: Text(
               "${data.comment.adminName ?? S.current.unknown_department}",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 10),
             ),
           ),
           decoration: BoxDecoration(
@@ -412,10 +403,7 @@ class MessageItem extends StatelessWidget {
             SizedBox(width: 10),
             Text(
               "${data.comment?.userName ?? S.current.anonymous_user}",
-              style: TextStyle(
-                color: Color(0xff434650),
-                fontSize: 9,
-              ),
+              style: TextStyle(color: Color(0xff434650), fontSize: 9),
             ),
           ],
         );
@@ -425,24 +413,16 @@ class MessageItem extends StatelessWidget {
       children: [
         sender,
         Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             type.action,
-            style: TextStyle(
-              color: Color(0xff434650),
-              fontSize: 9,
-            ),
+            style: TextStyle(color: Color(0xff434650), fontSize: 9),
           ),
         ),
-        Expanded(child: SizedBox()),
+        Spacer(),
         Text(
           data.updatedAt?.time ?? "",
-          style: TextStyle(
-            color: Color(0xffb1b2be),
-            fontSize: 9,
-          ),
+          style: TextStyle(color: Color(0xffb1b2be), fontSize: 9),
         ),
       ],
     );
@@ -456,12 +436,12 @@ class MessageItem extends StatelessWidget {
           BoxShadow(
               blurRadius: 5,
               color: Color.fromARGB(64, 236, 237, 239),
-              offset: Offset(0, 0),
+              offset: Offset.zero,
               spreadRadius: 3),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -482,7 +462,7 @@ class MessageItem extends StatelessWidget {
                 ),
                 if (data.post.topImgUrl != null)
                   Padding(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Image.network(
                       data.post.topImgUrl,
                       fit: BoxFit.cover,
@@ -493,11 +473,7 @@ class MessageItem extends StatelessWidget {
               ],
             ),
             if (data.comment != null)
-              Divider(
-                thickness: 1,
-                height: 15,
-                color: Color(0xffacaeba),
-              ),
+              Divider(thickness: 1, height: 15, color: Color(0xffacaeba)),
             if (data.comment != null)
               RichText(
                 overflow: TextOverflow.ellipsis,
@@ -508,54 +484,39 @@ class MessageItem extends StatelessWidget {
                       fontSize: 13,
                     )),
               ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/images/account/comment.png",
-                    height: 20,
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Image.asset("assets/images/account/comment.png", height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 10),
+                  child: Text(
+                    data.post.commentCount.toString(),
+                    style: TextStyle(fontSize: 10, color: Color(0xffb1b2be)),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8, right: 10),
-                    child: Text(
-                      data.post.commentCount.toString(),
+                ),
+                Image.asset("assets/images/account/thumb_up.png", height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 10),
+                  child: Text(
+                    data.post.likeCount.toString(),
+                    style: TextStyle(fontSize: 10, color: Color(0xffb1b2be)),
+                  ),
+                ),
+                Spacer(),
+                Builder(
+                  builder: (_) {
+                    var isSolved = data.post.isSolved == 1;
+                    return Text(
+                      isSolved ? S.current.have_replied : S.current.not_reply,
                       style: TextStyle(
-                        fontSize: 10,
-                        color: Color(0xffb1b2be),
-                      ),
-                    ),
-                  ),
-                  Image.asset(
-                    "assets/images/account/thumb_up.png",
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8, right: 10),
-                    child: Text(
-                      data.post.likeCount.toString(),
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Color(0xffb1b2be),
-                      ),
-                    ),
-                  ),
-                  Expanded(child: SizedBox()),
-                  Builder(
-                    builder: (_) {
-                      var isSolved = data.post.isSolved == 1;
-                      return Text(
-                        isSolved ? S.current.have_replied : S.current.not_reply,
-                        style: TextStyle(
-                            color: isSolved
-                                ? Color(0xff434650)
-                                : Color(0xffb1b2be),
-                            fontSize: 10),
-                      );
-                    },
-                  )
-                ],
-              ),
+                          color:
+                              isSolved ? Color(0xff434650) : Color(0xffb1b2be),
+                          fontSize: 10),
+                    );
+                  },
+                )
+              ],
             )
           ],
         ),
@@ -565,23 +526,16 @@ class MessageItem extends StatelessWidget {
     Widget messageWrapper;
 
     if (data.visible == 1) {
-      // messageWrapper = ClipRect(
-      //   child: Banner(
-      //     message: "未读",
-      //     location: BannerLocation.topEnd,
-      //     child: questionItem,
-      //   ),
-      // );
       messageWrapper = Badge(
         position: BadgePosition.topEnd(end: -2, top: -14),
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         badgeContent: Text(""),
         child: questionItem,
       );
     }
 
     return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: GestureDetector(
         onTap: () async {
           await onTapDown?.call();
@@ -597,7 +551,7 @@ class MessageItem extends StatelessWidget {
           children: [
             title,
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: messageWrapper ?? questionItem,
             ),
           ],
@@ -619,7 +573,7 @@ extension StringExtension on String {
 
 class CustomIndicator extends Decoration {
   const CustomIndicator({
-    this.borderSide = const BorderSide(width: 2.0, color: Colors.white),
+    this.borderSide = const BorderSide(width: 2, color: Colors.white),
     this.insets = EdgeInsets.zero,
   })  : assert(borderSide != null),
         assert(insets != null);
@@ -691,7 +645,7 @@ class _UnderlinePainter extends BoxPainter {
     final TextDirection textDirection = configuration.textDirection;
     final Rect indicator = decoration
         ._indicatorRectFor(rect, textDirection)
-        .deflate(decoration.borderSide.width / 2.0);
+        .deflate(decoration.borderSide.width / 2);
     final Paint paint = decoration.borderSide.toPaint()
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(indicator.bottomLeft, indicator.bottomRight, paint);

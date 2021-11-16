@@ -129,7 +129,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
       ),
       title: Text(
         title,
-        style: TextStyle(
+        style: FontManager.YaHeiRegular.copyWith(
+          fontSize: 17,
           fontWeight: FontWeight.bold,
           color: ColorUtil.boldTextColor,
         ),

@@ -1,15 +1,13 @@
 import 'package:dio/dio.dart' show DioError;
 import 'package:flutter/material.dart' show required;
-import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart'
-    show OnResult, OnFailure;
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
-    show WpyDioError;
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
-void getGPABean({@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
+void getGPABean(
+    {@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
   /// 判断是否为硕士研究生
@@ -51,44 +49,49 @@ GPABean _data2GPABean(String data, bool isMaster) {
   if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
 
   /// 没评教赶快去评教啊喂
-  if (data.contains("就差一个评教的距离啦")) return null;
+  if (data.contains("就差一个评教的距离啦")) throw WpyDioError(error: "存在未评教的课程，请先前往评教");
 
-  /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
-  var totalData = isMaster
-      ? getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data)
-      : getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
+  /// 这里加一个try-catch捕获解析数据中抛出的异常（空指针之类的）
+  try {
+    /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
+    var totalData = isMaster
+        ? getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data)
+        : getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
 
-  List<double> thList = [];
-  getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
-      .forEach((e) => thList.add(double.parse(e)));
-  // 下标321是因为html数据的顺序和数据类的顺序不一样
-  var total = Total(thList[3], thList[2], thList[1]);
+    List<double> thList = [];
+    getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
+        .forEach((e) => thList.add(double.parse(e)));
+    // 下标321是因为html数据的顺序和数据类的顺序不一样
+    var total = Total(thList[3], thList[2], thList[1]);
 
-  /// 匹配所有科目信息
-  var filterStr = getRegExpStr(r'(?<=\>绩点\<)[\s\S]*', data); // 先去掉总数据部分的tr结点
+    /// 匹配所有科目信息
+    var filterStr = getRegExpStr(r'(?<=\>绩点\<)[\s\S]*', data); // 先去掉总数据部分的tr结点
 
-  var courseDataList =
-      getRegExpList(r'(?<=\<tr)[\s\S]*?(?=\<\/tr)', filterStr); // 所有的课程数据（糙数据）
-  var currentTermStr = "";
-  List<GPAStat> stats = [];
-  List<GPACourse> courses = [];
-  for (int i = 0; i < courseDataList.length; i++) {
-    /// 这里特意适配了重修课的红色span，在中括号里面
-    var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',
-        courseDataList[i]); // 这里的数据含有转义符
-    var term = courseData[0];
-    if (currentTermStr == "") currentTermStr = term;
-    if (currentTermStr != term) {
-      stats.add(_calculateStat(courses));
-      courses.clear();
-      currentTermStr = term;
+    var courseDataList = getRegExpList(
+        r'(?<=\<tr)[\s\S]*?(?=\<\/tr)', filterStr); // 所有的课程数据（糙数据）
+    var currentTermStr = "";
+    List<GPAStat> stats = [];
+    List<GPACourse> courses = [];
+    for (int i = 0; i < courseDataList.length; i++) {
+      /// 这里特意适配了重修课的红色span，在中括号里面
+      var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',
+          courseDataList[i]); // 这里的数据含有转义符
+      var term = courseData[0];
+      if (currentTermStr == "") currentTermStr = term;
+      if (currentTermStr != term) {
+        stats.add(_calculateStat(courses));
+        courses.clear();
+        currentTermStr = term;
+      }
+      var gpaCourse = _data2GPACourse(courseData, isMaster);
+      if (!courseDataList[i].contains("重修") && gpaCourse != null)
+        courses.add(gpaCourse);
+      if (i == courseDataList.length - 1) stats.add(_calculateStat(courses));
     }
-    var gpaCourse = _data2GPACourse(courseData, isMaster);
-    if (!courseDataList[i].contains("重修") && gpaCourse != null)
-      courses.add(gpaCourse);
-    if (i == courseDataList.length - 1) stats.add(_calculateStat(courses));
+    return GPABean(total, stats);
+  } catch (e) {
+    throw WpyDioError(error: "解析GPA数据出错，请出新尝试");
   }
-  return GPABean(total, stats);
 }
 
 /// 对课程数据进行整理后生成gpaCourse对象，注意研究生的list元素顺序和本科生的不一样

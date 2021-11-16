@@ -1,8 +1,8 @@
-import 'dart:convert';
+import 'dart:convert' show json;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
 

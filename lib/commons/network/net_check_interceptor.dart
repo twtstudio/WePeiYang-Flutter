@@ -1,6 +1,7 @@
-import 'package:dio/dio.dart';
-import 'error_interceptor.dart' show WpyDioError;
-import 'net_status_listener.dart';
+import 'package:dio/dio.dart' show InterceptorsWrapper;
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
+    show WpyDioError;
+import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 
 class NetCheckInterceptor extends InterceptorsWrapper {
   @override

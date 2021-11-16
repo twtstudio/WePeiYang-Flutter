@@ -65,13 +65,13 @@ class _SearchBarState extends State<SearchBar> {
     }
 
     var searchBar = Container(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: kToolbarHeight,
       child: Row(
         children: [
           Expanded(
             child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
                 child: searchInputField),
           ),
           widget.rightWidget ?? SizedBox.shrink()

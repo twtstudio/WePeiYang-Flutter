@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Color;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class MyColors {

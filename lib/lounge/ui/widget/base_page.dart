@@ -24,12 +24,12 @@ class StudyRoomPage extends StatelessWidget {
                 leadingWidth: 30,
                 brightness: Brightness.light,
                 elevation: 0,
-                leading: FlatButton(
-                  padding: EdgeInsets.all(0),
-                  onPressed: (){
+                leading: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(
+                  icon: Icon(
                     Icons.arrow_back,
                     size: 30,
                     color: Color(0XFF62677B),

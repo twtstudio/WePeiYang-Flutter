@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/message/message_dialog.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 
 class MessageProvider extends ChangeNotifier {
-
   List<MessageDataItem> _feedbackQuestions = [];
   List<MessageDataItem> _feedbackFavourites = [];
   List<int> _feedbackMessageList = [];
@@ -42,26 +41,21 @@ class MessageProvider extends ChangeNotifier {
     await refreshFeedbackCount();
   }
 
-  bool inMessageList(int questionId) =>
-      questionId == null
-          ? false
-          : _feedbackMessageList?.contains(questionId) ?? false;
+  bool inMessageList(int questionId) => questionId == null
+      ? false
+      : _feedbackMessageList?.contains(questionId) ?? false;
 
   bool isMessageEmptyOfType(FeedbackMessageType type) {
     if (isEmpty) return true;
     switch (type) {
       case FeedbackMessageType.detail_post:
         return feedbackQs.length.isZero;
-        break;
       case FeedbackMessageType.detail_favourite:
         return feedbackFs.length.isZero;
-        break;
       case FeedbackMessageType.home:
         return feedbackMessageList.length.isZero;
-        break;
       case FeedbackMessageType.mailbox:
         return classifiedMessageCount.total.isZero;
-        break;
       default:
         return true;
     }
@@ -69,11 +63,11 @@ class MessageProvider extends ChangeNotifier {
 }
 
 showMessageDialog(BuildContext context, String data) async {
-    await showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => MessageDialog(data),
-    );
+  await showDialog<String>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => MessageDialog(data),
+  );
 }
 
 extension IntExtension on int {

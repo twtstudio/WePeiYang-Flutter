@@ -1,5 +1,5 @@
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import '../model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
 
 /// 解决首页今日课程、课程表课程名称显示不全的问题（课程dialog不调用此函数）
 String formatText(String text) {

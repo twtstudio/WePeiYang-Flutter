@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ScheduleSettingPage extends StatefulWidget {
   @override
@@ -27,9 +28,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     else
       return Padding(
         padding: const EdgeInsets.only(right: 22),
-        child: Icon(
-          Icons.check,
-        ),
+        child: Icon(Icons.check),
       );
   }
 
@@ -63,16 +62,16 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
+                SizedBox(
                     width: 150,
                     child: Text(upNumberList[index], style: mainTextStyle)),
-                Container(
+                SizedBox(height: 3),
+                SizedBox(
                     width: 150,
-                    child: Text(downNumberList[index], style: hintTextStyle),
-                    padding: const EdgeInsets.only(top: 3))
+                    child: Text(downNumberList[index], style: hintTextStyle))
               ],
             ),
-            Expanded(child: Text('')),
+            Spacer(),
             _judgeIndex(index)
           ],
         ),
@@ -91,7 +90,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: ListView(
@@ -106,35 +105,34 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
                     fontSize: 28)),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(35, 15, 35, 20),
+            margin: const EdgeInsets.fromLTRB(35, 15, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_day_number_hint,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 124, 1), fontSize: 11.5)),
           ),
-          Container(
-              child: Card(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9)),
-                  child: Column(
-                    children: <Widget>[
-                      _getNumberOfDaysCard(context, 0),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        height: 1.0,
-                        color: Color.fromRGBO(212, 214, 226, 1),
-                      ),
-                      _getNumberOfDaysCard(context, 1),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        height: 1.0,
-                        color: Color.fromRGBO(212, 214, 226, 1),
-                      ),
-                      _getNumberOfDaysCard(context, 2),
-                    ],
-                  ))),
+          Card(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9)),
+              child: Column(
+                children: <Widget>[
+                  _getNumberOfDaysCard(context, 0),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    height: 1,
+                    color: Color.fromRGBO(212, 214, 226, 1),
+                  ),
+                  _getNumberOfDaysCard(context, 1),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    height: 1,
+                    color: Color.fromRGBO(212, 214, 226, 1),
+                  ),
+                  _getNumberOfDaysCard(context, 2),
+                ],
+              )),
         ],
       ),
     );

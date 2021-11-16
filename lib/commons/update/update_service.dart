@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show required;
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_prompter.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 /// 版本更新管理
 class UpdateManager {

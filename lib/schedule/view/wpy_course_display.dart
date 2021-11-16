@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -26,17 +26,17 @@ class TodayCoursesWidget extends StatelessWidget {
                   Text(S.current.schedule,
                       style: FontManager.YaQiHei.copyWith(
                           fontSize: 16,
-                          color: Color.fromRGBO(100, 103, 122, 1.0),
+                          color: Color.fromRGBO(100, 103, 122, 1),
                           fontWeight: FontWeight.bold)),
-                  Expanded(child: Text("")),
+                  Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(right: 25.0, top: 2),
+                    padding: const EdgeInsets.only(right: 25, top: 2),
                     child: (todayCourses.length == 0)
                         ? Container()
                         : DefaultTextStyle(
                             style: FontManager.YaHeiRegular.copyWith(
                                 fontSize: 12,
-                                color: Color.fromRGBO(100, 103, 122, 1.0)),
+                                color: Color.fromRGBO(100, 103, 122, 1)),
                             child: Text.rich(TextSpan(children: [
                               TextSpan(
                                   text: (notifier.nightMode &&
@@ -112,7 +112,7 @@ class TodayCoursesWidget extends StatelessWidget {
 
     /// 给本日课程排序
     todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
-    return Container(
+    return SizedBox(
       height: 185,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -146,18 +146,18 @@ class TodayCoursesWidget extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
                         ),
+                        SizedBox(height: 5),
                         Container(
                           alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 5),
                           child: Text(
                               getCourseTime(todayCourses[i].arrange.start,
                                   todayCourses[i].arrange.end),
                               style: FontManager.Aspira.copyWith(
                                   fontSize: 11.5, color: Colors.white)),
                         ),
+                        SizedBox(height: 15),
                         Container(
                           alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(top: 15),
                           child: Text(
                               replaceBuildingWord(todayCourses[i].arrange.room),
                               style: FontManager.Aspira.copyWith(

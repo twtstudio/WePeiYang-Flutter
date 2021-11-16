@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,13 +13,11 @@ class UserMailDialog extends Dialog {
       type: MaterialType.transparency,
       child: Center(
         child: ClipRRect(
-          borderRadius: BorderRadius.all(
-            const Radius.circular(20.0),
-          ),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
-            color: Colors.white,
             height: 500,
             width: 300,
+            color: Colors.white,
             child: CustomWebView(url),
           ),
         ),

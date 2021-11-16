@@ -8,9 +8,8 @@ class ScheduleBean {
   ScheduleBean.fromJson(Map<String, dynamic> map)
       : termStart = map['termStart'],
         termName = map['termName'],
-        courses = []
-          ..addAll((map['courses'] as List ?? [])
-              .map((e) => ScheduleCourse.fromJson(e)));
+        courses = []..addAll((map['courses'] as List ?? [])
+            .map((e) => ScheduleCourse.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'termStart': termStart,
@@ -75,8 +74,10 @@ class Arrange {
   String teacher; // 这个是具体上这节课的老师，不是上这门课的所有老师
 
   /// 这个是蹭课用的，记得补上binStr
-  Arrange.audit(this.week, this.room, this.start, this.end, this.day, this.teacher)
-      : binStr = '';
+  Arrange.audit(
+      this.week, this.room, this.start, this.end, this.day, this.teacher)
+      : binStr = '',
+        courseName = '';
 
   /// 用这个构造方法需要自行补上room
   Arrange.spider(this.week, this.binStr, this.start, this.end, this.day,

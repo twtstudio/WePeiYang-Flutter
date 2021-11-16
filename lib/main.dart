@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'dart:async';
-import 'dart:io' show HttpClient, HttpOverrides, Platform, SecurityContext, X509Certificate;
 
+import 'package:flutter/foundation.dart'
+    show TextTreeRenderer, DiagnosticsTreeStyle;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
@@ -14,6 +16,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -23,8 +26,6 @@ import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
-
-import 'feedback/model/feedback_providers.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -38,14 +39,20 @@ void main() async {
   // HttpOverrides.global = MyHttpOverrides();
 
   // debugPaintSizeEnabled = true;
-
-  /// 程序中的同步（sync）错误也交给zone处理
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    Zone.current.handleUncaughtError(details.exception, details.stack);
-  };
-
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    /// 程序中的同步（sync）错误也交给zone处理
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      /// 生成错误信息
+      String text = TextTreeRenderer(
+              wrapWidth: FlutterError.wrapWidth,
+              wrapWidthProperties: FlutterError.wrapWidth,
+              maxDescendentsTruncatableNode: 5)
+          .render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.flat))
+          .trimRight();
+      Zone.current.handleUncaughtError(text, null);
+    };
     await CommonPreferences.initPrefs();
     await NetStatusListener.init();
     runApp(WePeiYangApp());
@@ -116,7 +123,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("WBYINTENT ${state.toString()}");
     if (state == AppLifecycleState.resumed) {
       checkEventList();
     }
@@ -125,7 +131,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   checkEventList() async {
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
     await messageChannel?.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
-      print("WBYINTENT ${eventMap.toString()}");
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           // TODO: 传入id ,等更新完项目之后
@@ -139,7 +144,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         case IntentEvent.WBYPushHtml:
           break;
         case IntentEvent.SchedulePage:
-          print("IntentEvent.SchedulePage");
           if (!pageStack.contains(ScheduleRouter.schedule)) {
             Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
           }
@@ -180,7 +184,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
                   case 'refreshFeedbackMessageCount':
                     await messageProvider.refreshFeedbackCount();
                     return "success";
-                    break;
                   case 'showMessageDialogOnlyText':
                     String content = call.arguments['data'];
                     showDialog(content);
@@ -220,6 +223,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
           locale: localModel.locale(),
           home: StartUpWidget(),
           builder: (context, child) => GestureDetector(
+            child: child,
             onTapDown: (TapDownDetails details) {
               FocusScopeNode currentFocus = FocusScope.of(context);
               if (!currentFocus.hasPrimaryFocus &&
@@ -227,7 +231,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
                 FocusManager.instance.primaryFocus.unfocus();
               }
             },
-            child: child,
           ),
         );
       }),
@@ -358,6 +361,6 @@ class MyHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext context) {
     return super.createHttpClient(context)
       ..badCertificateCallback =
-      (X509Certificate cert, String host, int port) => true;
+          (X509Certificate cert, String host, int port) => true;
   }
 }

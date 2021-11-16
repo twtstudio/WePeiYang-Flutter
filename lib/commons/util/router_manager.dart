@@ -22,12 +22,12 @@ class RouterManager {
   static Route<dynamic> create(RouteSettings settings) {
     /// 这里添加其他模块的routers
     if (_routers.length == 0) {
-      _routers.addAll(HomeRouter.routers);
-      _routers.addAll(GPARouter.routers);
-      _routers.addAll(ScheduleRouter.routers);
       _routers.addAll(AuthRouter.routers);
       _routers.addAll(FeedbackRouter.routers);
+      _routers.addAll(GPARouter.routers);
+      _routers.addAll(HomeRouter.routers);
       _routers.addAll(LoungeRouter.routers);
+      _routers.addAll(ScheduleRouter.routers);
       _routers.addAll(ReportRouter.routers);
     }
     return MaterialPageRoute(

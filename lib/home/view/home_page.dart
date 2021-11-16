@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
-
-import 'wpy_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   /// bottomNavigationBar对应的分页
-  List<Widget> pages = <Widget>[];
+  List<Widget> pages = [];
   int _currentIndex = 0;
   DateTime _lastPressedAt;
   TabController _tabController;
@@ -27,14 +27,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    pages
-      ..add(WPYPage())
-      ..add(FeedbackHomePage())
-      // ..add(DrawerPage())
-      ..add(UserPage());
+    pages..add(WPYPage())..add(FeedbackHomePage())..add(UserPage());
     _tabController = TabController(
       length: pages.length,
-      vsync: ScrollableState(),
+      vsync: this,
       initialIndex: 0,
     )..addListener(() {
         if (_tabController.index != _tabController.previousIndex) {
@@ -64,48 +60,47 @@ class _HomePageState extends State<HomePage> {
     var otherStyle = TextStyle(
         fontSize: 12, color: MyColors.deepDust, fontWeight: FontWeight.w800);
 
-    var homePage = Container(
+    var homePage = SizedBox(
       height: 70,
       width: width,
-      child: RaisedButton(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        highlightElevation: 0,
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(),
-        color: Colors.white,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder()),
+          elevation: MaterialStateProperty.all(0),
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 20,
-              height: 20,
-              child: Image(
-                  image: _currentIndex == 0
-                      ? AssetImage('assets/images/icon_home_active.png')
-                      : AssetImage('assets/images/icon_home.png')),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Text('主页',
-                  style: _currentIndex == 0 ? currentStyle : otherStyle),
-            ),
+            Image(
+                width: 20,
+                height: 20,
+                image: _currentIndex == 0
+                    ? AssetImage('assets/images/icon_home_active.png')
+                    : AssetImage('assets/images/icon_home.png')),
+            SizedBox(height: 3),
+            Text('主页', style: _currentIndex == 0 ? currentStyle : otherStyle),
           ],
         ),
         onPressed: () => _tabController.animateTo(0),
       ),
     );
 
-    var feedBackPage = Container(
+    var feedbackPage = SizedBox(
       height: 70,
       width: width,
-      child: RaisedButton(
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        highlightElevation: 0,
-        color: Colors.white,
+      child: ElevatedButton(
+        onPressed: () {
+          _tabController.animateTo(1);
+        },
+        style: ButtonStyle(
+            elevation: MaterialStateProperty.all(0),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder()),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+              if (states.contains(MaterialState.pressed))
+                return Colors.transparent;
+              return Colors.white;
+            })),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -115,9 +110,10 @@ class _HomePageState extends State<HomePage> {
                 width: 20,
                 height: 20,
                 child: Image(
-                    image: _currentIndex == 1
-                        ? AssetImage('assets/images/icon_feedback_active.png')
-                        : AssetImage('assets/images/icon_feedback.png')),
+                  image: AssetImage(_currentIndex == 1
+                      ? 'assets/images/icon_feedback_active.png'
+                      : 'assets/images/icon_feedback.png'),
+                ),
               ),
             ),
             Padding(
@@ -127,68 +123,29 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        onPressed: () => _tabController.animateTo(1),
       ),
     );
 
-    // var casesPage = Container(
-    //   height: 70,
-    //   width: width,
-    //   child: RaisedButton(
-    //     elevation: 0.0,
-    //     shape: RoundedRectangleBorder(),
-    //     color: Colors.white,
-    //     splashColor: Colors.transparent,
-    //     highlightColor: Colors.transparent,
-    //     highlightElevation: 0,
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Container(
-    //           width: 20,
-    //           height: 20,
-    //           child: Image(
-    //               image: _currentIndex == 2
-    //                   ? AssetImage('assets/images/icon_action_active.png')
-    //                   : AssetImage('assets/images/icon_action.png')),
-    //         ),
-    //         Padding(
-    //           padding: const EdgeInsets.only(top: 3),
-    //           child: Text('抽屉',
-    //               style: _currentIndex == 2 ? currentStyle : otherStyle),
-    //         ),
-    //       ],
-    //     ),
-    //     onPressed: () => setState(() => _currentIndex = 2),
-    //   ),
-    // );
-
-    var selfPage = Container(
+    var selfPage = SizedBox(
       height: 70,
       width: width,
-      child: RaisedButton(
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(),
-        color: Colors.white,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        highlightElevation: 0,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder()),
+          elevation: MaterialStateProperty.all(0),
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 20,
-              height: 20,
-              child: Image(
-                  image: _currentIndex == 2
-                      ? AssetImage('assets/images/icon_user_active.png')
-                      : AssetImage('assets/images/icon_user.png')),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Text('个人中心',
-                  style: _currentIndex == 2 ? currentStyle : otherStyle),
-            ),
+            Image(
+                width: 20,
+                height: 20,
+                image: _currentIndex == 2
+                    ? AssetImage('assets/images/icon_user_active.png')
+                    : AssetImage('assets/images/icon_user.png')),
+            SizedBox(height: 3),
+            Text('个人中心', style: _currentIndex == 2 ? currentStyle : otherStyle),
           ],
         ),
         onPressed: () => _tabController.animateTo(2),
@@ -196,9 +153,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     var bottomNavigationBar = BottomAppBar(
-      child: Row(
-        children: <Widget>[homePage, feedBackPage, selfPage],
-      ),
+      child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
-import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _UserPageState extends State<UserPage> {
         color: Color.fromRGBO(98, 103, 122, 1));
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
+      backgroundColor: Color.fromRGBO(246, 246, 247, 1),
       body: Theme(
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
@@ -37,13 +38,14 @@ class _UserPageState extends State<UserPage> {
             ListView(
               physics: BouncingScrollPhysics(),
               children: <Widget>[
+                SizedBox(height: 15),
                 Container(
-                    margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0),
-                    height: 50.0,
+                    height: 50,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerLeft,
                     child: Row(
                       children: <Widget>[
-                        Expanded(child: Text('')),
+                        Spacer(),
                         GestureDetector(
                           onTap: () =>
                               Navigator.pushNamed(context, AuthRouter.mailbox),
@@ -62,9 +64,7 @@ class _UserPageState extends State<UserPage> {
                         )
                       ],
                     )),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(bottom: 15.0),
+                Center(
                   child: GestureDetector(
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.userInfo)
@@ -72,6 +72,7 @@ class _UserPageState extends State<UserPage> {
                       child: Icon(Icons.account_circle_rounded,
                           size: 90, color: Colors.white)),
                 ),
+                SizedBox(height: 15),
                 Text(CommonPreferences().nickname.value,
                     textAlign: TextAlign.center,
                     style: FontManager.YaHeiRegular.copyWith(
@@ -85,7 +86,7 @@ class _UserPageState extends State<UserPage> {
                       barrierDismissible: true,
                       builder: (BuildContext context) => DebugDialog()),
                   child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(CommonPreferences().userNumber.value,
                           textAlign: TextAlign.center,
                           style: FontManager.Texta.copyWith(
@@ -94,7 +95,8 @@ class _UserPageState extends State<UserPage> {
                 NavigationWidget(),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -106,20 +108,17 @@ class _UserPageState extends State<UserPage> {
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
                         children: <Widget>[
-                          Container(
-                            width: 20,
-                            margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset(
-                                'assets/images/modify_info_icon.png'),
-                          ),
-                          Container(
+                          SizedBox(width: 20),
+                          Image.asset('assets/images/modify_info_icon.png',
+                              width: 20),
+                          SizedBox(width: 10),
+                          SizedBox(
                               width: 150,
                               child: Text(S.current.reset_user_info,
                                   style: textStyle)),
-                          Expanded(child: Text('')),
-                          Padding(
-                              padding: const EdgeInsets.only(right: 22),
-                              child: arrow)
+                          Spacer(),
+                          arrow,
+                          SizedBox(width: 22)
                         ],
                       ),
                     ),
@@ -127,7 +126,8 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -139,19 +139,16 @@ class _UserPageState extends State<UserPage> {
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
                         children: <Widget>[
-                          Container(
-                            width: 20,
-                            margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset('assets/images/twt.png'),
-                          ),
-                          Container(
+                          SizedBox(width: 20),
+                          Image.asset('assets/images/twt.png', width: 20),
+                          SizedBox(width: 10),
+                          SizedBox(
                               width: 150,
                               child:
                                   Text(S.current.about_twt, style: textStyle)),
-                          Expanded(child: Text('')),
-                          Padding(
-                              padding: const EdgeInsets.only(right: 22),
-                              child: arrow)
+                          Spacer(),
+                          arrow,
+                          SizedBox(width: 22),
                         ],
                       ),
                     ),
@@ -159,7 +156,8 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -175,14 +173,12 @@ class _UserPageState extends State<UserPage> {
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
                         children: <Widget>[
-                          Container(
-                            width: 20,
-                            margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Icon(Icons.update,
-                                color: Color.fromRGBO(98, 103, 122, 1)),
-                          ),
+                          SizedBox(width: 20),
+                          Icon(Icons.update,
+                              color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                          SizedBox(width: 10),
                           Text(S.current.check_new, style: textStyle),
-                          Expanded(child: Text("")),
+                          Spacer(),
                           FutureBuilder(
                             future: CommonUtils.getVersion(),
                             builder: (_, AsyncSnapshot<String> snapshot) {
@@ -209,7 +205,8 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -223,15 +220,13 @@ class _UserPageState extends State<UserPage> {
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
                         children: <Widget>[
-                          Container(
-                            width: 20,
-                            margin: const EdgeInsets.only(left: 20, right: 10),
-                            child: Image.asset('assets/images/logout.png'),
-                          ),
-                          Container(
+                          SizedBox(width: 20),
+                          Image.asset('assets/images/logout.png', width: 20),
+                          SizedBox(width: 10),
+                          SizedBox(
                               width: 150,
                               child: Text(S.current.logout, style: textStyle)),
-                          Expanded(child: Text('')),
+                          Spacer()
                         ],
                       ),
                     ),
@@ -260,13 +255,9 @@ class _NavigationState extends State<NavigationWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Card(
         elevation: 1.8,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Center(
-          child: Image.asset(
-            'assets/images/to_be_continue.png',
-            height: 80,
-          ),
+          child: Image.asset('assets/images/to_be_continue.png', height: 80),
         ),
       ),
     );

@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
+import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
-import 'error_interceptor.dart';
-import 'net_check_interceptor.dart';
 
-export 'package:dio/dio.dart' show DioError, ResponseType;
-export 'package:dio/src/interceptor.dart' show InterceptorsWrapper;
+export 'package:dio/dio.dart' show DioError, ResponseType, InterceptorsWrapper;
 export 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
 

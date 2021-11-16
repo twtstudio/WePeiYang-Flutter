@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
 class Logger {
   /// release模式下在内存中存储log信息
@@ -24,7 +23,7 @@ class Logger {
       '----------------------------------------------------------------------'
     ];
     if (kDebugMode) {
-      for (String line in lines) print(line);
+      for (String line in lines) debugPrint(line);
     } else {
       checkList();
       logs.addAll(lines);

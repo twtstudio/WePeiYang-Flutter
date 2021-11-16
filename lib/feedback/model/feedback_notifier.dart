@@ -32,7 +32,7 @@ class NewPostProvider {
 
   List<File> imgList = [];
 
-  bool get check => title.isNotEmpty && content.isNotEmpty && tag?.id != -1;
+  bool get check => title.isNotEmpty && content.isNotEmpty && tag != null;
 }
 
 enum FbHomePageStatus {
@@ -124,7 +124,12 @@ class FbHomeListModel extends ChangeNotifier {
     }
   }
 
-  Future<void> initPostList({OnSuccess success, OnFailure failure}) async {
+  Future<void> initPostList(
+      {OnSuccess success, OnFailure failure, bool reset = false}) async {
+    if (reset) {
+      _status = FbHomePageStatus.loading;
+      notifyListeners();
+    }
     await FeedbackService.getPosts(
       tagId: '',
       page: '1',

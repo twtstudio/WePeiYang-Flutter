@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
-import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
+import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
-    color: Color.fromRGBO(53, 59, 84, 1.0),
+    color: Color.fromRGBO(53, 59, 84, 1),
     fontWeight: FontWeight.bold);
 
 class WPYPage extends StatefulWidget {
@@ -104,7 +105,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
-      padding: EdgeInsets.fromLTRB(30, 28, 10, 0),
+      padding: const EdgeInsets.fromLTRB(30, 28, 10, 0),
       child: Column(
         children: [
           Row(
@@ -114,7 +115,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                       fontSize: 30,
                       color: MyColors.deepBlue,
                       fontWeight: FontWeight.bold)),
-              Expanded(child: Text('')), // 起填充作用
+              Spacer(),
               Text(CommonPreferences().nickname.value, style: hintStyle),
               GestureDetector(
                 onTap: () =>
@@ -122,7 +123,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   onChanged(null);
                 }),
                 child: Container(
-                  margin: EdgeInsets.only(left: 7, right: 10),
+                  margin: const EdgeInsets.only(left: 7, right: 10),
                   child: Icon(Icons.account_circle_rounded,
                       size: 40, color: MyColors.deepBlue),
                 ),
@@ -251,7 +252,7 @@ class SliverCardsWidget extends StatelessWidget {
   }
 
   Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
-    return Container(
+    return SizedBox(
       width: 125,
       height: 90,
       child: Card(
@@ -262,7 +263,7 @@ class SliverCardsWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             bean.icon,
-            Container(height: 5),
+            SizedBox(height: 5),
             Center(
               child: Text(bean.label,
                   style: FontManager.YaQiHei.copyWith(

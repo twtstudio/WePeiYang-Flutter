@@ -1,18 +1,17 @@
 import 'dart:collection';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-
-import 'main_page.dart';
+import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 
 class ReportDataModel {
   final Map<ReportPart, dynamic> _data = {};
 
-  UnmodifiableMapView<ReportPart, dynamic> get data => UnmodifiableMapView(_data);
+  UnmodifiableMapView<ReportPart, dynamic> get data =>
+      UnmodifiableMapView(_data);
 
   void add(ReportPart k, dynamic v) {
     _data[k] = v;
@@ -215,9 +214,8 @@ class ReportList {
     return ReportList(
       errorCode: json['error_code'],
       message: json['message'],
-      result: []
-        ..addAll(
-            (json['result'] as List ?? []).map((e) => ReportItem.fromJson(e))),
+      result: []..addAll(
+          (json['result'] as List ?? []).map((e) => ReportItem.fromJson(e))),
     );
   }
 }

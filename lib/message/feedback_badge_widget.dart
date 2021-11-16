@@ -1,7 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 enum FeedbackMessageType { detail_post, detail_favourite, home, mailbox }
 
@@ -45,16 +45,12 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
           return widget.child;
         } else {
           var str = widget.type.messageCount(model);
-          print("---------${widget.type.toString()}---${widget.type.messageCount(model)}");
           var padding = str.isEmpty ? 5.0 : 4.0;
           return Badge(
             padding: EdgeInsets.all(padding),
             badgeContent: Text(
               str,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 10),
             ),
             child: widget.child,
           );

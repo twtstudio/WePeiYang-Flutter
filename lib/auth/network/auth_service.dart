@@ -1,10 +1,11 @@
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:flutter/material.dart' show Navigator, required;
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'dart:convert' show utf8, base64Encode;
+import 'package:flutter/material.dart' show Navigator, required;
+
+import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class AuthDio extends DioAbstract {
   static const APP_KEY = "banana";

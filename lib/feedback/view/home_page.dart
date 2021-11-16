@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -9,9 +10,9 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_type_switch_bar.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 
 class FeedbackHomePage extends StatefulWidget {
@@ -82,16 +83,9 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
           type: FeedbackMessageType.home,
           child: Image.asset('lib/feedback/assets/img/profile.png'),
         ),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FeedbackRouter.profile,
-          );
-        },
+        onPressed: () => Navigator.pushNamed(context, FeedbackRouter.profile),
       ),
-      tapField: () {
-        Navigator.pushNamed(context, FeedbackRouter.search);
-      },
+      tapField: () => Navigator.pushNamed(context, FeedbackRouter.search),
     );
 
     var listView = Consumer<FbHomeListModel>(builder: (_, model, __) {
@@ -107,18 +101,18 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
         child: ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
+          itemCount: model.homeList.length + 2,
           itemBuilder: (context, index) {
             if (index == 0) {
               return searchBar;
+            } else if (index == 1) {
+              return SearchTypeSwitchBar(
+                  controller: _refreshController, provider: _listProvider);
             }
-            index--;
+            index -= 2;
             final post = model.homeList[index];
-            return PostCard.simple(
-              post,
-              key: ValueKey(post.id),
-            );
+            return PostCard.simple(post, key: ValueKey(post.id));
           },
-          itemCount: model.homeList.length,
         ),
       );
     });

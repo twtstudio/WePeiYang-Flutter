@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show required;
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class ErrorInterceptor extends InterceptorsWrapper {
   @override

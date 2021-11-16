@@ -1,12 +1,13 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'dart:math';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -34,16 +35,16 @@ class CurveText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-    onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-    child: Container(
-        padding: const EdgeInsets.fromLTRB(25.0, 25.0, 0.0, 20.0),
-        alignment: Alignment.centerLeft,
-        child: Text("${notifier.typeName()}${S.current.curve}",
-            style: FontManager.YaQiHei.copyWith(
-                fontSize: 16.0,
-                color: Color.fromRGBO(100, 103, 122, 1.0),
-                fontWeight: FontWeight.bold))),
-  );
+        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+        child: Container(
+            padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
+            alignment: Alignment.centerLeft,
+            child: Text("${notifier.typeName()}${S.current.curve}",
+                style: FontManager.YaQiHei.copyWith(
+                    fontSize: 16,
+                    color: Color.fromRGBO(100, 103, 122, 1),
+                    fontWeight: FontWeight.bold))),
+      );
 }
 
 /// wpy_page中显示数值信息
@@ -52,8 +53,8 @@ class GPAIntro extends StatelessWidget {
 
   GPAIntro(this.notifier);
 
-  static final textStyle = FontManager.YaHeiLight.copyWith(
-      color: Color(0xffcdcdd3), fontSize: 14);
+  static final textStyle =
+      FontManager.YaHeiLight.copyWith(color: Color(0xffcdcdd3), fontSize: 14);
 
   static final numStyle = FontManager.Montserrat.copyWith(
       color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 22);
@@ -78,9 +79,8 @@ class GPAIntro extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text('总加权', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(weighted, style: numStyle))
+              SizedBox(height: 8),
+              Text(weighted, style: numStyle)
             ],
           ),
         ),
@@ -91,9 +91,8 @@ class GPAIntro extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text('总绩点', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(grade, style: numStyle))
+              SizedBox(height: 8),
+              Text(grade, style: numStyle)
             ],
           ),
         ),
@@ -104,9 +103,8 @@ class GPAIntro extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text('总学分', style: textStyle),
-              Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(credit, style: numStyle))
+              SizedBox(height: 8),
+              Text(credit, style: numStyle)
             ],
           ),
         )
@@ -135,14 +133,6 @@ class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
   static const Color _popupCardPreview = Colors.white;
   static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
-
-  @override
-  void initState() {
-    super.initState();
-    _popupCardColor = widget.gpaColors[3];
-    _popupTextColor = widget.gpaColors[1];
-  }
-
   static Color _popupCardColor;
   static Color _popupTextColor;
 
@@ -153,9 +143,16 @@ class _GPACurveState extends State<GPACurve>
   int _newTaped = 1;
 
   @override
+  void initState() {
+    super.initState();
+    _popupCardColor = widget.gpaColors[3];
+    _popupTextColor = widget.gpaColors[1];
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.notifier.currentDataWithNotify == null)
-      return Container(height: 20);
+      return SizedBox(height: 20);
     if (_lastTaped == _newTaped) {
       _lastTaped = widget.notifier.indexWithNotify + 1;
       _newTaped = _lastTaped;
@@ -175,7 +172,7 @@ class _GPACurveState extends State<GPACurve>
             widget.notifier.indexWithNotify = result - 1;
           }
         },
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Stack(
             children: <Widget>[
@@ -190,7 +187,7 @@ class _GPACurveState extends State<GPACurve>
 
               /// Stack顶层
               TweenAnimationBuilder(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 tween: Tween(
                     begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
                 onEnd: () => setState(() => _lastTaped = _newTaped),
@@ -201,12 +198,12 @@ class _GPACurveState extends State<GPACurve>
                     /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
                     offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
                         lT.y - 60 + (nT.y - lT.y) * value),
-                    child: Container(
+                    child: SizedBox(
                       width: 80,
                       height: 75,
                       child: Column(
                         children: <Widget>[
-                          Container(
+                          SizedBox(
                             width: 80,
                             height: 45,
                             child: Card(
@@ -229,7 +226,7 @@ class _GPACurveState extends State<GPACurve>
                           CustomPaint(
                             painter: _GPAPopupPainter(widget.gpaColors,
                                 isPreview: widget.isPreview),
-                            size: Size(80, 30),
+                            size: const Size(80, 30),
                           )
                         ],
                       ),
@@ -283,16 +280,8 @@ class _GPACurveState extends State<GPACurve>
 
 /// 绘制GPACurve栈上层的可移动点
 class _GPAPopupPainter extends CustomPainter {
-  final List<Color> gpaColors;
-  final bool isPreview;
-
-  _GPAPopupPainter(this.gpaColors, {@required this.isPreview}) {
-    _outerColor = gpaColors[1];
-    _innerColor = gpaColors[0];
-  }
-
   /// 在wpy_page显示的颜色
-  static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1.0);
+  static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1);
   static const Color _innerPreview = Colors.white;
 
   /// 在gpa_page显示的颜色
@@ -302,6 +291,13 @@ class _GPAPopupPainter extends CustomPainter {
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
   static const _outerRadius = 7.0;
+
+  final bool isPreview;
+
+  _GPAPopupPainter(List<Color> gpaColors, {@required this.isPreview}) {
+    _outerColor = gpaColors[1];
+    _innerColor = gpaColors[0];
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -325,19 +321,18 @@ class _GPAPopupPainter extends CustomPainter {
 
 /// 绘制GPACurve栈底层的曲线、黑点
 class _GPACurvePainter extends CustomPainter {
-  final List<Color> gpaColors;
   final bool isPreview;
   final List<Point<double>> points;
   final int taped;
 
-  _GPACurvePainter(this.gpaColors,
+  _GPACurvePainter(List<Color> gpaColors,
       {@required this.isPreview, @required this.points, @required this.taped}) {
     _lineColor = gpaColors[3];
     _pointColor = gpaColors[1];
   }
 
-  static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1.0);
-  static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1.0);
+  static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1);
+  static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1);
 
   static Color _lineColor;
   static Color _pointColor;

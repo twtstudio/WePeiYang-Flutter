@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 
 /// 课程表每个item之间的间距
 const double cardStep = 6;
@@ -70,7 +69,7 @@ class WeekDisplayWidget extends StatelessWidget {
         height: 28,
         width: width,
         decoration: BoxDecoration(
-            color: deepColor ? titleColor : Color.fromRGBO(236, 238, 237, 1.0),
+            color: deepColor ? titleColor : Color.fromRGBO(236, 238, 237, 1),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
@@ -95,10 +94,10 @@ class CourseDisplayWidget extends StatelessWidget {
       this.titleColor);
 
   /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
-  final double singleCourseHeight = 65;
+  static const double singleCourseHeight = 65;
 
   /// "午休"提示栏的高度
-  final double middleStep = 40;
+  static const double middleStep = 40;
 
   @override
   Widget build(BuildContext context) {
