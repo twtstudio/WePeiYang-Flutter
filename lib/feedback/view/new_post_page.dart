@@ -461,7 +461,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
           titleCounter.value = '${text.characters.length}/20';
         },
         inputFormatters: [
-          _CustomizedLengthTextInputFormatter(20),
+          CustomizedLengthTextInputFormatter(20),
         ],
       ),
     );
@@ -540,7 +540,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
         contentCounter.value = '${text.characters.length}/200';
       },
       inputFormatters: [
-        _CustomizedLengthTextInputFormatter(200),
+        CustomizedLengthTextInputFormatter(200),
       ],
     );
 
@@ -590,7 +590,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        titleTextStyle:  FontManager.YaHeiRegular.copyWith(
+        titleTextStyle: FontManager.YaHeiRegular.copyWith(
             color: Color.fromRGBO(79, 88, 107, 1),
             fontSize: 16,
             fontWeight: FontWeight.normal,
@@ -711,8 +711,9 @@ class _BasePage extends StatelessWidget {
       title: Text(
         S.current.feedback_new_post,
         style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 18,
-          color: Color(0xff303c66),
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+          color: ColorUtil.boldTextColor,
         ),
       ),
       brightness: Brightness.light,
@@ -751,10 +752,10 @@ class _BasePage extends StatelessWidget {
 
 /// 自定义兼容中文拼音输入法长度限制输入框
 /// https://www.jianshu.com/p/d2c50b9271d3
-class _CustomizedLengthTextInputFormatter extends TextInputFormatter {
+class CustomizedLengthTextInputFormatter extends TextInputFormatter {
   final int maxLength;
 
-  _CustomizedLengthTextInputFormatter(this.maxLength);
+  CustomizedLengthTextInputFormatter(this.maxLength);
 
   @override
   TextEditingValue formatEditUpdate(

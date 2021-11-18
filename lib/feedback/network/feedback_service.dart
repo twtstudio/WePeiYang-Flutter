@@ -408,4 +408,26 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  static reportQuestion(
+      {@required id,
+        @required reason,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('reportQuestion', () async {
+      try {
+        await feedbackDio.post(
+          'question/complain',
+          formData: FormData.fromMap({
+            'token': CommonPreferences().feedbackToken.value,
+            'question_id': id,
+            'reason': reason,
+          }),
+        );
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
 }

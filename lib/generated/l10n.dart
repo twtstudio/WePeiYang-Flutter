@@ -1596,6 +1596,36 @@ class S {
   }
 
   /// ``
+  String get feedback_report {
+    return Intl.message(
+      '',
+      name: 'feedback_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_report_success {
+    return Intl.message(
+      '',
+      name: 'feedback_report_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get feedback_other_reason {
+    return Intl.message(
+      '',
+      name: 'feedback_other_reason',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get feedback_add_tag {
     return Intl.message(
       '',

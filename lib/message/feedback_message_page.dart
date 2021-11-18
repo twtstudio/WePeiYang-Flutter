@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import 'message_service.dart';
 import 'message_provider.dart';
@@ -99,9 +100,10 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage> {
             centerTitle: true,
             title: Text(
               S.current.feedback_message,
-              style: TextStyle(
-                color: Color(0xff303c66),
-                fontSize: 16,
+              style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: ColorUtil.boldTextColor,
               ),
             ),
             leading: FlatButton(

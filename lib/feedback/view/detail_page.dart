@@ -183,11 +183,11 @@ class _DetailPageState extends State<DetailPage> {
     Widget body;
 
     if (status == DetailPageStatus.loading) {
-      if(post.title == null){
+      if (post.title == null) {
         body = Center(
           child: Loading(),
         );
-      }else {
+      } else {
         body = ListView(
           children: [
             PostCard.detail(
@@ -280,17 +280,37 @@ class _DetailPageState extends State<DetailPage> {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
     }
 
-    // TODO: 分享问题到qq
-    // var shareButton = IconButton(
-    //   icon: Icon(
-    //     Icons.share_outlined,
-    //     color: Color(0xff62677b),
-    //   ),
-    //   onPressed: () {
-    //     shareChannel.invokeMethod("shareToQQ",
-    //         {"summary": "校务专区问题详情", "title": post.title, "id": post.id});
-    //   },
-    // );
+    var menuButton = IconButton(
+      padding: const EdgeInsets.only(right: 20),
+      icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
+      onPressed: () {
+        showMenu(
+          context: context,
+
+          /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
+          /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
+          position: RelativeRect.fromLTRB(
+              1000, MediaQuery.of(context).padding.top + kToolbarHeight, 0, 0),
+          items: <PopupMenuItem<String>>[
+            new PopupMenuItem<String>(
+              value: '举报',
+              child: new Text(
+                '举报',
+                style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 13,
+                  color: ColorUtil.boldTextColor,
+                ),
+              ),
+            ),
+          ],
+        ).then((value) {
+          if (value == "举报") {
+            Navigator.pushNamed(context, FeedbackRouter.report,
+                arguments: widget.post.id);
+          }
+        });
+      },
+    );
 
     var appBar = AppBar(
       backgroundColor: Colors.white,
@@ -298,10 +318,11 @@ class _DetailPageState extends State<DetailPage> {
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
-      // actions: [shareButton],
+      actions: [menuButton],
       title: Text(
         S.current.feedback_detail,
         style: FontManager.YaHeiRegular.copyWith(
+          fontSize: 17,
           fontWeight: FontWeight.bold,
           color: ColorUtil.boldTextColor,
         ),
