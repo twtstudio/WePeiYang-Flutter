@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +29,11 @@ class _SettingPageState extends State<SettingPage> {
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   var pref = CommonPreferences();
+  double descriptionMaxWidth;
 
   @override
   Widget build(BuildContext context) {
+    descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.setting,
@@ -52,55 +55,13 @@ class _SettingPageState extends State<SettingPage> {
       body: ListView(
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
+            padding: const EdgeInsets.fromLTRB(25, 20, 25, 5),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_general, style: titleTextStyle),
           ),
-          // TODO 系统语言
-          // Container(
-          //   height: 80,
-          //   child: Card(
-          //     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          //     elevation: 0,
-          //     shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(9)),
-          //     child: InkWell(
-          //       onTap: () =>
-          //           Navigator.pushNamed(context, AuthRouter.languageSetting).then((_) {
-          //         /// 使用pop返回此页面时进行rebuild
-          //         this.setState(() {});
-          //       }),
-          //       splashFactory: InkRipple.splashFactory,
-          //       borderRadius: BorderRadius.circular(9),
-          //       child: Row(
-          //         children: <Widget>[
-          //           Column(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: [
-          //               Container(
-          //                   width: 150,
-          //                   margin: const EdgeInsets.only(left: 15),
-          //                   child: Text(S.current.setting_language, style: mainTextStyle)),
-          //               Container(
-          //                   width: 150,
-          //                   margin: const EdgeInsets.only(left: 15, top: 3),
-          //                   child: Text(S.current.language,
-          //                       style: hintTextStyle,
-          //                       textAlign: TextAlign.left))
-          //             ],
-          //           ),
-          //           Expanded(child: Text('')),
-          //           Padding(
-          //               padding: const EdgeInsets.only(right: 26), child: arrow)
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          SizedBox(
-            height: 80,
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -115,42 +76,36 @@ class _SettingPageState extends State<SettingPage> {
                 borderRadius: BorderRadius.circular(9),
                 child: Row(
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            width: 230,
-                            margin: const EdgeInsets.only(left: 15),
-                            child: Text(S.current.setting_color,
-                                style: mainTextStyle)),
-                        SizedBox(height: 3),
-                        Container(
-                            width: 230,
-                            margin: const EdgeInsets.only(left: 15),
-                            child: Text(S.current.setting_color_hint,
-                                style: hintTextStyle))
-                      ],
+                    SizedBox(
+                      width: descriptionMaxWidth,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(S.current.setting_color, style: mainTextStyle),
+                          SizedBox(height: 3),
+                          Text(S.current.setting_color_hint,
+                              style: hintTextStyle)
+                        ],
+                      ),
                     ),
                     Spacer(),
                     arrow,
-                    SizedBox(width: 26)
                   ],
                 ),
               ),
             ),
           ),
-          SizedBox(
-            height: 80,
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: Row(
                 children: <Widget>[
-                  SizedBox(width: 15),
                   SizedBox(
-                      width: 150,
+                      width: descriptionMaxWidth,
                       child: Text(S.current.setting_gpa, style: mainTextStyle)),
                   Spacer(),
                   Switch(
@@ -165,37 +120,32 @@ class _SettingPageState extends State<SettingPage> {
                     activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
                     inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
                   ),
-                  SizedBox(width: 12)
                 ],
               ),
             ),
           ),
-          SizedBox(
-            height: 80,
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: Row(
                 children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          width: 210,
-                          margin: const EdgeInsets.only(left: 15),
-                          child: Text(S.current.setting_night_mode,
-                              style: mainTextStyle)),
-                      SizedBox(height: 3),
-                      Container(
-                          width: 210,
-                          margin: const EdgeInsets.only(left: 15),
-                          child: Text(
-                            S.current.setting_night_mode_hint,
-                            style: hintTextStyle,
-                          ))
-                    ],
+                  SizedBox(
+                    width: descriptionMaxWidth,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(S.current.setting_night_mode, style: mainTextStyle),
+                        SizedBox(height: 3),
+                        Text(
+                          S.current.setting_night_mode_hint,
+                          style: hintTextStyle,
+                        )
+                      ],
+                    ),
                   ),
                   Spacer(),
                   Switch(
@@ -210,19 +160,17 @@ class _SettingPageState extends State<SettingPage> {
                     activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
                     inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
                   ),
-                  SizedBox(width: 12)
                 ],
               ),
             ),
           ),
           Container(
-              padding: const EdgeInsets.fromLTRB(20, 17, 20, 5),
+              padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
               alignment: Alignment.centerLeft,
               child: Text(S.current.schedule, style: titleTextStyle)),
-          SizedBox(
-            height: 80,
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -237,34 +185,29 @@ class _SettingPageState extends State<SettingPage> {
                 borderRadius: BorderRadius.circular(9),
                 child: Row(
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(left: 15),
-                            child: Text(S.current.setting_day_number,
-                                style: mainTextStyle)),
-                        SizedBox(height: 3),
-                        Container(
-                            width: 150,
-                            margin: const EdgeInsets.only(left: 15),
-                            child: Text('${pref.dayNumber.value}',
-                                style: hintTextStyle))
-                      ],
+                    SizedBox(
+                      width: descriptionMaxWidth,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(S.current.setting_day_number,
+                              style: mainTextStyle),
+                          SizedBox(height: 3),
+                          Text('${pref.dayNumber.value}', style: hintTextStyle)
+                        ],
+                      ),
                     ),
                     Spacer(),
                     arrow,
-                    SizedBox(width: 26),
                   ],
                 ),
               ),
             ),
           ),
-          SizedBox(
-            height: 80,
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -272,21 +215,19 @@ class _SettingPageState extends State<SettingPage> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              width: 210,
-                              margin: const EdgeInsets.only(left: 15),
-                              child: Text(S.current.setting_other_week,
-                                  style: mainTextStyle)),
-                          SizedBox(height: 3),
-                          Container(
-                              width: 210,
-                              margin: const EdgeInsets.only(left: 15),
-                              child: Text(S.current.setting_other_week_hint,
-                                  style: hintTextStyle))
-                        ],
+                      SizedBox(
+                        width: descriptionMaxWidth,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(S.current.setting_other_week,
+                                style: mainTextStyle),
+                            SizedBox(height: 3),
+                            Text(S.current.setting_other_week_hint,
+                                style: hintTextStyle)
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -301,7 +242,6 @@ class _SettingPageState extends State<SettingPage> {
                     activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
                     inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
                   ),
-                  SizedBox(width: 12),
                 ],
               ),
             ),

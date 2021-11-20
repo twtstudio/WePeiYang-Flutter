@@ -61,7 +61,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       onPressed: () => setState(() {
         _toListPage();
       }),
-      iconSize: 40,
+      iconSize: 25,
       icon: Icon(Icons.list, color: Colors.white),
     );
   }
@@ -72,7 +72,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       onPressed: () => setState(() {
         _toReportPage();
       }),
-      iconSize: 40,
+      iconSize: 25,
       icon: Icon(Icons.add, color: Colors.white),
     );
   }

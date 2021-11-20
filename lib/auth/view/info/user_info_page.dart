@@ -64,10 +64,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         margin: const EdgeInsets.all(20),
                         child: Row(
                           children: <Widget>[
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.avatar,
-                                    style: mainTextStyle)),
+                            Text(S.current.avatar,
+                                style: mainTextStyle),
                             Spacer(),
                             SizedBox(
                               height: 45,
@@ -98,10 +96,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         padding: const EdgeInsets.all(20),
                         child: Row(
                           children: <Widget>[
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.user_name,
-                                    style: mainTextStyle)),
+                            Text(S.current.user_name,
+                                style: mainTextStyle),
                             Spacer(),
                             Text(pref.nickname.value, style: hintTextStyle),
                             SizedBox(width: 10),
@@ -129,10 +125,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         padding: const EdgeInsets.all(20),
                         child: Row(
                           children: <Widget>[
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.office_network,
-                                    style: mainTextStyle)),
+                            Text(S.current.office_network,
+                                style: mainTextStyle),
                             Spacer(),
                             Text(
                                 pref.isBindTju.value
@@ -165,10 +159,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         padding: const EdgeInsets.all(20),
                         child: Row(
                           children: <Widget>[
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.reset_password,
-                                    style: mainTextStyle)),
+                            Text(S.current.reset_password,
+                                style: mainTextStyle),
                             Spacer(),
                             arrow,
                             SizedBox(width: 11)
@@ -202,10 +194,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Image.asset('assets/images/telephone.png',
                                 width: 20),
                             SizedBox(width: 15),
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.phone2,
-                                    style: mainTextStyle)),
+                            Text(S.current.phone2,
+                                style: mainTextStyle),
                             Spacer(),
                             Text(
                                 (pref.phone.value != "")
@@ -240,10 +230,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           children: <Widget>[
                             Image.asset('assets/images/email.png', width: 20),
                             SizedBox(width: 15),
-                            SizedBox(
-                                width: 150,
-                                child: Text(S.current.email2,
-                                    style: mainTextStyle)),
+                            Text(S.current.email2,
+                                style: mainTextStyle),
                             Spacer(),
                             Text(
                                 (pref.email.value != "")

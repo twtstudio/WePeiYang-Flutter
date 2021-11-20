@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
@@ -81,42 +83,121 @@ class _SelfInformationState extends State<SelfInformation> {
     return DefaultTextStyle(
       style: TextStyle(fontSize: 13),
       child: Container(
-          height: 90,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.symmetric(vertical: 10),
+          width: MediaQuery.of(context).size.width / 1.2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 5),
-                      Text(", 你好"),
-                    ],
+                  Text(
+                    name,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: 30),
-                  Text(id),
+                  Text(" , 你好"),
+                  SizedBox(width: 20),
+                  Text("ID:"),
+                  Expanded(
+                    child: Text(
+                      id.substring(4),
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Text(department),
-                  SizedBox(width: 20),
-                  Text(type),
-                  SizedBox(width: 20),
-                  Text(major),
-                ],
+              SizedBox(height: 7),
+              SizedBox(
+                height: 32,
+                child: Expanded(
+                  child: TextScroller(
+                    stepOffset: 200.0,
+                    duration: Duration(seconds: 5),
+                    paddingLeft: 0.0,
+                    children: [
+                      Text(department),
+                      SizedBox(width: 10),
+                      Text(type),
+                      SizedBox(width: 10),
+                      Text(major),
+                      SizedBox(width: 30),
+                    ],
+                  ),
+                ),
               ),
             ],
           )),
+    );
+  }
+}
+
+//https://www.cnblogs.com/qqcc1388/p/12405548.html
+///跑马灯哗哗哗
+class TextScroller extends StatefulWidget {
+  Duration duration; // 轮播时间
+  double stepOffset; // 偏移量
+  double paddingLeft; // 内容之间的间距
+  List<Widget> children = []; //内容
+  TextScroller(
+      {this.paddingLeft, this.duration, this.stepOffset, this.children});
+
+  _TextScrollerState createState() => _TextScrollerState();
+}
+
+class _TextScrollerState extends State<TextScroller> {
+  ScrollController _controller; // 执行动画的controller
+  Timer _timer; // 定时器timer
+  double _offset = 0.0; // 执行动画的偏移量
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = ScrollController(initialScrollOffset: _offset);
+    _timer = Timer.periodic(widget.duration, (timer) {
+      double newOffset = _controller.offset + widget.stepOffset;
+      if (newOffset != _offset) {
+        _offset = newOffset;
+        _controller.animateTo(_offset,
+            duration: widget.duration, curve: Curves.linear); // 线性曲线动画
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _child() {
+    return new Row(children: _children());
+  }
+
+  // 子视图
+  List<Widget> _children() {
+    List<Widget> items = [];
+    List list = widget.children;
+    for (var i = 0; i < list.length; i++) {
+      Container item = new Container(
+        margin: new EdgeInsets.only(right: widget.paddingLeft),
+        child: list[i],
+      );
+      items.add(item);
+    }
+    return items;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.horizontal, // 横向滚动
+      controller: _controller, // 滚动的controller
+      itemBuilder: (context, index) {
+        return _child();
+      },
     );
   }
 }
