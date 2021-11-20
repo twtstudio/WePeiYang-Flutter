@@ -21,10 +21,12 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
 
   static const reasons = [
     '', // 无用，对应index == 0
-    '垃圾广告信息',
-    '辱骂、人身攻击等不友善行为',
-    '诱导赞同、关注等行为',
-    '骚扰',
+    '违反宪法及相关法律法规与政策，违反《普通高等学校学生管理规定》和天津大学学生管理规定',
+    '危害国家安全，煽动民族矛盾，鼓动地域歧视，以及其他破坏政治稳定',
+    '散布宗教、迷信、谣言、虚假信息，干扰校园和社会秩序',
+    '含有淫秽色情、性暗示、赌博、传销、暴力、凶杀、恐怖或者教唆犯罪内容',
+    '侵害他人肖像权隐私，未经允许披露他人信息、侮辱攻击他人或机构',
+    '干扰校务专区正常运营，以及迫害其他用户或第三方合法权益的内容'
   ];
 
   @override
@@ -60,10 +62,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
           },
           title: Text(
             reasons[i],
-            style: FontManager.YaHeiRegular.copyWith(
-              fontSize: 15,
-              color: ColorUtil.boldTextColor,
-            ),
+            style: TextStyle(fontSize: 13, color: ColorUtil.boldTextColor),
           ),
         ),
       );
@@ -83,10 +82,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
             },
             title: Text(
               '其他',
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 15,
-                color: ColorUtil.boldTextColor,
-              ),
+              style: TextStyle(fontSize: 13, color: ColorUtil.boldTextColor),
             ),
             secondary: IconButton(
               icon: Icon(Icons.keyboard_arrow_right,
