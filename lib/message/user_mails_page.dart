@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/message/message_service.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/service/images.dart';
+import 'package:we_pei_yang_flutter/message/message_service.dart';
 
 class UserMailboxPage extends StatefulWidget {
   @override
@@ -33,7 +32,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: UserMailList(),
@@ -61,26 +60,21 @@ class _UserMailListState extends State<UserMailList> {
   @override
   Widget build(BuildContext context) {
     if (_messages == null) {
-      return Center(
-        child: Text("waiting"),
-      );
+      return Center(child: Text("waiting"));
     }
     return ListView.builder(
-      itemBuilder: (c, i) {
-        return MailItem(
-          data: _messages.mails[i],
-        );
-      },
       itemCount: _messages.mails.length,
+      itemBuilder: (_, i) {
+        return MailItem(data: _messages.mails[i]);
+      },
     );
   }
 }
 
 class MailItem extends StatefulWidget {
   final UserMail data;
-  final VoidCallback onTapDown;
 
-  const MailItem({Key key, this.data, this.onTapDown}) : super(key: key);
+  const MailItem({Key key, this.data}) : super(key: key);
 
   @override
   _MailItemState createState() => _MailItemState();
@@ -90,88 +84,72 @@ class _MailItemState extends State<MailItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: GestureDetector(
-        // onTapUp: (_) => showDialog(
-        //     context: context, builder: (_) => UserMailDialog(widget.data.url)),
         onTapUp: (_) {
           if (widget.data.url != "") {
             Navigator.push(
               context,
-              new MaterialPageRoute(
-                builder: (context) => new MailPage(
-                  url: widget.data.url,
-                  title: widget.data.title,
-                ),
+              MaterialPageRoute(
+                builder: (context) =>
+                    MailPage(url: widget.data.url, title: widget.data.title),
               ),
             );
           }
         },
         child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
                   blurRadius: 5,
                   color: Color.fromARGB(64, 236, 237, 239),
-                  offset: Offset(0, 0),
+                  offset: Offset.zero,
                   spreadRadius: 3),
             ],
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.data.title,
-                  style: TextStyle(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.data.title,
+                style: TextStyle(
                     color: Color(0xff363c54),
                     fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                    fontSize: 15),
+              ),
+              SizedBox(height: 10),
+              Text(
+                widget.data.content,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Color(0xff363c54), fontSize: 13),
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Image(
+                    image: AssetImage(Images.cloud),
+                    width: 17,
+                    color: Colors.black,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  widget.data.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Color(0xff363c54),
-                    fontSize: 13,
+                  SizedBox(width: 10),
+                  Text(
+                    "twt",
+                    style: TextStyle(color: Color(0xff414650), fontSize: 11),
                   ),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Image(
-                      image: AssetImage(Images.cloud),
-                      width: 17,
-                      color: Colors.black,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "twt",
-                      style: TextStyle(
-                        color: Color(0xff414650),
-                        fontSize: 11,
-                      ),
-                    ),
-                    Expanded(child: SizedBox()),
-                    Text(
-                      widget.data.time,
-                      style: TextStyle(
-                        color: Color(0xffb1b2be),
-                        fontSize: 11,
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
+                  Spacer(),
+                  Text(
+                    widget.data.time,
+                    style: TextStyle(color: Color(0xffb1b2be), fontSize: 11),
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),
@@ -215,7 +193,7 @@ class _MailPageState extends State<MailPage> {
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
               child: Icon(Icons.arrow_back,
-                  color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                  color: Color.fromRGBO(53, 59, 84, 1), size: 32),
               onTap: () => Navigator.pop(context)),
         ),
       ),
@@ -224,12 +202,12 @@ class _MailPageState extends State<MailPage> {
         child: WebView(
           initialUrl: widget.url,
           javascriptMode: JavascriptMode.unrestricted,
-          onPageFinished: (_){
+          onPageFinished: (_) {
             setState(() {
               opacity = 1.0;
             });
           },
-          onWebResourceError: (WebResourceError error){
+          onWebResourceError: (WebResourceError error) {
             ToastProvider.error('加载遇到了错误');
           },
         ),

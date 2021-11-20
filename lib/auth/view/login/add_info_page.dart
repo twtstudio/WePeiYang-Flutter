@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class AddInfoWidget extends StatefulWidget {
   @override
@@ -39,7 +40,6 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
     else {
       AuthService.addInfo(phone, code, email,
           onSuccess: () {
-            ToastProvider.success("登录成功");
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
@@ -71,16 +71,16 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text(S.current.add_info_hint,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -94,7 +94,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -106,8 +106,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -120,7 +121,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -128,8 +129,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               children: [
                 ConstrainedBox(
@@ -144,17 +146,18 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(15, 18, 0, 18),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Container(
+                SizedBox(width: 20),
+                SizedBox(
                     height: 55,
                     width: width / 2 - 20,
-                    margin: const EdgeInsets.only(left: 20),
                     child: isPress
                         ? StreamBuilder<int>(
                             stream: Stream.periodic(
@@ -165,48 +168,73 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                               if (time == 0)
                                 WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
-                              return RaisedButton(
+                              return ElevatedButton(
                                 onPressed: () {},
-                                color: Colors.grey[300],
-                                splashColor: Colors.grey[300],
                                 child: Text('$time秒后重试',
                                     style: FontManager.YaHeiRegular.copyWith(
                                         color: Color.fromRGBO(98, 103, 123, 1),
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold)),
-                                elevation: 5.0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)),
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(5),
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.grey[300]),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.grey[300]),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30))),
+                                ),
                               );
                             })
-                        : RaisedButton(
+                        : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            color: Color.fromRGBO(53, 59, 84, 1.0),
-                            splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                             child: Text(S.current.fetch_captcha,
                                 style: FontManager.YaHeiRegular.copyWith(
                                     color: Colors.white, fontSize: 13)),
-                            elevation: 5.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                            style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(5),
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color.fromRGBO(103, 110, 150, 1);
+                                return Color.fromRGBO(53, 59, 84, 1);
+                              }),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Color.fromRGBO(53, 59, 84, 1)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                            ),
                           )),
               ],
             ),
           ),
+          SizedBox(height: 30),
           Container(
-              height: 50.0,
-              width: 400.0,
-              margin: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-              child: RaisedButton(
+              height: 50,
+              width: 400,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              child: ElevatedButton(
                 onPressed: _submit,
-                color: Color.fromRGBO(53, 59, 84, 1.0),
-                splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                 child: Text(S.current.login2,
                     style: FontManager.YaHeiRegular.copyWith(
                         color: Colors.white, fontSize: 13)),
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(5),
+                  overlayColor:
+                      MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.pressed))
+                      return Color.fromRGBO(103, 110, 150, 1);
+                    return Color.fromRGBO(53, 59, 84, 1);
+                  }),
+                  backgroundColor:
+                      MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+                ),
               )),
         ],
       ),

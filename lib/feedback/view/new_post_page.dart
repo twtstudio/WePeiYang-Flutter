@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -577,11 +576,11 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    PickedFile pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile xFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
     Provider.of<NewPostProvider>(context, listen: false)
         .imgList
-        .add(File(pickedFile.path));
+        .add(File(xFile.path));
     if (!mounted) return;
     setState(() {});
   }
@@ -591,18 +590,18 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       context: context,
       builder: (context) => AlertDialog(
         titleTextStyle: FontManager.YaHeiRegular.copyWith(
-            color: Color.fromRGBO(79, 88, 107, 1),
+            color: Color.fromRGBO(79, 88, 107, 1.0),
             fontSize: 16,
             fontWeight: FontWeight.normal,
             decoration: TextDecoration.none),
         title: Text(S.current.feedback_delete_image_content),
         actions: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
               child: Text(S.current.feedback_cancel)),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },

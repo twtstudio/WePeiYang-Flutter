@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetNicknamePage extends StatefulWidget {
   @override
@@ -49,10 +50,10 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
               padding: const EdgeInsets.only(left: 15),
               child: GestureDetector(
                   child: Icon(Icons.arrow_back,
-                      color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                      color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                   onTap: () => Navigator.pop(context)),
             )),
-        body: Container(
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: TextField(
               focusNode: node,

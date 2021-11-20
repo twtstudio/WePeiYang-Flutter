@@ -1,7 +1,6 @@
 package com.twt.service.widget
 
 import android.content.Context
-import android.util.Log
 import org.json.JSONObject
 import java.util.*
 import kotlin.math.ceil

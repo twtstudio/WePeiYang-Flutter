@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 class UpdateDialog {
   bool isShowing = false;
@@ -151,27 +151,33 @@ class _UpdateWidgetState extends State<UpdateWidget> {
 
     var updateButton = FractionallySizedBox(
       widthFactor: 1,
-      child: RaisedButton(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        elevation: 0,
-        highlightElevation: 0,
+      child: ElevatedButton(
         child: Text(widget.updateButtonText, style: normalStyle),
-        color: Colors.transparent,
         onPressed: widget.onUpdate,
+        style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          elevation: MaterialStateProperty.all(0),
+          overlayColor: MaterialStateProperty.all(Colors.grey[300]),
+          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+        ),
       ),
     );
 
     var installButton = FractionallySizedBox(
       widthFactor: 1,
-      child: RaisedButton(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        elevation: 0,
-        highlightElevation: 0,
+      child: ElevatedButton(
         child: Text(widget.installButtonText, style: normalStyle),
-        color: Colors.transparent,
         onPressed: widget.onInstall,
+        style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          elevation: MaterialStateProperty.all(0),
+          overlayColor: MaterialStateProperty.all(Colors.grey[300]),
+          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+        ),
       ),
     );
 
@@ -183,7 +189,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
           Container(
             width: dialogWidth,
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),

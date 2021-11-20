@@ -129,15 +129,11 @@ class PrefsBean<T> with PreferencesUtil<T> {
 
   T get value => _getValue(_key) ?? _default;
 
-  set value(T newValue) {
-    // 这个判断不能加，因为不存储的话原生那边获取不到，除非原生那边也设置了默认值
-    // if (value == newValue) return;
-    _setValue(newValue, _key);
-  }
+  // 这个判断不能加，因为不存储的话原生那边获取不到，除非原生那边也设置了默认值
+  // if (value == newValue) return;
+  set value(T newValue) => _setValue(newValue, _key);
 
-  clear() {
-    _clearValue(_key);
-  }
+  clear() => _clearValue(_key);
 }
 
 mixin PreferencesUtil<T> {

@@ -38,22 +38,19 @@ Widget getQuietCourse(double height, double width, ScheduleCourse course) {
           width: width,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5), color: quietBackColor),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
-            child: Column(
-              children: [
-                Expanded(child: Text("")),
-                Icon(Icons.lock, color: quiteFrontColor, size: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text(formatText(course.courseName),
-                      style: quietNameStyle, textAlign: TextAlign.center),
-                ),
-                Text(S.current.not_this_week,
-                    style: quietHintStyle, textAlign: TextAlign.center),
-                Expanded(child: Text(""))
-              ],
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 3),
+          child: Column(
+            children: [
+              Spacer(),
+              Icon(Icons.lock, color: quiteFrontColor, size: 15),
+              SizedBox(height: 2),
+              Text(formatText(course.courseName),
+                  style: quietNameStyle, textAlign: TextAlign.center),
+              SizedBox(height: 2),
+              Text(S.current.not_this_week,
+                  style: quietHintStyle, textAlign: TextAlign.center),
+              Spacer()
+            ],
           ),
         )
       : Container();

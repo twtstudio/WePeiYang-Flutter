@@ -17,7 +17,7 @@ class ReportBasePage extends StatelessWidget {
           preferredSize: Size.fromHeight(140),
           child: Container(
             color: Color(0xff63677b),
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Hero(
               tag: 'appbar',
               transitionOnUserGestures: true,
@@ -32,16 +32,12 @@ class ReportBasePage extends StatelessWidget {
                   '健康信息填报',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
-                leading: FlatButton(
-                  padding: EdgeInsets.all(0),
+                leading: IconButton(
+                  padding: const EdgeInsets.all(0),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: 30,
-                    color: Colors.white,
-                  ),
+                  icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
                 ),
                 backgroundColor: Colors.transparent,
                 actions: [action],
@@ -86,7 +82,7 @@ class _SelfInformationState extends State<SelfInformation> {
       style: TextStyle(fontSize: 13),
       child: Container(
           height: 90,
-          padding: EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

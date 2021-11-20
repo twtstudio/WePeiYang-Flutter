@@ -10,7 +10,7 @@ class FeedbackBannerWidget extends StatelessWidget {
   final Widget Function(VoidFutureCallBack tap) builder;
 
   const FeedbackBannerWidget(
-      {Key key, this.questionId,  this.showBanner = false, this.builder})
+      {Key key, this.questionId, this.showBanner = false, this.builder})
       : super(key: key);
 
   @override

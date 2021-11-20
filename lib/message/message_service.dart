@@ -1,13 +1,13 @@
-import 'dart:convert';
-
+import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show compute;
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
@@ -78,11 +78,11 @@ class UserNotificationDio extends DioAbstract {
 }
 
 class MessageDio extends DioAbstract {
-  @override
-  String baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
-
   // @override
   // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
+
+  @override
+  String baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
 
   @override
   Map<String, String> headers = {"Connection": "close"};
@@ -90,14 +90,14 @@ class MessageDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
 
-  @override
   /// 这里不能改，因为下面手动解析的字符串
+  @override
   ResponseType responseType = ResponseType.plain;
 }
 
 class ApiInterceptor extends InterceptorsWrapper {
   @override
-  onResponse(Response response) async {
+  onResponse(response, handler) async {
     final String data = response.data.toString();
     final bool isCompute = data.length > 10 * 1024;
     final Map<dynamic, dynamic> _map =
@@ -105,9 +105,9 @@ class ApiInterceptor extends InterceptorsWrapper {
     FeedbackMessageBaseData respData = FeedbackMessageBaseData.fromJson(_map);
     if (respData.success) {
       response.data = respData.data;
-      return messageDio.dio.resolve(response);
+      return handler.resolve(response);
     } else {
-      throw WpyDioError(error: respData.message);
+      return handler.reject(WpyDioError(error: respData.message), true);
     }
   }
 }

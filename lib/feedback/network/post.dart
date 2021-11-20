@@ -54,22 +54,22 @@ class Post {
     userName = json['username'];
     commentCount = json['msgCount'];
     if (json['url_list'] != null) {
-      imgUrlList = new List<String>();
+      imgUrlList = <String>[];
       json['url_list'].forEach((v) {
         imgUrlList.add(v);
       });
     }
     if (json['thumb_url_list'] != null) {
-      thumbImgUrlList = new List<String>();
+      thumbImgUrlList = <String>[];
       json['thumb_url_list'].forEach((v) {
         thumbImgUrlList.add(v);
       });
     }
     topImgUrl = json['thumbImg'];
     if (json['tags'] != null) {
-      tags = new List<TagOfPost>();
+      tags = <TagOfPost>[];
       json['tags'].forEach((v) {
-        tags.add(new TagOfPost.fromJson(v));
+        tags.add(TagOfPost.fromJson(v));
       });
     }
     isLiked = json['is_liked'];
@@ -82,7 +82,7 @@ class Post {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.title;
     data['description'] = this.content;
@@ -125,7 +125,7 @@ class TagOfPost {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     return data;

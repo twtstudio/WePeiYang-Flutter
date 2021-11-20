@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
@@ -8,8 +9,6 @@ import 'package:we_pei_yang_flutter/feedback/view/search_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
-
-import '../home/view/home_page.dart';
 
 class FeedbackRouter {
   static String home = 'feedback/home';

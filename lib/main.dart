@@ -1,13 +1,14 @@
+import 'dart:io';
 import 'dart:async';
-import 'dart:io'
-    show HttpClient, HttpOverrides, Platform, SecurityContext, X509Certificate;
 
-import 'package:flutter/foundation.dart' show TextTreeRenderer, DiagnosticsTreeStyle;
+import 'package:flutter/foundation.dart'
+    show TextTreeRenderer, DiagnosticsTreeStyle;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:umeng_sdk/umeng_sdk.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
@@ -15,6 +16,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -24,8 +26,6 @@ import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
-
-import 'feedback/model/feedback_providers.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -167,7 +167,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
-    UmengSdk.setPageCollectionModeManual();
+    UmengCommonSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -184,7 +184,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
                   case 'refreshFeedbackMessageCount':
                     await messageProvider.refreshFeedbackCount();
                     return "success";
-                    break;
                   case 'showMessageDialogOnlyText':
                     String content = call.arguments['data'];
                     showDialog(content);
@@ -224,6 +223,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
           locale: localModel.locale(),
           home: StartUpWidget(),
           builder: (context, child) => GestureDetector(
+            child: child,
             onTapDown: (TapDownDetails details) {
               FocusScopeNode currentFocus = FocusScope.of(context);
               if (!currentFocus.hasPrimaryFocus &&
@@ -231,7 +231,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
                 FocusManager.instance.primaryFocus.unfocus();
               }
             },
-            child: child,
           ),
         );
       }),

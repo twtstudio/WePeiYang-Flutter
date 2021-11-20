@@ -75,8 +75,8 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     status = DetailPageStatus.loading;
-    _officialCommentList = List();
-    _commentList = List();
+    _officialCommentList = [];
+    _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
       if (post.title == null) {
@@ -184,9 +184,7 @@ class _DetailPageState extends State<DetailPage> {
 
     if (status == DetailPageStatus.loading) {
       if (post.title == null) {
-        body = Center(
-          child: Loading(),
-        );
+        body = Center(child: Loading());
       } else {
         body = ListView(
           children: [
@@ -202,9 +200,7 @@ class _DetailPageState extends State<DetailPage> {
             ),
             SizedBox(
               height: 100,
-              child: Center(
-                child: Loading(),
-              ),
+              child: Center(child: Loading()),
             )
           ],
         );

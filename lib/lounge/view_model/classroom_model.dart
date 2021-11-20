@@ -28,7 +28,7 @@ class ClassroomsDataModel extends ViewStateListModel {
       var floor = c.name[0];
       var room = c..aId = area.id;
       if (f.containsKey(floor)) {
-        var list = List<Classroom>()
+        var list = <Classroom>[]
           ..addAll(f[floor])
           ..add(room);
         f[floor] = list;

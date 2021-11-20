@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -97,10 +97,10 @@ class _SettingPageState extends State<SettingPage> {
           //     ),
           //   ),
           // ),
-          Container(
+          SizedBox(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -123,60 +123,57 @@ class _SettingPageState extends State<SettingPage> {
                             margin: const EdgeInsets.only(left: 15),
                             child: Text(S.current.setting_color,
                                 style: mainTextStyle)),
+                        SizedBox(height: 3),
                         Container(
                             width: 230,
-                            margin: const EdgeInsets.only(left: 15, top: 3),
+                            margin: const EdgeInsets.only(left: 15),
                             child: Text(S.current.setting_color_hint,
                                 style: hintTextStyle))
                       ],
                     ),
-                    Expanded(child: Text('')),
-                    Padding(
-                        padding: const EdgeInsets.only(right: 26), child: arrow)
+                    Spacer(),
+                    arrow,
+                    SizedBox(width: 26)
                   ],
                 ),
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
               child: Row(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Container(
-                        width: 150,
-                        child:
-                            Text(S.current.setting_gpa, style: mainTextStyle)),
+                  SizedBox(width: 15),
+                  SizedBox(
+                      width: 150,
+                      child: Text(S.current.setting_gpa, style: mainTextStyle)),
+                  Spacer(),
+                  Switch(
+                    value: pref.hideGPA.value,
+                    onChanged: (value) {
+                      setState(() => pref.hideGPA.value = value);
+                      Provider.of<GPANotifier>(context, listen: false)
+                          .hideGPAWithNotify = value;
+                    },
+                    activeColor: Color.fromRGBO(105, 109, 127, 1),
+                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
                   ),
-                  Expanded(child: Text('')),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Switch(
-                        value: pref.hideGPA.value,
-                        onChanged: (value) {
-                          setState(() => pref.hideGPA.value = value);
-                          Provider.of<GPANotifier>(context, listen: false)
-                              .hideGPAWithNotify = value;
-                        },
-                        activeColor: Color.fromRGBO(105, 109, 127, 1),
-                        inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                        activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                        inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      ))
+                  SizedBox(width: 12)
                 ],
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -190,30 +187,30 @@ class _SettingPageState extends State<SettingPage> {
                           margin: const EdgeInsets.only(left: 15),
                           child: Text(S.current.setting_night_mode,
                               style: mainTextStyle)),
+                      SizedBox(height: 3),
                       Container(
                           width: 210,
-                          margin: const EdgeInsets.only(left: 15, top: 3),
+                          margin: const EdgeInsets.only(left: 15),
                           child: Text(
                             S.current.setting_night_mode_hint,
                             style: hintTextStyle,
                           ))
                     ],
                   ),
-                  Expanded(child: Text('')),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Switch(
-                        value: pref.nightMode.value,
-                        onChanged: (value) {
-                          setState(() => pref.nightMode.value = value);
-                          Provider.of<ScheduleNotifier>(context, listen: false)
-                              .nightMode = value;
-                        },
-                        activeColor: Color.fromRGBO(105, 109, 127, 1),
-                        inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                        activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                        inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      ))
+                  Spacer(),
+                  Switch(
+                    value: pref.nightMode.value,
+                    onChanged: (value) {
+                      setState(() => pref.nightMode.value = value);
+                      Provider.of<ScheduleNotifier>(context, listen: false)
+                          .nightMode = value;
+                    },
+                    activeColor: Color.fromRGBO(105, 109, 127, 1),
+                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  ),
+                  SizedBox(width: 12)
                 ],
               ),
             ),
@@ -222,10 +219,10 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.fromLTRB(20, 17, 20, 5),
               alignment: Alignment.centerLeft,
               child: Text(S.current.schedule, style: titleTextStyle)),
-          Container(
+          SizedBox(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -248,25 +245,26 @@ class _SettingPageState extends State<SettingPage> {
                             margin: const EdgeInsets.only(left: 15),
                             child: Text(S.current.setting_day_number,
                                 style: mainTextStyle)),
+                        SizedBox(height: 3),
                         Container(
                             width: 150,
-                            margin: const EdgeInsets.only(left: 15, top: 3),
+                            margin: const EdgeInsets.only(left: 15),
                             child: Text('${pref.dayNumber.value}',
                                 style: hintTextStyle))
                       ],
                     ),
-                    Expanded(child: Text('')),
-                    Padding(
-                        padding: const EdgeInsets.only(right: 26), child: arrow)
+                    Spacer(),
+                    arrow,
+                    SizedBox(width: 26),
                   ],
                 ),
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
@@ -282,28 +280,28 @@ class _SettingPageState extends State<SettingPage> {
                               margin: const EdgeInsets.only(left: 15),
                               child: Text(S.current.setting_other_week,
                                   style: mainTextStyle)),
+                          SizedBox(height: 3),
                           Container(
                               width: 210,
-                              margin: const EdgeInsets.only(left: 15, top: 3),
+                              margin: const EdgeInsets.only(left: 15),
                               child: Text(S.current.setting_other_week_hint,
                                   style: hintTextStyle))
                         ],
                       ),
                     ],
                   ),
-                  Expanded(child: Text('')),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Switch(
-                        value: pref.otherWeekSchedule.value,
-                        onChanged: (value) {
-                          setState(() => pref.otherWeekSchedule.value = value);
-                        },
-                        activeColor: Color.fromRGBO(105, 109, 127, 1),
-                        inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                        activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                        inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      ))
+                  Spacer(),
+                  Switch(
+                    value: pref.otherWeekSchedule.value,
+                    onChanged: (value) {
+                      setState(() => pref.otherWeekSchedule.value = value);
+                    },
+                    activeColor: Color.fromRGBO(105, 109, 127, 1),
+                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  ),
+                  SizedBox(width: 12),
                 ],
               ),
             ),

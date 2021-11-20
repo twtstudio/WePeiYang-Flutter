@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LoginHomeWidget extends StatelessWidget {
   @override
@@ -23,53 +24,67 @@ class LoginHomeWidget extends StatelessWidget {
                     fontSize: 50,
                     fontWeight: FontWeight.w300)),
           ),
-          Expanded(child: Text(""), flex: 1),
+          Spacer(flex: 1),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 height: 50,
                 width: 100,
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.loginPw),
-                  color: MyColors.deepBlue,
-                  splashColor: MyColors.brightBlue,
                   child: Text(S.current.login,
                       style: FontManager.YaHeiRegular.copyWith(
                           color: Colors.white, fontSize: 13)),
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(3),
+                    overlayColor:
+                        MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.pressed))
+                        return MyColors.brightBlue;
+                      return MyColors.deepBlue;
+                    }),
+                    backgroundColor:
+                        MaterialStateProperty.all(MyColors.deepBlue),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                  ),
                 ),
               ),
-              Container(
+              SizedBox(width: 50),
+              SizedBox(
                 height: 50,
                 width: 100,
-                margin: const EdgeInsets.only(left: 50),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.register1),
-                  color: MyColors.deepBlue,
-                  splashColor: MyColors.brightBlue,
                   child: Text(S.current.register,
                       style: FontManager.YaHeiRegular.copyWith(
                           color: Colors.white, fontSize: 13)),
-                  elevation: 3.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(3),
+                    overlayColor:
+                        MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.pressed))
+                        return MyColors.brightBlue;
+                      return MyColors.deepBlue;
+                    }),
+                    backgroundColor:
+                        MaterialStateProperty.all(MyColors.deepBlue),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30))),
+                  ),
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: Text(S.current.first_login_hint,
-                textAlign: TextAlign.center,
-                style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 11, color: Color.fromRGBO(98, 103, 124, 1))),
-          ),
-          Expanded(child: Text(""), flex: 2)
+          SizedBox(height: 30),
+          Text(S.current.first_login_hint,
+              textAlign: TextAlign.center,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 11, color: Color.fromRGBO(98, 103, 124, 1))),
+          Spacer(flex: 2)
         ],
       ),
     );

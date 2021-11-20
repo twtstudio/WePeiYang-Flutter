@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
+
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -36,8 +37,8 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     }
   }
 
-  FocusNode _userNumFocus = FocusNode();
-  FocusNode _nicknameFocus = FocusNode();
+  final FocusNode _userNumFocus = FocusNode();
+  final FocusNode _nicknameFocus = FocusNode();
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
@@ -59,16 +60,16 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text(S.current.register2,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -82,7 +83,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -94,8 +95,9 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -111,7 +113,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -119,7 +121,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               ),
             ),
           ),
-          Expanded(child: Text("")),
+          Spacer(),
           Container(
             height: 50,
             alignment: Alignment.bottomRight,
@@ -193,10 +195,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
     }
   }
 
-  FocusNode _idNumFocus = FocusNode();
-  FocusNode _emailFocus = FocusNode();
-  FocusNode _phoneFocus = FocusNode();
-  FocusNode _codeFocus = FocusNode();
+  final FocusNode _idNumFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _codeFocus = FocusNode();
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
@@ -220,16 +222,16 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text(S.current.register2,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -243,7 +245,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -255,8 +257,9 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -270,7 +273,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -282,8 +285,9 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -296,7 +300,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -304,8 +308,9 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               children: [
                 ConstrainedBox(
@@ -321,17 +326,18 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         filled: true,
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(15, 18, 0, 18),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Container(
+                SizedBox(width: 20),
+                SizedBox(
                     height: 55,
                     width: width / 2 - 20,
-                    margin: const EdgeInsets.only(left: 20),
                     child: isPress
                         ? StreamBuilder<int>(
                             stream: Stream.periodic(
@@ -342,35 +348,51 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                               if (time == 0)
                                 WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
-                              return RaisedButton(
+                              return ElevatedButton(
                                 onPressed: () {},
-                                color: Colors.grey[300],
-                                splashColor: Colors.grey[300],
                                 child: Text('$time秒后重试',
                                     style: FontManager.YaHeiRegular.copyWith(
                                         color: Color.fromRGBO(98, 103, 123, 1),
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold)),
-                                elevation: 5.0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)),
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(5),
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.grey[300]),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.grey[300]),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30))),
+                                ),
                               );
                             })
-                        : RaisedButton(
+                        : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            color: Color.fromRGBO(53, 59, 84, 1.0),
-                            splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                             child: Text(S.current.fetch_captcha,
                                 style: FontManager.YaHeiRegular.copyWith(
                                     color: Colors.white, fontSize: 13)),
-                            elevation: 5.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                            style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(5),
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color.fromRGBO(103, 110, 150, 1);
+                                return Color.fromRGBO(53, 59, 84, 1);
+                              }),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Color.fromRGBO(53, 59, 84, 1)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                            ),
                           )),
               ],
             ),
           ),
-          Expanded(child: Text("")),
+          Spacer(),
           Row(
             children: [
               Container(
@@ -383,7 +405,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       image: AssetImage('assets/images/arrow_round_back.png')),
                 ),
               ),
-              Expanded(child: Text("")),
+              Spacer(),
               Container(
                 height: 50,
                 alignment: Alignment.bottomRight,
@@ -443,8 +465,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     }
   }
 
-  FocusNode _pw1Focus = FocusNode();
-  FocusNode _pw2Focus = FocusNode();
+  final FocusNode _pw1Focus = FocusNode();
+  final FocusNode _pw2Focus = FocusNode();
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
@@ -466,16 +488,16 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text(S.current.register2,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -491,7 +513,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -503,8 +525,9 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -519,7 +542,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -529,19 +552,17 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(25, 20, 40, 0),
+            padding: const EdgeInsets.fromLTRB(25, 20, 40, 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  child: Checkbox(
-                    value: this.check,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    activeColor: Color.fromRGBO(98, 103, 123, 1),
-                    onChanged: (bool val) =>
-                        this.setState(() => this.check = !this.check),
-                  ),
+                Checkbox(
+                  value: this.check,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  activeColor: Color.fromRGBO(98, 103, 123, 1),
+                  onChanged: (bool val) =>
+                      this.setState(() => this.check = !this.check),
                 ),
                 Text(S.current.register_hint1,
                     style: FontManager.YaHeiRegular.copyWith(
@@ -560,7 +581,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               ],
             ),
           ),
-          Expanded(child: Text("")),
+          Spacer(),
           Row(
             children: [
               Container(
@@ -573,7 +594,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                       image: AssetImage('assets/images/arrow_round_back.png')),
                 ),
               ),
-              Expanded(child: Text("")),
+              Spacer(),
               Container(
                 height: 50,
                 alignment: Alignment.bottomRight,

@@ -17,7 +17,7 @@ class Building {
     building.name =
         RegExp(r'^[0-9]{2}').firstMatch(map['building'] ?? '').group(0);
     building.campus = map['campus_id'] ?? '';
-    List<Area> list = List()
+    List<Area> list = []
       ..addAll((map['areas'] as List ?? []).map((e) => Area.fromMap(e)));
     building.roomCount = 0;
     building.areas = {};

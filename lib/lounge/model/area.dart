@@ -13,7 +13,7 @@ class Area {
     Area area = Area();
     area.id = map['area_id'] ?? '';
     // var list = map['classrooms'];
-    List<Classroom> list = List()
+    List<Classroom> list = []
       ..addAll((map['classrooms'] as List ?? [])
           .map((e) => Classroom.fromMap(e, aId: area.id)));
     area.classrooms = {};

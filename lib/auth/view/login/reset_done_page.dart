@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetDoneWidget extends StatelessWidget {
   @override
@@ -21,30 +21,37 @@ class ResetDoneWidget extends StatelessWidget {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 180),
+          SizedBox(height: 180),
+          Center(
             child: Text(S.current.reset_password_done,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
-          Container(
+          SizedBox(height: 20),
+          SizedBox(
             height: 55,
             width: 140,
-            margin: const EdgeInsets.only(top: 20),
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context, AuthRouter.login, (route) => false),
-              color: Color.fromRGBO(53, 59, 84, 1.0),
-              splashColor: Color.fromRGBO(103, 110, 150, 1.0),
               child: Text(S.current.login3,
                   style: FontManager.YaHeiRegular.copyWith(
                       color: Colors.white, fontSize: 13)),
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(5),
+                overlayColor:
+                    MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.pressed))
+                    return Color.fromRGBO(103, 110, 150, 1);
+                  return Color.fromRGBO(53, 59, 84, 1);
+                }),
+                backgroundColor:
+                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30))),
+              ),
             ),
           ),
         ],

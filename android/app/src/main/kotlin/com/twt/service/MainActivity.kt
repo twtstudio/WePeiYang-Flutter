@@ -15,8 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.lifecycleScope
-import com.example.umeng_sdk.UmengSdkPlugin
+import com.umeng.umeng_common_sdk.UmengCommonSdkPlugin
 import com.google.gson.Gson
 import com.tencent.tauth.Tencent
 import com.twt.service.download.MyViewModel
@@ -27,8 +26,6 @@ import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -86,7 +83,7 @@ class MainActivity : FlutterFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WBYApplication.activity = WeakReference(this)
-        UmengSdkPlugin.setContext(this)
+        UmengCommonSdkPlugin.setContext(this)
         updateWidget()
         handleIntent()
 

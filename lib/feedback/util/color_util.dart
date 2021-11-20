@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class ColorUtil {
   static ColorUtil instance = ColorUtil();
-  static Color mainColor = Color.fromARGB(255, 48, 60, 102);
-  static Color backgroundColor = Color.fromARGB(255, 247, 247, 248);
-  static Color searchBarIconColor = Color.fromARGB(255, 132, 135, 145);
-  static Color searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
-  static Color boldTextColor = Color.fromARGB(255, 48, 60, 102);
-  static Color lightTextColor = Color.fromARGB(255, 145, 145, 145);
-  static Color profileNameColor = Color.fromARGB(255, 255, 255, 255);
-  static Color profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
+  static const mainColor = Color.fromARGB(255, 48, 60, 102);
+  static const backgroundColor = Color.fromARGB(255, 247, 247, 248);
+  static const searchBarIconColor = Color.fromARGB(255, 132, 135, 145);
+  static const searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
+  static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
+  static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
+  static const profileNameColor = Color.fromARGB(255, 255, 255, 255);
+  static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
 }

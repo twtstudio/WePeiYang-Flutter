@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class FindPwDialog extends Dialog {
   static final _hintStyle = FontManager.YaHeiRegular.copyWith(

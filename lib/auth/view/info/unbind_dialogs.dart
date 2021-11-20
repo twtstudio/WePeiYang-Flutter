@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 final _hintStyle = FontManager.YaQiHei.copyWith(
     fontSize: 15,
@@ -54,7 +55,7 @@ class TjuUnbindDialog extends Dialog {
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
-                Container(width: 30),
+                SizedBox(width: 30),
                 GestureDetector(
                   onTap: () => _unbind(context),
                   child: Container(
@@ -110,7 +111,7 @@ class PhoneUnbindDialog extends Dialog {
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
-                Container(width: 30),
+                SizedBox(width: 30),
                 GestureDetector(
                   onTap: () => _unbind(context),
                   child: Container(
@@ -166,7 +167,7 @@ class EmailUnbindDialog extends Dialog {
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
-                Container(width: 30),
+                SizedBox(width: 30),
                 GestureDetector(
                   onTap: () => _unbind(context),
                   child: Container(

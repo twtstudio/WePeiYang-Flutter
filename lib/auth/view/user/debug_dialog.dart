@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class DebugDialog extends Dialog {
   static final _hintStyle = FontManager.YaQiHei.copyWith(
@@ -22,15 +22,14 @@ class DebugDialog extends Dialog {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              child: Text("确定要进入日志页面吗？",
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 13,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
-            ),
+            SizedBox(height: 20),
+            Text("确定要进入日志页面吗？",
+                style: FontManager.YaHeiRegular.copyWith(
+                    color: Color.fromRGBO(79, 88, 107, 1),
+                    fontSize: 13,
+                    fontWeight: FontWeight.normal,
+                    decoration: TextDecoration.none)),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -41,9 +40,10 @@ class DebugDialog extends Dialog {
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
-                Container(width: 30),
+                SizedBox(width: 30),
                 GestureDetector(
-                  onTap: () => Navigator.pushReplacementNamed(context, AuthRouter.debug),
+                  onTap: () =>
+                      Navigator.pushReplacementNamed(context, AuthRouter.debug),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),

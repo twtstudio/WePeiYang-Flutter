@@ -1,12 +1,13 @@
-import 'package:dio/dio.dart';
-import 'error_interceptor.dart' show WpyDioError;
-import 'net_status_listener.dart';
+import 'package:dio/dio.dart' show InterceptorsWrapper;
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
+    show WpyDioError;
+import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 
 class NetCheckInterceptor extends InterceptorsWrapper {
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(options, handler) async {
     if (NetStatusListener().hasNetwork())
-      return options;
+      return handler.next(options);
     else
       throw WpyDioError(error: "网络未连接");
   }

@@ -1,5 +1,5 @@
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import '../model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
 
 /// 解决首页今日课程、课程表课程名称显示不全的问题（课程dialog不调用此函数）
 String formatText(String text) {
@@ -66,8 +66,8 @@ List<List<bool>> getBoolMatrix(
 List<List<List<ScheduleCourse>>> getMergedCourses(
     ScheduleNotifier notifier, int dayNumber) {
   List<ScheduleCourse> courses = notifier.coursesWithNotify;
-  List<List<List<ScheduleCourse>>> result = List();
-  for (int i = 0; i < dayNumber; i++) result.add(List());
+  List<List<List<ScheduleCourse>>> result = [];
+  for (int i = 0; i < dayNumber; i++) result.add([]);
   courses.forEach((course) {
     int day = int.parse(course.arrange.day);
     if (day > dayNumber) return; // 这里return起到continue的作用
@@ -113,7 +113,7 @@ List<List<List<ScheduleCourse>>> getMergedCourses(
         }
       }
     });
-    if (!hasMerged) result[day - 1].add(List()..add(course));
+    if (!hasMerged) result[day - 1].add([]..add(course));
   });
   return result;
 }

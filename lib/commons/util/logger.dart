@@ -1,10 +1,9 @@
 import 'dart:async';
-
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
 class Logger {
   /// release模式下在内存中存储log信息
-  static List<String> logs = List();
+  static List<String> logs = [];
 
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
     String line = _getFormatTime() + ' | ' + str;
@@ -34,7 +33,7 @@ class Logger {
   // TODO 为了防止内存占用，暂时先控制log条数在200条以内
   static void checkList() {
     if (logs.length < 200) return;
-    List<String> newList = List()
+    List<String> newList = []
       ..addAll(logs.getRange(logs.length - 50, logs.length));
     logs = newList;
   }

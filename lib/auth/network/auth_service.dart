@@ -1,13 +1,11 @@
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:flutter/material.dart' show Navigator, required;
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
-    show WpyDioError;
-import 'package:dio/dio.dart' show Options, Response;
 import 'dart:convert' show utf8, base64Encode;
+import 'package:flutter/material.dart' show Navigator, required;
+
+import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class AuthDio extends DioAbstract {
   static const APP_KEY = "banana";
@@ -23,53 +21,73 @@ class AuthDio extends DioAbstract {
 
   @override
   List<InterceptorsWrapper> interceptors = [
-    InterceptorsWrapper(onRequest: (Options options) {
+    InterceptorsWrapper(onRequest: (options, handler) {
       var pref = CommonPreferences();
       options.headers['token'] = pref.token.value;
       options.headers['Cookie'] = pref.captchaCookie.value;
-    }, onResponse: (Response response) {
+      return handler.next(options);
+    }, onResponse: (response, handler) {
       var code = response?.data['error_code'] ?? -1;
+      var error = "";
       switch (code) {
         case 40002:
-          throw WpyDioError(error: "该用户不存在");
+          error = "该用户不存在";
+          break;
         case 40004:
-          throw WpyDioError(error: "用户名或密码错误");
+          error = "用户名或密码错误";
+          break;
         case 40005:
           Navigator.pushNamedAndRemoveUntil(
               WePeiYangApp.navigatorState.currentContext,
               AuthRouter.login,
               (route) => false);
-          throw WpyDioError(error: "登录失效，请重新登录");
+          error = "登录失效，请重新登录";
+          break;
         case 50005:
-          throw WpyDioError(error: "学号和身份证号不匹配");
+          error = "学号和身份证号不匹配";
+          break;
         case 50006:
-          throw WpyDioError(error: "用户名和邮箱已存在");
+          error = "用户名和邮箱已存在";
+          break;
         case 50007:
-          throw WpyDioError(error: "用户名已存在");
+          error = "用户名已存在";
+          break;
         case 50008:
-          throw WpyDioError(error: "邮箱已存在");
+          error = "邮箱已存在";
+          break;
         case 50009:
-          throw WpyDioError(error: "手机号码无效");
+          error = "手机号码无效";
+          break;
         case 50011:
-          throw WpyDioError(error: "验证失败，请重新尝试");
+          error = "验证失败，请重新尝试";
+          break;
         case 50012:
-          throw WpyDioError(error: "电子邮件或手机号格式不规范");
+          error = "电子邮件或手机号格式不规范";
+          break;
         case 50013:
-          throw WpyDioError(error: "电子邮件或手机号重复");
+          error = "电子邮件或手机号重复";
+          break;
         case 50014:
-          throw WpyDioError(error: "手机号已存在");
+          error = "手机号已存在";
+          break;
         case 50015:
-          throw WpyDioError(error: "升级失败，目标升级账号信息不存在");
+          error = "升级失败，目标升级账号信息不存在";
+          break;
         case 50016:
-          throw WpyDioError(error: "无此学院");
+          error = "无此学院";
+          break;
         case 50019:
-          throw WpyDioError(error: "用户名中含有非法字符");
+          error = "用户名中含有非法字符";
+          break;
         case 50020:
-          throw WpyDioError(error: "用户名过长");
+          error = "用户名过长";
+          break;
         case 50021:
-          throw WpyDioError(error: "该学号所属用户已注册过");
+          error = "该学号所属用户已注册过";
+          break;
         case 50022:
-          throw WpyDioError(error: "该身份证号未在系统中登记");
+          error = "该身份证号未在系统中登记";
+          break;
         case 40001:
         case 40003:
         case 50001:
@@ -77,8 +95,12 @@ class AuthDio extends DioAbstract {
         case 50003:
         case 50004:
         case 50010:
-          throw WpyDioError(error: "发生未知错误，请重新尝试");
+          error = "发生未知错误，请重新尝试";
       }
+      if (error == "")
+        return handler.next(response);
+      else
+        return handler.reject(WpyDioError(error: error), true);
     })
   ];
 }
@@ -287,8 +309,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeEmail', () async {
       try {
-        await authDio.put(
-            "user/single/email", queryParameters: {'email': email});
+        await authDio
+            .put("user/single/email", queryParameters: {'email': email});
         CommonPreferences().email.value = email;
         onSuccess();
       } on DioError catch (e) {
@@ -302,9 +324,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeNickname', () async {
       try {
-        await authDio
-            .put(
-            "user/single/username", queryParameters: {'username': username});
+        await authDio.put("user/single/username",
+            queryParameters: {'username': username});
         CommonPreferences().nickname.value = username;
         onSuccess();
       } on DioError catch (e) {

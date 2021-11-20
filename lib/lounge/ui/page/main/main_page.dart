@@ -184,16 +184,28 @@ class _RetryWidgetState extends State<RetryWidget> {
       height: 80,
       color: Colors.transparent,
       child: Center(
-        child: FlatButton(
+        child: ElevatedButton(
           onPressed: () {
             Provider.of<LoungeTimeModel>(context, listen: false).setTime();
           },
-          color: Colors.blue,
-          highlightColor: Colors.blue[700],
-          colorBrightness: Brightness.dark,
-          splashColor: Colors.grey,
-          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Text("重试"),
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20))),
+            elevation: MaterialStateProperty.all(0),
+            overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+              if (states.contains(MaterialState.pressed)) return Colors.grey;
+              return Colors.blue;
+            }),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (states) {
+                // 采用这种和overlayColor 效果于原来splashColor稍微有点点区别
+                if (states.contains(MaterialState.pressed))
+                  return Color(0xFF1976D2);
+                return Colors.blue; // 默认的背景颜色.
+              },
+            ),
+          ),
         ),
       ),
     );

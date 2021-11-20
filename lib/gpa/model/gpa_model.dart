@@ -6,7 +6,7 @@ class GPABean {
 
   GPABean.fromJson(Map<String, dynamic> map)
       : total = Total.fromJson(map['total']),
-        stats = List()
+        stats = []
           ..addAll(
               (map['stats'] as List ?? []).map((e) => GPAStat.fromJson(e)));
 
@@ -44,7 +44,7 @@ class GPAStat {
       : weighted = map['weighted'],
         gpa = map['gpa'],
         credits = map['credits'],
-        courses = List()
+        courses = []
           ..addAll(
               (map['courses'] as List ?? []).map((e) => GPACourse.fromJson(e)));
 

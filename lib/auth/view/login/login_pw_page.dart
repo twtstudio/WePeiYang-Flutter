@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -28,7 +29,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             if (result['telephone'] == null || result['email'] == null) {
               Navigator.pushNamed(context, AuthRouter.addInfo);
             } else {
-              ToastProvider.success("登录成功");
               Navigator.pushNamedAndRemoveUntil(
                   context, HomeRouter.home, (route) => false);
             }
@@ -36,8 +36,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  FocusNode _accountFocus = FocusNode();
-  FocusNode _passwordFocus = FocusNode();
+  final FocusNode _accountFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
@@ -59,16 +59,16 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           )),
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
+          Center(
             child: Text("${S.current.WBY}4.0",
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(98, 103, 123, 1),
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
           ),
+          SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -82,7 +82,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -94,8 +94,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               ),
             ),
           ),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 55,
@@ -109,7 +110,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
                     isCollapsed: true,
-                    contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none)),
@@ -118,49 +119,56 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               ),
             ),
           ),
+          SizedBox(height: 15),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(40, 15, 40, 25),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: GestureDetector(
               child: Text(S.current.forget_password,
                   style: FontManager.YaHeiRegular.copyWith(
                       fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
-              onTap: () =>
-                  Navigator.pushNamed(context, AuthRouter.findHome),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
           ),
+          SizedBox(height: 25),
           Container(
-              height: 50.0,
-              width: 400.0,
-              padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-              child: RaisedButton(
+              height: 50,
+              width: 400,
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: ElevatedButton(
                 onPressed: _login,
-                color: Color.fromRGBO(53, 59, 84, 1.0),
-                splashColor: Color.fromRGBO(103, 110, 150, 1.0),
                 child: Text(S.current.login,
                     style: FontManager.YaHeiRegular.copyWith(
                         color: Colors.white, fontSize: 13)),
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0)),
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(5),
+                  overlayColor:
+                      MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.pressed))
+                      return Color.fromRGBO(103, 110, 150, 1);
+                    return Color.fromRGBO(53, 59, 84, 1);
+                  }),
+                  backgroundColor:
+                      MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+                ),
               )),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(25, 20, 40, 0),
+            padding: const EdgeInsets.fromLTRB(25, 20, 40, 0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  child: Checkbox(
-                    value: this.check,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    activeColor: Color.fromRGBO(98, 103, 123, 1),
-                    onChanged: (bool val) =>
-                        this.setState(() => this.check = !this.check),
-                  ),
+                Checkbox(
+                  value: this.check,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  activeColor: Color.fromRGBO(98, 103, 123, 1),
+                  onChanged: (bool val) =>
+                      this.setState(() => this.check = !this.check),
                 ),
                 Text(S.current.register_hint1,
                     style: FontManager.YaHeiRegular.copyWith(

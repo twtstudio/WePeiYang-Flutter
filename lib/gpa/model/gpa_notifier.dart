@@ -1,10 +1,9 @@
-import 'dart:convert';
-
+import 'dart:convert' show json;
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'gpa_model.dart';
-import '../network/gpa_spider.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
+import 'package:we_pei_yang_flutter/gpa/network/gpa_spider.dart';
 
 class GPANotifier with ChangeNotifier {
   /// 每学期的gpa数据
@@ -61,7 +60,7 @@ class GPANotifier with ChangeNotifier {
 
   /// 获取曲线上的数据
   List<double> get curveDataWithNotify {
-    var doubles = List<double>();
+    var doubles = <double>[];
     if (_type == 0) for (var i in _gpaStats) doubles.add(i.weighted);
     if (_type == 1) for (var i in _gpaStats) doubles.add(i.gpa);
     if (_type == 2) for (var i in _gpaStats) doubles.add(i.credits);
@@ -70,7 +69,7 @@ class GPANotifier with ChangeNotifier {
 
   /// 获取当前学年的course detail
   List<GPACourse> get coursesWithNotify {
-    if (_gpaStats.length == 0) return List();
+    if (_gpaStats.length == 0) return [];
     return _gpaStats[_index].courses;
   }
 
@@ -135,10 +134,6 @@ class GPANotifier with ChangeNotifier {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
       getGPABean(onResult: (gpaBean) {
-        if (gpaBean == null) {
-          ToastProvider.error("存在未评教的课程，请先前往评教");
-          return;
-        }
         if (hint) ToastProvider.success("刷新gpa数据成功");
         _gpaStats = gpaBean.stats;
         _total = gpaBean.total;

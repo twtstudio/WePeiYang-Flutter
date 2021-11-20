@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'class_table_widget.dart';
-import 'week_select_widget.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/view/class_table_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
 class SchedulePage extends StatelessWidget {
   /// 星期栏是否收缩
@@ -181,7 +181,7 @@ class HoursCounterWidget extends StatelessWidget {
               )
             ],
           ),
-          Container(height: 45)
+          SizedBox(height: 45)
         ],
       ),
     );

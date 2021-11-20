@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class RegisterDialog extends Dialog {
   @override
@@ -90,8 +90,8 @@ class RegisterDialog extends Dialog {
                       "法律法规规定的其他情形下，微北洋可能在不经过您的同意或授权的前提下，向相关部门提供您的个人信息。\n" +
                       "2.3 第三方SDK信息\n" +
                       "2.3.1 微北洋使用了友盟+(Umeng)SDK，通过采集唯一设备识别码（IMEI）对用户进行唯一标识，" +
-                      "以便进行用户新增等统计分析服务。在特殊情况下（如用户使用平板设备或电视盒子时），"+
-                      "无法通过唯一设备识别码标识设备，我们会将设备Mac地址作为用户的唯一标识，以便正常提供统计分析服务。"+
+                      "以便进行用户新增等统计分析服务。在特殊情况下（如用户使用平板设备或电视盒子时），" +
+                      "无法通过唯一设备识别码标识设备，我们会将设备Mac地址作为用户的唯一标识，以便正常提供统计分析服务。" +
                       "详细内容请访问《【友盟+】隐私政策》(https://www.umeng.com/page/policy)。\n" +
                       "2.3.2 微北洋使用了个推SDK，我们可能会将您的设备平台、设备厂商及品牌、设备型号及系统版本、设备识别码、设备序列号等设备信息、" +
                       "应用列表信息、网络信息以及位置相关信息提供给每日互动股份有限公司，用于为您提供推送技术服务。" +
@@ -172,14 +172,13 @@ class RegisterDialog extends Dialog {
                 ]),
               ),
             ),
+            SizedBox(height: 13),
             Container(
-              height: 1.0,
-              margin: const EdgeInsets.symmetric(vertical: 13),
+              height: 1,
               color: Color.fromRGBO(172, 174, 186, 1),
             ),
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(bottom: 14),
+            SizedBox(height: 13),
+            Center(
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Text(S.current.ok,
@@ -189,7 +188,8 @@ class RegisterDialog extends Dialog {
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.none)),
               ),
-            )
+            ),
+            SizedBox(height: 14)
           ],
         ));
   }

@@ -11,7 +11,7 @@ class DebugPage extends StatelessWidget {
           centerTitle: true,
           backgroundColor: Color.fromRGBO(98, 103, 122, 1)),
       body: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
           itemCount: list.length,
           itemBuilder: (context, index) {
             return Text(list[index], style: TextStyle(fontSize: 10));

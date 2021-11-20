@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:convert' show base64;
+import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show StringCodec, BasicMessageChannel;
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -37,7 +37,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
               child: Icon(Icons.arrow_back,
-                  color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                  color: Color.fromRGBO(53, 59, 84, 1), size: 32),
               onTap: () => Navigator.pop(context)),
         ),
       ),
@@ -64,7 +64,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                     List<Directory> tempDir =
                         await getExternalStorageDirectories(
                             type: StorageDirectory.pictures);
-                    var newImg = new File(
+                    var newImg = File(
                         "${tempDir.first.path}/人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg")
                       ..writeAsBytesSync(bytes);
                     var channel = BasicMessageChannel(
