@@ -83,7 +83,7 @@ class _SelfInformationState extends State<SelfInformation> {
     return DefaultTextStyle(
       style: TextStyle(fontSize: 13),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: 10),
           width: MediaQuery.of(context).size.width / 1.2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -109,20 +109,18 @@ class _SelfInformationState extends State<SelfInformation> {
               SizedBox(height: 7),
               SizedBox(
                 height: 32,
-                child: Expanded(
-                  child: TextScroller(
-                    stepOffset: 200.0,
-                    duration: Duration(seconds: 5),
-                    paddingLeft: 0.0,
-                    children: [
-                      Text(department),
-                      SizedBox(width: 10),
-                      Text(type),
-                      SizedBox(width: 10),
-                      Text(major),
-                      SizedBox(width: 30),
-                    ],
-                  ),
+                child: TextScroller(
+                  stepOffset: 200.0,
+                  duration: Duration(seconds: 5),
+                  paddingLeft: 0.0,
+                  children: [
+                    Text(department),
+                    SizedBox(width: 10),
+                    Text(type),
+                    SizedBox(width: 10),
+                    Text(major),
+                    SizedBox(width: 30),
+                  ],
                 ),
               ),
             ],

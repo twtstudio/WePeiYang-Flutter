@@ -518,7 +518,7 @@ class _TodayTempState extends State<TodayTemp> {
 
   @override
   Widget build(BuildContext context) {
-    var textFieldWidth = MediaQuery.of(context).size.width * 0.654;
+    var textFieldWidth = MediaQuery.of(context).size.width * 0.645;
 
     return BackgroundColorListener(
       part: ReportPart.temperature,
@@ -577,7 +577,7 @@ class _TodayTempState extends State<TodayTemp> {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -1036,20 +1036,20 @@ class StateItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var itemWidth = MediaQuery.of(context).size.width * 0.18;
-    var itemHeight = itemWidth * 0.371;
+    var itemHeight = MediaQuery.of(context).size.height * 0.042;
     return InkWell(
       onTap: onclick,
-      borderRadius: BorderRadius.circular(12.5),
+      borderRadius: BorderRadius.circular(itemHeight / 2),
       child: Container(
         height: itemHeight,
         width: itemWidth,
         decoration: isSelected
             ? BoxDecoration(
                 shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(12.5),
+                borderRadius: BorderRadius.circular(itemHeight / 2),
                 color: Color(0XFF62677B))
             : BoxDecoration(
-                borderRadius: BorderRadius.circular(12.5),
+                borderRadius: BorderRadius.circular(itemHeight / 2),
                 border: Border.all(color: Color(0XFF62677B), width: 1)),
         child: Center(
           child: Text(

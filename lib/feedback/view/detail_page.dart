@@ -282,7 +282,6 @@ class _DetailPageState extends State<DetailPage> {
       onPressed: () {
         showMenu(
           context: context,
-
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
           position: RelativeRect.fromLTRB(

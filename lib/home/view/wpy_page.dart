@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 
@@ -115,8 +116,13 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                       fontSize: 30,
                       color: MyColors.deepBlue,
                       fontWeight: FontWeight.bold)),
-              Spacer(),
-              Text(CommonPreferences().nickname.value, style: hintStyle),
+              SizedBox(width: 5),
+              Expanded(
+                  child: Text(CommonPreferences().nickname.value,
+                      style: hintStyle,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  )),
               GestureDetector(
                 onTap: () =>
                     Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {

@@ -72,26 +72,26 @@ class _UserPageState extends State<UserPage> {
                       child: Icon(Icons.account_circle_rounded,
                           size: 90, color: Colors.white)),
                 ),
-                SizedBox(height: 15),
-                Text(CommonPreferences().nickname.value,
-                    textAlign: TextAlign.center,
-                    style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    )),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(CommonPreferences().nickname.value,
+                      textAlign: TextAlign.center,
+                      style: FontManager.YaHeiRegular.copyWith(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
                 GestureDetector(
                   onLongPress: () => showDialog(
                       context: context,
                       barrierDismissible: true,
                       builder: (BuildContext context) => DebugDialog()),
-                  child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(CommonPreferences().userNumber.value,
+                  child: Text(CommonPreferences().userNumber.value,
                           textAlign: TextAlign.center,
                           style: FontManager.Texta.copyWith(
                               color: MyColors.deepDust, fontSize: 15))),
-                ),
+                SizedBox(height: 5),
                 NavigationWidget(),
                 Container(
                   height: 80,

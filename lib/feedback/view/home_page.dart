@@ -101,17 +101,20 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
         child: ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: model.homeList.length + 2,
+          itemCount: model.homeList.length,
           itemBuilder: (context, index) {
-            if (index == 0) {
-              return searchBar;
-            } else if (index == 1) {
-              return SearchTypeSwitchBar(
-                  controller: _refreshController, provider: _listProvider);
-            }
-            index -= 2;
             final post = model.homeList[index];
-            return PostCard.simple(post, key: ValueKey(post.id));
+            if (index == 0) {
+              return Column(
+                children: [
+                  searchBar,
+                  SearchTypeSwitchBar(
+                      controller: _refreshController, provider: _listProvider),
+                  PostCard.simple(post, key: ValueKey(post.id))
+                ],
+              );
+            }
+              return PostCard.simple(post, key: ValueKey(post.id));
           },
         ),
       );
