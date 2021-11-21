@@ -277,8 +277,8 @@ class _DetailPageState extends State<DetailPage> {
     }
 
     var menuButton = IconButton(
-      padding: const EdgeInsets.only(right: 20),
       icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
+      splashRadius: 20,
       onPressed: () {
         showMenu(
           context: context,

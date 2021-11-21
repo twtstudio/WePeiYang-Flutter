@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/home/model/home_model.dart';
@@ -91,6 +92,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   FocusNode _accountFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
+  FocusNode _notRobotFocus = FocusNode();
 
   Widget _detail(BuildContext context, CommonPreferences pref) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
@@ -154,6 +156,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
               textInputAction: TextInputAction.next,
               controller: nameController,
               focusNode: _accountFocus,
+              cursorColor: ColorUtil.mainColor,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
@@ -187,6 +191,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               keyboardType: TextInputType.visiblePassword,
               controller: pwController,
               focusNode: _passwordFocus,
+              cursorColor: ColorUtil.mainColor,
               decoration: InputDecoration(
                   hintText: S.current.password,
                   hintStyle: hintStyle,
@@ -203,6 +208,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 pwController?.clear();
                 pwController = null;
               },
+              onEditingComplete: () {
+                _accountFocus.unfocus();
+                FocusScope.of(context).requestFocus(_notRobotFocus);
+              },
             ),
           ),
         ),
@@ -217,6 +226,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   width: 120,
                   child: TextField(
                     controller: codeController,
+                    focusNode: _notRobotFocus,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         hintText: S.current.captcha,
                         hintStyle: hintStyle,
@@ -228,6 +239,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
                     onChanged: (input) => setState(() => captcha = input),
+                    onEditingComplete: () {
+                      _notRobotFocus.unfocus();
+                    },
                   ),
                 ),
               ),
@@ -280,6 +294,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 onTap: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Row(

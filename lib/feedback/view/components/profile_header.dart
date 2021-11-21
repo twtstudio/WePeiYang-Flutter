@@ -40,13 +40,17 @@ class ProfileHeader extends StatelessWidget {
             ),
             SliverToBoxAdapter(child: SizedBox(height: 23)),
             SliverToBoxAdapter(
-              child: Text(CommonPreferences().nickname.value,
-                  textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  )),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(CommonPreferences().nickname.value,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
             ),
             SliverToBoxAdapter(
               child: Container(

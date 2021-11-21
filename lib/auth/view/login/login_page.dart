@@ -24,7 +24,7 @@ class LoginHomeWidget extends StatelessWidget {
                     fontSize: 50,
                     fontWeight: FontWeight.w300)),
           ),
-          Spacer(flex: 1),
+          Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

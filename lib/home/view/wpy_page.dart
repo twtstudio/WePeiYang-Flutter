@@ -203,6 +203,7 @@ class SliverCardsWidget extends StatelessWidget {
       controller: controller,
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.only(left: 15),
+      physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (i != 4) {
