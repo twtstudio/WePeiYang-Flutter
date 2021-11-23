@@ -20,9 +20,10 @@ class SchedulePage extends StatelessWidget {
   /// 进入课程表页面后重设选中周并自动刷新数据
   SchedulePage() {
     var notifier = Provider.of<ScheduleNotifier>(
-        WePeiYangApp.navigatorState.currentContext);
+        WePeiYangApp.navigatorState.currentContext,
+        listen: false);
     notifier.quietResetWeek();
-    notifier.refreshSchedule(hint: false);
+    notifier.refreshSchedule().call();
   }
 
   @override
@@ -83,12 +84,16 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           onPressed: () {
             if (CommonPreferences().isBindTju.value) {
               Provider.of<ScheduleNotifier>(context, listen: false)
-                  .refreshSchedule(onFailure: () {
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => TjuRebindDialog());
-              }).call();
+                  .refreshSchedule(
+                      hint: true,
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                        showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) =>
+                                TjuRebindDialog());
+                      }).call();
             } else {
               ToastProvider.error("请绑定办公网");
               Navigator.pushNamed(context, AuthRouter.tjuBind);
@@ -139,7 +144,7 @@ class HoursCounterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var notifier = Provider.of<ScheduleNotifier>(context);
+    var notifier = Provider.of<ScheduleNotifier>(context, listen: false);
     if (notifier.coursesWithNotify.length == 0) return Container();
     int currentHours = getCurrentHours(notifier.currentWeek,
         DateTime.now().weekday, notifier.coursesWithNotify);

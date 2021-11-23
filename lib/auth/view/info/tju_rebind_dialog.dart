@@ -81,12 +81,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(hint: false)
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(hint: false)
-          .call();
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      ).call();
+      Provider.of<ScheduleNotifier>(context, listen: false).refreshSchedule(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      ).call();
       Navigator.pop(context);
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());

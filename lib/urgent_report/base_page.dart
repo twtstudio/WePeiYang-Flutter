@@ -83,7 +83,7 @@ class _SelfInformationState extends State<SelfInformation> {
     return DefaultTextStyle(
       style: TextStyle(fontSize: 13),
       child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           width: MediaQuery.of(context).size.width / 1.2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

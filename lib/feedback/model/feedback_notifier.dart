@@ -110,11 +110,13 @@ class FbHomeListModel extends ChangeNotifier {
     );
   }
 
-  checkTokenAndGetPostList({OnSuccess success, OnFailure failure}) async {
+  checkTokenAndGetPostList(FbTagsProvider provider,
+      {OnSuccess success, OnFailure failure}) async {
     if (CommonPreferences().feedbackToken.value == "") {
       await FeedbackService.getToken(
         onResult: (token) {
           CommonPreferences().feedbackToken.value = token;
+          provider.initTags();
           initPostList();
         },
         onFailure: (e) {
