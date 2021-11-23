@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,12 +27,10 @@ class _SettingPageState extends State<SettingPage> {
   static final arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
-  var pref = CommonPreferences();
-  double descriptionMaxWidth;
-
   @override
   Widget build(BuildContext context) {
-    descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
+    var pref = CommonPreferences();
+    var descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.setting,
@@ -60,7 +57,7 @@ class _SettingPageState extends State<SettingPage> {
             child: Text(S.current.setting_general, style: titleTextStyle),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -97,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -125,7 +122,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -169,7 +166,7 @@ class _SettingPageState extends State<SettingPage> {
               alignment: Alignment.centerLeft,
               child: Text(S.current.schedule, style: titleTextStyle)),
           Padding(
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -206,7 +203,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(

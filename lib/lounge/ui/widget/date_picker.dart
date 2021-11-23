@@ -69,6 +69,7 @@ class _BottomDatePickerState extends State<BottomDatePicker>
         AnimationController(duration: Duration(milliseconds: 200), vsync: this)
           ..forward();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusedDay = model.dateTime;
       model.classTime.forEach((v) {
         updateGroupValue(v);
       });

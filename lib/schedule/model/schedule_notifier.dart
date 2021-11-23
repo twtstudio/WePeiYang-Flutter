@@ -1,5 +1,6 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -76,7 +77,7 @@ class ScheduleNotifier with ChangeNotifier {
 
   /// 通过爬虫刷新数据
   RefreshCallback refreshSchedule(
-      {bool hint = true, void Function() onFailure}) {
+      {bool hint = false, OnFailure onFailure}) {
     return () async {
       if (hint) ToastProvider.running("刷新数据中……");
       getScheduleCourses(onResult: (courses) {
@@ -87,8 +88,7 @@ class ScheduleNotifier with ChangeNotifier {
             json.encode(ScheduleBean(termStart, termName, courses)); // 刷新本地缓存
         messageChannel?.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
       }, onFailure: (e) {
-        if (hint && onFailure == null) ToastProvider.error(e.error.toString());
-        if (onFailure != null) onFailure();
+        if (onFailure != null) onFailure(e);
       });
     };
   }

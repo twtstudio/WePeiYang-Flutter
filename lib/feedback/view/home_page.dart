@@ -65,8 +65,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
-      _tagsProvider.initTags();
-      _listProvider.checkTokenAndGetPostList(failure: (e) {
+      _listProvider.checkTokenAndGetPostList(_tagsProvider, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });

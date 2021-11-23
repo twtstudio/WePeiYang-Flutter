@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -46,16 +45,17 @@ final _hintStyle = FontManager.YaQiHei.copyWith(
 class ReadAllDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
-    return Stack(alignment: Alignment.center, children: [
-      Container(
-        padding: EdgeInsets.all(25),
+    return Center(
+      child: Container(
+        height: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Color.fromRGBO(237, 240, 244, 1)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(height: 20),
             Text(S.current.feedback_set_all_read,
                 textAlign: TextAlign.center,
                 style: FontManager.YaHeiRegular.copyWith(
@@ -66,22 +66,27 @@ class ReadAllDialog extends Dialog {
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context, false),
-                  child: Text(S.current.cancel, style: _hintStyle),
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: Text(S.current.cancel, style: _hintStyle),
+                  ),
                 ),
                 SizedBox(width: 30),
                 GestureDetector(
                   onTap: () => Navigator.pop(context, true),
-                  child: Text(S.current.ok, style: _hintStyle),
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: Text(S.current.ok, style: _hintStyle),
+                  ),
                 )
               ],
             ),
           ],
         ),
       ),
-    ]);
+    );
   }
 }

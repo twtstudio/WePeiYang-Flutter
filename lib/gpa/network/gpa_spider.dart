@@ -127,7 +127,7 @@ GPACourse _data2GPACourse(List<String> data, bool isMaster) {
   if (score >= 60) credit = double.parse(list[5]);
 
   if (score != _DELAYED && score != _IGNORED) {
-    double gpa = double.parse(list[8]);
+    double gpa = double.parse(list[7]);
     return GPACourse(isMaster ? list[3] : list[2], list[4], score, credit, gpa);
   } else {
     return null;

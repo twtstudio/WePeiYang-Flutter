@@ -1,5 +1,6 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -130,7 +131,7 @@ class GPANotifier with ChangeNotifier {
     return _hideGPA;
   }
 
-  GestureTapCallback refreshGPA({bool hint = true, void Function() onFailure}) {
+  GestureTapCallback refreshGPA({bool hint = false, OnFailure onFailure}) {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
       getGPABean(onResult: (gpaBean) {
@@ -140,8 +141,7 @@ class GPANotifier with ChangeNotifier {
         notifyListeners();
         CommonPreferences().gpaData.value = json.encode(gpaBean);
       }, onFailure: (e) {
-        if (hint && onFailure == null) ToastProvider.error(e.error.toString());
-        if (onFailure != null) onFailure();
+        if (onFailure != null) onFailure(e);
       });
     };
   }

@@ -282,10 +282,11 @@ class _DetailPageState extends State<DetailPage> {
       onPressed: () {
         showMenu(
           context: context,
+
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-          position: RelativeRect.fromLTRB(
-              1000, MediaQuery.of(context).padding.top + kToolbarHeight, 0, 0),
+          // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
+          position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
               value: '举报',

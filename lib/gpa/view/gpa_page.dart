@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -37,9 +38,9 @@ class GPAPage extends StatefulWidget {
 class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
   _GPAPageState() {
-    Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext)
-        .refreshGPA(hint: false)
-        .call();
+    Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext,
+            listen: false)
+        .refreshGPA().call();
   }
 
   @override
@@ -92,13 +93,17 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
-              onTap: Provider.of<GPANotifier>(context, listen: false)
-                  .refreshGPA(onFailure: () {
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => TjuRebindDialog());
-              })),
+              onTap: () =>
+                  Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+                      hint: true,
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                        showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) =>
+                                TjuRebindDialog());
+                      }).call()),
         ),
       ],
     );
@@ -402,13 +407,13 @@ class GPAStatsWidget extends StatelessWidget {
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('GPA', style: textStyle),
+                /// 这里两边加上空格，让UI分布更均匀
+                Text(' GPA  ', style: textStyle),
                 SizedBox(height: 8),
                 Text(gpa, style: numStyle)
               ],
             ),
           ),
-          SizedBox(width: 6),
           InkResponse(
             onTap: () => notifier.typeWithNotify = 2,
             radius: 45,
