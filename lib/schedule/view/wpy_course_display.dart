@@ -116,6 +116,7 @@ class TodayCoursesWidget extends StatelessWidget {
       height: 185,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: todayCourses.length,
           itemBuilder: (context, i) {

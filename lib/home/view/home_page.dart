@@ -12,6 +12,8 @@ import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
+bool ifCanBeRefreshed = false;
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -23,11 +25,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _currentIndex = 0;
   DateTime _lastPressedAt;
   TabController _tabController;
+  final feedbackKey = GlobalKey<FeedbackHomePageState>();
 
   @override
   void initState() {
     super.initState();
-    pages..add(WPYPage())..add(FeedbackHomePage())..add(UserPage());
+    pages
+      ..add(WPYPage())
+      ..add(FeedbackHomePage(key: feedbackKey))
+      ..add(UserPage());
     _tabController = TabController(
       length: pages.length,
       vsync: this,
@@ -55,6 +61,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double width = WePeiYangApp.screenWidth / 3;
+
     var currentStyle = TextStyle(
         fontSize: 12, color: MyColors.deepBlue, fontWeight: FontWeight.w800);
     var otherStyle = TextStyle(
@@ -91,7 +98,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: ElevatedButton(
         onPressed: () {
-          _tabController.animateTo(1);
+          if (_currentIndex == 1) {
+            feedbackKey.currentState.listToTop();
+          } else
+            _tabController.animateTo(1);
         },
         style: ButtonStyle(
             elevation: MaterialStateProperty.all(0),
@@ -106,14 +116,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             FeedbackBadgeWidget(
               type: FeedbackMessageType.home,
-              child: Container(
+              child: SizedBox(
                 width: 20,
                 height: 20,
-                child: Image(
-                  image: AssetImage(_currentIndex == 1
-                      ? 'assets/images/icon_feedback_active.png'
-                      : 'assets/images/icon_feedback.png'),
-                ),
+                child: _currentIndex == 1
+                    ? Stack(children: [
+                        Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Image(
+                                image: AssetImage(
+                                    'assets/images/icon_feedback_active.png')),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.bottomCenter,
+                          child: Icon(
+                            Icons.arrow_upward_rounded,
+                            size: 14,
+                            color: MyColors.myGrey,
+                          ),
+                        ),
+                      ])
+                    : Center(
+                      child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Image(
+                            image: AssetImage('assets/images/icon_feedback.png'),
+                          ),
+                        ),
+                    ),
               ),
             ),
             Padding(
@@ -191,3 +225,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
+
+// class CanBeRefreshed {
+//   canBeRefreshed() {
+//     ifCanBeRefreshed = true;
+//   }
+//
+//   canNotBeRefreshed() {
+//     ifCanBeRefreshed = false;
+//   }
+// }
