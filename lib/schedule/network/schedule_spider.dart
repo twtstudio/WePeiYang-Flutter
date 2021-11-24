@@ -28,7 +28,7 @@ void getScheduleCourses(
         params: {'projectId': '1'});
     semesterRsp.headers.map['set-cookie'].forEach((string) {
       if (string.contains('semester'))
-        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
+        pref.semesterId.value = getRegExpStr(r'semester.id=\w+', string);
     });
 
     /// 切换至主修
@@ -40,7 +40,7 @@ void getScheduleCourses(
         "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
         cookieList: pref.getCookies(),
         params: {'projectId': '1', '_': DateTime.now().millisecondsSinceEpoch});
-    idsValue = getRegExpStr(r'(?<=ids\"\,\")\w*', idsRsp1.data.toString());
+    idsValue = getRegExpStr(r'(?<=ids",")\w*', idsRsp1.data.toString());
 
     /// 获取主修课程
     var courseRsp1 = await getDetailSchedule(idsValue);
@@ -55,7 +55,7 @@ void getScheduleCourses(
         "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
         cookieList: pref.getCookies(),
         params: {'projectId': '2'});
-    idsValue = getRegExpStr(r'(?<=ids\"\,\")\w*', idsRsp2.data.toString());
+    idsValue = getRegExpStr(r'(?<=ids",")\w*', idsRsp2.data.toString());
 
     /// 获取辅修课程
     var courseRsp2 = await getDetailSchedule(idsValue);
@@ -88,7 +88,7 @@ Future<Response> getDetailSchedule(String ids) {
 /// 用请求到的html数据生成schedule对象
 List<ScheduleCourse> _data2ScheduleCourses(String data) {
   /// 判断会话是否过期
-  if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
+  if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
 
   try {
     /// 先整理出所有的arrange对象
@@ -99,10 +99,10 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     arrangeDataList?.forEach((item) {
       var day =
           (int.parse(getRegExpStr(r'(?<=index =)\w', item)) + 1).toString();
-      var startEnd = getRegExpList(r'(?<=unitCount\+)\w*', item);
+      var startEnd = getRegExpList(r'(?<=unitCount+)\w*', item);
       var start = (int.parse(startEnd.first) + 1).toString();
       var end = (int.parse(startEnd.last) + 1).toString();
-      var teacherData = getRegExpStr(r'(?<=actTeachers )[^]*?(?=\;)', item);
+      var teacherData = getRegExpStr(r'(?<=actTeachers )[^]*?(?=;)', item);
       var teacherList = getRegExpList(r'(?<=name:")[^]*?(?=")', teacherData);
       var teacher = '';
       teacherList.forEach((t) {
@@ -113,7 +113,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
 
       /// 课程名称、课程星期分布的信息
       List<String> courseInfo =
-          getRegExpStr(r'(?<=activity )[^]*?(?=\;)', item).split('\"');
+          getRegExpStr(r'(?<=activity )[^]*?(?=;)', item).split('\"');
       var courseName = courseInfo[3];
       var weekInfo = courseInfo[9];
 
@@ -144,17 +144,16 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
 
     /// 下面的[?.]和[return]是本学期没有课程时的空判断
     List<ScheduleCourse> courses = [];
-    List<String> trList =
-        getRegExpStr(r'(?<=\<tbody)[^]*?(?=\<\/tbody\>)', data)
-            ?.split("</tr><tr>");
+    List<String> trList = getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', data)
+        ?.split("</tr><tr>");
     trList?.forEach((tr) {
-      List<String> tdList = getRegExpList(r'(?<=\<td\>)[^]*?(?=\<\/td\>)', tr);
+      List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);
       if (tdList.isEmpty) return;
-      var classId = getRegExpStr(r'(?<=\>)[0-9]*', tdList[1]);
+      var classId = getRegExpStr(r'(?<=>)[0-9]*', tdList[1]);
       var courseId = tdList[2];
 
       /// 类似 “体育C 体育舞蹈” 这种有副标题的需要做判断
-      List<String> names = getRegExpList(r'[^\>]+(?=\<)', tdList[3]);
+      List<String> names = getRegExpList(r'[^>]+(?=<)', tdList[3]);
       var courseName = (names.length == 0)
           ? tdList[3]
           : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -87,12 +88,13 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                   .refreshSchedule(
                       hint: true,
                       onFailure: (e) {
-                        ToastProvider.error(e.error.toString());
                         showDialog(
                             context: context,
                             barrierDismissible: true,
                             builder: (BuildContext context) =>
-                                TjuRebindDialog());
+                                TjuRebindDialog(reason: e is WpyDioError
+                                    ? e.error.toString()
+                                    : null));
                       }).call();
             } else {
               ToastProvider.error("请绑定办公网");

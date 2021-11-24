@@ -10,12 +10,13 @@ void getGPABean(
     {@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
 
-  /// 判断是否为硕士研究生
-  /// 这里的stuType是天外天账号里的，所以本科生twt账号绑定研究生办公网会有问题
-  /// 将来可以在办公网绑定时就判断是不是研究生
-  bool isMaster = pref.stuType.value == "硕士研究生";
-
   try {
+    var info = await fetch("http://classes.tju.edu.cn/eams/stdDetail.action",
+        cookieList: pref.getCookies());
+
+    /// 判断是否为硕士研究生
+    bool isMaster = info.data.toString().contains("研究");
+
     if (isMaster) {
       /// 如果是研究生，切换至研究生成绩
       await fetch(
@@ -23,7 +24,7 @@ void getGPABean(
           cookieList: pref.getCookies(),
           params: {'projectId': '22'});
     } else if (pref.ids.value == "useless") {
-      /// 如果有复修，切换至主修成绩（其实是总成绩）
+      /// 如果有辅修，切换至主修成绩（其实是总成绩）
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
           cookieList: pref.getCookies(),
@@ -33,49 +34,91 @@ void getGPABean(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
         cookieList: pref.getCookies());
     onResult(_data2GPABean(response.data.toString(), isMaster));
-    return;
   } on DioError catch (e) {
     if (onFailure != null) onFailure(e);
   }
 }
 
-const double _DELAYED = 999.0;
-const double _IGNORED = 999.0;
-
 /// 用请求到的html数据生成gpaBean对象
 GPABean _data2GPABean(String data, bool isMaster) {
-  /// 如果匹配失败，则证明cookie已过期（或者根本没保存cookie）
-  if (!data.contains("在校汇总")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
-  if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "会话过期，请重新尝试");
-
-  /// 没评教赶快去评教啊喂
+  if (!data.contains("在校汇总") || data.contains("本次会话已经被过期"))
+    throw WpyDioError(error: "办公网绑定失效，请重新绑定");
   if (data.contains("就差一个评教的距离啦")) throw WpyDioError(error: "存在未评教的课程，请先前往评教");
 
   /// 这里加一个try-catch捕获解析数据中抛出的异常（空指针之类的）
   try {
     /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
     var totalData = isMaster
-        ? getRegExpStr(r'(?<=在校汇总\<\/th\>)[\s\S]*?(?=\<\/tr)', data)
-        : getRegExpStr(r'(?<=总计\<\/th\>)[\s\S]*?(?=\<\/tr)', data);
+        ? getRegExpStr(r'(?<=在校汇总</th>)[\s\S]*?(?=</tr)', data)
+        : getRegExpStr(r'(?<=总计</th>)[\s\S]*?(?=</tr)', data);
 
     List<double> thList = [];
-    getRegExpList(r'(?<=\<th\>)[0-9\.]*', totalData)
+    getRegExpList(r'(?<=<th>)[0-9.]*', totalData)
         .forEach((e) => thList.add(double.parse(e)));
-    // 下标321是因为html数据的顺序和数据类的顺序不一样
-    var total = Total(thList[3], thList[2], thList[1]);
 
-    /// 匹配所有科目信息
-    var filterStr = getRegExpStr(r'(?<=\>绩点\<)[\s\S]*', data); // 先去掉总数据部分的tr结点
+    /// 下标321是因为html数据的顺序和数据类的顺序不一样
+    var total = Total(
+      thList.length > 3 ? thList[3] : 0.0,
+      thList.length > 2 ? thList[2] : 0.0,
+      thList.length > 1 ? thList[1] : 0.0,
+    );
 
-    var courseDataList = getRegExpList(
-        r'(?<=\<tr)[\s\S]*?(?=\<\/tr)', filterStr); // 所有的课程数据（糙数据）
+    var tables = getRegExpList(r'(?<=gridtable)[\s\S]*?(?=</table)', data);
+    var gridHead = getRegExpStr(r'(?<=gridhead)[\s\S]*(?=</thead)', tables[1]);
+
+    /// ["学年学期", "课程代码", "课程序号", "课程名称", "课程类别", "学分", "考试情况", "期末成绩", "平时成绩", "总评成绩", "最终", "绩点"]
+    var headList = getRegExpList(r'(?<=<th.*>)[\s\S][^<]*?(?=</th)', gridHead);
+    Map<String, int> indexMap = {};
+    for (int i = 0; i < headList.length; i++) {
+      switch (headList[i]) {
+        case '学年学期':
+          indexMap['semester'] = i;
+          break;
+        case '课程代码':
+          indexMap['code'] = i;
+          break;
+        case '课程序号':
+          indexMap['no'] = i;
+          break;
+        case '课程类别':
+          indexMap['type'] = i;
+          break;
+        case '课程性质':
+          indexMap['classProperty'] = i;
+          break;
+        case '课程名称':
+          indexMap['name'] = i;
+          break;
+        case '学分':
+          indexMap['credit'] = i;
+          break;
+        case '考试情况':
+          indexMap['condition'] = i;
+          break;
+        case '最终':
+        case '成绩':
+          indexMap['score'] = i;
+          break;
+        case '绩点':
+          indexMap['gpa'] = i;
+          break;
+      }
+    }
+
+    /// 课程数据存储在了第二个table的tbody中
+    var filterStr = getRegExpStr(r'(?<=<tbody>)[\s\S]*(?=</tbody>)', tables[1]);
+
+    /// 所有的课程数据
+    var courseDataList = getRegExpList(r'(?<=<tr)[\s\S]*?(?=</tr)', filterStr);
     var currentTermStr = "";
     List<GPAStat> stats = [];
     List<GPACourse> courses = [];
     for (int i = 0; i < courseDataList.length; i++) {
       /// 这里特意适配了重修课的红色span，在中括号里面
-      var courseData = getRegExpList(r'(?<=\<td[ =":a-z]*?\>)[\s\S]*?(?=\<)',
-          courseDataList[i]); // 这里的数据含有转义符
+      var courseData =
+          getRegExpList(r'(?<=<td[ =":a-z]*?>)[\s\S]*?(?=<)', courseDataList[i])
+              .map((e) => e.replaceAll(RegExp(r'\s'), ''))
+              .toList(); // 这里去掉了数据中的转义符
       var term = courseData[0];
       if (currentTermStr == "") currentTermStr = term;
       if (currentTermStr != term) {
@@ -83,55 +126,46 @@ GPABean _data2GPABean(String data, bool isMaster) {
         courses.clear();
         currentTermStr = term;
       }
-      var gpaCourse = _data2GPACourse(courseData, isMaster);
+
+      var gpaCourse =
+          _data2GPACourse(indexMap.map((k, v) => MapEntry(k, courseData[v])));
       if (!courseDataList[i].contains("重修") && gpaCourse != null)
         courses.add(gpaCourse);
       if (i == courseDataList.length - 1) stats.add(_calculateStat(courses));
     }
     return GPABean(total, stats);
   } catch (e) {
-    throw WpyDioError(error: "解析GPA数据出错，请出新尝试");
+    throw WpyDioError(error: "解析GPA数据出错，请重新尝试");
   }
 }
 
 /// 对课程数据进行整理后生成gpaCourse对象，注意研究生的list元素顺序和本科生的不一样
-GPACourse _data2GPACourse(List<String> data, bool isMaster) {
-  List<String> list = [];
-  data.forEach((s) => list.add(s.replaceAll(RegExp(r'\s'), ''))); // 去掉数据中的转义符
+GPACourse _data2GPACourse(Map<String, String> data) {
   double score = 0.0;
-  switch (isMaster ? list[7] : list[6]) {
-    case 'P':
-      score = 100.0;
-      break;
+  switch (data['score'] ?? '0.0') {
     case '缓考':
-      score = _DELAYED;
-      break;
     case '--':
-      score = _DELAYED;
-      break;
-    case 'F':
-      score = 0.0;
-      break;
+      return null; // DELAYED
     case 'A':
     case 'B':
     case 'C':
     case 'D':
     case 'E':
     case '':
-      score = _IGNORED;
+      return null; // IGNORED
+    case 'F':
+      score = 0.0;
+      break;
+    case 'P':
+      score = 100.0;
       break;
     default:
-      score = double.parse(isMaster ? list[7] : list[6]);
+      score = double.parse(data['score'] ?? '0.0');
   }
   double credit = 0.0;
-  if (score >= 60) credit = double.parse(list[5]);
-
-  if (score != _DELAYED && score != _IGNORED) {
-    double gpa = double.parse(list[7]);
-    return GPACourse(isMaster ? list[3] : list[2], list[4], score, credit, gpa);
-  } else {
-    return null;
-  }
+  if (score >= 60) credit = double.parse(data['credit'] ?? '0.0');
+  double gpa = double.parse(data['gpa'] ?? '0.0');
+  return GPACourse(data['name'] ?? '', data['type'] ?? '', score, credit, gpa);
 }
 
 /// 计算每学期的总加权/绩点/学分

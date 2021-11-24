@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -40,7 +40,8 @@ class _GPAPageState extends State<GPAPage> {
   _GPAPageState() {
     Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext,
             listen: false)
-        .refreshGPA().call();
+        .refreshGPA()
+        .call();
   }
 
   @override
@@ -93,17 +94,22 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
-              onTap: () =>
-                  Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-                      hint: true,
-                      onFailure: (e) {
-                        ToastProvider.error(e.error.toString());
-                        showDialog(
+              onTap: () {
+                Provider.of<GPANotifier>(context, listen: false)
+                    .refreshGPA(
+                        hint: true,
+                        onFailure: (e) {
+                          showDialog(
                             context: context,
                             barrierDismissible: true,
-                            builder: (BuildContext context) =>
-                                TjuRebindDialog());
-                      }).call()),
+                            builder: (BuildContext context) => TjuRebindDialog(
+                                reason: e is WpyDioError
+                                    ? e.error.toString()
+                                    : null),
+                          );
+                        })
+                    .call();
+              }),
         ),
       ],
     );

@@ -71,12 +71,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      Provider.of<ScheduleNotifier>(context, listen: false).refreshSchedule(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      ).call();
-      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      ).call();
+      Provider.of<GPANotifier>(context, listen: false)
+          .refreshGPA(
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
+          .call();
+      Provider.of<ScheduleNotifier>(context, listen: false)
+          .refreshSchedule(
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
+          .call();
       setState(() {
         tjuuname = "";
         tjupasswd = "";

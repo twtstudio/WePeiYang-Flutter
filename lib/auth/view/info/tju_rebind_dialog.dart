@@ -12,6 +12,11 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 class TjuRebindDialog extends Dialog {
+  final String reason;
+
+  TjuRebindDialog({String reason})
+      : reason = (reason == null ? S.current.re_login_text : reason);
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -22,7 +27,7 @@ class TjuRebindDialog extends Dialog {
             borderRadius: BorderRadius.circular(10), color: Colors.white),
         child: Material(
           color: Colors.white,
-          child: _TjuRebindWidget(),
+          child: _TjuRebindWidget(reason),
         ),
       ),
     );
@@ -30,6 +35,10 @@ class TjuRebindDialog extends Dialog {
 }
 
 class _TjuRebindWidget extends StatefulWidget {
+  final String reason;
+
+  _TjuRebindWidget(this.reason);
+
   @override
   _TjuRebindWidgetState createState() => _TjuRebindWidgetState();
 }
@@ -81,12 +90,16 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
-      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      ).call();
-      Provider.of<ScheduleNotifier>(context, listen: false).refreshSchedule(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      ).call();
+      Provider.of<GPANotifier>(context, listen: false)
+          .refreshGPA(
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
+          .call();
+      Provider.of<ScheduleNotifier>(context, listen: false)
+          .refreshSchedule(
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
+          .call();
       Navigator.pop(context);
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
@@ -115,7 +128,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                   fontSize: 17))
         ]),
         SizedBox(height: 8),
-        Text(S.current.re_login_text,
+        Text(widget.reason,
             style: FontManager.YaHeiRegular.copyWith(
                 color: Color.fromRGBO(79, 88, 107, 1), fontSize: 12)),
         SizedBox(height: 18),
