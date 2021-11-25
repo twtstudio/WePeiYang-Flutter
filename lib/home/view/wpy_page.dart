@@ -207,7 +207,7 @@ class SliverCardsWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (itemCount < i) itemCount = i; //获取列表长度 @-@
+        if (itemCount < i) itemCount = i;
         if (i != 4) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
@@ -252,7 +252,7 @@ class SliverCardsWidget extends StatelessWidget {
                           ? controller.animateTo(controller.offset + 130,
                               duration: Duration(milliseconds: 400),
                               curve: Curves.fastOutSlowIn)
-                          : controller.animateTo(                         //这个是防止一直点之后列表一直后退
+                          : controller.animateTo(
                               140 * (itemCount - 1).toDouble(),
                               duration: Duration(milliseconds: 800),
                               curve: Curves.slowMiddle);

@@ -225,13 +225,3 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
-
-// class CanBeRefreshed {
-//   canBeRefreshed() {
-//     ifCanBeRefreshed = true;
-//   }
-//
-//   canNotBeRefreshed() {
-//     ifCanBeRefreshed = false;
-//   }
-// }

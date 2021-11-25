@@ -51,8 +51,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   borderRadius: BorderRadius.circular(9)),
               child: Column(
                 children: <Widget>[
-                  SizedBox(
+                  Container(
                     height: 70,
+                    padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                     child: InkWell(
                       onTap: () async {
                         Navigator.pushNamed(context, AuthRouter.avatarCrop)
@@ -61,19 +62,19 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
                       splashFactory: InkRipple.splashFactory,
-                      child: Container(
-                        margin: const EdgeInsets.all(20),
-                        child: Row(
-                          children: <Widget>[
-                            Text(S.current.avatar, style: mainTextStyle),
-                            Spacer(),
-                            Hero(
-                              tag: 'avatar',
-                              child: UserAvatarImage(size: 35),
-                            ),
-                            SizedBox(width: 6)
-                          ],
-                        ),
+                      child: Row(
+                        children: <Widget>[
+                          Text(S.current.avatar, style: mainTextStyle),
+                          Spacer(),
+                          Hero(
+                            tag: 'avatar',
+                            child: UserAvatarImage(size: 45),
+                          ),
+                          SizedBox(width: 6),
+                          arrow,
+                          SizedBox(width: 11)
+
+                        ],
                       ),
                     ),
                   ),
