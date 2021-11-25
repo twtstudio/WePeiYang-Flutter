@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,10 +28,12 @@ class _SettingPageState extends State<SettingPage> {
   static final arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
+  var pref = CommonPreferences();
+  double descriptionMaxWidth;
+
   @override
   Widget build(BuildContext context) {
-    var pref = CommonPreferences();
-    var descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
+    descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.setting,
@@ -57,11 +60,11 @@ class _SettingPageState extends State<SettingPage> {
             child: Text(S.current.setting_general, style: titleTextStyle),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
+                  borderRadius: BorderRadius.circular(15)),
               child: InkWell(
                 onTap: () =>
                     Navigator.pushNamed(context, AuthRouter.colorSetting)
@@ -70,116 +73,73 @@ class _SettingPageState extends State<SettingPage> {
                   this.setState(() {});
                 }),
                 splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: descriptionMaxWidth,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(S.current.setting_color, style: mainTextStyle),
+                            SizedBox(height: 3),
+                            Text(S.current.setting_color_hint,
+                                style: hintTextStyle)
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      arrow,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: <Widget>[
                     SizedBox(
-                      width: descriptionMaxWidth,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(S.current.setting_color, style: mainTextStyle),
-                          SizedBox(height: 3),
-                          Text(S.current.setting_color_hint,
-                              style: hintTextStyle)
-                        ],
-                      ),
-                    ),
+                        width: descriptionMaxWidth,
+                        child:
+                            Text(S.current.setting_gpa, style: mainTextStyle)),
                     Spacer(),
-                    arrow,
+                    Switch(
+                      value: pref.hideGPA.value,
+                      onChanged: (value) {
+                        setState(() => pref.hideGPA.value = value);
+                        Provider.of<GPANotifier>(context, listen: false)
+                            .hideGPAWithNotify = value;
+                      },
+                      activeColor: Color.fromRGBO(105, 109, 127, 1),
+                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                      width: descriptionMaxWidth,
-                      child: Text(S.current.setting_gpa, style: mainTextStyle)),
-                  Spacer(),
-                  Switch(
-                    value: pref.hideGPA.value,
-                    onChanged: (value) {
-                      setState(() => pref.hideGPA.value = value);
-                      Provider.of<GPANotifier>(context, listen: false)
-                          .hideGPAWithNotify = value;
-                    },
-                    activeColor: Color.fromRGBO(105, 109, 127, 1),
-                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: descriptionMaxWidth,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(S.current.setting_night_mode, style: mainTextStyle),
-                        SizedBox(height: 3),
-                        Text(
-                          S.current.setting_night_mode_hint,
-                          style: hintTextStyle,
-                        )
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  Switch(
-                    value: pref.nightMode.value,
-                    onChanged: (value) {
-                      setState(() => pref.nightMode.value = value);
-                      Provider.of<ScheduleNotifier>(context, listen: false)
-                          .nightMode = value;
-                    },
-                    activeColor: Color.fromRGBO(105, 109, 127, 1),
-                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
-              alignment: Alignment.centerLeft,
-              child: Text(S.current.schedule, style: titleTextStyle)),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.scheduleSetting)
-                        .then((_) {
-                  /// 使用pop返回此页面时进行rebuild
-                  this.setState(() {});
-                }),
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: <Widget>[
                     SizedBox(
@@ -188,29 +148,56 @@ class _SettingPageState extends State<SettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(S.current.setting_day_number,
+                          Text(S.current.setting_night_mode,
                               style: mainTextStyle),
                           SizedBox(height: 3),
-                          Text('${pref.dayNumber.value}', style: hintTextStyle)
+                          Text(
+                            S.current.setting_night_mode_hint,
+                            style: hintTextStyle,
+                          )
                         ],
                       ),
                     ),
                     Spacer(),
-                    arrow,
+                    Switch(
+                      value: pref.nightMode.value,
+                      onChanged: (value) {
+                        setState(() => pref.nightMode.value = value);
+                        Provider.of<ScheduleNotifier>(context, listen: false)
+                            .nightMode = value;
+                      },
+                      activeColor: Color.fromRGBO(105, 109, 127, 1),
+                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
+          Container(
+              padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
+              alignment: Alignment.centerLeft,
+              child: Text(S.current.schedule, style: titleTextStyle)),
           Padding(
-            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Row(
-                children: <Widget>[
-                  Row(
+                  borderRadius: BorderRadius.circular(15)),
+              child: InkWell(
+                onTap: () =>
+                    Navigator.pushNamed(context, AuthRouter.scheduleSetting)
+                        .then((_) {
+                  /// 使用pop返回此页面时进行rebuild
+                  this.setState(() {});
+                }),
+                splashFactory: InkRipple.splashFactory,
+                borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
                     children: <Widget>[
                       SizedBox(
                         width: descriptionMaxWidth,
@@ -218,28 +205,59 @@ class _SettingPageState extends State<SettingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(S.current.setting_other_week,
+                            Text(S.current.setting_day_number,
                                 style: mainTextStyle),
                             SizedBox(height: 3),
-                            Text(S.current.setting_other_week_hint,
+                            Text('${pref.dayNumber.value}',
                                 style: hintTextStyle)
                           ],
                         ),
                       ),
+                      Spacer(),
+                      arrow,
                     ],
                   ),
-                  Spacer(),
-                  Switch(
-                    value: pref.otherWeekSchedule.value,
-                    onChanged: (value) {
-                      setState(() => pref.otherWeekSchedule.value = value);
-                    },
-                    activeColor: Color.fromRGBO(105, 109, 127, 1),
-                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  ),
-                ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: descriptionMaxWidth,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(S.current.setting_other_week,
+                              style: mainTextStyle),
+                          SizedBox(height: 3),
+                          Text(S.current.setting_other_week_hint,
+                              style: hintTextStyle)
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Switch(
+                      value: pref.otherWeekSchedule.value,
+                      onChanged: (value) {
+                        setState(() => pref.otherWeekSchedule.value = value);
+                      },
+                      activeColor: Color.fromRGBO(105, 109, 127, 1),
+                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

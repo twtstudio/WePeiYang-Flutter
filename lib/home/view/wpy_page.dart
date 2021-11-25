@@ -194,6 +194,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 class SliverCardsWidget extends StatelessWidget {
   final List<CardBean> cards;
   final ScrollController controller = ScrollController();
+  int itemCount = 0;
 
   SliverCardsWidget(this.cards);
 
@@ -206,6 +207,7 @@ class SliverCardsWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
+        if (itemCount < i) itemCount = i; //获取列表长度 @-@
         if (i != 4) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
@@ -246,9 +248,14 @@ class SliverCardsWidget extends StatelessWidget {
                     icon: Icon(Icons.arrow_forward_ios_sharp,
                         color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
                     onPressed: () {
-                      controller.animateTo(controller.offset + 125,
-                          duration: Duration(milliseconds: 250),
-                          curve: Curves.linear);
+                      controller.offset <= 130 * (itemCount - 1)
+                          ? controller.animateTo(controller.offset + 130,
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.fastOutSlowIn)
+                          : controller.animateTo(                         //这个是防止一直点之后列表一直后退
+                              140 * (itemCount - 1).toDouble(),
+                              duration: Duration(milliseconds: 800),
+                              curve: Curves.slowMiddle);
                     }),
               ),
             ),

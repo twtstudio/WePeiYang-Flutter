@@ -187,10 +187,11 @@ class _GPACurveState extends State<GPACurve>
 
               /// Stack顶层
               TweenAnimationBuilder(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 500),
                 tween: Tween(
                     begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
                 onEnd: () => setState(() => _lastTaped = _newTaped),
+                curve: Curves.easeInOutSine,
                 builder: (BuildContext context, value, Widget child) {
                   var lT = points[_lastTaped], nT = points[_newTaped];
                   return Transform.translate(

@@ -16,19 +16,23 @@ import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 
 class FeedbackHomePage extends StatefulWidget {
+  FeedbackHomePage({Key key}) : super(key: key);
+
   @override
-  _FeedbackHomePageState createState() => _FeedbackHomePageState();
+  FeedbackHomePageState createState() => FeedbackHomePageState();
 }
 
-class _FeedbackHomePageState extends State<FeedbackHomePage>
+class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin {
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
 
+  final ScrollController controller = ScrollController();
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  _onRefresh([AnimationController controller]) {
+  onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initTags();
       _listProvider.initPostList(success: () {
@@ -93,15 +97,19 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
         controller: _refreshController,
         header: ClassicHeader(),
         enablePullDown: true,
-        onRefresh: _onRefresh,
+        onRefresh: onRefresh,
         footer: ClassicFooter(),
         enablePullUp: !model.isLastPage,
         onLoading: _onLoading,
         child: ListView.builder(
+          controller: controller,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: model.homeList.length,
           itemBuilder: (context, index) {
+            // controller.offset > 100
+            //     ? CanBeRefreshed().canBeRefreshed()
+            //     : CanBeRefreshed().canNotBeRefreshed();
             final post = model.homeList[index];
             if (index == 0) {
               return Column(
@@ -113,7 +121,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
                 ],
               );
             }
-              return PostCard.simple(post, key: ValueKey(post.id));
+            return PostCard.simple(post, key: ValueKey(post.id));
           },
         ),
       );
@@ -129,7 +137,7 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
               child: listView,
             ),
             if (status.isLoading) Loading(),
-            if (status.isError) HomeErrorContainer(_onRefresh),
+            if (status.isError) HomeErrorContainer(onRefresh),
           ],
         );
       },
@@ -153,6 +161,11 @@ class _FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   bool get wantKeepAlive => true;
+
+  void listToTop() {
+    controller.animateTo(-80,
+        duration: Duration(milliseconds: 1000), curve: Curves.fastOutSlowIn);
+  }
 }
 
 class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
