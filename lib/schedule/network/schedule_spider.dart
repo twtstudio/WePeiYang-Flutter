@@ -99,7 +99,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     arrangeDataList?.forEach((item) {
       var day =
           (int.parse(getRegExpStr(r'(?<=index =)\w', item)) + 1).toString();
-      var startEnd = getRegExpList(r'(?<=unitCount+)\w*', item);
+      var startEnd = getRegExpList(r'(?<=unitCount\+)\w*', item);
       var start = (int.parse(startEnd.first) + 1).toString();
       var end = (int.parse(startEnd.last) + 1).toString();
       var teacherData = getRegExpStr(r'(?<=actTeachers )[^]*?(?=;)', item);
