@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/common.dart';
@@ -66,11 +67,11 @@ class _UserPageState extends State<UserPage> {
                     )),
                 Center(
                   child: GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.userInfo)
-                              .then((_) => setState(() {})),
-                      child: Icon(Icons.account_circle_rounded,
-                          size: 90, color: Colors.white)),
+                    onTap: () =>
+                        Navigator.pushNamed(context, AuthRouter.userInfo)
+                            .then((_) => setState(() {})),
+                    child: UserAvatarImage(size: 90),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -83,14 +84,14 @@ class _UserPageState extends State<UserPage> {
                       )),
                 ),
                 GestureDetector(
-                  onLongPress: () => showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) => DebugDialog()),
-                  child: Text(CommonPreferences().userNumber.value,
-                          textAlign: TextAlign.center,
-                          style: FontManager.Texta.copyWith(
-                              color: MyColors.deepDust, fontSize: 15))),
+                    onLongPress: () => showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => DebugDialog()),
+                    child: Text(CommonPreferences().userNumber.value,
+                        textAlign: TextAlign.center,
+                        style: FontManager.Texta.copyWith(
+                            color: MyColors.deepDust, fontSize: 15))),
                 SizedBox(height: 5),
                 NavigationWidget(),
                 Container(

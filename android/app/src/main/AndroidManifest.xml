@@ -112,9 +112,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--注意，这里的222222要换成app自己的appid-->
+
                 <data android:scheme="tencent1104743406" />
-                <!-- 100380359 100381104 222222 -->
             </intent-filter>
         </activity>
 

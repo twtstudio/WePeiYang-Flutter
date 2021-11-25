@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/auth/view/info/reset_password_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/reset_nickname_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/user_info_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/avatar_crop_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/add_info_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/login_page.dart';
@@ -41,6 +42,7 @@ class AuthRouter {
   static String resetName = 'info/resetName';
   static String resetPassword = 'info/resetPassword';
   static String userInfo = 'info/home';
+  static String avatarCrop = 'info/avatar_crop';
 
   /// 个人页 & 设置页
   static String user = 'home/user';
@@ -79,6 +81,7 @@ class AuthRouter {
     resetName: (_) => ResetNicknamePage(),
     resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
+    avatarCrop: (_) => AvatarCropPage(),
     user: (_) => UserPage(),
     setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),

@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:convert' show utf8, base64Encode;
 import 'package:flutter/material.dart' show Navigator, required;
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
@@ -258,6 +261,7 @@ class AuthService with AsyncTimer {
         prefs.department.value = result['department'] ?? "";
         prefs.major.value = result['major'] ?? "";
         prefs.stuType.value = result['stuType'] ?? "";
+        prefs.avatar.value = result['avatar'] ?? "";
         prefs.isLogin.value = true;
         onResult(result);
 
@@ -373,5 +377,25 @@ class AuthService with AsyncTimer {
       pref.termName.value = result['semesterName'];
       pref.termStartDate.value = result['semesterStartAt'];
     } on DioError catch (_) {}
+  }
+
+  static uploadAvatar(File image,
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('uploadAvatar', () async {
+      try {
+        var data = FormData.fromMap({
+          'avatar': MultipartFile.fromBytes(
+            image.readAsBytesSync(),
+            filename: image.path,
+            contentType: MediaType("image", "jpg"),
+          ),
+        });
+        var response = await authDio.post("user/avatar", formData: data);
+        CommonPreferences().avatar.value = response.data['result'];
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 }

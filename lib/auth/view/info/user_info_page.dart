@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -54,8 +54,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   SizedBox(
                     height: 70,
                     child: InkWell(
-                      onTap: () {
-                        // TODO 修改头像
+                      onTap: () async {
+                        Navigator.pushNamed(context, AuthRouter.avatarCrop)
+                            .then((_) => this.setState(() {}));
                       },
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(9)),
@@ -66,11 +67,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           children: <Widget>[
                             Text(S.current.avatar, style: mainTextStyle),
                             Spacer(),
-                            SizedBox(
-                              height: 45,
-                              child: Icon(Icons.account_circle_rounded,
-                                  size: 35,
-                                  color: Color.fromRGBO(98, 103, 124, 1.0)),
+                            Hero(
+                              tag: 'avatar',
+                              child: UserAvatarImage(size: 35),
                             ),
                             SizedBox(width: 6)
                           ],
@@ -86,9 +85,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   SizedBox(
                     height: 70,
                     child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.resetName)
-                              .then((_) => this.setState(() {})),
+                      onTap: () {
+                        Navigator.pushNamed(context, AuthRouter.resetName)
+                            .then((_) => this.setState(() {}));
+                      },
                       borderRadius: BorderRadius.zero,
                       splashFactory: InkRipple.splashFactory,
                       child: Padding(

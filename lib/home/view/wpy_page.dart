@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 
+import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -117,11 +118,12 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                       fontWeight: FontWeight.bold)),
               SizedBox(width: 5),
               Expanded(
-                  child: Text(CommonPreferences().nickname.value,
-                      style: hintStyle,
-                    textAlign: TextAlign.end,
-                    overflow: TextOverflow.ellipsis,
-                  )),
+                  child: Text(
+                CommonPreferences().nickname.value,
+                style: hintStyle,
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+              )),
               GestureDetector(
                 onTap: () =>
                     Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {
@@ -129,8 +131,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                 }),
                 child: Container(
                   margin: const EdgeInsets.only(left: 7, right: 10),
-                  child: Icon(Icons.account_circle_rounded,
-                      size: 40, color: MyColors.deepBlue),
+                  child: UserAvatarImage(size: 40),
                 ),
               )
             ],

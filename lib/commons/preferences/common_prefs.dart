@@ -29,8 +29,9 @@ class CommonPreferences {
   var captchaCookie = PrefsBean<String>('Cookie');
   var realName = PrefsBean<String>('realName');
   var department = PrefsBean<String>('department');
-  var stuType = PrefsBean<String>('stuType');
   var major = PrefsBean<String>('major');
+  var stuType = PrefsBean<String>('stuType');
+  var avatar = PrefsBean<String>('avatar');
 
   /// 校务专区
   var feedbackToken = PrefsBean<String>("feedbackToken");

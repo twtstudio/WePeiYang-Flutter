@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert' show jsonDecode;
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';

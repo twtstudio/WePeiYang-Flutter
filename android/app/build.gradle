@@ -95,7 +95,6 @@ android {
             shrinkResources false//删除无用资源
         }
     }
-
 }
 
 flutter {
@@ -133,6 +132,12 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.tencent.tauth:qqopensdk:3.52.0'
     implementation 'com.amap.api:location:5.4.0'
+
+    implementation('io.github.lucksiege:pictureselector:v2.7.2') {
+        configurations {
+            compile.exclude module: 'ucrop'
+        }
+    }
 
 //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
 

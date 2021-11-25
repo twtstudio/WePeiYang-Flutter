@@ -132,12 +132,16 @@ class _SelfInformationState extends State<SelfInformation> {
 //https://www.cnblogs.com/qqcc1388/p/12405548.html
 ///跑马灯哗哗哗
 class TextScroller extends StatefulWidget {
-  Duration duration; // 轮播时间
-  double stepOffset; // 偏移量
-  double paddingLeft; // 内容之间的间距
-  List<Widget> children = []; //内容
+  final Duration duration; // 轮播时间
+  final double stepOffset; // 偏移量
+  final double paddingLeft; // 内容之间的间距
+  final List<Widget> children; //内容
+
   TextScroller(
-      {this.paddingLeft, this.duration, this.stepOffset, this.children});
+      {@required this.paddingLeft,
+      @required this.duration,
+      @required this.stepOffset,
+      @required this.children});
 
   _TextScrollerState createState() => _TextScrollerState();
 }

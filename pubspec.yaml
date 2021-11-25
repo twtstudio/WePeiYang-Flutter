@@ -39,6 +39,7 @@ dependencies:
   hive_flutter: ^1.1.0
   hive_generator: ^1.1.1
   http_parser: ^4.0.0
+  image_cropper:
   image_picker: ^0.8.4+1
   image_pickers: ^2.0.0 # 可以被原生替代
   like_button: ^2.0.3
