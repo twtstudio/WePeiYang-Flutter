@@ -94,7 +94,7 @@ class ReportDio extends DioAbstract with AsyncTimer {
     try {
       var token = CommonPreferences().token.value;
       var response = await dio.get(
-        "https://api.twt.edu.cn/api/returnSchool/record",
+        "record",
         options: Options(
           headers: {
             "DOMAIN": AuthDio.DOMAIN,
@@ -114,7 +114,7 @@ class ReportDio extends DioAbstract with AsyncTimer {
     try {
       var token = CommonPreferences().token.value;
       var response = await dio.get(
-        "https://api.twt.edu.cn/api/returnSchool/status",
+        "status",
         options: Options(
           headers: {
             "DOMAIN": AuthDio.DOMAIN,

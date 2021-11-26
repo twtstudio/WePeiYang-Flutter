@@ -18,7 +18,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
 
   pickAndCropImage(BuildContext context, ImageSource source) async {
     var image = await ImagePicker().pickImage(source: source, imageQuality: 50);
-    if (image == null) return;
+    if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
     File croppedFile = await ImageCropper.cropImage(
       sourcePath: image.path,
@@ -31,6 +31,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: true),
     );
+    if (croppedFile == null) return; // 取消裁剪图片的情况
     AuthService.uploadAvatar(croppedFile, onSuccess: () {
       setState(() {
         this.file = croppedFile;
@@ -69,7 +70,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
   }
 
   Widget getAvatar() {
-    var width = WePeiYangApp.screenWidth;
+    var width = WePeiYangApp.screenWidth - 30;
     if (file != null) {
       return CircleAvatar(
         radius: width / 2,
