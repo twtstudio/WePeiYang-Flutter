@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -25,10 +26,14 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       cropStyle: CropStyle.circle,
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
-          toolbarTitle: '图片裁剪',
+          toolbarTitle: '裁剪',
           toolbarColor: Color.fromRGBO(98, 103, 123, 1),
           toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
+          activeControlsWidgetColor: Color.fromRGBO(177, 175, 227, 1.0),
+          dimmedLayerColor: Colors.black26,
+          statusBarColor: ColorUtil.mainColor,
+          backgroundColor: Color.fromRGBO(58, 59, 69, 1.0),
+          initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
     if (croppedFile == null) return; // 取消裁剪图片的情况
@@ -51,14 +56,14 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               children: [
                 ListTile(
                   leading: Icon(Icons.photo_camera),
-                  title: Text("相机拍照"),
+                  title: Text("拍照"),
                   onTap: () async {
                     pickAndCropImage(context, ImageSource.camera);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.photo_library),
-                  title: Text("相册选择"),
+                  title: Text("相册"),
                   onTap: () async {
                     pickAndCropImage(context, ImageSource.gallery);
                   },

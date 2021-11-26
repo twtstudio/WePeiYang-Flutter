@@ -107,9 +107,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           physics: NeverScrollableScrollPhysics(),
           itemCount: model.homeList.length,
           itemBuilder: (context, index) {
-            // controller.offset > 100
-            //     ? CanBeRefreshed().canBeRefreshed()
-            //     : CanBeRefreshed().canNotBeRefreshed();
             final post = model.homeList[index];
             if (index == 0) {
               return Column(
