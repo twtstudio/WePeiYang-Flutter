@@ -70,7 +70,7 @@ class _UserPageState extends State<UserPage> {
                     onTap: () =>
                         Navigator.pushNamed(context, AuthRouter.userInfo)
                             .then((_) => setState(() {})),
-                    child: UserAvatarImage(size: 90),
+                    child: UserAvatarImage(size: 90, iconColor: Colors.white),
                   ),
                 ),
                 Padding(

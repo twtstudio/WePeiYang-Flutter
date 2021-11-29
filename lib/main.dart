@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart'
-    show TextTreeRenderer, DiagnosticsTreeStyle;
+    show DiagnosticsTreeStyle, TextTreeRenderer, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/app_route_analysis.dart';
+import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
@@ -37,8 +37,6 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 void main() async {
   // HttpOverrides.global = MyHttpOverrides();
-
-  // debugPaintSizeEnabled = true;
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -94,8 +92,6 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
-var pageStack = <String>[];
-
 class WePeiYangAppState extends State<WePeiYangApp>
     with WidgetsBindingObserver {
   @override
@@ -144,7 +140,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         case IntentEvent.WBYPushHtml:
           break;
         case IntentEvent.SchedulePage:
-          if (!pageStack.contains(ScheduleRouter.schedule)) {
+          if (!PageStackObserver.pageStack.contains(ScheduleRouter.schedule)) {
             Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
           }
           break;
@@ -167,7 +163,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
-    UmengCommonSdk.setPageCollectionModeManual();
+    if (!kDebugMode) UmengCommonSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -310,52 +306,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 }
 
-class PageStackObserver extends NavigatorObserver {
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (route.settings.name != null) {
-      pageStack.add(route.settings.name);
-    }
-    print("pageStack:didPush ${pageStack.toString()}");
-  }
-
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (route.settings.name != null) {
-      pageStack.remove(route.settings.name);
-    }
-    print("pageStack:didPop ${pageStack.toString()}");
-  }
-
-  @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (route.settings.name != null) {
-      pageStack.remove(route.settings.name);
-    }
-    print("pageStack:didStartUserGesture ${pageStack.toString()}");
-  }
-
-  @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    if (oldRoute.settings.name != null) {
-      pageStack.remove(oldRoute.settings.name);
-    }
-    if (newRoute.settings.name != null) {
-      pageStack.add(newRoute.settings.name);
-    }
-    print("pageStack:didReplace ${pageStack.toString()}");
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (route.settings.name != null) {
-      pageStack.remove(route.settings.name);
-    }
-    print("pageStack:didRemove ${pageStack.toString()}");
-  }
-}
-
-// 证书问题 暂时这样写
+// 自习室证书问题 暂时这样写
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext context) {
