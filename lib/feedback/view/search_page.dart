@@ -190,7 +190,6 @@ class _SearchPageState extends State<SearchPage> {
       builder: (_, provider, __) {
         return Wrap(
           spacing: 6,
-          runSpacing: 6,
           children: List.generate(provider.tagList.length, (index) {
             return InkResponse(
               radius: 50,

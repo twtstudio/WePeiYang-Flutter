@@ -72,6 +72,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       _listProvider.checkTokenAndGetPostList(_tagsProvider, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
+      _tagsProvider.initTags();
     });
     super.initState();
   }
@@ -160,7 +161,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool get wantKeepAlive => true;
 
   void listToTop() {
-    controller.animateTo(-80,
+    if (controller.offset > 1500) controller.jumpTo(1500);
+    controller.animateTo(-85,
         duration: Duration(milliseconds: 1000), curve: Curves.fastOutSlowIn);
   }
 }

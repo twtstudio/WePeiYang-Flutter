@@ -52,7 +52,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
     var boxDecoration = BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(16),
       shape: BoxShape.rectangle,
       boxShadow: [
         BoxShadow(
@@ -248,7 +248,7 @@ class _TabGridViewState extends State<TabGridView>
           S.current.feedback_add_tag,
           style: FontManager.YaHeiRegular.copyWith(
             color: Color(0xff303c66),
-            fontSize: 16,
+            fontSize: 18,
           ),
         ),
         ConfirmButton(
@@ -373,11 +373,11 @@ class _CampusSelectorState extends State<CampusSelector> {
 
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
-      return BorderRadius.horizontal(left: Radius.circular(5));
+      return BorderRadius.horizontal(left: Radius.circular(12));
     else if (index == 1)
       return BorderRadius.zero;
     else
-      return BorderRadius.horizontal(right: Radius.circular(5));
+      return BorderRadius.horizontal(right: Radius.circular(12));
   }
 }
 
