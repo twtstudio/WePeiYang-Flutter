@@ -25,6 +25,7 @@
   "cannotFindRoom1": "“没有找到这件教室···”",
   "cannotFindRoom2": "请输入阿拉伯数字和字母\n以查找教学楼或教室\n\n如果你想找到26教B区120教室：\n可输入26教b120，26b120，26120或120...",
   "searchHistory": "历史记录",
+  "notHaveLounge": "暂无自习室在线数据，请连接网络",
   "notHaveLoungeFavour": "暂无收藏",
   "like": "点赞",
   "comment": "评论",

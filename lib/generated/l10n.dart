@@ -286,6 +286,16 @@ class S {
   }
 
   /// ``
+  String get notHaveLounge {
+    return Intl.message(
+      '',
+      name: 'notHaveLounge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get notHaveLoungeFavour {
     return Intl.message(
       '',

@@ -45,13 +45,7 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
         ),
         onModelReady: widget.init == true
             ? (model) async {
-                // debugPrint("set can false");
-                // pageState.canNotGoIntoLounge.value = true;
                 await model.initData();
-                // if (model.isIdle || model.isEmpty) {
-                //   // debugPrint("set can true");
-                //   pageState.canNotGoIntoLounge.value = false;
-                // }
               }
             : null,
         builder: (_, FavouriteListModel model, __) {
@@ -116,16 +110,13 @@ class FavourListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListLoadSteps(
       model: model,
-      emptyV: Container(
+      emptyV: SizedBox(
         height: 60,
-        child: Container(
-          child: Center(
-            child: Text(
-              // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
-              S.current.notHaveLoungeFavour,
-              style: FontManager.YaHeiLight.copyWith(
-                  color: Color(0xffcdcdd3), fontSize: 14),
-            ),
+        child: Center(
+          child: Text(
+            S.current.notHaveLoungeFavour,
+            style: FontManager.YaHeiLight.copyWith(
+                color: Color(0xffcdcdd3), fontSize: 14),
           ),
         ),
       ),

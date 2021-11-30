@@ -44,8 +44,9 @@ class _MainPageState extends State<MainPage> {
           body: ListView(
             physics: BouncingScrollPhysics(),
             children: [
+              SizedBox(height: 5),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 26),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -56,13 +57,14 @@ class _MainPageState extends State<MainPage> {
                         time,
                         style: FontManager.YaHeiRegular.copyWith(
                           color: Color(0xff62677b),
-                          fontSize: 10,
+                          fontSize: 13,
                         ),
                       );
                     })
                   ],
                 ),
               ),
+              SizedBox(height: 5),
               SearchBarWidget(),
               BuildingGridWidget(),
               LoungeFavourWidget(title: S.current.myFavour)
@@ -79,8 +81,8 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Builder(
         builder: (_) => InkWell(
           onTap: () async {
@@ -105,17 +107,13 @@ class SearchBarWidget extends StatelessWidget {
           },
           child: Container(
             height: 40,
+            padding: EdgeInsets.only(left: 15),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               shape: BoxShape.rectangle,
               color: Color(0xffecedef),
             ),
-            child: Container(
-              padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
-              child: Row(
-                children: [Image(image: AssetImage(Images.search), width: 16)],
-              ),
-            ),
+            child: Image(image: AssetImage(Images.search), width: 16,alignment: Alignment.centerLeft,),
           ),
         ),
       ),
@@ -157,15 +155,24 @@ class BuildingGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 40, 15, 10),
-      child: Container(
-        child: Consumer<BuildingDataModel>(
-          builder: (_, model, __) => ListLoadSteps(
-            model: model,
-            errorHeight: 80,
-            successV: _successView(model),
-            errorV: RetryWidget(),
+      padding: const EdgeInsets.fromLTRB(15, 25, 15, 10),
+      child: Consumer<BuildingDataModel>(
+        builder: (_, model, __) => ListLoadSteps(
+          model: model,
+          errorHeight: 80,
+          emptyV: SizedBox(
+            height: 60,
+            child: Center(
+              child: Text(
+                //S.current.notHaveLounge,
+                "暂无自习室在线数据，请连接网络",
+                style: FontManager.YaHeiLight.copyWith(
+                    color: Color(0xffcdcdd3), fontSize: 14),
+              ),
+            ),
           ),
+          successV: _successView(model),
+          errorV: RetryWidget(),
         ),
       ),
     );
@@ -180,9 +187,8 @@ class RetryWidget extends StatefulWidget {
 class _RetryWidgetState extends State<RetryWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 80,
-      color: Colors.transparent,
       child: Center(
         child: ElevatedButton(
           onPressed: () {
