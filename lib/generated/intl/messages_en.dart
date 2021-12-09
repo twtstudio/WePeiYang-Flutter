@@ -144,6 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mon_sun" : MessageLookupByLibrary.simpleMessage(""),
     "myFavour" : MessageLookupByLibrary.simpleMessage(""),
     "no_more_data" : MessageLookupByLibrary.simpleMessage(""),
+    "notHaveLounge" : MessageLookupByLibrary.simpleMessage(""),
     "notHaveLoungeFavour" : MessageLookupByLibrary.simpleMessage(""),
     "not_bind" : MessageLookupByLibrary.simpleMessage(""),
     "not_read" : MessageLookupByLibrary.simpleMessage(""),

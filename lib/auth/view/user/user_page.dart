@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
@@ -199,6 +200,36 @@ class _UserPageState extends State<UserPage> {
                               }
                             },
                           )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 80,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9)),
+                    child: InkWell(
+                      onTap: () => showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) => RegisterDialog()),
+                      splashFactory: InkRipple.splashFactory,
+                      borderRadius: BorderRadius.circular(9),
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(width: 20),
+                          Icon(Icons.lock_outline,
+                              color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                          SizedBox(width: 10),
+                          Text('查看隐私政策', style: textStyle),
+                          Spacer(),
+                          arrow,
+                          SizedBox(width: 22),
                         ],
                       ),
                     ),

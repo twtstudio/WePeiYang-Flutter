@@ -144,6 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mon_sun" : MessageLookupByLibrary.simpleMessage("周一至周日"),
     "myFavour" : MessageLookupByLibrary.simpleMessage("我的收藏"),
     "no_more_data" : MessageLookupByLibrary.simpleMessage("没有更多数据了!"),
+    "notHaveLounge" : MessageLookupByLibrary.simpleMessage("暂无自习室在线数据，请连接网络"),
     "notHaveLoungeFavour" : MessageLookupByLibrary.simpleMessage("暂无收藏"),
     "not_bind" : MessageLookupByLibrary.simpleMessage("未绑定"),
     "not_read" : MessageLookupByLibrary.simpleMessage("未读"),

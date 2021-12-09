@@ -2,12 +2,11 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, TextTreeRenderer, kDebugMode;
+    show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
@@ -33,10 +32,10 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 /// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
 /// 2. App build 前后：
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
+/// 3. 用户登陆时（调用AuthService.login），此时用户已同意隐私权先
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
-  // HttpOverrides.global = MyHttpOverrides();
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -163,7 +162,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode) UmengCommonSdk.setPageCollectionModeManual();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
@@ -303,15 +301,5 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         ),
       );
     }
-  }
-}
-
-// 自习室证书问题 暂时这样写
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
   }
 }

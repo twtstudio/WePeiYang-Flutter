@@ -442,7 +442,7 @@ class RegisterPageThree extends StatefulWidget {
 class _RegisterPageThreeState extends State<RegisterPageThree> {
   String password1 = "";
   String password2 = "";
-  bool check = false;
+  var checkNotifier = ValueNotifier<bool>(false);
 
   _submit() async {
     if (password1 == "")
@@ -451,8 +451,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       ToastProvider.error("请再次输入密码");
     else if (password1 != password2)
       ToastProvider.error("两次输入密码不一致");
-    else if (!check)
-      ToastProvider.error("请阅读用户须知");
+    else if (!checkNotifier.value)
+      ToastProvider.error("请同意用户须知并继续");
     else {
       AuthService.register(widget.userNum, widget.nickname, widget.phone,
           widget.code, password1, widget.email, widget.idNum,
@@ -556,13 +556,19 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Checkbox(
-                  value: this.check,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                  activeColor: Color.fromRGBO(98, 103, 123, 1),
-                  onChanged: (bool val) =>
-                      this.setState(() => this.check = !this.check),
+                ValueListenableBuilder(
+                  valueListenable: checkNotifier,
+                  builder: (context, value, _) {
+                    return Checkbox(
+                      value: value,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                      activeColor: Color.fromRGBO(98, 103, 123, 1),
+                      onChanged: (_) {
+                        checkNotifier.value = !checkNotifier.value;
+                      },
+                    );
+                  },
                 ),
                 Text(S.current.register_hint1,
                     style: FontManager.YaHeiRegular.copyWith(
@@ -571,7 +577,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                   onTap: () => showDialog(
                       context: context,
                       barrierDismissible: true,
-                      builder: (BuildContext context) => RegisterDialog()),
+                      builder: (BuildContext context) =>
+                          RegisterDialog(check: checkNotifier)),
                   child: Text(S.current.register_hint2,
                       style: FontManager.YaHeiRegular.copyWith(
                           fontSize: 11,

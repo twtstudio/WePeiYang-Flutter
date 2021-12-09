@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:convert' show utf8, base64Encode;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' show Navigator, required;
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
@@ -243,6 +245,7 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('login', () async {
       try {
+        if (!kDebugMode) UmengCommonSdk.setPageCollectionModeManual();
         var result = await authDio.postRst("auth/common",
             queryParameters: {"account": account, "password": password});
         var prefs = CommonPreferences();

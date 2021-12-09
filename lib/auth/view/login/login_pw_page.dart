@@ -15,14 +15,14 @@ class LoginPwWidget extends StatefulWidget {
 class _LoginPwWidgetState extends State<LoginPwWidget> {
   String account = "";
   String password = "";
-  bool check = false;
+  var checkNotifier = ValueNotifier<bool>(false);
 
   _login() async {
     _passwordFocus.unfocus();
     if (account == "" || password == "")
       ToastProvider.error("账号密码不能为空");
-    else if (!check)
-      ToastProvider.error("请阅读用户须知");
+    else if (!checkNotifier.value)
+      ToastProvider.error("请同意用户须知并继续");
     else
       AuthService.login(account, password,
           onResult: (result) {
@@ -162,13 +162,19 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Checkbox(
-                  value: this.check,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                  activeColor: Color.fromRGBO(98, 103, 123, 1),
-                  onChanged: (bool val) =>
-                      this.setState(() => this.check = !this.check),
+                ValueListenableBuilder(
+                  valueListenable: checkNotifier,
+                  builder: (context, value, _) {
+                    return Checkbox(
+                      value: value,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                      activeColor: Color.fromRGBO(98, 103, 123, 1),
+                      onChanged: (_) {
+                        checkNotifier.value = !checkNotifier.value;
+                      },
+                    );
+                  },
                 ),
                 Text(S.current.register_hint1,
                     style: FontManager.YaHeiRegular.copyWith(
@@ -177,7 +183,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   onTap: () => showDialog(
                       context: context,
                       barrierDismissible: true,
-                      builder: (BuildContext context) => RegisterDialog()),
+                      builder: (context) =>
+                          RegisterDialog(check: checkNotifier)),
                   child: Text(S.current.register_hint2,
                       style: FontManager.YaHeiRegular.copyWith(
                           fontSize: 11,
