@@ -196,12 +196,16 @@ class RegisterDialog extends Dialog {
       return Center(
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: Text(S.current.ok,
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(98, 103, 123, 1),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+          child: Container(
+            decoration: BoxDecoration(), // 加个这个扩大点击事件范围
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text(S.current.ok,
+                style: FontManager.YaQiHei.copyWith(
+                    color: Color.fromRGBO(98, 103, 123, 1),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
         ),
       );
     } else {
@@ -213,24 +217,32 @@ class RegisterDialog extends Dialog {
               check.value = false;
               Navigator.pop(context);
             },
-            child: Text('拒绝',
-                style: FontManager.YaQiHei.copyWith(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none)),
+            child: Container(
+              decoration: BoxDecoration(), // 加个这个扩大点击事件范围
+              padding: const EdgeInsets.all(10),
+              child: Text('拒绝',
+                  style: FontManager.YaQiHei.copyWith(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none)),
+            ),
           ),
           GestureDetector(
             onTap: () {
               check.value = true;
               Navigator.pop(context);
             },
-            child: Text('同意',
-                style: FontManager.YaQiHei.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none)),
+            child: Container(
+              decoration: BoxDecoration(), // 加个这个扩大点击事件范围
+              padding: const EdgeInsets.all(10),
+              child: Text('同意',
+                  style: FontManager.YaQiHei.copyWith(
+                      color: Color.fromRGBO(98, 103, 123, 1),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none)),
+            ),
           ),
         ],
       );
