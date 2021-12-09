@@ -72,7 +72,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       _listProvider.checkTokenAndGetPostList(_tagsProvider, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
-      _tagsProvider.initTags();
     });
     super.initState();
   }

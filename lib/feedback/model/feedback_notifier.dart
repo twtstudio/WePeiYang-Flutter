@@ -126,6 +126,7 @@ class FbHomeListModel extends ChangeNotifier {
         },
       );
     } else {
+      provider.initTags();
       initPostList();
     }
   }
