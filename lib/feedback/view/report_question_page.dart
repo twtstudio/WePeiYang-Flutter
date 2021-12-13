@@ -243,7 +243,6 @@ class _ReportOtherReasonPageState extends State<ReportOtherReasonPage> {
               ),
               onChanged: (text) {
                 textInput = text;
-                print(text);
               },
               inputFormatters: [
                 CustomizedLengthTextInputFormatter(200),

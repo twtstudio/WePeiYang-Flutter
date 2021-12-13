@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -103,7 +104,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     if (pref.isBindTju.value)
       return Column(children: [
-        SizedBox(height: 50),
+        SizedBox(height: 30),
         Text("${S.current.bind_account}: ${pref.tjuuname.value}",
             style: FontManager.YaHeiRegular.copyWith(
                 fontWeight: FontWeight.bold,
@@ -138,21 +139,21 @@ class _TjuBindPageState extends State<TjuBindPage> {
         ),
       ]);
     else {
-      return Column(children: [
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
-          child: Text(
-            S.current.tju_bind_hint,
-            textAlign: TextAlign.center,
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(children: [
+          SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              S.current.tju_bind_hint,
+              textAlign: TextAlign.center,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+            ),
           ),
-        ),
-        SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: ConstrainedBox(
+          SizedBox(height: 20),
+          ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: 55,
             ),
@@ -182,11 +183,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
               },
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: ConstrainedBox(
+          SizedBox(height: 20),
+          ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: 55,
             ),
@@ -217,11 +215,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
               },
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Row(
+          SizedBox(height: 20),
+          Row(
             children: [
               Expanded(
                 child: SizedBox(
@@ -252,12 +247,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
               SizedBox(height: 55, width: 120, child: captchaWidget)
             ],
           ),
-        ),
-        SizedBox(height: 35),
-        Container(
+          SizedBox(height: 25),
+          SizedBox(
             height: 50,
             width: 400,
-            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
@@ -276,8 +269,44 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
-            )),
-      ]);
+            ),
+          ),
+          SizedBox(height: 35),
+          Text(
+            '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
+            '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+          ),
+          Row(
+            children: [
+              Text(
+                '办公网网址为 ',
+                style: FontManager.YaHeiRegular.copyWith(
+                    fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  String url = 'http://classes.tju.edu.cn/';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    ToastProvider.error('请检查网络状态');
+                  }
+                },
+                child: Text(
+                  'classes.tju.edu.cn',
+                  style: FontManager.YaHeiRegular.copyWith(
+                      fontSize: 10,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 35),
+        ]),
+      );
     }
   }
 
@@ -304,7 +333,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.fromLTRB(35, 20, 20, 50),
+                  margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
                   child: Text(S.current.tju_bind,
                       style: FontManager.YaQiHei.copyWith(
                           color: Color.fromRGBO(48, 60, 102, 1),
@@ -312,7 +341,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                           fontSize: 28)),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 32, 0, 50),
+                  margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                   child: Text(
                       pref.isBindTju.value
                           ? S.current.is_bind
@@ -326,7 +355,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
 
             /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-            SizedBox(height: pref.isBindTju.value ? 20 : 1),
+            SizedBox(height: pref.isBindTju.value ? 20 : 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -9,6 +9,8 @@ class CommonUtils {
 
   static Future<String> getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.version;
+    var version = packageInfo.version;
+    if (!version.startsWith('v')) version = 'v' + version;
+    return version;
   }
 }

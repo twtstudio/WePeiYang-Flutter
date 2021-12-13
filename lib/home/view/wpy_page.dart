@@ -33,10 +33,13 @@ class WPYPageState extends State<WPYPage> {
     cards = []
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/wiki.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Wiki',
+          HomeRouter.wiki))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
-      ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
-          "重开模拟器", HomeRouter.restartGame))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
@@ -46,11 +49,8 @@ class WPYPageState extends State<WPYPage> {
               color: Color(0xffcecfd4), size: 20),
           S.current.lounge,
           LoungeRouter.main))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
-          'Wiki',
-          HomeRouter.wiki));
+      ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
+          "重开模拟器", HomeRouter.restartGame));
   }
 
   @override

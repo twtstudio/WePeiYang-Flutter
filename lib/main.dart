@@ -32,7 +32,7 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 /// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
 /// 2. App build 前后：
 /// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
-/// 3. 用户登陆时（调用AuthService.login），此时用户已同意隐私权先
+/// 3. 用户登录时（调用AuthService.login），此时用户已同意隐私权先
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
@@ -281,11 +281,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||
         prefs.password.value == "") {
-      /// 既然没登陆过就多看会启动页吧
+      /// 既然没登录过就多看会启动页吧
       Future.delayed(Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
-      /// 如果登陆过的话，短暂显示启动页后尝试自动登录，无论成功与否都进入主页
+      /// 如果登录过的话，短暂显示启动页后尝试自动登录，无论成功与否都进入主页
       Future.delayed(Duration(milliseconds: 500)).then(
         (_) => AuthService.login(
           prefs.account.value,

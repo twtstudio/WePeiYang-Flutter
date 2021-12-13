@@ -92,6 +92,9 @@ class CommonPreferences {
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   var updateTime = PrefsBean<String>('updateTime');
 
+  /// 是否为初次使用此app
+  var firstUse = PrefsBean<bool>('firstUse', true);
+
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {
     isLogin.clear();

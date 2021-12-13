@@ -48,7 +48,7 @@ class ReadAllDialog extends Dialog {
     return Center(
       child: Container(
         height: 120,
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Color.fromRGBO(237, 240, 244, 1)),
