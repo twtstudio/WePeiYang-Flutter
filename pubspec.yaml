@@ -57,7 +57,7 @@ dependencies:
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
-
+  flutter_svg: ^0.22.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
