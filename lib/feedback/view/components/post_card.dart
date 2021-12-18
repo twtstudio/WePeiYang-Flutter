@@ -85,10 +85,9 @@ class _PostCardState extends State<PostCard> {
     var campus = post.campus > 0
         ? Container(
             decoration: BoxDecoration(
-              color: ColorUtil.backgroundColor,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: ColorUtil.mainColor)
-            ),
+                color: ColorUtil.backgroundColor,
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: ColorUtil.mainColor)),
             padding: const EdgeInsets.fromLTRB(2, 2, 2, 1),
             child: Text(const ['', '卫津路', '北洋园'][post.campus],
                 style: FontManager.YaHeiRegular.copyWith(
@@ -111,7 +110,11 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          Row(children: [TagShowWidget(tag.data.toString().substring(1)), SizedBox(width: 8), campus]),
+          Row(children: [
+            TagShowWidget(tag.data.toString().substring(1)),
+            SizedBox(width: 8),
+            campus
+          ]),
           SizedBox(height: 8),
           content,
         ],
@@ -123,11 +126,14 @@ class _PostCardState extends State<PostCard> {
         (post.topImgUrl?.isNotEmpty ?? false)) {
       rowList.addAll([
         SizedBox(width: 10),
-        Image.network(
-          post.topImgUrl,
-          width: 80,
-          height: 60,
-          fit: BoxFit.cover,
+        ClipRRect(
+          child: Image.network(
+            post.topImgUrl,
+            width: 80,
+            height: 76,
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ]);
     }
@@ -145,8 +151,9 @@ class _PostCardState extends State<PostCard> {
                 children: [
                   title,
                   SizedBox(width: 10),
-                  if(post.isSolved == 1) SolvedWidget(),
-                  if(post.isSolved == 0 && post.tags[0].name != "小树洞") UnSolvedWidget(),
+                  if (post.isSolved == 1) SolvedWidget(),
+                  if (post.isSolved == 0 && post.tags[0].name != "小树洞")
+                    UnSolvedWidget(),
                 ],
               ),
               SizedBox(height: 5),
@@ -198,7 +205,6 @@ class _PostCardState extends State<PostCard> {
         textBaseline: TextBaseline.ideographic,
         fontWeight: FontWeight.w900,
         letterSpacing: 1.3,
-
       ),
     );
 
@@ -255,8 +261,7 @@ class _PostCardState extends State<PostCard> {
           );
         }
       },
-      circleColor:
-      CircleColor(start: Colors.black12, end: Colors.blue[200]),
+      circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
       bubblesColor: BubblesColor(
         dotPrimaryColor: Colors.blueGrey,
         dotSecondaryColor: Colors.black26,
@@ -264,7 +269,6 @@ class _PostCardState extends State<PostCard> {
       animationDuration: Duration(milliseconds: 600),
       padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
     );
-
 
     var commentAndLike = [
       ...commentCount,
@@ -295,7 +299,7 @@ class _PostCardState extends State<PostCard> {
           collectButton,
         ]);
 
-        if (post.imgUrlList.isNotEmpty) {
+        if (post.imgUrlList.length > 1) {
           var imageList = Row(
             children: List.generate(
               post.imgUrlList.length,
@@ -306,6 +310,22 @@ class _PostCardState extends State<PostCard> {
             SizedBox(height: 10),
             imageList,
           ]);
+        } else if (post.imgUrlList.length == 1) {
+          imagesWidget.add(InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
+                "urlList": post.imgUrlList,
+                "urlListLength": post.imgUrlList.length,
+                "indexNow": 1
+              });
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+              child: FadeInImage.memoryNetwork(
+                  fit: BoxFit.cover,
+                  placeholder: kTransparentImage,
+                  image: post.thumbImgUrlList[0]),
+            )));
         }
 
         imagesWidget.add(
@@ -337,6 +357,7 @@ class _PostCardState extends State<PostCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             mainWidget(tap),
+            SizedBox(height: 8),
             ...imagesWidget,
             bottomWidget,
           ],
@@ -369,11 +390,17 @@ class _PostCardState extends State<PostCard> {
             "indexNow": index
           });
         },
-        child: FadeInImage.memoryNetwork(
-            fit: BoxFit.cover,
-            height: 200 - (post.thumbImgUrlList.length) * 40.0,
-            placeholder: kTransparentImage,
-            image: post.thumbImgUrlList[index]),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: FadeInImage.memoryNetwork(
+                fit: BoxFit.cover,
+                height: 200 - (post.thumbImgUrlList.length) * 30.0,
+                placeholder: kTransparentImage,
+                image: post.thumbImgUrlList[index]),
+          ),
+        ),
       ),
     );
   }
