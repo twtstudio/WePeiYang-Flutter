@@ -83,7 +83,7 @@ class _NCommentCardState extends State<NCommentCard> {
           },
         );
       },
-      isLiked: widget.comment.isLiked,
+      isLiked: widget.comment.isLiked
     );
 
     var bottomWidget = Row(
