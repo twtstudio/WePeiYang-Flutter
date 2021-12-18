@@ -20,26 +20,19 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
   @override
   Widget build(BuildContext context) {
     var type = CommonPreferences().feedbackSearchType.value;
-    return Row(
+    return Column(
       children: [
-        SizedBox(width: 20),
         Expanded(
           child: ElevatedButton(
             child: Text(
               "时间排序",
               style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.mainColor,
+                color: type == "1" ? ColorUtil.mainColor : ColorUtil.lightTextColor,
                 fontSize: 15,
               ),
             ),
             style: ElevatedButton.styleFrom(
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.horizontal(left: Radius.circular(30))),
-                primary: type == "1"
-                    ? ColorUtil.searchBarBackgroundColor
-                    : Colors.white),
+                elevation: 0, primary: ColorUtil.backgroundColor),
             onPressed: () {
               if (type == "1") return;
               CommonPreferences().feedbackSearchType.value = "1";
@@ -61,18 +54,12 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
             child: Text(
               "热度排序",
               style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.mainColor,
+                color: type == "2" ? ColorUtil.mainColor : ColorUtil.lightTextColor,
                 fontSize: 15,
               ),
             ),
             style: ElevatedButton.styleFrom(
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.horizontal(right: Radius.circular(30))),
-                primary: type == "2"
-                    ? ColorUtil.searchBarBackgroundColor
-                    : Colors.white),
+                elevation: 0, primary: ColorUtil.backgroundColor),
             onPressed: () {
               if (type == "2") return;
               CommonPreferences().feedbackSearchType.value = "2";

@@ -14,6 +14,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
+import 'components/widget/search_type_switch_bar.dart';
+
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key key}) : super(key: key);
 
@@ -26,6 +28,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
   TabController _tabController;
+  bool _ifSeqMessageShow = true;
 
   final ScrollController controller = ScrollController();
 
@@ -103,9 +106,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             if (index == 0) {
               return Column(
                 children: [
-                  // searchBar,
-                  // SearchTypeSwitchBar(
-                  //     controller: _refreshController, provider: _listProvider),
                   PostCard.simple(post, key: ValueKey(post.id))
                 ],
               );
@@ -135,31 +135,40 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return Scaffold(
       body: DefaultTabController(
         length: 4,
-        initialIndex: 1,
+        initialIndex: 0,
         child: Scaffold(
           appBar: AppBar(
             actions: [
               SizedBox(width: 5),
-              IconButton(icon: Icon(Icons.all_inbox, color: ColorUtil.mainColor), onPressed: () => Navigator.pushNamed(context, FeedbackRouter.profile)),
+              IconButton(
+                  icon: ImageIcon(
+                    AssetImage('assets/img/telephone.png'),
+                    color: ColorUtil.mainColor,
+                  ),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, FeedbackRouter.profile)),
               Expanded(child: searchBar),
               SizedBox(
                 height: 30,
                 width: 30,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(ColorUtil.mainColor),
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
-                    shape: MaterialStateProperty.all(CircleBorder(
-                        side: BorderSide(
-                      width: 0.0,
-                      style: BorderStyle.none,
-                    ))), //圆角弧度
+                child: Hero(
+                  tag: "addNewPost",
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(ColorUtil.mainColor),
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      shape: MaterialStateProperty.all(CircleBorder(
+                          side: BorderSide(
+                        width: 0.0,
+                        style: BorderStyle.none,
+                      ))), //圆角弧度
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, FeedbackRouter.newPost);
+                    },
+                    child: Icon(Icons.add),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, FeedbackRouter.newPost);
-                  },
-                  child: Icon(Icons.add),
                 ),
               ),
               SizedBox(width: 15)
@@ -187,40 +196,83 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             fontSize: 16,
                           ),
                           indicator: CustomIndicator(
-                            borderSide: BorderSide(color: ColorUtil.mainColor,width: 2)
-                          ),
+                              borderSide: BorderSide(
+                                  color: ColorUtil.mainColor, width: 2)),
                           tabs: [
                             Tab(text: "全部"),
                             Tab(text: "湖底"),
-                            Tab(text: "校务"),
-                            Tab(child: Row(children: [Text("   游戏"), Icon(Icons.assignment_turned_in_rounded,size: 14)],),),
+                            Tab(
+                              text: "校务",
+                            ),
+                            Tab(
+                              child: Row(
+                                children: [
+                                  Text("   游戏"),
+                                  Icon(Icons.assignment_turned_in_rounded,
+                                      size: 14)
+                                ],
+                              ),
+                            ),
                           ]),
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width / 4),
                     IconButton(
                         icon: Icon(
-                          Icons.add_to_photos_sharp,
+                          Icons.clear_all,
+                          size: 20,
                           color: ColorUtil.mainColor,
                         ),
-                        onPressed: () {}),
+                        onPressed: () {
+                          setState(() {
+                            _ifSeqMessageShow = !_ifSeqMessageShow;
+                          });
+                        }),
                     SizedBox(width: 8)
                   ]),
             ),
             backgroundColor: ColorUtil.backgroundColor,
             elevation: 0,
           ),
-
-          /// Click and jump to NewPostPage.
-          // floatingActionButton: FloatingActionButton(
-          //   backgroundColor: ColorUtil.mainColor,
-          //   child: Icon(Icons.add),
-          //   onPressed: () {
-          //     Navigator.pushNamed(context, FeedbackRouter.newPost);
-          //   },
-          // ),
-          body: TabBarView(
-            children: <Widget>[body, Text("湖底"), Text("校务"), Text("呦西")],
-          ),
+          body: Stack(children: [
+            TabBarView(
+              children: <Widget>[body, Text("湖底"), Text("校务"), Text("呦西")],
+            ),
+            Offstage(
+              offstage: _ifSeqMessageShow,
+              child: Stack(
+                children: [
+                  InkWell(
+                    child: Container(
+                      color: Colors.black38,
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _ifSeqMessageShow = true;
+                      });
+                    },
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 18,
+                    child: Container(
+                      width: 110,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: ColorUtil.backgroundColor,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15)),
+                      ),
+                      child: SearchTypeSwitchBar(
+                          controller: _refreshController,
+                          provider: _listProvider),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ]),
         ),
       ),
     );
@@ -277,7 +329,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: const Duration(seconds: 3), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
     animation = Tween(begin: 0.0, end: 1.0).animate(controller);
   }
 
