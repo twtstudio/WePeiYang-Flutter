@@ -5,7 +5,7 @@ class ColorUtil {
   static const mainColor = Color.fromARGB(255, 48, 60, 102);
   static const backgroundColor = Color.fromARGB(255, 237, 237, 238);
   static const searchBarIconColor = Color.fromARGB(255, 132, 135, 145);
-  static const searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
+  static const searchBarBackgroundColor = Color.fromARGB(255, 226, 226, 226);
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const profileNameColor = Color.fromARGB(255, 255, 255, 255);

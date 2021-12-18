@@ -35,6 +35,24 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  String get feedback_solved {
+    return Intl.message(
+      '已解决',
+      name: 'feedback_solved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get feedback_unsolved {
+    return Intl.message(
+      '未解决',
+      name: 'feedback_unsolved',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wei Jin Lu`
   String get WJL {
     return Intl.message(

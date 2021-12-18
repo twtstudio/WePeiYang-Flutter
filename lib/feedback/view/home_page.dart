@@ -142,7 +142,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               SizedBox(width: 5),
               IconButton(
                   icon: ImageIcon(
-                    AssetImage('assets/img/telephone.png'),
+                    AssetImage('lib/feedback/assets/img/error.png'),
                     color: ColorUtil.mainColor,
                   ),
                   onPressed: () =>

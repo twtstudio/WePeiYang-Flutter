@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -10,6 +12,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/collect_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
@@ -67,22 +70,10 @@ class _PostCardState extends State<PostCard> {
         overflow: TextOverflow.ellipsis,
         style: FontManager.YaHeiRegular.copyWith(
           color: ColorUtil.boldTextColor,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
         ),
       ),
-    );
-
-    var topWidget = Row(
-      children: [
-        title,
-        if (post.isSolved == 1)
-          Text(
-            '官方已回复',
-            style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.boldTextColor, fontSize: 12),
-          ),
-      ],
     );
 
     var tag = Text(
@@ -120,7 +111,7 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          Row(children: [tag, SizedBox(width: 8), campus]),
+          Row(children: [TagShowWidget(tag.data.toString().substring(1)), SizedBox(width: 8), campus]),
           SizedBox(height: 8),
           content,
         ],
@@ -146,10 +137,18 @@ class _PostCardState extends State<PostCard> {
     var mainWidget = (tap) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 5),
-              topWidget,
+              Row(
+                children: [
+                  title,
+                  SizedBox(width: 10),
+                  if(post.isSolved == 1) SolvedWidget(),
+                  if(post.isSolved == 0 && post.tags[0].name != "小树洞") UnSolvedWidget(),
+                ],
+              ),
               SizedBox(height: 5),
               middleWidget,
             ],
@@ -192,9 +191,14 @@ class _PostCardState extends State<PostCard> {
 
     var createTime = Text(
       post.createTime.time,
-      style: FontManager.YaHeiRegular.copyWith(
+      textAlign: TextAlign.right,
+      style: FontManager.Aspira.copyWith(
         color: ColorUtil.lightTextColor,
         fontSize: 12,
+        textBaseline: TextBaseline.ideographic,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 1.3,
+
       ),
     );
 
@@ -203,14 +207,14 @@ class _PostCardState extends State<PostCard> {
         child: Icon(
           Icons.message_outlined,
           size: 16,
-          color: ColorUtil.lightTextColor,
+          color: ColorUtil.boldTextColor,
         ),
       ),
       SizedBox(width: 6),
       Text(
         post.commentCount.toString(),
         style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 14, color: ColorUtil.lightTextColor),
+            fontSize: 14, color: ColorUtil.boldTextColor),
       )
     ];
 
@@ -235,11 +239,40 @@ class _PostCardState extends State<PostCard> {
       isLiked: post.isLiked,
     );
 
+    var unlikeWidget = LikeButton(
+      likeBuilder: (bool isLiked) {
+        if (isLiked) {
+          return Icon(
+            Icons.thumb_down,
+            size: 16,
+            color: Colors.blueGrey[900],
+          );
+        } else {
+          return Icon(
+            Icons.thumb_down_outlined,
+            size: 16,
+            color: ColorUtil.boldTextColor,
+          );
+        }
+      },
+      circleColor:
+      CircleColor(start: Colors.black12, end: Colors.blue[200]),
+      bubblesColor: BubblesColor(
+        dotPrimaryColor: Colors.blueGrey,
+        dotSecondaryColor: Colors.black26,
+      ),
+      animationDuration: Duration(milliseconds: 600),
+      padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+    );
+
+
     var commentAndLike = [
       ...commentCount,
       SizedBox(width: 5),
       // Like count.
       likeWidget,
+      SizedBox(width: 5),
+      unlikeWidget
     ];
 
     List<Widget> bottomList = [];
@@ -299,7 +332,7 @@ class _PostCardState extends State<PostCard> {
       showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

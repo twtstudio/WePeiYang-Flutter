@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 3),
-              child: Text('校务',
+              child: Text('青年湖底',
                   style: _currentIndex == 1 ? currentStyle : otherStyle),
             ),
           ],

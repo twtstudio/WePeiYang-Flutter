@@ -189,6 +189,8 @@
   "feedback_official": "官方",
   "feedback_profile": "个人中心",
   "feedback_set_all_read":"确定要设置所有消息已读吗？",
+  "feedback_solved":"已解决",
+  "feedback_unsolved":"未解决",
 
   "report": "健康信息"
 }
