@@ -21,7 +21,6 @@ fun readCourseList(context: Context): List<Course> {
         val today = if (it == Calendar.SUNDAY) 7 else it - 1
         if (nightMode) (today + 1) % 7 else today
     }
-
     val nowTime: Int = (Calendar.getInstance().timeInMillis / 1000).toInt()
     val termStart: Int = pref.getLong("flutter.termStart", 0).toInt()
     val weeks: Double = (nowTime - termStart) / 604800.0
@@ -40,13 +39,13 @@ fun readCourseList(context: Context): List<Course> {
         for (i in 0 until list.length()) {
             val scheduleCourse = list.getJSONObject(i)
             var courseName = scheduleCourse.getString("courseName")
-            if (courseName.length > 15) courseName = courseName.substring(0, 15) + "..."
+            if (courseName.length > 10) courseName = courseName.substring(0, 10) + "..."
             val arrange = scheduleCourse.getJSONObject("arrange")
             var room = arrange.getString("room").replace("-", "楼")
             if (room == "") room = "————"
             val start = arrange.getString("start")
             val end = arrange.getString("end")
-            val time = "第${start}-${end}节"
+            val time = getCourseTime(start.toInt(),end.toInt())
             val flag1 = nowDay == arrange.getString("day").toInt()
             val flag2 = arrange.getString("binStr").let { str ->
                 if (str.length <= nowWeek) false else str[nowWeek] == '1'
@@ -57,5 +56,33 @@ fun readCourseList(context: Context): List<Course> {
     courseList.sortWith { a, b -> a.time.compareTo(b.time) }
     return courseList
 }
+private fun getCourseTime(start : Int, end : Int) : String{
+    val startTimes = arrayListOf("08:30",
+            "09:20",
+            "10:25",
+            "11:15",
+            "13:30",
+            "14:20",
+            "15:25",
+            "16:15",
+            "18:30",
+            "19:20",
+            "20:10",
+            "21:00")
 
+    val endTimes = arrayListOf("09:15",
+            "10:05",
+            "11:10",
+            "12:00",
+            "14:15",
+            "15:05",
+            "16:10",
+            "17:00",
+            "19:15",
+            "20:05",
+            "20:55",
+            "21:45")
+
+    return "${startTimes[start - 1]}-${endTimes[end - 1]}"
+}
 class Course(val courseName: String = "", val room: String = "", val time: String = "")

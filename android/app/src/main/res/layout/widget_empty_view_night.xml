@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_empty_view_night"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="135.0dip"
+        android:layout_height="42.0dip"
+        android:layout_marginTop="20.3dp"
+        android:layout_marginStart="19.33dp"
+        android:text="夜深了 做个早睡的人吧~"
+        android:textStyle="bold"
+        android:textSize="16.0sp" />
+</FrameLayout>

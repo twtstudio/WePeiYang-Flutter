@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/widget_week"
+        android:layout_width="wrap_content"
+        android:layout_height="54.0dip"
+        android:layout_marginTop="12.0dip"
+        android:layout_marginEnd="46.329987dip"
+        android:src="@drawable/sunday" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_background"
+        android:orientation="vertical">
+        <include layout="@layout/widget_empty_view_day" />
+        <ListView
+            android:id="@+id/widget_listview_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4.669983dip"
+            android:divider="@null"
+            android:dividerHeight="9.669983dip"
+             />
+    </LinearLayout>
+</LinearLayout>
