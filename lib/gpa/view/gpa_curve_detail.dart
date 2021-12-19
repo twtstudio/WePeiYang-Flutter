@@ -14,18 +14,16 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<GPANotifier>(builder: (context, notifier, _) {
-      if (notifier.hideGPAWithNotify)
-        return Container();
-      else
-        return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-          child: Column(children: <Widget>[
-            CurveText(notifier),
-            // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义
-            GPACurve(notifier, FavorColors.gpaColor, isPreview: true),
-            GPAIntro(notifier)
-          ]),
-        );
+      if (notifier.hideGPA) return Container();
+      return GestureDetector(
+        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+        child: Column(children: <Widget>[
+          CurveText(notifier),
+          // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义
+          GPACurve(notifier, FavorColors.gpaColor, isPreview: true),
+          GPAIntro(notifier)
+        ]),
+      );
     });
   }
 }

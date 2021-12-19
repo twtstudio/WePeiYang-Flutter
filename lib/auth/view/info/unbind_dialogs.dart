@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 final _hintStyle = FontManager.YaQiHei.copyWith(
@@ -20,6 +21,7 @@ class TjuUnbindDialog extends Dialog {
     CommonPreferences().clearTjuPrefs();
     Provider.of<GPANotifier>(context, listen: false).clear();
     Provider.of<ScheduleNotifier>(context, listen: false).clear();
+    Provider.of<ExamNotifier>(context, listen: false).clear();
     Navigator.pop(context);
   }
 

@@ -11,7 +11,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
-import 'package:we_pei_yang_flutter/schedule/view/wpy_course_display.dart';
+import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 17,
@@ -40,10 +41,15 @@ class WPYPageState extends State<WPYPage> {
           HomeRouter.wiki))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/exam.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Exam',
+          ScheduleRouter.exam))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
-      /// 别改变自习室的位置，确定下标为4，不然请去wpy_page最下面改一下index
+      /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
               color: Color(0xffcecfd4), size: 20),
@@ -76,6 +82,9 @@ class WPYPageState extends State<WPYPage> {
 
         /// 当天课程
         SliverToBoxAdapter(child: TodayCoursesWidget()),
+
+        /// 考表
+        SliverToBoxAdapter(child: WpyExamWidget()),
 
         /// GPA曲线及信息展示
         SliverToBoxAdapter(child: GPAPreview()),
@@ -208,7 +217,9 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (itemCount < i) itemCount = i;
-        if (i != 4) {
+
+        /// 这里是自习室在cards中的下标
+        if (i != 5) {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
             child: generateCard(context, cards[i]),

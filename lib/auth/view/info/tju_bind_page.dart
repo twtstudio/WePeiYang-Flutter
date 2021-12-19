@@ -11,7 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/home/model/home_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 class TjuBindPage extends StatefulWidget {
@@ -81,6 +81,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
           .refreshSchedule(
             onFailure: (e) => ToastProvider.error(e.error.toString()),
           )
+          .call();
+      Provider.of<ExamNotifier>(context, listen: false)
+          .refreshExam(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      )
           .call();
       setState(() {
         tjuuname = "";
@@ -385,41 +390,41 @@ class CaptchaWidget extends StatefulWidget {
   CaptchaWidgetState createState() => CaptchaWidgetState();
 }
 
-class CaptchaWidgetState extends State<CaptchaWidget> {
-  int index;
+var index = 0;
 
-  void refresh() {
+class CaptchaWidgetState extends State<CaptchaWidget> {
+  refresh() {
     setState(() => index++);
-    GlobalModel().increase();
   }
 
   @override
-  void initState() {
-    super.initState();
-    index = GlobalModel().captchaIndex;
-    GlobalModel().increase();
+  void dispose() {
+    index++;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getExecAndSession(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData) {
-            Map map = snapshot.data;
-            widget.params.clear();
-            widget.params.addAll(map);
-            return InkWell(
-              onTap: refresh,
-              child: Image.network(
-                  "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                  key: ValueKey(index),
-                  headers: {"Cookie": map['session']},
-                  fit: BoxFit.fill),
-            );
-          } else
-            return Container();
-        });
+      future: getExecAndSession(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          Map map = snapshot.data;
+          widget.params.clear();
+          widget.params.addAll(map);
+          return InkWell(
+            onTap: refresh,
+            child: Image.network(
+                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
+                key: ValueKey(index),
+                headers: {"Cookie": map['session']},
+                fit: BoxFit.fill),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }

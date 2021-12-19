@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
+/// release模式下在内存中存储log信息，debug模式下直接打印
 class Logger {
-  /// release模式下在内存中存储log信息
   static List<String> logs = [];
 
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
@@ -16,10 +17,15 @@ class Logger {
   }
 
   static void reportError(Object error, StackTrace stack) {
+    // 限制错误日志的长度
+    final shortError =
+        error.toString().substring(0, min(3000, error.toString().length));
+    final shortStack =
+        stack.toString().substring(0, min(3000, stack.toString().length));
     List<String> lines = [
       '----------------------------------------------------------------------',
-      _getFormatTime() + ' | ' + error.toString(),
-      stack.toString(),
+      _getFormatTime() + ' | ' + shortError,
+      shortStack,
       '----------------------------------------------------------------------'
     ];
     if (kDebugMode) {
@@ -30,7 +36,7 @@ class Logger {
     }
   }
 
-  // TODO 为了防止内存占用，暂时先控制log条数在200条以内
+  /// 为了防止内存占用，控制log条数在200条以内
   static void checkList() {
     if (logs.length < 200) return;
     List<String> newList = []

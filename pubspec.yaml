@@ -85,7 +85,6 @@ flutter:
     - assets/images/account/2.0x/
     - assets/images/account/3.0x/
     - assets/images/account/4.0x/
-    - assets/images/arrow_up.png
     # Images in feedback module.
     - lib/feedback/assets/img/my_post.png
     - lib/feedback/assets/img/my_favorite.png
@@ -144,6 +143,11 @@ flutter:
     - family: Gilroy
       fonts:
         - asset: assets/fonts/Gilroy-HeavyItalic-8.otf
+
+    - family: Bauhaus
+      fonts:
+        - asset: assets/fonts/Bauhaus-Bold-Italic_6276.ttf
+          style: italic
 
 flutter_intl:
   enabled: true

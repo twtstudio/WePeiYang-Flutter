@@ -47,6 +47,7 @@ class CommonPreferences {
   /// 办公网
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
+  var examData = PrefsBean<String>('examData');
   var isBindTju = PrefsBean<bool>('bindtju');
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
@@ -75,6 +76,7 @@ class CommonPreferences {
   var language = PrefsBean<int>("language", 0); // 系统语言
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
+  var hideExam = PrefsBean<bool>("hideExam"); // 首页不显示考表
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程

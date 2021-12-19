@@ -11,4 +11,5 @@ class FontManager {
   static const YaHeiBold = TextStyle(fontFamily: 'MicrosoftYaHei', fontWeight: FontWeight.bold);
 
   static const Gilroy = TextStyle(fontFamily: 'Gilroy');
+  static const Bauhaus = TextStyle(fontFamily: 'Bauhaus');
 }

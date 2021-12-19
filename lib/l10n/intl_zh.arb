@@ -114,6 +114,7 @@
   "setting_color": "调色板",
   "setting_color_hint": "给课表和GPA定义喜欢的颜色",
   "setting_gpa": "首页不显示GPA",
+  "setting_exam": "首页不显示考表",
   "setting_night_mode": "开启夜猫子模式",
   "setting_night_mode_hint": "晚上9:00以后首页课表将展示第二天课程安排",
   "setting_day_number": "每周显示天数",

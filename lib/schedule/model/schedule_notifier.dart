@@ -1,15 +1,13 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
 
 class ScheduleNotifier with ChangeNotifier {
-  void notify() => notifyListeners.call();
-
   List<ScheduleCourse> _courses = [];
 
   /// 外部更新课表总数据时调用（如网络请求）
@@ -45,39 +43,33 @@ class ScheduleNotifier with ChangeNotifier {
   /// 手动计算当前周,不从办公网爬了
   int get currentWeek {
     if (isBeforeTermStart) return 1; // 防止week为负数
-    var week = ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) / weekOfSeconds)
+    var week = ((DateTime.now().millisecondsSinceEpoch / 1000 - termStart) /
+            weekOfSeconds)
         .ceil();
-    if(week > _weekCount) week = _weekCount; // 如果后台一直不更新termStart, 这里要防止越界
+    if (week > weekCount) week = weekCount; // 如果后台一直不更新termStart, 这里要防止越界
     return week;
   }
 
-  bool get isBeforeTermStart => DateTime.now().millisecondsSinceEpoch / 1000 < termStart;
+  bool get isBeforeTermStart =>
+      DateTime.now().millisecondsSinceEpoch / 1000 < termStart;
 
   /// 这个是专门给首页的课程用的，因为有夜猫子模式
-  bool get isOneDayBeforeTermStart => (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
+  bool get isOneDayBeforeTermStart =>
+      (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
 
-  /// 一学期一共有多少周……这个就先写死了
-  // TODO 怎么一学期有27周，看来还是得手动获取
-  int _weekCount = 27;
-
-  int get weekCount => _weekCount;
+  // TODO 一学期一共有多少周，暂时写死，之后手动获取
+  int weekCount = 27;
 
   /// 夜猫子模式，这个变量的主要作用是通知widget更新
-  bool _nightMode = true;
-
   set nightMode(bool value) {
-    _nightMode = value;
+    CommonPreferences().nightMode.value = value;
     notifyListeners();
   }
 
-  bool get nightMode {
-    _nightMode = CommonPreferences().nightMode.value; /// 优先听缓存的
-    return _nightMode;
-  }
+  bool get nightMode => CommonPreferences().nightMode.value;
 
   /// 通过爬虫刷新数据
-  RefreshCallback refreshSchedule(
-      {bool hint = false, OnFailure onFailure}) {
+  RefreshCallback refreshSchedule({bool hint = false, OnFailure onFailure}) {
     return () async {
       if (hint) ToastProvider.running("刷新数据中……");
       getScheduleCourses(onResult: (courses) {

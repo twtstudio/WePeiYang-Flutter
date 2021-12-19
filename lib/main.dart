@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'dart:async';
-
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
@@ -23,6 +22,7 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
@@ -166,6 +166,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
+        ChangeNotifierProvider(create: (context) => ExamNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ...loungeProviders,
         ...feedbackProviders,
@@ -277,6 +278,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
     /// 读取gpa和课程表的缓存
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
+    Provider.of<ExamNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
     if (!prefs.isLogin.value ||
         prefs.account.value == "" ||

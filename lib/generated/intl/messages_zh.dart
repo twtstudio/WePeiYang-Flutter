@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "setting_color_hint" : MessageLookupByLibrary.simpleMessage("给课表和GPA定义喜欢的颜色"),
     "setting_day_number" : MessageLookupByLibrary.simpleMessage("每周显示天数"),
     "setting_day_number_hint" : MessageLookupByLibrary.simpleMessage("课程表页面将会根据选择调整展示的天数。"),
+    "setting_exam" : MessageLookupByLibrary.simpleMessage("首页不显示考表"),
     "setting_general" : MessageLookupByLibrary.simpleMessage("通用"),
     "setting_gpa" : MessageLookupByLibrary.simpleMessage("首页不显示GPA"),
     "setting_language" : MessageLookupByLibrary.simpleMessage("系统语言"),

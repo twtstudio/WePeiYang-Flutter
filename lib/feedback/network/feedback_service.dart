@@ -411,18 +411,21 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static reportQuestion(
+  /// 举报问题 / 评论
+  static report(
       {@required id,
+        @required isQuestion,
         @required reason,
         @required OnSuccess onSuccess,
         @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('reportQuestion', () async {
+      var target = isQuestion ? 'question' : 'commit';
       try {
         await feedbackDio.post(
-          'question/complain',
+          '$target/complain',
           formData: FormData.fromMap({
             'token': CommonPreferences().feedbackToken.value,
-            'question_id': id,
+            '${target}_id': id,
             'reason': reason,
           }),
         );
