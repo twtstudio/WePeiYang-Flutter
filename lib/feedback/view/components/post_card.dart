@@ -3,9 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -15,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/collect_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 enum PostCardType { simple, detail }
@@ -75,111 +74,18 @@ class _PostCardState extends State<PostCard> {
         maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
         style: FontManager.YaHeiRegular.copyWith(
-          color: ColorUtil.boldTagTextColor,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          color: ColorUtil.boldTextColor,
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
 
-    var topWidget = Row(
-      children: [
-        title,
-        post.type == 1
-            ? Container(
-                padding: EdgeInsets.fromLTRB(0, 2, 10, 1),
-                height: 20,
-                decoration: BoxDecoration(
-                  color: ColorUtil.boldTextColor,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                        margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 2),
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: ColorUtil.backgroundColor,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "√",
-                            style: TextStyle(
-                                color: ColorUtil.boldTextColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )),
-                    Text(
-                      '已解决',
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: ColorUtil.backgroundColor),
-                    ),
-                  ],
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.fromLTRB(4, 2, 6, 1),
-                height: 20,
-                decoration: BoxDecoration(
-                  color: ColorUtil.boldTextColor,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Center(
-                  child: Text(
-                    '#MP${post.id}',
-                    style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: ColorUtil.backgroundColor),
-                  ),
-                )),
-      ],
-    );
-
-    var tag = Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-      height: 20,
-      decoration: BoxDecoration(
-        color: ColorUtil.tagBackgroundColor,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Row(
-        children: [
-          Container(
-              margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: ColorUtil.backgroundColor,
-              ),
-              child: Center(
-                child: Text(
-                  "#",
-                  style: TextStyle(
-                      color: ColorUtil.boldTextColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800),
-                ),
-              )),
-          post.type == 0 ? Text(
-            post.tag != null ? '${post.tag.name}' : '无标签',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 13, color: ColorUtil.tagTextColor),
-          ) : Text(
-            post.department != null ? '${post.department.name}' : '无部门',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 13, color: ColorUtil.tagTextColor),
-          ),
-        ],
-      ),
-    );
+    var tag =
+        post.type == 0 ?
+          post.tag != null ? '${post.tag.name}' : '无标签'
+         :
+          post.department != null ? '${post.department.name}' : '无部门';
 
     var campus = post.campus > 0
         ? Container(
@@ -209,7 +115,11 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          Row(children: [tag, SizedBox(width: 8), campus]),
+          Row(children: [
+            TagShowWidget(tag),
+            SizedBox(width: 8),
+            campus
+          ]),
           SizedBox(height: 8),
           content,
         ],
@@ -238,10 +148,21 @@ class _PostCardState extends State<PostCard> {
     var mainWidget = (tap) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 5),
-              topWidget,
+              Row(
+                children: [
+                  title,
+                  SizedBox(width: 10),
+                  //if (post.isSolved == 1) SolvedWidget(),
+                  if (
+                  //post.isSolved == 0 &&
+                      post.type != 0)
+                    UnSolvedWidget(),
+                ],
+              ),
               SizedBox(height: 5),
               middleWidget,
             ],
@@ -362,7 +283,7 @@ class _PostCardState extends State<PostCard> {
       // Like count.
       likeWidget,
       SizedBox(width: 5),
-      dislikeWidget,
+      dislikeWidget
     ];
 
     List<Widget> bottomList = [];
@@ -403,7 +324,7 @@ class _PostCardState extends State<PostCard> {
                     arguments: {
                       "urlList": post.images,
                       "urlListLength": post.images.length,
-                      "indexNow": 1
+                      "indexNow": 0
                     });
               },
               child: ClipRRect(
@@ -439,11 +360,12 @@ class _PostCardState extends State<PostCard> {
       showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             mainWidget(tap),
+            SizedBox(height: 8),
             ...imagesWidget,
             bottomWidget,
           ],
@@ -491,3 +413,70 @@ class _PostCardState extends State<PostCard> {
     );
   }
 }
+
+final Uint8List kTransparentImage = Uint8List.fromList(<int>[
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE
+]);

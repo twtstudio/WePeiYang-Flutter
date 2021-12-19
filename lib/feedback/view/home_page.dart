@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_type_switch_bar.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -139,31 +138,34 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return Scaffold(
       body: DefaultTabController(
         length: 4,
-        initialIndex: 1,
+        initialIndex: 0,
         child: Scaffold(
           appBar: AppBar(
             actions: [
               SizedBox(width: 5),
               IconButton(icon: Icon(Icons.all_inbox, color: ColorUtil.mainColor), onPressed: () => Navigator.pushNamed(context, FeedbackRouter.profile)),
               Expanded(child: searchBar),
-              SizedBox(
-                height: 30,
-                width: 30,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(ColorUtil.mainColor),
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
-                    shape: MaterialStateProperty.all(CircleBorder(
-                        side: BorderSide(
-                      width: 0.0,
-                      style: BorderStyle.none,
-                    ))), //圆角弧度
+              Hero(
+                tag: "addNewPost",
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      backgroundColor:
+                          MaterialStateProperty.all(ColorUtil.mainColor),
+                      shape: MaterialStateProperty.all(CircleBorder(
+                          side: BorderSide(
+                        width: 0.0,
+                        style: BorderStyle.none,
+                      ))), //圆角弧度
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, FeedbackRouter.newPost);
+                    },
+                    child: Icon(Icons.add),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, FeedbackRouter.newPost);
-                  },
-                  child: Icon(Icons.add),
                 ),
               ),
               SizedBox(width: 15)

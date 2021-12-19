@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_pickers/image_pickers.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
@@ -19,6 +20,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    timeDilation = 1.7;
     dynamic obj = ModalRoute.of(context).settings.arguments;
     urlList = obj['urlList'];
     urlListLength = obj['urlListLength'];

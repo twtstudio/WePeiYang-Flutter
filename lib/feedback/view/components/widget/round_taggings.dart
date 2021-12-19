@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class SolvedWidget extends StatelessWidget {
   @override
@@ -27,7 +26,7 @@ class SolvedWidget extends StatelessWidget {
             )),
           ),
           Text(
-            S.current.feedback_solved,
+            "已解决",
             style: FontManager.YaHeiRegular.copyWith(
               fontSize: 13,
               color: Colors.white,
@@ -73,7 +72,7 @@ class UnSolvedWidget extends StatelessWidget {
             )),
           ),
           Text(
-            S.current.feedback_unsolved,
+            "未解决",
             style: FontManager.YaHeiRegular.copyWith(
               fontSize: 13,
               color: Colors.white,
