@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -12,7 +10,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/collect_widget.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
@@ -69,17 +66,95 @@ class _PostCardState extends State<PostCard> {
         maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
         style: FontManager.YaHeiRegular.copyWith(
-          color: ColorUtil.boldTextColor,
-          fontSize: 17,
-          fontWeight: FontWeight.w700,
+          color: ColorUtil.boldTagTextColor,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
 
-    var tag = Text(
-      (post.tags?.length ?? 0) > 0 ? '#${post.tags[0].name}' : '#无标签',
-      style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 14, color: ColorUtil.lightTextColor),
+    var topWidget = Row(
+      children: [
+        title,
+    (post.isSolved == 1)?
+    Container(
+      padding: EdgeInsets.fromLTRB( 0, 2,10, 1),
+      height: 20,
+      decoration: BoxDecoration(
+        color: ColorUtil.boldTextColor,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Row(
+        children: [
+          Container(
+              margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 2),
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: ColorUtil.backgroundColor,
+              ),
+              child: Center(
+                child: Text("√",
+                  style: TextStyle(color: ColorUtil.boldTextColor,fontSize: 10,fontWeight: FontWeight.bold),
+                ),
+              )),
+          Text(
+           '已解决',
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 13,fontWeight: FontWeight.bold, color: ColorUtil.backgroundColor),
+          ),
+        ],
+      ),
+    ):Container(
+      padding: EdgeInsets.fromLTRB( 4, 2,6, 1),
+      height: 20,
+      decoration: BoxDecoration(
+        color: ColorUtil.boldTextColor,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child:
+      Center(
+        child:Text(
+            '#MP000001',
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 13, fontWeight: FontWeight.bold,color: ColorUtil.backgroundColor),
+          ),)
+    ),
+      ],
+    );
+
+    var tag = Container(
+      padding: EdgeInsets.fromLTRB( 0, 0,10, 0),
+      height: 20,
+      decoration: BoxDecoration(
+        color: ColorUtil.tagBackgroundColor,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: ColorUtil.backgroundColor,
+              ),
+              child: Center(
+                child: Text(
+                  "#",
+                  style: TextStyle(color: ColorUtil.boldTextColor,fontSize: 12,fontWeight: FontWeight.w800),
+                ),
+              )),
+          Text(
+            (post.tags?.length ?? 0) > 0 ? '${post.tags[0].name}' : '#无标签',
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 13, color: ColorUtil.tagTextColor),
+          ),
+        ],
+      ),
     );
 
     var campus = post.campus > 0
@@ -101,7 +176,7 @@ class _PostCardState extends State<PostCard> {
       overflow:
           widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
       style: FontManager.YaHeiRegular.copyWith(
-        color: ColorUtil.boldTextColor,
+        color: ColorUtil.boldTagTextColor,
       ),
     );
 
@@ -110,11 +185,7 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          Row(children: [
-            TagShowWidget(tag.data.toString().substring(1)),
-            SizedBox(width: 8),
-            campus
-          ]),
+          Row(children: [tag, SizedBox(width: 8), campus]),
           SizedBox(height: 8),
           content,
         ],
@@ -126,14 +197,11 @@ class _PostCardState extends State<PostCard> {
         (post.topImgUrl?.isNotEmpty ?? false)) {
       rowList.addAll([
         SizedBox(width: 10),
-        ClipRRect(
-          child: Image.network(
-            post.topImgUrl,
-            width: 80,
-            height: 76,
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+        Image.network(
+          post.topImgUrl,
+          width: 80,
+          height: 60,
+          fit: BoxFit.cover,
         ),
       ]);
     }
@@ -143,19 +211,10 @@ class _PostCardState extends State<PostCard> {
     var mainWidget = (tap) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 5),
-              Row(
-                children: [
-                  title,
-                  SizedBox(width: 10),
-                  if (post.isSolved == 1) SolvedWidget(),
-                  if (post.isSolved == 0 && post.tags[0].name != "小树洞")
-                    UnSolvedWidget(),
-                ],
-              ),
+              topWidget,
               SizedBox(height: 5),
               middleWidget,
             ],
@@ -198,13 +257,10 @@ class _PostCardState extends State<PostCard> {
 
     var createTime = Text(
       post.createTime.time,
-      textAlign: TextAlign.right,
-      style: FontManager.Aspira.copyWith(
-        color: ColorUtil.lightTextColor,
-        fontSize: 12,
-        textBaseline: TextBaseline.ideographic,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1.3,
+      style: FontManager.YaHeiRegular.copyWith(
+        color: ColorUtil.boldTagTextColor,
+        fontSize: 15,
+        fontWeight: FontWeight.bold
       ),
     );
 
@@ -213,14 +269,14 @@ class _PostCardState extends State<PostCard> {
         child: Icon(
           Icons.message_outlined,
           size: 16,
-          color: ColorUtil.boldTextColor,
+          color: ColorUtil.boldTagTextColor,
         ),
       ),
       SizedBox(width: 6),
       Text(
         post.commentCount.toString(),
         style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 14, color: ColorUtil.boldTextColor),
+            fontSize: 14, color: ColorUtil.boldTagTextColor),
       )
     ];
 
@@ -245,38 +301,11 @@ class _PostCardState extends State<PostCard> {
       isLiked: post.isLiked,
     );
 
-    var unlikeWidget = LikeButton(
-      likeBuilder: (bool isLiked) {
-        if (isLiked) {
-          return Icon(
-            Icons.thumb_down,
-            size: 16,
-            color: Colors.blueGrey[900],
-          );
-        } else {
-          return Icon(
-            Icons.thumb_down_outlined,
-            size: 16,
-            color: ColorUtil.boldTextColor,
-          );
-        }
-      },
-      circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: Colors.blueGrey,
-        dotSecondaryColor: Colors.black26,
-      ),
-      animationDuration: Duration(milliseconds: 600),
-      padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-    );
-
     var commentAndLike = [
       ...commentCount,
       SizedBox(width: 5),
       // Like count.
       likeWidget,
-      SizedBox(width: 5),
-      unlikeWidget
     ];
 
     List<Widget> bottomList = [];
@@ -299,7 +328,7 @@ class _PostCardState extends State<PostCard> {
           collectButton,
         ]);
 
-        if (post.imgUrlList.length > 1) {
+        if (post.imgUrlList.isNotEmpty) {
           var imageList = Row(
             children: List.generate(
               post.imgUrlList.length,
@@ -310,22 +339,6 @@ class _PostCardState extends State<PostCard> {
             SizedBox(height: 10),
             imageList,
           ]);
-        } else if (post.imgUrlList.length == 1) {
-          imagesWidget.add(InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-                "urlList": post.imgUrlList,
-                "urlListLength": post.imgUrlList.length,
-                "indexNow": 1
-              });
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
-              child: FadeInImage.memoryNetwork(
-                  fit: BoxFit.cover,
-                  placeholder: kTransparentImage,
-                  image: post.thumbImgUrlList[0]),
-            )));
         }
 
         imagesWidget.add(
@@ -352,12 +365,11 @@ class _PostCardState extends State<PostCard> {
       showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             mainWidget(tap),
-            SizedBox(height: 8),
             ...imagesWidget,
             bottomWidget,
           ],
@@ -390,17 +402,11 @@ class _PostCardState extends State<PostCard> {
             "indexNow": index
           });
         },
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            child: FadeInImage.memoryNetwork(
-                fit: BoxFit.cover,
-                height: 200 - (post.thumbImgUrlList.length) * 30.0,
-                placeholder: kTransparentImage,
-                image: post.thumbImgUrlList[index]),
-          ),
-        ),
+        child: FadeInImage.memoryNetwork(
+            fit: BoxFit.cover,
+            height: 200 - (post.thumbImgUrlList.length) * 40.0,
+            placeholder: kTransparentImage,
+            image: post.thumbImgUrlList[index]),
       ),
     );
   }
