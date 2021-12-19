@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -94,11 +94,27 @@ class SubmitButton extends StatelessWidget {
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     if (dataModel.check) {
+      dataModel.type == 1 ?///暂时没有UI对type
       FeedbackService.sendPost(
+        type: 1,
+        title: dataModel.title,
+        content: dataModel.content,
+        departmentId: dataModel.department.id,
+        images: dataModel.images,
+        campus: notifier.value + 1,
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        },
+      ) : FeedbackService.sendPost(
+        type: 0,
         title: dataModel.title,
         content: dataModel.content,
         tagId: dataModel.tag.id,
-        imgList: dataModel.imgList,
+        images: dataModel.images,
         campus: notifier.value + 1,
         onSuccess: () {
           ToastProvider.success(S.current.feedback_post_success);
@@ -155,35 +171,35 @@ class TagView extends StatefulWidget {
 }
 
 class _TagViewState extends State<TagView> {
-  ValueNotifier<Tag> tag;
+  ValueNotifier<Department> department;
 
   @override
   void initState() {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    tag = ValueNotifier(dataModel.tag)
+    department = ValueNotifier(dataModel.department)
       ..addListener(() {
-        dataModel.tag = tag.value;
+        dataModel.department = department.value;
       });
   }
 
   _showTags(BuildContext context) async {
-    var result = await showModalBottomSheet<Tag>(
+    var result = await showModalBottomSheet<Department>(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (_) => TabGridView(
-        tag: tag.value,
+        department: department.value,
       ),
     );
-    if (result != null) tag.value = result;
+    if (result != null) department.value = result;
   }
 
   @override
   Widget build(BuildContext context) {
     var text = ValueListenableBuilder(
-      valueListenable: tag,
-      builder: (_, Tag tag, __) {
+      valueListenable: department,
+      builder: (_, Department tag, __) {
         return Text(
           tag == null
               ? S.current.feedback_add_tag_hint
@@ -220,9 +236,9 @@ class _TagViewState extends State<TagView> {
 }
 
 class TabGridView extends StatefulWidget {
-  final Tag tag;
+  final Department department;
 
-  const TabGridView({Key key, this.tag}) : super(key: key);
+  const TabGridView({Key key, this.department}) : super(key: key);
 
   @override
   _TabGridViewState createState() => _TabGridViewState();
@@ -231,7 +247,7 @@ class TabGridView extends StatefulWidget {
 class _TabGridViewState extends State<TabGridView>
     with TickerProviderStateMixin {
   AnimationController _animationController;
-  ValueNotifier<Tag> currentTab;
+  ValueNotifier<Department> currentTab;
 
   @override
   void initState() {
@@ -239,18 +255,18 @@ class _TabGridViewState extends State<TabGridView>
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200))
           ..forward();
-    currentTab = ValueNotifier(widget.tag);
+    currentTab = ValueNotifier(widget.department);
   }
 
   @override
   Widget build(BuildContext context) {
     var tagInformation = ValueListenableBuilder(
         valueListenable: currentTab,
-        builder: (_, Tag value, __) {
+        builder: (_, Department value, __) {
           if (value != null) {
             var information = value.name + ': ';
-            information += (value.description != null
-                ? value.description
+            information += (value.introduction != null
+                ? value.introduction
                 : S.current.feedback_no_description);
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -293,8 +309,8 @@ class _TabGridViewState extends State<TabGridView>
       builder: (_, data, __) => Wrap(
         alignment: WrapAlignment.start,
         spacing: 10,
-        children: List.generate(data.tagList.length, (index) {
-          return _tagButton(data.tagList[index]);
+        children: List.generate(data.departmentList.length, (index) {
+          return _tagButton(data.departmentList[index]);
         }),
       ),
     );
@@ -315,8 +331,8 @@ class _TabGridViewState extends State<TabGridView>
     );
   }
 
-  void updateGroupValue(Tag tag) {
-    currentTab.value = tag;
+  void updateGroupValue(Department department) {
+    currentTab.value = department;
     _animationController.forward(from: 0.0);
   }
 
@@ -335,7 +351,7 @@ class _TabGridViewState extends State<TabGridView>
     );
   }
 
-  ActionChip _tagChip(bool chose, Tag tag) => ActionChip(
+  ActionChip _tagChip(bool chose, Department tag) => ActionChip(
         backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           tag.name,
@@ -617,7 +633,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
     Provider.of<NewPostProvider>(context, listen: false)
-        .imgList
+        .images
         .add(File(xFile.path));
     if (!mounted) return;
     setState(() {});
@@ -709,21 +725,21 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       builder: (_, data, __) => GridView.builder(
         shrinkWrap: true,
         gridDelegate: gridDelegate,
-        itemCount: maxImage == data.imgList.length
-            ? data.imgList.length
-            : data.imgList.length + 1,
+        itemCount: maxImage == data.images.length
+            ? data.images.length
+            : data.images.length + 1,
         itemBuilder: (_, index) {
-          if (index <= 2 && index == data.imgList.length) {
+          if (index <= 2 && index == data.images.length) {
             return _ImagePickerWidget(onTap: loadAssets);
           } else {
             return imgBuilder(
               index,
-              data.imgList,
-              data.imgList.length,
+              data.images,
+              data.images.length,
               onTap: () async {
                 var result = await _showDialog();
                 if (result == 'ok') {
-                  data.imgList.removeAt(index);
+                  data.images.removeAt(index);
                   setState(() {});
                 }
               },

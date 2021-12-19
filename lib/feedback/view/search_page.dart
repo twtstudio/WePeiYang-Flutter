@@ -190,12 +190,12 @@ class _SearchPageState extends State<SearchPage> {
       builder: (_, provider, __) {
         return Wrap(
           spacing: 6,
-          children: List.generate(provider.tagList.length, (index) {
+          children: List.generate(provider.departmentList.length, (index) {
             return InkResponse(
               radius: 50,
               child: Chip(
                 backgroundColor: Color.fromRGBO(238, 238, 238, 1),
-                label: Text(provider.tagList[index].name, style: tagTextStyle),
+                label: Text(provider.departmentList[index].name, style: tagTextStyle),
               ),
               onTap: () {
                 Navigator.pushNamed(
@@ -203,8 +203,8 @@ class _SearchPageState extends State<SearchPage> {
                   FeedbackRouter.searchResult,
                   arguments: SearchResultPageArgs(
                     '',
-                    provider.tagList[index].id.toString(),
-                    '#${provider.tagList[index].name}',
+                    provider.departmentList[index].id.toString(),
+                    '#${provider.departmentList[index].name}',
                   ),
                 ).then((_) {
                   Navigator.pop(context);

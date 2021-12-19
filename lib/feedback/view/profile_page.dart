@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/message/message_model.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 import 'components/post_card.dart';
@@ -29,27 +29,6 @@ extension _CurrentTabb on _CurrentTab {
     var next = (this.index + 1) % 2;
     return _CurrentTab.values[next];
   }
-}
-
-extension PostListSortExtension on List<Post> {
-  List<Post> sortWithMessage(List<MessageDataItem> list) {
-    if (list == null) return this;
-    List<Post> match = [];
-    List<int> ids = list.map((e) => e.questionId).toList();
-    List<Post> base = [...this];
-    this.forEach((element) {
-      if (ids.contains(element.id)) {
-        match.add(element);
-        base.remove(element);
-      }
-    });
-    match.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
-    base.sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
-    return [...match, ...base];
-  }
-
-  List<Post> sortNormal() =>
-      this..sort((a, b) => a.updatedTime.compareTo(b.updatedTime) * (-1));
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -208,10 +187,7 @@ class _PostListState extends State<_PostList> {
   }
 
   _addPostList(List<Post> list) {
-    var sortList = messageProvider.feedbackQs == null
-        ? list.sortNormal()
-        : list.sortWithMessage(messageProvider.feedbackQs);
-    _postList = sortList;
+    _postList = list;
   }
 
   _deletePostOnLongPressed(int index) {

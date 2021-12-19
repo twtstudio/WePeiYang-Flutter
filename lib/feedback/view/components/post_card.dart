@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -16,6 +20,7 @@ import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 enum PostCardType { simple, detail }
 
 typedef HitLikeCallback = void Function(bool, int);
+typedef HitDislikeCallback = void Function(bool, int);
 
 typedef HitCollectCallback = void Function(bool);
 
@@ -23,6 +28,7 @@ class PostCard extends StatefulWidget {
   final Post post;
   final VoidCallback onContentPressed;
   final HitLikeCallback onLikePressed;
+  final HitDislikeCallback onDislikePressed;
   final HitCollectCallback onFavoritePressed;
   final VoidCallback onContentLongPressed;
   final bool showBanner;
@@ -32,6 +38,7 @@ class PostCard extends StatefulWidget {
     this.post, {
     this.onContentPressed,
     this.onLikePressed,
+    this.onDislikePressed,
     this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
@@ -44,6 +51,7 @@ class PostCard extends StatefulWidget {
     this.post, {
     this.onContentPressed,
     this.onLikePressed,
+    this.onDislikePressed,
     this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
@@ -55,6 +63,7 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   Post post;
+  final String baseUrl = 'https://www.zrzz.site:7013/';
 
   _PostCardState(this.post);
 
@@ -76,9 +85,9 @@ class _PostCardState extends State<PostCard> {
     var topWidget = Row(
       children: [
         title,
-    (post.isSolved == 1)?
+    post.type == 1 ?
     Container(
-      padding: EdgeInsets.fromLTRB( 0, 2,10, 1),
+      padding: EdgeInsets.fromLTRB(0, 2, 10, 1),
       height: 20,
       decoration: BoxDecoration(
         color: ColorUtil.boldTextColor,
@@ -108,7 +117,7 @@ class _PostCardState extends State<PostCard> {
         ],
       ),
     ):Container(
-      padding: EdgeInsets.fromLTRB( 4, 2,6, 1),
+      padding: EdgeInsets.fromLTRB(4, 2, 6, 1),
       height: 20,
       decoration: BoxDecoration(
         color: ColorUtil.boldTextColor,
@@ -117,7 +126,7 @@ class _PostCardState extends State<PostCard> {
       child:
       Center(
         child:Text(
-            '#MP000001',
+            '#MP${post.id}',
             style: FontManager.YaHeiRegular.copyWith(
                 fontSize: 13, fontWeight: FontWeight.bold,color: ColorUtil.backgroundColor),
           ),)
@@ -147,9 +156,10 @@ class _PostCardState extends State<PostCard> {
                   "#",
                   style: TextStyle(color: ColorUtil.boldTextColor,fontSize: 12,fontWeight: FontWeight.w800),
                 ),
-              )),
+              )
+          ),
           Text(
-            (post.tags?.length ?? 0) > 0 ? '${post.tags[0].name}' : '#无标签',
+            post.tag != null ? '${post.tag.name}' : '#无标签',
             style: FontManager.YaHeiRegular.copyWith(
                 fontSize: 13, color: ColorUtil.tagTextColor),
           ),
@@ -194,14 +204,17 @@ class _PostCardState extends State<PostCard> {
     ));
 
     if (widget.type == PostCardType.simple &&
-        (post.topImgUrl?.isNotEmpty ?? false)) {
+        (post.images?.isNotEmpty ?? false)) {
       rowList.addAll([
         SizedBox(width: 10),
-        Image.network(
-          post.topImgUrl,
-          width: 80,
-          height: 60,
-          fit: BoxFit.cover,
+        ClipRRect(
+          child: Image.network(
+            baseUrl + post.images[0],
+            width: 80,
+            height: 76,
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ]);
     }
@@ -241,10 +254,10 @@ class _PostCardState extends State<PostCard> {
       onCollectPressed: (boolNotifier) async {
         FeedbackService.postHitFavorite(
           id: post.id,
-          isFavorite: post.isFavorite,
+          isFavorite: post.isFav,
           onSuccess: () {
             widget.onFavoritePressed?.call(boolNotifier.value);
-            post.isFavorite = !post.isFavorite;
+            post.isFav = !post.isFav;
           },
           onFailure: (e) {
             boolNotifier.value = boolNotifier.value;
@@ -252,15 +265,18 @@ class _PostCardState extends State<PostCard> {
           },
         );
       },
-      isCollect: post.isFavorite,
+      isCollect: post.isFav,
     );
 
     var createTime = Text(
-      post.createTime.time,
-      style: FontManager.YaHeiRegular.copyWith(
-        color: ColorUtil.boldTagTextColor,
-        fontSize: 15,
-        fontWeight: FontWeight.bold
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
+      textAlign: TextAlign.right,
+      style: FontManager.Aspira.copyWith(
+        color: ColorUtil.lightTextColor,
+        fontSize: 12,
+        textBaseline: TextBaseline.ideographic,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 1.3,
       ),
     );
 
@@ -282,13 +298,13 @@ class _PostCardState extends State<PostCard> {
 
     var likeWidget = LikeWidget(
       count: post.likeCount,
-      onLikePressed: (isLiked, likeCount, success, failure) async {
+      onLikePressed: (isLike, likeCount, success, failure) async {
         await FeedbackService.postHitLike(
           id: post.id,
-          isLiked: post.isLiked,
+          isLiked: post.isLike,
           onSuccess: () {
-            widget.onLikePressed?.call(!isLiked, likeCount);
-            post.isLiked = !isLiked;
+            widget.onLikePressed?.call(!isLike, likeCount);
+            post.isLike = !isLike;
             post.likeCount = likeCount;
             success.call();
           },
@@ -298,7 +314,32 @@ class _PostCardState extends State<PostCard> {
           },
         );
       },
-      isLiked: post.isLiked,
+      isLiked: post.isLike,
+    );
+
+    var dislikeWidget = LikeButton(
+      likeBuilder: (bool isDisliked) {
+        if (isDisliked) {
+          return Icon(
+            Icons.thumb_down,
+            size: 16,
+            color: Colors.blueGrey[900],
+          );
+        } else {
+          return Icon(
+            Icons.thumb_down_outlined,
+            size: 16,
+            color: ColorUtil.boldTextColor,
+          );
+        }
+      },
+      circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
+      bubblesColor: BubblesColor(
+        dotPrimaryColor: Colors.blueGrey,
+        dotSecondaryColor: Colors.black26,
+      ),
+      animationDuration: Duration(milliseconds: 600),
+      padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
     );
 
     var commentAndLike = [
@@ -306,6 +347,8 @@ class _PostCardState extends State<PostCard> {
       SizedBox(width: 5),
       // Like count.
       likeWidget,
+      SizedBox(width: 5),
+      dislikeWidget,
     ];
 
     List<Widget> bottomList = [];
@@ -328,10 +371,10 @@ class _PostCardState extends State<PostCard> {
           collectButton,
         ]);
 
-        if (post.imgUrlList.isNotEmpty) {
+        if (post.images.isNotEmpty) {
           var imageList = Row(
             children: List.generate(
-              post.imgUrlList.length,
+              post.images.length,
               (index) => _image(index, context),
             ),
           );
@@ -339,6 +382,22 @@ class _PostCardState extends State<PostCard> {
             SizedBox(height: 10),
             imageList,
           ]);
+        } else if (post.images.length == 1) {
+          imagesWidget.add(InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
+                "urlList": post.images,
+                "urlListLength": post.images.length,
+                "indexNow": 1
+              });
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+              child: FadeInImage.memoryNetwork(
+                  fit: BoxFit.cover,
+                  placeholder: kTransparentImage,
+                  image: post.images[0]),
+            )));
         }
 
         imagesWidget.add(
@@ -397,84 +456,23 @@ class _PostCardState extends State<PostCard> {
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-            "urlList": post.imgUrlList,
-            "urlListLength": post.imgUrlList.length,
+            "urlList": post.images,
+            "urlListLength": post.images.length,
             "indexNow": index
           });
         },
-        child: FadeInImage.memoryNetwork(
-            fit: BoxFit.cover,
-            height: 200 - (post.thumbImgUrlList.length) * 40.0,
-            placeholder: kTransparentImage,
-            image: post.thumbImgUrlList[index]),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: FadeInImage.memoryNetwork(
+                fit: BoxFit.cover,
+                height: 200 - (post.images.length) * 30.0,
+                placeholder: kTransparentImage,
+                image: baseUrl + post.images[index]),
+          ),
+        ),
       ),
     );
   }
 }
-
-final Uint8List kTransparentImage = Uint8List.fromList(<int>[
-  0x89,
-  0x50,
-  0x4E,
-  0x47,
-  0x0D,
-  0x0A,
-  0x1A,
-  0x0A,
-  0x00,
-  0x00,
-  0x00,
-  0x0D,
-  0x49,
-  0x48,
-  0x44,
-  0x52,
-  0x00,
-  0x00,
-  0x00,
-  0x01,
-  0x00,
-  0x00,
-  0x00,
-  0x01,
-  0x08,
-  0x06,
-  0x00,
-  0x00,
-  0x00,
-  0x1F,
-  0x15,
-  0xC4,
-  0x89,
-  0x00,
-  0x00,
-  0x00,
-  0x0A,
-  0x49,
-  0x44,
-  0x41,
-  0x54,
-  0x78,
-  0x9C,
-  0x63,
-  0x00,
-  0x01,
-  0x00,
-  0x00,
-  0x05,
-  0x00,
-  0x01,
-  0x0D,
-  0x0A,
-  0x2D,
-  0xB4,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x49,
-  0x45,
-  0x4E,
-  0x44,
-  0xAE
-]);

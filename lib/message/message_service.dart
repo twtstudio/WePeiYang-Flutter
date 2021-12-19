@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
+///TODO:暂时没有message相关接口，所以这里的接口都会报错
 class MessageService {
   static Future<FeedbackDetailMessages> getDetailMessages(
       MessageType type, int page) async {

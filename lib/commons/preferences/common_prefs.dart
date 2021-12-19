@@ -35,6 +35,7 @@ class CommonPreferences {
 
   /// 校务专区
   var feedbackToken = PrefsBean<String>("feedbackToken");
+  var feedbackUid = PrefsBean<String>('feedbackUid');
   var feedbackSearchHistory =
       PrefsBean<List<String>>("feedbackSearchHistory", []);
   // 1 -> 按时间排序; 2 -> 按热度排序

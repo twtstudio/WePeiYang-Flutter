@@ -15,6 +15,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int urlListLength = 0;
   int indexNow = 0;
   int tempSelect;
+  final String baseUrl = 'https://www.zrzz.site:7013/';
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  imageProvider: NetworkImage(urlList[index]),
+                  imageProvider: NetworkImage(baseUrl + urlList[index]),
                   maxScale: PhotoViewComputedScale.contained * 5.0,
                   minScale: PhotoViewComputedScale.contained * 1.0,
                   initialScale: PhotoViewComputedScale.contained,
@@ -77,7 +78,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               onTap: () {
-                ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                ImagePickers.saveImageToGallery(baseUrl + urlList[tempSelect]);
                 ToastProvider.success('已保存到手机相册');
                 Navigator.pop(context);
               },
@@ -89,7 +90,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
               ),
               onTap: () async {
                 var path =
-                    await ImagePickers.saveImageToGallery(urlList[tempSelect]);
+                    await ImagePickers.saveImageToGallery(baseUrl + urlList[tempSelect]);
                 await shareChannel
                     .invokeMethod("shareImgToQQ", {"imageUrl": path});
               },

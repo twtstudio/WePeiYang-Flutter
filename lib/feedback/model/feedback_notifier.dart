@@ -5,18 +5,17 @@ import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class FbTagsProvider {
-  List<Tag> tagList = [];
+  List<Department> departmentList = [];
 
-  Future<void> initTags() async {
-    await FeedbackService.getTags(
+  Future<void> initDepartments() async {
+    await FeedbackService.getDepartments(
       CommonPreferences().feedbackToken.value,
       onResult: (list) {
-        tagList.clear();
-        tagList.addAll(list);
+        departmentList.clear();
+        departmentList.addAll(list);
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
@@ -28,11 +27,13 @@ class FbTagsProvider {
 class NewPostProvider {
   String title = "";
   String content = "";
+  int type = 1;
+  Department department;
   Tag tag;
 
-  List<File> imgList = [];
+  List<File> images = [];
 
-  bool get check => title.isNotEmpty && content.isNotEmpty && tag != null;
+  bool get check => title.isNotEmpty && content.isNotEmpty && ((type == 1 && department != null) || (type == 0 && tag != null));
 }
 
 // class ReloadProvider with ChangeNotifier{
@@ -68,18 +69,21 @@ class FbHomeListModel extends ChangeNotifier {
 
   List<Post> get homeList => _homeList.values.toList();
   FbHomePageStatus _status = FbHomePageStatus.loading;
+  int _postType = 2;
   int _totalPage = 0;
   int _currentPage = 0;
 
   bool get isLastPage => _totalPage == _currentPage;
+
+  int get postType => _postType;
 
   // TODO: 是否要在进行操作时更新列表？
   void quietUpdateItem(Post post) {
     _homeList.update(
       post.id,
       (value) {
-        value.isLiked = post.isLiked;
-        value.isFavorite = post.isFavorite;
+        value.isLike = post.isLike;
+        value.isFav = post.isFav;
         value.likeCount = post.likeCount;
         return value;
       },
@@ -94,9 +98,9 @@ class FbHomeListModel extends ChangeNotifier {
     });
   }
 
-  Future<void> getNextPage({OnSuccess success, OnFailure failure}) async {
+  Future<void> getNextPage(type, {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
-      tagId: '',
+      type: '$type',
       page: _currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList);
@@ -110,14 +114,14 @@ class FbHomeListModel extends ChangeNotifier {
     );
   }
 
-  checkTokenAndGetPostList(FbTagsProvider provider,
+  checkTokenAndGetPostList(int type, FbTagsProvider provider,
       {OnSuccess success, OnFailure failure}) async {
     if (CommonPreferences().feedbackToken.value == "") {
       await FeedbackService.getToken(
         onResult: (token) {
           CommonPreferences().feedbackToken.value = token;
-          provider.initTags();
-          initPostList();
+          provider.initDepartments();
+          initPostList(type);
         },
         onFailure: (e) {
           _status = FbHomePageStatus.error;
@@ -126,19 +130,19 @@ class FbHomeListModel extends ChangeNotifier {
         },
       );
     } else {
-      provider.initTags();
-      initPostList();
+      provider.initDepartments();
+      initPostList(type);
     }
   }
 
-  Future<void> initPostList(
+  Future<void> initPostList(int type,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
       _status = FbHomePageStatus.loading;
       notifyListeners();
     }
     await FeedbackService.getPosts(
-      tagId: '',
+      type: '$type',
       page: '1',
       onSuccess: (postList, totalPage) {
         _homeList.clear();

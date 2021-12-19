@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_type_switch_bar.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -27,6 +28,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbTagsProvider _tagsProvider;
   TabController _tabController;
 
+  final typeList = [2, 0, 1, 2];///根据tab的index得到对应type
+
   final ScrollController controller = ScrollController();
 
   RefreshController _refreshController =
@@ -34,8 +37,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
-      _tagsProvider.initTags();
-      _listProvider.initPostList(success: () {
+      _tagsProvider.initDepartments();
+      _listProvider.initPostList(typeList[0], success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
       }, failure: (_) {
@@ -49,11 +52,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     });
   }
 
-  _onLoading() {
+  _onLoading({int type = 2}) {
     if (_listProvider.isLastPage) {
       _refreshController.loadNoData();
     } else {
       _listProvider.getNextPage(
+        type,
         success: () {
           _refreshController.loadComplete();
         },
@@ -69,7 +73,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, failure: (e) {
+      _listProvider.checkTokenAndGetPostList(typeList[0], _tagsProvider, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });
