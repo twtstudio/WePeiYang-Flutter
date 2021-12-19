@@ -8,23 +8,43 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/view/class_table_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
-class SchedulePage extends StatelessWidget {
+class SchedulePage extends StatefulWidget {
   /// 星期栏是否收缩
   final ValueNotifier<bool> isShrink =
       ValueNotifier<bool>(CommonPreferences().scheduleShrink.value);
 
+  @override
+  _SchedulePageState createState() => _SchedulePageState();
+}
+
+class _SchedulePageState extends State<SchedulePage> {
   /// 进入课程表页面后重设选中周并自动刷新数据
-  SchedulePage() {
+  _SchedulePageState() {
     var notifier = Provider.of<ScheduleNotifier>(
         WePeiYangApp.navigatorState.currentContext,
         listen: false);
     notifier.quietResetWeek();
     notifier.refreshSchedule().call();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (CommonPreferences().firstUse.value) {
+        CommonPreferences().firstUse.value = false;
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => ClassesNeedVPNDialog());
+      }
+    });
   }
 
   @override
@@ -91,11 +111,12 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                         showDialog(
                             context: context,
                             barrierDismissible: true,
-                            builder: (BuildContext context) =>
-                                TjuRebindDialog(reason: e is WpyDioError
+                            builder: (BuildContext context) => TjuRebindDialog(
+                                reason: e is WpyDioError
                                     ? e.error.toString()
                                     : null));
-                      }).call();
+                      })
+                  .call();
             } else {
               ToastProvider.error("请绑定办公网");
               Navigator.pushNamed(context, AuthRouter.tjuBind);

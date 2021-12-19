@@ -2,9 +2,10 @@ import 'package:dio/dio.dart' show DioError, Response;
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 
-/// 发送请求，获取html中的schedule数据
+/// 爬取课程表信息
 void getScheduleCourses(
     {OnResult<List<ScheduleCourse>> onResult, OnFailure onFailure}) async {
   var pref = CommonPreferences();
@@ -144,8 +145,8 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
 
     /// 下面的[?.]和[return]是本学期没有课程时的空判断
     List<ScheduleCourse> courses = [];
-    List<String> trList = getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', data)
-        ?.split("</tr><tr>");
+    List<String> trList =
+        getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', data)?.split("</tr><tr>");
     trList?.forEach((tr) {
       List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);
       if (tdList.isEmpty) return;
@@ -175,7 +176,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
         /// "体育D\s(体适能)"这门课，course中的名称为"体育D\s(体适能)"，arrange中的名称为"体育D"
         /// 不能像courseName.contains(arrange.courseName)这么写，否则就会把"机器学习"和"机器学习综合实践"这样的课算在一起
         if (courseName == arrange.courseName ||
-            judgeSubtitle(courseName, arrange.courseName)) {
+            _judgeSubtitle(courseName, arrange.courseName)) {
           /// 有些个别课没有教室信息，此时roomList.length = 2
           if (roomList.length > roomIndex) {
             arrange.room = roomList[roomIndex].replaceAll("<br/>", '');
@@ -188,19 +189,47 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
           teacherList.forEach((t) {
             if (t.contains(teacher)) teacher = t;
           });
-          courses.add(ScheduleCourse(classId, courseId, courseName, credit,
-              teacher, campus, week, arrange));
+          courses.add(ScheduleCourse.spider(classId, courseId, courseName,
+              credit, teacher, campus, week, arrange));
         }
       });
     });
     return courses;
   } catch (e) {
-    throw WpyDioError(error: "解析课程数据出错，请重新尝试");
+    throw WpyDioError(error: '解析课程数据出错，请重新尝试');
   }
 }
 
 /// 判断s1的格式是否为 "${s2} ${某subtitle}"
-bool judgeSubtitle(String s1, String s2) {
+bool _judgeSubtitle(String s1, String s2) {
   var titles = s1.split(' ');
   return titles.length > 1 ? titles[0] == s2 : false;
+}
+
+/// 爬取考表信息
+void getExam({OnResult<List<Exam>> onResult, OnFailure onFailure}) async {
+  try {
+    var response = await fetch(
+        "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action",
+        cookieList: CommonPreferences().getCookies());
+    var exams = <Exam>[];
+    String tbody =
+        getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', response.data.toString());
+    List<String> trList = tbody.split("</tr><tr>");
+    trList.forEach((tr) {
+      List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);
+      tdList = tdList
+          .map((e) => e.contains('color')
+              ? getRegExpStr(r'(?<=>)[^]*?(?=</font)', e)
+              : e)
+          .toList();
+      var ext = tdList[8] == '正常' ? '' : tdList[9];
+      exams.add(Exam(tdList[0], tdList[1], tdList[2], tdList[3], tdList[5],
+          tdList[6], tdList[7], tdList[8], ext));
+    });
+    onResult(exams);
+  } catch (e) {
+    if (onFailure == null) return;
+    onFailure(e is DioError ? e : WpyDioError(error: '解析考表数据出错，请重新尝试'));
+  }
 }

@@ -48,6 +48,7 @@ class CommonPreferences {
   /// 办公网
   var gpaData = PrefsBean<String>('gpaData');
   var scheduleData = PrefsBean<String>('scheduleData');
+  var examData = PrefsBean<String>('examData');
   var isBindTju = PrefsBean<bool>('bindtju');
   var tjuuname = PrefsBean<String>('tjuuname');
   var tjupasswd = PrefsBean<String>('tjupasswd');
@@ -76,6 +77,7 @@ class CommonPreferences {
   var language = PrefsBean<int>("language", 0); // 系统语言
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
+  var hideExam = PrefsBean<bool>("hideExam"); // 首页不显示考表
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
@@ -92,6 +94,9 @@ class CommonPreferences {
 
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   var updateTime = PrefsBean<String>('updateTime');
+
+  /// 是否为初次使用此app
+  var firstUse = PrefsBean<bool>('firstUse', true);
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {

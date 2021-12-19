@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 
 final activeNameStyle = FontManager.YaQiHei.copyWith(

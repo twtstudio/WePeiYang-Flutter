@@ -1146,6 +1146,16 @@ class S {
   }
 
   /// ``
+  String get setting_exam {
+    return Intl.message(
+      '',
+      name: 'setting_exam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
   String get setting_night_mode {
     return Intl.message(
       '',

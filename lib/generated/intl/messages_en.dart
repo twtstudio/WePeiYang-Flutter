@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "setting_color_hint" : MessageLookupByLibrary.simpleMessage(""),
     "setting_day_number" : MessageLookupByLibrary.simpleMessage(""),
     "setting_day_number_hint" : MessageLookupByLibrary.simpleMessage(""),
+    "setting_exam" : MessageLookupByLibrary.simpleMessage(""),
     "setting_general" : MessageLookupByLibrary.simpleMessage(""),
     "setting_gpa" : MessageLookupByLibrary.simpleMessage(""),
     "setting_language" : MessageLookupByLibrary.simpleMessage(""),

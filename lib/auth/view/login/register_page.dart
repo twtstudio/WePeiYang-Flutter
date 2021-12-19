@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -578,7 +578,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                       context: context,
                       barrierDismissible: true,
                       builder: (BuildContext context) =>
-                          RegisterDialog(check: checkNotifier)),
+                          PrivacyDialog(check: checkNotifier)),
                   child: Text(S.current.register_hint2,
                       style: FontManager.YaHeiRegular.copyWith(
                           fontSize: 11,

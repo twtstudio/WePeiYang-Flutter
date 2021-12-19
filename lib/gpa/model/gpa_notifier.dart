@@ -18,9 +18,7 @@ class GPANotifier with ChangeNotifier {
   }
 
   /// 所有学期的gpa总数居
-  Total _total = Total(0, 0, 0);
-
-  Total get total => _total;
+  Total total = Total(0, 0, 0);
 
   /// 当前显示的学年
   int _index = 0;
@@ -118,18 +116,12 @@ class GPANotifier with ChangeNotifier {
   }
 
   /// notifier中也写一个hideGPA，就可以在从设置页面pop至主页时，令主页的GPAWidget进行rebuild
-  bool _hideGPA = false;
-
-  set hideGPAWithNotify(bool value) {
-    _hideGPA = value;
+  set hideGPA(bool value) {
+    CommonPreferences().hideGPA.value = value;
     notifyListeners();
   }
 
-  bool get hideGPAWithNotify {
-    /// notifier和缓存不同的唯一情况，就是初次加载时，notifier为false，缓存为true的情况。这时候听缓存的
-    _hideGPA = CommonPreferences().hideGPA.value;
-    return _hideGPA;
-  }
+  bool get hideGPA => CommonPreferences().hideGPA.value;
 
   GestureTapCallback refreshGPA({bool hint = false, OnFailure onFailure}) {
     return () {
@@ -137,7 +129,7 @@ class GPANotifier with ChangeNotifier {
       getGPABean(onResult: (gpaBean) {
         if (hint) ToastProvider.success("刷新gpa数据成功");
         _gpaStats = gpaBean.stats;
-        _total = gpaBean.total;
+        total = gpaBean.total;
         notifyListeners();
         CommonPreferences().gpaData.value = json.encode(gpaBean);
       }, onFailure: (e) {
@@ -152,14 +144,14 @@ class GPANotifier with ChangeNotifier {
     if (pref.gpaData.value == '') return;
     GPABean gpaBean = GPABean.fromJson(json.decode(pref.gpaData.value));
     _gpaStats = gpaBean.stats;
-    _total = gpaBean.total;
+    total = gpaBean.total;
     notifyListeners();
   }
 
   /// 办公网解绑时清除数据
   void clear() {
     _gpaStats = [];
-    _total = Total(0, 0, 0);
+    total = Total(0, 0, 0);
     _index = 0;
     _type = 0;
     _sortType = 0;

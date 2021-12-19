@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
-import 'package:we_pei_yang_flutter/auth/view/login/register_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
@@ -217,7 +217,7 @@ class _UserPageState extends State<UserPage> {
                       onTap: () => showDialog(
                           context: context,
                           barrierDismissible: true,
-                          builder: (BuildContext context) => RegisterDialog()),
+                          builder: (BuildContext context) => PrivacyDialog()),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(9),
                       child: Row(
