@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 
@@ -7,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
@@ -26,6 +28,8 @@ class WPYPage extends StatefulWidget {
 
 class WPYPageState extends State<WPYPage> {
   ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
+  GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
+  ScrollController customScrollViewController = ScrollController();
   List<CardBean> cards;
 
   @override
@@ -57,6 +61,12 @@ class WPYPageState extends State<WPYPage> {
           LoungeRouter.main))
       ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
           "重开模拟器", HomeRouter.restartGame));
+    customScrollViewController.addListener(() {
+      if (customScrollViewController.offset >= 180)
+        erCiYuanKey.currentState.onStaged(false);
+      else
+        erCiYuanKey.currentState.onStaged(true);
+    });
   }
 
   @override
@@ -64,36 +74,48 @@ class WPYPageState extends State<WPYPage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       systemNavigationBarColor: Colors.white,
     ));
-    return CustomScrollView(
-      slivers: <Widget>[
-        /// 自定义标题栏
-        SliverPadding(
-          padding: const EdgeInsets.only(top: 30),
-          sliver: SliverPersistentHeader(
-              delegate: _WPYHeader(onChanged: (_) {
-                setState(() {});
-              }),
-              pinned: true,
-              floating: true),
+    return Stack(
+      children: [
+        ErCiYuanWidget(erCiYuanKey),
+        CustomScrollView(
+          controller: customScrollViewController,
+          physics: BouncingScrollPhysics(),
+          slivers: <Widget>[
+            /// 自定义标题栏
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 30),
+              sliver: SliverPersistentHeader(
+                  delegate: _WPYHeader(onChanged: (_) {
+                    setState(() {});
+                  }),
+                  pinned: true,
+                  floating: true),
+            ),
+
+            /// 功能跳转卡片
+            SliverCardsWidget(cards),
+
+            /// 当天课程
+            SliverToBoxAdapter(child: TodayCoursesWidget()),
+
+            /// 考表
+            SliverToBoxAdapter(child: WpyExamWidget()),
+
+            /// GPA曲线及信息展示
+            SliverToBoxAdapter(child: GPAPreview()),
+
+            SliverToBoxAdapter(
+                child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+              child: LoungeFavourWidget(title: S.current.lounge, init: true),
+            )),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+              ),
+            )
+          ],
         ),
-
-        /// 功能跳转卡片
-        SliverCardsWidget(cards),
-
-        /// 当天课程
-        SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-        /// 考表
-        SliverToBoxAdapter(child: WpyExamWidget()),
-
-        /// GPA曲线及信息展示
-        SliverToBoxAdapter(child: GPAPreview()),
-
-        SliverToBoxAdapter(
-            child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-          child: LoungeFavourWidget(title: S.current.lounge, init: true),
-        ))
       ],
     );
   }
@@ -172,10 +194,18 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 
   String get _getGreetText {
     int hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 12)
+    if (hour >= 0 && hour < 5)
+      return '夜深了，早点睡';
+    else if (hour >= 5 && hour < 8)
+      return '起得好早';
+    else if (hour >= 8 && hour < 12)
       return '早上好';
+    else if (hour >= 12 && hour < 14)
+      return '中午好';
     else if (hour >= 12 && hour < 17)
       return '下午好';
+    else if (hour >= 17 && hour < 19)
+      return '傍晚好';
     else
       return '晚上好';
   }
@@ -300,6 +330,126 @@ class SliverCardsWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ErCiYuanWidget extends StatefulWidget {
+  ErCiYuanWidget(Key key) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return ErCiYuanWidgetState();
+  }
+}
+
+class ErCiYuanWidgetState extends State<ErCiYuanWidget>
+    with TickerProviderStateMixin {
+  bool _offStage = true;
+  AnimationController _girlController;
+  AnimationController _talkController;
+
+  Animation _girlAnimation, _talkAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _girlController = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _talkController = AnimationController(
+      duration: Duration(milliseconds: 3000),
+      vsync: this,
+    );
+
+    _girlAnimation = CurvedAnimation(
+        parent: Tween(begin: 0.0, end: 1.0).animate(_girlController),
+        curve: Curves.easeInQuad);
+
+    _talkAnimation = CurvedAnimation(
+        parent: Tween(begin: 0.0, end: 1.0).animate(_talkController),
+        curve: Curves.easeInBack);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Offstage(
+        offstage: _offStage,
+        child: Stack(
+          children: [
+            Positioned(
+                left: -30,
+                bottom: -45,
+                child: FadeTransition(
+                  opacity: _girlAnimation,
+                  child: Image.asset(
+                    'assets/images/er_ci_yuan.png',
+                    width: 300,
+                  ),
+                )),
+            Positioned(
+                top: 80,
+                left: 30,
+                child: Text(
+                  "欢迎来到微北娘的世界",
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: ColorUtil.lightTextColor,
+                      fontSize: 18,
+                      letterSpacing: 1.8,
+                      fontWeight: FontWeight.w900),
+                )),
+            Positioned(
+                bottom: 240,
+                left: 160,
+                child: FadeTransition(
+                  opacity: _talkController,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 172,
+                    child: Text(
+                      "『" +
+                          //"你好，我是你的微北娘，有什么问题可以问我"
+                          _WPYHeader()._getGreetText
+                          +
+                          "』",
+                      textAlign: TextAlign.start,
+                      style: FontManager.YaQiHei.copyWith(
+                          color: ColorUtil.lightTextColor,
+                          fontSize: 40,
+                          letterSpacing: 1.8,
+                          fontWeight: FontWeight.w600,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(2.0, 2.0),
+                            blurRadius: 2.0,
+                            color: Color.fromARGB(125, 93, 91, 132),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ))
+          ],
+        ));
+  }
+
+  @override
+  void dispose() {
+    _girlController.dispose();
+    _talkController.dispose();
+    super.dispose();
+  }
+
+  void onStaged(bool offstage) {
+    setState(() {
+      if (offstage) {
+        _girlController.reset();
+        _talkController.reset();
+      } else {
+        _girlController.forward();
+        _talkController.forward();
+      }
+      _offStage = offstage;
+    });
   }
 }
 

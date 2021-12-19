@@ -397,6 +397,32 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+
+  /// 举报问题 / 评论
+  static report(
+      {@required id,
+        @required isQuestion,
+        @required reason,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('reportQuestion', () async {
+      var target = isQuestion ? 'question' : 'commit';
+      try {
+        await feedbackDio.post(
+          '$target/complain',
+          formData: FormData.fromMap({
+            'token': CommonPreferences().feedbackToken.value,
+            '${target}_id': id,
+            'reason': reason,
+          }),
+        );
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   static reportQuestion(
       {@required id,
       @required reason,
