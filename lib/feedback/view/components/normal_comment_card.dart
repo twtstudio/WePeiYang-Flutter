@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -30,25 +31,36 @@ class _NCommentCardState extends State<NCommentCard> {
     var topWidget = Row(
       children: [
         Icon(Icons.account_circle_rounded,
-            size: 20, color: Color.fromRGBO(98, 103, 124, 1.0)),
+            size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
         SizedBox(height: 8),
-        Expanded(
-          child: Text(
-            widget.comment.userName ?? S.current.feedback_anonymous,
-            maxLines: 1,
-            overflow: TextOverflow.clip,
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 12, color: ColorUtil.lightTextColor),
-          ),
-        ),
-        Spacer(),
-        Text(
-          widget.comment.createTime.time,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: ColorUtil.lightTextColor,
-          ),
-        ),
+       Expanded(
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.comment.userName ?? S.current.feedback_anonymous,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 14, color: ColorUtil.lightTextColor),
+            ),
+            Text(
+              widget.comment.createTime.time,
+              style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 10,
+                color: ColorUtil.lightTextColor,
+              ),
+            ),
+          ],
+        ),),
+        IconButton(
+          icon: Icon(Icons.more_horiz),
+          iconSize: 16,
+          onPressed: () {},
+          constraints: BoxConstraints(),
+          padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+        )
       ],
     );
 
@@ -59,17 +71,18 @@ class _NCommentCardState extends State<NCommentCard> {
       ),
     );
 
-    var floor = Text(
-      '${widget.commentFloor}' + '楼 ',
-      style: FontManager.YaHeiRegular.copyWith(
-        fontSize: 12,
-        color: ColorUtil.lightTextColor,
-      ),
+    var floor = IconButton(
+      icon: Icon(Icons.chat),
+      iconSize: 16,
+      constraints: BoxConstraints(),
+      onPressed: (){},
+      padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+      color: ColorUtil.boldLakeTextColor,
     );
 
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
-      onLikePressed: (isLiked, count,success,failure) async {
+      onLikePressed: (isLiked, count, success, failure) async {
         await FeedbackService.commentHitLike(
           id: widget.comment.id,
           isLiked: widget.comment.isLiked,
@@ -88,7 +101,7 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var bottomWidget = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [floor, likeWidget],
+      children: [likeWidget, floor],
     );
 
     var body = Column(

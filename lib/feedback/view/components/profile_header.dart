@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -16,13 +17,6 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        SizedBox(
-          height: 350,
-          child: Image.asset(
-            'assets/images/user_back.png',
-            fit: BoxFit.cover,
-          ),
-        ),
         CustomScrollView(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -30,36 +24,62 @@ class ProfileHeader extends StatelessWidget {
             SliverAppBar(
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
+                icon: Icon(Icons.arrow_back_ios_rounded,color: ColorUtil.boldTagTextColor),
                 onPressed: () => Navigator.pop(context),
               ),
-              title: Text(S.current.feedback_profile),
+              title: Text(S.current.feedback_profile,style: TextStyle(color: ColorUtil.boldTagTextColor),),
               centerTitle: true,
               actions: [FeedbackReadAllButton(), FeedbackMailbox()],
             ),
             SliverToBoxAdapter(child: SizedBox(height: 23)),
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(CommonPreferences().nickname.value,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    )),
+              child:
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  UserAvatarImage(size: 96, iconColor: Colors.white),
+                  SizedBox(width: 67,),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        child: Text(CommonPreferences().nickname.value,
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: FontManager.YaHeiRegular.copyWith(
+                              color: ColorUtil.boldTagTextColor,
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                      Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4.5),
+                          child: Text(CommonPreferences().userNumber.value,
+                              textAlign: TextAlign.start,
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  color: ColorUtil.tagTextColor,
+                                  fontSize: 15))),
+                      Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4.5),
+                          child: Text("MPID:000001",
+                              textAlign: TextAlign.start,
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  color: ColorUtil.tagTextColor,
+                                  fontSize: 15))),
+                      Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4.5),
+                          child: Text('已经潜水{12}天了。',
+                              textAlign: TextAlign.start,
+                              style: FontManager.YaHeiRegular.copyWith(
+                                  color: ColorUtil.tagTextColor,
+                                  fontSize: 15))),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(CommonPreferences().userNumber.value,
-                      textAlign: TextAlign.center,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          color: ColorUtil.profileNameColor,
-                          fontSize: 13))),
+
             ),
             child,
           ],
@@ -87,7 +107,7 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           child: Center(
             child: FeedbackBadgeWidget(
               type: FeedbackMessageType.mailbox,
-              child: Icon(Icons.mail_outline),
+              child: Icon(Icons.notifications_none_outlined,color: ColorUtil.boldTagTextColor),
             ),
           ),
         ),

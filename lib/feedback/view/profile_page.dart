@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
@@ -29,17 +28,6 @@ extension _CurrentTabb on _CurrentTab {
   _CurrentTab get change {
     var next = (this.index + 1) % 2;
     return _CurrentTab.values[next];
-  }
-
-  FeedbackMessageType get messageType {
-    switch (this.index) {
-      case 0:
-        return FeedbackMessageType.detail_post;
-      case 1:
-        return FeedbackMessageType.detail_favourite;
-      default:
-        return FeedbackMessageType.detail_post;
-    }
   }
 }
 
@@ -120,17 +108,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
     Widget tabs = Container(
-      height: 140,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      height: 36,
       child: Card(
+        color: Color.fromRGBO(246, 246, 247, 1.0),
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
           child: Row(
             children: [myPost, myFavor],
           ),
-        ),
+
       ),
     );
 
@@ -313,33 +298,31 @@ class _ProfileTabButtonState extends State<ProfileTabButton> {
         context.findAncestorStateOfType<_ProfilePageState>()._currentTab;
 
     return Expanded(
+      flex: 1,
       child: ValueListenableBuilder(
         valueListenable: currentType,
         builder: (_, value, __) => InkWell(
-          child: Column(
-            children: [
-              FeedbackBadgeWidget(
-                type: widget.type.messageType,
-                child: Image.asset(widget.img, height: 30),
-              ),
-              SizedBox(height: 5),
-              Text(
-                widget.text,
-                style: FontManager.YaHeiRegular.copyWith(
-                    height: 1, color: ColorUtil.lightTextColor),
-              ),
-              SizedBox(height: 5),
-              ClipOval(
-                child: Container(
-                  width: 5,
-                  height: 5,
-                  color:
-                      value == widget.type ? ColorUtil.mainColor : Colors.white,
+            child: Column(
+              children: [
+                SizedBox(height: 2,),
+                Text(
+                  widget.text,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      height: 1, color: ColorUtil.boldTagTextColor),
                 ),
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
+                SizedBox(height: 5,),
+                  Container(
+                    decoration: BoxDecoration(
+                      color:
+                      value == widget.type ? ColorUtil.mainColor : ColorUtil.tagBackgroundColor,
+                      borderRadius: BorderRadius.all(Radius.circular(30))
+                    ),
+                    width: 30,
+                    height: 4,
+                  ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           onTap: () {
             if (value == widget.type.change) {
               currentType.value = widget.type;
