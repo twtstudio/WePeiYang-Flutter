@@ -56,7 +56,7 @@ class FeedbackService with AsyncTimer {
         CommonPreferences().feedbackToken.value =
             response.data['data']['token'];
         CommonPreferences().feedbackUid.value =
-        response.data['data']['uid'];
+        response.data['data']['uid'].toString();
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
         throw WpyDioError(error: '校务专区登录失败, 请刷新');

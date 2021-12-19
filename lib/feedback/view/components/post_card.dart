@@ -85,57 +85,65 @@ class _PostCardState extends State<PostCard> {
     var topWidget = Row(
       children: [
         title,
-    post.type == 1 ?
-    Container(
-      padding: EdgeInsets.fromLTRB(0, 2, 10, 1),
-      height: 20,
-      decoration: BoxDecoration(
-        color: ColorUtil.boldTextColor,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Row(
-        children: [
-          Container(
-              margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 2),
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: ColorUtil.backgroundColor,
-              ),
-              child: Center(
-                child: Text("√",
-                  style: TextStyle(color: ColorUtil.boldTextColor,fontSize: 10,fontWeight: FontWeight.bold),
+        post.type == 1
+            ? Container(
+                padding: EdgeInsets.fromLTRB(0, 2, 10, 1),
+                height: 20,
+                decoration: BoxDecoration(
+                  color: ColorUtil.boldTextColor,
+                  borderRadius: BorderRadius.circular(50),
                 ),
-              )),
-          Text(
-           '已解决',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 13,fontWeight: FontWeight.bold, color: ColorUtil.backgroundColor),
-          ),
-        ],
-      ),
-    ):Container(
-      padding: EdgeInsets.fromLTRB(4, 2, 6, 1),
-      height: 20,
-      decoration: BoxDecoration(
-        color: ColorUtil.boldTextColor,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child:
-      Center(
-        child:Text(
-            '#MP${post.id}',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 13, fontWeight: FontWeight.bold,color: ColorUtil.backgroundColor),
-          ),)
-    ),
+                child: Row(
+                  children: [
+                    Container(
+                        margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 2),
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: ColorUtil.backgroundColor,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "√",
+                            style: TextStyle(
+                                color: ColorUtil.boldTextColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                    Text(
+                      '已解决',
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: ColorUtil.backgroundColor),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                padding: EdgeInsets.fromLTRB(4, 2, 6, 1),
+                height: 20,
+                decoration: BoxDecoration(
+                  color: ColorUtil.boldTextColor,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Center(
+                  child: Text(
+                    '#MP${post.id}',
+                    style: FontManager.YaHeiRegular.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: ColorUtil.backgroundColor),
+                  ),
+                )),
       ],
     );
 
     var tag = Container(
-      padding: EdgeInsets.fromLTRB( 0, 0,10, 0),
+      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
       height: 20,
       decoration: BoxDecoration(
         color: ColorUtil.tagBackgroundColor,
@@ -144,7 +152,7 @@ class _PostCardState extends State<PostCard> {
       child: Row(
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+              margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
               width: 12,
               height: 12,
               decoration: BoxDecoration(
@@ -154,12 +162,18 @@ class _PostCardState extends State<PostCard> {
               child: Center(
                 child: Text(
                   "#",
-                  style: TextStyle(color: ColorUtil.boldTextColor,fontSize: 12,fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                      color: ColorUtil.boldTextColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800),
                 ),
-              )
-          ),
-          Text(
-            post.tag != null ? '${post.tag.name}' : '#无标签',
+              )),
+          post.type == 0 ? Text(
+            post.tag != null ? '${post.tag.name}' : '无标签',
+            style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 13, color: ColorUtil.tagTextColor),
+          ) : Text(
+            post.department != null ? '${post.department.name}' : '无部门',
             style: FontManager.YaHeiRegular.copyWith(
                 fontSize: 13, color: ColorUtil.tagTextColor),
           ),
@@ -384,20 +398,21 @@ class _PostCardState extends State<PostCard> {
           ]);
         } else if (post.images.length == 1) {
           imagesWidget.add(InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-                "urlList": post.images,
-                "urlListLength": post.images.length,
-                "indexNow": 1
-              });
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
-              child: FadeInImage.memoryNetwork(
-                  fit: BoxFit.cover,
-                  placeholder: kTransparentImage,
-                  image: post.images[0]),
-            )));
+              onTap: () {
+                Navigator.pushNamed(context, FeedbackRouter.imageView,
+                    arguments: {
+                      "urlList": post.images,
+                      "urlListLength": post.images.length,
+                      "indexNow": 1
+                    });
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+                child: FadeInImage.memoryNetwork(
+                    fit: BoxFit.cover,
+                    placeholder: kTransparentImage,
+                    image: post.images[0]),
+              )));
         }
 
         imagesWidget.add(

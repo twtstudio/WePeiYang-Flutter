@@ -38,7 +38,7 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.horizontal(left: Radius.circular(30))),
-                primary: type == "1"
+                primary: sortType == "1"
                     ? ColorUtil.searchBarBackgroundColor
                     : Colors.white),
             onPressed: () {
@@ -72,7 +72,7 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                     BorderRadius.horizontal(right: Radius.circular(30))),
-                primary: type == "2"
+                primary: sortType == "2"
                     ? ColorUtil.searchBarBackgroundColor
                     : Colors.white),
             onPressed: () {

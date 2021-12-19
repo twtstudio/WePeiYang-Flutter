@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -69,7 +66,7 @@ class _NCommentCardState extends State<NCommentCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.comment.nickName ?? S.current.feedback_anonymous,
+              widget.comment.nickname ?? S.current.feedback_anonymous,
               maxLines: 1,
               overflow: TextOverflow.clip,
               style: FontManager.YaHeiRegular.copyWith(
@@ -157,7 +154,11 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var bottomWidget = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [likeWidget, deleteButton, floor],
+      children: [
+        likeWidget,
+        if(CommonPreferences().feedbackUid.value == widget.comment.id.toString())deleteButton,
+        floor,
+      ],
     );
 
     var body = Column(
