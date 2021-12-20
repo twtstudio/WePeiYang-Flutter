@@ -39,13 +39,13 @@ class WPYPageState extends State<WPYPage> {
               color: MyColors.darkGrey, size: 25),
           'Wiki',
           HomeRouter.wiki))
-      ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
-          S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/exam.png'),
               color: MyColors.darkGrey, size: 25),
-          'Exam',
+          '考表',
           ScheduleRouter.exam))
+      ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
+          S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
 
