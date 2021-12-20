@@ -170,6 +170,37 @@ class _SettingPageState extends State<SettingPage> {
             child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                        width: descriptionMaxWidth,
+                        child:
+                        Text("首页显示看板娘", style: mainTextStyle)),
+                    Spacer(),
+                    Switch(
+                      value: pref.showPosterGirl.value,
+                      onChanged: (value) {
+                        setState(() => pref.showPosterGirl.value = value);
+                      },
+                      activeColor: Color.fromRGBO(105, 109, 127, 1),
+                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),

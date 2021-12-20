@@ -78,6 +78,7 @@ class CommonPreferences {
   var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
   var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
   var hideExam = PrefsBean<bool>("hideExam"); // 首页不显示考表
+  var showPosterGirl = PrefsBean<bool>("hidePosterGirl"); //首页不显示看板娘
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程

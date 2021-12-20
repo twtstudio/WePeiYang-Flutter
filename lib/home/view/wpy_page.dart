@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
-import 'package:we_pei_yang_flutter/home/talk/based_widget.dart';
+import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -75,7 +75,7 @@ class WPYPageState extends State<WPYPage> {
       systemNavigationBarColor: Colors.white,
     ));
     customScrollViewController.addListener(() {
-      if (customScrollViewController.offset > _getWidgetHeight(context) - 100)
+      if (customScrollViewController.offset > _getWidgetHeight(context) * 0.9)
         erCiYuanKey.currentState.onStaged(false);
       else
         erCiYuanKey.currentState.onStaged(true);
@@ -115,11 +115,14 @@ class WPYPageState extends State<WPYPage> {
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
                 child: LoungeFavourWidget(title: S.current.lounge, init: true),
               )),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                ),
-              )
+              !CommonPreferences().showPosterGirl.value
+                  ? SliverToBoxAdapter()
+                  : SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: 1,
+                      ),
+                    )
             ],
           ),
           ErCiYuanWidget(erCiYuanKey),
