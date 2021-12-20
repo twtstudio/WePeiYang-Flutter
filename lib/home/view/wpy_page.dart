@@ -8,9 +8,9 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/home/talk/based_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -38,20 +38,20 @@ class WPYPageState extends State<WPYPage> {
     cards = []
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
-          'Wiki',
-          HomeRouter.wiki))
+      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
+          'GPA', GPARouter.gpa))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/exam.png'),
               color: MyColors.darkGrey, size: 25),
-          'Exam',
+          '考表',
           ScheduleRouter.exam))
-      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
-          'GPA', GPARouter.gpa))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/wiki.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Wiki',
+          HomeRouter.wiki))
 
       /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
@@ -61,12 +61,12 @@ class WPYPageState extends State<WPYPage> {
           LoungeRouter.main))
       ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
           "重开模拟器", HomeRouter.restartGame));
-    customScrollViewController.addListener(() {
-      if (customScrollViewController.offset >= 180)
-        erCiYuanKey.currentState.onStaged(false);
-      else
-        erCiYuanKey.currentState.onStaged(true);
-    });
+  }
+
+  double _getWidgetHeight(context) {
+    final listHeight = context.findRenderObject().semanticBounds.size.height;
+    print('listHeight == $listHeight');
+    return listHeight;
   }
 
   @override
@@ -74,49 +74,57 @@ class WPYPageState extends State<WPYPage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       systemNavigationBarColor: Colors.white,
     ));
-    return Stack(
-      children: [
-        ErCiYuanWidget(erCiYuanKey),
-        CustomScrollView(
-          controller: customScrollViewController,
-          physics: BouncingScrollPhysics(),
-          slivers: <Widget>[
-            /// 自定义标题栏
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 30),
-              sliver: SliverPersistentHeader(
-                  delegate: _WPYHeader(onChanged: (_) {
-                    setState(() {});
-                  }),
-                  pinned: true,
-                  floating: true),
-            ),
-
-            /// 功能跳转卡片
-            SliverCardsWidget(cards),
-
-            /// 当天课程
-            SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-            /// 考表
-            SliverToBoxAdapter(child: WpyExamWidget()),
-
-            /// GPA曲线及信息展示
-            SliverToBoxAdapter(child: GPAPreview()),
-
-            SliverToBoxAdapter(
-                child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-              child: LoungeFavourWidget(title: S.current.lounge, init: true),
-            )),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
+    customScrollViewController.addListener(() {
+      if (customScrollViewController.offset > _getWidgetHeight(context) - 100)
+        erCiYuanKey.currentState.onStaged(false);
+      else
+        erCiYuanKey.currentState.onStaged(true);
+    });
+    return SafeArea(
+      child: Stack(
+        children: [
+          CustomScrollView(
+            controller: customScrollViewController,
+            physics: BouncingScrollPhysics(),
+            slivers: <Widget>[
+              /// 自定义标题栏
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 5),
+                sliver: SliverPersistentHeader(
+                    delegate: _WPYHeader(onChanged: (_) {
+                      setState(() {});
+                    }),
+                    pinned: true,
+                    floating: true),
               ),
-            )
-          ],
-        ),
-      ],
+
+              /// 功能跳转卡片
+              SliverCardsWidget(cards),
+
+              /// 当天课程
+              SliverToBoxAdapter(child: TodayCoursesWidget()),
+
+              /// 考表
+              SliverToBoxAdapter(child: WpyExamWidget()),
+
+              /// GPA曲线及信息展示
+              SliverToBoxAdapter(child: GPAPreview()),
+
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+                child: LoungeFavourWidget(title: S.current.lounge, init: true),
+              )),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                ),
+              )
+            ],
+          ),
+          ErCiYuanWidget(erCiYuanKey),
+        ],
+      ),
     );
   }
 }
@@ -137,7 +145,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
-      padding: const EdgeInsets.fromLTRB(30, 28, 10, 0),
+      padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
         children: [
           Row(
@@ -167,27 +175,26 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               )
             ],
           ),
-          (distance - shrinkOffset > 25)
-              ? Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                      "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
-                      style: FontManager.YaQiHei.copyWith(
-                          color: Color.fromRGBO(114, 119, 138, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15)),
-                )
-              : Container()
+          if (distance - shrinkOffset > 10)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
+                  style: FontManager.YaQiHei.copyWith(
+                      color: Color.fromRGBO(114, 119, 138, 1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15)),
+            )
         ],
       ),
     );
   }
 
   @override
-  double get maxExtent => 120;
+  double get maxExtent => 65;
 
   @override
-  double get minExtent => 75;
+  double get minExtent => 50;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
@@ -330,126 +337,6 @@ class SliverCardsWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class ErCiYuanWidget extends StatefulWidget {
-  ErCiYuanWidget(Key key) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return ErCiYuanWidgetState();
-  }
-}
-
-class ErCiYuanWidgetState extends State<ErCiYuanWidget>
-    with TickerProviderStateMixin {
-  bool _offStage = true;
-  AnimationController _girlController;
-  AnimationController _talkController;
-
-  Animation _girlAnimation, _talkAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _girlController = AnimationController(
-      duration: Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    _talkController = AnimationController(
-      duration: Duration(milliseconds: 3000),
-      vsync: this,
-    );
-
-    _girlAnimation = CurvedAnimation(
-        parent: Tween(begin: 0.0, end: 1.0).animate(_girlController),
-        curve: Curves.easeInQuad);
-
-    _talkAnimation = CurvedAnimation(
-        parent: Tween(begin: 0.0, end: 1.0).animate(_talkController),
-        curve: Curves.easeInBack);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Offstage(
-        offstage: _offStage,
-        child: Stack(
-          children: [
-            Positioned(
-                left: -30,
-                bottom: -45,
-                child: FadeTransition(
-                  opacity: _girlAnimation,
-                  child: Image.asset(
-                    'assets/images/er_ci_yuan.png',
-                    width: 300,
-                  ),
-                )),
-            Positioned(
-                top: 80,
-                left: 30,
-                child: Text(
-                  "欢迎来到微北娘的世界",
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: ColorUtil.lightTextColor,
-                      fontSize: 18,
-                      letterSpacing: 1.8,
-                      fontWeight: FontWeight.w900),
-                )),
-            Positioned(
-                bottom: 240,
-                left: 160,
-                child: FadeTransition(
-                  opacity: _talkController,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 172,
-                    child: Text(
-                      "『" +
-                          //"你好，我是你的微北娘，有什么问题可以问我"
-                          _WPYHeader()._getGreetText
-                          +
-                          "』",
-                      textAlign: TextAlign.start,
-                      style: FontManager.YaQiHei.copyWith(
-                          color: ColorUtil.lightTextColor,
-                          fontSize: 40,
-                          letterSpacing: 1.8,
-                          fontWeight: FontWeight.w600,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 2.0,
-                            color: Color.fromARGB(125, 93, 91, 132),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ))
-          ],
-        ));
-  }
-
-  @override
-  void dispose() {
-    _girlController.dispose();
-    _talkController.dispose();
-    super.dispose();
-  }
-
-  void onStaged(bool offstage) {
-    setState(() {
-      if (offstage) {
-        _girlController.reset();
-        _talkController.reset();
-      } else {
-        _girlController.forward();
-        _talkController.forward();
-      }
-      _offStage = offstage;
-    });
   }
 }
 
