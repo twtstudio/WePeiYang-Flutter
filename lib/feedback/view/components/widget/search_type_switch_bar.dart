@@ -19,8 +19,9 @@ class SearchTypeSwitchBar extends StatefulWidget {
 class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
   @override
   Widget build(BuildContext context) {
-    var type = CommonPreferences().feedbackSearchType.value;
-    return Row(
+    var sortType = CommonPreferences().feedbackSearchType.value;
+    var postType = widget.provider.postType;
+    return Column(
       children: [
         SizedBox(width: 20),
         Expanded(
@@ -28,7 +29,7 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
             child: Text(
               "时间排序",
               style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.mainColor,
+                color: sortType == "1" ? ColorUtil.mainColor : ColorUtil.lightTextColor,
                 fontSize: 15,
               ),
             ),
@@ -37,13 +38,14 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.horizontal(left: Radius.circular(30))),
-                primary: type == "1"
+                primary: sortType == "1"
                     ? ColorUtil.searchBarBackgroundColor
                     : Colors.white),
             onPressed: () {
-              if (type == "1") return;
+              if (sortType == "1") return;
               CommonPreferences().feedbackSearchType.value = "1";
               widget.provider.initPostList(
+                  postType,
                   success: () {
                     widget.controller.refreshCompleted();
                   },
@@ -61,7 +63,7 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
             child: Text(
               "热度排序",
               style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.mainColor,
+                color: sortType == "2" ? ColorUtil.mainColor : ColorUtil.lightTextColor,
                 fontSize: 15,
               ),
             ),
@@ -70,13 +72,14 @@ class _SearchTypeSwitchBarState extends State<SearchTypeSwitchBar> {
                 shape: RoundedRectangleBorder(
                     borderRadius:
                     BorderRadius.horizontal(right: Radius.circular(30))),
-                primary: type == "2"
+                primary: sortType == "2"
                     ? ColorUtil.searchBarBackgroundColor
                     : Colors.white),
             onPressed: () {
-              if (type == "2") return;
+              if (sortType == "2") return;
               CommonPreferences().feedbackSearchType.value = "2";
               widget.provider.initPostList(
+                  postType,
                   success: () {
                     widget.controller.refreshCompleted();
                   },

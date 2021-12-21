@@ -27,6 +27,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbTagsProvider _tagsProvider;
   TabController _tabController;
 
+  final typeList = [2, 0, 1, 2];///根据tab的index得到对应type
+
   final ScrollController controller = ScrollController();
 
   RefreshController _refreshController =
@@ -34,8 +36,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
-      _tagsProvider.initTags();
-      _listProvider.initPostList(success: () {
+      _tagsProvider.initDepartments();
+      _listProvider.initPostList(typeList[0], success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
       }, failure: (_) {
@@ -49,11 +51,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     });
   }
 
-  _onLoading() {
+  _onLoading({int type = 2}) {
     if (_listProvider.isLastPage) {
       _refreshController.loadNoData();
     } else {
       _listProvider.getNextPage(
+        type,
         success: () {
           _refreshController.loadComplete();
         },
@@ -69,7 +72,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, failure: (e) {
+      _listProvider.checkTokenAndGetPostList(typeList[0], _tagsProvider, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });
@@ -135,31 +138,34 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return Scaffold(
       body: DefaultTabController(
         length: 4,
-        initialIndex: 1,
+        initialIndex: 0,
         child: Scaffold(
           appBar: AppBar(
             actions: [
               SizedBox(width: 5),
               IconButton(icon: Icon(Icons.all_inbox, color: ColorUtil.mainColor), onPressed: () => Navigator.pushNamed(context, FeedbackRouter.profile)),
               Expanded(child: searchBar),
-              SizedBox(
-                height: 30,
-                width: 30,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(ColorUtil.mainColor),
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
-                    shape: MaterialStateProperty.all(CircleBorder(
-                        side: BorderSide(
-                      width: 0.0,
-                      style: BorderStyle.none,
-                    ))), //圆角弧度
+              Hero(
+                tag: "addNewPost",
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      backgroundColor:
+                          MaterialStateProperty.all(ColorUtil.mainColor),
+                      shape: MaterialStateProperty.all(CircleBorder(
+                          side: BorderSide(
+                        width: 0.0,
+                        style: BorderStyle.none,
+                      ))), //圆角弧度
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, FeedbackRouter.newPost);
+                    },
+                    child: Icon(Icons.add),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, FeedbackRouter.newPost);
-                  },
-                  child: Icon(Icons.add),
                 ),
               ),
               SizedBox(width: 15)

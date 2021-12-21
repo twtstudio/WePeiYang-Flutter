@@ -10,13 +10,11 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
+
+import 'components/post_card.dart';
 
 enum DetailPageStatus {
   loading,
@@ -38,7 +36,7 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   Post post;
   DetailPageStatus status;
-  List<Comment> _officialCommentList, _commentList;
+  List<Floor> _commentList;
   int currentPage = 1, _totalPage = 1;
 
   var _refreshController = RefreshController(initialRefresh: false);
@@ -75,11 +73,10 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     status = DetailPageStatus.loading;
-    _officialCommentList = [];
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
-      if (post.title == null) {
+      if (post == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -91,7 +88,6 @@ class _DetailPageState extends State<DetailPage> {
           });
         });
       } else {
-        _getOfficialComment();
         _getComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -107,10 +103,9 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   // 逻辑有点问题
-  _initPostAndComments({Function(List<Comment>) onSuccess, Function onFail}) {
+  _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
-        _getOfficialComment(onFail: onFail);
         _getComments(
           onSuccess: onSuccess,
           onFail: onFail,
@@ -140,28 +135,13 @@ class _DetailPageState extends State<DetailPage> {
     return success;
   }
 
-  _getOfficialComment({Function onSuccess, Function onFail}) {
-    FeedbackService.getOfficialComment(
-      id: post.id,
-      onSuccess: (comments) {
-        _officialCommentList = comments;
-        onSuccess?.call();
-        setState(() {});
-      },
-      onFailure: (e) {
-        onFail?.call();
-        ToastProvider.error(e.error.toString());
-      },
-    );
-  }
-
   _getComments(
-      {Function(List<Comment>) onSuccess, Function onFail, int current}) {
+      {Function(List<Floor>) onSuccess, Function onFail, int current}) {
     FeedbackService.getComments(
       id: post.id,
       page: current ?? currentPage,
-      onSuccess: (comments, totalPage) {
-        _totalPage = totalPage;
+      onSuccess: (comments, totalFloor) {
+        _totalPage = (totalFloor / 10).floor();
         onSuccess?.call(comments);
         setState(() {});
       },
@@ -183,7 +163,7 @@ class _DetailPageState extends State<DetailPage> {
     Widget body;
 
     if (status == DetailPageStatus.loading) {
-      if (post.title == null) {
+      if (post == null) {
         body = Center(child: Loading());
       } else {
         body = ListView(
@@ -191,11 +171,11 @@ class _DetailPageState extends State<DetailPage> {
             PostCard.detail(
               post,
               onLikePressed: (isLike, likeCount) {
-                post.isLiked = isLike;
+                post.isLike = isLike;
                 post.likeCount = likeCount;
               },
-              onFavoritePressed: (isCollect) {
-                post.isFavorite = isCollect;
+              onFavoritePressed: (isFav) {
+                post.isFav = isFav;
               },
             ),
             SizedBox(
@@ -207,49 +187,32 @@ class _DetailPageState extends State<DetailPage> {
       }
     } else if (status == DetailPageStatus.idle) {
       Widget mainList = ListView.builder(
-        itemCount: _officialCommentList.length + _commentList.length + 1,
+        itemCount: _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return PostCard.detail(
               post,
               onLikePressed: (isLike, likeCount) {
-                post.isLiked = isLike;
+                post.isLike = isLike;
                 post.likeCount = likeCount;
               },
               onFavoritePressed: (isCollect) {
-                post.isFavorite = isCollect;
+                post.isFav = isCollect;
               },
             );
           }
           index--;
-          if (index < _officialCommentList.length) {
-            var data = _officialCommentList[index];
-            return OfficialReplyCard.reply(
-              comment: data,
-              onContentPressed: (refresh) async {
-                var comment = await Navigator.of(context).pushNamed(
-                  FeedbackRouter.officialComment,
-                  arguments: OfficialCommentPageArgs(
-                    comment: data,
-                    title: post.title,
-                    isOwner: post.isOwner,
-                  ),
-                );
-                data = comment as Comment;
-                refresh?.call(data);
-              },
-            );
-          } else {
-            var data = _commentList[index - _officialCommentList.length];
-            return NCommentCard(
-              comment: data,
-              commentFloor: index - _officialCommentList.length + 1,
-              likeSuccessCallback: (isLiked, count) {
-                data.isLiked = isLiked;
-                data.likeCount = count;
-              },
-            );
-          }
+          ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
+          ///_officialCommentList,点赞注释了
+          var data = _commentList[index];
+          return NCommentCard(
+            comment: data,
+            commentFloor: index + 1,
+            // likeSuccessCallback: (isLiked, count) {
+            //   data.isLiked = isLiked;
+            //   data.likeCount = count;
+            // },
+          );
         },
       );
 
@@ -285,12 +248,13 @@ class _DetailPageState extends State<DetailPage> {
 
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
+          // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
-              value: '举报此问题',
+              value: '举报',
               child: new Text(
-                '举报此问题',
+                '举报',
                 style: FontManager.YaHeiRegular.copyWith(
                   fontSize: 13,
                   color: ColorUtil.boldTextColor,
@@ -299,9 +263,9 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ],
         ).then((value) {
-          if (value == "举报此问题") {
+          if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
+                arguments: widget.post.id);
           }
         });
       },

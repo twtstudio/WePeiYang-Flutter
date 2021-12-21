@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view_page.dart';
@@ -20,6 +21,7 @@ class FeedbackRouter {
   static String searchResult = 'feedback/search_result';
   static String mailbox = 'feedback/mailbox';
   static String imageView = 'feedback/image_view';
+  static String localImageView = 'feedback/local_image_view';
   static String report = 'feedback/report';
   static String reportOther = 'feedback/report_other_reason';
   static final Map<String, Widget Function(Object arguments)> routers = {
@@ -31,6 +33,7 @@ class FeedbackRouter {
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     imageView: (_) => ImageViewPage(),
+    localImageView:(_) => LocalImageViewPage(),
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
     reportOther: (args) => ReportOtherReasonPage(args),

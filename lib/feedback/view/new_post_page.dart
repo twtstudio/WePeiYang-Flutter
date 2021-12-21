@@ -1,18 +1,19 @@
 import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/tag.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../feedback_router.dart';
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -23,58 +24,65 @@ class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
   ValueNotifier campusNotifier = ValueNotifier<int>(0);
 
-  Divider _divider() {
-    return const Divider(
-      height: 0.6,
-      color: Color(0xffacaeba),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget body = ListView(
-      shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      children: [
-        TitleInputField(),
-        _divider(),
-        ContentInputField(),
-        SizedBox(height: 10),
-        ImagesGridView(),
-        SizedBox(height: 10),
-        TagView(),
-        CampusSelector(campusNotifier),
-        SizedBox(height: 10),
-        _divider(),
-        SubmitButton(campusNotifier),
-      ],
-    );
-
-    var boxDecoration = BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      shape: BoxShape.rectangle,
-      boxShadow: [
-        BoxShadow(
-            color: Colors.grey[200],
-            blurRadius: 5.0, //阴影模糊程度
-            spreadRadius: 5.0 //阴影扩散程度
-            )
-      ],
-    );
-
-    return DefaultTextStyle(
-      style: FontManager.YaHeiRegular,
-      child: _BasePage(
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-          child: Container(
-            decoration: boxDecoration,
-            child: body,
-          ),
+    var appBar = AppBar(
+      centerTitle: true,
+      title: Text(
+        S.current.feedback_new_post,
+        style: FontManager.YaHeiRegular.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: ColorUtil.boldTextColor,
         ),
       ),
+      brightness: Brightness.light,
+      elevation: 0,
+      leading: IconButton(
+        padding: EdgeInsets.zero,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        icon: Icon(
+          Icons.keyboard_arrow_left,
+          color: Color(0XFF62677B),
+          size: 36,
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(58),
+        child: TitleInputField(),
+      ),
+      backgroundColor: Colors.transparent,
     );
+
+    return Scaffold(
+        backgroundColor: ColorUtil.backgroundColor,
+        appBar: appBar,
+        body: ListView(
+            shrinkWrap: true,
+            physics: BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              TagView(),
+              Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    shape: BoxShape.rectangle,
+                  ),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ContentInputField(),
+                    SizedBox(height: 10),
+                    ImagesGridView(),
+                    SizedBox(height: 20),
+                    CampusSelector(campusNotifier),
+                    SubmitButton(campusNotifier),
+                  ]))
+            ]));
   }
 }
 
@@ -86,12 +94,28 @@ class SubmitButton extends StatelessWidget {
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     if (dataModel.check) {
+      dataModel.type == 1 ?///暂时没有UI对type
       FeedbackService.sendPost(
+        type: 1,
+        title: dataModel.title,
+        content: dataModel.content,
+        departmentId: dataModel.department.id,
+        images: dataModel.images,
+        campus: notifier.value + 1,
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        },
+      ) : FeedbackService.sendPost(
+        type: 0,
         title: dataModel.title,
         content: dataModel.content,
         tagId: dataModel.tag.id,
-        imgList: dataModel.imgList,
-        campus: notifier.value,
+        images: dataModel.images,
+        campus: notifier.value + 1,
         onSuccess: () {
           ToastProvider.success(S.current.feedback_post_success);
           Navigator.pop(context);
@@ -107,19 +131,31 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    timeDilation = 1.5;
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          child: TextButton(
+        Spacer(),
+        Hero(
+          tag: "addNewPost",
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(1),
+              backgroundColor: MaterialStateProperty.all(ColorUtil.mainColor),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
             onPressed: () => submit(context),
             child: Text(
               S.current.feedback_submit,
               style: FontManager.YaHeiRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Color(0xff303c66),
-                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ColorUtil.backgroundColor,
+                fontSize: 14,
               ),
             ),
           ),
@@ -135,61 +171,74 @@ class TagView extends StatefulWidget {
 }
 
 class _TagViewState extends State<TagView> {
-  ValueNotifier<Tag> tag;
+  ValueNotifier<Department> department;
 
   @override
   void initState() {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    tag = ValueNotifier(dataModel.tag)
+    department = ValueNotifier(dataModel.department)
       ..addListener(() {
-        dataModel.tag = tag.value;
+        dataModel.department = department.value;
       });
   }
 
   _showTags(BuildContext context) async {
-    var result = await showModalBottomSheet<Tag>(
+    var result = await showModalBottomSheet<Department>(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (_) => TabGridView(
-        tag: tag.value,
+        department: department.value,
       ),
     );
-    if (result != null) tag.value = result;
+    if (result != null) department.value = result;
   }
 
   @override
   Widget build(BuildContext context) {
     var text = ValueListenableBuilder(
-      valueListenable: tag,
-      builder: (_, Tag tag, __) {
+      valueListenable: department,
+      builder: (_, Department tag, __) {
         return Text(
           tag == null
               ? S.current.feedback_add_tag_hint
               : '#${tag.name} ${S.current.feedback_change_tag_hint}',
           style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: Color(0xff303c66),
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: ColorUtil.boldTextColor,
           ),
         );
       },
     );
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        shape: BoxShape.rectangle,
+      ),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
       child: InkResponse(
         radius: 20,
         onTap: () => _showTags(context),
-        child: text,
+        child: Row(
+          children: [
+            text,
+            Spacer(),
+            Icon(Icons.tag)
+          ],
+        ),
       ),
     );
   }
 }
 
 class TabGridView extends StatefulWidget {
-  final Tag tag;
+  final Department department;
 
-  const TabGridView({Key key, this.tag}) : super(key: key);
+  const TabGridView({Key key, this.department}) : super(key: key);
 
   @override
   _TabGridViewState createState() => _TabGridViewState();
@@ -198,7 +247,7 @@ class TabGridView extends StatefulWidget {
 class _TabGridViewState extends State<TabGridView>
     with TickerProviderStateMixin {
   AnimationController _animationController;
-  ValueNotifier<Tag> currentTab;
+  ValueNotifier<Department> currentTab;
 
   @override
   void initState() {
@@ -206,18 +255,18 @@ class _TabGridViewState extends State<TabGridView>
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200))
           ..forward();
-    currentTab = ValueNotifier(widget.tag);
+    currentTab = ValueNotifier(widget.department);
   }
 
   @override
   Widget build(BuildContext context) {
     var tagInformation = ValueListenableBuilder(
         valueListenable: currentTab,
-        builder: (_, Tag value, __) {
+        builder: (_, Department value, __) {
           if (value != null) {
             var information = value.name + ': ';
-            information += (value.description != null
-                ? value.description
+            information += (value.introduction != null
+                ? value.introduction
                 : S.current.feedback_no_description);
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -260,8 +309,8 @@ class _TabGridViewState extends State<TabGridView>
       builder: (_, data, __) => Wrap(
         alignment: WrapAlignment.start,
         spacing: 10,
-        children: List.generate(data.tagList.length, (index) {
-          return _tagButton(data.tagList[index]);
+        children: List.generate(data.departmentList.length, (index) {
+          return _tagButton(data.departmentList[index]);
         }),
       ),
     );
@@ -282,8 +331,8 @@ class _TabGridViewState extends State<TabGridView>
     );
   }
 
-  void updateGroupValue(Tag tag) {
-    currentTab.value = tag;
+  void updateGroupValue(Department department) {
+    currentTab.value = department;
     _animationController.forward(from: 0.0);
   }
 
@@ -302,7 +351,7 @@ class _TabGridViewState extends State<TabGridView>
     );
   }
 
-  ActionChip _tagChip(bool chose, Tag tag) => ActionChip(
+  ActionChip _tagChip(bool chose, Department tag) => ActionChip(
         backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           tag.name,
@@ -327,7 +376,7 @@ class CampusSelector extends StatefulWidget {
 }
 
 class _CampusSelectorState extends State<CampusSelector> {
-  static const texts = ["不区分", "卫津路", "北洋园"];
+  static const texts = ["卫津路", "北洋园"];
 
   @override
   Widget build(BuildContext context) {
@@ -337,13 +386,13 @@ class _CampusSelectorState extends State<CampusSelector> {
         return SizedBox(
           height: 32,
           child: ListView.builder(
-            itemCount: 3,
+            itemCount: 2,
             scrollDirection: Axis.horizontal,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return SizedBox(
                 height: 32,
-                width: (WePeiYangApp.screenWidth - 80) / 3,
+                width: (WePeiYangApp.screenWidth - 80) / 4,
                 child: ElevatedButton(
                   child: Text(
                     texts[index],
@@ -374,8 +423,6 @@ class _CampusSelectorState extends State<CampusSelector> {
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
       return BorderRadius.horizontal(left: Radius.circular(12));
-    else if (index == 1)
-      return BorderRadius.zero;
     else
       return BorderRadius.horizontal(right: Radius.circular(12));
   }
@@ -421,7 +468,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     _titleController = TextEditingController(text: dataModel.title);
-    titleCounter = ValueNotifier('${dataModel.title.characters.length}/20')
+    titleCounter = ValueNotifier('${dataModel.title.characters.length}/30')
       ..addListener(() {
         dataModel.title = _titleController.text;
       });
@@ -443,25 +490,27 @@ class _TitleInputFieldState extends State<TitleInputField> {
         textInputAction: TextInputAction.done,
         style: FontManager.YaHeiRegular.copyWith(
           color: ColorUtil.boldTextColor,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w900,
           fontSize: 16,
         ),
         minLines: 1,
         maxLines: 10,
         decoration: InputDecoration.collapsed(
           hintStyle: FontManager.YaHeiRegular.copyWith(
-            color: Color(0xffd0d1d6),
+            color: ColorUtil.searchBarIconColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
           hintText: S.current.feedback_enter_title,
         ),
         onChanged: (text) {
-          titleCounter.value = '${text.characters.length}/20';
+          titleCounter.value = '${text.characters.length} / 30';
         },
         inputFormatters: [
-          CustomizedLengthTextInputFormatter(20),
+          CustomizedLengthTextInputFormatter(30),
         ],
+        cursorColor: ColorUtil.boldTextColor,
+        cursorHeight: 20,
       ),
     );
 
@@ -479,12 +528,16 @@ class _TitleInputFieldState extends State<TitleInputField> {
     );
 
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [inputField, Container(width: 3), rightTextCounter],
-        ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        shape: BoxShape.rectangle,
+      ),
+      margin: const EdgeInsets.fromLTRB(20, 5, 20, 15),
+      padding: const EdgeInsets.fromLTRB(22, 15, 22, 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [inputField, SizedBox(width: 3), rightTextCounter],
       ),
     );
   }
@@ -522,18 +575,21 @@ class _ContentInputFieldState extends State<ContentInputField> {
       controller: _contentController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,
-      minLines: 6,
-      maxLines: 20,
+      minLines: 14,
+      maxLines: 22,
       style: FontManager.YaHeiRegular.copyWith(
           color: ColorUtil.boldTextColor,
-          fontWeight: FontWeight.normal,
-          fontSize: 14),
+          letterSpacing: 0.9,
+          fontWeight: FontWeight.w700,
+          height: 1.6,
+          fontSize: 15),
       decoration: InputDecoration.collapsed(
         hintStyle: FontManager.YaHeiRegular.copyWith(
           color: Color(0xffd0d1d6),
-          fontSize: 14,
+          fontWeight: FontWeight.w900,
+          fontSize: 16,
         ),
-        hintText: '${S.current.feedback_detail}...',
+        hintText: ':${S.current.feedback_detail}...',
       ),
       onChanged: (text) {
         contentCounter.value = '${text.characters.length}/200';
@@ -541,6 +597,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       inputFormatters: [
         CustomizedLengthTextInputFormatter(200),
       ],
+      cursorColor: ColorUtil.profileBackgroundColor,
     );
 
     Widget bottomTextCounter = ValueListenableBuilder(
@@ -556,13 +613,10 @@ class _ContentInputFieldState extends State<ContentInputField> {
       },
     );
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: ListView(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: [inputField, bottomTextCounter],
-      ),
+    return ListView(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      children: [inputField, SizedBox(height: 100), bottomTextCounter],
     );
   }
 }
@@ -577,9 +631,9 @@ class _ImagesGridViewState extends State<ImagesGridView> {
 
   loadAssets() async {
     XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 50);
+        .pickImage(source: ImageSource.gallery, imageQuality: 30);
     Provider.of<NewPostProvider>(context, listen: false)
-        .imgList
+        .images
         .add(File(xFile.path));
     if (!mounted) return;
     setState(() {});
@@ -611,21 +665,58 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     );
   }
 
-  Widget imgBuilder(data, {onLongPress}) {
-    return InkWell(
-      onLongPress: onLongPress,
-      child: Image.file(
-        data,
-        fit: BoxFit.cover,
+  Widget imgBuilder(index, List<File> data, length, {onTap}) {
+    return Stack(fit: StackFit.expand, children: [
+      InkWell(
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+            arguments: {
+              "uriList": data,
+              "uriListLength": length,
+              "indexNow": index
+            }),
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(width: 1, color: Colors.black26),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
+          child: ClipRRect(
+            child: Image.file(
+              data[index],
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
       ),
-    );
+      Positioned(
+        right: 0,
+        bottom: 0,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+            ),
+            child: Icon(
+              Icons.close,
+              size: MediaQuery.of(context).size.width / 32,
+              color: ColorUtil.searchBarBackgroundColor,
+            ),
+          ),
+        ),
+      ),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3,
-      childAspectRatio: 1.5,
+      crossAxisCount: 4, //方便右边宽度留白哈哈
+      childAspectRatio: 1,
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
     );
@@ -634,19 +725,21 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       builder: (_, data, __) => GridView.builder(
         shrinkWrap: true,
         gridDelegate: gridDelegate,
-        itemCount: maxImage == data.imgList.length
-            ? data.imgList.length
-            : data.imgList.length + 1,
+        itemCount: maxImage == data.images.length
+            ? data.images.length
+            : data.images.length + 1,
         itemBuilder: (_, index) {
-          if (index <= 2 && index == data.imgList.length) {
+          if (index <= 2 && index == data.images.length) {
             return _ImagePickerWidget(onTap: loadAssets);
           } else {
             return imgBuilder(
-              data.imgList[index],
-              onLongPress: () async {
+              index,
+              data.images,
+              data.images.length,
+              onTap: () async {
                 var result = await _showDialog();
                 if (result == 'ok') {
-                  data.imgList.removeAt(index);
+                  data.images.removeAt(index);
                   setState(() {});
                 }
               },
@@ -669,82 +762,9 @@ class _ImagePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: DottedBorder(
-        borderType: BorderType.Rect,
-        color: Color(0xffb5b7c5),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.add_circle_sharp,
-                color: Color(0xffb5b7c5),
-              ),
-              Text(
-                S.current.feedback_add_image,
-                style: FontManager.YaHeiRegular.copyWith(
-                  color: Color(0xffd0d1d6),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BasePage extends StatelessWidget {
-  final Widget body;
-
-  const _BasePage({this.body});
-
-  @override
-  Widget build(BuildContext context) {
-    var appBar = AppBar(
-      centerTitle: true,
-      title: Text(
-        S.current.feedback_new_post,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-          color: ColorUtil.boldTextColor,
-        ),
-      ),
-      brightness: Brightness.light,
-      elevation: 0,
-      leading: IconButton(
-        padding: EdgeInsets.zero,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        icon: Icon(Icons.arrow_back, color: Color(0XFF62677B)),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      backgroundColor: Colors.transparent,
-    );
-
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus.unfocus();
-        }
-      },
-      child: Container(
-        color: Color(0xfff7f7f8),
-        padding: const EdgeInsets.only(top: 10),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar:
-              PreferredSize(preferredSize: Size.fromHeight(35), child: appBar),
-          body: body,
-        ),
-      ),
+    return IconButton(
+      icon: Icon(Icons.crop_original),
+      onPressed: onTap,
     );
   }
 }

@@ -42,7 +42,7 @@ class _LikeWidgetState extends State<LikeWidget> {
                 return Icon(
                   Icons.thumb_up_outlined,
                   size: 16,
-                  color: ColorUtil.lightTextColor,
+                  color: ColorUtil.boldTextColor,
                 );
               }
             },

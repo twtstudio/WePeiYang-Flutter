@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:intl/intl.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -14,7 +16,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 typedef LikeCallback = void Function(bool, int);
 
 class NCommentCard extends StatefulWidget {
-  final Comment comment;
+  final Floor comment;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
 
@@ -25,6 +27,32 @@ class NCommentCard extends StatefulWidget {
 }
 
 class _NCommentCardState extends State<NCommentCard> {
+
+  Future<bool> _showDeleteConfirmDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('提示'),
+            content: Text('您确定要删除这条评论吗?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('确定'),
+                onPressed: () {
+                  //关闭对话框并返回true
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              TextButton(
+                child: Text('取消'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var box = SizedBox(height: 8);
@@ -32,25 +60,36 @@ class _NCommentCardState extends State<NCommentCard> {
     var topWidget = Row(
       children: [
         Icon(Icons.account_circle_rounded,
-            size: 20, color: Color.fromRGBO(98, 103, 124, 1.0)),
+            size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
         SizedBox(height: 8),
-        Expanded(
-          child: Text(
-            widget.comment.userName ?? S.current.feedback_anonymous,
-            maxLines: 1,
-            overflow: TextOverflow.clip,
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 12, color: ColorUtil.lightTextColor),
-          ),
-        ),
-        Spacer(),
-        Text(
-          widget.comment.createTime.time,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: ColorUtil.lightTextColor,
-          ),
-        ),
+       Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.comment.nickname ?? S.current.feedback_anonymous,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 14, color: ColorUtil.lightTextColor),
+            ),
+            Text(
+              DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.comment.createAt),
+              style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 10,
+                color: ColorUtil.lightTextColor,
+              ),
+            ),
+          ],
+        ),),
+        IconButton(
+          icon: Icon(Icons.more_horiz),
+          iconSize: 16,
+          onPressed: () {},
+          constraints: BoxConstraints(),
+          padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+        )
       ],
     );
 
@@ -61,11 +100,37 @@ class _NCommentCardState extends State<NCommentCard> {
       ),
     );
 
-    var floor = Text(
-      '${widget.commentFloor}' + '楼 ',
-      style: FontManager.YaHeiRegular.copyWith(
-        fontSize: 12,
-        color: ColorUtil.lightTextColor,
+    var floor = IconButton(
+      icon: Icon(Icons.chat),
+      iconSize: 16,
+      constraints: BoxConstraints(),
+      onPressed: (){},
+      padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+      color: ColorUtil.boldLakeTextColor,
+    );
+
+    var deleteButton = TextButton(
+      onPressed: () async {
+        bool confirm = await _showDeleteConfirmDialog();
+        if(confirm) {
+          FeedbackService.deleteFloor(
+            id: widget.comment.id,
+            onSuccess: () {
+              ToastProvider.success(S.current.feedback_delete_success);
+              setState(() {});
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
+          );
+        }
+      },
+      child: Text(
+        '删除',
+        style: FontManager.YaHeiRegular.copyWith(
+          fontSize: 12,
+          color: ColorUtil.lightTextColor,
+        ),
       ),
     );
 
@@ -84,25 +149,30 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
-      onLikePressed: (isLiked, count, success, failure) async {
-        await FeedbackService.commentHitLike(
-          id: widget.comment.id,
-          isLiked: widget.comment.isLiked,
-          onSuccess: () {
-            widget.likeSuccessCallback?.call(!isLiked, count);
-            success.call();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            failure.call();
-          },
-        );
-      },
-      isLiked: widget.comment.isLiked,
+      // onLikePressed: (isLiked, count,success,failure) async {
+      //   await FeedbackService.commentHitLike(
+      //     id: widget.comment.id,
+      //     isLiked: widget.comment.isLiked,
+      //     onSuccess: () {
+      //       widget.likeSuccessCallback?.call(!isLiked, count);
+      //       success.call();
+      //     },
+      //     onFailure: (e) {
+      //       ToastProvider.error(e.error.toString());
+      //       failure.call();
+      //     },
+      //   );
+      // },
+      // isLiked: widget.comment.isLiked
     );
 
     var bottomWidget = Row(
-      children: [floor, Spacer(), reportWidget, likeWidget],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        likeWidget,
+        if(CommonPreferences().feedbackUid.value == widget.comment.id.toString())deleteButton,
+        floor,
+      ],
     );
 
     var body = Column(

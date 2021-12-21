@@ -464,11 +464,11 @@ class MessageItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (data.post.topImgUrl != null)
+                if (data.post.images != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Image.network(
-                      data.post.topImgUrl,
+                      data.post.images[0],
                       fit: BoxFit.cover,
                       height: 50,
                       width: 70,
@@ -510,7 +510,7 @@ class MessageItem extends StatelessWidget {
                 Spacer(),
                 Builder(
                   builder: (_) {
-                    var isSolved = data.post.isSolved == 1;
+                    var isSolved = /*data.post.isSolved == */true;//TODO:等接口solve字段
                     return Text(
                       isSolved ? S.current.have_replied : S.current.not_reply,
                       style: TextStyle(

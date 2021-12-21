@@ -36,7 +36,7 @@ enum SearchPageStatus {
 
 class _SearchResultPageState extends State<SearchResultPage> {
   final String keyword;
-  final String tagId;
+  final String departmentId;
   final String title;
 
   int currentPage = 1, totalPage = 1;
@@ -47,12 +47,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   List<Post> _list = [];
 
-  _SearchResultPageState(this.keyword, this.tagId, this.title);
+  _SearchResultPageState(this.keyword, this.departmentId, this.title);
 
   _onRefresh() {
     currentPage = 1;
     FeedbackService.getPosts(
-      tagId: tagId,
+      type: '2',///先设置成了全部搜索
+      departmentId: departmentId,
       page: currentPage,
       keyword: keyword,
       onSuccess: (list, page) {
@@ -72,7 +73,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
     if (currentPage != totalPage) {
       currentPage++;
       FeedbackService.getPosts(
-        tagId: tagId,
+        departmentId: departmentId,
+        type: '2',///同上
         page: currentPage,
         keyword: keyword,
         onSuccess: (list, page) {
@@ -97,7 +99,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
     currentPage = 1;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FeedbackService.getPosts(
-        tagId: tagId,
+        departmentId: departmentId,
+        type: '2',
         page: currentPage,
         keyword: keyword,
         onSuccess: (list, page) {

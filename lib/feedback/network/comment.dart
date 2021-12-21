@@ -1,3 +1,5 @@
+///新版的comment改成了floor，该文件需要全部替换
+
 class Comment {
   int id;
   String content;

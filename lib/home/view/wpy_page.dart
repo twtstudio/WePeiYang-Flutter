@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 
@@ -9,6 +10,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -26,6 +28,8 @@ class WPYPage extends StatefulWidget {
 
 class WPYPageState extends State<WPYPage> {
   ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
+  GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
+  ScrollController customScrollViewController = ScrollController();
   List<CardBean> cards;
 
   @override
@@ -34,20 +38,20 @@ class WPYPageState extends State<WPYPage> {
     cards = []
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
-          'Wiki',
-          HomeRouter.wiki))
+      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
+          'GPA', GPARouter.gpa))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/exam.png'),
               color: MyColors.darkGrey, size: 25),
-          'Exam',
+          '考表',
           ScheduleRouter.exam))
-      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
-          'GPA', GPARouter.gpa))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/wiki.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Wiki',
+          HomeRouter.wiki))
 
       /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
@@ -59,42 +63,71 @@ class WPYPageState extends State<WPYPage> {
           "重开模拟器", HomeRouter.restartGame));
   }
 
+  double _getWidgetHeight(context) {
+    final listHeight = context.findRenderObject().semanticBounds.size.height;
+    print('listHeight == $listHeight');
+    return listHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       systemNavigationBarColor: Colors.white,
     ));
-    return CustomScrollView(
-      slivers: <Widget>[
-        /// 自定义标题栏
-        SliverPadding(
-          padding: const EdgeInsets.only(top: 30),
-          sliver: SliverPersistentHeader(
-              delegate: _WPYHeader(onChanged: (_) {
-                setState(() {});
-              }),
-              pinned: true,
-              floating: true),
-        ),
+    customScrollViewController.addListener(() {
+      if (customScrollViewController.offset > _getWidgetHeight(context) * 0.9)
+        erCiYuanKey.currentState.onStaged(false);
+      else
+        erCiYuanKey.currentState.onStaged(true);
+    });
+    return SafeArea(
+      child: Stack(
+        children: [
+          CustomScrollView(
+            controller: customScrollViewController,
+            physics: BouncingScrollPhysics(),
+            slivers: <Widget>[
+              /// 自定义标题栏
+              SliverPadding(
+                padding: const EdgeInsets.only(top: 5),
+                sliver: SliverPersistentHeader(
+                    delegate: _WPYHeader(onChanged: (_) {
+                      setState(() {});
+                    }),
+                    pinned: true,
+                    floating: true),
+              ),
 
-        /// 功能跳转卡片
-        SliverCardsWidget(cards),
+              /// 功能跳转卡片
+              SliverCardsWidget(cards),
 
-        /// 当天课程
-        SliverToBoxAdapter(child: TodayCoursesWidget()),
+              /// 当天课程
+              SliverToBoxAdapter(child: TodayCoursesWidget()),
 
-        /// 考表
-        SliverToBoxAdapter(child: WpyExamWidget()),
+              /// 考表
+              SliverToBoxAdapter(child: WpyExamWidget()),
 
-        /// GPA曲线及信息展示
-        SliverToBoxAdapter(child: GPAPreview()),
+              /// GPA曲线及信息展示
+              SliverToBoxAdapter(child: GPAPreview()),
 
-        SliverToBoxAdapter(
-            child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-          child: LoungeFavourWidget(title: S.current.lounge, init: true),
-        ))
-      ],
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+                child: LoungeFavourWidget(title: S.current.lounge, init: true),
+              )),
+              !CommonPreferences().showPosterGirl.value
+                  ? SliverToBoxAdapter()
+                  : SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: 1,
+                      ),
+                    )
+            ],
+          ),
+          ErCiYuanWidget(erCiYuanKey),
+        ],
+      ),
     );
   }
 }
@@ -115,7 +148,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     return Container(
       color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
-      padding: const EdgeInsets.fromLTRB(30, 28, 10, 0),
+      padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
         children: [
           Row(
@@ -145,37 +178,44 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               )
             ],
           ),
-          (distance - shrinkOffset > 25)
-              ? Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                      "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
-                      style: FontManager.YaQiHei.copyWith(
-                          color: Color.fromRGBO(114, 119, 138, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15)),
-                )
-              : Container()
+          if (distance - shrinkOffset > 10)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "${now.month}月${now.day}日 ${_chineseWeekDay(now.weekday)}",
+                  style: FontManager.YaQiHei.copyWith(
+                      color: Color.fromRGBO(114, 119, 138, 1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15)),
+            )
         ],
       ),
     );
   }
 
   @override
-  double get maxExtent => 120;
+  double get maxExtent => 65;
 
   @override
-  double get minExtent => 75;
+  double get minExtent => 50;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 
   String get _getGreetText {
     int hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 12)
+    if (hour >= 0 && hour < 5)
+      return '夜深了，早点睡';
+    else if (hour >= 5 && hour < 8)
+      return '起得好早';
+    else if (hour >= 8 && hour < 12)
       return '早上好';
+    else if (hour >= 12 && hour < 14)
+      return '中午好';
     else if (hour >= 12 && hour < 17)
       return '下午好';
+    else if (hour >= 17 && hour < 19)
+      return '傍晚好';
     else
       return '晚上好';
   }
