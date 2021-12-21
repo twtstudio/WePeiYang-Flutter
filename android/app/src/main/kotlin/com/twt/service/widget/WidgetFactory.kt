@@ -13,9 +13,7 @@ class WidgetFactory(var mContext: Context, var courseList: List<Course>) : Remot
         remoteViews.setTextViewText(R.id.widget_course_title, course.courseName)
         remoteViews.setTextViewText(R.id.widget_course_location, course.room)
         remoteViews.setTextViewText(R.id.widget_course_time, course.time)
-        
         remoteViews.setOnClickFillInIntent(R.id.widget_schedule_item, Intent())
-        
         return remoteViews
     }
 

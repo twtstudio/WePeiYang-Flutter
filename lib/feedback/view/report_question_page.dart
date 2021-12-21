@@ -7,10 +7,17 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
-class ReportQuestionPage extends StatefulWidget {
-  final int questionId;
+class ReportPageArgs {
+  final int id;
+  final bool isQuestion; // 是举报问题还是举报评论
 
-  ReportQuestionPage(this.questionId);
+  ReportPageArgs(this.id, this.isQuestion);
+}
+
+class ReportQuestionPage extends StatefulWidget {
+  final ReportPageArgs args;
+
+  ReportQuestionPage(this.args);
 
   @override
   _ReportQuestionPageState createState() => _ReportQuestionPageState();
@@ -38,7 +45,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        S.current.feedback_report,
+        S.current.feedback_report + (widget.args.isQuestion ? '问题' : '评论'),
         style: FontManager.YaHeiRegular.copyWith(
           fontSize: 17,
           fontWeight: FontWeight.bold,
@@ -89,7 +96,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                   size: 24, color: ColorUtil.boldTextColor),
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.reportOther,
-                    arguments: widget.questionId);
+                    arguments: widget.args);
               },
             ),
           ),
@@ -128,8 +135,9 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
 
   _report() {
     if (index == reasons.length) return;
-    FeedbackService.reportQuestion(
-        id: widget.questionId,
+    FeedbackService.report(
+        id: widget.args.id,
+        isQuestion: widget.args.isQuestion,
         reason: reasons[index],
         onSuccess: () {
           ToastProvider.success(S.current.feedback_report_success);
@@ -142,9 +150,9 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
 }
 
 class ReportOtherReasonPage extends StatefulWidget {
-  final int questionId;
+  final ReportPageArgs args;
 
-  ReportOtherReasonPage(this.questionId);
+  ReportOtherReasonPage(this.args);
 
   @override
   _ReportOtherReasonPageState createState() => _ReportOtherReasonPageState();
@@ -201,8 +209,9 @@ class _ReportOtherReasonPageState extends State<ReportOtherReasonPage> {
           ToastProvider.error("请输入详细说明");
           return;
         }
-        FeedbackService.reportQuestion(
-            id: widget.questionId,
+        FeedbackService.report(
+            id: widget.args.id,
+            isQuestion: widget.args.isQuestion,
             reason: textInput,
             onSuccess: () {
               ToastProvider.success(S.current.feedback_report_success);
@@ -243,7 +252,6 @@ class _ReportOtherReasonPageState extends State<ReportOtherReasonPage> {
               ),
               onChanged: (text) {
                 textInput = text;
-                print(text);
               },
               inputFormatters: [
                 CustomizedLengthTextInputFormatter(200),

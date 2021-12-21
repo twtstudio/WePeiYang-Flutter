@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 class SettingPage extends StatefulWidget {
@@ -120,7 +120,40 @@ class _SettingPageState extends State<SettingPage> {
                       onChanged: (value) {
                         setState(() => pref.hideGPA.value = value);
                         Provider.of<GPANotifier>(context, listen: false)
-                            .hideGPAWithNotify = value;
+                            .hideGPA = value;
+                      },
+                      activeColor: Color.fromRGBO(105, 109, 127, 1),
+                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                        width: descriptionMaxWidth,
+                        child:
+                            Text(S.current.setting_exam, style: mainTextStyle)),
+                    Spacer(),
+                    Switch(
+                      value: pref.hideExam.value,
+                      onChanged: (value) {
+                        setState(() => pref.hideExam.value = value);
+                        Provider.of<ExamNotifier>(context, listen: false)
+                            .hideExam = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
                       inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),

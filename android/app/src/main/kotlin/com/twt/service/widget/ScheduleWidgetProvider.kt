@@ -66,7 +66,6 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
             startActivityIntent.data = Uri.parse(Gson().toJson(intentContent))
             val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             remoteViews.setPendingIntentTemplate(R.id.widget_listview, startActivityPendingIntent)
-
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }

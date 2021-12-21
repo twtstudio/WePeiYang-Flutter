@@ -166,7 +166,20 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/schedule_widget_provider" />
         </receiver>
+        <receiver
+            android:name=".widget.ScheduleCardWidgetProvider"
+            android:label="微北洋课程表-简约">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.twt.appwidget.refresh" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/schedule_widget_card_provider" />
+        </receiver>
         <provider
             android:name=".share.QQProvider"
             android:authorities="com.twt.service.qqprovider"
@@ -190,6 +203,8 @@
         <service
             android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
+        <service
+            android:name=".widget.WidgetCardService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 </manifest>

@@ -21,6 +21,7 @@ import com.tencent.tauth.Tencent
 import com.twt.service.download.MyViewModel
 import com.twt.service.location.AMapFactory
 import com.twt.service.share.QQFactory
+import com.twt.service.widget.ScheduleCardWidgetProvider
 import com.twt.service.widget.ScheduleWidgetProvider
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -107,7 +108,11 @@ class MainActivity : FlutterFragmentActivity() {
         val intent = Intent(this@MainActivity, ScheduleWidgetProvider::class.java).apply {
             action = "com.twt.appwidget.refresh"
         }
+        val intent2 = Intent(this@MainActivity, ScheduleCardWidgetProvider::class.java).apply {
+            action = "com.twt.appwidget.refresh"
+        }
         sendBroadcast(intent)
+        sendBroadcast(intent2)
     }
 
     private fun handleIntent() {

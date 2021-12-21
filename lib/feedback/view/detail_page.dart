@@ -11,12 +11,12 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
-
-import 'components/post_card.dart';
-import 'official_comment_page.dart';
 
 enum DetailPageStatus {
   loading,
@@ -285,13 +285,12 @@ class _DetailPageState extends State<DetailPage> {
 
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-          // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
-              value: '举报',
+              value: '举报此问题',
               child: new Text(
-                '举报',
+                '举报此问题',
                 style: FontManager.YaHeiRegular.copyWith(
                   fontSize: 13,
                   color: ColorUtil.boldTextColor,
@@ -300,9 +299,9 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ],
         ).then((value) {
-          if (value == "举报") {
+          if (value == "举报此问题") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: widget.post.id);
+                arguments: ReportPageArgs(widget.post.id, true));
           }
         });
       },

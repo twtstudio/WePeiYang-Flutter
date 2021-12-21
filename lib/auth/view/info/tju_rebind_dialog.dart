@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart'
-    show CaptchaWidget, CaptchaWidgetState;
+import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 class TjuRebindDialog extends Dialog {
@@ -97,6 +97,11 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           .call();
       Provider.of<ScheduleNotifier>(context, listen: false)
           .refreshSchedule(
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
+          .call();
+      Provider.of<ExamNotifier>(context, listen: false)
+          .refreshExam(
             onFailure: (e) => ToastProvider.error(e.error.toString()),
           )
           .call();

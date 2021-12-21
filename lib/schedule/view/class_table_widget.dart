@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
 /// 课程表每个item之间的间距
@@ -24,7 +24,7 @@ class ClassTableWidget extends StatelessWidget {
       var dayCount = CommonPreferences().dayNumber.value;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Padding(
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+        padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         child: Column(
           children: [
             WeekDisplayWidget(cardWidth, notifier, dayCount, titleColor),

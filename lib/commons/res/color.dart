@@ -81,7 +81,6 @@ class FavorColors {
   ];
 
   static final List<String> _lightGPA = [
-    // 这里本来是238 237 237的，我把red调成了245以更符合设计图（为啥app和web的颜色会有差别呢）
     Color.fromRGBO(245, 237, 237, 1.0).value.toString(),
     Color.fromRGBO(157, 123, 131, 1).value.toString(),
     Color.fromRGBO(184, 162, 167, 1).value.toString(),

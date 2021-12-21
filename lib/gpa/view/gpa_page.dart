@@ -7,11 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -42,6 +44,21 @@ class _GPAPageState extends State<GPAPage> {
             listen: false)
         .refreshGPA()
         .call();
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (CommonPreferences().firstUse.value) {
+        CommonPreferences().firstUse.value = false;
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => ClassesNeedVPNDialog());
+      }
+    });
   }
 
   @override

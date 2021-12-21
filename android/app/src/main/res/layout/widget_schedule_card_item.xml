@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_schedule_card_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="2.669983dip"
+        android:layout_height="37.329987dip"
+        android:layout_marginStart="5.299988dip"
+        android:layout_marginTop="5.569977dip"
+        android:src="@drawable/launch_background"
+        android:tint="#ff4f586b"
+        tools:ignore="UseAppTint" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/class_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6.0dip"
+            android:layout_marginTop="4.299988dip"
+            android:text="大学物理"
+            android:textColor="#ff000000"
+            android:textSize="14.0sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6.669983dip"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/room_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6.0dip"
+                android:text="46-B201"
+                android:textColor="#ffa2a2a2"
+                android:textSize="13.329987sp" />
+
+            <TextView
+                android:id="@+id/time_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5.0dip"
+                android:text="10:20-12:00"
+                android:textColor="#ffa2a2a2"
+                android:textSize="13.329987sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
