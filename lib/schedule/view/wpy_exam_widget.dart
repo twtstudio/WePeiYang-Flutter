@@ -31,8 +31,8 @@ class WpyExamWidget extends StatelessWidget {
   }
 
   Widget _detail(ExamNotifier notifier, BuildContext context) {
-    if (notifier.afterNowReal.length == 0) {
-      var msg = notifier.afterNow.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
+    if (notifier.unscheduled.length == 0) {
+      var msg = notifier.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
@@ -53,8 +53,8 @@ class WpyExamWidget extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22),
         child: Column(
-          children: notifier.afterNowReal
-              .map((e) => examCard(context, e, true, wpy: true))
+          children: notifier.unscheduled
+              .map((e) => examCard(context, e, false, wpy: true))
               .toList(),
         ),
       );

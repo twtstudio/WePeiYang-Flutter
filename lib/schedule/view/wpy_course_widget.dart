@@ -125,7 +125,8 @@ class TodayCoursesWidget extends StatelessWidget {
               width: 140,
               padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
               child: Material(
-                color: FavorColors.homeSchedule[i % 5],
+                color: FavorColors
+                    .homeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
                 elevation: 2,
                 child: InkWell(

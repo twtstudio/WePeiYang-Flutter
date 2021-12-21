@@ -27,22 +27,24 @@ class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ExamNotifier>(builder: (context, notifier, _) {
-      List<Widget> after = notifier.afterNow.isEmpty
+      List<Widget> unfinished = notifier.unfinished.isEmpty
           ? [
               Center(
                   child: Text('没有未完成的考试哦',
                       style: FontManager.YaHeiLight.copyWith(
                           color: Colors.grey[400], fontSize: 12)))
             ]
-          : notifier.afterNow.map((e) => examCard(context, e, true)).toList();
-      List<Widget> before = notifier.beforeNow.isEmpty
+          : notifier.unfinished
+              .map((e) => examCard(context, e, false))
+              .toList();
+      List<Widget> finished = notifier.finished.isEmpty
           ? [
               Center(
                   child: Text('没有已完成的考试哦',
                       style: FontManager.YaHeiLight.copyWith(
                           color: Colors.grey[400], fontSize: 12)))
             ]
-          : notifier.beforeNow.map((e) => examCard(context, e, false)).toList();
+          : notifier.finished.map((e) => examCard(context, e, true)).toList();
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -93,7 +95,7 @@ class _ExamPageState extends State<ExamPage> {
                       color: FavorColors.scheduleTitleColor(),
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
-              ...after,
+              ...unfinished,
               SizedBox(height: 15),
               Text('已完成',
                   style: FontManager.YaQiHei.copyWith(
@@ -101,7 +103,7 @@ class _ExamPageState extends State<ExamPage> {
                       color: FavorColors.scheduleTitleColor(),
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
-              ...before,
+              ...finished,
             ],
           ),
         ),
@@ -110,21 +112,24 @@ class _ExamPageState extends State<ExamPage> {
   }
 }
 
-Widget examCard(BuildContext context, Exam exam, bool afterNow,
+Widget examCard(BuildContext context, Exam exam, bool finished,
     {bool wpy = false}) {
   int code = exam.name.hashCode + DateTime.now().day;
-  var colorList = wpy ? FavorColors.homeSchedule : FavorColors.scheduleColor;
+  var unfinishedColor = wpy
+      ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
+      : FavorColors.scheduleColor[code % FavorColors.scheduleColor.length];
   var name = exam.name;
   if (name.length >= 10) name = name.substring(0, 10) + '...';
   String remain = '';
-  if (!afterNow) {
+  if (finished) {
     remain = '';
   } else if (exam.date == '时间未安排') {
     remain = 'Unknown';
   } else {
     var now = DateTime.now();
     var target = DateTime.parse(exam.date);
-    remain = '${target.difference(now).inDays}days';
+    var diff = target.difference(now).inDays;
+    remain = (diff == 0) ? 'today' : '${diff}days';
   }
   var seat = exam.seat;
   if (seat != '地点未安排') seat = '座位' + seat;
@@ -133,15 +138,11 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
     child: Ink(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: afterNow
-            ? colorList[code % FavorColors.scheduleColor.length]
-            : Color.fromRGBO(236, 238, 237, 1),
+        color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
       ),
       child: InkWell(
         onTap: () {
-          if (wpy) {
-            Navigator.pushNamed(context, ScheduleRouter.exam);
-          }
+          if (wpy) Navigator.pushNamed(context, ScheduleRouter.exam);
         },
         borderRadius: BorderRadius.circular(10),
         splashFactory: InkRipple.splashFactory,
@@ -149,9 +150,9 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
           children: [
             DefaultTextStyle(
               style: TextStyle(
-                  color: afterNow
-                      ? Colors.white
-                      : Color.fromRGBO(205, 206, 210, 1)),
+                  color: finished
+                      ? Color.fromRGBO(205, 206, 210, 1)
+                      : Colors.white),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -174,9 +175,9 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                       children: [
                         Icon(Icons.location_on_outlined,
                             size: 17,
-                            color: afterNow
-                                ? Colors.white
-                                : Color.fromRGBO(205, 206, 210, 1)),
+                            color: finished
+                                ? Color.fromRGBO(205, 206, 210, 1)
+                                : Colors.white),
                         SizedBox(width: 3),
                         Text('${exam.location}-$seat',
                             style:
