@@ -63,7 +63,7 @@ class ProfileHeader extends StatelessWidget {
                                   fontSize: 15))),
                       Container(
                           margin: const EdgeInsets.symmetric(vertical: 4.5),
-                          child: Text("MPID:000001",
+                          child: Text("MPID: ${CommonPreferences().feedbackUid.value}",
                               textAlign: TextAlign.start,
                               style: FontManager.YaHeiRegular.copyWith(
                                   color: ColorUtil.tagTextColor,

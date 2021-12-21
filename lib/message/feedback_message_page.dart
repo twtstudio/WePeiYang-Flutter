@@ -464,11 +464,11 @@ class MessageItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (data.post.images != null)
+                if (data.post.imageUrls != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Image.network(
-                      data.post.images[0],
+                      data.post.imageUrls[0],
                       fit: BoxFit.cover,
                       height: 50,
                       width: 70,

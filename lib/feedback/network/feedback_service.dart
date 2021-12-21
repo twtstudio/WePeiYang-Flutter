@@ -56,7 +56,7 @@ class FeedbackService with AsyncTimer {
         CommonPreferences().feedbackToken.value =
             response.data['data']['token'];
         CommonPreferences().feedbackUid.value =
-        response.data['data']['uid'].toString();
+            response.data['data']['uid'].toString();
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
         throw WpyDioError(error: '校务专区登录失败, 请刷新');
@@ -272,6 +272,7 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
   ///暂时没有接口，后面改
   static officialCommentHitLike(
       {@required id,
@@ -291,6 +292,7 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
   ///TODO：暂时没加带图片
   static sendComment(
       {@required id,
@@ -325,35 +327,34 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendPost', () async {
       try {
-        List uploadImages = [];
+        var formData = FormData.fromMap({
+          'type': type,
+          'title': title,
+          'content': content,
+          'department_id': departmentId,
+          'tag_id': tagId,
+          'campus': campus,
+        });
         if (images.isNotEmpty) {
-          images.asMap().map((index, value) => MapEntry(
-              index,
-              uploadImages.add(
-                  MultipartFile.fromFile(
-                    value.path,
-                    filename: 'p${images[index].hashCode}i$index.jpg',
-                    contentType: MediaType("image", "jpg"),
-                  )
-              ),
-          ));
+          for (int i = 0; i < images.length; i++)
+            formData.files.addAll([
+              MapEntry(
+                  'images',
+                  MultipartFile.fromFileSync(
+                    images[i].path,
+                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
+                    contentType: MediaType("image", "jpeg"),
+                  ))
+            ]);
         }
-        await feedbackDio.post('post',
-            formData: FormData.fromMap({
-              'type': type,
-              'title': title,
-              'content': content,
-              'department_id': departmentId,
-              'tag_id': tagId,
-              'campus': campus,
-              'images': uploadImages,
-            }));
+        await feedbackDio.post('post', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
       }
     });
   }
+
   ///暂时没有接口，后面改
   static rate(
       {@required id,
@@ -433,7 +434,9 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(
           'report',
           formData: FormData.fromMap({
-            'type': 1,///TODO:1为帖子举报，2为楼层举报，暂时只有一种
+            'type': 1,
+
+            ///TODO:1为帖子举报，2为楼层举报，暂时只有一种
             'post_id': id,
             'reason': reason,
           }),
@@ -446,9 +449,9 @@ class FeedbackService with AsyncTimer {
   }
 
   static deleteFloor(
-    {@required id,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure}) async {
+      {@required id,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('deletePost', () async {
       try {
         await feedbackDio.get(

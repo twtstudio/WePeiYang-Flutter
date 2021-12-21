@@ -170,7 +170,7 @@ class _NCommentCardState extends State<NCommentCard> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         likeWidget,
-        if(CommonPreferences().feedbackUid.value == widget.comment.id.toString())deleteButton,
+        if(CommonPreferences().feedbackUid.value == widget.comment.uid.toString())deleteButton,
         floor,
       ],
     );

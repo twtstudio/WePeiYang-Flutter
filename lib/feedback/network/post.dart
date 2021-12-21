@@ -14,17 +14,19 @@ class Post {
     this.createAt,
     this.type,
     this.campus,
+    this.solved,
     this.title,
     this.content,
     this.favCount,
     this.likeCount,
+    this.rating,
     this.tag,
     this.floors,
     this.commentCount,
     this.isLike,
     this.isDis,
     this.isFav,
-    this.images,
+    this.imageUrls,
     this.department,
   });
 
@@ -32,17 +34,19 @@ class Post {
   DateTime createAt;
   int type;
   int campus;
+  int solved;
   String title;
   String content;
   int favCount;
   int likeCount;
+  int rating;
   Tag tag;
   List<Floor> floors;
   int commentCount;
   bool isLike;
   bool isDis;
   bool isFav;
-  List<String> images;
+  List<String> imageUrls;
   Department department;
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
@@ -50,17 +54,19 @@ class Post {
     createAt: DateTime.parse(json["create_at"]),
     type: json["type"],
     campus: json["campus"],
+    solved: json["solved"],
     title: json["title"],
     content: json["content"],
     favCount: json["fav_count"],
     likeCount: json["like_count"],
+    rating: json["rating"],
     tag: Tag.fromJson(json["tag"]),
     floors: List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
     commentCount: json["comment_count"],
     isLike: json["is_like"],
     isDis: json["is_dis"],
     isFav: json["is_fav"],
-    images: List<String>.from(json["images"].map((x) => x)),
+    imageUrls: List<String>.from(json["image_urls"].map((x) => x)),
     department: Department.fromJson(json["department"]),
   );
 
@@ -69,17 +75,19 @@ class Post {
     "create_at": createAt.toIso8601String(),
     "type": type,
     "campus": campus,
+    "solved": solved,
     "title": title,
     "content": content,
     "fav_count": favCount,
     "like_count": likeCount,
+    "rating": rating,
     "tag": tag.toJson(),
     "floors": List<dynamic>.from(floors.map((x) => x.toJson())),
     "comment_count": commentCount,
     "is_like": isLike,
     "is_dis": isDis,
     "is_fav": isFav,
-    "images": List<dynamic>.from(images.map((x) => x)),
+    "image_urls": List<dynamic>.from(imageUrls.map((x) => x)),
     "department": department.toJson(),
   };
 
