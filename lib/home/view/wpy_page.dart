@@ -29,6 +29,8 @@ class WPYPage extends StatefulWidget {
 class WPYPageState extends State<WPYPage> {
   ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
   GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
+  GlobalKey majorColumnHeightKey = GlobalKey();
+
   ScrollController customScrollViewController = ScrollController();
   List<CardBean> cards;
 
@@ -64,8 +66,11 @@ class WPYPageState extends State<WPYPage> {
   }
 
   double _getWidgetHeight(context) {
-    final listHeight = context.findRenderObject().semanticBounds.size.height;
-    print('listHeight == $listHeight');
+    final listHeight = majorColumnHeightKey.currentContext
+        .findRenderObject()
+        .semanticBounds
+        .size
+        .height;
     return listHeight;
   }
 
@@ -75,7 +80,7 @@ class WPYPageState extends State<WPYPage> {
       systemNavigationBarColor: Colors.white,
     ));
     customScrollViewController.addListener(() {
-      if (customScrollViewController.offset > _getWidgetHeight(context) * 0.9)
+      if (customScrollViewController.offset > _getWidgetHeight(context) + 100)
         erCiYuanKey.currentState.onStaged(false);
       else
         erCiYuanKey.currentState.onStaged(true);
@@ -89,32 +94,34 @@ class WPYPageState extends State<WPYPage> {
             slivers: <Widget>[
               /// 自定义标题栏
               SliverPadding(
-                padding: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(top: 8),
                 sliver: SliverPersistentHeader(
                     delegate: _WPYHeader(onChanged: (_) {
                       setState(() {});
                     }),
                     pinned: true,
-                    floating: true),
+                    floating: false),
               ),
 
               /// 功能跳转卡片
               SliverCardsWidget(cards),
 
               /// 当天课程
-              SliverToBoxAdapter(child: TodayCoursesWidget()),
-
-              /// 考表
-              SliverToBoxAdapter(child: WpyExamWidget()),
-
-              /// GPA曲线及信息展示
-              SliverToBoxAdapter(child: GPAPreview()),
-
               SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-                child: LoungeFavourWidget(title: S.current.lounge, init: true),
+                  child: Column(
+                key: majorColumnHeightKey,
+                children: [
+                  TodayCoursesWidget(),
+                  WpyExamWidget(),
+                  GPAPreview(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+                    child:
+                        LoungeFavourWidget(title: S.current.lounge, init: true),
+                  )
+                ],
               )),
+
               !CommonPreferences().showPosterGirl.value
                   ? SliverToBoxAdapter()
                   : SliverToBoxAdapter(

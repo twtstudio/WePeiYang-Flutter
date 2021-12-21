@@ -717,8 +717,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 4, //方便右边宽度留白哈哈
       childAspectRatio: 1,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
     );
 
     return Consumer<NewPostProvider>(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 
 class ErCiYuanWidget extends StatefulWidget {
   ErCiYuanWidget(Key key) : super(key: key);
@@ -26,18 +27,11 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
   int welcomeHintNum = 0;
   int talkingNum = 0;
   double _welcomeOpacity = 1;
-
+///会说的话，不能少于两条
   List<String> welcomeHints = [
     CommonPreferences().nickname.value + ",欢迎光临",
-    //ErCiYuanWidgetState()._getGreetText,
-    "你只需要从主页下滑就可以看见我啦!",
-    "如果想要关掉我可以进入个人中心的设置中关闭哦",
-    "在2021/12/20，我正式入住了微北洋！",
-    "大家晚上有过盗汗的经历吗",
-    "微北洋看板娘我来自天津大学最大互联网工作室天外天工作室 ^_^/",
-    "如果办公网绑定不上记得检查一下连没连接到校园网！",
-    "最新版本的微北洋加入了考表功能哦",
-    "校务专区单发一张长图可以在帖子页面直接浏览啦"
+    "...",
+    "您的学号是" + CommonPreferences().tjuuname.value,
   ];
 
   AnimationController _girlController;
@@ -173,21 +167,21 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
     return lastTalkingNum;
   }
 
-// String get _getGreetText {
-//   int hour = DateTime.now().hour;
-//   if (hour >= 0 && hour < 5)
-//     return '夜深了，早点睡';
-//   else if (hour >= 5 && hour < 8)
-//     return '起得好早';
-//   else if (hour >= 8 && hour < 12)
-//     return '早上好';
-//   else if (hour >= 12 && hour < 14)
-//     return '中午好';
-//   else if (hour >= 12 && hour < 17)
-//     return '下午好';
-//   else if (hour >= 17 && hour < 19)
-//     return '傍晚好';
-//   else
-//     return '晚上好';
-// }
+String get _getGreetText {
+  int hour = DateTime.now().hour;
+  if (hour >= 0 && hour < 5)
+    return '夜深了，早点睡';
+  else if (hour >= 5 && hour < 8)
+    return '起得好早';
+  else if (hour >= 8 && hour < 12)
+    return '早上好';
+  else if (hour >= 12 && hour < 14)
+    return '中午好';
+  else if (hour >= 12 && hour < 17)
+    return '下午好';
+  else if (hour >= 17 && hour < 19)
+    return '傍晚好';
+  else
+    return '晚上好';
+}
 }
