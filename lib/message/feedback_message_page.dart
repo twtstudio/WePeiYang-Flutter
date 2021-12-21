@@ -398,40 +398,44 @@ class MessageItem extends StatelessWidget {
         break;
       default:
         sender = Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.account_circle_outlined, size: 20),
-            SizedBox(width: 10),
-            Text(
-              "${data.comment?.userName ?? S.current.anonymous_user}",
-              style: TextStyle(color: Color(0xff434650), fontSize: 9),
+            Icon(Icons.account_circle_outlined, size: 41),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${data.comment?.userName ?? S.current.anonymous_user}",
+                      style: TextStyle(color: ColorUtil.boldLakeTextColor, fontSize: 18,fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      type.action,
+                      style: TextStyle(color: Color(0xff434650), fontSize: 16,fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 1),
+                Text(
+                  data.updatedAt?.time ?? "",
+                  style: TextStyle(color: Color(0xffb1b2be), fontSize: 12),
+                ),
+              ],
             ),
           ],
         );
     }
 
-    Widget title = Row(
-      children: [
-        sender,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            type.action,
-            style: TextStyle(color: Color(0xff434650), fontSize: 9),
-          ),
-        ),
-        Spacer(),
-        Text(
-          data.updatedAt?.time ?? "",
-          style: TextStyle(color: Color(0xffb1b2be), fontSize: 9),
-        ),
-      ],
-    );
+    Widget title = sender;
 
     Widget questionItem = Container(
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(7),
-        color: Colors.white,
+        color: ColorUtil.backgroundColor,
         boxShadow: [
           BoxShadow(
               blurRadius: 5,
@@ -472,8 +476,8 @@ class MessageItem extends StatelessWidget {
                   ),
               ],
             ),
-            if (data.comment != null)
-              Divider(thickness: 1, height: 15, color: Color(0xffacaeba)),
+            // if (data.comment != null)
+            //   Divider(thickness: 1, height: 15, color: Color(0xffacaeba)),
             if (data.comment != null)
               RichText(
                 overflow: TextOverflow.ellipsis,
@@ -492,7 +496,7 @@ class MessageItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8, right: 10),
                   child: Text(
                     data.post.commentCount.toString(),
-                    style: TextStyle(fontSize: 10, color: Color(0xffb1b2be)),
+                    style: TextStyle(fontSize: 13, color: ColorUtil.tagTextColor),
                   ),
                 ),
                 Image.asset("assets/images/account/thumb_up.png", height: 20),
@@ -500,7 +504,7 @@ class MessageItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8, right: 10),
                   child: Text(
                     data.post.likeCount.toString(),
-                    style: TextStyle(fontSize: 10, color: Color(0xffb1b2be)),
+                    style: TextStyle(fontSize: 13, color: ColorUtil.tagTextColor),
                   ),
                 ),
                 Spacer(),
@@ -511,8 +515,8 @@ class MessageItem extends StatelessWidget {
                       isSolved ? S.current.have_replied : S.current.not_reply,
                       style: TextStyle(
                           color:
-                              isSolved ? Color(0xff434650) : Color(0xffb1b2be),
-                          fontSize: 10),
+                          isSolved ? Color(0xff434650) : ColorUtil.tagTextColor,
+                          fontSize: 13),
                     );
                   },
                 )
@@ -547,14 +551,20 @@ class MessageItem extends StatelessWidget {
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
         },
-        child: Column(
-          children: [
-            title,
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: messageWrapper ?? questionItem,
-            ),
-          ],
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(7))
+          ),
+          child: Column(
+            children: [
+              title,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                child: messageWrapper ?? questionItem,
+              ),
+            ],
+          ),
         ),
       ),
     );

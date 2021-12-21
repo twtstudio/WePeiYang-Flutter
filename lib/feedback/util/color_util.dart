@@ -7,7 +7,12 @@ class ColorUtil {
   static const searchBarIconColor = Color.fromARGB(255, 132, 135, 145);
   static const searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
+  static const boldLakeTextColor = Color.fromARGB(200, 0, 0, 0);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const profileNameColor = Color.fromARGB(255, 255, 255, 255);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
+  static const tagTextColor = Color.fromARGB(255, 108, 108, 108);
+  static const boldTagTextColor = Color.fromARGB(255, 42, 42, 42);
+  static const tagBackgroundColor = Color.fromARGB(255, 234, 234, 234);
+  static const boldTagBackgroundColor = Color.fromARGB(84, 54, 60, 84);
 }

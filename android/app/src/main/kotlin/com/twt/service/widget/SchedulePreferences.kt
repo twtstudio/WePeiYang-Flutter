@@ -39,7 +39,7 @@ fun readCourseList(context: Context): List<Course> {
         for (i in 0 until list.length()) {
             val scheduleCourse = list.getJSONObject(i)
             var courseName = scheduleCourse.getString("courseName")
-            if (courseName.length > 10) courseName = courseName.substring(0, 10) + "..."
+            if (courseName.length > 10) courseName = courseName.substring(0, 8) + "..."
             val arrange = scheduleCourse.getJSONObject("arrange")
             var room = arrange.getString("room").replace("-", "楼")
             if (room == "") room = "————"
