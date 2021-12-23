@@ -154,7 +154,7 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                       : Color.fromRGBO(205, 206, 210, 1)),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    const EdgeInsets.fromLTRB(14, 13, 10, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

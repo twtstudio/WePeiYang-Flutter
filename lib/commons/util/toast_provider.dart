@@ -7,8 +7,8 @@ class ToastProvider with AsyncTimer {
   static success(
     String msg, {
     ToastGravity gravity = ToastGravity.BOTTOM,
-    Color backgroundColor: Colors.green,
-    Color textColor: Colors.white,
+    backgroundColor: const Color.fromRGBO(61, 96, 46, 1.0),
+    textColor: Colors.white,
   }) {
     AsyncTimer.runRepeatChecked(msg, () async {
       print('ToastProvider success: $msg');
@@ -27,7 +27,7 @@ class ToastProvider with AsyncTimer {
       print('ToastProvider error: $msg');
       await Fluttertoast.showToast(
           msg: msg,
-          backgroundColor: Color.fromRGBO(53, 53, 53, 1),
+          backgroundColor: const Color.fromRGBO(84, 52, 52, 1.0),
           gravity: gravity,
           textColor: Colors.white,
           fontSize: 15.0);
@@ -40,7 +40,7 @@ class ToastProvider with AsyncTimer {
       print('ToastProvider running: $msg');
       await Fluttertoast.showToast(
         msg: msg,
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromRGBO(71, 90, 105, 1.0),
         textColor: Colors.white,
         fontSize: 15.0,
         gravity: gravity,

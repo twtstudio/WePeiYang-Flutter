@@ -18,7 +18,7 @@ import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
 final hintStyle = const TextStyle(
-    fontSize: 17,
+    fontSize: 16,
     color: Color.fromRGBO(53, 59, 84, 1),
     fontWeight: FontWeight.bold);
 
@@ -43,6 +43,11 @@ class WPYPageState extends State<WPYPage> {
           S.current.report, ReportRouter.main))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
+      ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/wiki.png'),
+              color: MyColors.darkGrey, size: 25),
+          'Wiki',
+          HomeRouter.wiki))
       ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(
@@ -50,12 +55,6 @@ class WPYPageState extends State<WPYPage> {
               color: MyColors.darkGrey, size: 25),
           '考表',
           ScheduleRouter.exam))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
-          'Wiki',
-          HomeRouter.wiki))
-
       /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
@@ -115,10 +114,7 @@ class WPYPageState extends State<WPYPage> {
                     key: majorColumnHeightKey,
                     children: [
                       TodayCoursesWidget(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                        child: WpyExamWidget(),
-                      ),
+                      WpyExamWidget(),
                       GPAPreview(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
@@ -170,7 +166,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
             children: <Widget>[
               Text(_getGreetText,
                   style: FontManager.YaQiHei.copyWith(
-                      fontSize: 30,
+                      fontSize: 24,
                       color: MyColors.deepBlue,
                       fontWeight: FontWeight.bold)),
               SizedBox(width: 5),
@@ -201,7 +197,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   style: FontManager.YaQiHei.copyWith(
                       color: Color.fromRGBO(114, 119, 138, 1),
                       fontWeight: FontWeight.bold,
-                      fontSize: 15)),
+                      fontSize: 14)),
             )
         ],
       ),

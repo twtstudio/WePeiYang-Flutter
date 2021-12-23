@@ -2,33 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
 
 class WpyExamWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExamNotifier>(builder: (context, notifier, _) {
-      if (notifier.hideExam) return Container();
-      return Column(
-        children: [
-          SizedBox(height: 7),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text('考表',
-                  style: FontManager.YaQiHei.copyWith(
-                      fontSize: 16,
-                      color: Color.fromRGBO(100, 103, 122, 1),
-                      fontWeight: FontWeight.bold)),
-            ),
-          ),
-          SizedBox(height: 5),
-          _detail(notifier, context),
-        ],
-      );
-    });
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 22.0),
+        child: Consumer<ExamNotifier>(builder: (context, notifier, _) {
+          if (notifier.hideExam) return Container();
+          return Column(
+            children: [
+              SizedBox(height: 7),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Text('考表',
+                          style: FontManager.YaQiHei.copyWith(
+                              fontSize: 16,
+                              color: Color.fromRGBO(100, 103, 122, 1),
+                              fontWeight: FontWeight.bold)),
+                      Spacer(),
+                      Icon(Icons.keyboard_arrow_down,color: ColorUtil.lightTextColor),
+                      SizedBox(width: 5)
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              _detail(notifier, context),
+            ],
+          );
+        }));
   }
 
   Widget _detail(ExamNotifier notifier, BuildContext context) {
@@ -61,10 +71,11 @@ class WpyExamWidget extends StatelessWidget {
               .toList(),
         ),
       );
-    } else return Column(
-      children: notifier.afterNowReal
-          .map((e) => examCard(context, e, true, wpy: true))
-          .toList(),
-    );
+    } else
+      return Column(
+        children: notifier.afterNowReal
+            .map((e) => examCard(context, e, true, wpy: true))
+            .toList(),
+      );
   }
 }

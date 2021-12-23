@@ -18,7 +18,7 @@ class UpdateManager {
     }, onSuccess: () {
       if (showDialog) ToastProvider.success('已是最新版本');
     }, onFailure: (_) {
-      if (showDialog) ToastProvider.error("检查更新失败");
+      if (showDialog) ToastProvider.error("检查更新失败, 请重新尝试");
     });
   }
 }
