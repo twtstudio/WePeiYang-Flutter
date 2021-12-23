@@ -35,6 +35,7 @@ dependencies:
   fluttertoast: ^8.0.8
   flutter_html: ^2.0.0
   flutter_rating_bar: ^4.0.0
+  flutter_svg: ^0.22.0
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   hive_generator: ^1.1.1
@@ -54,6 +55,7 @@ dependencies:
   shared_preferences: ^2.0.7
   simple_html_css: ^3.0.1
   table_calendar: ^3.0.2
+  transparent_image: ^1.0.0
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13

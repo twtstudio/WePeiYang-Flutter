@@ -18,6 +18,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
+import 'home_page.dart';
+
 enum DetailPageStatus {
   loading,
   idle,
@@ -275,6 +277,16 @@ class _DetailPageState extends State<DetailPage> {
     } else {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
     }
+    
+    var shareButton = IconButton(
+      icon: Icon(Icons.ios_share, size: 23, color: ColorUtil.boldTextColor),
+      onPressed: () {
+        String weCo = '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
+        ClipboardData data = ClipboardData(text: weCo);
+        Clipboard.setData(data);
+        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+      }
+    );
 
     var menuButton = IconButton(
       icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
@@ -313,7 +325,7 @@ class _DetailPageState extends State<DetailPage> {
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
-      actions: [menuButton],
+      actions: [shareButton, menuButton],
       title: Text(
         S.current.feedback_detail,
         style: FontManager.YaHeiRegular.copyWith(

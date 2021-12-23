@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -27,6 +30,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
 
+  List<String> _feedbackHasViewed = [];
+
+  set feedbackHasViewed(String id) => _feedbackHasViewed.add(id);
+
   final ScrollController controller = ScrollController();
 
   RefreshController _refreshController =
@@ -42,6 +49,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         controller?.stop();
         _refreshController.refreshFailed();
       });
+      getClipboardWeKoContents();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
@@ -64,6 +72,44 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
+  ///微口令的识别
+  getClipboardWeKoContents() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null && clipboardData.text.trim() != '') {
+      String weCo = clipboardData.text.trim();
+      RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
+      if (regExp.hasMatch(weCo)) {
+        var id = RegExp(r'\d{1,}').stringMatch(weCo);
+        if(!_feedbackHasViewed.contains(id)){
+          FeedbackService.getPostById(
+              id: int.parse(id),
+              onResult: (post) {
+                showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WeKoDialog(
+                      post: post,
+                      onConfirm: () => Navigator.pop(context, true),
+                      onCancel: () => Navigator.pop(context, true),
+                    );
+                  },
+                ).then((confirm) {
+                  if (confirm != null && confirm) {
+                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
+                    _feedbackHasViewed.add(id);
+                  } else {
+                    _feedbackHasViewed.add(id);
+                  }
+                });
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              });
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -73,6 +119,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         ToastProvider.error(e.error.toString());
       });
     });
+    getClipboardWeKoContents();
     super.initState();
   }
 
