@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
@@ -88,49 +89,56 @@ class WPYPageState extends State<WPYPage> {
     return SafeArea(
       child: Stack(
         children: [
-          CustomScrollView(
-            controller: customScrollViewController,
-            physics: BouncingScrollPhysics(),
-            slivers: <Widget>[
-              /// 自定义标题栏
-              SliverPadding(
-                padding: const EdgeInsets.only(top: 8),
-                sliver: SliverPersistentHeader(
-                    delegate: _WPYHeader(onChanged: (_) {
-                      setState(() {});
-                    }),
-                    pinned: true,
-                    floating: false),
-              ),
+          Container(
+            child: ScrollConfiguration(
+              behavior: WPYScrollBehavior(),
+              child: CustomScrollView(
+                controller: customScrollViewController,
+                slivers: <Widget>[
+                  /// 自定义标题栏
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 8),
+                    sliver: SliverPersistentHeader(
+                        delegate: _WPYHeader(onChanged: (_) {
+                          setState(() {});
+                        }),
+                        pinned: true
+                        ),
+                  ),
 
-              /// 功能跳转卡片
-              SliverCardsWidget(cards),
+                  /// 功能跳转卡片
+                  SliverCardsWidget(cards),
 
-              /// 当天课程
-              SliverToBoxAdapter(
-                  child: Column(
-                key: majorColumnHeightKey,
-                children: [
-                  TodayCoursesWidget(),
-                  WpyExamWidget(),
-                  GPAPreview(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-                    child:
-                        LoungeFavourWidget(title: S.current.lounge, init: true),
-                  )
-                ],
-              )),
-
-              !CommonPreferences().showPosterGirl.value
-                  ? SliverToBoxAdapter()
-                  : SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        width: 1,
+                  /// 当天课程
+                  SliverToBoxAdapter(
+                      child: Column(
+                    key: majorColumnHeightKey,
+                    children: [
+                      TodayCoursesWidget(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                        child: WpyExamWidget(),
                       ),
-                    )
-            ],
+                      GPAPreview(),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+                        child: LoungeFavourWidget(
+                            title: S.current.lounge, init: true),
+                      )
+                    ],
+                  )),
+
+                  !CommonPreferences().showPosterGirl.value
+                      ? SliverToBoxAdapter()
+                      : SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                            width: 1,
+                          ),
+                        )
+                ],
+              ),
+            ),
           ),
           ErCiYuanWidget(erCiYuanKey),
         ],
@@ -357,3 +365,22 @@ class CardBean {
 
   CardBean(this.icon, this.label, this.route);
 }
+
+class WPYScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return GlowingOverscrollIndicator(
+      child: child,
+      showTrailing: false,
+      axisDirection: AxisDirection.down,
+      color: ColorUtil.mainColor,
+    );
+  }
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return ClampingScrollPhysics();
+  }
+}
+

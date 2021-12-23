@@ -12,10 +12,10 @@ class WpyExamWidget extends StatelessWidget {
       if (notifier.hideExam) return Container();
       return Column(
         children: [
+          SizedBox(height: 7),
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
               alignment: Alignment.centerLeft,
               child: Text('考表',
                   style: FontManager.YaQiHei.copyWith(
@@ -24,6 +24,7 @@ class WpyExamWidget extends StatelessWidget {
                       fontWeight: FontWeight.bold)),
             ),
           ),
+          SizedBox(height: 5),
           _detail(notifier, context),
         ],
       );
@@ -37,7 +38,6 @@ class WpyExamWidget extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
             height: 60,
-            margin: const EdgeInsets.symmetric(horizontal: 22),
             decoration: BoxDecoration(
                 color: Color.fromRGBO(236, 238, 237, 1),
                 borderRadius: BorderRadius.circular(15)),
@@ -49,15 +49,22 @@ class WpyExamWidget extends StatelessWidget {
                       letterSpacing: 0.5)),
             )),
       );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22),
-        child: Column(
+    } else if (notifier.afterNowReal.length > 1) {
+      return Container(
+        constraints: BoxConstraints(
+          maxHeight: 160,
+        ),
+        child: ListView(
+          physics: BouncingScrollPhysics(),
           children: notifier.afterNowReal
               .map((e) => examCard(context, e, true, wpy: true))
               .toList(),
         ),
       );
-    }
+    } else return Column(
+      children: notifier.afterNowReal
+          .map((e) => examCard(context, e, true, wpy: true))
+          .toList(),
+    );
   }
 }

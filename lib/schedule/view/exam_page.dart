@@ -128,15 +128,14 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
   }
   var seat = exam.seat;
   if (seat != '地点未安排') seat = '座位' + seat;
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 5),
-    child: Ink(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: afterNow
-            ? colorList[code % FavorColors.scheduleColor.length]
-            : Color.fromRGBO(236, 238, 237, 1),
-      ),
+  return Padding(
+       padding: const EdgeInsets.symmetric(vertical: 5),
+    child: Material(
+      borderRadius: BorderRadius.circular(15),
+      color: afterNow
+          ? colorList[code % FavorColors.scheduleColor.length]
+          : Color.fromRGBO(236, 238, 237, 1),
+      elevation: 2,
       child: InkWell(
         onTap: () {
           if (wpy) {
@@ -146,6 +145,7 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
         borderRadius: BorderRadius.circular(10),
         splashFactory: InkRipple.splashFactory,
         child: Stack(
+          clipBehavior: Clip.hardEdge,
           children: [
             DefaultTextStyle(
               style: TextStyle(
@@ -159,7 +159,7 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(name,
-                        style: FontManager.YaQiHei.copyWith(fontSize: 20)),
+                        style: FontManager.YaQiHei.copyWith(fontSize: 18)),
                     SizedBox(height: 10),
                     Row(
                       children: [
@@ -200,7 +200,7 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                       fontSize: 55,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white.withOpacity(0.4))),
+                      color: Colors.white30)),
             ),
           ],
         ),

@@ -285,15 +285,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     ))
               ];
             },
-
-            /// Click and jump to NewPostPage.
-            // floatingActionButton: FloatingActionButton(
-            //   backgroundColor: ColorUtil.mainColor,
-            //   child: Icon(Icons.add),
-            //   onPressed: () {
-            //     Navigator.pushNamed(context, FeedbackRouter.newPost);
-            //   },
-            // ),
             body: TabBarView(
               children: <Widget>[body, Text("湖底"), Text("校务"), Text("呦西")],
             )),
