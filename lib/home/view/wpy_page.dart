@@ -120,7 +120,7 @@ class WPYPageState extends State<WPYPage> {
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
                         child: LoungeFavourWidget(
                             title: S.current.lounge, init: true),
-                      )
+                      ),
                     ],
                   )),
 

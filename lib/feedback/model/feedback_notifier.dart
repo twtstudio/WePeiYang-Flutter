@@ -33,7 +33,10 @@ class NewPostProvider {
 
   List<File> images = [];
 
-  bool get check => title.isNotEmpty && content.isNotEmpty && ((type == 1 && department != null) || (type == 0 && tag != null));
+  bool get check =>
+      title.isNotEmpty &&
+      content.isNotEmpty &&
+      ((type == 1 && department != null) || (type == 0 && tag != null));
 }
 
 // class ReloadProvider with ChangeNotifier{
@@ -65,21 +68,23 @@ class FbHomeStatusNotifier extends ChangeNotifier {
 
 class FbHomeListModel extends ChangeNotifier {
   // map default is LinkedHashMap
-  Map<int, Post> _homeList = {};
+  List<Map<int, Post>> _homeList = [{}, {}, {}];
 
-  List<Post> get homeList => _homeList.values.toList();
-  FbHomePageStatus _status = FbHomePageStatus.loading;
+  List<List<Post>> get allList => [_homeList[0].values.toList(), _homeList[1].values.toList(), _homeList[2].values.toList()];
+
   int _postType = 2;
   int _totalPage = 0;
   int _currentPage = 0;
+
+  FbHomePageStatus _status = FbHomePageStatus.loading;
 
   bool get isLastPage => _totalPage == _currentPage;
 
   int get postType => _postType;
 
   // TODO: 是否要在进行操作时更新列表？
-  void quietUpdateItem(Post post) {
-    _homeList.update(
+  void quietUpdateItem(Post post, int type) {
+    _homeList[type].update(
       post.id,
       (value) {
         value.isLike = post.isLike;
@@ -92,9 +97,10 @@ class FbHomeListModel extends ChangeNotifier {
   }
 
   // 列表去重
-  void _addOrUpdateItems(List<Post> data) {
+  void _addOrUpdateItems(List<Post> data, int type) {
     data.forEach((element) {
-      _homeList.update(element.id, (value) => element, ifAbsent: () => element);
+      _homeList[type]
+          .update(element.id, (value) => element, ifAbsent: () => element);
     });
   }
 
@@ -103,7 +109,7 @@ class FbHomeListModel extends ChangeNotifier {
       type: '$type',
       page: _currentPage + 1,
       onSuccess: (postList, page) {
-        _addOrUpdateItems(postList);
+        _addOrUpdateItems(postList, type);
         _currentPage += 1;
         success?.call();
         notifyListeners();
@@ -114,7 +120,7 @@ class FbHomeListModel extends ChangeNotifier {
     );
   }
 
-  checkTokenAndGetPostList(int type, FbTagsProvider provider,
+  checkTokenAndGetPostList(FbTagsProvider provider, int type,
       {OnSuccess success, OnFailure failure}) async {
     if (CommonPreferences().feedbackToken.value == "") {
       await FeedbackService.getToken(
@@ -145,8 +151,8 @@ class FbHomeListModel extends ChangeNotifier {
       type: '$type',
       page: '1',
       onSuccess: (postList, totalPage) {
-        _homeList.clear();
-        _addOrUpdateItems(postList);
+        _homeList[type].clear();
+        _addOrUpdateItems(postList, type);
         _currentPage = 1;
         _totalPage = totalPage;
         _status = FbHomePageStatus.idle;

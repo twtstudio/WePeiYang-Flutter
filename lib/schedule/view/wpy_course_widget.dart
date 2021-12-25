@@ -49,7 +49,7 @@ class TodayCoursesWidget extends StatelessWidget {
                                       TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(text: " 节课 "),
                               TextSpan(
-                                  text: ">", style: TextStyle(fontSize: 15))
+                                  text: "> ", style: TextStyle(fontSize: 15))
                             ])),
                           ),
                   )

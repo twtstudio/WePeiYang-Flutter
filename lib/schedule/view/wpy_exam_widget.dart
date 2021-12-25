@@ -28,7 +28,7 @@ class WpyExamWidget extends StatelessWidget {
                               color: Color.fromRGBO(100, 103, 122, 1),
                               fontWeight: FontWeight.bold)),
                       Spacer(),
-                      Icon(Icons.keyboard_arrow_down,color: ColorUtil.lightTextColor),
+                      Icon(Icons.keyboard_arrow_right,color: ColorUtil.lightTextColor),
                       SizedBox(width: 5)
                     ],
                   ),
@@ -62,9 +62,10 @@ class WpyExamWidget extends StatelessWidget {
     } else if (notifier.afterNowReal.length > 1) {
       return Container(
         constraints: BoxConstraints(
-          maxHeight: 160,
+          maxHeight: 110,
         ),
         child: ListView(
+          scrollDirection: Axis.horizontal,
           physics: BouncingScrollPhysics(),
           children: notifier.afterNowReal
               .map((e) => examCard(context, e, true, wpy: true))
@@ -72,7 +73,7 @@ class WpyExamWidget extends StatelessWidget {
         ),
       );
     } else
-      return Column(
+      return Row(
         children: notifier.afterNowReal
             .map((e) => examCard(context, e, true, wpy: true))
             .toList(),
