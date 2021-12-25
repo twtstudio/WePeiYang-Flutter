@@ -1,3 +1,4 @@
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -150,7 +151,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     duration: Duration(milliseconds: 500));
                 _feedbackIsLoaded = true;
               }
-
             }
             break;
           default:
@@ -425,8 +425,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   ))
             ];
           },
-          body: TabBarView(
+          body: ExtendedTabBarView(
             controller: _tabController,
+            cacheExtent: 2,
             children: <Widget>[
               _mixedBody,
               _lakeBody,
