@@ -79,25 +79,58 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       appBar: appBar,
       body: Column(
         children: [
-          ...reasonTiles,
-          RadioListTile(
-            value: reasons.length,
-            groupValue: this.index,
-            selected: this.index == reasons.length,
-            onChanged: (value) {
-              setState(() => this.index = value);
-            },
-            title: Text(
-              '其他',
-              style: TextStyle(fontSize: 13, color: ColorUtil.boldTextColor),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width-16,
+              height: 60,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                  color: Colors.white),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                    child: Text("你正在举报"+"“${widget.args.id}”",style: TextStyle(fontSize: 20,color: ColorUtil.boldTextColor),),
+                  ),
+                ],
+              ),
             ),
-            secondary: IconButton(
-              icon: Icon(Icons.keyboard_arrow_right,
-                  size: 24, color: ColorUtil.boldTextColor),
-              onPressed: () {
-                Navigator.pushNamed(context, FeedbackRouter.reportOther,
-                    arguments: widget.args);
-              },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                  color: Colors.white),
+              child: Column(
+                children: [
+                  ...reasonTiles,
+                  RadioListTile(
+                    value: reasons.length,
+                    groupValue: this.index,
+                    selected: this.index == reasons.length,
+                    onChanged: (value) {
+                      setState(() => this.index = value);
+                    },
+                    title: Text(
+                      '其他',
+                      style: TextStyle(
+                          fontSize: 13, color: ColorUtil.boldTextColor),
+                    ),
+                    secondary: IconButton(
+                      icon: Icon(Icons.keyboard_arrow_right,
+                          size: 24, color: ColorUtil.boldTextColor),
+                      onPressed: () {
+                        Navigator.pushNamed(context, FeedbackRouter.reportOther,
+                            arguments: widget.args);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Spacer(),
