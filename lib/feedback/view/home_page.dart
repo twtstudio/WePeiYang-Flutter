@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_type_
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key key}) : super(key: key);
@@ -29,10 +30,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin {
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
-
-  List<String> _feedbackHasViewed = [];
-
-  set feedbackHasViewed(String id) => _feedbackHasViewed.add(id);
 
   final ScrollController controller = ScrollController();
 
@@ -80,7 +77,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if(!_feedbackHasViewed.contains(id)){
+        if(!Provider.of<MessageProvider>(context, listen: false).feedbackHasViewed.contains(id)){
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -96,9 +93,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 ).then((confirm) {
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
-                    _feedbackHasViewed.add(id);
+                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
                   } else {
-                    _feedbackHasViewed.add(id);
+                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
                   }
                 });
               },
