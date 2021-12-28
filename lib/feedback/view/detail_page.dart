@@ -18,8 +18,6 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
-import 'home_page.dart';
-
 enum DetailPageStatus {
   loading,
   idle,
@@ -277,7 +275,17 @@ class _DetailPageState extends State<DetailPage> {
     } else {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
     }
-    
+
+    var reportButton = IconButton(
+        padding: EdgeInsets.all(5),
+        constraints: BoxConstraints(),
+        icon: Icon(Icons.warning_amber_rounded,
+            size: 23, color: ColorUtil.boldTextColor),
+        onPressed: () {
+          Navigator.pushNamed(context, FeedbackRouter.report,
+              arguments: ReportPageArgs(widget.post.id, true));
+        });
+
     var shareButton = IconButton(
       icon: Icon(Icons.ios_share, size: 23, color: ColorUtil.boldTextColor),
       onPressed: () {
@@ -290,36 +298,36 @@ class _DetailPageState extends State<DetailPage> {
       }
     );
 
-    var menuButton = IconButton(
-      icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
-      splashRadius: 20,
-      onPressed: () {
-        showMenu(
-          context: context,
-
-          /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
-          /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-          position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
-          items: <PopupMenuItem<String>>[
-            new PopupMenuItem<String>(
-              value: '举报此问题',
-              child: new Text(
-                '举报此问题',
-                style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 13,
-                  color: ColorUtil.boldTextColor,
-                ),
-              ),
-            ),
-          ],
-        ).then((value) {
-          if (value == "举报此问题") {
-            Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
-          }
-        });
-      },
-    );
+    // var menuButton = IconButton(
+    //   icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
+    //   splashRadius: 20,
+    //   onPressed: () {
+    //     showMenu(
+    //       context: context,
+    //
+    //       /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
+    //       /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
+    //       position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
+    //       items: <PopupMenuItem<String>>[
+    //         new PopupMenuItem<String>(
+    //           value: '举报此问题',
+    //           child: new Text(
+    //             '举报此问题',
+    //             style: FontManager.YaHeiRegular.copyWith(
+    //               fontSize: 13,
+    //               color: ColorUtil.boldTextColor,
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ).then((value) {
+    //       if (value == "举报此问题") {
+    //         Navigator.pushNamed(context, FeedbackRouter.report,
+    //             arguments: ReportPageArgs(widget.post.id, true));
+    //       }
+    //     });
+    //   },
+    // );
 
     var appBar = AppBar(
       backgroundColor: Colors.white,
@@ -327,7 +335,7 @@ class _DetailPageState extends State<DetailPage> {
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
-      actions: [shareButton, menuButton],
+      actions: [reportButton, shareButton, SizedBox(width: 8)],
       title: Text(
         S.current.feedback_detail,
         style: FontManager.YaHeiRegular.copyWith(

@@ -35,6 +35,11 @@ class WPYPageState extends State<WPYPage> {
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
       ..add(CardBean(
+          ImageIcon(AssetImage('assets/images/whale.png'),
+              color: MyColors.darkGrey, size: 25),
+          '52赫兹',
+          HomeRouter.hz))
+      ..add(CardBean(
           ImageIcon(AssetImage('assets/images/wiki.png'),
               color: MyColors.darkGrey, size: 25),
           'Wiki',
@@ -48,8 +53,6 @@ class WPYPageState extends State<WPYPage> {
           S.current.schedule, ScheduleRouter.schedule))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
           'GPA', GPARouter.gpa))
-
-      /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
               color: Color(0xffcecfd4), size: 20),
@@ -217,14 +220,7 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (itemCount < i) itemCount = i;
-
-        /// 这里是自习室在cards中的下标
-        if (i != 5) {
-          return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, cards[i].route),
-            child: generateCard(context, cards[i]),
-          );
-        } else {
+        if (cards[i].label == S.current.lounge) {
           return ValueListenableBuilder(
             valueListenable: context
                 .findAncestorStateOfType<WPYPageState>()
@@ -239,6 +235,11 @@ class SliverCardsWidget extends StatelessWidget {
               },
               child: generateCard(context, cards[i]),
             ),
+          );
+        } else {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, cards[i].route),
+            child: generateCard(context, cards[i]),
           );
         }
       },
