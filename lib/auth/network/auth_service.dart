@@ -382,6 +382,7 @@ class AuthService with AsyncTimer {
     } on DioError catch (_) {}
   }
 
+  /// 上传头像
   static uploadAvatar(File image,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('uploadAvatar', () async {
@@ -395,6 +396,18 @@ class AuthService with AsyncTimer {
         });
         var response = await authDio.post("user/avatar", formData: data);
         CommonPreferences().avatar.value = response.data['result'];
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  /// 注销账号
+  static logoff({@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('logoff', () async {
+      try {
+        await authDio.post("auth/logoff");
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -38,12 +39,12 @@ class WPYPageState extends State<WPYPage> {
           ImageIcon(AssetImage('assets/images/whale.png'),
               color: MyColors.darkGrey, size: 25),
           '52赫兹',
-          HomeRouter.hz))
+          'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences().token.value}'))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/wiki.png'),
               color: MyColors.darkGrey, size: 25),
           'Wiki',
-          HomeRouter.wiki))
+          'https://wiki.tjubot.cn/'))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/exam.png'),
               color: MyColors.darkGrey, size: 25),
@@ -235,6 +236,17 @@ class SliverCardsWidget extends StatelessWidget {
               },
               child: generateCard(context, cards[i]),
             ),
+          );
+        } else if (cards[i].label == '52赫兹' || cards[i].label == 'Wiki') {
+          return GestureDetector(
+            onTap: () async {
+              if (await canLaunch(cards[i].route)) {
+                await launch(cards[i].route);
+              } else {
+                ToastProvider.error('请检查网络状态');
+              }
+            },
+            child: generateCard(context, cards[i]),
           );
         } else {
           return GestureDetector(

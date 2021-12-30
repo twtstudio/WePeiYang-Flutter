@@ -287,7 +287,7 @@ class _DetailPageState extends State<DetailPage> {
         });
 
     var shareButton = IconButton(
-      icon: Icon(Icons.ios_share, size: 23, color: ColorUtil.boldTextColor),
+      icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
       onPressed: () {
         String weCo = '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
         ClipboardData data = ClipboardData(text: weCo);

@@ -320,7 +320,7 @@ packages:
     source: hosted
     version: "4.0.0"
   flutter_svg:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.flutter-io.cn"
@@ -842,6 +842,13 @@ packages:
     dependency: transitive
     description:
       name: timing
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  transparent_image:
+    dependency: "direct main"
+    description:
+      name: transparent_image
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
