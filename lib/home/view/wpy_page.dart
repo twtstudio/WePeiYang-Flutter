@@ -36,11 +36,6 @@ class WPYPageState extends State<WPYPage> {
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
       ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/whale.png'),
-              color: MyColors.darkGrey, size: 25),
-          '52赫兹',
-          'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences().token.value}'))
-      ..add(CardBean(
           ImageIcon(AssetImage('assets/images/wiki.png'),
               color: MyColors.darkGrey, size: 25),
           'Wiki',
@@ -237,7 +232,7 @@ class SliverCardsWidget extends StatelessWidget {
               child: generateCard(context, cards[i]),
             ),
           );
-        } else if (cards[i].label == '52赫兹' || cards[i].label == 'Wiki') {
+        } else if (cards[i].label == 'Wiki') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {

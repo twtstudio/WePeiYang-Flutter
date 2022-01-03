@@ -127,8 +127,9 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
     remain = 'Unknown';
   } else {
     var now = DateTime.now();
+    var realNow = DateTime(now.year, now.month, now.day);
     var target = DateTime.parse(exam.date);
-    var diff = target.difference(now).inDays;
+    var diff = target.difference(realNow).inDays;
     remain = (diff == 0) ? 'today' : '${diff}days';
   }
   var seat = exam.seat;

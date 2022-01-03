@@ -11,12 +11,11 @@ class ExamNotifier with ChangeNotifier {
 
   /// 已完成的考试，判断比now早即可
   List<Exam> get finished {
-    var now = DateTime.now();
     List<Exam> ret = [];
     _examTable.exams.forEach((e) {
       if (e.date == '时间未安排') return;
       var target = DateTime.parse(e.date);
-      if (target.isBefore(now)) ret.add(e);
+      if (target.isBefore(realNow)) ret.add(e);
     });
     ret.sort((a, b) => b.date.compareTo(a.date)); // 将`刚考完`的排在上面
     return ret;
@@ -26,13 +25,13 @@ class ExamNotifier with ChangeNotifier {
   List<Exam> get unfinished {
     List<Exam> unscheduled = [];
     List<Exam> after = [];
-    var now = DateTime.now();
     _examTable.exams.forEach((e) {
       if (e.date == '时间未安排') {
         unscheduled.add(e);
       } else {
         var target = DateTime.parse(e.date);
-        if (target.isAfter(now) || target.isAtSameMomentAs(now)) after.add(e);
+        if (target.isAfter(realNow) || target.isAtSameMomentAs(realNow))
+          after.add(e);
       }
     });
     after.sort((a, b) => a.date.compareTo(b.date)); // 将`刚要考`的排在上面
@@ -43,11 +42,11 @@ class ExamNotifier with ChangeNotifier {
   /// 未完成的、且有安排的考试，在[unfinished]的基础上滤去了时间未安排的课程
   List<Exam> get unscheduled {
     List<Exam> ret = [];
-    var now = DateTime.now();
     _examTable.exams.forEach((e) {
       if (e.date == '时间未安排') return;
       var target = DateTime.parse(e.date);
-      if (target.isAfter(now) || target.isAtSameMomentAs(now)) ret.add(e);
+      if (target.isAfter(realNow) || target.isAtSameMomentAs(realNow))
+        ret.add(e);
     });
     ret.sort((a, b) => a.date.compareTo(b.date)); // 将`刚要考`的排在上面
     return ret;
@@ -88,5 +87,11 @@ class ExamNotifier with ChangeNotifier {
   void clear() {
     this._examTable.exams = [];
     notifyListeners();
+  }
+
+  /// 由于Exam中的date只确切到天，所以本地时间也确切到天，这样便于计算
+  DateTime get realNow {
+    var now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
   }
 }
