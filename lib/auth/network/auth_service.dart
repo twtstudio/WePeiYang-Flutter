@@ -240,10 +240,10 @@ class AuthService with AsyncTimer {
     });
   }
 
-  /// 使用学号/昵称/邮箱登录
-  static login(String account, String password,
+  /// 使用学号/昵称/邮箱/手机号 + 密码登录
+  static pwLogin(String account, String password,
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('login', () async {
+    AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
         if (!kDebugMode) UmengCommonSdk.setPageCollectionModeManual();
         var result = await authDio.postRst("auth/common",
@@ -256,6 +256,59 @@ class AuthService with AsyncTimer {
         }
         prefs.account.value = account;
         prefs.password.value = password;
+        prefs.nickname.value = result['nickname'] ?? "";
+        prefs.userNumber.value = result['userNumber'] ?? "";
+        prefs.phone.value = result['telephone'] ?? "";
+        prefs.email.value = result['email'] ?? "";
+        prefs.realName.value = result['realname'] ?? "";
+        prefs.department.value = result['department'] ?? "";
+        prefs.major.value = result['major'] ?? "";
+        prefs.stuType.value = result['stuType'] ?? "";
+        prefs.avatar.value = result['avatar'] ?? "";
+        prefs.isLogin.value = true;
+        onResult(result);
+
+        /// 登录成功后尝试更新学期信息
+        await getSemesterInfo();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  /// 登陆时获取短信验证码
+  static getCaptchaOnLogin(String phone,
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {
+      try {
+        var response = await authDio
+            .post("auth/phone/msg", queryParameters: {"phone": phone});
+        var cookie = response.headers.map['set-cookie'];
+        if (cookie != null) {
+          CommonPreferences().captchaCookie.value =
+              getRegExpStr(r'\S+(?=\;)', cookie[0]);
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  /// 使用手机号 + 验证码登录
+  static codeLogin(String phone, String code,
+      {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('codeLogin', () async {
+      try {
+        if (!kDebugMode) UmengCommonSdk.setPageCollectionModeManual();
+        var result = await authDio.postRst("auth/phone",
+            queryParameters: {"phone": phone, "code": code});
+        var prefs = CommonPreferences();
+        prefs.token.value = result['token'] ?? "";
+        if (prefs.phone.value != phone && prefs.phone.value != "") {
+          /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
+          prefs.clearTjuPrefs();
+        }
         prefs.nickname.value = result['nickname'] ?? "";
         prefs.userNumber.value = result['userNumber'] ?? "";
         prefs.phone.value = result['telephone'] ?? "";

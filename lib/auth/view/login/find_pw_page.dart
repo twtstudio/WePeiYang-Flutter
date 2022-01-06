@@ -148,22 +148,20 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     color: Color.fromRGBO(98, 103, 123, 1), size: 35),
                 onTap: () => Navigator.pop(context)),
           )),
-      body: Column(
-        children: [
-          Center(
-            child: Text(S.current.find_password_title,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
-          ),
-          SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: 55,
-              ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          children: [
+            Center(
+              child: Text(S.current.find_password_title,
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Color.fromRGBO(98, 103, 123, 1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+            ),
+            SizedBox(height: 40),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 55),
               child: TextField(
                 decoration: InputDecoration(
                     hintText: S.current.phone,
@@ -178,11 +176,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                 onChanged: (input) => setState(() => phone = input),
               ),
             ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
+            SizedBox(height: 20),
+            Row(
               children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
@@ -261,18 +256,19 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                           )),
               ],
             ),
-          ),
-          Spacer(),
-          Container(
-            height: 50,
-            alignment: Alignment.bottomRight,
-            margin: const EdgeInsets.all(30),
-            child: GestureDetector(
-              onTap: _verifyCaptcha,
-              child: Image(image: AssetImage('assets/images/arrow_round.png')),
+            Spacer(),
+            Container(
+              height: 50,
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                onTap: _verifyCaptcha,
+                child:
+                    Image(image: AssetImage('assets/images/arrow_round.png')),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }

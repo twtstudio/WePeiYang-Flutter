@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -280,27 +279,15 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<ExamNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
-    if (!prefs.isLogin.value ||
-        prefs.account.value == "" ||
-        prefs.password.value == "") {
-      /// 既然没登录过就多看会启动页吧
+    if (!prefs.isLogin.value || prefs.token.value == '') {
+      /// 既然没登录过就多看会启动页，再跳转至登录页
       Future.delayed(Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
-      /// 如果登录过的话，短暂显示启动页后尝试自动登录，无论成功与否都进入主页
+      /// 如果登录过的话，短暂显示启动页后直接进入主页
       Future.delayed(Duration(milliseconds: 500)).then(
-        (_) => AuthService.login(
-          prefs.account.value,
-          prefs.password.value,
-          onResult: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          },
-          onFailure: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          },
-        ),
+        (_) => Navigator.pushNamedAndRemoveUntil(
+            context, HomeRouter.home, (route) => false),
       );
     }
   }

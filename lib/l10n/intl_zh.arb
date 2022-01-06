@@ -63,7 +63,7 @@
   "email": "邮箱号",
   "email2": "邮箱",
   "tju_account": "办公网账号",
-  "forget_password": "忘记密码",
+  "forget_password": "忘记密码?",
   "fetch_captcha": "获取验证码",
   "register2": "新用户注册",
   "input_password1": "请输入新密码",
