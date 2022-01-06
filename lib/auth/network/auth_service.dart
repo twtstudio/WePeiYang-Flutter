@@ -329,6 +329,22 @@ class AuthService with AsyncTimer {
     });
   }
 
+  /// 获取个人信息（刷新token用）
+  static getInfo(
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('getInfo', () async {
+      try {
+        var result = await authDio.getRst('user/single');
+        if (result['token'] != null) {
+          CommonPreferences().token.value = result['token'];
+        }
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   /// 补全信息（手机号和邮箱）
   static addInfo(String telephone, String verifyCode, String email,
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
@@ -457,7 +473,8 @@ class AuthService with AsyncTimer {
   }
 
   /// 注销账号
-  static logoff({@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+  static logoff(
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('logoff', () async {
       try {
         await authDio.post("auth/logoff");

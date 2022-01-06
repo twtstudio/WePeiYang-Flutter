@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
@@ -284,10 +285,18 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Future.delayed(Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     } else {
-      /// 如果登录过的话，短暂显示启动页后直接进入主页
+      /// 如果登录过的话，短暂显示启动页后尝试刷新token，若失败则需重新登陆
       Future.delayed(Duration(milliseconds: 500)).then(
-        (_) => Navigator.pushNamedAndRemoveUntil(
-            context, HomeRouter.home, (route) => false),
+        (_) => AuthService.getInfo(
+          onSuccess: () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, HomeRouter.home, (route) => false);
+          },
+          onFailure: (_) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, AuthRouter.login, (route) => false);
+          },
+        ),
       );
     }
   }

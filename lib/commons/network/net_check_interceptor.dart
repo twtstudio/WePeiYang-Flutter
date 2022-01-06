@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 class NetCheckInterceptor extends InterceptorsWrapper {
   @override
   Future onRequest(options, handler) async {
-    print('New Request: ' + options.baseUrl + options.path);
     if (NetStatusListener().hasNetwork())
       return handler.next(options);
     else
