@@ -24,6 +24,9 @@ class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
   ValueNotifier campusNotifier = ValueNotifier<int>(0);
 
+  // 0 -> 校务专区; 1 -> 青年湖底
+  ValueNotifier lakeNotifier = ValueNotifier<int>(0);
+
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
@@ -65,6 +68,8 @@ class _NewPostPageState extends State<NewPostPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
               TagView(),
+              LakeSelector(lakeNotifier),
+              SizedBox(height: 10),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -73,16 +78,97 @@ class _NewPostPageState extends State<NewPostPage> {
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContentInputField(),
-                    SizedBox(height: 10),
-                    ImagesGridView(),
-                    SizedBox(height: 20),
-                    CampusSelector(campusNotifier),
-                    SubmitButton(campusNotifier),
-                  ]))
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ContentInputField(),
+                        SizedBox(height: 10),
+                        ImagesGridView(),
+                        SizedBox(height: 20),
+                        CampusSelector(campusNotifier),
+                        SubmitButton(campusNotifier),
+                      ]))
             ]));
+  }
+}
+
+class LakeSelector extends StatefulWidget {
+  final ValueNotifier notifier;
+
+  LakeSelector(this.notifier);
+
+  @override
+  State<StatefulWidget> createState() => LakeSelectorState();
+}
+
+class LakeSelectorState extends State<LakeSelector> {
+  static const texts = ["校务专区", "青年湖底"];
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.notifier,
+      builder: (context, value, _) {
+        return SizedBox(
+          height: 60,
+          child: ListView.builder(
+            itemCount: 2,
+            scrollDirection: Axis.horizontal,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 58,
+                width: (WePeiYangApp.screenWidth - 40) / 2,
+                child: ElevatedButton(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        texts[index],
+                        style: FontManager.YaHeiRegular.copyWith(
+                          color: value == index
+                              ? ColorUtil.boldTextColor
+                              : ColorUtil.lightTextColor,
+                          fontWeight: value == index
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: value == index
+                                ? ColorUtil.mainColor
+                                : Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
+                        width: 30,
+                        height: 4,
+                      ),
+                    ],
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: _judgeBorder(index)),
+                      primary: Colors.white),
+                  onPressed: () {
+                    widget.notifier.value = index;
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  BorderRadius _judgeBorder(int index) {
+    if (index == 0)
+      return BorderRadius.horizontal(left: Radius.circular(12));
+    else
+      return BorderRadius.horizontal(right: Radius.circular(12));
   }
 }
 
@@ -94,36 +180,40 @@ class SubmitButton extends StatelessWidget {
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     if (dataModel.check) {
-      dataModel.type == 1 ?///暂时没有UI对type
-      FeedbackService.sendPost(
-        type: 1,
-        title: dataModel.title,
-        content: dataModel.content,
-        departmentId: dataModel.department.id,
-        images: dataModel.images,
-        campus: notifier.value + 1,
-        onSuccess: () {
-          ToastProvider.success(S.current.feedback_post_success);
-          Navigator.pop(context);
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        },
-      ) : FeedbackService.sendPost(
-        type: 0,
-        title: dataModel.title,
-        content: dataModel.content,
-        tagId: dataModel.tag.id,
-        images: dataModel.images,
-        campus: notifier.value + 1,
-        onSuccess: () {
-          ToastProvider.success(S.current.feedback_post_success);
-          Navigator.pop(context);
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        },
-      );
+      dataModel.type == 1
+          ?
+
+          ///暂时没有UI对type
+          FeedbackService.sendPost(
+              type: 1,
+              title: dataModel.title,
+              content: dataModel.content,
+              departmentId: dataModel.department.id,
+              images: dataModel.images,
+              campus: notifier.value + 1,
+              onSuccess: () {
+                ToastProvider.success(S.current.feedback_post_success);
+                Navigator.pop(context);
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            )
+          : FeedbackService.sendPost(
+              type: 0,
+              title: dataModel.title,
+              content: dataModel.content,
+              tagId: dataModel.tag.id,
+              images: dataModel.images,
+              campus: notifier.value + 1,
+              onSuccess: () {
+                ToastProvider.success(S.current.feedback_post_success);
+                Navigator.pop(context);
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            );
     } else {
       ToastProvider.error(S.current.feedback_empty_content_error);
     }
@@ -224,11 +314,7 @@ class _TagViewState extends State<TagView> {
         radius: 20,
         onTap: () => _showTags(context),
         child: Row(
-          children: [
-            text,
-            Spacer(),
-            Icon(Icons.tag)
-          ],
+          children: [text, Spacer(), Icon(Icons.tag)],
         ),
       ),
     );

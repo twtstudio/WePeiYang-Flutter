@@ -410,12 +410,31 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       ),
                                     ]),
                               ),
-                              IconButton(
-                                  icon: Icon(
-                                    Icons.add_to_photos_sharp,
-                                    color: ColorUtil.mainColor,
-                                  ),
-                                  onPressed: () {}),
+                              PopupMenuButton(
+                                padding: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                    ),
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                  tooltip: "排序方式",
+                                 child: Icon(Icons.add_to_photos_sharp,color: ColorUtil.mainColor,),
+                                 //1-->时间排序，2-->动态排序
+                                 onSelected: (value){
+
+                                 },
+                                 itemBuilder: (context){
+                                   return <PopupMenuEntry<int>>[
+                                   CheckedPopupMenuItem<int>(
+                                   value: 1,
+                                   child: Text('时间排序',style: TextStyle(color:ColorUtil.lightTextColor),),
+                                   ),
+                                   CheckedPopupMenuItem<int>(
+                                   value: 2,
+                                   child: Text('动态排序'),
+                                   ),
+                                   ];
+                                 },),
                               SizedBox(width: 8)
                             ]),
                       ),

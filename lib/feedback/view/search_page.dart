@@ -192,7 +192,8 @@ class _SearchPageState extends State<SearchPage> {
           spacing: 6,
           children: List.generate(provider.departmentList.length, (index) {
             return InkResponse(
-              radius: 50,
+              radius: 30,
+              highlightColor: Colors.transparent,
               child: Chip(
                 backgroundColor: Color.fromRGBO(238, 238, 238, 1),
                 label: Text(provider.departmentList[index].name, style: tagTextStyle),
