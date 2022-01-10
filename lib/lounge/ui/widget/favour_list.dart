@@ -57,7 +57,7 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
                 child: Text(
                   widget.title,
                   style: FontManager.YaQiHei.copyWith(
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Color(0XFF62677B),
                   ),
@@ -94,8 +94,11 @@ class _LoungeFavourWidgetState extends State<LoungeFavourWidget> {
             );
           }
 
-          return MediaQuery.removePadding(
-              context: context, removeRight: true, child: wrapper ?? body);
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
+            child: MediaQuery.removePadding(
+                context: context, removeRight: true, child: wrapper ?? body),
+          );
         },
       );
 }

@@ -160,23 +160,29 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                   : Color.fromRGBO(205, 206, 210, 1)),
           child: Padding(
             padding:
-            const EdgeInsets.fromLTRB(14, 13, 10, 8),
+            const EdgeInsets.fromLTRB(12, 13, 10, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name,
-                    style: FontManager.YaQiHei.copyWith(fontSize: 18)),
+                Row(
+                  children: [
+                    SizedBox(width: 2.5),
+                    Text(name,
+                        style: FontManager.YaQiHei.copyWith(fontSize: 18)),
+                  ],
+                ),
                 SizedBox(height: 10),
                 Row(
                   children: [
                     Spacer(),
                     Text(exam.arrange,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500)),
+                        style: FontManager.Aspira.copyWith(
+                            fontSize: 14, fontWeight: FontWeight.w600)),
                   ],
                 ),
+                SizedBox(height: 2),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.location_on_outlined,
                         size: 17,
@@ -186,11 +192,11 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
                     SizedBox(width: 3),
                     Text('${exam.location}-$seat',
                         style:
-                        FontManager.YaHeiLight.copyWith(fontSize: 14)),
+                        FontManager.Aspira.copyWith(fontSize: 12)),
                     Spacer(),
                     Text(exam.date,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500)),
+                        style: FontManager.Aspira.copyWith(
+                            fontSize: 13, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ],
@@ -203,7 +209,7 @@ Widget examCard(BuildContext context, Exam exam, bool afterNow,
           child: Text(remain,
               style: FontManager.Bauhaus.copyWith(
                   height: 0,
-                  fontSize: 55,
+                  fontSize: 50,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold,
                   color: Colors.white30)),

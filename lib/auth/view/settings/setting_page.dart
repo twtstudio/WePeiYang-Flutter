@@ -9,7 +9,17 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 
+class SettingPageArgs {
+  final bool showBrief;
+
+  SettingPageArgs(this.showBrief);
+}
+
 class SettingPage extends StatefulWidget {
+  final bool showBrief;
+
+  SettingPage(SettingPageArgs args) : showBrief = args.showBrief;
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -57,48 +67,50 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: const EdgeInsets.fromLTRB(25, 20, 25, 5),
             alignment: Alignment.centerLeft,
-            child: Text(S.current.setting_general, style: titleTextStyle),
+            child: (!widget.showBrief)?Text(S.current.setting_general, style: titleTextStyle):Text("首页自定义", style: titleTextStyle),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.colorSetting)
-                        .then((_) {
-                  /// 使用pop返回此页面时进行rebuild
-                  this.setState(() {});
-                }),
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(15),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: descriptionMaxWidth,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(S.current.setting_color, style: mainTextStyle),
-                            SizedBox(height: 3),
-                            Text(S.current.setting_color_hint,
-                                style: hintTextStyle)
-                          ],
+          if (!widget.showBrief)
+            Padding(
+              padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+              child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(context, AuthRouter.colorSetting)
+                          .then((_) {
+                    /// 使用pop返回此页面时进行rebuild
+                    this.setState(() {});
+                  }),
+                  splashFactory: InkRipple.splashFactory,
+                  borderRadius: BorderRadius.circular(15),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: descriptionMaxWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(S.current.setting_color,
+                                  style: mainTextStyle),
+                              SizedBox(height: 3),
+                              Text(S.current.setting_color_hint,
+                                  style: hintTextStyle)
+                            ],
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      arrow,
-                    ],
+                        Spacer(),
+                        arrow,
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           Padding(
             padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
             child: Card(
@@ -178,8 +190,7 @@ class _SettingPageState extends State<SettingPage> {
                   children: <Widget>[
                     SizedBox(
                         width: descriptionMaxWidth,
-                        child:
-                        Text("首页显示看板娘", style: mainTextStyle)),
+                        child: Text("首页显示看板娘", style: mainTextStyle)),
                     Spacer(),
                     Switch(
                       value: pref.showPosterGirl.value,
@@ -240,91 +251,95 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ),
           ),
-          Container(
-              padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
-              alignment: Alignment.centerLeft,
-              child: Text(S.current.schedule, style: titleTextStyle)),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, AuthRouter.scheduleSetting)
-                        .then((_) {
-                  /// 使用pop返回此页面时进行rebuild
-                  this.setState(() {});
-                }),
-                splashFactory: InkRipple.splashFactory,
-                borderRadius: BorderRadius.circular(15),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: descriptionMaxWidth,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(S.current.setting_day_number,
-                                style: mainTextStyle),
-                            SizedBox(height: 3),
-                            Text('${pref.dayNumber.value}',
-                                style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      arrow,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: descriptionMaxWidth,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(S.current.setting_other_week,
-                              style: mainTextStyle),
-                          SizedBox(height: 3),
-                          Text(S.current.setting_other_week_hint,
-                              style: hintTextStyle)
+          if (!widget.showBrief)
+            Column(children: [
+              Container(
+                  padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
+                  alignment: Alignment.centerLeft,
+                  child: Text(S.current.schedule, style: titleTextStyle)),
+              Padding(
+                padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: InkWell(
+                    onTap: () =>
+                        Navigator.pushNamed(context, AuthRouter.scheduleSetting)
+                            .then((_) {
+                      /// 使用pop返回此页面时进行rebuild
+                      this.setState(() {});
+                    }),
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(15),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: descriptionMaxWidth,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(S.current.setting_day_number,
+                                    style: mainTextStyle),
+                                SizedBox(height: 3),
+                                Text('${pref.dayNumber.value}',
+                                    style: hintTextStyle)
+                              ],
+                            ),
+                          ),
+                          Spacer(),
+                          arrow,
                         ],
                       ),
                     ),
-                    Spacer(),
-                    Switch(
-                      value: pref.otherWeekSchedule.value,
-                      onChanged: (value) {
-                        setState(() => pref.otherWeekSchedule.value = value);
-                      },
-                      activeColor: Color.fromRGBO(105, 109, 127, 1),
-                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: descriptionMaxWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(S.current.setting_other_week,
+                                  style: mainTextStyle),
+                              SizedBox(height: 3),
+                              Text(S.current.setting_other_week_hint,
+                                  style: hintTextStyle)
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        Switch(
+                          value: pref.otherWeekSchedule.value,
+                          onChanged: (value) {
+                            setState(
+                                () => pref.otherWeekSchedule.value = value);
+                          },
+                          activeColor: Color.fromRGBO(105, 109, 127, 1),
+                          inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                          activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                          inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ])
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -55,6 +56,7 @@ class WPYPageState extends State<WPYPage> {
               color: MyColors.darkGrey, size: 25),
           '考表',
           ScheduleRouter.exam))
+
       /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
@@ -101,8 +103,7 @@ class WPYPageState extends State<WPYPage> {
                         delegate: _WPYHeader(onChanged: (_) {
                           setState(() {});
                         }),
-                        pinned: true
-                        ),
+                        pinned: true),
                   ),
 
                   /// 功能跳转卡片
@@ -110,18 +111,19 @@ class WPYPageState extends State<WPYPage> {
 
                   /// 当天课程
                   SliverToBoxAdapter(
-                      child: Column(
-                    key: majorColumnHeightKey,
-                    children: [
-                      TodayCoursesWidget(),
-                      WpyExamWidget(),
-                      GPAPreview(),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 12),
-                        child: LoungeFavourWidget(
-                            title: S.current.lounge, init: true),
-                      ),
-                    ],
+                      child: GestureDetector(
+                    onLongPress: () => Navigator.pushNamed(
+                        context, AuthRouter.setting,
+                        arguments: SettingPageArgs(true)),
+                    child: Column(
+                      key: majorColumnHeightKey,
+                      children: [
+                        toolCards[0],
+                        toolCards[1],
+                        toolCards[2],
+                        toolCards[3]
+                      ], //以后可以写排序
+                    ),
                   )),
 
                   !CommonPreferences().showPosterGirl.value
@@ -141,6 +143,13 @@ class WPYPageState extends State<WPYPage> {
       ),
     );
   }
+
+  List<Widget> toolCards = [
+    TodayCoursesWidget(),
+    WpyExamWidget(),
+    GPAPreview(),
+    LoungeFavourWidget(title: S.current.lounge, init: true),
+  ];
 }
 
 ///替代appbar使用
@@ -215,11 +224,9 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 
   String get _getGreetText {
     int hour = DateTime.now().hour;
-    if (hour >= 0 && hour < 5)
-      return '夜深了，早点睡';
-    else if (hour >= 5 && hour < 8)
-      return '起得好早';
-    else if (hour >= 8 && hour < 12)
+    if (hour < 5)
+      return '晚上好!';
+    else if (hour >= 5 && hour < 12)
       return '早上好';
     else if (hour >= 12 && hour < 14)
       return '中午好';
@@ -379,4 +386,3 @@ class WPYScrollBehavior extends ScrollBehavior {
     return ClampingScrollPhysics();
   }
 }
-

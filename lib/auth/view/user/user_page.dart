@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
@@ -60,7 +61,7 @@ class _UserPageState extends State<UserPage> {
                         SizedBox(width: 15),
                         GestureDetector(
                           onTap: () =>
-                              Navigator.pushNamed(context, AuthRouter.setting),
+                              Navigator.pushNamed(context, AuthRouter.setting, arguments: SettingPageArgs(false)),
                           child: Image.asset('assets/images/setting.png',
                               width: 24, height: 24),
                         )

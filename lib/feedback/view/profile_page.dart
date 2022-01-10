@@ -285,7 +285,7 @@ class _ProfileTabButtonState extends State<ProfileTabButton> {
                   style: FontManager.YaHeiRegular.copyWith(
                       height: 1, color: ColorUtil.bold42TextColor),
                 ),
-                SizedBox(height: 5,),
+                SizedBox(height: 5),
                   Container(
                     decoration: BoxDecoration(
                       color:
@@ -442,6 +442,5 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

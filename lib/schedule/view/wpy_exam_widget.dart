@@ -62,7 +62,7 @@ class WpyExamWidget extends StatelessWidget {
     } else if (notifier.afterNowReal.length > 1) {
       return Container(
         constraints: BoxConstraints(
-          maxHeight: 110,
+          maxHeight: 105,
         ),
         child: ListView(
           scrollDirection: Axis.horizontal,
