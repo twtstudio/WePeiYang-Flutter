@@ -412,16 +412,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               ),
                               PopupMenuButton(
                                 padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                    ),
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
                                   tooltip: "排序方式",
                                  child: Icon(Icons.add_to_photos_sharp,color: ColorUtil.mainColor,),
                                  //1-->时间排序，2-->动态排序
                                  onSelected: (value){
-
                                  },
                                  itemBuilder: (context){
                                    return <PopupMenuEntry<int>>[
