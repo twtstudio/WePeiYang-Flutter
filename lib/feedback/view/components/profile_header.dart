@@ -24,10 +24,10 @@ class ProfileHeader extends StatelessWidget {
             SliverAppBar(
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_rounded,color: ColorUtil.boldTagTextColor),
+                icon: Icon(Icons.arrow_back_ios_rounded,color: ColorUtil.bold42TextColor),
                 onPressed: () => Navigator.pop(context),
               ),
-              title: Text(S.current.feedback_profile,style: TextStyle(color: ColorUtil.boldTagTextColor),),
+              title: Text(S.current.feedback_profile,style: TextStyle(color: ColorUtil.bold42TextColor),),
               centerTitle: true,
               actions: [FeedbackReadAllButton(), FeedbackMailbox()],
             ),
@@ -49,7 +49,7 @@ class ProfileHeader extends StatelessWidget {
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.ellipsis,
                             style: FontManager.YaHeiRegular.copyWith(
-                              color: ColorUtil.boldTagTextColor,
+                              color: ColorUtil.bold42TextColor,
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
                             )),
@@ -107,7 +107,7 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           child: Center(
             child: FeedbackBadgeWidget(
               type: FeedbackMessageType.mailbox,
-              child: Icon(Icons.notifications_none_outlined,color: ColorUtil.boldTagTextColor),
+              child: Icon(Icons.notifications_none_outlined,color: ColorUtil.bold42TextColor),
             ),
           ),
         ),

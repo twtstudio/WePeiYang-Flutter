@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -73,10 +74,9 @@ class _PostCardState extends State<PostCard> {
         post.title,
         maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
-        style: FontManager.YaHeiRegular.copyWith(
+        style: FontManager.NotoSansSCMedium.copyWith(
           color: ColorUtil.boldTextColor,
           fontSize: 17,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -105,8 +105,8 @@ class _PostCardState extends State<PostCard> {
       maxLines: widget.type == PostCardType.detail ? null : 2,
       overflow:
           widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
-      style: FontManager.YaHeiRegular.copyWith(
-        color: ColorUtil.boldTagTextColor,
+      style: FontManager.NotoSansSCRegular.copyWith(
+        color: ColorUtil.bold42TextColor,
       ),
     );
 
@@ -203,13 +203,7 @@ class _PostCardState extends State<PostCard> {
     var createTime = Text(
       DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
       textAlign: TextAlign.right,
-      style: FontManager.Aspira.copyWith(
-        color: ColorUtil.lightTextColor,
-        fontSize: 12,
-        textBaseline: TextBaseline.ideographic,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 1.3,
-      ),
+      style: TextUtil.base.black2A.bold.ProductSans.sp(12),
     );
 
     List<Widget> commentCount = [
@@ -217,14 +211,14 @@ class _PostCardState extends State<PostCard> {
         child: Icon(
           Icons.message_outlined,
           size: 16,
-          color: ColorUtil.boldTagTextColor,
+          color: ColorUtil.bold42TextColor,
         ),
       ),
       SizedBox(width: 6),
       Text(
         post.commentCount.toString(),
-        style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 14, color: ColorUtil.boldTagTextColor),
+        style: FontManager.ProductSansBold.copyWith(
+            fontSize: 14, color: ColorUtil.bold42TextColor),
       )
     ];
 

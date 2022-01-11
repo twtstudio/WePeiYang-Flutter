@@ -81,13 +81,10 @@ class _LikeWidgetState extends State<LikeWidget> {
     var likeCount = ValueListenableBuilder(
         valueListenable: widget.countNotifier,
         builder: (_, value, __) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Text(
-              value.toString(),
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 14, color: ColorUtil.lightTextColor),
-            ),
+          return Text(
+            value.toString(),
+            style: FontManager.ProductSansBold.copyWith(
+                fontSize: 14, color: ColorUtil.bold42TextColor),
           );
         });
 

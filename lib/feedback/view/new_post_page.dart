@@ -22,14 +22,14 @@ class NewPostPage extends StatefulWidget {
 
 class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
-  ValueNotifier campusNotifier = ValueNotifier<int>(0);
+  final campusNotifier = ValueNotifier(0);
 
-  // 0 -> 校务专区; 1 -> 青年湖底
-  ValueNotifier lakeNotifier = ValueNotifier<int>(0);
+  // 0 -> 青年湖底; 1 -> 校务专区
+  final postTypeNotifier = ValueNotifier(PostType.lake);
 
   @override
   Widget build(BuildContext context) {
-    var appBar = AppBar(
+    final appBar = AppBar(
       centerTitle: true,
       title: Text(
         S.current.feedback_new_post,
@@ -67,17 +67,17 @@ class _NewPostPageState extends State<NewPostPage> {
             physics: BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
-              TagView(),
-              LakeSelector(lakeNotifier),
+              LakeSelector(),
               SizedBox(height: 10),
+              TagView(postTypeNotifier),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     shape: BoxShape.rectangle,
                   ),
                   margin: const EdgeInsets.symmetric(vertical: 4),
-                  padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
+                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -86,29 +86,39 @@ class _NewPostPageState extends State<NewPostPage> {
                         ImagesGridView(),
                         SizedBox(height: 20),
                         CampusSelector(campusNotifier),
-                        SubmitButton(campusNotifier),
+                        SizedBox(height: 10),
+                        SubmitButton(campusNotifier, postTypeNotifier),
                       ]))
             ]));
   }
 }
 
-class LakeSelector extends StatefulWidget {
-  final ValueNotifier notifier;
+enum PostType{
+  lake,
+  feedback
+}
 
-  LakeSelector(this.notifier);
+extension PostTypeExt on PostType{
+  int get value => [0, 1][index];
+
+  String get title => ["青年湖底", "校务专区"][index];
+}
+
+
+class LakeSelector extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => LakeSelectorState();
 }
 
 class LakeSelectorState extends State<LakeSelector> {
-  static const texts = ["校务专区", "青年湖底"];
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.notifier,
-      builder: (context, value, _) {
+    final notifier = context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    return ValueListenableBuilder<PostType>(
+      valueListenable: notifier,
+      builder: (context, type, _) {
         return SizedBox(
           height: 60,
           child: ListView.builder(
@@ -125,12 +135,12 @@ class LakeSelectorState extends State<LakeSelector> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        texts[index],
+                        PostType.values[index].title,
                         style: FontManager.YaHeiRegular.copyWith(
-                          color: value == index
+                          color: type.value == index
                               ? ColorUtil.boldTextColor
                               : ColorUtil.lightTextColor,
-                          fontWeight: value == index
+                          fontWeight: type.value == index
                               ? FontWeight.bold
                               : FontWeight.normal,
                           fontSize: 15,
@@ -138,22 +148,24 @@ class LakeSelectorState extends State<LakeSelector> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            color: value == index
+                            color: type.value == index
                                 ? ColorUtil.mainColor
                                 : Colors.white,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
+                                BorderRadius.all(Radius.circular(16))),
                         width: 30,
                         height: 4,
                       ),
                     ],
                   ),
                   style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: _judgeBorder(index)),
-                      primary: Colors.white),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: _judgeBorder(index)),
+                    primary: Colors.white,
+                    elevation: 0,
+                  ),
                   onPressed: () {
-                    widget.notifier.value = index;
+                    notifier.value = PostType.values[index];
                   },
                 ),
               );
@@ -166,31 +178,29 @@ class LakeSelectorState extends State<LakeSelector> {
 
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
-      return BorderRadius.horizontal(left: Radius.circular(12));
+      return BorderRadius.horizontal(left: Radius.circular(16));
     else
-      return BorderRadius.horizontal(right: Radius.circular(12));
+      return BorderRadius.horizontal(right: Radius.circular(16));
   }
 }
 
 class SubmitButton extends StatelessWidget {
-  final ValueNotifier notifier;
+  final ValueNotifier campusNotifier, postTypeNotifier;
 
-  const SubmitButton(this.notifier, {Key key}) : super(key: key);
+  const SubmitButton(this.campusNotifier, this.postTypeNotifier, {Key key}) : super(key: key);
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     if (dataModel.check) {
-      dataModel.type == 1
+      postTypeNotifier.value == PostType.feedback
           ?
-
-          ///暂时没有UI对type
           FeedbackService.sendPost(
-              type: 1,
+              type: PostType.feedback.value,
               title: dataModel.title,
               content: dataModel.content,
               departmentId: dataModel.department.id,
               images: dataModel.images,
-              campus: notifier.value + 1,
+              campus: campusNotifier.value,
               onSuccess: () {
                 ToastProvider.success(S.current.feedback_post_success);
                 Navigator.pop(context);
@@ -200,12 +210,12 @@ class SubmitButton extends StatelessWidget {
               },
             )
           : FeedbackService.sendPost(
-              type: 0,
+              type: PostType.lake.value,
               title: dataModel.title,
               content: dataModel.content,
               tagId: dataModel.tag.id,
               images: dataModel.images,
-              campus: notifier.value + 1,
+              campus: campusNotifier.value,
               onSuccess: () {
                 ToastProvider.success(S.current.feedback_post_success);
                 Navigator.pop(context);
@@ -214,6 +224,7 @@ class SubmitButton extends StatelessWidget {
                 ToastProvider.error(e.error.toString());
               },
             );
+      dataModel.clear();
     } else {
       ToastProvider.error(S.current.feedback_empty_content_error);
     }
@@ -235,7 +246,7 @@ class SubmitButton extends StatelessWidget {
               backgroundColor: MaterialStateProperty.all(ColorUtil.mainColor),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -256,12 +267,17 @@ class SubmitButton extends StatelessWidget {
 }
 
 class TagView extends StatefulWidget {
+  final ValueNotifier lakeOrFBNotifier;
+
+  const TagView(this.lakeOrFBNotifier, {Key key}) : super(key: key);
+
   @override
   _TagViewState createState() => _TagViewState();
 }
 
 class _TagViewState extends State<TagView> {
   ValueNotifier<Department> department;
+  ValueNotifier<Tag> tag;
 
   @override
   void initState() {
@@ -270,6 +286,10 @@ class _TagViewState extends State<TagView> {
     department = ValueNotifier(dataModel.department)
       ..addListener(() {
         dataModel.department = department.value;
+      });
+    tag = ValueNotifier(dataModel.tag)
+      ..addListener(() {
+        dataModel.tag = tag.value;
       });
   }
 
@@ -305,13 +325,13 @@ class _TagViewState extends State<TagView> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         shape: BoxShape.rectangle,
       ),
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
       child: InkResponse(
-        radius: 20,
+        radius: 16,
         onTap: () => _showTags(context),
         child: Row(
           children: [text, Spacer(), Icon(Icons.tag)],
@@ -453,32 +473,32 @@ class _TabGridViewState extends State<TabGridView>
 }
 
 class CampusSelector extends StatefulWidget {
-  final ValueNotifier notifier;
+  final ValueNotifier campusNotifier;
 
-  CampusSelector(this.notifier);
+  CampusSelector(this.campusNotifier);
 
   @override
   _CampusSelectorState createState() => _CampusSelectorState();
 }
 
 class _CampusSelectorState extends State<CampusSelector> {
-  static const texts = ["卫津路", "北洋园"];
+  static const texts = ["双校区", "卫津路", "北洋园"];
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: widget.notifier,
+      valueListenable: widget.campusNotifier,
       builder: (context, value, _) {
         return SizedBox(
           height: 32,
           child: ListView.builder(
-            itemCount: 2,
+            itemCount: 3,
             scrollDirection: Axis.horizontal,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return SizedBox(
                 height: 32,
-                width: (WePeiYangApp.screenWidth - 80) / 4,
+                width: (WePeiYangApp.screenWidth - 100) / 3,
                 child: ElevatedButton(
                   child: Text(
                     texts[index],
@@ -495,7 +515,7 @@ class _CampusSelectorState extends State<CampusSelector> {
                       primary:
                           value == index ? ColorUtil.mainColor : Colors.white),
                   onPressed: () {
-                    widget.notifier.value = index;
+                    widget.campusNotifier.value = index;
                   },
                 ),
               );
@@ -509,8 +529,10 @@ class _CampusSelectorState extends State<CampusSelector> {
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
       return BorderRadius.horizontal(left: Radius.circular(12));
-    else
+    else if (index == 2)
       return BorderRadius.horizontal(right: Radius.circular(12));
+    else
+      return BorderRadius.zero;
   }
 }
 
@@ -675,7 +697,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
           fontWeight: FontWeight.w900,
           fontSize: 16,
         ),
-        hintText: ':${S.current.feedback_detail}...',
+        hintText: '${S.current.feedback_detail}...',
       ),
       onChanged: (text) {
         contentCounter.value = '${text.characters.length}/200';

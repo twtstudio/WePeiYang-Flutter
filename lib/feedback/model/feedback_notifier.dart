@@ -37,6 +37,13 @@ class NewPostProvider {
       title.isNotEmpty &&
       content.isNotEmpty &&
       ((type == 1 && department != null) || (type == 0 && tag != null));
+
+  void clear() {
+    title = "";
+    content = "";
+    type = 1;
+    images = [];
+  }
 }
 
 // class ReloadProvider with ChangeNotifier{

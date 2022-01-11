@@ -1,6 +1,7 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/screen_util.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -164,6 +165,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: Size(390, 844),
+        orientation: Orientation.portrait);
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
     var searchBar = SearchBar(
       tapField: () => Navigator.pushNamed(context, FeedbackRouter.search),

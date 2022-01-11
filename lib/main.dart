@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -26,6 +27,8 @@ import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+
+import 'commons/util/text_util.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -218,16 +221,25 @@ class WePeiYangAppState extends State<WePeiYangApp>
           },
           locale: localModel.locale(),
           home: StartUpWidget(),
-          builder: (context, child) => GestureDetector(
-            child: child,
-            onTapDown: (TapDownDetails details) {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus &&
-                  currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus.unfocus();
-              }
-            },
-          ),
+          builder: (context, child) {
+            ScreenUtil.init(
+                BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width,
+                    maxHeight: MediaQuery.of(context).size.height),
+                designSize: const Size(390, 844),
+                orientation: Orientation.portrait);
+            TextUtil.init(context);
+            return GestureDetector(
+              child: child,
+              onTapDown: (TapDownDetails details) {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus &&
+                    currentFocus.focusedChild != null) {
+                  FocusManager.instance.primaryFocus.unfocus();
+                }
+              },
+            );
+          }
         );
       }),
     );
