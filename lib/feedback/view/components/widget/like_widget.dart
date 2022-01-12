@@ -25,23 +25,29 @@ class LikeWidget extends StatefulWidget {
 class _LikeWidgetState extends State<LikeWidget> {
   @override
   Widget build(BuildContext context) {
-    var likeButton = SizedBox(
-      height: 40,
+    var likeButton = ConstrainedBox(
+
+      constraints: BoxConstraints(
+        minWidth:ScreenUtil().setSp(11.67),
+        minHeight:ScreenUtil().setSp(11.67),
+      ),
       child: ValueListenableBuilder(
         valueListenable: widget.isLikedNotifier,
         builder: (_, value, __) {
           return LikeButton(
+            size: ScreenUtil().setSp(11.67),
+           likeCountPadding: EdgeInsets.only(bottom:  ScreenUtil().setSp(5),right: ScreenUtil().setSp(5.17) ),
             likeBuilder: (bool isLiked) {
               if (isLiked) {
                 return Icon(
                   Icons.thumb_up,
-                  size: 16,
+                  size: ScreenUtil().setSp(11.67),
                   color: Colors.redAccent,
                 );
               } else {
                 return Icon(
                   Icons.thumb_up_outlined,
-                  size: 16,
+                  size: ScreenUtil().setSp(11.67),
                   color: ColorUtil.boldTextColor,
                 );
               }
@@ -83,8 +89,7 @@ class _LikeWidgetState extends State<LikeWidget> {
         builder: (_, value, __) {
           return Text(
             value.toString(),
-            style: FontManager.ProductSansBold.copyWith(
-                fontSize: 14, color: ColorUtil.bold42TextColor),
+            style: TextUtil.base.black2A.bold.ProductSans.sp(12),
           );
         });
 

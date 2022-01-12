@@ -304,9 +304,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           preferredSize: Size.fromHeight(60),
                           child: Row(
                             children: [
-                              SizedBox(width: 5),
                               IconButton(
-                                  icon: Icon(Icons.all_inbox,
+                                  padding: EdgeInsets.fromLTRB(ScreenUtil().setSp(16), 0, ScreenUtil().setSp(8), 0),
+                                  icon: Icon(Icons.all_inbox,size: ScreenUtil().setSp(24),
                                       color: ColorUtil.mainColor),
                                   onPressed: () => Navigator.pushNamed(
                                       context, FeedbackRouter.profile)),
@@ -314,8 +314,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               Hero(
                                 tag: "addNewPost",
                                 child: SizedBox(
-                                  height: 30,
-                                  width: 30,
+                                  height: ScreenUtil().setSp(24),
+                                  width: ScreenUtil().setSp(24),
                                   child: ElevatedButton(
                                     style: ButtonStyle(
                                       padding: MaterialStateProperty.all(

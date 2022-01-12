@@ -17,7 +17,7 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(Icons.check_box_outlined,  color: ColorUtil.bold42TextColor),
+        icon: Icon(Icons.check_box_outlined, size: ScreenUtil().setSp(15)*1.5, color: ColorUtil.bold42TextColor),
         onPressed: () {
           showDialog<bool>(
                   context: context,

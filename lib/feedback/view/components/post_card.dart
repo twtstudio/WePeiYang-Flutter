@@ -74,10 +74,7 @@ class _PostCardState extends State<PostCard> {
         post.title,
         maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
-        style: FontManager.NotoSansSCMedium.copyWith(
-          color: ColorUtil.boldTextColor,
-          fontSize: 17,
-        ),
+        style: TextUtil.base.w500.normal.NotoSansSC.sp(18).black2A,
       ),
     );
 
@@ -210,15 +207,14 @@ class _PostCardState extends State<PostCard> {
       ClipOval(
         child: Icon(
           Icons.message_outlined,
-          size: 16,
+          size: ScreenUtil().setSp(11.67),
           color: ColorUtil.bold42TextColor,
         ),
       ),
       SizedBox(width: 6),
       Text(
         post.commentCount.toString(),
-        style: FontManager.ProductSansBold.copyWith(
-            fontSize: 14, color: ColorUtil.bold42TextColor),
+        style: TextUtil.base.black2A.bold.ProductSans.sp(12),
       )
     ];
 
@@ -254,7 +250,7 @@ class _PostCardState extends State<PostCard> {
         } else {
           return Icon(
             Icons.thumb_down_outlined,
-            size: 16,
+            size: ScreenUtil().setSp(11.67),
             color: ColorUtil.boldTextColor,
           );
         }

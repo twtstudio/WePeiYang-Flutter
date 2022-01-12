@@ -149,7 +149,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
           break;
         default:
       }
-    });
+});
   }
 
   showDialog(String content) {

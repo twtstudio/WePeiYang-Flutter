@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -28,20 +30,33 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    Widget searchInputField = TextField(
+    Widget searchInputField = ConstrainedBox
+      (
+        constraints: BoxConstraints(
+          maxHeight: ScreenUtil().setSp(24),
+          maxWidth: ScreenUtil().setSp(282),
+        ),
+        child:TextField(
       controller: _controller,
       decoration: InputDecoration(
+        hintStyle: TextStyle().NotoSansSC.sp(13),
         hintText: S.current.feedback_search_hint,
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(1080),
         ),
-        contentPadding: EdgeInsets.zero,
         fillColor: ColorUtil.searchBarBackgroundColor,
         filled: true,
-        prefixIcon: Icon(
-          Icons.search,
-          color: ColorUtil.mainColor,
+        prefixIcon: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: ScreenUtil().setSp(13.5),
+            maxWidth:  ScreenUtil().setSp(13.5),
+          ),
+          child:Icon(
+            Icons.search,
+            color: ColorUtil.mainColor,
+          ),
         ),
       ),
       enabled: true,
@@ -53,7 +68,7 @@ class _SearchBarState extends State<SearchBar> {
         }
       },
       textInputAction: TextInputAction.search,
-    );
+    ),);
 
     if (widget.tapField != null) {
       searchInputField = InkWell(
@@ -65,15 +80,15 @@ class _SearchBarState extends State<SearchBar> {
     }
 
     var searchBar = Container(
-      padding: const EdgeInsets.only(right: 10),
       height: kToolbarHeight,
       child: Row(
         children: [
           Expanded(
             child: Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                padding: const EdgeInsets.all(0),
                 child: searchInputField),
           ),
+          SizedBox(width: ScreenUtil().setSp(16),),
           widget.rightWidget ?? SizedBox.shrink()
         ],
       ),

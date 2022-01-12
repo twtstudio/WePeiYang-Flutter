@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
-import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 typedef LikeCallback = void Function(bool, int);
@@ -71,15 +70,11 @@ class _NCommentCardState extends State<NCommentCard> {
               widget.comment.nickname ?? S.current.feedback_anonymous,
               maxLines: 1,
               overflow: TextOverflow.clip,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 14, color: ColorUtil.lightTextColor),
+              style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
             ),
             Text(
               DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.comment.createAt),
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 10,
-                color: ColorUtil.lightTextColor,
-              ),
+              style: TextUtil.base.NotoSansSC.w400.normal.sp(10).grey6C,
             ),
           ],
         ),),
@@ -95,9 +90,7 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var commentContent = Text(
       widget.comment.content,
-      style: FontManager.YaHeiRegular.copyWith(
-        color: ColorUtil.boldTextColor,
-      ),
+      style: TextUtil.base.w400.NotoSansSC.normal.black2A.sp(14),
     );
 
     var floor = IconButton(
@@ -134,18 +127,18 @@ class _NCommentCardState extends State<NCommentCard> {
       ),
     );
 
-    var reportWidget = IconButton(
-        iconSize: 20,
-        padding: const EdgeInsets.all(2),
-        constraints: BoxConstraints(),
-        icon: Icon(
-          Icons.warning_amber_rounded,
-          color: ColorUtil.lightTextColor,
-        ),
-        onPressed: () {
-          Navigator.pushNamed(context, FeedbackRouter.report,
-              arguments: ReportPageArgs(widget.comment.id, false));
-        });
+    // var reportWidget = IconButton(
+    //     iconSize: 20,
+    //     padding: const EdgeInsets.all(2),
+    //     constraints: BoxConstraints(),
+    //     icon: Icon(
+    //       Icons.warning_amber_rounded,
+    //       color: ColorUtil.lightTextColor,
+    //     ),
+    //     onPressed: () {
+    //       Navigator.pushNamed(context, FeedbackRouter.report,
+    //           arguments: ReportPageArgs(widget.comment.id, false));
+    //     });
 
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
