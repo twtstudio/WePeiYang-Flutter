@@ -1,18 +1,20 @@
-import 'dart:io';
 import 'dart:convert' show jsonDecode;
+import 'dart:io';
+
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:location_permissions/location_permissions.dart';
-
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+
+import 'report_loading_dialog.dart';
 
 enum _Page { report, list }
 
@@ -107,20 +109,30 @@ class _ReportMainPageState extends State<ReportMainPage> {
     unSelected = model.check();
     LocationData locationData = model.data[ReportPart.currentLocation];
     if (unSelected.isEmpty && locationData.address.isNotEmpty) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return ReportLoadingDialog();
+        },
+      );
       ToastProvider.running('上传中');
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
       reportDio.report(
           data: model.data,
-          onResult: () {
+          onResult: () async {
             CommonPreferences().reportTime.value = DateTime.now().toString();
+            Navigator.pop(context);
             ToastProvider.success('上传成功');
             clearAll.value = !clearAll.value;
             model.clearAll();
+            await Future.delayed(const Duration(milliseconds: 1500));
             _showReportDialog();
           },
           onFailure: (e) {
+            Navigator.pop(context);
             ToastProvider.error('上传失败:${e.error.toString()}');
           });
     } else {
@@ -183,6 +195,18 @@ class _ReportMainPageState extends State<ReportMainPage> {
             CurrentState(),
             Builder(
               builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
+            ),
+            SizedBox(height: 40),
+            Text(
+              "若无法填报成功可前往网页版填报(长按复制)",
+              style: TextStyle(color: Color(0x8862677b), fontSize: 10),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            SelectableText(
+              "https://i.twt.edu.cn/#/report",
+              style: TextStyle(color: Color(0xff62677b), fontSize: 14),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
           ],
