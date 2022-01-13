@@ -8,15 +8,15 @@ typedef NotifierCallback = Future<void> Function(
 
 class LikeWidget extends StatefulWidget {
   final int count;
-  final bool isLiked;
+  final bool isLike;
   final NotifierCallback onLikePressed;
 
   final ValueNotifier<int> countNotifier;
   final ValueNotifier<bool> isLikedNotifier;
 
-  LikeWidget({this.count, this.isLiked, this.onLikePressed})
+  LikeWidget({this.count, this.isLike, this.onLikePressed})
       : countNotifier = ValueNotifier(count),
-        isLikedNotifier = ValueNotifier(isLiked);
+        isLikedNotifier = ValueNotifier(isLike);
 
   @override
   _LikeWidgetState createState() => _LikeWidgetState();

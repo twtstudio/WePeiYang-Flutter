@@ -26,6 +26,7 @@ class Post {
     this.isLike,
     this.isDis,
     this.isFav,
+    this.isOwner,
     this.imageUrls,
     this.department,
   });
@@ -46,6 +47,7 @@ class Post {
   bool isLike;
   bool isDis;
   bool isFav;
+  bool isOwner;
   List<String> imageUrls;
   Department department;
 
@@ -60,14 +62,15 @@ class Post {
     favCount: json["fav_count"],
     likeCount: json["like_count"],
     rating: json["rating"],
-    tag: Tag.fromJson(json["tag"]),
+    tag: json["tag"] == null ? null : Tag.fromJson(json["tag"]),
     floors: List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
     commentCount: json["comment_count"],
     isLike: json["is_like"],
     isDis: json["is_dis"],
     isFav: json["is_fav"],
+    isOwner: json["is_owner"],
     imageUrls: List<String>.from(json["image_urls"].map((x) => x)),
-    department: Department.fromJson(json["department"]),
+    department: json["department"] == null ? null : Department.fromJson(json["department"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -87,6 +90,7 @@ class Post {
     "is_like": isLike,
     "is_dis": isDis,
     "is_fav": isFav,
+    "is_owner": isOwner,
     "image_urls": List<dynamic>.from(imageUrls.map((x) => x)),
     "department": department.toJson(),
   };
@@ -131,7 +135,12 @@ class Floor {
     this.imageUrl,
     this.replyTo,
     this.replyToName,
+    this.subTo,
     this.likeCount,
+    this.subFloors,
+    this.isLike,
+    this.isDis,
+    this.isOwner,
   });
 
   int id;
@@ -143,7 +152,12 @@ class Floor {
   String imageUrl;
   int replyTo;
   String replyToName;
+  int subTo;
   int likeCount;
+  List<Floor> subFloors;
+  bool isLike;
+  bool isDis;
+  bool isOwner;
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
     id: json["id"],
@@ -155,7 +169,12 @@ class Floor {
     imageUrl: json["image_url"],
     replyTo: json["reply_to"],
     replyToName: json["reply_to_name"],
+    subTo: json["sub_to"],
     likeCount: json["like_count"],
+    subFloors: json["sub_floors"] == null ? null : List<Floor>.from(json["sub_floors"].map((x) => Floor.fromJson(x))),
+    isLike: json["is_like"],
+    isDis: json["is_dis"],
+    isOwner: json["is_owner"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -168,7 +187,12 @@ class Floor {
     "image_url": imageUrl,
     "reply_to": replyTo,
     "reply_to_name": replyToName,
+    "sub_to": subTo,
     "like_count": likeCount,
+    "sub_floors": subFloors == null ? null : List<dynamic>.from(subFloors.map((x) => x.toJson())),
+    "is_like": isLike,
+    "is_dis": isDis,
+    "is_owner": isOwner,
   };
 
   // changeLikeStatus() {

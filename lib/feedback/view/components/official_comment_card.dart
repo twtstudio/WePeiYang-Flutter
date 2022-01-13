@@ -81,7 +81,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         );
         return true;
       },
-      isLiked: widget.comment.isLiked,
+      isLike: widget.comment.isLiked,
     );
 
     Widget starWidget;

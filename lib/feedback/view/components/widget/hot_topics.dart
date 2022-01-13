@@ -81,7 +81,7 @@ class _HotTopicsCardState extends State<HotTopicsCard> {
         );
         return true;
       },
-      isLiked: widget.comment.isLiked,
+      isLike: widget.comment.isLiked,
     );
 
     Widget starWidget;

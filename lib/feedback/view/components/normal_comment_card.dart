@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -74,7 +76,7 @@ class _NCommentCardState extends State<NCommentCard> {
             ),
             Text(
               DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.comment.createAt),
-              style: TextUtil.base.NotoSansSC.w400.normal.sp(10).grey6C,
+              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
             ),
           ],
         ),),
@@ -142,21 +144,21 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var likeWidget = LikeWidget(
       count: widget.comment.likeCount,
-      // onLikePressed: (isLiked, count,success,failure) async {
-      //   await FeedbackService.commentHitLike(
-      //     id: widget.comment.id,
-      //     isLiked: widget.comment.isLiked,
-      //     onSuccess: () {
-      //       widget.likeSuccessCallback?.call(!isLiked, count);
-      //       success.call();
-      //     },
-      //     onFailure: (e) {
-      //       ToastProvider.error(e.error.toString());
-      //       failure.call();
-      //     },
-      //   );
-      // },
-      // isLiked: widget.comment.isLiked
+      onLikePressed: (isLiked, count,success,failure) async {
+        await FeedbackService.commentHitLike(
+          id: widget.comment.id,
+          isLike: widget.comment.isLike,
+          onSuccess: () {
+            widget.likeSuccessCallback?.call(!isLiked, count);
+            success.call();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            failure.call();
+          },
+        );
+      },
+      isLike: widget.comment.isLike
     );
 
     var bottomWidget = Row(

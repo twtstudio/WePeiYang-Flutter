@@ -85,6 +85,10 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getTags() async {
+
+  }
+
   static getPosts(
       {keyword,
       departmentId,
@@ -195,7 +199,7 @@ class FeedbackService with AsyncTimer {
 
   static Future<void> postHitLike({
     @required id,
-    @required bool isLiked,
+    @required bool isLike,
     @required OnSuccess onSuccess,
     @required OnFailure onFailure,
   }) async {
@@ -204,7 +208,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post('post/likeOrUnlike/modify',
             formData: FormData.fromMap({
               'post_id': '$id',
-              'op': isLiked ? 0 : 1,
+              'op': isLike ? 0 : 1,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
@@ -253,18 +257,17 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  ///暂时没有接口，后面改
   static Future<void> commentHitLike(
       {@required id,
-      @required bool isLiked,
+      @required bool isLike,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitLike', () async {
       try {
-        await feedbackDio.post(isLiked ? 'commit/dislike' : 'commit/like',
+        await feedbackDio.post('floor/likeOrUnlike/modify',
             formData: FormData.fromMap({
-              'id': '$id',
-              'token': CommonPreferences().feedbackToken.value,
+              'floor_id': '$id',
+              'op': isLike ? 0 : 1,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
@@ -452,12 +455,12 @@ class FeedbackService with AsyncTimer {
       {@required id,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('deletePost', () async {
+    AsyncTimer.runRepeatChecked('deleteFloor', () async {
       try {
         await feedbackDio.get(
           'floor/delete',
           queryParameters: {
-            'floor_id': id,
+            'floor_id': '$id',
           },
         );
         onSuccess?.call();

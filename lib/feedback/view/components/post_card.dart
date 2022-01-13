@@ -223,7 +223,7 @@ class _PostCardState extends State<PostCard> {
       onLikePressed: (isLike, likeCount, success, failure) async {
         await FeedbackService.postHitLike(
           id: post.id,
-          isLiked: post.isLike,
+          isLike: post.isLike,
           onSuccess: () {
             widget.onLikePressed?.call(!isLike, likeCount);
             post.isLike = !isLike;
@@ -236,7 +236,7 @@ class _PostCardState extends State<PostCard> {
           },
         );
       },
-      isLiked: post.isLike,
+      isLike: post.isLike,
     );
 
     var dislikeWidget = LikeButton(
