@@ -1,20 +1,25 @@
 package com.twt.service.push
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.PushManager
 import com.twt.service.BuildConfig
 import com.twt.service.MainActivity
 import com.twt.service.WBYApplication
+import com.twt.service.common.CanPushType
 import com.twt.service.common.IntentEvent
+import com.twt.service.common.WbySharePreference
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -24,6 +29,17 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 
 
+// 和产品商量后不获取这两个权限：WRITE_EXTERNAL_STORAGE , READ_PHONE_STATE
+//    sd卡权限不要可能cid会变化
+//    read_phone那个可能影响cid唯一性
+
+// 微北洋推送流程：
+// 1.用户没有登录时不初始化sdk，不开启推送
+// 2.用户登陆时确认过《隐私政策》后，进入主页后 初始化个推 sdk（推送服务默认是开启状态），如果这时候检测到通知权限没有，
+//   会弹窗引导用户打开推送，如果拒绝则关闭推送
+// 3.如果用户通过通知栏关闭了微北洋的推送服务，那默认用户想要关闭推送
+// 不管用户是否允许推送，只要确认了隐私权限就初始化 sdk
+
 class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     PluginRegistry.NewIntentListener, ActivityAware {
     private lateinit var channel: MethodChannel
@@ -31,106 +47,25 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private lateinit var receiver: PushBroadCastReceiver
     private lateinit var binding: ActivityPluginBinding
     private val pushManager by lazy { PushManager.getInstance() }
+    private var initSdk = false
+    private var goToPushPermissionPage = false
+
+    //    private lateinit var getPermissionResult: MethodChannel.Result
+    private lateinit var openNotificationCallback: Pair<MethodChannel.Result, () -> Unit>
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, "com.twt.service/push")
         context = binding.applicationContext
         channel.setMethodCallHandler(this)
+        // 从 Android 8.0（API 26）开始，所有的 Notification 都要指定 Channel
         createNotificationChannel()
-        initSdk()
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
-
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            "turnOnPushService" -> {
-                if (!pushManager.isPushTurnedOn(context)) {
-                    Log.d(TAG, "turnOnPushService")
-                    pushManager.turnOnPush(context)
-                }
-            }
-            "getCid" -> {
-                if (pushManager.isPushTurnedOn(context)) {
-                    result.success(pushManager.getClientid(context))
-                } else {
-                    result.error("", "", "")
-                }
-            }
-            "cancelNotification" -> {
-                call.argument<Int>("id")?.let {
-                    NotificationManagerCompat.from(context).cancel(it)
-                }
-                result.success("cancel success")
-            }
-            "turnOffPushService" -> {
-                if (pushManager.isPushTurnedOn(context)) {
-                    pushManager.turnOffPush(context)
-                }
-            }
-            "cancelAllNotification" -> {
-                NotificationManagerCompat.from(context).cancelAll()
-            }
-            "getIntentUri" -> {
-                getIntentUri(call,result)
-            }
-            else -> result.notImplemented()
+        // 如果用户同意了条款，并且打开通知权限，就初始化个推 sdk
+        runCatching(::initSdkWhenOpenApp).onFailure {
+            log("init sdk when open app failure : $it")
         }
     }
 
-    override fun onNewIntent(intent: Intent?): Boolean {
-        intent?.let {
-            handleIntent(it)
-            return true
-        }
-        return false
-    }
-
-    private fun handleIntent(intent: Intent) {
-        // 华为和小米厂商通道可以传递 data ，魅族厂商通道只能产地 extra ，所以只通过 extra 传递数据
-        when (intent.getStringExtra("type")) {
-            "feedback" -> {
-                val id = intent.getIntExtra("question_id", -1)
-                Log.d(TAG, "question_id : $id")
-                WBYApplication.eventList.add(
-                    Event(IntentEvent.FeedbackPostPage.type, id)
-                )
-            }
-            "mailbox" -> {
-                val url = intent.getStringExtra("url")
-                val title = intent.getStringExtra("title")
-                val data = mapOf("url" to url, "title" to title)
-                WBYApplication.eventList.add(
-                    Event(IntentEvent.MailBox.type, data)
-                )
-            }
-        }
-    }
-
-    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        handleIntent(binding.activity.intent)
-        val intentFilter = IntentFilter()
-        receiver = PushBroadCastReceiver(binding, channel)
-        this.binding = binding
-        val localBroadcastManager = LocalBroadcastManager.getInstance(context)
-        Log.d(TAG, context.applicationContext.toString())
-        intentFilter.addAction(DATA)
-        intentFilter.addAction(CID)
-        intentFilter.addDataScheme("twtstudio")
-        localBroadcastManager.registerReceiver(receiver, intentFilter)
-        binding.addOnNewIntentListener(this)
-    }
-
-    override fun onDetachedFromActivityForConfigChanges() {}
-
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
-
-    override fun onDetachedFromActivity() {
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
-    }
-
+    // 创建通知 channel
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "通知"
@@ -147,49 +82,455 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         }
     }
 
-    private fun initSdk() {
+    // 如果用户同意了条款，就初始化个推 sdk，如果用户没有允许推送，或者没有权限，就关闭推送
+    private fun initSdkWhenOpenApp() {
+        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown.value }
+            ?.runCatching {
+                initGeTuiSdk()
+                this
+            }?.onSuccess {
+                initSdk = true
+                log("init push sdk success when open app")
+                if ((it.canPush != CanPushType.Want.value) || !isNotificationEnabled) {
+                    it.setCanPush(CanPushType.Not)
+                    runCatching { pushManager.turnOffPush(context) }.onSuccess {
+                        Toast.makeText(
+                            context,
+                            "don't allow push ,so turn off push service",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        log("don't allow push ,so turn off push service")
+                    }
+                }
+            }?.onFailure { throw it }
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+
+    private fun showRequestNotificationDialog() {
+        channel.invokeMethod("showRequestNotificationDialog", null, object : MethodChannel.Result {
+            override fun success(result: Any?) {
+                when (result) {
+                    "ok" -> {
+                        WbySharePreference.setCanPush(CanPushType.Want)
+                        val (result2, _) = openNotificationCallback
+                        requestPushPermissionBy(result2, ::openNotificationConfigPage)
+                    }
+                    "refuse" -> {
+                        log("user refuse that request to open push")
+                        WbySharePreference.setCanPush(CanPushType.Not)
+                        val (result2, _) = openNotificationCallback
+                        result2.success("refuse open push")
+                    }
+                }
+            }
+
+            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                val (result, _) = openNotificationCallback
+                result.error(OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR, errorMessage, errorDetails)
+            }
+
+            override fun notImplemented() {
+                val (result, _) = openNotificationCallback
+                result.error(FATAL_ERROR, "", "")
+            }
+        })
+    }
+
+    fun continueDoUnCompleteWork() {
+        if (goToPushPermissionPage) {
+            goToPushPermissionPage = false
+            val (result2, todo) = openNotificationCallback
+            log("continue do $todo")
+            checkNotificationAnd(result2, todo) {
+                WbySharePreference.setCanPush(CanPushType.Not)
+                result2.success("refuse open push")
+                log("don't allow permission")
+            }
+        }
+    }
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            // 个推 sdk 初始化，开启推送，关闭推送，获取当前是否接收推送
+            "initGeTuiSdk" -> {
+                // 这个方法每次进入主页都会调用，所以要先判断用户是否进入过主页，美金如果主页则 canPush = Unknown
+                // 若进入过主页，则 canPush = Want / Not
+                if (WbySharePreference.canPush == CanPushType.Unknown.value) {
+                    // 个推默认在初始化 sdk 后开启推送
+                    // 认为用户在同意隐私协议后同意接收推送
+                    WbySharePreference.setCanPush(CanPushType.Want)
+                    log("initGeTuiSdk")
+                    runCatching {
+                        initGeTuiSdk()
+                    }.onSuccess {
+                        if (isNotificationEnabled) {
+                            result.success("open push service success")
+                        } else {
+                            pushManager.turnOffPush(context)
+                            requestPushPermissionBy(result, ::showRequestNotificationDialog)
+                        }
+                    }.onFailure {
+                        result.error(INIT_GT_SDK_ERROR, it.message, it.toString())
+                    }
+                }
+            }
+            // 用户在设置中打开了推送选项，
+            "turnOnPushService" -> {
+                // 既然用户选择打开推送，则必然用户想要接收推送
+                WbySharePreference.setCanPush(CanPushType.Want)
+                log("turn on push service")
+                requestPushPermissionBy(result, ::openNotificationConfigPage)
+            }
+            "turnOffPushService" -> {
+                WbySharePreference.setCanPush(CanPushType.Not)
+                runCatching {
+                    if (pushManager.isPushTurnedOn(context)) {
+                        pushManager.turnOffPush(context)
+                    }
+                }.onSuccess {
+                    log("turn off push service success")
+                    result.success("")
+                }.onFailure {
+                    log("turn off push service error : $it")
+                    result.error("", "", "")
+                }
+            }
+            "getCurrentCanReceivePush" -> {
+                runCatching {
+                    pushManager.areNotificationsEnabled(context)
+                }.onSuccess {
+                    log("get current can receive push success")
+                    result.success(it)
+                }.onFailure {
+                    log("get current can receive push error : $it")
+                    result.error("", "", "")
+                }
+            }
+
+            "getCid" -> {
+                runCatching {
+                    if (pushManager.isPushTurnedOn(context)) {
+                        pushManager.getClientid(context)
+                    } else {
+                        null
+                    }
+                }.onSuccess {
+                    log("get cid success : $it")
+                    result.success(it)
+                }.onFailure {
+                    log("get cid error : $it")
+                    result.error("", "", "")
+                }
+            }
+            "cancelNotification" -> {
+                runCatching {
+                    val id = call.argument<Int>("id")
+                    if (id == null) {
+                        result.error("", "", "")
+                        return
+                    }
+                    NotificationManagerCompat.from(context).cancel(id)
+                    id
+                }.onSuccess {
+                    log("cancel notification success id : $it")
+                    result.success("cancel success")
+                }.onFailure {
+                    log("cancel notification failure throwable: $it")
+                    result.error("", "", it.message)
+                }
+            }
+            "cancelAllNotification" -> {
+                runCatching {
+                    NotificationManagerCompat.from(context).cancelAll()
+                }.onSuccess {
+                    log("cancel all notification success")
+                    result.success("")
+                }.onFailure {
+                    log("cancel all notification error : $it")
+                    result.error("", "", "")
+                }
+            }
+            "getIntentUri" -> {
+                getIntentUri(call, result)
+            }
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun initGeTuiSdk() {
         pushManager.initialize(context)
-        pushManager.turnOffPush(context)
+        log("init push sdk success")
         if (BuildConfig.DEBUG) {
             pushManager.setDebugLogger(context) { s -> Log.i(TAG, s) }
         }
     }
 
-    private fun getIntentUri(call:MethodCall,result: MethodChannel.Result) {
+    private fun turnOnPushService() {
+        if (!pushManager.isPushTurnedOn(context)) {
+            pushManager.turnOnPush(context)
+        }
+    }
+
+    // 检查是否具有权限：WRITE_EXTERNAL_STORAGE , READ_PHONE_STATE
+    // sd卡权限不要可能cid会变化
+    // read_phone那个可能影响cid唯一性
+    // 和产品商量后，暂时不要这两个权限
+    @Suppress("unused")
+    private fun checkPermissionAnd(todo: () -> Unit) {
+        if (checkPermission) {
+            todo()
+        } else {
+            // TODO: 我寻思着是不是把微北洋最低支持版本提高到 6.0
+            if (Build.VERSION.SDK_INT >= 23) {
+                binding.activity.requestPermissions(
+                    arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE
+                    ),
+                    REQUEST_NOTIFICATION_PERMISSION
+                )
+            }
+        }
+    }
+
+    private fun checkNotificationAnd(
+        result: MethodChannel.Result,
+        todo: () -> Unit,
+        notAllow: (() -> Unit) -> Unit
+    ) {
+        log("check notification $todo")
+        // 做双重检查，主要是两个方式不一样，一个是 NotificationManagerCompat
+        // 一个是 NotificationManagerCompat + AppOpsManager 反射挺搞
+        result.runCatching {
+            if (isNotificationEnabled) {
+                runCatching(todo).onSuccess {
+                    log("invoke $todo success")
+                    success("open push service success")
+                }.onFailure {
+                    log("invoke $todo method error : $it")
+                    error(
+                        OPEN_PUSH_SERVICE_ERROR,
+                        "invoke method $todo error when enable notification",
+                        it.message
+                    )
+                }
+            } else {
+                notAllow(todo)
+            }
+        }.onFailure {
+            log("check notification error : $it")
+            result.error(CHECK_NOTIFICATION_ENABLE_ERROR, "", it.message)
+        }
+    }
+
+    private fun requestPushPermissionBy(result: MethodChannel.Result, send: () -> Unit) {
+        checkNotificationAnd(result, ::turnOnPushService) { todo ->
+            openNotificationCallback = result to todo
+            runCatching(send).onFailure {
+                log("open notification config page error : $it")
+                result.error(OPEN_NOTIFICATION_CONFIG_PAGE_ERROR, "", it.message)
+            }
+        }
+    }
+
+    // 打开系统通知权限页面
+    private fun openNotificationConfigPage() {
+        // 参考个推 demo
+        val intent = Intent().apply {
+            when {
+                Build.VERSION.SDK_INT >= 26 -> {
+                    // android 8.0引导
+                    action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                    putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
+                }
+                Build.VERSION.SDK_INT >= 21 -> {
+                    // android 5.0-7.0
+                    action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                    putExtra("app_package", context.packageName)
+                    putExtra("app_uid", context.applicationInfo.uid)
+                }
+                else -> {
+                    // 其他
+                    action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+            }
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        goToPushPermissionPage = true
+        binding.activity.startActivity(intent)
+        // 这里很坑，因为你打开权限页后，activity自动重启
+    }
+
+    private val isNotificationEnabled: Boolean
+        get() = NotificationManagerCompat.from(context)
+            .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
+
+    // 和产品商量过，暂时不用这两个权限
+    private val checkPermission: Boolean
+        get() {
+            val pkgManager: PackageManager = context.packageManager
+
+            // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
+            val sdCardWritePermission = pkgManager.checkPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                context.packageName
+            ) == PackageManager.PERMISSION_GRANTED
+
+            // read phone state用于获取 imei 设备信息
+            val phoneSatePermission = pkgManager.checkPermission(
+                Manifest.permission.READ_PHONE_STATE,
+                context.packageName
+            ) == PackageManager.PERMISSION_GRANTED
+            // 在5.0及以下的android系统上并没有动态请求权限的方法，不过我们可以在获得这些权限时，try catch
+            // 如果报错意味着我们没有这些权限，这时候提示用户打开权限也是可以实现判断的目的的。
+            return sdCardWritePermission && phoneSatePermission
+        }
+
+    // 点击通知进入微北洋，若应用未在后台，会传递intent，并在 onCreate 中解析
+    // 若在后台，就调用 onNewIntent
+    // 什么情况会调用 handleInent:
+    //    1.推送（通知栏）：
+    //       Ⅰ：青年湖底推送
+    //       Ⅱ：天外天官方推送
+    //       Ⅲ：热修复通知推送
+    //    2.点击桌面小组件：暂时只有课程表小组件
+    private fun handleIntent(intent: Intent) {
+        // 华为和小米厂商通道可以传递 data ，魅族厂商通道只能产地 extra ，所以只通过 extra 传递数据
+        log("WbyPushPlugin handle intent : $intent")
+        when (intent.getStringExtra("type")) {
+            "feedback" -> {
+                val id = intent.getIntExtra("question_id", -1)
+                log("question_id : $id")
+                WBYApplication.eventList.add(
+                    Event(IntentEvent.FeedbackPostPage.type, id)
+                )
+            }
+            "mailbox" -> {
+                val url = intent.getStringExtra("url")
+                val title = intent.getStringExtra("title")
+                val data = mapOf("url" to url, "title" to title)
+                WBYApplication.eventList.add(
+                    Event(IntentEvent.MailBox.type, data)
+                )
+            }
+            "update" -> {
+                // 默认是重要更新
+                val versionCode = intent.getIntExtra("versionCode", 0)
+                val fixCode = intent.getIntExtra("fixCode", 0)
+                val url = intent.getStringExtra("url") ?: ""
+                val data = mapOf(
+                    "versionCode" to versionCode,
+                    "fixCode" to fixCode,
+                    "url" to url,
+                )
+                WBYApplication.eventList.add(
+                    Event(IntentEvent.Update.type, data)
+                )
+            }
+        }
+    }
+
+    // 设置 MainActivity:  android:launchMode="singleInstance"
+    // 若 activity 进程还在，则调用 onNewIntent，
+    // 若 activity 进程没有，则调用 onCreate
+    override fun onNewIntent(intent: Intent?): Boolean {
+        intent?.let {
+            handleIntent(it)
+            return true
+        }
+        return false
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        handleIntent(binding.activity.intent)
+        binding.addOnNewIntentListener(this)
+        this.binding = binding
+        runCatching(::initLocalBroadcast)
+    }
+
+    // 初始化 LocalBroadcast
+    private fun initLocalBroadcast() {
+        receiver = PushBroadCastReceiver(binding, channel)
+        val intentFilter = IntentFilter().apply {
+            addAction(DATA)
+            addAction(CID)
+            addDataScheme("twtstudio")
+        }
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
+        log("init local broadcast success")
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {}
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
+
+    // 注销 LocalBroadcast
+    override fun onDetachedFromActivity() {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
+    }
+
+    // 获取发送通知打开具体页面所用的 intent
+    private fun getIntentUri(call: MethodCall, result: MethodChannel.Result) {
         val intent = Intent(context, MainActivity::class.java).apply {
             setPackage(context.packageName)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
 
-        when(call.argument<String>("type")){
+        when (call.argument<String>("type")) {
             "feedback" -> {
                 val id = call.argument<Int>("question_id")
-                if (id == null){
-                    result.error("-1","question_id can't be null!","")
+                if (id == null) {
+                    result.error("-1", "question_id can't be null!", "")
                     return
                 }
 
                 val intentUri = intent.apply {
                     data = Uri.parse("twtstudio://weipeiyang.app/feedback?")
                     putExtra("question_id", id)
+                    putExtra("type", "feedback")
                 }.toUri(Intent.URI_INTENT_SCHEME)
 
+                log("get feedback intent success : $intentUri")
                 result.success(intentUri)
             }
             "mailbox" -> {
                 val url = call.argument<String>("url")
                 val title = call.argument<String>("title")
-                if (url.isNullOrBlank() || title.isNullOrBlank()){
-                    result.error("-1","url and title can't be null!","")
+                if (url.isNullOrBlank() || title.isNullOrBlank()) {
+                    result.error("-1", "url and title can't be null!", "")
                     return
                 }
 
                 val intentUri = intent.apply {
                     data = Uri.parse("twtstudio://weipeiyang.app/mailbox?")
-                    putExtra("url", "www.twt.edu.cn")
-                    putExtra("title","twt")
+                    putExtra("url", url)
+                    putExtra("title", title)
+                    putExtra("type", "mailbox")
                 }.toUri(Intent.URI_INTENT_SCHEME)
 
+                log("get mailbox intent success : $intentUri")
+                result.success(intentUri)
+            }
+            "update" -> {
+                val versionCode = call.argument<Int>("versionCode") ?: 0
+                val fixCode = call.argument<Int>("fixCode") ?: 0
+                val url = call.argument<String>("url") ?: ""
+                // 默认是重要修复
+                val importance = call.argument<Int>("importance") ?: 1
+
+                val intentUri = intent.apply {
+                    data = Uri.parse("twtstudio://weipeiyang.app/mailbox?")
+                    putExtra("url", url)
+                    putExtra("versionCode", versionCode)
+                    putExtra("fixCode", fixCode)
+                    putExtra("type", "update")
+                }.toUri(Intent.URI_INTENT_SCHEME)
+
+                log("get update intent success : $intentUri")
                 result.success(intentUri)
             }
             else -> result.notImplemented()
@@ -200,5 +541,15 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         const val DATA = "com.twt.service.PUSH_DATA"
         const val CID = "com.twt.service.PUSH_TOKEN"
         const val TAG = "WBY_PUSH"
+        const val REQUEST_NOTIFICATION_PERMISSION = 303
+
+        const val OPEN_PUSH_SERVICE_ERROR = "OPEN_PUSH_SERVICE_ERROR"
+        const val OPEN_NOTIFICATION_CONFIG_PAGE_ERROR = "OPEN_NOTIFICATION_CONFIG_PAGE_ERROR"
+        const val CHECK_NOTIFICATION_ENABLE_ERROR = "CHECK_NOTIFICATION_ENABLE_ERROR"
+        const val INIT_GT_SDK_ERROR = "INIT_GT_SDK_ERROR"
+
+        const val OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR = "OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR"
+        const val FATAL_ERROR = "FATAL_ERROR"
+        fun log(message: String) = Log.d(TAG, message)
     }
 }

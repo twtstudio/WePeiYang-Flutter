@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/update/common.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 
 class UpdateDialog {
@@ -50,10 +50,12 @@ class UpdateDialog {
     }
   }
 
-  UpdateDialog(BuildContext context,
-      {@required VoidCallback onUpdate,
-      @required VoidCallback onInstall,
-      Version version}) {
+  UpdateDialog(
+      BuildContext context, {
+        VoidCallback onUpdate,
+        @required VoidCallback onInstall,
+        Version version,
+      }) {
     _context = context;
     _widget = UpdateWidget(
       onUpdate: onUpdate,
@@ -64,14 +66,28 @@ class UpdateDialog {
 
   /// 显示版本更新提示框
   static UpdateDialog showUpdate(
-    BuildContext context, {
-    @required VoidCallback onUpdate,
-    @required VoidCallback onInstall,
-    Version version,
-  }) {
+      BuildContext context, {
+        @required VoidCallback onUpdate,
+        @required VoidCallback onInstall,
+        Version version,
+      }) {
     UpdateDialog dialog = UpdateDialog(
       context,
       onUpdate: onUpdate,
+      onInstall: onInstall,
+      version: version,
+    );
+    dialog.show();
+    return dialog;
+  }
+
+  static UpdateDialog showInstall(
+      BuildContext context, {
+        @required VoidCallback onInstall,
+        Version version,
+      }) {
+    UpdateDialog dialog = UpdateDialog(
+      context,
       onInstall: onInstall,
       version: version,
     );
@@ -94,7 +110,7 @@ class UpdateWidget extends StatefulWidget {
   final Version version;
 
   UpdateWidget({
-    @required this.onUpdate,
+    this.onUpdate,
     this.updateButtonText = '点击更新',
     this.installButtonText = '安装',
     this.version,
@@ -138,6 +154,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isUpdate = widget.onUpdate != null && widget.onInstall != null;
     double dialogWidth = WePeiYangApp.screenWidth * 0.7;
     String versionDetail = '更新内容:';
     int index = 0;
@@ -149,21 +166,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
       index++;
     });
 
-    var updateButton = FractionallySizedBox(
-      widthFactor: 1,
-      child: ElevatedButton(
-        child: Text(widget.updateButtonText, style: normalStyle),
-        onPressed: widget.onUpdate,
-        style: ButtonStyle(
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          elevation: MaterialStateProperty.all(0),
-          overlayColor: MaterialStateProperty.all(Colors.grey[300]),
-          backgroundColor: MaterialStateProperty.all(Colors.transparent),
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
-        ),
-      ),
-    );
+    Widget content;
 
     var installButton = FractionallySizedBox(
       widthFactor: 1,
@@ -180,6 +183,34 @@ class _UpdateWidgetState extends State<UpdateWidget> {
         ),
       ),
     );
+
+    if (isUpdate) {
+      var updateButton = FractionallySizedBox(
+        widthFactor: 1,
+        child: ElevatedButton(
+          child: Text(widget.updateButtonText, style: normalStyle),
+          onPressed: widget.onUpdate,
+          style: ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            elevation: MaterialStateProperty.all(0),
+            overlayColor: MaterialStateProperty.all(Colors.grey[300]),
+            backgroundColor: MaterialStateProperty.all(Colors.transparent),
+            shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+          ),
+        ),
+      );
+
+      content = progress < 0
+          ? updateButton
+          : progress == 0
+          ? Center(child: Text("请稍等", style: normalStyle))
+          : progress >= 1.0
+          ? installButton
+          : NumberProgress(progress);
+    } else {
+      content = installButton;
+    }
 
     return Material(
       type: MaterialType.transparency,
@@ -232,13 +263,13 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                           children: [
                             Text("版本: ", style: detailStyle),
                             FutureBuilder(
-                                future: CommonUtils.getVersion(),
+                                future: UpdateUtil.getVersion(),
                                 builder: (_, AsyncSnapshot<String> snapshot) =>
-                                    snapshot.hasData
-                                        ? Text(
-                                            "${snapshot.data} => ${widget.version.version}",
-                                            style: detailStyle)
-                                        : Container()),
+                                snapshot.hasData
+                                    ? Text(
+                                    "${snapshot.data} => ${widget.version.version}",
+                                    style: detailStyle)
+                                    : Container()),
                           ],
                         ),
                         SizedBox(height: 3),
@@ -248,13 +279,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                           color: const Color(0xffACAEBA),
                         ),
                         SizedBox(height: 5),
-                        progress < 0
-                            ? updateButton
-                            : progress == 0
-                                ? Center(child: Text("请稍等", style: normalStyle))
-                                : progress >= 1.0
-                                    ? installButton
-                                    : NumberProgress(progress),
+                        content,
                         SizedBox(height: 10),
                       ],
                     ),

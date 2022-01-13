@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/message/message_router.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -88,12 +89,10 @@ class _MailItemState extends State<MailItem> {
       child: GestureDetector(
         onTapUp: (_) {
           if (widget.data.url != "") {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    MailPage(url: widget.data.url, title: widget.data.title),
-              ),
+              MessageRouter.htmlMailPage,
+              arguments: {"url": widget.data.url, "title": widget.data.title},
             );
           }
         },

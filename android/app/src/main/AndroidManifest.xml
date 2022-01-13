@@ -38,11 +38,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--用于申请调用A-GPS模块-->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
 <!--    华为更改角标权限 ，据官网说是-->
-    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>
+<!--    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>-->
 
     <!--url_launcher-->
     <!-- Provide required visibility configuration for API level 30 and above -->
@@ -65,7 +65,9 @@
         android:name=".WBYApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/label"
-        tools:replace="android:label">
+        tools:replace="android:label"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
 
         <activity
             android:name=".MainActivity"

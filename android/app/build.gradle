@@ -58,17 +58,18 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                HUAWEI_APP_ID  : "103402255",
+                HUAWEI_APP_ID   : "103402255",
 
-                XIAOMI_APP_ID  : "2882303761517785783",
-                XIAOMI_APP_KEY : "5851778525783",
+                XIAOMI_APP_ID   : "2882303761517785783",
+                XIAOMI_APP_KEY  : "5851778525783",
 
-                MEIZU_APP_ID   : "146410",
-                MEIZU_APP_KEY  : "77b312b3e3b9497bb25298911f7b14d7",
+                MEIZU_APP_ID    : "146410",
+                MEIZU_APP_KEY   : "77b312b3e3b9497bb25298911f7b14d7",
 
-                VIVO_APP_ID    : "105266463",
-                VIVO_APP_KEY   : "40e5b229553e31f1842b80915781e2e8",
+                VIVO_APP_ID     : "105266463",
+                VIVO_APP_KEY    : "40e5b229553e31f1842b80915781e2e8",
 
+                // 移除 Gradle 中 GETUI_APP_KEY、GETUI_APP_SECRET、配置，GETUI_APP_ID 改为 GETUI_APPID, AndroidManifest 中仅保留 GETUI_APPID 占位符。
                 // project
 //                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
 //                GETUI_APP_KEY   : "lMfDbXITSXALHE5EtfZv6A",
@@ -84,7 +85,7 @@ android {
 
         ndk {
             // 注意：这里需要添加项目所需 CPU 类型的最小集
-            abiFilters "arm64-v8a", "x86", "armeabi-v7a"
+            abiFilters "arm64-v8a"
         }
     }
 
@@ -104,8 +105,11 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.config
-            minifyEnabled false   // 删除无用代码
-            shrinkResources false // 删除无用资源
+//            minifyEnabled false   // 删除无用代码
+//            shrinkResources false // 删除无用资源
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources true // 删除无用资源
         }
 
         debug {
@@ -161,6 +165,7 @@ dependencies {
     implementation 'com.getui.opt:hwp:3.1.0'
     implementation 'com.getui.opt:xmp:3.1.0'
     // TODO: 还没有配置
+    // oppo集成有其他步骤
 //    implementation 'com.assist-v3:oppo:3.1.0'
     implementation 'com.assist-v3:vivo:3.1.0'
     implementation 'com.getui.opt:mzp:3.2.0'
@@ -168,10 +173,6 @@ dependencies {
     implementation 'com.huawei.hms:push:6.1.0.300'
 
 //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
-
-//    implementation  'com.umeng.umsdk:common:9.4.0'  // 基础组件库，必选
-//    implementation  'com.umeng.umsdk:asms:1.2.3'    // 基础组件库，必选
-//    implementation 'com.umeng.umsdk:link:1.1.0'     // 集成智能超链SDK，必选
 
 //    implementation "com.jakewharton.timber:timber:4.7.1"
 }

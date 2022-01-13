@@ -3,6 +3,7 @@ package com.twt.service.location
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
+import androidx.annotation.Keep
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
@@ -13,9 +14,8 @@ import io.flutter.plugin.common.MethodChannel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+// 大部分代码都是来自高德地图 demo
 object AMapFactory {
-
     fun init(placeChannel: MethodChannel, context: Context): AMapLocationClient {
         val locationClient = AMapLocationClient(context)
         val locationOption = getDefaultOption()
@@ -292,6 +292,7 @@ object AMapFactory {
     }
 }
 
+@Keep
 data class LocationData(
     val longitude: Double,
     val latitude: Double,

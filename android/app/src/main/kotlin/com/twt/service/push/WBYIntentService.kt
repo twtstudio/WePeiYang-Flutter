@@ -27,6 +27,7 @@ class WBYIntentService : GTIntentService() {
         }
     }
 
+    // 暂时不用透传，不过先写到这里，因为一些重要通知肯定要透传
     override fun onReceiveMessageData(context: Context?, msg: GTTransmitMessage?) {
         val appid = msg?.appid
         val taskid = msg?.taskId
@@ -53,8 +54,8 @@ class WBYIntentService : GTIntentService() {
         } else {
             val data = String(payload)
             Log.d(WbyPushPlugin.TAG, "receiver payload = $data")
-            val intent = IntentUtil.messageData(msg)
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+//            val intent = IntentUtil.messageData(msg)
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
         Log.d(
             WbyPushPlugin.TAG,

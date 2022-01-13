@@ -45,7 +45,7 @@ final feedbackDio = FeedbackDio();
 class FeedbackService with AsyncTimer {
   static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
     try {
-      var cid = await messageChannel.invokeMethod<String>("getCid");
+      var cid = await pushChannel.invokeMethod<String>("getCid");
       var response = await feedbackDio.post(
         'login',
         formData: FormData.fromMap({

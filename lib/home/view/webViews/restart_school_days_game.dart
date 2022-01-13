@@ -61,16 +61,9 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                   try {
                     Uint8List bytes =
                         base64.decode(message.message.split(",")[1]);
-                    List<Directory> tempDir =
-                        await getExternalStorageDirectories(
-                            type: StorageDirectory.pictures);
-                    var newImg = File(
-                        "${tempDir.first.path}/人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg")
-                      ..writeAsBytesSync(bytes);
-                    var channel = BasicMessageChannel(
-                        'com.twt.service/saveBase64Img', StringCodec());
-                    var result = await channel.send(newImg.absolute.path);
-                    if (result != null) ToastProvider.success("保存成功");
+                    final fileName =
+                        "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
+                    await WbyImageSave.saveImage(bytes, fileName);
                   } catch (_) {
                     ToastProvider.error('图片保存失败');
                   }
@@ -79,5 +72,19 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
         ),
       ),
     );
+  }
+}
+
+class WbyImageSave {
+  static final channel =
+      BasicMessageChannel('com.twt.service/saveBase64Img', StringCodec());
+
+  static Future<void> saveImage(Uint8List data, String fileName) async {
+    List<Directory> tempDir =
+        await getExternalStorageDirectories(type: StorageDirectory.pictures);
+    var newImg = File("${tempDir.first.path}/$fileName")
+      ..writeAsBytesSync(data);
+    var result = await channel.send(newImg.absolute.path);
+    if (result != null) ToastProvider.success("保存成功");
   }
 }

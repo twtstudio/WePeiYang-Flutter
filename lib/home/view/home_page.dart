@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
@@ -46,6 +49,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // WbyFontLoader.initFonts();
+      PushManager.getInstance().initGeTuiSdk();
       UpdateManager.checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {
@@ -53,6 +58,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       } else {
         CommonPreferences().reportTime.value = "";
       }
+
+      UmengCommonSdk.initCommon(
+        "60464782b8c8d45c1390e7e3",
+        "605440876ee47d382b8b74c3",
+        "Umeng",
+      ).then(
+            (_) {
+              debugPrint('init umeng success');
+              UmengCommonSdk.setPageCollectionModeManual();
+            },
+      );
+
       // 检查当前是否有未处理的事件
       context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
     });

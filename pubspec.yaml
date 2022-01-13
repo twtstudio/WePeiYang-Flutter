@@ -16,7 +16,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 4.1.7+82
+# 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
+# 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
+version: 4.1.9+81
 
 environment:
   sdk: ">=2.10.0 <3.0.0"

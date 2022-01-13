@@ -7,6 +7,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
+// 由于 flutter 引擎初始化有延迟，所以选择在进入微北洋主页后主动查看 eventList 中是否由未处理事件
 class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
@@ -29,7 +30,7 @@ class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     if (size > 1) {
                         removeLast()
                     }
-                    Log.d(TAG, size.toString())
+                    Log.d(TAG, "WBYApplication.eventList: $this")
                     if (event.type != -1) {
                         Log.d(TAG, event.toString())
                         result.success(

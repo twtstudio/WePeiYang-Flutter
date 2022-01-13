@@ -42,7 +42,7 @@ class MessageService {
     var token = CommonPreferences().feedbackToken.value;
     await messageDio.post("question",
         queryParameters: {"token": token, "question_id": questionId});
-    await messageChannel
+    await pushChannel
         .invokeMethod<String>("cancelNotification", {"id": questionId});
   }
 

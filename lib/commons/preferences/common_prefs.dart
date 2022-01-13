@@ -97,6 +97,12 @@ class CommonPreferences {
   /// 是否使用账密登陆（false则为短信登陆）
   var usePwLogin = PrefsBean<bool>('pwLogin', true);
 
+  // 应用更新相关配置
+  /// 使用beta版还是release版微北洋
+  var apkType = PrefsBean('apkType',"release");
+  /// 是否自动更新
+  var autoUpdateApp = PrefsBean("autoUpdateApp",true);
+
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {
     isLogin.clear();

@@ -28,7 +28,10 @@ class PushBroadCastReceiver(
     private val channel: MethodChannel
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(WbyPushPlugin.TAG, intent?.dataString ?: "no data")
+        Log.d(
+            WbyPushPlugin.TAG,
+            "PushBroadCastReceiver receive intent :" + intent?.dataString ?: "no data"
+        )
         when (intent?.action) {
             WbyPushPlugin.DATA -> {
                 intent.getStringExtra("data")?.let {
@@ -141,15 +144,15 @@ class PushBroadCastReceiver(
                 // intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 intent.apply {
                     this.data = Uri.parse("${BASEURL}feedback?")
-                    putExtra("question_id",data.question_id)
+                    putExtra("question_id", data.question_id)
                 }
                 send(data.question_id, data.title, data.content, intent)
             }
             is MailBoxMessage -> {
                 intent.apply {
                     this.data = Uri.parse("${BASEURL}mailbox?")
-                    putExtra("url",data.url)
-                    putExtra("title",data.title)
+                    putExtra("url", data.url)
+                    putExtra("title", data.title)
                 }
                 send(0, data.title, data.content, intent)
             }

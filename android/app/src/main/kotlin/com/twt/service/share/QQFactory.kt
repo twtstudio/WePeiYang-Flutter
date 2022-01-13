@@ -3,12 +3,14 @@ package com.twt.service.share
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.Keep
 import com.tencent.connect.share.QQShare
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import io.flutter.plugin.common.MethodCall
 
+@Keep
 data class QQShareData(
     val targetUrl: String = "",
     val summary: String = "",

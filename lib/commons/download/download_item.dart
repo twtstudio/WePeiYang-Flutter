@@ -1,35 +1,40 @@
+// @dart = 2.12
 import 'dart:convert';
 
 class DownloadItem {
   final String url;
   final String fileName;
-  final String title;
+  final String? title;
+  final String? description;
   final bool showNotification;
+  final DownloadType type;
+  String resultPath = "";
+  final String id;
+  late String listenerId;
 
-  DownloadItem(this.url, this.fileName, this.title, this.showNotification);
+  DownloadItem({
+    required this.url,
+    required this.fileName,
+    required this.showNotification,
+    required this.type,
+    this.title,
+    this.description,
+  }) : id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";
 
   Map<String, dynamic> toMap() {
     return {
       'url': url,
       'fileName': fileName,
-      'title': title,
       'showNotification': showNotification,
+      'type': type.path,
+      'title': title,
+      'description': description,
+      'id': id,
+      'listenerId': listenerId,
     };
   }
 
   String toJson() => json.encode(toMap());
-
-  factory DownloadItem.fromMap(Map<String, dynamic> map) {
-    return DownloadItem(
-      map['url'] ?? '',
-      map['fileName'] ?? '',
-      map['title'] ?? '',
-      map['showNotification'] ?? false,
-    );
-  }
-
-  factory DownloadItem.fromJson(String source) =>
-      DownloadItem.fromMap(json.decode(source));
 }
 
 class DownloadList {
@@ -43,15 +48,11 @@ class DownloadList {
     };
   }
 
-  factory DownloadList.fromMap(Map<String, dynamic> map) {
-    return DownloadList(
-      List<DownloadItem>.from(map['list']?.map((x) => DownloadItem.fromMap(x))),
-    );
-  }
-
-  factory DownloadList.fromList(List<Map<String, dynamic>> map) {
-    return DownloadList.fromMap({"list": map});
-  }
-
   String toJson() => json.encode(toMap());
+}
+
+enum DownloadType { apk, font, hotfix, other }
+
+extension DownloadTypeExt on DownloadType {
+  String get path => ['apk', 'font', 'hotfix', 'other'][index];
 }

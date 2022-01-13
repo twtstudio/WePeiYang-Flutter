@@ -1,15 +1,19 @@
 package com.twt.service.download
 
-class Progress(
-        val id: Long,
-        val state: State,
-        val progress: Double,
-        val fileName:String,
-        val message: String = "",
-        val path: String = "",
+import androidx.annotation.Keep
+
+@Keep
+data class Progress(
+    val id: Long,
+    val listenerId: String,
+    val status: Status,
+    val progress: Double,
+    val taskId: String,
+    val message: String = "",
+    val path: String = "",
 )
 
-enum class State {
+enum class Status {
     BEGIN,
     RUNNING,
     SUCCESS,

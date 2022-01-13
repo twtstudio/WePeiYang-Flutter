@@ -8,7 +8,6 @@ import io.flutter.plugin.common.MethodChannel
 class WbyLocationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private lateinit var context:Context
     private lateinit var placeChannel: MethodChannel
-    private val locationClient by lazy { AMapFactory.init(placeChannel, context) }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
@@ -23,7 +22,13 @@ class WbyLocationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getLocation" -> {
-                locationClient.startLocation()
+                kotlin.runCatching {
+                    AMapFactory.init(placeChannel, context).startLocation()
+                }.onSuccess {
+                    result.success("begin")
+                }.onFailure {
+                    result.error(START_LOCATION_ERROR,"start location failure",it.message)
+                }
             }
             else -> result.notImplemented()
         }
@@ -31,5 +36,6 @@ class WbyLocationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     companion object {
         const val TAG = "WBY_MAP"
+        const val START_LOCATION_ERROR = "START_LOCATION_ERROR"
     }
 }
