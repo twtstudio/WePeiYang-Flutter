@@ -6,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:location_permissions/location_permissions.dart';
-import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -118,7 +117,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
           return ReportLoadingDialog();
         },
       );
-      ToastProvider.running('上传中');
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
@@ -200,15 +198,26 @@ class _ReportMainPageState extends State<ReportMainPage> {
             ),
             SizedBox(height: 40),
             Text(
-              "若无法填报成功可前往网页版填报(长按复制)",
+              "若无法填报成功可点击下方链接前往网页版填报",
               style: TextStyle(color: Color(0x8862677b), fontSize: 10),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            SelectableText(
-              "https://i.twt.edu.cn/#/report",
-              style: TextStyle(color: Color(0xff62677b), fontSize: 14),
-              textAlign: TextAlign.center,
+            GestureDetector(
+              onTap: () async {
+                var url =
+                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  ToastProvider.error('请检查网络状态');
+                }
+              },
+              child: Text(
+                "https://i.twt.edu.cn/#/report",
+                style: TextStyle(color: Color(0xff62677b), fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(height: 40),
           ],
@@ -330,7 +339,7 @@ class _ReportListItem extends StatelessWidget {
 
   String _tryParseMonthAndDay(String text) {
     try {
-      var date = DateTime.parse(text);
+      var date = DateTime.parse(text).toLocal();
       var month = date.month.toString();
       var day = date.day.toString();
       if (month.length < 2) month = '0' + month;
@@ -556,7 +565,10 @@ class _TodayTempState extends State<TodayTemp> {
           children: [
             Text(
               "今日体温",
-              style: TextStyle(color: Color(0xff63677b), fontSize: 13, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Color(0xff63677b),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500),
             ),
             SizedBox(width: 15),
             Container(
@@ -752,7 +764,10 @@ class _PickImageState extends State<PickImage> {
           alignment: Alignment.center,
           child: Text(
             '上传${widget.image.name}',
-            style: TextStyle(fontSize: 13, color: Color(0xff63677b), fontWeight: FontWeight.w700),
+            style: TextStyle(
+                fontSize: 13,
+                color: Color(0xff63677b),
+                fontWeight: FontWeight.w700),
           ),
         ),
         GestureDetector(
