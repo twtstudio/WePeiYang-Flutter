@@ -49,8 +49,7 @@ class FeedbackService with AsyncTimer {
       var response = await feedbackDio.post(
         'login',
         formData: FormData.fromMap({
-          'username': CommonPreferences().account.value,
-          'password': CommonPreferences().password.value,
+          'wpyToken': CommonPreferences().token.value,
           'cid': cid,
         }),
       );
