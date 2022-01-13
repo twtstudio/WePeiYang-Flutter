@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/screen_util.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';

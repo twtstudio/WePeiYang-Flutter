@@ -496,7 +496,7 @@ class MessageItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8, right: 10),
                   child: Text(
                     data.post.commentCount.toString(),
-                    style: TextStyle(fontSize: 13, color: ColorUtil.tagTextColor),
+                    style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
                   ),
                 ),
                 Image.asset("assets/images/account/thumb_up.png", height: 20),
@@ -504,7 +504,7 @@ class MessageItem extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8, right: 10),
                   child: Text(
                     data.post.likeCount.toString(),
-                    style: TextStyle(fontSize: 13, color: ColorUtil.tagTextColor),
+                    style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
                   ),
                 ),
                 Spacer(),
@@ -515,7 +515,7 @@ class MessageItem extends StatelessWidget {
                       isSolved ? S.current.have_replied : S.current.not_reply,
                       style: TextStyle(
                           color:
-                          isSolved ? Color(0xff434650) : ColorUtil.tagTextColor,
+                          isSolved ? Color(0xff434650) : ColorUtil.grey108,
                           fontSize: 13),
                     );
                   },

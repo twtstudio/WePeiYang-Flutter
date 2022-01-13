@@ -59,21 +59,21 @@ class ProfileHeader extends StatelessWidget {
                           child: Text(CommonPreferences().userNumber.value,
                               textAlign: TextAlign.start,
                               style: FontManager.YaHeiRegular.copyWith(
-                                  color: ColorUtil.tagTextColor,
+                                  color: ColorUtil.grey108,
                                   fontSize: 15))),
                       Container(
                           margin: const EdgeInsets.symmetric(vertical: 4.5),
                           child: Text("MPID: ${CommonPreferences().feedbackUid.value}",
                               textAlign: TextAlign.start,
                               style: FontManager.YaHeiRegular.copyWith(
-                                  color: ColorUtil.tagTextColor,
+                                  color: ColorUtil.grey108,
                                   fontSize: 15))),
                       Container(
                           margin: const EdgeInsets.symmetric(vertical: 4.5),
                           child: Text('已经潜水{12}天了。',
                               textAlign: TextAlign.start,
                               style: FontManager.YaHeiRegular.copyWith(
-                                  color: ColorUtil.tagTextColor,
+                                  color: ColorUtil.grey108,
                                   fontSize: 15))),
                     ],
                   ),

@@ -11,8 +11,9 @@ class ColorUtil {
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const profileNameColor = Color.fromARGB(255, 255, 255, 255);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
-  static const tagTextColor = Color.fromARGB(255, 108, 108, 108);
+  static const grey108 = Color.fromARGB(255, 108, 108, 108);
   static const bold42TextColor = Color.fromARGB(255, 42, 42, 42);
   static const tagBackgroundColor = Color.fromARGB(255, 234, 234, 234);
-  static const boldTagBackgroundColor = Color.fromARGB(84, 54, 60, 84);
+  static const boldTag54 = Color.fromARGB(255, 54, 60, 84);
+  static const white253 = Color.fromARGB(255, 253, 253, 254);
 }

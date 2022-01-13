@@ -30,45 +30,40 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    Widget searchInputField = ConstrainedBox
-      (
-        constraints: BoxConstraints(
-          maxHeight: ScreenUtil().setSp(24),
-          maxWidth: ScreenUtil().setSp(282),
-        ),
-        child:TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        hintStyle: TextStyle().NotoSansSC.sp(13),
-        hintText: S.current.feedback_search_hint,
-        contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(1080),
-        ),
-        fillColor: ColorUtil.searchBarBackgroundColor,
-        filled: true,
-        prefixIcon: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: ScreenUtil().setSp(13.5),
-            maxWidth:  ScreenUtil().setSp(13.5),
-          ),
-          child:Icon(
-            Icons.search,
-            color: ColorUtil.mainColor,
-          ),
-        ),
+    Widget searchInputField = ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 25,
+        maxWidth: 282,
       ),
-      enabled: true,
-      onSubmitted: (content) {
-        if (content.isNotEmpty) {
-          widget.onSubmitted?.call(content);
-        } else {
-          ToastProvider.error(S.current.feedback_empty_keyword);
-        }
-      },
-      textInputAction: TextInputAction.search,
-    ),);
+      child: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(16),
+          hintText: S.current.feedback_search_hint,
+          contentPadding: const EdgeInsets.all(0),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(1080),
+          ),
+          fillColor: ColorUtil.searchBarBackgroundColor,
+          filled: true,
+          prefixIcon: Icon(
+            Icons.search,
+            size: 19,
+            color: ColorUtil.grey108,
+          ),
+        ),
+        enabled: true,
+        onSubmitted: (content) {
+          if (content.isNotEmpty) {
+            widget.onSubmitted?.call(content);
+          } else {
+            ToastProvider.error(S.current.feedback_empty_keyword);
+          }
+        },
+        textInputAction: TextInputAction.search,
+      ),
+    );
 
     if (widget.tapField != null) {
       searchInputField = InkWell(
@@ -85,10 +80,11 @@ class _SearchBarState extends State<SearchBar> {
         children: [
           Expanded(
             child: Padding(
-                padding: const EdgeInsets.all(0),
-                child: searchInputField),
+                padding: const EdgeInsets.all(0), child: searchInputField),
           ),
-          SizedBox(width: ScreenUtil().setSp(16),),
+          SizedBox(
+            width: ScreenUtil().setSp(16),
+          ),
           widget.rightWidget ?? SizedBox.shrink()
         ],
       ),

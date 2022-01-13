@@ -1,10 +1,12 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -298,49 +300,37 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           physics: BouncingScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
-              SliverPersistentHeader(
-                  delegate: HomeHeaderDelegate(
-                      child: PreferredSize(
-                          preferredSize: Size.fromHeight(60),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                  padding: EdgeInsets.fromLTRB(ScreenUtil().setSp(16), 0, ScreenUtil().setSp(8), 0),
-                                  icon: Icon(Icons.all_inbox,size: ScreenUtil().setSp(24),
-                                      color: ColorUtil.mainColor),
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, FeedbackRouter.profile)),
-                              Expanded(child: searchBar),
-                              Hero(
-                                tag: "addNewPost",
-                                child: SizedBox(
-                                  height: ScreenUtil().setSp(24),
-                                  width: ScreenUtil().setSp(24),
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          EdgeInsets.zero),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              ColorUtil.mainColor),
-                                      shape: MaterialStateProperty.all(
-                                          CircleBorder(
-                                              side: BorderSide(
-                                        width: 0.0,
-                                        style: BorderStyle.none,
-                                      ))), //圆角弧度
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, FeedbackRouter.newPost);
-                                    },
-                                    child: Icon(Icons.add),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15)
-                            ],
-                          )))),
+              SliverAppBar(
+                toolbarHeight: 48,
+                backgroundColor: ColorUtil.white253,
+                titleSpacing: 0,
+                leading: IconButton(
+                    icon: ImageIcon(
+                        AssetImage("assets/images/lake_butt_icons/box.png"),
+                        size: 28,
+                        color: ColorUtil.boldTag54),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, FeedbackRouter.profile)),
+                title: searchBar,
+                actions: [
+                  Hero(
+                    tag: "addNewPost",
+                    child: InkWell(
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                            height: 27,
+                            width: 27,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "assets/images/lake_butt_icons/add_post.png")))),
+                        onTap: () {
+                          Navigator.pushNamed(context, FeedbackRouter.newPost);
+                        }),
+                  ),
+                  SizedBox(width: 15)
+                ],
+              ),
               SliverPersistentHeader(
                   floating: true,
                   pinned: true,
@@ -348,10 +338,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     child: PreferredSize(
                       preferredSize: Size(double.infinity, 30),
                       child: Container(
-                        color: ColorUtil.backgroundColor,
+                        color: ColorUtil.white253,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              SizedBox(width: 4),
                               Expanded(
                                 child: TabBar(
                                     indicatorPadding: EdgeInsets.zero,
@@ -360,20 +351,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                     physics: BouncingScrollPhysics(),
                                     controller: _tabController,
                                     labelColor: Color(0xff303c66),
-                                    labelStyle:
-                                        FontManager.YaHeiRegular.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff303c66),
-                                      fontSize: 16,
-                                    ),
+                                    labelStyle: TextUtil
+                                        .base.black2A.w700.NotoSansSC
+                                        .sp(18),
                                     unselectedLabelColor:
                                         ColorUtil.lightTextColor,
-                                    unselectedLabelStyle:
-                                        FontManager.YaHeiRegular.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff303c66),
-                                      fontSize: 16,
-                                    ),
+                                    unselectedLabelStyle: TextUtil
+                                        .base.grey6C.w600.NotoSansSC
+                                        .sp(18),
                                     indicator: CustomIndicator(
                                         borderSide: BorderSide(
                                             color: ColorUtil.mainColor,
@@ -408,10 +393,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           children: [
                                             SizedBox(width: _tabPaddingWidth),
                                             Text("游戏"),
-                                            Icon(
-                                                Icons
-                                                    .assignment_turned_in_rounded,
-                                                size: 14)
+                                            Container(
+                                              width: 13,
+                                              height: 13,
+                                              padding: EdgeInsets.only(left: 2.2),
+                                              decoration: BoxDecoration(
+                                                color: ColorUtil.boldTag54,
+                                                borderRadius: BorderRadius.all(Radius.circular(2.0))
+                                              ),
+                                              child: Text("荐",style: TextUtil.base.w400.white.NotoSansSC.sp(9),),
+                                            )
                                           ],
                                         ),
                                       ),
@@ -419,24 +410,33 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               ),
                               PopupMenuButton(
                                 padding: EdgeInsets.zero,
-                                  tooltip: "排序方式",
-                                 child: Icon(Icons.add_to_photos_sharp,color: ColorUtil.mainColor,),
-                                 //1-->时间排序，2-->动态排序
-                                 onSelected: (value){
-                                 },
-                                 itemBuilder: (context){
-                                   return <PopupMenuEntry<int>>[
-                                   CheckedPopupMenuItem<int>(
-                                   value: 1,
-                                   child: Text('时间排序',style: TextStyle(color:ColorUtil.lightTextColor),),
-                                   ),
-                                   CheckedPopupMenuItem<int>(
-                                   value: 2,
-                                   child: Text('动态排序'),
-                                   ),
-                                   ];
-                                 },),
-                              SizedBox(width: 8)
+                                tooltip: "排序方式",
+                                child: Image(
+                                  height: ScreenUtil().setHeight(25),
+                                  width: ScreenUtil().setWidth(25),
+                                  image: AssetImage(
+                                      "assets/images/lake_butt_icons/menu.png"),
+                                ),
+                                //1-->时间排序，2-->动态排序
+                                onSelected: (value) {},
+                                itemBuilder: (context) {
+                                  return <PopupMenuEntry<int>>[
+                                    CheckedPopupMenuItem<int>(
+                                      value: 1,
+                                      child: Text(
+                                        '时间排序',
+                                        style: TextStyle(
+                                            color: ColorUtil.lightTextColor),
+                                      ),
+                                    ),
+                                    CheckedPopupMenuItem<int>(
+                                      value: 2,
+                                      child: Text('动态排序'),
+                                    ),
+                                  ];
+                                },
+                              ),
+                              SizedBox(width: 17)
                             ]),
                       ),
                     ),
@@ -480,10 +480,10 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => kToolbarHeight;
+  double get maxExtent => 30;
 
   @override
-  double get minExtent => kToolbarHeight;
+  double get minExtent => 30;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
