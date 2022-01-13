@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -28,6 +26,8 @@ class NCommentCard extends StatefulWidget {
 }
 
 class _NCommentCardState extends State<NCommentCard> {
+
+  final String baseUrl = 'https://www.zrzz.site:7013/';
 
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
@@ -94,6 +94,8 @@ class _NCommentCardState extends State<NCommentCard> {
       widget.comment.content,
       style: TextUtil.base.w400.NotoSansSC.normal.black2A.sp(14),
     );
+
+    var commentImage = Image.network(baseUrl + widget.comment.imageUrl);
 
     var floor = IconButton(
       icon: Icon(Icons.chat),
@@ -179,6 +181,8 @@ class _NCommentCardState extends State<NCommentCard> {
         box,
         box,
         commentContent,
+        if(widget.comment.imageUrl != null) box,
+        if(widget.comment.imageUrl != null) commentImage,
         bottomWidget,
       ],
     );

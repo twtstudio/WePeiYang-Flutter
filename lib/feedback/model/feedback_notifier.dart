@@ -50,6 +50,17 @@ class NewPostProvider {
 //
 // }
 
+class NewFloorProvider {
+  String content = "";
+  int replyTo = 0;
+  List<File> images = [];
+  void clear() {
+    content = "";
+    replyTo = 0;
+    images = [];
+  }
+}
+
 enum FbHomePageStatus {
   loading,
   idle,

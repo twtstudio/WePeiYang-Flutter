@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -373,32 +377,188 @@ class _CommentInputFieldState extends State<CommentInputField> {
       onPressed: () async {
         _focusNode.unfocus();
         if (_textEditingController.text.isNotEmpty) {
-          _sendComment();
+          _sendFloor();
         }
       },
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [inputField, commitButton],
+      child: Column(
+        children: [
+          Row(
+            children: [inputField, commitButton],
+          ),
+          ImagesGridView(),
+        ],
       ),
     );
   }
 
-  _sendComment() {
-    FeedbackService.sendComment(
+  _sendFloor() {
+    FeedbackService.sendFloor(
       id: widget.postId,
       content: _textEditingController.text,
+      images: Provider.of<NewFloorProvider>(context, listen: false).images,
       onSuccess: () {
         _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
+        Provider.of<NewFloorProvider>(context, listen: false).clear();
         // TODO: 暂时没想到什么好的办法来更新评论
         ToastProvider.success("评论成功");
       },
       onFailure: (e) => ToastProvider.error(
         e.error.toString(),
       ),
+    );
+  }
+}
+
+
+class ImagesGridView extends StatefulWidget {
+  @override
+  _ImagesGridViewState createState() => _ImagesGridViewState();
+}
+
+class _ImagesGridViewState extends State<ImagesGridView> {
+  static const maxImage = 1;
+
+  loadAssets() async {
+    XFile xFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 30);
+    Provider.of<NewFloorProvider>(context, listen: false)
+        .images
+        .add(File(xFile.path));
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  Future<String> _showDialog() {
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        titleTextStyle: FontManager.YaHeiRegular.copyWith(
+            color: Color.fromRGBO(79, 88, 107, 1.0),
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            decoration: TextDecoration.none),
+        title: Text(S.current.feedback_delete_image_content),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop('cancel');
+              },
+              child: Text(S.current.feedback_cancel)),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop('ok');
+              },
+              child: Text(S.current.feedback_ok)),
+        ],
+      ),
+    );
+  }
+
+  Widget imgBuilder(index, List<File> data, length, {onTap}) {
+    return Stack(fit: StackFit.expand, children: [
+      InkWell(
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+            arguments: {
+              "uriList": data,
+              "uriListLength": length,
+              "indexNow": index
+            }),
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(width: 1, color: Colors.black26),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
+          child: ClipRRect(
+            child: Image.file(
+              data[index],
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
+      Positioned(
+        right: 0,
+        bottom: 0,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+            ),
+            child: Icon(
+              Icons.close,
+              size: MediaQuery.of(context).size.width / 32,
+              color: ColorUtil.searchBarBackgroundColor,
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 4, //方便右边宽度留白哈哈
+      childAspectRatio: 1,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
+    );
+
+    return Consumer<NewFloorProvider>(
+      builder: (_, data, __) => GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: gridDelegate,
+        itemCount: maxImage == data.images.length
+            ? data.images.length
+            : data.images.length + 1,
+        itemBuilder: (_, index) {
+          if (index == 0 && index == data.images.length) {//评论最多一张图yo
+            return _ImagePickerWidget(onTap: loadAssets);
+          } else {
+            return imgBuilder(
+              index,
+              data.images,
+              data.images.length,
+              onTap: () async {
+                var result = await _showDialog();
+                if (result == 'ok') {
+                  data.images.removeAt(index);
+                  setState(() {});
+                }
+              },
+            );
+          }
+        },
+        physics: NeverScrollableScrollPhysics(),
+      ),
+    );
+  }
+}
+
+class _ImagePickerWidget extends StatelessWidget {
+  const _ImagePickerWidget({
+    Key key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.crop_original),
+      onPressed: onTap,
     );
   }
 }
