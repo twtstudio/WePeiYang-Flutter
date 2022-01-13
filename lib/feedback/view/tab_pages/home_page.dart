@@ -32,6 +32,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbTagsProvider _tagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
+  double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
 
   bool _lakeIsLoaded, _feedbackIsLoaded;
@@ -43,6 +44,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   List swapLister = [2, 0, 1, 3];
 
   ///根据tab的index得到对应type
+
+  final ScrollController _nestedController = ScrollController();
 
   final ScrollController _controller1 = ScrollController();
   final ScrollController _controller2 = ScrollController();
@@ -91,6 +94,43 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           _refreshController.loadFailed();
         },
       );
+    }
+  }
+
+  bool scroll = false;
+
+  _onClose() {
+    if (!scroll  && _nestedController.offset != _nestedController.position.maxScrollExtent) {
+      scroll = true;
+      _nestedController
+          .animateTo(_nestedController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn)
+          .then((value) => scroll = false);
+    }
+  }
+
+  _onOpen() {
+    if (!scroll && _nestedController.offset != 0) {
+      print("------------------oooo");
+      scroll = true;
+      _nestedController
+          .animateTo(0,
+              duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn)
+          .then((value) => scroll = false);
+    }
+  }
+
+  _onScrollNotification(ScrollNotification scrollInfo) {
+    if (scrollInfo.metrics.pixels == 0)
+      _onOpen();
+    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 50 &&
+        scrollInfo.metrics.pixels >= 10 &&
+        scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
+      if (scrollInfo.metrics.pixels <= _previousOffset)
+        _onOpen();
+      else
+        _onClose();
+      _previousOffset = scrollInfo.metrics.pixels;
     }
   }
 
@@ -181,280 +221,255 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _offsets[1] = _controller2.hasClients ? _controller2.offset : 2;
     _offsets[2] = _controller3.hasClients ? _controller3.offset : 2;
     _mixedListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: _refreshController1,
-        header: ClassicHeader(),
-        enablePullDown: true,
-        onRefresh: onRefresh,
-        footer: ClassicFooter(),
-        enablePullUp: !model.isLastPage,
-        onLoading: _onLoading,
-        child: ListView.builder(
-          controller: _controller1,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: model.allList[swapLister[0]].length,
-          itemBuilder: (context, index) {
-            final post = model.allList[swapLister[0]][index];
-            return PostCard.simple(post, key: ValueKey(post.id));
-          },
+      return NotificationListener<ScrollNotification>(
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController1,
+          header: ClassicHeader(),
+          enablePullDown: true,
+          onRefresh: onRefresh,
+          footer: ClassicFooter(),
+          enablePullUp: !model.isLastPage,
+          onLoading: _onLoading,
+          child: ListView.builder(
+            controller: _controller1,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: model.allList[swapLister[0]].length,
+            itemBuilder: (context, index) {
+              final post = model.allList[swapLister[0]][index];
+              return PostCard.simple(post, key: ValueKey(post.id));
+            },
+          ),
         ),
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
       );
     });
     _lakeListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: _refreshController2,
-        header: ClassicHeader(),
-        enablePullDown: true,
-        onRefresh: onRefresh,
-        footer: ClassicFooter(),
-        enablePullUp: !model.isLastPage,
-        onLoading: _onLoading,
-        child: ListView.builder(
-          controller: _controller2,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: model.allList[swapLister[1]].length,
-          itemBuilder: (context, index) {
-            final post = model.allList[swapLister[1]][index];
-            return PostCard.simple(post, key: ValueKey(post.id));
-          },
+      return NotificationListener<ScrollNotification>(
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController2,
+          header: ClassicHeader(),
+          enablePullDown: true,
+          onRefresh: onRefresh,
+          footer: ClassicFooter(),
+          enablePullUp: !model.isLastPage,
+          onLoading: _onLoading,
+          child: ListView.builder(
+            controller: _controller2,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: model.allList[swapLister[1]].length,
+            itemBuilder: (context, index) {
+              final post = model.allList[swapLister[1]][index];
+              return PostCard.simple(post, key: ValueKey(post.id));
+            },
+          ),
         ),
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
       );
     });
     _feedbackListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: _refreshController3,
-        header: ClassicHeader(),
-        enablePullDown: true,
-        onRefresh: onRefresh,
-        footer: ClassicFooter(),
-        enablePullUp: !model.isLastPage,
-        onLoading: _onLoading,
-        child: ListView.builder(
-          controller: _controller3,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: model.allList[swapLister[2]].length,
-          itemBuilder: (context, index) {
-            final post = model.allList[swapLister[2]][index];
-            return PostCard.simple(post, key: ValueKey(post.id));
-          },
+      return NotificationListener<ScrollNotification>(
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController3,
+          header: ClassicHeader(),
+          enablePullDown: true,
+          onRefresh: onRefresh,
+          footer: ClassicFooter(),
+          enablePullUp: !model.isLastPage,
+          onLoading: _onLoading,
+          child: ListView.builder(
+            controller: _controller3,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: model.allList[swapLister[2]].length,
+            itemBuilder: (context, index) {
+              final post = model.allList[swapLister[2]][index];
+              return PostCard.simple(post, key: ValueKey(post.id));
+            },
+          ),
         ),
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
       );
     });
 
-    var _mixedBody = Consumer<FbHomeStatusNotifier>(
-      builder: (_, status, __) {
-        return Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.zero,
-              child: _mixedListView,
-            ),
-            if (status.isLoading) Loading(),
-            if (status.isError) HomeErrorContainer(onRefresh),
-          ],
-        );
-      },
-    );
-
-    var _lakeBody = Consumer<FbHomeStatusNotifier>(
-      builder: (_, status, __) {
-        return Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.zero,
-              child: _lakeListView,
-            ),
-            if (status.isLoading) Loading(),
-            if (status.isError) HomeErrorContainer(onRefresh),
-          ],
-        );
-      },
-    );
-
-    var _feedbackBody = Consumer<FbHomeStatusNotifier>(
-      builder: (_, status, __) {
-        return Stack(
-          alignment: AlignmentDirectional.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.zero,
-              child: _feedbackListView,
-            ),
-            if (status.isLoading) Loading(),
-            if (status.isError) HomeErrorContainer(onRefresh),
-          ],
-        );
-      },
-    );
-
     return SafeArea(
       child: NestedScrollView(
-          physics: BouncingScrollPhysics(),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                toolbarHeight: 48,
-                backgroundColor: ColorUtil.white253,
-                titleSpacing: 0,
-                leading: IconButton(
-                    icon: ImageIcon(
-                        AssetImage("assets/images/lake_butt_icons/box.png"),
-                        size: 28,
-                        color: ColorUtil.boldTag54),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, FeedbackRouter.profile)),
-                title: searchBar,
-                actions: [
-                  Hero(
-                    tag: "addNewPost",
-                    child: InkWell(
-                        highlightColor: Colors.transparent,
-                        child: Container(
-                            height: 27,
-                            width: 27,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        "assets/images/lake_butt_icons/add_post.png")))),
-                        onTap: () {
-                          Navigator.pushNamed(context, FeedbackRouter.newPost);
-                        }),
-                  ),
-                  SizedBox(width: 15)
-                ],
-              ),
-              SliverPersistentHeader(
-                  floating: true,
-                  pinned: true,
-                  delegate: HomeHeaderDelegate(
-                    child: PreferredSize(
-                      preferredSize: Size(double.infinity, 30),
+        controller: _nestedController,
+        physics: NeverScrollableScrollPhysics(),
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          scroll = false;
+          return <Widget>[
+            SliverAppBar(
+              toolbarHeight: 48,
+              backgroundColor: ColorUtil.white253,
+              titleSpacing: 0,
+              leading: IconButton(
+                  icon: ImageIcon(
+                      AssetImage("assets/images/lake_butt_icons/box.png"),
+                      size: 28,
+                      color: ColorUtil.boldTag54),
+                  onPressed: () =>
+                      Navigator.pushNamed(context, FeedbackRouter.profile)),
+              title: searchBar,
+              actions: [
+                Hero(
+                  tag: "addNewPost",
+                  child: InkWell(
+                      highlightColor: Colors.transparent,
                       child: Container(
-                        color: ColorUtil.white253,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(width: 4),
-                              Expanded(
-                                child: TabBar(
-                                    indicatorPadding: EdgeInsets.zero,
-                                    labelPadding: EdgeInsets.zero,
-                                    isScrollable: true,
-                                    physics: BouncingScrollPhysics(),
-                                    controller: _tabController,
-                                    labelColor: Color(0xff303c66),
-                                    labelStyle: TextUtil
-                                        .base.black2A.w700.NotoSansSC
-                                        .sp(18),
-                                    unselectedLabelColor:
-                                        ColorUtil.lightTextColor,
-                                    unselectedLabelStyle: TextUtil
-                                        .base.grey6C.w600.NotoSansSC
-                                        .sp(18),
-                                    indicator: CustomIndicator(
-                                        borderSide: BorderSide(
-                                            color: ColorUtil.mainColor,
-                                            width: 2)),
-                                    tabs: [
-                                      Tab(
-                                          child: Row(
-                                        children: [
-                                          SizedBox(width: _tabPaddingWidth),
-                                          Text("全部"),
-                                          SizedBox(width: _tabPaddingWidth),
-                                        ],
-                                      )),
-                                      Tab(
-                                          child: Row(
-                                        children: [
-                                          SizedBox(width: _tabPaddingWidth),
-                                          Text("湖底"),
-                                          SizedBox(width: _tabPaddingWidth),
-                                        ],
-                                      )),
-                                      Tab(
-                                          child: Row(
-                                        children: [
-                                          SizedBox(width: _tabPaddingWidth),
-                                          Text("校务"),
-                                          SizedBox(width: _tabPaddingWidth),
-                                        ],
-                                      )),
-                                      Tab(
-                                        child: Row(
-                                          children: [
-                                            SizedBox(width: _tabPaddingWidth),
-                                            Text("游戏"),
-                                            Container(
-                                              width: 13,
-                                              height: 13,
-                                              padding: EdgeInsets.only(left: 2.2),
-                                              decoration: BoxDecoration(
-                                                color: ColorUtil.boldTag54,
-                                                borderRadius: BorderRadius.all(Radius.circular(2.0))
-                                              ),
-                                              child: Text("荐",style: TextUtil.base.w400.white.NotoSansSC.sp(9),),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-                              PopupMenuButton(
-                                padding: EdgeInsets.zero,
-                                tooltip: "排序方式",
-                                child: Image(
-                                  height: ScreenUtil().setHeight(25),
-                                  width: ScreenUtil().setWidth(25),
+                          height: 27,
+                          width: 27,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
                                   image: AssetImage(
-                                      "assets/images/lake_butt_icons/menu.png"),
+                                      "assets/images/lake_butt_icons/add_post.png")))),
+                      onTap: () {
+                        Navigator.pushNamed(context, FeedbackRouter.newPost);
+                      }),
+                ),
+                SizedBox(width: 15)
+              ],
+            ),
+            SliverPersistentHeader(
+                floating: true,
+                pinned: true,
+                delegate: HomeHeaderDelegate(
+                    child: Container(
+                  color: ColorUtil.white253,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: TabBar(
+                              indicatorPadding: EdgeInsets.only(bottom: 2),
+                              labelPadding: EdgeInsets.only(bottom: 3),
+                              isScrollable: true,
+                              physics: BouncingScrollPhysics(),
+                              controller: _tabController,
+                              labelColor: Color(0xff303c66),
+                              labelStyle:
+                                  TextUtil.base.black2A.w700.NotoSansSC.sp(18),
+                              unselectedLabelColor: ColorUtil.lightTextColor,
+                              unselectedLabelStyle:
+                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(18),
+                              indicator: CustomIndicator(
+                                  borderSide: BorderSide(
+                                      color: ColorUtil.mainColor, width: 2)),
+                              tabs: [
+                                Tab(
+                                    child: Row(
+                                  children: [
+                                    SizedBox(width: _tabPaddingWidth),
+                                    Text("全部"),
+                                    SizedBox(width: _tabPaddingWidth),
+                                  ],
+                                )),
+                                Tab(
+                                    child: Row(
+                                  children: [
+                                    SizedBox(width: _tabPaddingWidth),
+                                    Text("湖底"),
+                                    SizedBox(width: _tabPaddingWidth),
+                                  ],
+                                )),
+                                Tab(
+                                    child: Row(
+                                  children: [
+                                    SizedBox(width: _tabPaddingWidth),
+                                    Text("校务"),
+                                    SizedBox(width: _tabPaddingWidth),
+                                  ],
+                                )),
+                                Tab(
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: _tabPaddingWidth),
+                                      Text("游戏"),
+                                      Container(
+                                        width: 13,
+                                        height: 13,
+                                        padding: EdgeInsets.only(left: 2.2),
+                                        decoration: BoxDecoration(
+                                            color: ColorUtil.boldTag54,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(2.0))),
+                                        child: Text(
+                                          "荐",
+                                          style: TextUtil
+                                              .base.w400.white.NotoSansSC
+                                              .sp(9),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                //1-->时间排序，2-->动态排序
-                                onSelected: (value) {},
-                                itemBuilder: (context) {
-                                  return <PopupMenuEntry<int>>[
-                                    CheckedPopupMenuItem<int>(
-                                      value: 1,
-                                      child: Text(
-                                        '时间排序',
-                                        style: TextStyle(
-                                            color: ColorUtil.lightTextColor),
-                                      ),
-                                    ),
-                                    CheckedPopupMenuItem<int>(
-                                      value: 2,
-                                      child: Text('动态排序'),
-                                    ),
-                                  ];
-                                },
+                              ]),
+                        ),
+                        PopupMenuButton(
+                          padding: EdgeInsets.zero,
+                          tooltip: "排序方式",
+                          child: Image(
+                            height: ScreenUtil().setHeight(25),
+                            width: ScreenUtil().setWidth(25),
+                            image: AssetImage(
+                                "assets/images/lake_butt_icons/menu.png"),
+                          ),
+                          //1-->时间排序，2-->动态排序
+                          onSelected: (value) {},
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry<int>>[
+                              CheckedPopupMenuItem<int>(
+                                value: 1,
+                                child: Text(
+                                  '时间排序',
+                                  style: TextStyle(
+                                      color: ColorUtil.lightTextColor),
+                                ),
                               ),
-                              SizedBox(width: 17)
-                            ]),
-                      ),
-                    ),
-                    //backgroundColor: ColorUtil.backgroundColor,
-                    //elevation: 0,
-                  ))
-            ];
+                              CheckedPopupMenuItem<int>(
+                                value: 2,
+                                child: Text('动态排序'),
+                              ),
+                            ];
+                          },
+                        ),
+                        SizedBox(width: 17)
+                      ]),
+                )))
+          ];
+        },
+        body: Consumer<FbHomeStatusNotifier>(
+          builder: (_, status, __) {
+            return Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Padding(
+                    padding: EdgeInsets.zero,
+                    child: ExtendedTabBarView(
+                      controller: _tabController,
+                      cacheExtent: 2,
+                      children: <Widget>[
+                        _mixedListView,
+                        _lakeListView,
+                        _feedbackListView,
+                        GamePage(),
+                      ],
+                    )),
+                if (status.isLoading) Loading(),
+                if (status.isError) HomeErrorContainer(onRefresh),
+              ],
+            );
           },
-          body: ExtendedTabBarView(
-            controller: _tabController,
-            cacheExtent: 2,
-            children: <Widget>[
-              _mixedBody,
-              _lakeBody,
-              _feedbackBody,
-              GamePage(),
-            ],
-          )),
+        ),
+      ),
     );
   }
 
@@ -480,10 +495,10 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 30;
+  double get maxExtent => 32;
 
   @override
-  double get minExtent => 30;
+  double get minExtent => 32;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
