@@ -5,6 +5,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -554,7 +556,7 @@ class _TodayTempState extends State<TodayTemp> {
           children: [
             Text(
               "今日体温",
-              style: TextStyle(color: Color(0xff63677b), fontSize: 13),
+              style: TextStyle(color: Color(0xff63677b), fontSize: 13, fontWeight: FontWeight.w500),
             ),
             SizedBox(width: 15),
             Container(
@@ -750,7 +752,7 @@ class _PickImageState extends State<PickImage> {
           alignment: Alignment.center,
           child: Text(
             '上传${widget.image.name}',
-            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
+            style: TextStyle(fontSize: 13, color: Color(0xff63677b), fontWeight: FontWeight.w700),
           ),
         ),
         GestureDetector(
@@ -758,20 +760,31 @@ class _PickImageState extends State<PickImage> {
             _imgFromGallery();
           },
           child: _image != null
-              ? Image.file(
-                  _image,
-                  width: imageWidth,
-                  height: imageWidth,
-                  fit: BoxFit.fitHeight,
-                )
-              : DottedBorder(
-                  borderType: BorderType.Rect,
-                  color: Color(0xffd0d1d6),
-                  child: SizedBox(
-                    width: imageWidth,
-                    height: imageWidth,
-                    child: Icon(Icons.add_circle,
-                        size: 40, color: Color(0xffd0d1d6)),
+              ? Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 12)
+                      ]),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.file(
+                        _image,
+                        width: imageWidth,
+                        height: imageWidth,
+                        fit: BoxFit.fitWidth,
+                      )))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    color: Color(0xffd0d1d6),
+                    child: SizedBox(
+                      width: imageWidth - 32,
+                      height: imageWidth - 32,
+                      child: Icon(Icons.add_circle,
+                          size: 40, color: Color(0xffd0d1d6)),
+                    ),
                   ),
                 ),
         ),

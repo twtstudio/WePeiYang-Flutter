@@ -280,12 +280,20 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     Provider.of<ScheduleNotifier>(context, listen: false).readPref();
     Provider.of<ExamNotifier>(context, listen: false).readPref();
     Provider.of<GPANotifier>(context, listen: false).readPref();
-    if (!prefs.isLogin.value || prefs.token.value == '') {
-      /// 既然没登录过就多看会启动页，再跳转至登录页
-      Future.delayed(Duration(seconds: 1)).then(
-          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
-    } else {
-      /// 如果登录过的话，短暂显示启动页后尝试刷新token，若失败则需重新登陆
+
+    /// 如果存过账号密码，优先用账密刷新token
+    if (prefs.account.value != '' && prefs.password.value != '') {
+      Future.delayed(Duration(milliseconds: 500)).then((_) =>
+          AuthService.pwLogin(prefs.account.value, prefs.password.value,
+              onResult: (_) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, HomeRouter.home, (route) => false);
+          }, onFailure: (_) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, AuthRouter.login, (route) => false);
+          }));
+    } else if (prefs.isLogin.value && prefs.token.value != '') {
+      /// 如果是短信登陆的，尝试用token刷新
       Future.delayed(Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
@@ -298,6 +306,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
           },
         ),
       );
+    } else {
+      /// 没登陆过的话，多看一会的启动页再跳转到登录页
+      Future.delayed(Duration(seconds: 1)).then(
+          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
   }
 }

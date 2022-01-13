@@ -311,7 +311,7 @@ class AuthService with AsyncTimer {
         }
         prefs.nickname.value = result['nickname'] ?? "";
         prefs.userNumber.value = result['userNumber'] ?? "";
-        prefs.phone.value = result['telephone'] ?? "";
+        prefs.phone.value = phone;
         prefs.email.value = result['email'] ?? "";
         prefs.realName.value = result['realname'] ?? "";
         prefs.department.value = result['department'] ?? "";
