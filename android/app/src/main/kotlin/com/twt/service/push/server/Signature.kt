@@ -1,7 +1,7 @@
-package com.twt.service.message.server
+package com.twt.service.push.server
 
 import android.util.Base64
-import com.twt.service.message.model.MessageDataBase
+import com.twt.service.push.model.AuthToken
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -17,7 +17,7 @@ internal inline val Request.signed
     get() = with(newBuilder()) {
         addHeader("DOMAIN", DOMAIN)
         addHeader("ticket", Base64.encodeToString("$APP_KEY.$APP_SECRET".toByteArray(), Base64.NO_WRAP))
-        addHeader("token", MessageDataBase.authToken.orEmpty())
+        addHeader("token", AuthToken.authToken.orEmpty())
     }.build()
 
 internal object SignatureInterceptor : Interceptor {

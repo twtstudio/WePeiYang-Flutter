@@ -13,6 +13,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 object AMapFactory {
 
     fun init(placeChannel: MethodChannel, context: Context): AMapLocationClient {
@@ -37,7 +38,7 @@ object AMapFactory {
                     )
                 }
                 val json = Gson().toJson(locationData)
-                Log.d("locationresult", json)
+                Log.d(WbyLocationPlugin.TAG, json)
                 // 发送到flutter
                 placeChannel.invokeMethod("showResult", json)
                 locationClient.stopLocation()
@@ -48,7 +49,6 @@ object AMapFactory {
         }
 
         locationClient.setLocationListener(locationListener)
-
         return locationClient
     }
 
@@ -248,13 +248,14 @@ object AMapFactory {
 
             //解析定位结果
             val result = sb.toString()
-            Log.d("locationresult", result)
+            Log.d(WbyLocationPlugin.TAG, result)
         } else {
-            Log.d("locationresult", "定位失败，loc is null")
+            Log.d(WbyLocationPlugin.TAG, "定位失败，loc is null")
         }
     }
 
     private var sdf: SimpleDateFormat? = null
+
     private fun formatUTC(l: Long, strPattern: String?): String {
         var str = strPattern
         if (TextUtils.isEmpty(str)) {

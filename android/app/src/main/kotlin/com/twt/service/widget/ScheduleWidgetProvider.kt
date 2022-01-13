@@ -10,11 +10,9 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
-import com.google.gson.Gson
-import com.twt.service.IntentEvent
-import com.twt.service.IntentType
 import com.twt.service.MainActivity
 import com.twt.service.R
+import com.twt.service.common.BASEURL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,8 +36,7 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val intent = Intent(context, MainActivity::class.java)
-            val intentContent = IntentType(type = IntentEvent.SchedulePage.type, data = "schedule")
-            intent.data = Uri.parse(Gson().toJson(intentContent))
+            intent.data = Uri.parse("${BASEURL}schedule")
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             val remoteViews = RemoteViews(context.packageName, R.layout.widget_schedule)
             remoteViews.setOnClickPendingIntent(R.id.widget_framelayout, pendingIntent)
@@ -54,7 +51,6 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.widget_image_button, imageClickPendingIntent)
 
             // 小组件List部分，WidgetFactory的List为空则显示emptyView(也就是今日没课)
-            // TODO:fix 实际上你这个地方没写对，点击今日没课是跳的上面的intent
             val serviceIntent = Intent(context, WidgetService::class.java)
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             serviceIntent.data = Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME))
@@ -63,7 +59,7 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
 
             // List部分的点击监听，点击后跳转至Flutter课程表页
             val startActivityIntent = Intent(context, MainActivity::class.java)
-            startActivityIntent.data = Uri.parse(Gson().toJson(intentContent))
+            startActivityIntent.data = Uri.parse("${BASEURL}schedule")
             val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             remoteViews.setPendingIntentTemplate(R.id.widget_listview, startActivityPendingIntent)
 

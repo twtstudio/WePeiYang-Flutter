@@ -1,13 +1,12 @@
 package com.twt.service.share
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.tencent.connect.common.Constants
 import com.tencent.connect.share.QQShare
-import com.tencent.tauth.DefaultUiListener
 import com.tencent.tauth.IUiListener
+import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import com.twt.service.WBYApplication
 import io.flutter.plugin.common.MethodCall
 
 data class QQShareData(
@@ -21,7 +20,7 @@ data class QQShareData(
     val questionId: Int = 0,
 )
 
-object QQFactory {
+class QQFactory(private val mTencent: Tencent, private val activity: Activity) :IUiListener{
 
     fun share(call: MethodCall) {
         QQShareData(
@@ -71,27 +70,22 @@ object QQFactory {
         }
         Log.d("WBY", params.toString())
 
-        WBYApplication.activity?.get()?.let {
-            it.mTencent?.shareToQQ(it, params, qqShareListener)
-        }
+        mTencent.shareToQQ(activity, params, this)
     }
 
-    private val qqShareListener: IUiListener = object : DefaultUiListener() {
-        override fun onCancel() {
+    override fun onComplete(p0: Any?) {
+        TODO("Not yet implemented")
+    }
 
-        }
+    override fun onError(p0: UiError?) {
+        TODO("Not yet implemented")
+    }
 
-        override fun onComplete(response: Any) {
-        }
+    override fun onCancel() {
+        TODO("Not yet implemented")
+    }
 
-        override fun onError(e: UiError) {
-
-        }
-
-        override fun onWarning(code: Int) {
-            if (code == Constants.ERROR_NO_AUTHORITY) {
-                WBYApplication.activity?.get()?.alertDialog("onWarning: 请授权QQ访问分享的文件的读取权限")
-            }
-        }
+    override fun onWarning(p0: Int) {
+        TODO("Not yet implemented")
     }
 }

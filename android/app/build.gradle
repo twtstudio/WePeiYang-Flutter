@@ -23,6 +23,7 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.huawei.agconnect'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 Properties pro = new Properties()
@@ -34,7 +35,7 @@ tasks.withType(JavaCompile) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -52,15 +53,33 @@ android {
         applicationId "com.twt.service"
         multiDexEnabled true
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
-                GETUI_APP_KEY   : "lMfDbXITSXALHE5EtfZv6A",
-                GETUI_APP_SECRET: "kyL4r0PNpG9xnSEUO1omn5",
-                MASTERSECRET    : "WLVrpl4GFz7esi3AeyrYj"
+                HUAWEI_APP_ID  : "103402255",
+
+                XIAOMI_APP_ID  : "2882303761517785783",
+                XIAOMI_APP_KEY : "5851778525783",
+
+                MEIZU_APP_ID   : "146410",
+                MEIZU_APP_KEY  : "77b312b3e3b9497bb25298911f7b14d7",
+
+                VIVO_APP_ID    : "105266463",
+                VIVO_APP_KEY   : "40e5b229553e31f1842b80915781e2e8",
+
+                // project
+//                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
+//                GETUI_APP_KEY   : "lMfDbXITSXALHE5EtfZv6A",
+//                GETUI_APP_SECRET: "kyL4r0PNpG9xnSEUO1omn5",
+//                MASTERSECRET    : "WLVrpl4GFz7esi3AeyrYj"
+
+                // develop
+                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
+                GETUI_APP_KEY   : "7Cce8U9u4B9nZ6MPQgrb33",
+                GETUI_APP_SECRET: "4MHg2QpRfIAU2cj9nboct4",
+                MASTERSECRET    : "4YJ5qkGgrl5sdnPCP5Axc2"
         ]
 
         ndk {
@@ -70,7 +89,7 @@ android {
     }
 
     signingConfigs {
-        release {
+        config {
             try {
                 storeFile file(pro.getProperty('jksPath'))
                 storePassword pro.getProperty('storePassword')
@@ -84,13 +103,13 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.config
             minifyEnabled false   // 删除无用代码
             shrinkResources false // 删除无用资源
         }
 
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.config
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
         }
@@ -104,8 +123,6 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.getui:gtsdk:3.1.4.0'
-    implementation 'com.getui:gtc:3.1.0.0'
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
     implementation("com.squareup.okhttp3:okhttp")
@@ -117,19 +134,18 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
 
-    def work_version = "2.6.0"
+    def work_version = "2.7.1"
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
-    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "androidx.core:core-ktx:1.7.0"
 
-    def lifecycle_version = "2.3.1"
+    def lifecycle_version = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
-    implementation "androidx.fragment:fragment-ktx:1.3.6"
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
 
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.tencent.tauth:qqopensdk:3.52.0'
     implementation 'com.amap.api:location:5.4.0'
 
@@ -138,6 +154,18 @@ dependencies {
             compile.exclude module: 'ucrop'
         }
     }
+
+    implementation 'com.getui:gtsdk:3.2.7.0'
+    implementation 'com.getui:gtc:3.1.7.0'
+
+    implementation 'com.getui.opt:hwp:3.1.0'
+    implementation 'com.getui.opt:xmp:3.1.0'
+    // TODO: 还没有配置
+//    implementation 'com.assist-v3:oppo:3.1.0'
+    implementation 'com.assist-v3:vivo:3.1.0'
+    implementation 'com.getui.opt:mzp:3.2.0'
+
+    implementation 'com.huawei.hms:push:6.1.0.300'
 
 //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
 

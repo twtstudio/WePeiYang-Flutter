@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.twt.service">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -40,6 +41,9 @@
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+<!--    华为更改角标权限 ，据官网说是-->
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>
+
     <!--url_launcher-->
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
@@ -60,7 +64,8 @@
     <application
         android:name=".WBYApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="微北洋">
+        android:label="@string/label"
+        tools:replace="android:label">
 
         <activity
             android:name=".MainActivity"
@@ -70,7 +75,8 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
@@ -93,10 +99,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="weipeiyang.app"
                     android:pathPrefix="/feedback"
@@ -104,14 +108,18 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="weipeiyang.app"
                     android:pathPrefix="/mailbox"
                     android:scheme="twtstudio" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="um.60464782b8c8d45c1390e7e3" />
             </intent-filter>
         </activity>
 
@@ -119,6 +127,7 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="behind" />
+
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
@@ -133,17 +142,23 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="60464782b8c8d45c1390e7e3" />
+<!--        <meta-data-->
+<!--            android:name="UMENG_APPKEY"-->
+<!--            android:value="60464782b8c8d45c1390e7e3" />-->
 
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="Umeng" />
+<!--        <meta-data-->
+<!--            android:name="UMENG_CHANNEL"-->
+<!--            android:value="Umeng" />-->
 
+<!--        product-->
+<!--        <meta-data-->
+<!--            android:name="PUSH_APPID"-->
+<!--            android:value="43HGFmIKsnAmjrjDLr60X4" />-->
+
+<!--        develop-->
         <meta-data
             android:name="PUSH_APPID"
-            android:value="43HGFmIKsnAmjrjDLr60X4" />
+            android:value="bj16oBtQ3VAvqPbGtEHB69" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -153,14 +168,20 @@
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
-            android:name="com.twt.service.message.WBYIntentService"
+            android:name="com.twt.service.push.WBYIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <!-- 用户自定义服务名 -->
         <service
-            android:name="com.twt.service.message.WBYPushService"
+            android:name="com.twt.service.push.WBYPushService"
             android:exported="true"
             android:label="PushService"
             android:process=":pushservice" />
+
+<!--        <service android:name=".message.WBYHmsMessageService" android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.huawei.push.action.MESSAGING_EVENT"/>-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -170,7 +191,8 @@
 
         <receiver
             android:name=".widget.ScheduleWidgetProvider"
-            android:label="微北洋课程表">
+            android:label="微北洋课程表"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -194,7 +216,7 @@
         </provider>
 
         <provider
-            android:name=".download.InstallProvider"
+            android:name=".install.InstallProvider"
             android:authorities="com.twt.service.apkprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -208,4 +230,10 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="com.getui.sdk.action" />
+        </intent>
+    </queries>
 </manifest>

@@ -1,14 +1,18 @@
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         jcenter()
-        maven { url  'https://repo1.maven.org/maven2/'}
+        maven { url 'https://repo1.maven.org/maven2/' }
+        // 配置HMS Core SDK的Maven仓地址。
+        maven { url 'https://developer.huawei.com/repo/' }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // 增加agcp插件配置。
+        classpath 'com.huawei.agconnect:agcp:1.6.0.300'
     }
 }
 
@@ -19,7 +23,17 @@ allprojects {
         maven {
             url "http://mvn.gt.getui.com/nexus/content/repositories/releases/"
         }
-        maven { url  'https://repo1.maven.org/maven2/'}
+        maven { url 'https://repo1.maven.org/maven2/' }
+
+        maven {
+            url 'https://maven.columbus.heytapmobi.com/repository/releases/'
+            credentials {
+                username 'nexus'
+                password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
+            }
+        }
+        // 配置HMS Core SDK的Maven仓地址。
+        maven { url 'https://developer.huawei.com/repo/' }
     }
 }
 

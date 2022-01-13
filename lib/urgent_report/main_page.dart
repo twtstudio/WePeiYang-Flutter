@@ -96,6 +96,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
   bool _checkTodayHasReportedOrNot() {
     try {
       var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
+      debugPrint("------------------------" + lastTime.toString());
       var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
       var difference = lastDay.difference(DateTime.now()).inDays;
       return difference == 0;
@@ -775,31 +776,30 @@ class _PickImageState extends State<PickImage> {
             _imgFromGallery();
           },
           child: _image != null
-              ? Container(
+              ? DecoratedBox(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(color: Colors.black12, blurRadius: 12)
                       ]),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(
-                        _image,
-                        width: imageWidth,
-                        height: imageWidth,
-                        fit: BoxFit.fitWidth,
-                      )))
-              : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DottedBorder(
-                    borderType: BorderType.RRect,
-                    color: Color(0xffd0d1d6),
-                    child: SizedBox(
-                      width: imageWidth - 32,
-                      height: imageWidth - 32,
-                      child: Icon(Icons.add_circle,
-                          size: 40, color: Color(0xffd0d1d6)),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.file(
+                      _image,
+                      width: imageWidth,
+                      height: imageWidth,
+                      fit: BoxFit.fitWidth,
                     ),
+                  ),
+                )
+              : DottedBorder(
+                  borderType: BorderType.RRect,
+                  color: Color(0xffd0d1d6),
+                  child: SizedBox(
+                    width: imageWidth - 32,
+                    height: imageWidth - 32,
+                    child: Icon(Icons.add_circle,
+                        size: 40, color: Color(0xffd0d1d6)),
                   ),
                 ),
         ),
