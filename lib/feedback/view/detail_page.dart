@@ -237,7 +237,37 @@ class _DetailPageState extends State<DetailPage> {
       var inputField = CommentInputField(postId: post.id);
 
       body = Column(
-        children: [mainList, inputField],
+        children: [
+          mainList,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+               boxShadow:[
+                 BoxShadow(
+                     color: Colors.white,
+                     offset: Offset(-1, -1),
+                     blurRadius: 1,
+                     spreadRadius: 1),
+               ]
+            ),
+            child: Row(
+              children: [
+                inputField,
+         PostCard.outSide(
+                  post,
+                  onLikePressed: (isLike, likeCount) {
+                    post.isLike = isLike;
+                    post.likeCount = likeCount;
+                  },
+                  onFavoritePressed: (isCollect) {
+                    post.isFav = isCollect;
+                  },
+                ),
+              ],
+            ),
+          ),
+          ImagesGridView()
+      ],
       );
     } else {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
@@ -337,6 +367,13 @@ class _CommentInputFieldState extends State<CommentInputField> {
       focusNode: _focusNode,
       controller: _textEditingController,
       maxLength: 200,
+      textInputAction: TextInputAction.send,
+      onEditingComplete: () async {
+        _focusNode.unfocus();
+        if (_textEditingController.text.isNotEmpty) {
+          _sendFloor();
+        }
+      },
       decoration: InputDecoration(
         counterText: '',
         hintText: S.current.feedback_write_comment,
@@ -369,30 +406,16 @@ class _CommentInputFieldState extends State<CommentInputField> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: inputField,
-      ),
+      )
     );
-
-    Widget commitButton = IconButton(
-      icon: Icon(Icons.send),
-      onPressed: () async {
-        _focusNode.unfocus();
-        if (_textEditingController.text.isNotEmpty) {
-          _sendFloor();
-        }
-      },
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Row(
-            children: [inputField, commitButton],
-          ),
-          ImagesGridView(),
-        ],
-      ),
-    );
+    return
+      ConstrainedBox(
+        constraints: BoxConstraints( maxWidth:MediaQuery.of(context).size.width*0.55),
+        child:
+            Row(
+            children: [inputField, ],
+            ),
+      );
   }
 
   _sendFloor() {
@@ -439,7 +462,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       builder: (context) => AlertDialog(
         titleTextStyle: FontManager.YaHeiRegular.copyWith(
             color: Color.fromRGBO(79, 88, 107, 1.0),
-            fontSize: 16,
+            fontSize: 10,
             fontWeight: FontWeight.normal,
             decoration: TextDecoration.none),
         title: Text(S.current.feedback_delete_image_content),

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/screen_util.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';
@@ -18,7 +18,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
-enum PostCardType { simple, detail }
+enum PostCardType { simple, detail, outSide }
 
 typedef HitLikeCallback = void Function(bool, int);
 typedef HitDislikeCallback = void Function(bool, int);
@@ -58,6 +58,16 @@ class PostCard extends StatefulWidget {
     this.showBanner = false,
   }) : type = PostCardType.detail;
 
+  PostCard.outSide(
+    this.post, {
+    this.onContentPressed,
+    this.onLikePressed,
+    this.onDislikePressed,
+    this.onFavoritePressed,
+    this.onContentLongPressed,
+    this.showBanner = false,
+  }) : type = PostCardType.outSide;
+
   @override
   _PostCardState createState() => _PostCardState(this.post);
 }
@@ -79,11 +89,13 @@ class _PostCardState extends State<PostCard> {
       ),
     );
 
-    var tag =
-        post.type == 0 ?
-          post.tag != null ? '${post.tag.name}' : '无标签'
-         :
-          post.department != null ? '${post.department.name}' : '无部门';
+    var tag = post.type == 0
+        ? post.tag != null
+            ? '${post.tag.name}'
+            : '无标签'
+        : post.department != null
+            ? '${post.department.name}'
+            : '无部门';
 
     var campus = post.campus > 0
         ? Container(
@@ -113,11 +125,13 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         children: [
-          Row(children: [
-            TagShowWidget(tag),
-            SizedBox(width: 8),
-            campus
-          ]),
+          Row(children: [TagShowWidget(tag), SizedBox(width: 8), campus]),
+          if (widget.type == PostCardType.detail)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [title],
+            ),
           SizedBox(height: 8),
           content,
         ],
@@ -140,7 +154,16 @@ class _PostCardState extends State<PostCard> {
         ),
       ]);
     }
-
+    var createTime = Text(
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
+      textAlign: TextAlign.right,
+      style: TextUtil.base.black2A.bold.ProductSans.sp(12),
+    );
+    var createTimeDetail = Text(
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
+      textAlign: TextAlign.right,
+      style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
+    );
     var middleWidget = Row(children: rowList);
 
     var mainWidget = (tap) => GestureDetector(
@@ -152,10 +175,24 @@ class _PostCardState extends State<PostCard> {
               SizedBox(height: 5),
               Row(
                 children: [
-                  title,
+                  if (widget.type == PostCardType.detail)
+                    Expanded(
+                        child: Text(
+                      post.id.toString(),
+                      style:
+                          TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
+                    )),
+                  if (widget.type == PostCardType.simple) title,
                   SizedBox(width: 10),
-                  if (post.solved== 1 && post.type == 1) SolvedWidget(),
-                  if (post.solved == 0 && post.type == 1) UnSolvedWidget(),
+                  if (post.solved == 1 &&
+                      post.type == 1 &&
+                      widget.type == PostCardType.simple)
+                    SolvedWidget(),
+                  if (post.solved == 0 &&
+                      post.type == 1 &&
+                      widget.type == PostCardType.simple)
+                    UnSolvedWidget(),
+                  if (widget.type == PostCardType.detail) createTimeDetail,
                 ],
               ),
               SizedBox(height: 5),
@@ -180,97 +217,144 @@ class _PostCardState extends State<PostCard> {
           onLongPress: widget.onContentLongPressed,
         );
 
-    var collectButton = CollectWidget(
-      onCollectPressed: (boolNotifier) async {
-        FeedbackService.postHitFavorite(
-          id: post.id,
-          isFavorite: post.isFav,
-          onSuccess: () {
-            widget.onFavoritePressed?.call(boolNotifier.value);
-            post.isFav = !post.isFav;
-          },
-          onFailure: (e) {
-            boolNotifier.value = boolNotifier.value;
-            ToastProvider.error(e.error.toString());
-          },
-        );
-      },
-      isCollect: post.isFav,
-    );
-
-    var createTime = Text(
-      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
-      textAlign: TextAlign.right,
-      style: TextUtil.base.black2A.bold.ProductSans.sp(12),
-    );
-
-    List<Widget> commentCount = [
-      ClipOval(
-        child: Icon(
-          Icons.message_outlined,
-          size: ScreenUtil().setSp(11.67),
-          color: ColorUtil.bold42TextColor,
-        ),
-      ),
-      SizedBox(width: 6),
-      Text(
-        post.commentCount.toString(),
-        style: TextUtil.base.black2A.bold.ProductSans.sp(12),
-      )
-    ];
-
-    var likeWidget = LikeWidget(
-      count: post.likeCount,
-      onLikePressed: (isLike, likeCount, success, failure) async {
-        await FeedbackService.postHitLike(
-          id: post.id,
-          isLike: post.isLike,
-          onSuccess: () {
-            widget.onLikePressed?.call(!isLike, likeCount);
-            post.isLike = !isLike;
-            post.likeCount = likeCount;
-            success.call();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            failure.call();
-          },
-        );
-      },
-      isLike: post.isLike,
-    );
-
-    var dislikeWidget = LikeButton(
-      likeBuilder: (bool isDisliked) {
-        if (isDisliked) {
-          return Icon(
-            Icons.thumb_down,
-            size: 16,
-            color: Colors.blueGrey[900],
+    var collectButton = (widget.type == PostCardType.outSide)
+        ? BottomCollectWidget(
+            onCollectPressed: (boolNotifier) async {
+              FeedbackService.postHitFavorite(
+                id: post.id,
+                isFavorite: post.isFav,
+                onSuccess: () {
+                  widget.onFavoritePressed?.call(boolNotifier.value);
+                  post.isFav = !post.isFav;
+                },
+                onFailure: (e) {
+                  boolNotifier.value = boolNotifier.value;
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            },
+            isCollect: post.isFav,
+          )
+        : CollectWidget(
+            onCollectPressed: (boolNotifier) async {
+              FeedbackService.postHitFavorite(
+                id: post.id,
+                isFavorite: post.isFav,
+                onSuccess: () {
+                  widget.onFavoritePressed?.call(boolNotifier.value);
+                  post.isFav = !post.isFav;
+                },
+                onFailure: (e) {
+                  boolNotifier.value = boolNotifier.value;
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            },
+            isCollect: post.isFav,
           );
-        } else {
-          return Icon(
-            Icons.thumb_down_outlined,
-            size: ScreenUtil().setSp(11.67),
-            color: ColorUtil.boldTextColor,
+
+
+    var likeWidget = (widget.type == PostCardType.outSide)
+        ? BottomLikeWidget(
+            count: post.likeCount,
+            onLikePressed: (isLike, likeCount, success, failure) async {
+              await FeedbackService.postHitLike(
+                id: post.id,
+                isLike: post.isLike,
+                onSuccess: () {
+                  widget.onLikePressed?.call(!isLike, likeCount);
+                  post.isLike = !isLike;
+                  post.likeCount = likeCount;
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: post.isLike,
+          )
+        : LikeWidget(
+            count: post.likeCount,
+            onLikePressed: (isLike, likeCount, success, failure) async {
+              await FeedbackService.postHitLike(
+                id: post.id,
+                isLike: post.isLike,
+                onSuccess: () {
+                  widget.onLikePressed?.call(!isLike, likeCount);
+                  post.isLike = !isLike;
+                  post.likeCount = likeCount;
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: post.isLike,
           );
-        }
-      },
-      circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: Colors.blueGrey,
-        dotSecondaryColor: Colors.black26,
-      ),
-      animationDuration: Duration(milliseconds: 600),
-      padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-    );
+
+    var dislikeWidget = (widget.type == PostCardType.outSide)
+        ? LikeButton(
+            likeBuilder: (bool isDisliked) {
+              if (isDisliked) {
+                return Icon(
+                  Icons.thumb_down,
+                  size: 22,
+                  color: Colors.blueGrey[900],
+                );
+              } else {
+                return Icon(
+                  Icons.thumb_down_outlined,
+                  size: 22,
+                  color: ColorUtil.boldTextColor,
+                );
+              }
+            },
+            circleColor:
+                CircleColor(start: Colors.black12, end: Colors.blue[200]),
+            bubblesColor: BubblesColor(
+              dotPrimaryColor: Colors.blueGrey,
+              dotSecondaryColor: Colors.black26,
+            ),
+            animationDuration: Duration(milliseconds: 600),
+            padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+          )
+        : LikeButton(
+            likeBuilder: (bool isDisliked) {
+              if (isDisliked) {
+                return Icon(
+                  Icons.thumb_down,
+                  size: 16,
+                  color: Colors.blueGrey[900],
+                );
+              } else {
+                return Icon(
+                  Icons.thumb_down_outlined,
+                  size: ScreenUtil().setSp(11.67),
+                  color: ColorUtil.boldTextColor,
+                );
+              }
+            },
+            circleColor:
+                CircleColor(start: Colors.black12, end: Colors.blue[200]),
+            bubblesColor: BubblesColor(
+              dotPrimaryColor: Colors.blueGrey,
+              dotSecondaryColor: Colors.black26,
+            ),
+            animationDuration: Duration(milliseconds: 600),
+            padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+          );
 
     var commentAndLike = [
-      ...commentCount,
-      SizedBox(width: 5),
-      // Like count.
       likeWidget,
-      SizedBox(width: 5),
+      SizedBox(width: 10),
+      if(widget.type == PostCardType.outSide)
+        collectButton,
+      if(widget.type == PostCardType.outSide)
+        SizedBox(width: 10),
       dislikeWidget
     ];
 
@@ -328,6 +412,11 @@ class _PostCardState extends State<PostCard> {
           SizedBox(height: 10),
         );
         break;
+      case PostCardType.outSide:
+        bottomList.addAll([
+          ...commentAndLike,
+        ]);
+        break;
     }
 
     var bottomWidget = Row(children: bottomList);
@@ -355,24 +444,33 @@ class _PostCardState extends State<PostCard> {
             mainWidget(tap),
             SizedBox(height: 8),
             ...imagesWidget,
+            if (widget.type != PostCardType.detail)
             bottomWidget,
           ],
         ),
         decoration: decoration,
       ),
     );
+    return widget.type != PostCardType.outSide
+        ? DefaultTextStyle(
+            style: FontManager.YaHeiRegular,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              child: ClipCopy(
+                toast: '复制提问成功',
+                copy: post.content,
+                child: body,
+              ),
+            ),
+          )
+        :
+             Row(
+              children: [
+                SizedBox(width: 10,),
+                ...commentAndLike,
+              ],
+            );
 
-    return DefaultTextStyle(
-      style: FontManager.YaHeiRegular,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-        child: ClipCopy(
-          toast: '复制提问成功',
-          copy: post.content,
-          child: body,
-        ),
-      ),
-    );
   }
 
   _image(index, context) {
