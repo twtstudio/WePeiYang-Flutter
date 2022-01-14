@@ -89,6 +89,22 @@ class FeedbackService with AsyncTimer {
 
   }
 
+  static getHotTags({
+    @required OnResult<List<Tag>> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('tags/hot');
+      List<Tag> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Tag.fromJson(json));
+      }
+      onResult(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getPosts(
       {keyword,
       departmentId,

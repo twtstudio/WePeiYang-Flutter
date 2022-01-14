@@ -207,19 +207,23 @@ class Floor {
 class Tag {
   Tag({
     this.id,
+    this.point,
     this.name,
   });
 
   int id;
+  int point;
   String name;
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-    id: json["id"],
+    id: json["tag_id"],
+    point: json["point"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "point": point,
     "name": name,
   };
 }

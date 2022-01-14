@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/tab_pages/pages/game_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -100,30 +101,30 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool scroll = false;
 
   _onClose() {
-    if (!scroll  && _nestedController.offset != _nestedController.position.maxScrollExtent) {
+    if (!scroll &&
+        _nestedController.offset !=
+            _nestedController.position.maxScrollExtent) {
       scroll = true;
       _nestedController
           .animateTo(_nestedController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn)
+              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
           .then((value) => scroll = false);
     }
   }
 
   _onOpen() {
     if (!scroll && _nestedController.offset != 0) {
-      print("------------------oooo");
       scroll = true;
       _nestedController
           .animateTo(0,
-              duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn)
+              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
           .then((value) => scroll = false);
     }
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels == 0)
-      _onOpen();
-    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 50 &&
+    if (scrollInfo.metrics.pixels == 0) _onOpen();
+    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
         scrollInfo.metrics.pixels >= 10 &&
         scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
       if (scrollInfo.metrics.pixels <= _previousOffset)
@@ -225,7 +226,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController1,
-          header: ClassicHeader(),
+          header: ClassicHeader(
+            completeDuration: Duration(milliseconds: 300),
+          ),
           enablePullDown: true,
           onRefresh: onRefresh,
           footer: ClassicFooter(),
@@ -251,7 +254,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController2,
-          header: ClassicHeader(),
+          header: ClassicHeader(
+            completeDuration: Duration(milliseconds: 300),
+          ),
           enablePullDown: true,
           onRefresh: onRefresh,
           footer: ClassicFooter(),
@@ -261,8 +266,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             controller: _controller2,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[1]].length,
+            itemCount: model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
+              if (index == 0) return HotCard();
+              index --;
               final post = model.allList[swapLister[1]][index];
               return PostCard.simple(post, key: ValueKey(post.id));
             },
@@ -277,7 +284,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController3,
-          header: ClassicHeader(),
+          header: ClassicHeader(
+            completeDuration: Duration(milliseconds: 300),
+          ),
           enablePullDown: true,
           onRefresh: onRefresh,
           footer: ClassicFooter(),
@@ -302,7 +311,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return SafeArea(
       child: NestedScrollView(
         controller: _nestedController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: BouncingScrollPhysics(),
+        floatHeaderSlivers: false,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           scroll = false;
           return <Widget>[
