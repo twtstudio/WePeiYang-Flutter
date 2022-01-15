@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
@@ -72,20 +73,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: ElevatedButton(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder()),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(18)),
+          )),
           elevation: MaterialStateProperty.all(0),
           backgroundColor: MaterialStateProperty.all(Colors.white),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
-                width: 20,
-                height: 20,
-                image: _currentIndex == 0
-                    ? AssetImage('assets/images/icon_home_active.png')
-                    : AssetImage('assets/images/icon_home.png')),
-            SizedBox(height: 3),
+            Center(
+              child: ImageIcon(
+                AssetImage('assets/images/lake_butt_icons/main_page.png'),
+                size: 32,
+                color: _currentIndex == 0 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+              ),
+            ),
+            SizedBox(height: 2),
             Text('主页', style: _currentIndex == 0 ? currentStyle : otherStyle),
           ],
         ),
@@ -117,14 +121,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             FeedbackBadgeWidget(
               type: FeedbackMessageType.home,
               child: Center(
-                    child: Image(width: 25,
-                      height: 25,
-                      image: AssetImage('assets/images/lake_butt_icons/dive.png'),
-                    ),
-                  ),
+                child: ImageIcon(
+                    AssetImage('assets/images/lake_butt_icons/dive_page.png'),
+                  size: 32,
+                  color: _currentIndex == 1 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                ),
+              ),
             ),
-            Text('青年湖底',
-                style: _currentIndex == 1 ? currentStyle : otherStyle),
+            SizedBox(height: 2),
+            Text('青年湖底', style: _currentIndex == 1 ? currentStyle : otherStyle),
           ],
         ),
       ),
@@ -135,20 +140,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: ElevatedButton(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder()),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topRight: Radius.circular(18)),
+          )),
           elevation: MaterialStateProperty.all(0),
           backgroundColor: MaterialStateProperty.all(Colors.white),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
-                width: 20,
-                height: 20,
-                image: _currentIndex == 2
-                    ? AssetImage('assets/images/icon_user_active.png')
-                    : AssetImage('assets/images/icon_user.png')),
-            SizedBox(height: 3),
+            SizedBox(height: 4),
+            Center(
+              child: ImageIcon(
+                AssetImage('assets/images/lake_butt_icons/my_page.png'),
+                size: 28,
+                color: _currentIndex == 2 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+              ),
+            ),
+            SizedBox(height: 2),
             Text('个人中心', style: _currentIndex == 2 ? currentStyle : otherStyle),
           ],
         ),
@@ -156,9 +165,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    var bottomNavigationBar = BottomAppBar(
-      child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
-    );
+    var bottomNavigationBar = ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(18.0),
+          topRight: Radius.circular(18.0),
+        ),
+        child: BottomAppBar(
+          child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
+        ));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
@@ -167,6 +181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           : SystemUiOverlayStyle.dark
               .copyWith(systemNavigationBarColor: Colors.white),
       child: Scaffold(
+        extendBody: true,
         bottomNavigationBar: bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {

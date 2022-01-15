@@ -553,7 +553,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       controller: _contentController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,
-      minLines: 14,
+      minLines: 1,
       maxLines: 22,
       style: FontManager.YaHeiRegular.copyWith(
           color: ColorUtil.boldTextColor,

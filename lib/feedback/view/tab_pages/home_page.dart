@@ -112,6 +112,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onTapped() {
+    _onOpen();
     if (_tagsContainerCanAnimate) {
       if (_tagsWrapIsShow == false)
         setState(() {
@@ -333,7 +334,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var tagsWrap = Consumer<FbTagsProvider>(
       builder: (_, provider, __) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
           child: Wrap(
             spacing: 6,
             children: List.generate(provider.departmentList.length, (index) {
@@ -413,8 +414,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   opacity: _tagsContainerBackgroundOpacity,
                   duration: Duration(milliseconds: 500),
                   onEnd: _offstageTheBackground,
-                  child: Container(
-                    color: Colors.black45,
+                  child: InkWell(
+                    onTap: _onTapped,
+                    child: Container(
+                      color: Colors.black45,
+                    ),
                   ),
                 )),
             Offstage(
