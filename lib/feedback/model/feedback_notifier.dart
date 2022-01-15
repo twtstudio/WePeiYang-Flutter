@@ -54,6 +54,7 @@ class NewFloorProvider {
   String content = "";
   int replyTo = 0;
   List<File> images = [];
+
   void clear() {
     content = "";
     replyTo = 0;
@@ -88,7 +89,11 @@ class FbHomeListModel extends ChangeNotifier {
   // map default is LinkedHashMap
   List<Map<int, Post>> _homeList = [{}, {}, {}];
 
-  List<List<Post>> get allList => [_homeList[0].values.toList(), _homeList[1].values.toList(), _homeList[2].values.toList()];
+  List<List<Post>> get allList => [
+        _homeList[0].values.toList(),
+        _homeList[1].values.toList(),
+        _homeList[2].values.toList()
+      ];
 
   int _postType = 2;
   int _totalPage = 0;

@@ -116,45 +116,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             FeedbackBadgeWidget(
               type: FeedbackMessageType.home,
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: _currentIndex == 1
-                    ? Stack(children: [
-                        Center(
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Image(
-                                image: AssetImage(
-                                    'assets/images/icon_feedback_active.png')),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.bottomCenter,
-                          child: Icon(
-                            Icons.arrow_upward_rounded,
-                            size: 14,
-                            color: MyColors.myGrey,
-                          ),
-                        ),
-                      ])
-                    : Center(
-                      child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Image(
-                            image: AssetImage('assets/images/icon_feedback.png'),
-                          ),
-                        ),
+              child: Center(
+                    child: Image(width: 25,
+                      height: 25,
+                      image: AssetImage('assets/images/lake_butt_icons/dive.png'),
                     ),
-              ),
+                  ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Text('青年湖底',
-                  style: _currentIndex == 1 ? currentStyle : otherStyle),
-            ),
+            Text('青年湖底',
+                style: _currentIndex == 1 ? currentStyle : otherStyle),
           ],
         ),
       ),

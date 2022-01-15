@@ -6,6 +6,21 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
+List<Text> tags = List.filled(
+    5,
+    Text(
+      "此条暂无热搜",
+      style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,
+    ));
+List<Text> hotIndex = List.filled(
+    5,
+    Text(
+      "0",
+      style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,
+    ));
+
+List<Tag> tagUtil = [];
+
 class HotCard extends StatefulWidget {
   @override
   _HotCardState createState() => _HotCardState();
@@ -14,6 +29,12 @@ class HotCard extends StatefulWidget {
 class _HotCardState extends State<HotCard> {
   _HotCardState();
 
+  @override
+  void initState() {
+    initHotRankCards();
+    super.initState();
+  }
+
   List<SvgPicture> leads = [
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg"),
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg"),
@@ -21,15 +42,18 @@ class _HotCardState extends State<HotCard> {
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg"),
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg"),
   ];
-  List<Text> tags = List.filled(5, Text("此条暂无热搜", style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,));
-  List<Text> hotIndex = List.filled(5, Text("0", style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,));
-  List<Tag> tagUtil = [];
 
   _setHotTags(List<Tag> list) {
     tagUtil = list;
     for (int total = 0; list.isNotEmpty; total++) {
-      tags[total] = Text(tagUtil[total].name, style: TextUtil.base.w500.NotoSansSC.sp(14).grey6C,);
-      hotIndex[total] = Text(tagUtil[total].point.toString(), style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,);
+      tags[total] = Text(
+        tagUtil[total].name,
+        style: TextUtil.base.w500.NotoSansSC.sp(14).grey6C,
+      );
+      hotIndex[total] = Text(
+        tagUtil[total].point.toString(),
+        style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
+      );
     }
   }
 
@@ -45,8 +69,6 @@ class _HotCardState extends State<HotCard> {
 
   @override
   Widget build(BuildContext context) {
-    initHotRankCards();
-
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
           width: 22),
@@ -55,30 +77,41 @@ class _HotCardState extends State<HotCard> {
           width: 100)
     ]);
 
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 8),
-      padding: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-      ),
-      child: Column(
-        children: [
-          title,
-          SizedBox(height: 8),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return  Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Row(children: [leads[index], SizedBox(width: 5), tags[index], Spacer(), hotIndex[index]],),
-              );
-            },
-          ),
-        ],
+    return InkWell(
+      onTap: initHotRankCards,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.fromLTRB(16, 16, 16, 8),
+        padding: EdgeInsets.all(15.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        child: Column(
+          children: [
+            title,
+            SizedBox(height: 8),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Row(
+                    children: [
+                      leads[index],
+                      SizedBox(width: 5),
+                      tags[index],
+                      Spacer(),
+                      hotIndex[index]
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

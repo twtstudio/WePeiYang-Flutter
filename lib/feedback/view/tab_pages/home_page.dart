@@ -37,6 +37,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   List<double> _offsets = [2, 2, 2];
 
   bool _lakeIsLoaded, _feedbackIsLoaded;
+  bool _hotDisplays = false;
 
   ///第几个tab
   int _swap;
@@ -70,6 +71,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       _tagsProvider.initDepartments();
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
+        _hotDisplays = true;
         _refreshController.refreshCompleted();
       }, failure: (_) {
         controller?.stop();
@@ -78,6 +80,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
+      _hotDisplays = false;
       _refreshController.refreshFailed();
     });
   }
@@ -140,6 +143,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _swap = 0;
     _lakeIsLoaded = false;
     _feedbackIsLoaded = false;
+    _hotDisplays = false;
     _refreshController = _refreshController1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -268,8 +272,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             physics: NeverScrollableScrollPhysics(),
             itemCount: model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
-              if (index == 0) return HotCard();
-              index --;
+              if (index == 0)
+                return Offstage(offstage: !_hotDisplays, child: HotCard());
+              index--;
               final post = model.allList[swapLister[1]][index];
               return PostCard.simple(post, key: ValueKey(post.id));
             },
