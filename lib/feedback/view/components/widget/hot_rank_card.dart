@@ -10,7 +10,7 @@ List<Text> tags = List.filled(
     5,
     Text(
       "此条暂无热搜",
-      style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,
+      style: TextUtil.base.w400.NotoSansSC.sp(16).grey97,
     ));
 List<Text> hotIndex = List.filled(
     5,
@@ -21,6 +21,7 @@ List<Text> hotIndex = List.filled(
 
 List<Tag> tagUtil = [];
 
+//北洋热搜
 class HotCard extends StatefulWidget {
   @override
   _HotCardState createState() => _HotCardState();
@@ -48,7 +49,7 @@ class _HotCardState extends State<HotCard> {
     for (int total = 0; list.isNotEmpty; total++) {
       tags[total] = Text(
         tagUtil[total].name,
-        style: TextUtil.base.w500.NotoSansSC.sp(14).grey6C,
+        style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
       );
       hotIndex[total] = Text(
         tagUtil[total].point.toString(),
@@ -71,10 +72,10 @@ class _HotCardState extends State<HotCard> {
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 22),
+          width: 19),
       SizedBox(width: 2),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 100)
+          width: 90)
     ]);
 
     return InkWell(
@@ -102,7 +103,7 @@ class _HotCardState extends State<HotCard> {
                     children: [
                       leads[index],
                       SizedBox(width: 5),
-                      tags[index],
+                      Center(child: tags[index]),
                       Spacer(),
                       hotIndex[index]
                     ],

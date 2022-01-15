@@ -19,6 +19,9 @@ import 'package:we_pei_yang_flutter/feedback/view/tab_pages/pages/game_page.dart
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab_grid_view.dart';
+
+import '../new_post_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key key}) : super(key: key);
@@ -35,11 +38,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   double _tabPaddingWidth = 0;
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
+  double _animatedContainerHeight;
 
   bool _lakeIsLoaded, _feedbackIsLoaded;
   bool _hotDisplays = false;
+  bool _tagsContainerCanAnimate;
+  bool _tagsContainerBackgroundIsShow;
+  double _tagsContainerBackgroundOpacity = 0;
 
-  ///第几个tab
+  ///第几个tab,0,1,2,3
   int _swap;
 
   //请求type
@@ -62,9 +69,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RefreshController(initialRefresh: false);
   RefreshController _refreshController;
 
+  final postTypeNotifier = ValueNotifier(PostType.lake);
+
   Widget _mixedListView;
   Widget _lakeListView;
   Widget _feedbackListView;
+  Widget _departmentSelectionContainer;
 
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
@@ -101,6 +111,29 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
+  _onShow() {
+    if (_tagsContainerCanAnimate) {
+      if (_animatedContainerHeight == 0)
+        setState(() {
+          _tagsContainerBackgroundIsShow = true;
+          _animatedContainerHeight = 250;
+          _tagsContainerBackgroundOpacity = 1.0;
+        });
+      else
+        setState(() {
+          _animatedContainerHeight = 0;
+          _tagsContainerBackgroundOpacity = 0;
+        });
+    }
+    _tagsContainerCanAnimate = false;
+  }
+
+  _offstageTheBackground() {
+    if (_tagsContainerBackgroundOpacity < 1) {
+      _tagsContainerBackgroundIsShow = false;
+    _listProvider.justForGetConcentrate();}
+  }
+
   bool scroll = false;
 
   _onClose() {
@@ -113,6 +146,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               duration: Duration(milliseconds: 160), curve: Curves.decelerate)
           .then((value) => scroll = false);
     }
+    if (_refreshController.isRefresh) _refreshController.refreshCompleted();
   }
 
   _onOpen() {
@@ -144,6 +178,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _lakeIsLoaded = false;
     _feedbackIsLoaded = false;
     _hotDisplays = false;
+    _tagsContainerCanAnimate = true;
+    _tagsContainerBackgroundIsShow = false;
+    _tagsContainerBackgroundOpacity = 0;
+    _animatedContainerHeight = 0;
     _refreshController = _refreshController1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -157,7 +195,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tabController.addListener(() {
       if (_tabController.index.toDouble() == _tabController.animation.value) {
         //判断TabBar是否切换
-        print(_tabController.index);
         switch (_tabController.index) {
           case 0:
             {
@@ -235,7 +272,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           ),
           enablePullDown: true,
           onRefresh: onRefresh,
-          footer: ClassicFooter(),
+          footer: ClassicFooter(
+            idleIcon: Icon(Icons.check, color: Colors.grey),
+            idleText: "你翻到了青年湖底！",
+          ),
           enablePullUp: !model.isLastPage,
           onLoading: _onLoading,
           child: ListView.builder(
@@ -263,7 +303,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           ),
           enablePullDown: true,
           onRefresh: onRefresh,
-          footer: ClassicFooter(),
+          footer: ClassicFooter(
+            idleIcon: Icon(Icons.check, color: Colors.grey),
+            idleText: "你翻到了青年湖底！",
+          ),
           enablePullUp: !model.isLastPage,
           onLoading: _onLoading,
           child: ListView.builder(
@@ -284,29 +327,67 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             _onScrollNotification(scrollInfo),
       );
     });
+
+    _departmentSelectionContainer = AnimatedContainer(
+      width: double.infinity,
+      height: _animatedContainerHeight,
+      curve: Curves.decelerate,
+      duration: Duration(milliseconds: 800),
+      decoration: BoxDecoration(
+          color: ColorUtil.white253,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(22),
+              bottomRight: Radius.circular(22))),
+      onEnd: () {
+        _tagsContainerCanAnimate = true;
+      },
+      child: TabGridView(),
+    );
+
     _feedbackListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
       return NotificationListener<ScrollNotification>(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController3,
-          header: ClassicHeader(
-            completeDuration: Duration(milliseconds: 300),
-          ),
-          enablePullDown: true,
-          onRefresh: onRefresh,
-          footer: ClassicFooter(),
-          enablePullUp: !model.isLastPage,
-          onLoading: _onLoading,
-          child: ListView.builder(
-            controller: _controller3,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[2]].length,
-            itemBuilder: (context, index) {
-              final post = model.allList[swapLister[2]][index];
-              return PostCard.simple(post, key: ValueKey(post.id));
-            },
-          ),
+        child: Stack(
+          children: [
+            SmartRefresher(
+              physics: BouncingScrollPhysics(),
+              controller: _refreshController3,
+              header: ClassicHeader(
+                completeDuration: Duration(milliseconds: 300),
+              ),
+              enablePullDown: true,
+              onRefresh: onRefresh,
+              footer: ClassicFooter(
+                idleIcon: Icon(Icons.check, color: Colors.grey),
+                idleText: "只有这么多了",
+              ),
+              enablePullUp: !model.isLastPage,
+              onLoading: _onLoading,
+              child: ListView.builder(
+                controller: _controller3,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: model.allList[swapLister[2]].length,
+                itemBuilder: (context, index) {
+                  final post = model.allList[swapLister[2]][index];
+                  return PostCard.simple(post, key: ValueKey(post.id));
+                },
+              ),
+            ),
+            Offstage(
+                offstage: !_tagsContainerBackgroundIsShow,
+                child: AnimatedOpacity(
+                  opacity: _tagsContainerBackgroundOpacity,
+                  duration: Duration(milliseconds: 600),
+                  onEnd: _offstageTheBackground,
+                  child: Container(
+                    color: Colors.black45,
+                  ),
+                )),
+            Offstage(
+              offstage: !_tagsContainerBackgroundIsShow,
+              child: _departmentSelectionContainer,
+            )
+          ],
         ),
         onNotification: (ScrollNotification scrollInfo) =>
             _onScrollNotification(scrollInfo),
@@ -396,13 +477,28 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   ],
                                 )),
                                 Tab(
-                                    child: Row(
-                                  children: [
-                                    SizedBox(width: _tabPaddingWidth),
-                                    Text("校务"),
-                                    SizedBox(width: _tabPaddingWidth),
-                                  ],
-                                )),
+                                  child: _swap == 2
+                                      ? InkWell(
+                                          child: Row(
+                                            children: [
+                                              SizedBox(width: _tabPaddingWidth),
+                                              Text("校务"),
+                                              Icon(
+                                                Icons.arrow_drop_down,
+                                                size: 12,
+                                              )
+                                            ],
+                                          ),
+                                          onTap: _onShow,
+                                        )
+                                      : Row(
+                                          children: [
+                                            SizedBox(width: _tabPaddingWidth),
+                                            Text("校务"),
+                                            SizedBox(width: _tabPaddingWidth),
+                                          ],
+                                        ),
+                                ),
                                 Tab(
                                   child: Row(
                                     children: [

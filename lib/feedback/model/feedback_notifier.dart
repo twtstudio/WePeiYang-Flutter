@@ -143,6 +143,10 @@ class FbHomeListModel extends ChangeNotifier {
     );
   }
 
+  justForGetConcentrate() {
+    notifyListeners();
+  }
+
   checkTokenAndGetPostList(FbTagsProvider provider, int type,
       {OnSuccess success, OnFailure failure}) async {
     if (CommonPreferences().feedbackToken.value == "") {
