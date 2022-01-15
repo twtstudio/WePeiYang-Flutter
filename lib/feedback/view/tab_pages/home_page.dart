@@ -19,9 +19,9 @@ import 'package:we_pei_yang_flutter/feedback/view/tab_pages/pages/game_page.dart
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab_grid_view.dart';
 
 import '../new_post_page.dart';
+import '../search_result_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key key}) : super(key: key);
@@ -31,19 +31,19 @@ class FeedbackHomePage extends StatefulWidget {
 }
 
 class FeedbackHomePageState extends State<FeedbackHomePage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
-  double _animatedContainerHeight;
 
   bool _lakeIsLoaded, _feedbackIsLoaded;
   bool _hotDisplays = false;
-  bool _tagsContainerCanAnimate;
-  bool _tagsContainerBackgroundIsShow;
+  bool _tagsContainerCanAnimate,
+      _tagsContainerBackgroundIsShow,
+      _tagsWrapIsShow;
   double _tagsContainerBackgroundOpacity = 0;
 
   ///第几个tab,0,1,2,3
@@ -111,27 +111,29 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  _onShow() {
+  _onTapped() {
     if (_tagsContainerCanAnimate) {
-      if (_animatedContainerHeight == 0)
+      if (_tagsWrapIsShow == false)
         setState(() {
+          _tagsWrapIsShow = true;
           _tagsContainerBackgroundIsShow = true;
-          _animatedContainerHeight = 250;
           _tagsContainerBackgroundOpacity = 1.0;
         });
       else
         setState(() {
-          _animatedContainerHeight = 0;
           _tagsContainerBackgroundOpacity = 0;
+          _tagsWrapIsShow = false;
         });
     }
     _tagsContainerCanAnimate = false;
   }
 
   _offstageTheBackground() {
+    _tagsContainerCanAnimate = true;
     if (_tagsContainerBackgroundOpacity < 1) {
       _tagsContainerBackgroundIsShow = false;
-    _listProvider.justForGetConcentrate();}
+      _listProvider.justForGetConcentrate();
+    }
   }
 
   bool scroll = false;
@@ -178,10 +180,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _lakeIsLoaded = false;
     _feedbackIsLoaded = false;
     _hotDisplays = false;
+    _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
     _tagsContainerBackgroundOpacity = 0;
-    _animatedContainerHeight = 0;
     _refreshController = _refreshController1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -328,20 +330,52 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       );
     });
 
-    _departmentSelectionContainer = AnimatedContainer(
+    var tagsWrap = Consumer<FbTagsProvider>(
+      builder: (_, provider, __) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Wrap(
+            spacing: 6,
+            children: List.generate(provider.departmentList.length, (index) {
+              return InkResponse(
+                radius: 30,
+                highlightColor: Colors.transparent,
+                child: Chip(
+                  backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                  label: Text(provider.departmentList[index].name,
+                      style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.searchResult,
+                    arguments: SearchResultPageArgs(
+                      '',
+                      provider.departmentList[index].id.toString(),
+                      '#${provider.departmentList[index].name}',
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
+        );
+      },
+    );
+
+    _departmentSelectionContainer = Container(
       width: double.infinity,
-      height: _animatedContainerHeight,
-      curve: Curves.decelerate,
-      duration: Duration(milliseconds: 800),
       decoration: BoxDecoration(
           color: ColorUtil.white253,
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
-      onEnd: () {
-        _tagsContainerCanAnimate = true;
-      },
-      child: TabGridView(),
+      child: AnimatedSize(
+        curve: Curves.easeInOutExpo,
+        duration: Duration(milliseconds: 700),
+        vsync: this,
+        child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
+      ),
     );
 
     _feedbackListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
@@ -377,7 +411,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 offstage: !_tagsContainerBackgroundIsShow,
                 child: AnimatedOpacity(
                   opacity: _tagsContainerBackgroundOpacity,
-                  duration: Duration(milliseconds: 600),
+                  duration: Duration(milliseconds: 500),
                   onEnd: _offstageTheBackground,
                   child: Container(
                     color: Colors.black45,
@@ -489,7 +523,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                               )
                                             ],
                                           ),
-                                          onTap: _onShow,
+                                          onTap: _onTapped,
                                         )
                                       : Row(
                                           children: [

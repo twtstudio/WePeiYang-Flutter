@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
@@ -80,18 +78,6 @@ class _SearchPageState extends State<SearchPage> {
         fontSize: 13.0,
         color: Color.fromRGBO(98, 103, 124, 1),
         fontWeight: FontWeight.bold);
-    var tagTextStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 12.0, color: Color.fromRGBO(98, 103, 124, 1));
-
-    var searchIcon = Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      margin: EdgeInsets.only(top: 20),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        S.current.feedback_search_tag,
-        style: titleTextStyle,
-      ),
-    );
 
     var historyTextStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 15.0,
@@ -182,46 +168,11 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
 
-    var searchHistory = Column(
-      children: [searchHistoryIcon, searchHistoryList],
-    );
-
-    var tagsWrap = Consumer<FbTagsProvider>(
-      builder: (_, provider, __) {
-        return Wrap(
-          spacing: 6,
-          children: List.generate(provider.departmentList.length, (index) {
-            return InkResponse(
-              radius: 30,
-              highlightColor: Colors.transparent,
-              child: Chip(
-                backgroundColor: Color.fromRGBO(238, 238, 238, 1),
-                label: Text(provider.departmentList[index].name, style: tagTextStyle),
-              ),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  FeedbackRouter.searchResult,
-                  arguments: SearchResultPageArgs(
-                    '',
-                    provider.departmentList[index].id.toString(),
-                    '#${provider.departmentList[index].name}',
-                  ),
-                ).then((_) {
-                  Navigator.pop(context);
-                });
-              },
-            );
-          }),
-        );
-      },
-    );
-
-    var tagWidget = Padding(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+    var searchHistory = Padding(
       child: Column(
-        children: <Widget>[searchHistory, searchIcon, tagsWrap],
+        children: [searchHistoryIcon, searchHistoryList],
       ),
+      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
     );
 
     return DefaultTextStyle(
@@ -231,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
           padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
           child: ListView(
             padding: EdgeInsets.zero,
-            children: [searchBar, tagWidget],
+            children: [searchBar, searchHistory],
           ),
         ),
       ),
