@@ -85,9 +85,7 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static getTags() async {
-
-  }
+  static getTags() async {}
 
   static getHotTags({
     @required OnResult<List<Tag>> onResult,
@@ -221,7 +219,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitLike', () async {
       try {
-        await feedbackDio.post('post/likeOrUnlike/modify',
+        await feedbackDio.post('post/like',
             formData: FormData.fromMap({
               'post_id': '$id',
               'op': isLike ? 0 : 1,
@@ -241,7 +239,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitFavorite', () async {
       try {
-        await feedbackDio.post('post/favOrUnfav/modify',
+        await feedbackDio.post('post/fav',
             formData: FormData.fromMap({
               'post_id': id,
               'op': isFavorite ? 0 : 1,
@@ -261,7 +259,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitDislike', () async {
       try {
-        await feedbackDio.post('post/disOrUndis/modify',
+        await feedbackDio.post('post/dis',
             formData: FormData.fromMap({
               'post_id': '$id',
               'op': isDisliked ? 0 : 1,
@@ -280,7 +278,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitLike', () async {
       try {
-        await feedbackDio.post('floor/likeOrUnlike/modify',
+        await feedbackDio.post('floor/like',
             formData: FormData.fromMap({
               'floor_id': '$id',
               'op': isLike ? 0 : 1,
@@ -346,18 +344,29 @@ class FeedbackService with AsyncTimer {
 
   static replyFloor(
       {@required id,
-        @required content,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required content,
+      @required List<File> images,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyFloor', () async {
       try {
-        await feedbackDio.post(
-          'floor/reply',
-          formData: FormData.fromMap({
-            'reply_to_floor': id,
-            'content': content,
-          }),
-        );
+        var formData = FormData.fromMap({
+          'reply_to_floor': id,
+          'content': content,
+        });
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.files.addAll([
+              MapEntry(
+                  'images',
+                  MultipartFile.fromFileSync(
+                    images[i].path,
+                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
+                    contentType: MediaType("image", "jpeg"),
+                  ))
+            ]);
+        }
+        await feedbackDio.post('floor/reply', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
@@ -448,14 +457,13 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-
   /// 举报问题 / 评论
   static report(
       {@required id,
-        @required isQuestion,
-        @required reason,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required isQuestion,
+      @required reason,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('reportQuestion', () async {
       var target = isQuestion ? 'question' : 'commit';
       try {

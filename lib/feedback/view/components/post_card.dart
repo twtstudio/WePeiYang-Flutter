@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screen_util.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';
@@ -13,8 +12,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/collect_widget.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
@@ -23,14 +21,14 @@ enum PostCardType { simple, detail, outSide }
 typedef HitLikeCallback = void Function(bool, int);
 typedef HitDislikeCallback = void Function(bool, int);
 
-typedef HitCollectCallback = void Function(bool);
+typedef HitFavoriteCallback = void Function(bool, int);
 
 class PostCard extends StatefulWidget {
   final Post post;
   final VoidCallback onContentPressed;
   final HitLikeCallback onLikePressed;
   final HitDislikeCallback onDislikePressed;
-  final HitCollectCallback onFavoritePressed;
+  final HitFavoriteCallback onFavoritePressed;
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
@@ -178,7 +176,7 @@ class _PostCardState extends State<PostCard> {
                   if (widget.type == PostCardType.detail)
                     Expanded(
                         child: Text(
-                      post.id.toString(),
+                      '#MP' + post.id.toString().padLeft(6, '0'),
                       style:
                           TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
                     )),
@@ -218,44 +216,49 @@ class _PostCardState extends State<PostCard> {
         );
 
     var collectButton = (widget.type == PostCardType.outSide)
-        ? BottomCollectWidget(
-            onCollectPressed: (boolNotifier) async {
-              FeedbackService.postHitFavorite(
+        ? IconWidget(
+      IconType.bottomFav,
+            count: post.favCount,
+            onLikePressed: (boolNotifier, favCount, success, failure) async {
+              await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(boolNotifier.value);
-                  post.isFav = !post.isFav;
+                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  success.call();
                 },
                 onFailure: (e) {
-                  boolNotifier.value = boolNotifier.value;
                   ToastProvider.error(e.error.toString());
+                  failure.call();
                 },
               );
             },
-            isCollect: post.isFav,
+            isLike: post.isFav,
           )
-        : CollectWidget(
-            onCollectPressed: (boolNotifier) async {
-              FeedbackService.postHitFavorite(
+        : IconWidget(
+      IconType.fav,
+            count: post.favCount,
+            onLikePressed: (boolNotifier, favCount, success, failure) async {
+              await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(boolNotifier.value);
-                  post.isFav = !post.isFav;
+                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  success.call();
                 },
                 onFailure: (e) {
-                  boolNotifier.value = boolNotifier.value;
                   ToastProvider.error(e.error.toString());
+                  failure.call();
                 },
               );
             },
-            isCollect: post.isFav,
+            isLike: post.isFav,
           );
 
 
     var likeWidget = (widget.type == PostCardType.outSide)
-        ? BottomLikeWidget(
+        ? IconWidget(
+      IconType.bottomLike,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -275,7 +278,8 @@ class _PostCardState extends State<PostCard> {
             },
             isLike: post.isLike,
           )
-        : LikeWidget(
+        : IconWidget(
+      IconType.like,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -302,13 +306,13 @@ class _PostCardState extends State<PostCard> {
               if (isDisliked) {
                 return Icon(
                   Icons.thumb_down,
-                  size: 22,
+                  size: 16,
                   color: Colors.blueGrey[900],
                 );
               } else {
                 return Icon(
                   Icons.thumb_down_outlined,
-                  size: 22,
+                  size: 16,
                   color: ColorUtil.boldTextColor,
                 );
               }
@@ -327,13 +331,13 @@ class _PostCardState extends State<PostCard> {
               if (isDisliked) {
                 return Icon(
                   Icons.thumb_down,
-                  size: 16,
+                  size: 15,
                   color: Colors.blueGrey[900],
                 );
               } else {
                 return Icon(
                   Icons.thumb_down_outlined,
-                  size: ScreenUtil().setSp(11.67),
+                  size: 15,
                   color: ColorUtil.boldTextColor,
                 );
               }

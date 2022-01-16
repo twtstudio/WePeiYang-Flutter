@@ -138,6 +138,7 @@ class Floor {
     this.subTo,
     this.likeCount,
     this.subFloors,
+    this.subFloorCnt,
     this.isLike,
     this.isDis,
     this.isOwner,
@@ -155,6 +156,7 @@ class Floor {
   int subTo;
   int likeCount;
   List<Floor> subFloors;
+  int subFloorCnt;
   bool isLike;
   bool isDis;
   bool isOwner;
@@ -172,6 +174,7 @@ class Floor {
     subTo: json["sub_to"],
     likeCount: json["like_count"],
     subFloors: json["sub_floors"] == null ? null : List<Floor>.from(json["sub_floors"].map((x) => Floor.fromJson(x))),
+    subFloorCnt: json["sub_floor_cnt"],
     isLike: json["is_like"],
     isDis: json["is_dis"],
     isOwner: json["is_owner"],
@@ -190,6 +193,7 @@ class Floor {
     "sub_to": subTo,
     "like_count": likeCount,
     "sub_floors": subFloors == null ? null : List<dynamic>.from(subFloors.map((x) => x.toJson())),
+    "sub_floor_cnt": subFloorCnt,
     "is_like": isLike,
     "is_dis": isDis,
     "is_owner": isOwner,

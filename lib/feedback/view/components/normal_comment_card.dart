@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 typedef LikeCallback = void Function(bool, int);
@@ -18,11 +20,13 @@ class NCommentCard extends StatefulWidget {
   final Floor comment;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
+  final bool isSubFloor;
 
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard({this.comment, this.commentFloor, this.likeSuccessCallback});
+  NCommentCard(
+      {this.comment, this.commentFloor, this.likeSuccessCallback, this.isSubFloor});
 }
 
 class _NCommentCardState extends State<NCommentCard> {
@@ -63,23 +67,23 @@ class _NCommentCardState extends State<NCommentCard> {
         Icon(Icons.account_circle_rounded,
             size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
         SizedBox(height: 8),
-       Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.comment.nickname ?? S.current.feedback_anonymous,
-              maxLines: 1,
-              overflow: TextOverflow.clip,
-              style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
-            ),
-            Text(
-              DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.comment.createAt),
-              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
-            ),
-          ],
-        ),),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.comment.nickname ?? S.current.feedback_anonymous,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
+              ),
+              Text(
+                DateTime.now().difference(widget.comment.createAt).dayHourMinuteSecondFormatted(),
+                style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+              ),
+            ],
+          ),),
         IconButton(
           icon: Icon(Icons.more_horiz),
           iconSize: 16,
@@ -97,19 +101,46 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var commentImage = Image.network(baseUrl + widget.comment.imageUrl);
 
-    var floor = IconButton(
+    var replyButton = IconButton(
       icon: Icon(Icons.chat),
       iconSize: 16,
       constraints: BoxConstraints(),
-      onPressed: (){},
+      onPressed: () {
+        context
+            .read<NewFloorProvider>()
+            .replyTo = widget.comment.id;
+        context
+            .read<NewFloorProvider>()
+            .focusNode
+            .requestFocus();
+      },
       padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
       color: ColorUtil.boldLakeTextColor,
     );
 
+    var subFloor;
+    if (widget.comment.subFloors != null && !widget.isSubFloor) {
+      subFloor = ListView.builder(
+        shrinkWrap: true,
+        itemCount: widget.comment.subFloorCnt,
+        itemBuilder: (context, index) {
+          return NCommentCard(
+            comment: widget.comment.subFloors[index],
+            commentFloor: index + 1,
+            isSubFloor: true,
+            // likeSuccessCallback: (isLiked, count) {
+            //   data.isLiked = isLiked;
+            //   data.likeCount = count;
+            // },
+          );
+        },
+      );
+    }
+
     var deleteButton = TextButton(
       onPressed: () async {
         bool confirm = await _showDeleteConfirmDialog();
-        if(confirm) {
+        if (confirm) {
           FeedbackService.deleteFloor(
             id: widget.comment.id,
             onSuccess: () {
@@ -144,31 +175,33 @@ class _NCommentCardState extends State<NCommentCard> {
     //           arguments: ReportPageArgs(widget.comment.id, false));
     //     });
 
-    var likeWidget = LikeWidget(
-      count: widget.comment.likeCount,
-      onLikePressed: (isLiked, count,success,failure) async {
-        await FeedbackService.commentHitLike(
-          id: widget.comment.id,
-          isLike: widget.comment.isLike,
-          onSuccess: () {
-            widget.likeSuccessCallback?.call(!isLiked, count);
-            success.call();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            failure.call();
-          },
-        );
-      },
-      isLike: widget.comment.isLike
+    var likeWidget = IconWidget(
+        IconType.like,
+        count: widget.comment.likeCount,
+        onLikePressed: (isLiked, count, success, failure) async {
+          await FeedbackService.commentHitLike(
+            id: widget.comment.id,
+            isLike: widget.comment.isLike,
+            onSuccess: () {
+              widget.likeSuccessCallback?.call(!isLiked, count);
+              success.call();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+              failure.call();
+            },
+          );
+        },
+        isLike: widget.comment.isLike
     );
 
     var bottomWidget = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         likeWidget,
-        if(CommonPreferences().feedbackUid.value == widget.comment.uid.toString())deleteButton,
-        floor,
+        if(CommonPreferences().feedbackUid.value ==
+            widget.comment.uid.toString()) deleteButton,
+        replyButton,
       ],
     );
 
@@ -184,6 +217,7 @@ class _NCommentCardState extends State<NCommentCard> {
         if(widget.comment.imageUrl != null) box,
         if(widget.comment.imageUrl != null) commentImage,
         bottomWidget,
+        if(!widget.isSubFloor && subFloor != null) subFloor,
       ],
     );
 

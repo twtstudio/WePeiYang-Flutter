@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/like_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/official_logo.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -64,7 +64,8 @@ class _HotTopicsCardState extends State<HotTopicsCard> {
       ],
     );
 
-    var likeWidget = LikeWidget(
+    var likeWidget = IconWidget(
+      IconType.like,
       count: widget.comment.likeCount,
       onLikePressed: (isLiked, count, success, failure) async {
         await FeedbackService.officialCommentHitLike(

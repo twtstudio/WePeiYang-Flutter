@@ -51,12 +51,10 @@ class NewPostProvider {
 // }
 
 class NewFloorProvider {
-  String content = "";
   int replyTo = 0;
   List<File> images = [];
-
+  FocusNode focusNode = FocusNode();
   void clear() {
-    content = "";
     replyTo = 0;
     images = [];
   }
@@ -113,6 +111,7 @@ class FbHomeListModel extends ChangeNotifier {
         value.isLike = post.isLike;
         value.isFav = post.isFav;
         value.likeCount = post.likeCount;
+        value.favCount = post.favCount;
         return value;
       },
       ifAbsent: () => post,

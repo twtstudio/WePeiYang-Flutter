@@ -178,8 +178,9 @@ class _DetailPageState extends State<DetailPage> {
                 post.isLike = isLike;
                 post.likeCount = likeCount;
               },
-              onFavoritePressed: (isFav) {
+              onFavoritePressed: (isFav, favCount) {
                 post.isFav = isFav;
+                post.favCount = favCount;
               },
             ),
             SizedBox(
@@ -200,8 +201,9 @@ class _DetailPageState extends State<DetailPage> {
                 post.isLike = isLike;
                 post.likeCount = likeCount;
               },
-              onFavoritePressed: (isCollect) {
-                post.isFav = isCollect;
+              onFavoritePressed: (isFav, favCount) {
+                post.isFav = isFav;
+                post.favCount = favCount;
               },
             );
           }
@@ -212,6 +214,7 @@ class _DetailPageState extends State<DetailPage> {
           return NCommentCard(
             comment: data,
             commentFloor: index + 1,
+            isSubFloor: false,
             // likeSuccessCallback: (isLiked, count) {
             //   data.isLiked = isLiked;
             //   data.likeCount = count;
@@ -259,8 +262,9 @@ class _DetailPageState extends State<DetailPage> {
                     post.isLike = isLike;
                     post.likeCount = likeCount;
                   },
-                  onFavoritePressed: (isCollect) {
-                    post.isFav = isCollect;
+                  onFavoritePressed: (isFav, favCount) {
+                    post.isFav = isFav;
+                    post.favCount = favCount;
                   },
                 ),
               ],
@@ -352,26 +356,30 @@ class CommentInputField extends StatefulWidget {
 class _CommentInputFieldState extends State<CommentInputField> {
   var _textEditingController = TextEditingController();
   String _commentLengthIndicator = '0/200';
-  var _focusNode = FocusNode();
+
 
   @override
   void dispose() {
     _textEditingController.dispose();
-    _focusNode.dispose();
+    context.read<NewFloorProvider>().focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      focusNode: _focusNode,
+      focusNode: context.read<NewFloorProvider>().focusNode,
       controller: _textEditingController,
       maxLength: 200,
       textInputAction: TextInputAction.send,
       onEditingComplete: () async {
-        _focusNode.unfocus();
+        context.read<NewFloorProvider>().focusNode.unfocus();
         if (_textEditingController.text.isNotEmpty) {
-          _sendFloor();
+          if (context.read<NewFloorProvider>().replyTo == 0) {
+            _sendFloor();
+          } else {
+            _replyFloor();
+          }
         }
       },
       decoration: InputDecoration(
@@ -404,7 +412,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
 
     inputField = Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(8),
         child: inputField,
       )
     );
@@ -422,12 +430,29 @@ class _CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.sendFloor(
       id: widget.postId,
       content: _textEditingController.text,
-      images: Provider.of<NewFloorProvider>(context, listen: false).images,
+      images: context.read<NewFloorProvider>().images,
       onSuccess: () {
         _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
         Provider.of<NewFloorProvider>(context, listen: false).clear();
         // TODO: 暂时没想到什么好的办法来更新评论
+        ToastProvider.success("评论成功");
+      },
+      onFailure: (e) => ToastProvider.error(
+        e.error.toString(),
+      ),
+    );
+  }
+
+  _replyFloor() {
+    FeedbackService.replyFloor(
+      id: context.read<NewFloorProvider>().replyTo,
+      content: _textEditingController.text,
+      images: context.read<NewFloorProvider>().images,
+      onSuccess: () {
+        _textEditingController.text = '';
+        setState(() => _commentLengthIndicator = '0/200');
+        Provider.of<NewFloorProvider>(context, listen: false).clear();
         ToastProvider.success("评论成功");
       },
       onFailure: (e) => ToastProvider.error(
@@ -449,7 +474,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    Provider.of<NewFloorProvider>(context, listen: false)
+    context.read<NewFloorProvider>()
         .images
         .add(File(xFile.path));
     if (!mounted) return;
