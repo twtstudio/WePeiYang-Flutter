@@ -10,7 +10,6 @@ typedef NotifierCallback = Future<void> Function(
 enum IconType { like, bottomLike, fav, bottomFav }
 
 extension IconTypeExt on IconType {
-  int get value => [0, 1][index];
 
   Icon get iconFilled => [
         Icon(

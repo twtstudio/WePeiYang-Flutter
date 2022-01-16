@@ -47,7 +47,7 @@ final feedbackDio = FeedbackDio();
 class FeedbackService with AsyncTimer {
   static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
     try {
-      var response = await feedbackDio.get('auth', queryParameters: {
+      var response = await feedbackDio.get('auth/passwd', queryParameters: {
         'user': CommonPreferences().account.value,
         'password': CommonPreferences().password.value,
       });
