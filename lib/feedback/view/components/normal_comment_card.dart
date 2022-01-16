@@ -121,6 +121,7 @@ class _NCommentCardState extends State<NCommentCard> {
     var subFloor;
     if (widget.comment.subFloors != null && !widget.isSubFloor) {
       subFloor = ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: widget.comment.subFloorCnt,
         itemBuilder: (context, index) {

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 
 class SearchPage extends StatefulWidget {
@@ -60,29 +59,12 @@ class _SearchPageState extends State<SearchPage> {
           Navigator.pop(context);
         });
       },
-      rightWidget: TextButton(
-        child: Text(
-          S.current.feedback_cancel,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontWeight: FontWeight.bold,
-            color: ColorUtil.boldTextColor,
-          ),
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
     );
 
     const titleTextStyle = TextStyle(
-        fontSize: 13.0,
+        fontSize: 17.0,
         color: Color.fromRGBO(98, 103, 124, 1),
         fontWeight: FontWeight.bold);
-
-    var historyTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 15.0,
-      color: Color.fromRGBO(48, 60, 102, 1),
-    );
 
     var searchHistoryIcon = Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -112,58 +94,50 @@ class _SearchPageState extends State<SearchPage> {
       valueListenable: _searchHistoryList,
       builder: (_, List<String> list, __) {
         if (list.isEmpty) {
-          return Center(
-            child: Text(
-              "暂无历史记录",
-              style: TextStyle(
-                  fontSize: 11.0,
-                  color: Color.fromRGBO(98, 103, 124, 0.61),
-                  fontWeight: FontWeight.normal),
+          return Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: Center(
+              child: Text(
+                "暂无历史记录",
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color.fromRGBO(98, 103, 124, 0.61),
+                    fontWeight: FontWeight.normal),
+              ),
             ),
           );
         }
 
-        var historyItem = (String item) => Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(item, style: historyTextStyle),
-                  Image.asset(
-                    'lib/feedback/assets/img/arrow_nw.png',
-                    fit: BoxFit.cover,
-                    height: 14,
-                    width: 14,
-                  )
-                ],
-              ),
-            );
-
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          itemCount: list.length,
-          shrinkWrap: true,
-          itemBuilder: (_, index) {
-            var searchArgument = SearchResultPageArgs(
-              list[list.length - index - 1],
-              '',
-              S.current.feedback_search_result,
-            );
-
-            return InkWell(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  FeedbackRouter.searchResult,
-                  arguments: searchArgument,
-                ).then((_) {
-                  Navigator.pop(context);
-                });
-              },
-              child: historyItem(list[list.length - index - 1]),
-            );
-          },
-          physics: NeverScrollableScrollPhysics(),
+        return Wrap(
+          spacing: 6,
+          children: List.generate(
+            list.length,
+            (index) {
+              var searchArgument = SearchResultPageArgs(
+                list[list.length - index - 1],
+                '',
+                S.current.feedback_search_result,
+              );
+              return InkResponse(
+                radius: 30,
+                highlightColor: Colors.transparent,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.searchResult,
+                    arguments: searchArgument,
+                  ).then((_) {
+                    Navigator.pop(context);
+                  });
+                },
+                child: Chip(
+                  backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                  label: Text(list[list.length - index - 1],
+                      style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
+                ),
+              );
+            },
+          ),
         );
       },
     );
@@ -172,21 +146,32 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         children: [searchHistoryIcon, searchHistoryList],
       ),
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 10),
     );
 
-    return DefaultTextStyle(
-      style: FontManager.YaHeiRegular,
-      child: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(top: WePeiYangApp.paddingTop),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [searchBar, searchHistory],
+    return Scaffold(
+        backgroundColor: ColorUtil.white253,
+        appBar: AppBar(
+          title: searchBar,
+          backgroundColor: ColorUtil.white253,
+          elevation: 0.1,
+          titleSpacing: 10,
+          leading: InkWell(
+            child: Row(
+              children: [
+                SizedBox(width: 18),
+                ImageIcon(AssetImage('assets/images/lake_butt_icons/back.png'),
+                    size: 18),
+              ],
+            ),
+            onTap: () => Navigator.pop(context),
+          ),
+          leadingWidth: 36,
+          iconTheme: IconThemeData(
+            color: ColorUtil.boldTag54,
           ),
         ),
-      ),
-    );
+        body: SafeArea(child: searchHistory));
   }
 
   showClearDialog() {

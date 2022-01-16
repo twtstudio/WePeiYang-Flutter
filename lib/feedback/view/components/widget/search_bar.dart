@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -9,10 +8,9 @@ typedef SubmitCallback = void Function(String);
 
 class SearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
-  final Widget rightWidget;
   final VoidCallback tapField;
 
-  const SearchBar({Key key, this.onSubmitted, this.rightWidget, this.tapField})
+  const SearchBar({Key key, this.onSubmitted, this.tapField})
       : super(key: key);
 
   @override
@@ -33,35 +31,37 @@ class _SearchBarState extends State<SearchBar> {
     Widget searchInputField = ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: 25,
-        maxWidth: 282,
       ),
-      child: TextField(
-        controller: _controller,
-        decoration: InputDecoration(
-          hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(16),
-          hintText: S.current.feedback_search_hint,
-          contentPadding: const EdgeInsets.all(0),
-          border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(1080),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 12.0),
+        child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(16),
+            hintText: S.current.feedback_search_hint,
+            contentPadding: const EdgeInsets.all(0),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(1080),
+            ),
+            fillColor: ColorUtil.searchBarBackgroundColor,
+            filled: true,
+            prefixIcon: Icon(
+              Icons.search,
+              size: 19,
+              color: ColorUtil.grey108,
+            ),
           ),
-          fillColor: ColorUtil.searchBarBackgroundColor,
-          filled: true,
-          prefixIcon: Icon(
-            Icons.search,
-            size: 19,
-            color: ColorUtil.grey108,
-          ),
+          enabled: true,
+          onSubmitted: (content) {
+            if (content.isNotEmpty) {
+              widget.onSubmitted?.call(content);
+            } else {
+              ToastProvider.error(S.current.feedback_empty_keyword);
+            }
+          },
+          textInputAction: TextInputAction.search,
         ),
-        enabled: true,
-        onSubmitted: (content) {
-          if (content.isNotEmpty) {
-            widget.onSubmitted?.call(content);
-          } else {
-            ToastProvider.error(S.current.feedback_empty_keyword);
-          }
-        },
-        textInputAction: TextInputAction.search,
       ),
     );
 
@@ -74,22 +74,6 @@ class _SearchBarState extends State<SearchBar> {
       );
     }
 
-    var searchBar = Container(
-      height: kToolbarHeight,
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-                padding: const EdgeInsets.all(0), child: searchInputField),
-          ),
-          SizedBox(
-            width: ScreenUtil().setSp(16),
-          ),
-          widget.rightWidget ?? SizedBox.shrink()
-        ],
-      ),
-    );
-
-    return searchBar;
+    return searchInputField;
   }
 }
