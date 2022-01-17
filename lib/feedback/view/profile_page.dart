@@ -90,10 +90,9 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Card(
         color: Color.fromRGBO(246, 246, 247, 1.0),
         elevation: 0,
-          child: Row(
-            children: [myPost, myFavor],
-          ),
-
+        child: Row(
+          children: [myPost, myFavor],
+        ),
       ),
     );
 
@@ -277,27 +276,31 @@ class _ProfileTabButtonState extends State<ProfileTabButton> {
       child: ValueListenableBuilder(
         valueListenable: currentType,
         builder: (_, value, __) => InkWell(
-            child: Column(
-              children: [
-                SizedBox(height: 2,),
-                Text(
-                  widget.text,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      height: 1, color: ColorUtil.bold42TextColor),
-                ),
-                SizedBox(height: 5),
-                  Container(
-                    decoration: BoxDecoration(
-                      color:
-                      value == widget.type ? ColorUtil.mainColor : ColorUtil.tagBackgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(30))
-                    ),
-                    width: 30,
-                    height: 4,
-                  ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 2,
+              ),
+              Text(
+                widget.text,
+                style: FontManager.YaHeiRegular.copyWith(
+                    height: 1, color: ColorUtil.bold42TextColor),
+              ),
+              SizedBox(height: 5),
+              Container(
+                decoration: BoxDecoration(
+                    color: value == widget.type
+                        ? ColorUtil.mainColor
+                        : ColorUtil.tagBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                width: 30,
+                height: 4,
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
           onTap: () {
             if (value == widget.type.change) {
               currentType.value = widget.type;

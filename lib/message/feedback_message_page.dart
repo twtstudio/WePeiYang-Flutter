@@ -1,8 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:simple_html_css/simple_html_css.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -18,11 +20,12 @@ enum MessageType {
   favor,
   contain,
   reply,
+  lake
 }
 
 extension MessageTypeExtension on MessageType {
   String get name =>
-      [S.current.like, S.current.comment, S.current.reply][this.index];
+      [S.current.like, S.current.comment, '校务回复', '湖底通知'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -95,48 +98,40 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: AppBar(
             titleSpacing: 0,
-            leadingWidth: 30,
+            leadingWidth: 25,
             brightness: Brightness.light,
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text(
-              S.current.feedback_message,
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: ColorUtil.boldTextColor,
-              ),
+              '消息中心',
+              style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)
             ),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25, color: Color(0XFF62677B)),
+              icon: Image.asset('assets/images/lake_butt_icons/back.png',width: 14),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TabBar(
-                  tabs: types.map((t) {
-                    return MessageTab(type: t);
-                  }).toList(),
-                  controller: _tabController,
-                  onTap: (index) {
-                    currentIndex.value = _tabController.index;
-                  },
-                  indicator: CustomIndicator(
-                    borderSide: BorderSide(
-                      width: 3.5,
-                      color: Color(0xff303c66),
-                    ),
+              child: TabBar(
+                tabs: types.map((t) {
+                  return MessageTab(type: t);
+                }).toList(),
+                controller: _tabController,
+                onTap: (index) {
+                  currentIndex.value = _tabController.index;
+                },
+                indicator: CustomIndicator(
+                  borderSide: BorderSide(
+                    width: 3.5,
+                    color: Color(0xff363c54),
                   ),
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 10),
-                  isScrollable: true,
-                  labelColor: Colors.red,
-                  unselectedLabelColor: Colors.black,
                 ),
+                labelPadding: const EdgeInsets.only(left: 8, right: 12),
+                isScrollable: false,
+                unselectedLabelColor: Colors.black,
               ),
             ),
           ),
@@ -179,10 +174,10 @@ class _MessageTabState extends State<MessageTab> {
           widget.type.name,
           style: TextStyle(
             color: current == widget.type.index
-                ? Color(0xff303c66)
+                ? Color(0xff2a2a2a)
                 : Color(0xffb1b2be),
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
           ),
         );
       },

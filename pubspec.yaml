@@ -91,13 +91,7 @@ flutter:
     - assets/images/account/3.0x/
     - assets/images/account/4.0x/
     - assets/images/lake_butt_icons/
-    # Images in feedback module.
-    - lib/feedback/assets/img/my_post.png
-    - lib/feedback/assets/img/my_favorite.png
-    - lib/feedback/assets/img/profile.png
-    - lib/feedback/assets/img/trash_can.png
-    - lib/feedback/assets/img/arrow_nw.png
-    - lib/feedback/assets/img/error.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

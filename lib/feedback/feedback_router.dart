@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/feedback/view/local_image_view_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/image_view_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';

@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -15,8 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
-import 'package:we_pei_yang_flutter/feedback/view/tab_pages/pages/game_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
@@ -206,6 +205,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 _refreshController = _refreshController1;
                 _controller = _controller1;
                 _swap = 0;
+                _tagsWrapIsShow = false;
+                _tagsContainerBackgroundIsShow = false;
+                _tagsContainerBackgroundOpacity = 0;
               });
             }
             break;
@@ -216,6 +218,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 _refreshController = _refreshController2;
                 _controller = _controller2;
                 _swap = 1;
+                _tagsWrapIsShow = false;
+                _tagsContainerBackgroundIsShow = false;
+                _tagsContainerBackgroundOpacity = 0;
                 if (_lakeIsLoaded == false) {
                   _controller2.animateTo(-85,
                       curve: Curves.decelerate,
@@ -242,6 +247,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             }
             break;
           default:
+            setState(() {
+              _swap = -1;
+              _tagsWrapIsShow = false;
+              _tagsContainerBackgroundIsShow = false;
+              _tagsContainerBackgroundOpacity = 0;
+            });
             break;
         }
       }
@@ -614,7 +625,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       ],
                     )),
                 if (status.isLoading) Loading(),
-                if (status.isError) HomeErrorContainer(onRefresh),
+                if (status.isError) HomeErrorContainer(onRefresh, true),
               ],
             );
           },
@@ -702,8 +713,9 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 class HomeErrorContainer extends StatefulWidget {
   final void Function(AnimationController) onPressed;
+  final bool networkFailPageUsage;
 
-  HomeErrorContainer(this.onPressed);
+  HomeErrorContainer(this.onPressed, this.networkFailPageUsage);
 
   @override
   _HomeErrorContainerState createState() => _HomeErrorContainerState();
@@ -718,24 +730,17 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: const Duration(seconds: 3), vsync: this);
-    animation = Tween(begin: 0.0, end: 1.0).animate(controller);
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    animation = CurveTween(curve: Curves.easeInOutCubic).animate(controller);
   }
 
   @override
   Widget build(BuildContext context) {
-    var errorImg = Image.asset(
-      'lib/feedback/assets/img/error.png',
-      height: 192,
-      fit: BoxFit.cover,
-    );
+    var errorImg = SvgPicture.asset('assets/svg_pics/network_failed.svg');
 
     var errorText = Text(
-      S.current.feedback_error,
-      style: FontManager.YaHeiRegular.copyWith(
-        color: ColorUtil.lightTextColor,
-      ),
-    );
+        widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
+        style: TextUtil.base.black2A.NotoSansSC.w600.sp(16));
 
     var retryButton = FloatingActionButton(
       child: RotationTransition(
@@ -743,8 +748,10 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
         turns: animation,
         child: Icon(Icons.refresh),
       ),
+      elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: ColorUtil.mainColor,
+      backgroundColor: Colors.white,
+      foregroundColor: ColorUtil.mainColor,
       onPressed: () {
         if (!controller.isAnimating) {
           controller.repeat();
@@ -754,7 +761,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       mini: true,
     );
 
-    var paddingBox = SizedBox(height: 16);
+    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 5);
 
     return Container(
       child: Column(
@@ -762,10 +769,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
         mainAxisSize: MainAxisSize.min,
         children: [
           errorImg,
-          paddingBox,
           errorText,
           paddingBox,
-          retryButton,
+          widget.networkFailPageUsage ? retryButton : SizedBox(),
         ],
       ),
     );
