@@ -565,6 +565,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
                           tooltip: "排序方式",
+                          shape: RacTangle(),
                           child: Image(
                             height: ScreenUtil().setHeight(25),
                             width: ScreenUtil().setWidth(25),
@@ -575,7 +576,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           onSelected: (value) {},
                           itemBuilder: (context) {
                             return <PopupMenuEntry<int>>[
-                              CheckedPopupMenuItem<int>(
+                              PopupMenuItem<int>(
                                 value: 1,
                                 child: Text(
                                   '时间排序',
@@ -583,7 +584,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       color: ColorUtil.lightTextColor),
                                 ),
                               ),
-                              CheckedPopupMenuItem<int>(
+                              PopupMenuItem<int>(
                                 value: 2,
                                 child: Text('动态排序'),
                               ),
@@ -630,6 +631,50 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _controller.animateTo(-85,
         duration: Duration(milliseconds: 1000), curve: Curves.fastOutSlowIn);
   }
+}
+
+class RacTangle extends ShapeBorder{
+
+  @override
+  // ignore: missing_return
+  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
+    return null;
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
+    var path = Path();
+    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(10)));
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
+    var paint = Paint()
+      ..color = Colors.transparent
+      ..strokeWidth = 12.0
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round;
+    var w = rect.width;
+    var tang = Paint()
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.square
+    ..color = Colors.white
+    ..strokeWidth = 5;
+    //var h = rect.height;
+    canvas.drawLine(Offset(0,5), Offset(w/2,5), paint);
+    canvas.drawLine(Offset(w-20,5), Offset(w-15,-5),tang);
+    canvas.drawLine(Offset(w-15,-5), Offset(w-10,5), tang);
+    canvas.drawLine(Offset(w-10,5), Offset(w,5), paint);
+  }
+
+  @override
+  ShapeBorder scale(double t) {
+  return null;
+  }
+
+  @override
+  EdgeInsetsGeometry get dimensions => null;
 }
 
 class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
