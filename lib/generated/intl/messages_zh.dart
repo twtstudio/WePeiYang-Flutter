@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_delete_image_content" : MessageLookupByLibrary.simpleMessage("是否要删除此图片"),
     "feedback_delete_question_content" : MessageLookupByLibrary.simpleMessage("是否要删除问题"),
     "feedback_delete_success" : MessageLookupByLibrary.simpleMessage("删除成功"),
-    "feedback_detail" : MessageLookupByLibrary.simpleMessage("问题详情"),
+    "feedback_detail" : MessageLookupByLibrary.simpleMessage("冒泡"),
     "feedback_empty_comment_error" : MessageLookupByLibrary.simpleMessage("评论不能为空"),
     "feedback_empty_content_error" : MessageLookupByLibrary.simpleMessage("内容和标签不能为空"),
     "feedback_empty_keyword" : MessageLookupByLibrary.simpleMessage("关键词不能为空"),

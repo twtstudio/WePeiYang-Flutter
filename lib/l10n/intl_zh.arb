@@ -145,7 +145,7 @@
   "feedback_search_history": "历史记录",
   "feedback_search_tag": "标签搜索",
   "feedback_clear_history": "确认清除所有搜索记录吗？",
-  "feedback_detail": "问题详情",
+  "feedback_detail": "冒泡",
   "feedback_comment_detail": "回复详情",
   "feedback_get_post_error": "校务专区获取帖子失败，请重试",
   "feedback_delete_success": "删除成功",

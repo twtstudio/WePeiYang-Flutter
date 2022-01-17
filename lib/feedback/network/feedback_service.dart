@@ -485,41 +485,27 @@ class FeedbackService with AsyncTimer {
       @required reason,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('reportQuestion', () async {
-      var target = isQuestion ? 'question' : 'commit';
+    AsyncTimer.runRepeatChecked('report', () async {
       try {
-        await feedbackDio.post(
-          '$target/complain',
-          formData: FormData.fromMap({
-            'token': CommonPreferences().feedbackToken.value,
-            '${target}_id': id,
-            'reason': reason,
-          }),
-        );
-        onSuccess?.call();
-      } on DioError catch (e) {
-        onFailure(e);
-      }
-    });
-  }
-
-  static reportQuestion(
-      {@required id,
-      @required reason,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('reportQuestion', () async {
-      try {
-        await feedbackDio.post(
-          'report',
-          formData: FormData.fromMap({
-            'type': 1,
-
-            ///TODO:1为帖子举报，2为楼层举报，暂时只有一种
-            'post_id': id,
-            'reason': reason,
-          }),
-        );
+        if (isQuestion) {
+          await feedbackDio.post(
+            'report',
+            formData: FormData.fromMap({
+              'type': 1,
+              'post_id': id,
+              'reason': reason,
+            }),
+          );
+        } else {
+          await feedbackDio.post(
+            'report',
+            formData: FormData.fromMap({
+              'type': 2,
+              'floor_id': id,
+              'reason': reason,
+            }),
+          );
+        }
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);

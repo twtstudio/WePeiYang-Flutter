@@ -16,4 +16,6 @@ class ColorUtil {
   static const tagBackgroundColor = Color.fromARGB(255, 234, 234, 234);
   static const boldTag54 = Color.fromARGB(255, 54, 60, 84);
   static const white253 = Color.fromARGB(255, 253, 253, 254);
+  static const black2AColor = Color(0xFF2A2A2A);
+  static const greyF7F8Color = Color(0xFFF7F7F8);
 }

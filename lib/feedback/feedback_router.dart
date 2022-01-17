@@ -36,6 +36,5 @@ class FeedbackRouter {
     localImageView:(_) => LocalImageViewPage(),
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
-    reportOther: (args) => ReportOtherReasonPage(args),
   };
 }

@@ -10,81 +10,73 @@ typedef NotifierCallback = Future<void> Function(
 enum IconType { like, bottomLike, fav, bottomFav }
 
 extension IconTypeExt on IconType {
-
-  Icon get iconFilled => [
-        Icon(
-          Icons.thumb_up,
-          size: 15,
-          color: Colors.redAccent,
-        ),
-        Icon(
-          Icons.thumb_up,
-          size: 16,
-          color: Colors.redAccent,
-        ),
-        Icon(
-          Icons.star,
-          size: 15,
-          color: Colors.amberAccent,
-        ),
-        Icon(
-          Icons.star,
-          size: 16,
-          color: Colors.amberAccent,
-        )
+  Image get iconFilled => [
+    Image.asset(
+      'assets/images/lake_butt_icons/like_filled.png',
+      width: 15,
+    ),
+    Image.asset(
+      'assets/images/lake_butt_icons/like_filled.png',
+      width: 18,
+    ),
+    Image.asset(
+      'assets/images/lake_butt_icons/favorite_filled.png',
+      width: 15,
+    ),
+    Image.asset(
+      'assets/images/lake_butt_icons/favorite_filled.png',
+      width: 18,
+    )
       ][index];
 
-  Icon get iconOutlined => [
-        Icon(
-          Icons.thumb_up_outlined,
-          size: 15,
-          color: ColorUtil.boldTextColor,
+  Image get iconOutlined => [
+        Image.asset(
+          'assets/images/lake_butt_icons/uil_thumbs-up.png',
+          width: 15,
+          color: ColorUtil.black2AColor,
         ),
-        Icon(
-          Icons.thumb_up_outlined,
-          size: 16,
-          color: ColorUtil.boldTextColor,
+        Image.asset(
+          'assets/images/lake_butt_icons/uil_thumbs-up.png',
+          width: 18,
+          color: ColorUtil.black2AColor,
         ),
-        Icon(
-          Icons.star_border_outlined,
-          size: 15,
-          color: ColorUtil.lightTextColor,
+        Image.asset(
+          'assets/images/lake_butt_icons/favorite_outlined.png',
+          width: 15,
         ),
-        Icon(
-          Icons.star_border_outlined,
-          size: 16,
-          color: ColorUtil.lightTextColor,
+        Image.asset(
+          'assets/images/lake_butt_icons/favorite_outlined.png',
+          width: 18,
         )
       ][index];
 
   CircleColor get circleColor => [
-    CircleColor(start: Colors.black12, end: Colors.redAccent),
-    CircleColor(start: Colors.black12, end: Colors.redAccent),
-    CircleColor(start: Colors.black12, end: Colors.yellow),
-    CircleColor(start: Colors.black12, end: Colors.yellow),
+        CircleColor(start: Colors.black12, end: Colors.redAccent),
+        CircleColor(start: Colors.black12, end: Colors.redAccent),
+        CircleColor(start: Colors.black12, end: Colors.yellow),
+        CircleColor(start: Colors.black12, end: Colors.yellow),
       ][index];
 
   BubblesColor get bubblesColor => [
-    BubblesColor(
-      dotPrimaryColor: Colors.redAccent,
-      dotSecondaryColor: Colors.pinkAccent,
-    ),
-    BubblesColor(
-      dotPrimaryColor: Colors.redAccent,
-      dotSecondaryColor: Colors.pinkAccent,
-    ),
-    BubblesColor(
-      dotPrimaryColor: Colors.amber,
-      dotSecondaryColor: Colors.amberAccent,
-    ),
-    BubblesColor(
-      dotPrimaryColor: Colors.amber,
-      dotSecondaryColor: Colors.amberAccent,
-    ),
-  ][index];
+        BubblesColor(
+          dotPrimaryColor: Colors.redAccent,
+          dotSecondaryColor: Colors.pinkAccent,
+        ),
+        BubblesColor(
+          dotPrimaryColor: Colors.redAccent,
+          dotSecondaryColor: Colors.pinkAccent,
+        ),
+        BubblesColor(
+          dotPrimaryColor: Colors.amber,
+          dotSecondaryColor: Colors.amberAccent,
+        ),
+        BubblesColor(
+          dotPrimaryColor: Colors.amber,
+          dotSecondaryColor: Colors.amberAccent,
+        ),
+      ][index];
 
   double get textSize => [12.0, 12.0, 12.0, 12.0][index];
-
 }
 
 class IconWidget extends StatefulWidget {
@@ -145,8 +137,7 @@ class _IconWidgetState extends State<IconWidget> {
               return !value;
             },
             isLiked: value,
-            circleColor:
-                widget.iconType.circleColor,
+            circleColor: widget.iconType.circleColor,
             bubblesColor: widget.iconType.bubblesColor,
             animationDuration: Duration(milliseconds: 600),
             padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
@@ -162,7 +153,8 @@ class _IconWidgetState extends State<IconWidget> {
             padding: const EdgeInsets.all(5.0),
             child: Text(
               value.toString(),
-              style: TextUtil.base.black2A.bold.ProductSans.sp(widget.iconType.textSize),
+              style: TextUtil.base.black2A.bold.ProductSans
+                  .sp(widget.iconType.textSize),
             ),
           );
         });

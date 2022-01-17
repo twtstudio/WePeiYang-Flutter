@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class SolvedWidget extends StatelessWidget {
@@ -91,43 +92,38 @@ class UnSolvedWidget extends StatelessWidget {
 }
 
 class TagShowWidget extends StatelessWidget {
-final String tag;
-TagShowWidget(this.tag);
+  final String tag;
+
+  TagShowWidget(this.tag);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-      height: 19,
+      padding: EdgeInsets.fromLTRB(2, 0, 2, 2),
+      height: 15,
       child: Row(
         children: [
           Container(
-            height: 15,
-            width: 15,
-            margin: EdgeInsets.only(right: 5),
+            height: 10,
+            width: 10,
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(0, 2, 4, 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(1080),
               color: Colors.white,
             ),
-            child: Center(
-                child: Text(
+            child: Text(
               "#",
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: ColorUtil.mainColor,
-                height: 1.4,
-              ),
-            )),
+              style: TextUtil.base.NotoSansSC.regular
+              .customColor(Color(0xFF363C54))
+              .sp(6.7),
+            ),
           ),
           Text(
             tag,
-            style: FontManager.YaHeiRegular.copyWith(
-              fontSize: 13,
-              color: ColorUtil.boldTextColor,
-              height: 1.4,
-            ),
+            style: TextUtil.base.NotoSansSC.regular.sp(10).grey6C,
           ),
-          SizedBox(width: 6)
+          SizedBox(width: 4)
         ],
       ),
       decoration: BoxDecoration(

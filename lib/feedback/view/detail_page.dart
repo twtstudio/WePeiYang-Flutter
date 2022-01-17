@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -195,19 +197,48 @@ class _DetailPageState extends State<DetailPage> {
         itemCount: _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return PostCard.detail(
-              post,
-              onLikePressed: (isLike, likeCount) {
-                post.isLike = isLike;
-                post.likeCount = likeCount;
-              },
-              onFavoritePressed: (isFav, favCount) {
-                post.isFav = isFav;
-                post.favCount = favCount;
-              },
+            return Column(
+              children: [
+                PostCard.detail(
+                  post,
+                  onLikePressed: (isLike, likeCount) {
+                    post.isLike = isLike;
+                    post.likeCount = likeCount;
+                  },
+                  onFavoritePressed: (isFav, favCount) {
+                    post.isFav = isFav;
+                    post.favCount = favCount;
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          '回复 ' + post.commentCount.toString(),
+                          style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Image.asset(
+                          'assets/images/lake_butt_icons/menu.png',
+                          width: 20,
+                        ),
+                      ),
+                    ]),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
             );
           }
           index--;
+
           ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
           ///_officialCommentList,点赞注释了
           var data = _commentList[index];
@@ -244,19 +275,20 @@ class _DetailPageState extends State<DetailPage> {
           mainList,
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
-               boxShadow:[
-                 BoxShadow(
-                     color: Colors.white,
-                     offset: Offset(-1, -1),
-                     blurRadius: 1,
-                     spreadRadius: 1),
-               ]
-            ),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.white,
+                      offset: Offset(-1, -1),
+                      blurRadius: 1,
+                      spreadRadius: 1),
+                ]),
             child: Row(
               children: [
                 inputField,
-         PostCard.outSide(
+                PostCard.outSide(
                   post,
                   onLikePressed: (isLike, likeCount) {
                     post.isLike = isLike;
@@ -271,14 +303,15 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ),
           ImagesGridView()
-      ],
+        ],
       );
     } else {
       body = Center(child: Text("error!", style: FontManager.YaHeiRegular));
     }
 
     var menuButton = IconButton(
-      icon: Icon(Icons.more_horiz, size: 25, color: ColorUtil.boldTextColor),
+      icon:
+          SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
       splashRadius: 20,
       onPressed: () {
         showMenu(
@@ -303,14 +336,14 @@ class _DetailPageState extends State<DetailPage> {
         ).then((value) {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id,true));
+                arguments: ReportPageArgs(widget.post.id, true));
           }
         });
       },
     );
 
     var appBar = AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
@@ -318,11 +351,7 @@ class _DetailPageState extends State<DetailPage> {
       actions: [menuButton],
       title: Text(
         S.current.feedback_detail,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-          color: ColorUtil.boldTextColor,
-        ),
+        style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
       ),
       centerTitle: true,
       elevation: 0,
@@ -356,7 +385,6 @@ class CommentInputField extends StatefulWidget {
 class _CommentInputFieldState extends State<CommentInputField> {
   var _textEditingController = TextEditingController();
   String _commentLengthIndicator = '0/200';
-
 
   @override
   void dispose() {
@@ -411,19 +439,19 @@ class _CommentInputFieldState extends State<CommentInputField> {
     );
 
     inputField = Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: inputField,
-      )
+        child: Padding(
+      padding: const EdgeInsets.all(8),
+      child: inputField,
+    ));
+    return ConstrainedBox(
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.55),
+      child: Row(
+        children: [
+          inputField,
+        ],
+      ),
     );
-    return
-      ConstrainedBox(
-        constraints: BoxConstraints( maxWidth:MediaQuery.of(context).size.width*0.55),
-        child:
-            Row(
-            children: [inputField, ],
-            ),
-      );
   }
 
   _sendFloor() {
@@ -462,7 +490,6 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 }
 
-
 class ImagesGridView extends StatefulWidget {
   @override
   _ImagesGridViewState createState() => _ImagesGridViewState();
@@ -474,9 +501,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    context.read<NewFloorProvider>()
-        .images
-        .add(File(xFile.path));
+    context.read<NewFloorProvider>().images.add(File(xFile.path));
     if (!mounted) return;
     setState(() {});
   }
@@ -571,7 +596,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             ? data.images.length
             : data.images.length + 1,
         itemBuilder: (_, index) {
-          if (index == 0 && index == data.images.length) {//评论最多一张图yo
+          if (index == 0 && index == data.images.length) {
+            //评论最多一张图yo
             return _ImagePickerWidget(onTap: loadAssets);
           } else {
             return imgBuilder(

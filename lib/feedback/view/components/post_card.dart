@@ -83,7 +83,7 @@ class _PostCardState extends State<PostCard> {
         post.title,
         maxLines: widget.type == PostCardType.detail ? 3 : 1,
         overflow: TextOverflow.ellipsis,
-        style: TextUtil.base.w500.normal.NotoSansSC.sp(18).black2A,
+        style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
       ),
     );
 
