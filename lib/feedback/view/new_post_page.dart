@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab_grid_view.dart';
 
 import '../feedback_router.dart';
+import 'components/widget/tag_search_card.dart';
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -323,21 +324,27 @@ class _TagViewState extends State<TagView> {
         );
       },
     );
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        shape: BoxShape.rectangle,
-      ),
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
-      child: InkResponse(
-        radius: 16,
-        onTap: () => _showTags(context),
-        child: Row(
-          children: [text, Spacer(), Icon(Icons.tag)],
-        ),
-      ),
+    final notifier = context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    return ValueListenableBuilder<PostType>(
+        valueListenable: notifier,
+        builder: (context, type, _) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            shape: BoxShape.rectangle,
+          ),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
+          child: notifier.value==PostType.feedback?InkResponse(
+            radius: 16,
+            onTap: () => _showTags(context),
+            child: Row(
+              children: [text, Spacer(), Icon(Icons.tag)],
+            ),
+          ):SearchTagCard(),
+        );
+      }
     );
   }
 }

@@ -1894,7 +1894,15 @@ class S {
       args: [],
     );
   }
-
+  /// ``
+  String get feedback_tag_hint {
+    return Intl.message(
+      '',
+      name: 'feedback_hint',
+      desc: '',
+      args: [],
+    );
+  }
   /// ``
   String get report {
     return Intl.message(
@@ -1904,6 +1912,7 @@ class S {
       args: [],
     );
   }
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

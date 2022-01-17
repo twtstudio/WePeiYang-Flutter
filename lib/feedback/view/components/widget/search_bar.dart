@@ -5,12 +5,12 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 typedef SubmitCallback = void Function(String);
-
+typedef ChangeCallback = void Function(String);
 class SearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
   final VoidCallback tapField;
-
-  const SearchBar({Key key, this.onSubmitted, this.tapField})
+  final ChangeCallback onChanged;
+  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged})
       : super(key: key);
 
   @override
@@ -58,6 +58,11 @@ class _SearchBarState extends State<SearchBar> {
               widget.onSubmitted?.call(content);
             } else {
               ToastProvider.error(S.current.feedback_empty_keyword);
+            }
+          },
+          onChanged: (content){
+            if (content.isNotEmpty) {
+              widget.onChanged?.call(content);
             }
           },
           textInputAction: TextInputAction.search,

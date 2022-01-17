@@ -102,6 +102,27 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+  static searchTags(
+      {
+        @required name,
+        @required OnResult<List<SearchTag>> onResult,
+        @required OnFailure onFailure})  async {
+      try {
+        var response = await feedbackDio.get(
+          'tags',
+          queryParameters: {
+            'name': '$name',
+          },
+        );
+        List<SearchTag> list = [];
+        for (Map<String, dynamic> json in response.data['data']['list']) {
+          list.add(SearchTag.fromJson(json));
+        }
+        onResult(list);
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    }
 
   static getPosts(
       {keyword,

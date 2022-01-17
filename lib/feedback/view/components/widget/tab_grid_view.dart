@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../../main.dart';
-import '../../new_post_page.dart';
 
 class TabGridView extends StatefulWidget {
   final Department department;
@@ -55,28 +54,28 @@ class _TabGridViewState extends State<TabGridView>
             return Container();
           }
         });
-
-    var confirmButton = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Visibility(
-          visible: false,
-          maintainSize: true,
-          maintainAnimation: true,
-          maintainState: true,
-          child: ConfirmButton(onPressed: null),
-        ),
-        Text(
-          S.current.feedback_add_tag,
-          style: FontManager.YaHeiRegular.copyWith(
-            color: Color(0xff303c66),
-            fontSize: 18,
-          ),
-        ),
-        ConfirmButton(
-            onPressed: () => Navigator.of(context).pop(currentTab.value))
-      ],
-    );
+    //设计图里没有发送按键，删了
+    // var confirmButton = Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     Visibility(
+    //       visible: false,
+    //       maintainSize: true,
+    //       maintainAnimation: true,
+    //       maintainState: true,
+    //       child: ConfirmButton(onPressed: null),
+    //     ),
+    //     Text(
+    //       S.current.feedback_add_tag,
+    //       style: FontManager.YaHeiRegular.copyWith(
+    //         color: Color(0xff303c66),
+    //         fontSize: 18,
+    //       ),
+    //     ),
+    //     ConfirmButton(
+    //         onPressed: () => Navigator.of(context).pop(currentTab.value))
+    //   ],
+    // );
 
     var tagsWrap = Consumer<FbTagsProvider>(
       builder: (_, data, __) => Wrap(
