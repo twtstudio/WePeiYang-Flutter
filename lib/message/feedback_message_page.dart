@@ -125,11 +125,11 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 },
                 indicator: CustomIndicator(
                   borderSide: BorderSide(
-                    width: 3.5,
+                    width: 3,
                     color: Color(0xff363c54),
                   ),
                 ),
-                labelPadding: const EdgeInsets.only(left: 8, right: 12),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 2),
                 isScrollable: false,
                 unselectedLabelColor: Colors.black,
               ),
@@ -172,12 +172,14 @@ class _MessageTabState extends State<MessageTab> {
       builder: (_, int current, __) {
         return Text(
           widget.type.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: current == widget.type.index
                 ? Color(0xff2a2a2a)
                 : Color(0xffb1b2be),
             fontSize: 14,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
         );
       },

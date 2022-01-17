@@ -621,7 +621,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         _mixedListView,
                         _lakeListView,
                         _feedbackListView,
-                        GamePage(),
+                        GamePage()
                       ],
                     )),
                 if (status.isLoading) Loading(),
@@ -644,8 +644,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 }
 
-class RacTangle extends ShapeBorder{
-
+class RacTangle extends ShapeBorder {
   @override
   // ignore: missing_return
   Path getInnerPath(Rect rect, {TextDirection textDirection}) {
@@ -670,18 +669,18 @@ class RacTangle extends ShapeBorder{
     var tang = Paint()
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.square
-    ..color = Colors.white
-    ..strokeWidth = 5;
+      ..color = Colors.white
+      ..strokeWidth = 5;
     //var h = rect.height;
-    canvas.drawLine(Offset(0,5), Offset(w/2,5), paint);
-    canvas.drawLine(Offset(w-20,5), Offset(w-15,-5),tang);
-    canvas.drawLine(Offset(w-15,-5), Offset(w-10,5), tang);
-    canvas.drawLine(Offset(w-10,5), Offset(w,5), paint);
+    canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
+    canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
+    canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
+    canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
   }
 
   @override
   ShapeBorder scale(double t) {
-  return null;
+    return null;
   }
 
   @override
