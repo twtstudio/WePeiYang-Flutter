@@ -102,27 +102,27 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+
   static searchTags(
-      {
-        @required name,
-        @required OnResult<List<SearchTag>> onResult,
-        @required OnFailure onFailure})  async {
-      try {
-        var response = await feedbackDio.get(
-          'tags',
-          queryParameters: {
-            'name': '$name',
-          },
-        );
-        List<SearchTag> list = [];
-        for (Map<String, dynamic> json in response.data['data']['list']) {
-          list.add(SearchTag.fromJson(json));
-        }
-        onResult(list);
-      } on DioError catch (e) {
-        onFailure(e);
+      {@required name,
+      @required OnResult<List<SearchTag>> onResult,
+      @required OnFailure onFailure}) async {
+    try {
+      var response = await feedbackDio.get(
+        'tags',
+        queryParameters: {
+          'name': '$name',
+        },
+      );
+      List<SearchTag> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(SearchTag.fromJson(json));
       }
+      onResult(list);
+    } on DioError catch (e) {
+      onFailure(e);
     }
+  }
 
   static getPosts(
       {keyword,
@@ -487,25 +487,24 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('report', () async {
       try {
+        var formData;
         if (isQuestion) {
-          await feedbackDio.post(
-            'report',
-            formData: FormData.fromMap({
-              'type': 1,
-              'post_id': id,
-              'reason': reason,
-            }),
-          );
+          formData = FormData.fromMap({
+            'type': 1,
+            'post_id': id,
+            'reason': reason,
+          });
         } else {
-          await feedbackDio.post(
-            'report',
-            formData: FormData.fromMap({
-              'type': 2,
-              'floor_id': id,
-              'reason': reason,
-            }),
-          );
+          formData = FormData.fromMap({
+            'type': 2,
+            'floor_id': id,
+            'reason': reason,
+          });
         }
+        await feedbackDio.post(
+          'report',
+          formData: formData,
+        );
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);

@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 typedef LikeCallback = void Function(bool, int);
 
 class NCommentCard extends StatefulWidget {
@@ -68,7 +70,7 @@ class _NCommentCardState extends State<NCommentCard> {
       children: [
         Icon(Icons.account_circle_rounded,
             size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
-        SizedBox(height: 8),
+        SizedBox(width: 8),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -76,23 +78,21 @@ class _NCommentCardState extends State<NCommentCard> {
             children: [
               Row(
                 children: [
-                  widget.comment.replyToName == ''
-                      ? Text(
+                  Text(
                     widget.comment.nickname,
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
-                  )
-                      : Text(
-                    widget.comment.nickname +
-                        '  >  ' +
-                        widget.comment.replyToName,
-                    maxLines: 1,
-                    overflow: TextOverflow.clip,
-                    style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
                   ),
-                  if(widget.comment.isOwner) Text('我的回复'),
-
+                  widget.comment.replyToName == ''
+                      ? Container()
+                      : Text(
+                          '  >  ' + widget.comment.replyToName,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
+                        ),
+                  if (widget.comment.isOwner) Text('我的回复'),
                 ],
               ),
               Text(
@@ -111,7 +111,8 @@ class _NCommentCardState extends State<NCommentCard> {
           onPressed: () {
             showMenu(
               context: context,
-              position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),//TODO:需要处理
+              position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
+              //TODO:需要处理
               items: <PopupMenuItem<String>>[
                 PopupMenuItem<String>(
                   value: '分享',
@@ -120,19 +121,23 @@ class _NCommentCardState extends State<NCommentCard> {
                     style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
                   ),
                 ),
-                widget.comment.isOwner ? PopupMenuItem<String>(
-                  value: '删除',
-                  child: new Text(
-                    '删除',
-                    style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ) : PopupMenuItem<String>(
-                  value: '举报',
-                  child: new Text(
-                    '举报',
-                    style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ),
+                widget.comment.isOwner
+                    ? PopupMenuItem<String>(
+                        value: '删除',
+                        child: new Text(
+                          '删除',
+                          style:
+                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                        ),
+                      )
+                    : PopupMenuItem<String>(
+                        value: '举报',
+                        child: new Text(
+                          '举报',
+                          style:
+                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                        ),
+                      ),
               ],
             ).then((value) async {
               if (value == '举报') {
@@ -263,7 +268,7 @@ class _NCommentCardState extends State<NCommentCard> {
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
             child: Ink(
-              padding: const EdgeInsets.fromLTRB(20, 8, 15, 8),
+              padding: EdgeInsets.fromLTRB(16.w, 8, 16.w, 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.white,
@@ -280,8 +285,7 @@ class _NCommentCardState extends State<NCommentCard> {
           ),
         ),
         if (!widget.isSubFloor && subFloor != null)
-          Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0), child: subFloor),
+          Padding(padding: EdgeInsets.fromLTRB(32.w, 0, 0, 0), child: subFloor),
       ],
     );
   }

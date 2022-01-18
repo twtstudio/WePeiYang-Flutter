@@ -16,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 enum PostCardType { simple, detail, outSide }
 
 typedef HitLikeCallback = void Function(bool, int);
@@ -441,7 +443,7 @@ class _PostCardState extends State<PostCard> {
       showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

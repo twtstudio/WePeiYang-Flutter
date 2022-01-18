@@ -3,6 +3,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 typedef SubmitCallback = void Function(String);
 typedef ChangeCallback = void Function(String);
@@ -30,7 +31,7 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     Widget searchInputField = ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: 25,
+        maxHeight: 30.w,
       ),
       child: Padding(
         padding: const EdgeInsets.only(right: 12.0),

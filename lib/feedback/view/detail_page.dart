@@ -302,7 +302,7 @@ class _DetailPageState extends State<DetailPage> {
               ],
             ),
           ),
-          ImagesGridView()
+          if(context.read<NewFloorProvider>().replyTo == 0) ImagesGridView()
         ],
       );
     } else {
