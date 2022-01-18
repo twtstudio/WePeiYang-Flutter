@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -39,11 +40,15 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState(this.post);
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _DetailPageState extends State<DetailPage>
+    with SingleTickerProviderStateMixin {
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
+  bool _onTapInputField;
   int currentPage = 1, _totalPage = 1;
+  double _previousOffset = 0;
+  final launchKey = GlobalKey<_CommentInputFieldState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
 
@@ -75,9 +80,25 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
+  _setOnTapInputField() {
+    print("bhdvuhwjehcbjhefjkhgvcfgwvjhfcvwekhjvfc");
+    setState(() {
+      _onTapInputField = !_onTapInputField;
+    });
+  }
+
+  _onScrollNotification(ScrollNotification scrollInfo) {
+    if (_onTapInputField == true &&
+        scrollInfo.metrics.pixels - _previousOffset <= 20) {
+      _setOnTapInputField();
+      _previousOffset = scrollInfo.metrics.pixels;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _onTapInputField = false;
     status = DetailPageStatus.loading;
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -167,6 +188,20 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     Widget body;
+    Widget checkButton = InkWell(
+      onTap: () {
+        launchKey.currentState.send();
+        setState(() {
+          _onRefresh();
+          _onTapInputField = false;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
+        child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
+            width: 20),
+      ),
+    );
 
     if (status == DetailPageStatus.loading) {
       if (post == null) {
@@ -193,7 +228,7 @@ class _DetailPageState extends State<DetailPage> {
         );
       }
     } else if (status == DetailPageStatus.idle) {
-      Widget mainList = ListView.builder(
+      Widget mainList1 = ListView.builder(
         itemCount: _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -220,7 +255,8 @@ class _DetailPageState extends State<DetailPage> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
                           '回复 ' + post.commentCount.toString(),
-                          style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+                          style:
+                              TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
                       ),
                       Padding(
@@ -254,55 +290,96 @@ class _DetailPageState extends State<DetailPage> {
         },
       );
 
-      mainList = Expanded(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController,
-          header: ClassicHeader(),
-          footer: ClassicFooter(),
-          enablePullDown: true,
-          onRefresh: _onRefresh,
-          enablePullUp: true,
-          onLoading: _onLoading,
-          child: mainList,
+      Widget mainList = Expanded(
+        child: NotificationListener<ScrollNotification>(
+          child: SmartRefresher(
+            physics: BouncingScrollPhysics(),
+            controller: _refreshController,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            enablePullDown: true,
+            onRefresh: _onRefresh,
+            enablePullUp: true,
+            onLoading: _onLoading,
+            child: mainList1,
+          ),onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
         ),
       );
 
-      var inputField = CommentInputField(postId: post.id);
+      var inputField = CommentInputField(postId: post.id, key: launchKey);
 
       body = Column(
         children: [
           mainList,
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.white,
-                      offset: Offset(-1, -1),
-                      blurRadius: 1,
-                      spreadRadius: 1),
-                ]),
-            child: Row(
-              children: [
-                inputField,
-                PostCard.outSide(
-                  post,
-                  onLikePressed: (isLike, likeCount) {
-                    post.isLike = isLike;
-                    post.likeCount = likeCount;
-                  },
-                  onFavoritePressed: (isFav, favCount) {
-                    post.isFav = isFav;
-                    post.favCount = favCount;
-                  },
-                ),
-              ],
+          AnimatedSize(
+            vsync: this,
+            duration: Duration(milliseconds: 450),
+            curve: Curves.easeInOutCubic,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, -1),
+                        blurRadius: 2,
+                        spreadRadius: 3),
+                  ],
+                  color: ColorUtil.whiteF8Color),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: _onTapInputField
+                            ? Column(
+                                children: [inputField, checkButton],
+                              )
+                            : InkWell(
+                                onTap: () => _setOnTapInputField(),
+                                child: Container(
+                                    height: 22,
+                                    margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text('友善回复，真诚沟通',
+                                          style: TextUtil
+                                              .base.NotoSansSC.w500.grey97
+                                              .sp(12)),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(11),
+                                      color: Colors.white,
+                                    )),
+                              ),
+                      ),
+                      if (!_onTapInputField)
+                        PostCard.outSide(
+                          post,
+                          onLikePressed: (isLike, likeCount) {
+                            post.isLike = isLike;
+                            post.likeCount = likeCount;
+                          },
+                          onFavoritePressed: (isFav, favCount) {
+                            post.isFav = isFav;
+                            post.favCount = favCount;
+                          },
+                        ),
+                    ],
+                  ),
+                  if (_onTapInputField &&
+                      context.read<NewFloorProvider>().replyTo == 0)
+                    ImagesGridView()
+                ],
+              ),
             ),
           ),
-          if(context.read<NewFloorProvider>().replyTo == 0) ImagesGridView()
         ],
       );
     } else {
@@ -393,13 +470,25 @@ class _CommentInputFieldState extends State<CommentInputField> {
     super.dispose();
   }
 
+  void send() {
+    context.read<NewFloorProvider>().focusNode.unfocus();
+    if (_textEditingController.text.isNotEmpty) {
+      if (context.read<NewFloorProvider>().replyTo == 0) {
+        _sendFloor();
+      } else {
+        _replyFloor();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
       focusNode: context.read<NewFloorProvider>().focusNode,
       controller: _textEditingController,
       maxLength: 200,
-      textInputAction: TextInputAction.send,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.text,
       onEditingComplete: () async {
         context.read<NewFloorProvider>().focusNode.unfocus();
         if (_textEditingController.text.isNotEmpty) {
@@ -422,10 +511,9 @@ class _CommentInputFieldState extends State<CommentInputField> {
         ),
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(kToolbarHeight / 2),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-        fillColor: ColorUtil.searchBarBackgroundColor,
+        fillColor: ColorUtil.whiteF8Color,
         filled: true,
         isDense: true,
       ),
@@ -438,19 +526,9 @@ class _CommentInputFieldState extends State<CommentInputField> {
       maxLines: 10,
     );
 
-    inputField = Expanded(
-        child: Padding(
+    return Padding(
       padding: const EdgeInsets.all(8),
       child: inputField,
-    ));
-    return ConstrainedBox(
-      constraints:
-          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.55),
-      child: Row(
-        children: [
-          inputField,
-        ],
-      ),
     );
   }
 

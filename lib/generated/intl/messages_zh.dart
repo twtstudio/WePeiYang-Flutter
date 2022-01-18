@@ -111,7 +111,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback_submit" : MessageLookupByLibrary.simpleMessage(" 发送 "),
     "feedback_upload_image_error" : MessageLookupByLibrary.simpleMessage("校务专区图片上传失败"),
     "feedback_write_comment" : MessageLookupByLibrary.simpleMessage("写评论…"),
-    "feedback_tag_hint" : MessageLookupByLibrary.simpleMessage("试试添加话题…"),
     "fetch_captcha" : MessageLookupByLibrary.simpleMessage("获取验证码"),
     "find_password_title" : MessageLookupByLibrary.simpleMessage("天外天账号密码找回"),
     "first_login_hint" : MessageLookupByLibrary.simpleMessage("首次登录微北洋4.0请使用天外天账号密码登录，\n在登录后绑定手机号码即可手机验证登录。"),

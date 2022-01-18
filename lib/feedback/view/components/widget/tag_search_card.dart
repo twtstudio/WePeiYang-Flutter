@@ -6,12 +6,11 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 List<Text> tags = List.filled(
     4,
     Text(
-      "此条暂无热搜",
+      "暂无此tag哦",
       style: TextUtil.base.w400.NotoSansSC.sp(16).grey97,
     ));
 List<Text> hotIndex = List.filled(
@@ -112,7 +111,7 @@ class _SearchTagCardState extends State<SearchTagCard> {
       decoration: InputDecoration(
         fillColor: ColorUtil.backgroundColor,
         hintStyle: TextStyle().black2A.NotoSansSC.w400.sp(16),
-        hintText: S.current.feedback_tag_hint,
+        hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(
           borderSide: BorderSide.none,

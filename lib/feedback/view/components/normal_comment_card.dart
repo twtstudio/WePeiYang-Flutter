@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -84,14 +85,25 @@ class _NCommentCardState extends State<NCommentCard> {
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
                   ),
+                  if (widget.comment.nickname == 'Owner')
+                    CommentIdentificationContainer('楼主', true),
                   widget.comment.replyToName == ''
                       ? Container()
-                      : Text(
-                          '  >  ' + widget.comment.replyToName,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                          style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
-                        ),
+                      : Row(
+                        children: [
+                          SizedBox(width: 3),
+                          Icon(Icons.play_arrow, size: 8),
+                          SizedBox(width: 3),
+                          Text(
+                              widget.comment.replyToName,
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                              style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
+                            ),
+                        ],
+                      ),
+                  if (widget.comment.replyToName == 'Owner')
+                    CommentIdentificationContainer('楼主', false),
                   if (widget.comment.isOwner) Text('我的回复'),
                 ],
               ),

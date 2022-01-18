@@ -109,28 +109,24 @@ class _PostCardState extends State<PostCard> {
                 style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 10, color: ColorUtil.mainColor)),
           )
-        : Container();
+        : SizedBox();
 
-    var content = Text(
-      post.content,
-      maxLines: widget.type == PostCardType.detail ? null : 2,
-      overflow:
-          widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
-      style: FontManager.NotoSansSCRegular.copyWith(
-        color: ColorUtil.bold42TextColor,
-      ),
-    );
+    var content = Text(post.content,
+        maxLines: widget.type == PostCardType.detail ? null : 2,
+        overflow:
+            widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
+        style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2));
 
     List<Widget> rowList = [];
 
     rowList.add(Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(children: [TagShowWidget(tag), SizedBox(width: 8), campus]),
+          SizedBox(height: 8),
           if (widget.type == PostCardType.detail)
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [title],
             ),
           SizedBox(height: 8),
@@ -147,9 +143,9 @@ class _PostCardState extends State<PostCard> {
         ClipRRect(
           child: Image.network(
             baseUrl + post.imageUrls[0],
-            width: 80,
+            width: 97,
             height: 76,
-            fit: BoxFit.cover,
+            fit: BoxFit.fitWidth,
           ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
@@ -165,7 +161,8 @@ class _PostCardState extends State<PostCard> {
       textAlign: TextAlign.right,
       style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
     );
-    var middleWidget = Row(children: rowList);
+    var middleWidget =
+        Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
 
     var mainWidget = (tap) => GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -173,7 +170,6 @@ class _PostCardState extends State<PostCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 5),
               Row(
                 children: [
                   if (widget.type == PostCardType.detail)
@@ -185,6 +181,8 @@ class _PostCardState extends State<PostCard> {
                     )),
                   if (widget.type == PostCardType.simple) title,
                   SizedBox(width: 10),
+                  if (post.type == 0 && widget.type == PostCardType.simple)
+                      MPWidget(post.id.toString().padLeft(6, '0')),
                   if (post.solved == 1 &&
                       post.type == 1 &&
                       widget.type == PostCardType.simple)
@@ -196,7 +194,7 @@ class _PostCardState extends State<PostCard> {
                   if (widget.type == PostCardType.detail) createTimeDetail,
                 ],
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 8),
               middleWidget,
             ],
           ),
@@ -220,7 +218,7 @@ class _PostCardState extends State<PostCard> {
 
     var collectButton = (widget.type == PostCardType.outSide)
         ? IconWidget(
-      IconType.bottomFav,
+            IconType.bottomFav,
             count: post.favCount,
             onLikePressed: (boolNotifier, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
@@ -239,7 +237,7 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           )
         : IconWidget(
-      IconType.fav,
+            IconType.fav,
             count: post.favCount,
             onLikePressed: (boolNotifier, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
@@ -273,7 +271,7 @@ class _PostCardState extends State<PostCard> {
     );
     var likeWidget = (widget.type == PostCardType.outSide)
         ? IconWidget(
-      IconType.bottomLike,
+            IconType.bottomLike,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -294,7 +292,7 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isLike,
           )
         : IconWidget(
-      IconType.like,
+            IconType.like,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -371,10 +369,9 @@ class _PostCardState extends State<PostCard> {
       if(widget.type == PostCardType.simple)
       commentWidget,
       likeWidget,
-      if(widget.type == PostCardType.outSide)
-        collectButton,
-      if(widget.type == PostCardType.outSide)
-        SizedBox(width: 10),
+      SizedBox(width: 10),
+      if (widget.type == PostCardType.outSide) collectButton,
+      if (widget.type == PostCardType.outSide) SizedBox(width: 10),
       dislikeWidget
     ];
 
@@ -398,7 +395,7 @@ class _PostCardState extends State<PostCard> {
           collectButton,
         ]);
 
-        if (post.imageUrls.isNotEmpty) {
+        if (post.imageUrls.length > 1) {
           var imageList = Row(
             children: List.generate(
               post.imageUrls.length,
@@ -424,7 +421,7 @@ class _PostCardState extends State<PostCard> {
                 child: FadeInImage.memoryNetwork(
                     fit: BoxFit.cover,
                     placeholder: kTransparentImage,
-                    image: post.imageUrls[0]),
+                    image: baseUrl + post.imageUrls[0]),
               )));
         }
 
@@ -457,15 +454,14 @@ class _PostCardState extends State<PostCard> {
       showBanner: widget.showBanner,
       questionId: post.id,
       builder: (tap) => Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             mainWidget(tap),
             SizedBox(height: 8),
             ...imagesWidget,
-            if (widget.type != PostCardType.detail)
-            bottomWidget,
+            if (widget.type != PostCardType.detail) bottomWidget,
           ],
         ),
         decoration: decoration,
@@ -475,7 +471,7 @@ class _PostCardState extends State<PostCard> {
         ? DefaultTextStyle(
             style: FontManager.YaHeiRegular,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: ClipCopy(
                 toast: '复制提问成功',
                 copy: post.content,
@@ -483,14 +479,14 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
           )
-        :
-             Row(
-              children: [
-                SizedBox(width: 10,),
-                ...commentAndLike,
-              ],
-            );
-
+        : Row(
+            children: [
+              SizedBox(
+                width: 10,
+              ),
+              ...commentAndLike,
+            ],
+          );
   }
 
   _image(index, context) {
@@ -507,10 +503,11 @@ class _PostCardState extends State<PostCard> {
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(6)),
             child: FadeInImage.memoryNetwork(
                 fit: BoxFit.cover,
-                height: 200 - (post.imageUrls.length) * 30.0,
+                height:
+                    (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
                 placeholder: kTransparentImage,
                 image: baseUrl + post.imageUrls[index]),
           ),
