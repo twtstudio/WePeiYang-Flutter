@@ -588,33 +588,38 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       mainAxisSpacing: 6,
     );
 
-    return Consumer<NewFloorProvider>(
-      builder: (_, data, __) => GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: gridDelegate,
-        itemCount: maxImage == data.images.length
-            ? data.images.length
-            : data.images.length + 1,
-        itemBuilder: (_, index) {
-          if (index == 0 && index == data.images.length) {
-            //评论最多一张图yo
-            return _ImagePickerWidget(onTap: loadAssets);
-          } else {
-            return imgBuilder(
-              index,
-              data.images,
-              data.images.length,
-              onTap: () async {
-                var result = await _showDialog();
-                if (result == 'ok') {
-                  data.images.removeAt(index);
-                  setState(() {});
-                }
-              },
-            );
-          }
-        },
-        physics: NeverScrollableScrollPhysics(),
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 400
+      ),
+      child: Consumer<NewFloorProvider>(
+        builder: (_, data, __) => GridView.builder(
+          shrinkWrap: true,
+          gridDelegate: gridDelegate,
+          itemCount: maxImage == data.images.length
+              ? data.images.length
+              : data.images.length + 1,
+          itemBuilder: (_, index) {
+            if (index == 0 && index == data.images.length) {
+              //评论最多一张图yo
+              return _ImagePickerWidget(onTap: loadAssets);
+            } else {
+              return imgBuilder(
+                index,
+                data.images,
+                data.images.length,
+                onTap: () async {
+                  var result = await _showDialog();
+                  if (result == 'ok') {
+                    data.images.removeAt(index);
+                    setState(() {});
+                  }
+                },
+              );
+            }
+          },
+          physics: NeverScrollableScrollPhysics(),
+        ),
       ),
     );
   }

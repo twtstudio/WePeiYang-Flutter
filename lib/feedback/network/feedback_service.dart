@@ -123,7 +123,23 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
-
+  static Future<void> postTags({
+    @required name,
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    AsyncTimer.runRepeatChecked('postTags', () async {
+      try {
+        await feedbackDio.post('tag',
+            formData: FormData.fromMap({
+              'name': '$name',
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
   static getPosts(
       {keyword,
       departmentId,

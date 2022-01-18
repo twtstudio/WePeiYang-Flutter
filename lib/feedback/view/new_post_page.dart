@@ -27,7 +27,7 @@ class _NewPostPageState extends State<NewPostPage> {
   final campusNotifier = ValueNotifier(0);
 
   // 0 -> 青年湖底; 1 -> 校务专区
-  final postTypeNotifier = ValueNotifier(PostType.lake);
+  final postTypeNotifier = ValueNotifier(PostType.feedback);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:like_button/like_button.dart';
@@ -16,7 +18,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum PostCardType { simple, detail, outSide }
 
@@ -257,7 +258,19 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           );
 
-
+    var commentWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",width: 11.67.w),
+        SizedBox(width: 5.17.w,),
+        Text(
+          post.commentCount.toString(),
+          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+        ),
+        SizedBox(width: 5.17.w,),
+      ],
+    );
     var likeWidget = (widget.type == PostCardType.outSide)
         ? IconWidget(
       IconType.bottomLike,
@@ -355,8 +368,9 @@ class _PostCardState extends State<PostCard> {
           );
 
     var commentAndLike = [
+      if(widget.type == PostCardType.simple)
+      commentWidget,
       likeWidget,
-      SizedBox(width: 10),
       if(widget.type == PostCardType.outSide)
         collectButton,
       if(widget.type == PostCardType.outSide)
