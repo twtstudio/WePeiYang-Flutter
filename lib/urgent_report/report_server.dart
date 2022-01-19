@@ -47,6 +47,18 @@ class ReportDio extends DioAbstract with AsyncTimer {
         var id = CommonPreferences().userNumber.value;
         var location = data[ReportPart.currentLocation] as LocationData;
         var state = data[ReportPart.currentState] as LocationState;
+        final travelCode = MultipartFile.fromFileSync(
+          data[ReportPart.itineraryCode],
+          filename: 't${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
+          contentType: MediaType('image', 'jpg'),
+        );
+        final healthCode = MultipartFile.fromFileSync(
+          data[ReportPart.healthCode],
+          filename: 'h${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
+          contentType: MediaType('image', 'jpg'),
+        );
+        debugPrint("travelCode size: ${travelCode.length}");
+        debugPrint("healthCode size: ${healthCode.length}");
         FormData formData = FormData.fromMap({
           'provinceName': location.province,
           'cityName': location.city,
@@ -54,16 +66,8 @@ class ReportDio extends DioAbstract with AsyncTimer {
           'address': location.address,
           'longitude': location.longitude,
           'latitude': location.latitude,
-          'healthCodeScreenshot': MultipartFile.fromFileSync(
-            data[ReportPart.healthCode],
-            filename: 'h${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
-            contentType: MediaType('image', 'jpg'),
-          ),
-          'travelCodeScreenshot': MultipartFile.fromFileSync(
-            data[ReportPart.itineraryCode],
-            filename: 't${DateTime.now().millisecondsSinceEpoch}code$id.jpg',
-            contentType: MediaType('image', 'jpg'),
-          ),
+          'healthCodeScreenshot': healthCode,
+          'travelCodeScreenshot': travelCode,
           'curStatus': state.index,
           'temperature': data[ReportPart.temperature],
         });

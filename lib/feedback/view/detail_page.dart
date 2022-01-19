@@ -417,7 +417,17 @@ class _DetailPageState extends State<DetailPage>
                 arguments: ReportPageArgs(widget.post.id, true));
           }
         });
-      },
+
+    var shareButton = IconButton(
+      icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
+      onPressed: () {
+        String weCo = '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
+        ClipboardData data = ClipboardData(text: weCo);
+        Clipboard.setData(data);
+        Provider.of<MessageProvider>(context, listen: false)
+            .setFeedbackWeKoHasViewed('${post.id}');
+        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+      }
     );
 
     var appBar = AppBar(
@@ -426,7 +436,7 @@ class _DetailPageState extends State<DetailPage>
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
-      actions: [menuButton],
+      actions: [shareButton, menuButton],
       title: Text(
         S.current.feedback_detail,
         style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),

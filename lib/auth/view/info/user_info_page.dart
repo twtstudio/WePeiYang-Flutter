@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -73,7 +74,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           SizedBox(width: 6),
                           arrow,
                           SizedBox(width: 11)
-
                         ],
                       ),
                     ),
@@ -177,79 +177,106 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ],
               )),
           Card(
+            margin: const EdgeInsets.fromLTRB(20, 15, 20, 5),
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 70,
+                  child: InkWell(
+                    onTap: () =>
+                        Navigator.pushNamed(context, AuthRouter.phoneBind)
+                            .then((_) => this.setState(() {})),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(9)),
+                    splashFactory: InkRipple.splashFactory,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: <Widget>[
+                          Image.asset('assets/images/telephone.png', width: 20),
+                          SizedBox(width: 15),
+                          Text(S.current.phone2, style: mainTextStyle),
+                          Spacer(),
+                          Text(
+                              (pref.phone.value != "")
+                                  ? S.current.is_bind
+                                  : S.current.not_bind,
+                              style: hintTextStyle),
+                          SizedBox(width: 10),
+                          arrow,
+                          SizedBox(width: 11)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 1,
+                  color: Color.fromRGBO(212, 214, 226, 1),
+                ),
+                SizedBox(
+                  height: 70,
+                  child: InkWell(
+                    onTap: () =>
+                        Navigator.pushNamed(context, AuthRouter.emailBind)
+                            .then((_) => this.setState(() {})),
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(9)),
+                    splashFactory: InkRipple.splashFactory,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: <Widget>[
+                          Image.asset('assets/images/email.png', width: 20),
+                          SizedBox(width: 15),
+                          Text(S.current.email2, style: mainTextStyle),
+                          Spacer(),
+                          Text(
+                              (pref.email.value != "")
+                                  ? S.current.is_bind
+                                  : S.current.not_bind,
+                              style: hintTextStyle),
+                          SizedBox(width: 10),
+                          arrow,
+                          SizedBox(width: 11)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Card(
               margin: const EdgeInsets.fromLTRB(20, 15, 20, 5),
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(9)),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
-                    child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.phoneBind)
-                              .then((_) => this.setState(() {})),
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(9)),
-                      splashFactory: InkRipple.splashFactory,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          children: <Widget>[
-                            Image.asset('assets/images/telephone.png',
-                                width: 20),
-                            SizedBox(width: 15),
-                            Text(S.current.phone2, style: mainTextStyle),
-                            Spacer(),
-                            Text(
-                                (pref.phone.value != "")
-                                    ? S.current.is_bind
-                                    : S.current.not_bind,
-                                style: hintTextStyle),
-                            SizedBox(width: 10),
-                            arrow,
-                            SizedBox(width: 11)
-                          ],
-                        ),
-                      ),
+              child: SizedBox(
+                height: 65,
+                child: InkWell(
+                  onTap: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) => LogoffDialog()),
+                  borderRadius: BorderRadius.circular(9),
+                  splashFactory: InkRipple.splashFactory,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: <Widget>[
+                        Text('注销账号', style: mainTextStyle),
+                        Spacer(),
+                        arrow,
+                        SizedBox(width: 11)
+                      ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    height: 1,
-                    color: Color.fromRGBO(212, 214, 226, 1),
-                  ),
-                  SizedBox(
-                    height: 70,
-                    child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.emailBind)
-                              .then((_) => this.setState(() {})),
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(9)),
-                      splashFactory: InkRipple.splashFactory,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          children: <Widget>[
-                            Image.asset('assets/images/email.png', width: 20),
-                            SizedBox(width: 15),
-                            Text(S.current.email2, style: mainTextStyle),
-                            Spacer(),
-                            Text(
-                                (pref.email.value != "")
-                                    ? S.current.is_bind
-                                    : S.current.not_bind,
-                                style: hintTextStyle),
-                            SizedBox(width: 10),
-                            arrow,
-                            SizedBox(width: 11)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               )),
         ],
       ),

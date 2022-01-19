@@ -2,6 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -48,9 +49,7 @@ class WPYPageState extends State<WPYPage> {
           ImageIcon(AssetImage('assets/images/wiki.png'),
               color: MyColors.darkGrey, size: 25),
           'Wiki',
-          HomeRouter.wiki))
-      ..add(CardBean(Icon(Icons.event, color: MyColors.darkGrey, size: 25),
-          S.current.schedule, ScheduleRouter.schedule))
+          'https://wiki.tjubot.cn/'))
       ..add(CardBean(
           ImageIcon(AssetImage('assets/images/exam.png'),
               color: MyColors.darkGrey, size: 25),
@@ -275,14 +274,7 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (itemCount < i) itemCount = i;
-
-        /// 这里是自习室在cards中的下标
-        if (i != 5) {
-          return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, cards[i].route),
-            child: generateCard(context, cards[i]),
-          );
-        } else {
+        if (cards[i].label == S.current.lounge) {
           return ValueListenableBuilder(
             valueListenable: context
                 .findAncestorStateOfType<WPYPageState>()
@@ -297,6 +289,22 @@ class SliverCardsWidget extends StatelessWidget {
               },
               child: generateCard(context, cards[i]),
             ),
+          );
+        } else if (cards[i].label == 'Wiki') {
+          return GestureDetector(
+            onTap: () async {
+              if (await canLaunch(cards[i].route)) {
+                await launch(cards[i].route);
+              } else {
+                ToastProvider.error('请检查网络状态');
+              }
+            },
+            child: generateCard(context, cards[i]),
+          );
+        } else {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, cards[i].route),
+            child: generateCard(context, cards[i]),
           );
         }
       },

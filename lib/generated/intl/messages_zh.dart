@@ -114,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fetch_captcha" : MessageLookupByLibrary.simpleMessage("获取验证码"),
     "find_password_title" : MessageLookupByLibrary.simpleMessage("天外天账号密码找回"),
     "first_login_hint" : MessageLookupByLibrary.simpleMessage("首次登录微北洋4.0请使用天外天账号密码登录，\n在登录后绑定手机号码即可手机验证登录。"),
-    "forget_password" : MessageLookupByLibrary.simpleMessage("忘记密码"),
+    "forget_password" : MessageLookupByLibrary.simpleMessage("忘记密码?"),
     "has_bind_phone" : MessageLookupByLibrary.simpleMessage("账号已绑定手机号"),
     "has_not_bind_hint1" : MessageLookupByLibrary.simpleMessage("您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群："),
     "has_not_bind_hint2" : MessageLookupByLibrary.simpleMessage("2群群号：738064793\n3群群号：337647539"),

@@ -6,11 +6,13 @@ import 'package:we_pei_yang_flutter/home/view/web_views/restart_school_days_game
 class HomeRouter {
   static String home = 'home/home';
   static String wiki = 'home/wiki';
+  static String hz = 'home/52hz';
   static String restartGame = 'home/restartGame';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     home: (_) => HomePage(),
     wiki: (_) => WikiPage(),
+    hz: (_) => FiftyTwoHzPage(),
     restartGame: (_) => RestartSchoolDaysGamePage()
   };
 }

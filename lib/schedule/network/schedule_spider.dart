@@ -215,6 +215,10 @@ void getExam({OnResult<List<Exam>> onResult, OnFailure onFailure}) async {
     var exams = <Exam>[];
     String tbody =
         getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', response.data.toString());
+    if (!tbody.contains('<td>')) {
+      onResult([]);
+      return;
+    }
     List<String> trList = tbody.split("</tr><tr>");
     trList.forEach((tr) {
       List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);

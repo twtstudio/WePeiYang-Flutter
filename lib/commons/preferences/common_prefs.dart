@@ -43,7 +43,7 @@ class CommonPreferences {
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
-  /// 2. 进入 gpa / 课程表 页面时再尝试用缓存中办公网的cookie爬取最新数据
+  /// 2. 进入 gpa / 课程表 / 考表 页面时再尝试用缓存中办公网的cookie爬取最新数据
   ///
   /// 办公网
   var gpaData = PrefsBean<String>('gpaData');
@@ -82,22 +82,21 @@ class CommonPreferences {
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
-  var remindBefore = PrefsBean<bool>("remindBefore"); // 课前提醒
-  var remindTime = PrefsBean<int>("remindTime", 900); // 提醒时间，默认为上课15分钟前
 
   /// lounge temporary data update time
   var temporaryUpdateTime = PrefsBean<String>("temporaryUpdateTime", "");
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
-  var favorListState = PrefsBean<int>("favorListState", 0);
 
   /// 健康信息提交时间
   var reportTime = PrefsBean<String>('reportTime');
 
+  /// ----------下方是一些应用相关的杂项----------
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   var updateTime = PrefsBean<String>('updateTime');
-
   /// 是否为初次使用此app
   var firstUse = PrefsBean<bool>('firstUse', true);
+  /// 是否使用账密登陆（false则为短信登陆）
+  var usePwLogin = PrefsBean<bool>('pwLogin', true);
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {

@@ -42,8 +42,8 @@ class WpyExamWidget extends StatelessWidget {
   }
 
   Widget _detail(ExamNotifier notifier, BuildContext context) {
-    if (notifier.afterNowReal.length == 0) {
-      var msg = notifier.afterNow.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
+    if (notifier.unscheduled.length == 0) {
+      var msg = notifier.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
@@ -59,7 +59,7 @@ class WpyExamWidget extends StatelessWidget {
                       letterSpacing: 0.5)),
             )),
       );
-    } else if (notifier.afterNowReal.length > 1) {
+    } else if (notifier.unscheduled.length > 1) {
       return Container(
         constraints: BoxConstraints(
           maxHeight: 105,
@@ -67,14 +67,14 @@ class WpyExamWidget extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           physics: BouncingScrollPhysics(),
-          children: notifier.afterNowReal
+          children: notifier.unscheduled
               .map((e) => examCard(context, e, true, wpy: true))
               .toList(),
         ),
       );
     } else
       return Row(
-        children: notifier.afterNowReal
+        children: notifier.unscheduled
             .map((e) => examCard(context, e, true, wpy: true))
             .toList(),
       );

@@ -1,18 +1,21 @@
-import 'dart:io';
 import 'dart:convert' show jsonDecode;
+import 'dart:io';
+
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:location_permissions/location_permissions.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+
+import 'report_loading_dialog.dart';
 
 enum _Page { report, list }
 
@@ -107,20 +110,29 @@ class _ReportMainPageState extends State<ReportMainPage> {
     unSelected = model.check();
     LocationData locationData = model.data[ReportPart.currentLocation];
     if (unSelected.isEmpty && locationData.address.isNotEmpty) {
-      ToastProvider.running('上传中');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return ReportLoadingDialog();
+        },
+      );
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
       reportDio.report(
           data: model.data,
-          onResult: () {
+          onResult: () async {
             CommonPreferences().reportTime.value = DateTime.now().toString();
+            Navigator.pop(context);
             ToastProvider.success('上传成功');
             clearAll.value = !clearAll.value;
             model.clearAll();
+            await Future.delayed(const Duration(milliseconds: 1500));
             _showReportDialog();
           },
           onFailure: (e) {
+            Navigator.pop(context);
             ToastProvider.error('上传失败:${e.error.toString()}');
           });
     } else {
@@ -183,6 +195,29 @@ class _ReportMainPageState extends State<ReportMainPage> {
             CurrentState(),
             Builder(
               builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
+            ),
+            SizedBox(height: 40),
+            Text(
+              "若无法填报成功可点击下方链接前往网页版填报",
+              style: TextStyle(color: Color(0x8862677b), fontSize: 10),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () async {
+                var url =
+                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  ToastProvider.error('请检查网络状态');
+                }
+              },
+              child: Text(
+                "https://i.twt.edu.cn/#/report",
+                style: TextStyle(color: Color(0xff62677b), fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(height: 40),
           ],
@@ -304,7 +339,7 @@ class _ReportListItem extends StatelessWidget {
 
   String _tryParseMonthAndDay(String text) {
     try {
-      var date = DateTime.parse(text);
+      var date = DateTime.parse(text).toLocal();
       var month = date.month.toString();
       var day = date.day.toString();
       if (month.length < 2) month = '0' + month;
@@ -530,7 +565,10 @@ class _TodayTempState extends State<TodayTemp> {
           children: [
             Text(
               "今日体温",
-              style: TextStyle(color: Color(0xff63677b), fontSize: 13),
+              style: TextStyle(
+                  color: Color(0xff63677b),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500),
             ),
             SizedBox(width: 15),
             Container(
@@ -726,7 +764,10 @@ class _PickImageState extends State<PickImage> {
           alignment: Alignment.center,
           child: Text(
             '上传${widget.image.name}',
-            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
+            style: TextStyle(
+                fontSize: 13,
+                color: Color(0xff63677b),
+                fontWeight: FontWeight.w700),
           ),
         ),
         GestureDetector(
@@ -734,20 +775,31 @@ class _PickImageState extends State<PickImage> {
             _imgFromGallery();
           },
           child: _image != null
-              ? Image.file(
-                  _image,
-                  width: imageWidth,
-                  height: imageWidth,
-                  fit: BoxFit.fitHeight,
-                )
-              : DottedBorder(
-                  borderType: BorderType.Rect,
-                  color: Color(0xffd0d1d6),
-                  child: SizedBox(
-                    width: imageWidth,
-                    height: imageWidth,
-                    child: Icon(Icons.add_circle,
-                        size: 40, color: Color(0xffd0d1d6)),
+              ? Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 12)
+                      ]),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.file(
+                        _image,
+                        width: imageWidth,
+                        height: imageWidth,
+                        fit: BoxFit.fitWidth,
+                      )))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    color: Color(0xffd0d1d6),
+                    child: SizedBox(
+                      width: imageWidth - 32,
+                      height: imageWidth - 32,
+                      child: Icon(Icons.add_circle,
+                          size: 40, color: Color(0xffd0d1d6)),
+                    ),
                   ),
                 ),
         ),

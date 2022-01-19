@@ -84,8 +84,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
           .call();
       Provider.of<ExamNotifier>(context, listen: false)
           .refreshExam(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      )
+            onFailure: (e) => ToastProvider.error(e.error.toString()),
+          )
           .call();
       setState(() {
         tjuuname = "";
@@ -94,15 +94,18 @@ class _TjuBindPageState extends State<TjuBindPage> {
         pwController = null;
       });
     }, onFailure: (e) {
+      if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
       ToastProvider.error(e.error.toString());
       captchaKey.currentState.refresh();
     });
     codeController.clear();
   }
 
-  FocusNode _accountFocus = FocusNode();
-  FocusNode _passwordFocus = FocusNode();
-  FocusNode _notRobotFocus = FocusNode();
+  final FocusNode _accountFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _notRobotFocus = FocusNode();
+
+  final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
 
   Widget _detail(BuildContext context, CommonPreferences pref) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
@@ -159,9 +162,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
           ),
           SizedBox(height: 20),
           ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 55,
-            ),
+            constraints: BoxConstraints(maxHeight: 55),
             child: TextField(
               textInputAction: TextInputAction.next,
               controller: nameController,
@@ -190,33 +191,48 @@ class _TjuBindPageState extends State<TjuBindPage> {
           ),
           SizedBox(height: 20),
           ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 55,
-            ),
-            child: TextField(
-              keyboardType: TextInputType.visiblePassword,
-              controller: pwController,
-              focusNode: _passwordFocus,
-              cursorColor: ColorUtil.mainColor,
-              decoration: InputDecoration(
-                  hintText: S.current.password,
-                  hintStyle: hintStyle,
-                  filled: true,
-                  fillColor: Color.fromRGBO(235, 238, 243, 1),
-                  isCollapsed: true,
-                  contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none)),
-              obscureText: true,
-              onChanged: (input) => setState(() => tjupasswd = input),
-              onTap: () {
-                pwController?.clear();
-                pwController = null;
-              },
-              onEditingComplete: () {
-                _accountFocus.unfocus();
-                FocusScope.of(context).requestFocus(_notRobotFocus);
+            constraints: BoxConstraints(maxHeight: 55),
+            child: ValueListenableBuilder(
+              valueListenable: visNotifier,
+              builder: (context, value, _) {
+                return Theme(
+                  data: Theme.of(context)
+                      .copyWith(primaryColor: Color.fromRGBO(53, 59, 84, 1)),
+                  child: TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: pwController,
+                    focusNode: _passwordFocus,
+                    cursorColor: ColorUtil.mainColor,
+                    decoration: InputDecoration(
+                      hintText: S.current.password,
+                      hintStyle: hintStyle,
+                      filled: true,
+                      fillColor: Color.fromRGBO(235, 238, 243, 1),
+                      isCollapsed: true,
+                      contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                      suffixIcon: GestureDetector(
+                        child: Icon(
+                            value ? Icons.visibility_off : Icons.visibility),
+                        onTap: () {
+                          visNotifier.value = !visNotifier.value;
+                        },
+                      ),
+                    ),
+                    obscureText: value,
+                    onChanged: (input) => setState(() => tjupasswd = input),
+                    onTap: () {
+                      pwController?.clear();
+                      pwController = null;
+                    },
+                    onEditingComplete: () {
+                      _accountFocus.unfocus();
+                      FocusScope.of(context).requestFocus(_notRobotFocus);
+                    },
+                  ),
+                );
               },
             ),
           ),

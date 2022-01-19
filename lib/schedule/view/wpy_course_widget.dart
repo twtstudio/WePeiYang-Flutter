@@ -113,7 +113,7 @@ class TodayCoursesWidget extends StatelessWidget {
     /// 给本日课程排序
     todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
     return SizedBox(
-      height: 175,
+      height: 185,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
@@ -121,43 +121,54 @@ class TodayCoursesWidget extends StatelessWidget {
           itemCount: todayCourses.length,
           itemBuilder: (context, i) {
             return Container(
-              width: 125,
-              decoration: BoxDecoration(
-                color: FavorColors.homeSchedule[i % 5],
+              height: 185,
+              width: 140,
+              padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
+              child: Material(
+                color: FavorColors
+                    .homeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
-              ),
-              margin: const EdgeInsets.fromLTRB(7, 0, 7, 7),
-              child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, ScheduleRouter.schedule),
-                borderRadius: BorderRadius.circular(15),
-                splashFactory: InkRipple.splashFactory,
-                splashColor: Color.fromRGBO(179, 182, 191, 1),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 16, 12, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(formatText(todayCourses[i].courseName),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: FontManager.YaQiHei.copyWith(
-                              fontSize: 18, color: Colors.white)),
-                      Spacer(),
-                      Text(
-                          getCourseTime(todayCourses[i].arrange.start,
-                              todayCourses[i].arrange.end),
-                          overflow: TextOverflow.fade,
-                          style: FontManager.Aspira.copyWith(
-                              fontSize: 12.5, color: Colors.white)),
-                      SizedBox(height: 15),
-                      Text(replaceBuildingWord(todayCourses[i].arrange.room),
-                          overflow: TextOverflow.ellipsis,
-                          style: FontManager.Aspira.copyWith(
-                              fontSize: 13.5,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold))
-                    ],
+                elevation: 2,
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(context, ScheduleRouter.schedule),
+                  borderRadius: BorderRadius.circular(15),
+                  splashFactory: InkRipple.splashFactory,
+                  splashColor: Color.fromRGBO(179, 182, 191, 1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 95,
+                          alignment: Alignment.centerLeft,
+                          child: Text(formatText(todayCourses[i].courseName),
+                              style: FontManager.YaHeiBold.copyWith(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              getCourseTime(todayCourses[i].arrange.start,
+                                  todayCourses[i].arrange.end),
+                              style: FontManager.Aspira.copyWith(
+                                  fontSize: 11.5, color: Colors.white)),
+                        ),
+                        SizedBox(height: 15),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              replaceBuildingWord(todayCourses[i].arrange.room),
+                              style: FontManager.Aspira.copyWith(
+                                  fontSize: 12.5,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

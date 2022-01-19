@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 4.1.4+77
+version: 4.1.7+82
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -35,6 +35,7 @@ dependencies:
   fluttertoast: ^8.0.8
   flutter_html: ^2.0.0
   flutter_rating_bar: ^4.0.0
+  flutter_svg: ^0.22.0
   flutter_screenutil: ^4.0.4
   hive: ^2.0.4
   hive_flutter: ^1.1.0
@@ -59,7 +60,6 @@ dependencies:
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
-  flutter_svg: ^0.22.0
   extended_tabs: ^2.3.0
 dev_dependencies:
   flutter_test:
