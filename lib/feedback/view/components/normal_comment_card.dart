@@ -21,6 +21,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 typedef LikeCallback = void Function(bool, int);
 
 class NCommentCard extends StatefulWidget {
+  final String ancestorName;
   final Floor comment;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
@@ -30,7 +31,8 @@ class NCommentCard extends StatefulWidget {
   _NCommentCardState createState() => _NCommentCardState();
 
   NCommentCard(
-      {this.comment,
+      {this.ancestorName,
+      this.comment,
       this.commentFloor,
       this.likeSuccessCallback,
       this.isSubFloor});
@@ -71,13 +73,14 @@ class _NCommentCardState extends State<NCommentCard> {
       children: [
         Icon(Icons.account_circle_rounded,
             size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
-        SizedBox(width: 8),
+        SizedBox(width: 4),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     widget.comment.nickname,
@@ -87,24 +90,29 @@ class _NCommentCardState extends State<NCommentCard> {
                   ),
                   if (widget.comment.nickname == 'Owner')
                     CommentIdentificationContainer('楼主', true),
-                  widget.comment.replyToName == ''
-                      ? Container()
-                      : Row(
-                        children: [
-                          SizedBox(width: 3),
-                          Icon(Icons.play_arrow, size: 8),
-                          SizedBox(width: 3),
-                          Text(
-                              widget.comment.replyToName,
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
-                            ),
-                        ],
-                      ),
-                  if (widget.comment.replyToName == 'Owner')
+                  if (widget.isSubFloor &&
+                      widget.comment.nickname == widget.ancestorName)
+                    CommentIdentificationContainer('层主', true),
+                  if (widget.comment.replyToName != '')
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Icon(Icons.play_arrow, size: 8),
+                    ),
+                  if (widget.comment.replyToName != '')
+                    Text(
+                      widget.comment.replyToName,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
+                    ),
+                  if (widget.isSubFloor &&
+                      widget.comment.replyToName == 'Owner')
                     CommentIdentificationContainer('楼主', false),
-                  if (widget.comment.isOwner) Text('我的回复'),
+                  if (widget.isSubFloor &&
+                      widget.comment.replyToName == widget.ancestorName)
+                    CommentIdentificationContainer('层主', false),
+                  if (widget.isSubFloor && widget.comment.isOwner)
+                    CommentIdentificationContainer('我的评论', true),
                 ],
               ),
               Text(
@@ -116,6 +124,7 @@ class _NCommentCardState extends State<NCommentCard> {
             ],
           ),
         ),
+        SizedBox(width: 4),
         IconButton(
           icon: SvgPicture.asset(
               'assets/svg_pics/lake_butt_icons/more_horizontal.svg'),
@@ -181,7 +190,7 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var commentContent = Text(
       widget.comment.content,
-      style: TextUtil.base.w400.NotoSansSC.normal.black2A.sp(14),
+      style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
     );
 
     var commentImage = Image.network(baseUrl + widget.comment.imageUrl);
@@ -206,6 +215,7 @@ class _NCommentCardState extends State<NCommentCard> {
         itemCount: widget.comment.subFloorCnt,
         itemBuilder: (context, index) {
           return NCommentCard(
+            ancestorName: widget.comment.nickname,
             comment: widget.comment.subFloors[index],
             commentFloor: index + 1,
             isSubFloor: true,
@@ -297,7 +307,7 @@ class _NCommentCardState extends State<NCommentCard> {
           ),
         ),
         if (!widget.isSubFloor && subFloor != null)
-          Padding(padding: EdgeInsets.fromLTRB(32.w, 0, 0, 0), child: subFloor),
+          Padding(padding: EdgeInsets.only(left: 24), child: subFloor),
       ],
     );
   }

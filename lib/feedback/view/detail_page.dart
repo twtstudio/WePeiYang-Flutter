@@ -317,6 +317,7 @@ class _DetailPageState extends State<DetailPage>
             duration: Duration(milliseconds: 450),
             curve: Curves.easeInOutCubic,
             child: Container(
+              margin: EdgeInsets.only(top: 4),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
