@@ -1,6 +1,7 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,9 +16,11 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 import '../new_post_page.dart';
 import '../search_result_page.dart';
@@ -174,6 +177,44 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
+  ///微口令的识别
+  getClipboardWeKoContents() async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null && clipboardData.text.trim() != '') {
+      String weCo = clipboardData.text.trim();
+      RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
+      if (regExp.hasMatch(weCo)) {
+        var id = RegExp(r'\d{1,}').stringMatch(weCo);
+        if(!Provider.of<MessageProvider>(context, listen: false).feedbackHasViewed.contains(id)){
+          FeedbackService.getPostById(
+              id: int.parse(id),
+              onResult: (post) {
+                showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WeKoDialog(
+                      post: post,
+                      onConfirm: () => Navigator.pop(context, true),
+                      onCancel: () => Navigator.pop(context, true),
+                    );
+                  },
+                ).then((confirm) {
+                  if (confirm != null && confirm) {
+                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
+                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                  } else {
+                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                  }
+                });
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              });
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     _swap = 0;
@@ -257,6 +298,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         }
       }
     });
+    getClipboardWeKoContents();
     super.initState();
   }
 

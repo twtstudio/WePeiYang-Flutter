@@ -7,6 +7,7 @@ class WeKoDialog extends StatelessWidget {
   final Post post;
   final void Function() onConfirm;
   final void Function() onCancel;
+  final String baseUrl = 'https://www.zrzz.site:7013/';
 
   WeKoDialog(
       {Key key,
@@ -45,8 +46,8 @@ class WeKoDialog extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.none)),
               ),
-              if(post.topImgUrl != null) Image.network(
-                post.topImgUrl,
+              if(post.imageUrls != null) Image.network(
+                baseUrl + post.imageUrls[0],
                 height: 100,
                 width: 100,
                 fit: BoxFit.cover,

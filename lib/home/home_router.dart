@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/fifty_two_hz_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/wiki_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/restart_school_days_game.dart';
 

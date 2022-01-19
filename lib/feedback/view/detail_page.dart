@@ -417,6 +417,8 @@ class _DetailPageState extends State<DetailPage>
                 arguments: ReportPageArgs(widget.post.id, true));
           }
         });
+      }
+    );
 
     var shareButton = IconButton(
       icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
