@@ -327,6 +327,25 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static Future<void> commentHitDislike(
+      {@required id,
+        @required bool isDis,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('commentHitDislike', () async {
+      try {
+        await feedbackDio.post('floor/dis',
+            formData: FormData.fromMap({
+              'floor_id': '$id',
+              'op': isDis ? 0 : 1,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   ///暂时没有接口，后面改
   static officialCommentHitLike(
       {@required id,

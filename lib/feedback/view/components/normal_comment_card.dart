@@ -19,12 +19,14 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 typedef LikeCallback = void Function(bool, int);
+typedef DislikeCallback = void Function(bool);
 
 class NCommentCard extends StatefulWidget {
   final String ancestorName;
   final Floor comment;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
+  final DislikeCallback dislikeSuccessCallback;
   final bool isSubFloor;
 
   @override
@@ -35,6 +37,7 @@ class NCommentCard extends StatefulWidget {
       this.comment,
       this.commentFloor,
       this.likeSuccessCallback,
+      this.dislikeSuccessCallback,
       this.isSubFloor});
 }
 
@@ -257,10 +260,37 @@ class _NCommentCardState extends State<NCommentCard> {
       );
     }, isLike: widget.comment.isLike);
 
+    var dislikeWidget = DislikeWidget(
+      size: 15.w,
+      isDislike: widget.comment.isDis,
+      onDislikePressed:
+          (dislikeNotifier) async {
+        await FeedbackService.commentHitDislike(
+          id: widget.comment.id,
+          isDis: widget.comment.isDis,
+          onSuccess: () {
+            widget.dislikeSuccessCallback
+                ?.call(dislikeNotifier);
+            widget.comment.isDis = !widget.comment.isDis;
+            if (widget.comment.isDis && widget.comment.isLike) {
+              widget.comment.isLike = !widget.comment.isLike;
+              widget.comment.likeCount--;
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          },
+        );
+      },
+    );
+
+    var likeAndDislikeWidget = [likeWidget, dislikeWidget];
+
     var bottomWidget = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        likeWidget,
+        ...likeAndDislikeWidget,
+        Spacer(),
         replyButton,
       ],
     );

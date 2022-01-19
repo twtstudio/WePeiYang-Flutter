@@ -5,9 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:like_button/like_button.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -20,11 +17,10 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
-
 enum PostCardType { simple, detail, outSide }
 
 typedef HitLikeCallback = void Function(bool, int);
-typedef HitDislikeCallback = void Function(bool, int);
+typedef HitDislikeCallback = void Function(bool);
 
 typedef HitFavoriteCallback = void Function(bool, int);
 
@@ -184,7 +180,7 @@ class _PostCardState extends State<PostCard> {
                   if (widget.type == PostCardType.simple) title,
                   SizedBox(width: 10),
                   if (post.type == 0 && widget.type == PostCardType.simple)
-                      MPWidget(post.id.toString().padLeft(6, '0')),
+                    MPWidget(post.id.toString().padLeft(6, '0')),
                   if (post.solved == 1 &&
                       post.type == 1 &&
                       widget.type == PostCardType.simple)
@@ -218,7 +214,7 @@ class _PostCardState extends State<PostCard> {
           onLongPress: widget.onContentLongPressed,
         );
 
-    var collectButton = (widget.type == PostCardType.outSide)
+    var favoriteWidget = (widget.type == PostCardType.outSide)
         ? IconWidget(
             IconType.bottomFav,
             count: post.favCount,
@@ -262,13 +258,21 @@ class _PostCardState extends State<PostCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",width: 11.67.w),
-        SizedBox(width: 5.17.w,),
-        Text(
-          post.commentCount.toString(),
-          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+        SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
+            width: 11.67.w),
+        SizedBox(
+          width: 5.17.w,
         ),
-        SizedBox(width: 5.17.w,),
+        SizedBox(
+          width: 20.w,
+          child: Text(
+            post.commentCount.toString(),
+            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+          ),
+        ),
+        SizedBox(
+          width: 5.17.w,
+        ),
       ],
     );
     var likeWidget = (widget.type == PostCardType.outSide)
@@ -316,65 +320,47 @@ class _PostCardState extends State<PostCard> {
           );
 
     var dislikeWidget = (widget.type == PostCardType.outSide)
-        ? LikeButton(
-            likeBuilder: (bool isDisliked) {
-              if (isDisliked) {
-                return Icon(
-                  Icons.thumb_down,
-                  size: 16,
-                  color: Colors.blueGrey[900],
-                );
-              } else {
-                return Icon(
-                  Icons.thumb_down_outlined,
-                  size: 16,
-                  color: ColorUtil.boldTextColor,
-                );
-              }
+        ? DislikeWidget(
+            size: 22.w,
+            isDislike: widget.post.isDis,
+            onDislikePressed: (dislikeNotifier) async {
+              await FeedbackService.postHitDislike(
+                id: post.id,
+                isDisliked: post.isDis,
+                onSuccess: () {
+                  widget.onDislikePressed?.call(dislikeNotifier);
+                  post.isDis = !post.isDis;
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
             },
-            circleColor:
-                CircleColor(start: Colors.black12, end: Colors.blue[200]),
-            bubblesColor: BubblesColor(
-              dotPrimaryColor: Colors.blueGrey,
-              dotSecondaryColor: Colors.black26,
-            ),
-            animationDuration: Duration(milliseconds: 600),
-            padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           )
-        : LikeButton(
-            likeBuilder: (bool isDisliked) {
-              if (isDisliked) {
-                return Icon(
-                  Icons.thumb_down,
-                  size: 15,
-                  color: Colors.blueGrey[900],
-                );
-              } else {
-                return Icon(
-                  Icons.thumb_down_outlined,
-                  size: 15,
-                  color: ColorUtil.boldTextColor,
-                );
-              }
+        : DislikeWidget(
+            size: 15.w,
+            isDislike: widget.post.isDis,
+            onDislikePressed: (dislikeNotifier) async {
+              await FeedbackService.postHitDislike(
+                id: post.id,
+                isDisliked: post.isDis,
+                onSuccess: () {
+                  widget.onDislikePressed?.call(dislikeNotifier);
+                  post.isDis = !post.isDis;
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
             },
-            circleColor:
-                CircleColor(start: Colors.black12, end: Colors.blue[200]),
-            bubblesColor: BubblesColor(
-              dotPrimaryColor: Colors.blueGrey,
-              dotSecondaryColor: Colors.black26,
-            ),
-            animationDuration: Duration(milliseconds: 600),
-            padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           );
 
     var commentAndLike = [
-      if(widget.type == PostCardType.simple)
-      commentWidget,
+      if (widget.type == PostCardType.simple) commentWidget,
       likeWidget,
-      SizedBox(width: 10),
-      if (widget.type == PostCardType.outSide) collectButton,
-      if (widget.type == PostCardType.outSide) SizedBox(width: 10),
-      dislikeWidget
+      if (widget.type == PostCardType.outSide) favoriteWidget,
+      dislikeWidget,
+      SizedBox(width: 10)
     ];
 
     List<Widget> bottomList = [];
@@ -394,7 +380,7 @@ class _PostCardState extends State<PostCard> {
           createTime,
           Spacer(),
           ...commentAndLike,
-          collectButton,
+          favoriteWidget,
         ]);
 
         if (post.imageUrls.length > 1) {

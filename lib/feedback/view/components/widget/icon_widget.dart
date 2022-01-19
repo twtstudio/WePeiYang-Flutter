@@ -1,54 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screen_util.dart';
 import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-typedef NotifierCallback = Future<void> Function(
+typedef WithCountNotifierCallback = Future<void> Function(
     bool, int, Function onSuccess, Function onFailure);
 
 enum IconType { like, bottomLike, fav, bottomFav }
 
 extension IconTypeExt on IconType {
   Image get iconFilled => [
-    Image.asset(
-      'assets/images/lake_butt_icons/like_filled.png',
-      width: 15,
-    ),
-    Image.asset(
-      'assets/images/lake_butt_icons/like_filled.png',
-      width: 18,
-    ),
-    Image.asset(
-      'assets/images/lake_butt_icons/favorite_filled.png',
-      width: 15,
-    ),
-    Image.asset(
-      'assets/images/lake_butt_icons/favorite_filled.png',
-      width: 18,
-    )
+        Image.asset('assets/images/lake_butt_icons/like_filled.png'),
+        Image.asset('assets/images/lake_butt_icons/like_filled.png'),
+        Image.asset('assets/images/lake_butt_icons/favorite_filled.png'),
+        Image.asset('assets/images/lake_butt_icons/favorite_filled.png')
       ][index];
 
   Image get iconOutlined => [
-        Image.asset(
-          'assets/images/lake_butt_icons/uil_thumbs-up.png',
-          width: 15,
-          color: ColorUtil.black2AColor,
-        ),
-        Image.asset(
-          'assets/images/lake_butt_icons/uil_thumbs-up.png',
-          width: 18,
-          color: ColorUtil.black2AColor,
-        ),
-        Image.asset(
-          'assets/images/lake_butt_icons/favorite_outlined.png',
-          width: 15,
-        ),
-        Image.asset(
-          'assets/images/lake_butt_icons/favorite_outlined.png',
-          width: 18,
-        )
+        Image.asset('assets/images/lake_butt_icons/like_outlined.png'),
+        Image.asset('assets/images/lake_butt_icons/like_outlined.png'),
+        Image.asset('assets/images/lake_butt_icons/favorite_outlined.png'),
+        Image.asset('assets/images/lake_butt_icons/favorite_outlined.png')
       ][index];
+
+  double get size => [
+    15.w,22.w,15.w,22.w
+  ][index];
 
   CircleColor get circleColor => [
         CircleColor(start: Colors.black12, end: Colors.redAccent),
@@ -76,13 +53,13 @@ extension IconTypeExt on IconType {
         ),
       ][index];
 
-  double get textSize => [12.0, 12.0, 12.0, 12.0][index];
+  double get textSize => [12.0, 14.0, 12.0, 14.0][index];
 }
 
 class IconWidget extends StatefulWidget {
   final int count;
   final bool isLike;
-  final NotifierCallback onLikePressed;
+  final WithCountNotifierCallback onLikePressed;
   final IconType iconType;
 
   final ValueNotifier<int> countNotifier;
@@ -101,16 +78,15 @@ class _IconWidgetState extends State<IconWidget> {
   Widget build(BuildContext context) {
     var likeButton = ConstrainedBox(
       constraints: BoxConstraints(
-        minWidth: ScreenUtil().setSp(11.67),
-        minHeight: ScreenUtil().setSp(11.67),
+        minWidth: 11.67.w,
+        minHeight: 11.67.w,
       ),
       child: ValueListenableBuilder(
         valueListenable: widget.isLikedNotifier,
         builder: (_, value, __) {
           return LikeButton(
-            size: 15,
-            likeCountPadding: EdgeInsets.only(
-                bottom: ScreenUtil().setSp(5), right: ScreenUtil().setSp(5.17)),
+            size: widget.iconType.size,
+            likeCountPadding: EdgeInsets.only(right: 5.17.w),
             likeBuilder: (bool isLiked) {
               if (isLiked) {
                 return widget.iconType.iconFilled;
@@ -140,7 +116,6 @@ class _IconWidgetState extends State<IconWidget> {
             circleColor: widget.iconType.circleColor,
             bubblesColor: widget.iconType.bubblesColor,
             animationDuration: Duration(milliseconds: 600),
-            padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           );
         },
       ),
@@ -150,11 +125,14 @@ class _IconWidgetState extends State<IconWidget> {
         valueListenable: widget.countNotifier,
         builder: (_, value, __) {
           return Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Text(
-              value.toString(),
-              style: TextUtil.base.black2A.bold.ProductSans
-                  .sp(widget.iconType.textSize),
+            padding: EdgeInsets.only(right: 5.17.w),
+            child: SizedBox(
+              width: 20.w,
+              child: Text(
+                value.toString(),
+                style: TextUtil.base.black2A.bold.ProductSans
+                    .sp(widget.iconType.textSize),
+              ),
             ),
           );
         });
@@ -163,5 +141,62 @@ class _IconWidgetState extends State<IconWidget> {
       children: [likeButton, likeCount],
     );
     return likeWidget;
+  }
+}
+
+
+typedef DislikeNotifierCallback = void Function(bool);
+
+class DislikeWidget extends StatelessWidget {
+  final bool isLike;
+  final bool isDislike;
+  final int count;
+  final DislikeNotifierCallback onDislikePressed;
+
+  final ValueNotifier<bool> isLikedNotifier;
+  final ValueNotifier<int> countNotifier;
+  final ValueNotifier<bool> isDislikedNotifier;
+  final double size;
+
+  DislikeWidget({
+    this.onDislikePressed,
+    this.isDislike,
+    this.isLike,
+    this.count,
+    this.size
+  }) : isDislikedNotifier = ValueNotifier(isDislike),
+        countNotifier = ValueNotifier(count),
+        isLikedNotifier = ValueNotifier(isLike);
+
+  @override
+  Widget build(BuildContext context) {
+    var dislikeButton = ValueListenableBuilder(
+      valueListenable: isDislikedNotifier,
+      builder: (_, value, __) {
+        return LikeButton(
+          size: size,
+          likeBuilder: (bool isDisliked) {
+            if (isDisliked) {
+              return Image.asset('assets/images/lake_butt_icons/dislike_filled.png');
+            } else {
+              return Image.asset('assets/images/lake_butt_icons/dislike_outlined.png');
+            }
+          },
+          onTap: (value) async {
+            onDislikePressed?.call(isDislikedNotifier.value);
+            return !value;
+          },
+          isLiked: value,
+          circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: Colors.blueGrey,
+            dotSecondaryColor: Colors.black26,
+          ),
+          animationDuration: Duration(milliseconds: 600),
+        );
+      },
+    );
+
+    return dislikeButton;
   }
 }
