@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_service.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/message_dialog.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 

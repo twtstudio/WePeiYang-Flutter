@@ -13,19 +13,19 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-import 'package:we_pei_yang_flutter/message/message_service.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 enum MessageType {
-  favor,
-  contain,
+  like,
+  comment,
   reply,
   lake
 }
 
 extension MessageTypeExtension on MessageType {
   String get name =>
-      [S.current.like, S.current.comment, '校务回复', '湖底通知'][this.index];
+      ['点赞', '评论', '校务回复', '湖底通知'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -37,12 +37,14 @@ extension MessageTypeExtension on MessageType {
 
   String get action {
     switch (this) {
-      case MessageType.favor:
-        return S.current.like_a_question;
-      case MessageType.contain:
-        return S.current.comment_a_question;
+      case MessageType.like:
+        return '为你点赞';
+      case MessageType.comment:
+        return '回复了了你的冒泡';
       case MessageType.reply:
-        return S.current.reply_a_question;
+        return '回复了你的问题';
+      case MessageType.lake:
+        return '发表了一则通知';
       default:
         return "";
     }
@@ -50,9 +52,9 @@ extension MessageTypeExtension on MessageType {
 
   int getMessageCount(MessageProvider model) {
     switch (this) {
-      case MessageType.favor:
+      case MessageType.like:
         return model.classifiedMessageCount?.favor ?? 0;
-      case MessageType.contain:
+      case MessageType.comment:
         return model.classifiedMessageCount?.contain ?? 0;
       case MessageType.reply:
         return model.classifiedMessageCount?.reply ?? 0;

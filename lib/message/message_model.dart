@@ -23,8 +23,8 @@ class ClassifiedCount {
   int reply;
 
   ClassifiedCount.fromJson(List<dynamic> list) {
-    favor = list[MessageType.favor.index] ?? 0;
-    contain = list[MessageType.contain.index] ?? 0;
+    favor = list[MessageType.like.index] ?? 0;
+    contain = list[MessageType.comment.index] ?? 0;
     reply = list[MessageType.reply.index] ?? 0;
   }
 

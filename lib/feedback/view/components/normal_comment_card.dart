@@ -111,7 +111,7 @@ class _NCommentCardState extends State<NCommentCard> {
                   if (widget.isSubFloor &&
                       widget.comment.replyToName == widget.ancestorName)
                     CommentIdentificationContainer('层主', false),
-                  if (widget.isSubFloor && widget.comment.isOwner)
+                  if (widget.comment.isOwner)
                     CommentIdentificationContainer('我的评论', true),
                 ],
               ),

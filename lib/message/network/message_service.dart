@@ -1,6 +1,7 @@
 import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
+import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -12,17 +13,16 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
-///TODO:暂时没有message相关接口，所以这里的接口都会报错
+
 class MessageService {
+
   static Future<FeedbackDetailMessages> getDetailMessages(
       MessageType type, int page) async {
-    var token = CommonPreferences().feedbackToken.value;
-    var response = await messageDio.get("get", queryParameters: {
-      "token": token,
+    var queryParameters = {
       "limits": 10,
       "page": page,
-      "type": type.index
-    });
+    };
+    var response = await messageDio.get("get", queryParameters: queryParameters);
     return FeedbackDetailMessages.fromJson(response.data);
   }
 
@@ -83,10 +83,10 @@ class MessageDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
 
   @override
-  String baseUrl = 'https://areas.twt.edu.cn/api/user/message/';
+  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
-  Map<String, String> headers = {"Connection": "close"};
+  Map<String, String> headers = {'token': CommonPreferences().feedbackToken.value};
 
   @override
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];

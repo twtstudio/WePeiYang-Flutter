@@ -444,7 +444,7 @@ class _PostCardState extends State<PostCard> {
       boxShadow: [
         BoxShadow(
             blurRadius: 5,
-            color: Color.fromARGB(64, 236, 237, 239),
+            color: ColorUtil.greyF7F8Color,
             offset: Offset(0, 0),
             spreadRadius: 3),
       ],

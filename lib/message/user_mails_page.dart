@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/message/message_service.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class UserMailboxPage extends StatefulWidget {
   @override

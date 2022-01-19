@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
-import 'package:we_pei_yang_flutter/message/message_service.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class FeedbackReadAllButton extends StatefulWidget {
   const FeedbackReadAllButton({Key key}) : super(key: key);

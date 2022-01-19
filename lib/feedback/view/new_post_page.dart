@@ -269,9 +269,9 @@ class SubmitButton extends StatelessWidget {
 }
 
 class TagView extends StatefulWidget {
-  final ValueNotifier lakeOrFBNotifier;
+  final ValueNotifier postTypeNotifier;
 
-  const TagView(this.lakeOrFBNotifier, {Key key}) : super(key: key);
+  const TagView(this.postTypeNotifier, {Key key}) : super(key: key);
 
   @override
   _TagViewState createState() => _TagViewState();
@@ -342,7 +342,7 @@ class _TagViewState extends State<TagView> {
             child: Row(
               children: [text, Spacer(), Icon(Icons.tag)],
             ),
-          ):SearchTagCard(),
+          ) : SearchTagCard(),
         );
       }
     );
