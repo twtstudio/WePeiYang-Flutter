@@ -234,7 +234,6 @@ class Tag {
 class SearchTag {
   SearchTag({
     this.id,
-    this.point,
     this.name,
   });
 
@@ -243,13 +242,26 @@ class SearchTag {
   String name;
 
   factory SearchTag.fromJson(Map<String, dynamic> json) => SearchTag(
-    id: json["tag_id"],
+    id: json["id"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "point": point,
     "name": name,
   };
+}
+class PostTagId{
+  PostTagId({
+    this.id,
+  });
+  int id;
+  factory PostTagId.fromJson(Map<String, dynamic> json) => PostTagId(
+    id: json["id"],
+  );
+  Map<String, dynamic> toJson() => {
+    "id": id,
+  };
+
+  int fromJson(Map<String, dynamic> json) {}
 }

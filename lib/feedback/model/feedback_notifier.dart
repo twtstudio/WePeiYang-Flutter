@@ -29,14 +29,14 @@ class NewPostProvider {
   String content = "";
   int type = 1;
   Department department;
-  Tag tag;
+  Tag tag =Tag();
 
   List<File> images = [];
 
   bool get check =>
       title.isNotEmpty &&
       content.isNotEmpty &&
-      ((type == 1 && department != null) || (type == 0 && tag != null));
+      ((type == 1 && department != null) || (type == 0 && tag.id != null));
 
   void clear() {
     title = "";

@@ -125,17 +125,18 @@ class FeedbackService with AsyncTimer {
   }
   static Future<void> postTags({
     @required name,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    @required void Function(PostTagId postTagId) onSuccess,
+    @required onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
-        await feedbackDio.post('tag',
+        var response =await feedbackDio.post('tag',
             formData: FormData.fromMap({
               'name': '$name',
             }));
-        onSuccess?.call();
-      } on DioError catch (e) {
+        Map<String, dynamic> json = response.data['data'];
+        onSuccess?.call(PostTagId.fromJson(json));
+      } on DioError catch(e){
         onFailure(e);
       }
     });

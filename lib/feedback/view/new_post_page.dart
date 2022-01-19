@@ -193,6 +193,7 @@ class SubmitButton extends StatelessWidget {
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
+    dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
     if (dataModel.check) {
       postTypeNotifier.value == PostType.feedback
           ?
@@ -279,7 +280,6 @@ class TagView extends StatefulWidget {
 
 class _TagViewState extends State<TagView> {
   ValueNotifier<Department> department;
-  ValueNotifier<Tag> tag;
 
   @override
   void initState() {
@@ -289,10 +289,7 @@ class _TagViewState extends State<TagView> {
       ..addListener(() {
         dataModel.department = department.value;
       });
-    tag = ValueNotifier(dataModel.tag)
-      ..addListener(() {
-        dataModel.tag = tag.value;
-      });
+
   }
 
   _showTags(BuildContext context) async {
@@ -306,7 +303,6 @@ class _TagViewState extends State<TagView> {
     );
     if (result != null) department.value = result;
   }
-
   @override
   Widget build(BuildContext context) {
     var text = ValueListenableBuilder(

@@ -28,7 +28,8 @@ class WpyExamWidget extends StatelessWidget {
                               color: Color.fromRGBO(100, 103, 122, 1),
                               fontWeight: FontWeight.bold)),
                       Spacer(),
-                      Icon(Icons.keyboard_arrow_right,color: ColorUtil.lightTextColor),
+                      Icon(Icons.keyboard_arrow_right,
+                          color: ColorUtil.lightTextColor),
                       SizedBox(width: 5)
                     ],
                   ),
