@@ -55,12 +55,14 @@ class NewFloorProvider extends ChangeNotifier {
   List<File> images = [];
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
-  void inputFieldSwitch() {
-    inputFieldEnabled = !inputFieldEnabled;
-    if (inputFieldEnabled)
-    clear();
+  void inputFieldOpen() {
+    inputFieldEnabled = true;
       notifyListeners();
     }
+  void inputFieldClose() {
+    inputFieldEnabled = false;
+    notifyListeners();
+  }
   void clear() {
     replyTo = 0;
     images = [];

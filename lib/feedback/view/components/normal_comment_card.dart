@@ -208,7 +208,7 @@ class _NCommentCardState extends State<NCommentCard> {
       constraints: BoxConstraints(),
       onPressed: () {
         Provider.of<NewFloorProvider>(context, listen: false)
-            .inputFieldSwitch();
+            .inputFieldOpen();
         context.read<NewFloorProvider>().replyTo = widget.comment.id;
         context.read<NewFloorProvider>().focusNode.requestFocus();
       },

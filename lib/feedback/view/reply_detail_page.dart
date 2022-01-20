@@ -231,7 +231,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                   ],
                 ),
                 if (_onTapInputField &&
-                    context.read<NewFloorProvider>().replyTo == 0)
+                    context.watch<NewFloorProvider>().replyTo == 0)
                   Column(
                     children: [
                       ImagesGridView(),
@@ -328,14 +328,11 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 
   void send() {
-    context.read<NewFloorProvider>().focusNode.unfocus();
     if (_textEditingController.text.isNotEmpty) {
-      if (context.read<NewFloorProvider>().replyTo == 0) {
-        _sendFloor();
-      } else {
         _replyFloor();
-      }
     }
+    Provider.of<NewFloorProvider>(context, listen: false)
+        .inputFieldClose();
   }
 
   @override
@@ -346,16 +343,6 @@ class _CommentInputFieldState extends State<CommentInputField> {
       maxLength: 200,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
-      onEditingComplete: () async {
-        context.read<NewFloorProvider>().focusNode.unfocus();
-        if (_textEditingController.text.isNotEmpty) {
-          if (context.read<NewFloorProvider>().replyTo == 0) {
-            _sendFloor();
-          } else {
-            _replyFloor();
-          }
-        }
-      },
       decoration: InputDecoration(
         counterText: '',
         hintText: S.current.feedback_write_comment,
@@ -389,30 +376,13 @@ class _CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _sendFloor() {
-    FeedbackService.sendFloor(
-      id: widget.postId,
-      content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
-      onSuccess: () {
-        _textEditingController.text = '';
-        setState(() => _commentLengthIndicator = '0/200');
-        Provider.of<NewFloorProvider>(context, listen: false).clear();
-        // TODO: 暂时没想到什么好的办法来更新评论
-        ToastProvider.success("评论成功");
-      },
-      onFailure: (e) => ToastProvider.error(
-        e.error.toString(),
-      ),
-    );
-  }
-
   _replyFloor() {
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo,
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
+        print('11451419198101145141919810');
         _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
         Provider.of<NewFloorProvider>(context, listen: false).clear();
@@ -490,24 +460,20 @@ class _ImagesGridViewState extends State<ImagesGridView> {
           ),
         ),
       ),
-      Positioned(
-        right: 0,
-        bottom: 0,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-            ),
-            child: Icon(
-              Icons.close,
-              size: MediaQuery.of(context).size.width / 32,
-              color: ColorUtil.searchBarBackgroundColor,
-            ),
+      InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.black26,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+          ),
+          child: Icon(
+            Icons.close,
+            size: MediaQuery.of(context).size.width / 32,
+            color: ColorUtil.searchBarBackgroundColor,
           ),
         ),
       ),

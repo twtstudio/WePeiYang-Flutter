@@ -45,9 +45,9 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
-  bool _onTapInputField;
   int currentPage = 1, _totalPage = 1;
-  double _previousOffset = 0;
+
+  //double _previousOffset = 0;
   final launchKey = GlobalKey<_CommentInputFieldState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
@@ -81,26 +81,25 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onLoadingThisPage() {
-      _getComments(onSuccess: (comments) {
-        _commentList.addAll(comments);
-        _refreshController.loadComplete();
-      }, onFail: () {
-        _refreshController.loadFailed();
-      });
+    _getComments(onSuccess: (comments) {
+      _commentList.addAll(comments);
+      _refreshController.loadComplete();
+    }, onFail: () {
+      _refreshController.loadFailed();
+    });
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_onTapInputField == true &&
-        scrollInfo.metrics.pixels - _previousOffset <= 20) {
-      //_setOnTapInputField();
-      _previousOffset = scrollInfo.metrics.pixels;
-    }
-  }
+  // _onScrollNotification(ScrollNotification scrollInfo) {
+  //   if (context.watch<NewFloorProvider>().inputFieldEnabled == true &&
+  //       scrollInfo.metrics.pixels - _previousOffset <= 20) {
+  //     //_setOnTapInputField();
+  //     _previousOffset = scrollInfo.metrics.pixels;
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    _onTapInputField = false;
     status = DetailPageStatus.loading;
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -306,8 +305,8 @@ class _DetailPageState extends State<DetailPage>
             onLoading: _onLoading,
             child: mainList1,
           ),
-          onNotification: (ScrollNotification scrollInfo) =>
-              _onScrollNotification(scrollInfo),
+          // onNotification: (ScrollNotification scrollInfo) =>
+          //     _onScrollNotification(scrollInfo),
         ),
       );
 
@@ -323,8 +322,7 @@ class _DetailPageState extends State<DetailPage>
             margin: EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
+                    topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                       color: Colors.black12,
@@ -339,34 +337,35 @@ class _DetailPageState extends State<DetailPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: value.inputFieldEnabled
-                          ? Column(
-                              children: [inputField, checkButton],
-                            )
-                          : InkWell(
-                              onTap: () {
-                                context.read<NewFloorProvider>().replyTo = widget.post.id;
-                                Provider.of<NewFloorProvider>(context, listen: false)
-                                  .inputFieldSwitch();
-                              },
-                              child: Container(
-                                  height: 22,
-                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text('友善回复，真诚沟通',
-                                        style: TextUtil
-                                            .base.NotoSansSC.w500.grey97
-                                            .sp(12)),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(11),
-                                    color: Colors.white,
-                                  )),
-                            ),
+                      child: Offstage(
+                          offstage: !value.inputFieldEnabled,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [inputField, checkButton],
+                          )),
                     ),
-                    if (!_onTapInputField)
+                    if(!value.inputFieldEnabled) InkWell(
+                        onTap: () {
+                          Provider.of<NewFloorProvider>(context, listen: false)
+                              .inputFieldOpen();
+                          context.watch<NewFloorProvider>().replyTo = 0;
+                        },
+                        child: Container(
+                            height: 22,
+                            margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('友善回复，真诚沟通',
+                                  style: TextUtil.base.NotoSansSC.w500.grey97
+                                      .sp(12)),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11),
+                              color: Colors.white,
+                            )),
+                      ),
+                    if (!context.watch<NewFloorProvider>().inputFieldEnabled)
                       PostCard.outSide(
                         post,
                         onLikePressed: (isLike, likeCount) {
@@ -380,13 +379,9 @@ class _DetailPageState extends State<DetailPage>
                       ),
                   ],
                 ),
-                if (_onTapInputField &&
-                    context.read<NewFloorProvider>().replyTo == 0)
-                  Column(
-                    children: [
-                      ImagesGridView(),
-                    ],
-                  )
+                if (context.watch<NewFloorProvider>().inputFieldEnabled &&
+                    context.watch<NewFloorProvider>().replyTo == 0)
+                  ImagesGridView()
               ],
             ),
           ),
@@ -495,9 +490,6 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 
   void send() {
-    context.read<NewFloorProvider>().focusNode.unfocus();
-    Provider.of<NewFloorProvider>(context, listen: false)
-        .inputFieldSwitch();
     if (_textEditingController.text.isNotEmpty) {
       if (context.read<NewFloorProvider>().replyTo == 0) {
         _sendFloor();
@@ -505,6 +497,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
         _replyFloor();
       }
     }
+    Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
   }
 
   @override
@@ -515,16 +508,6 @@ class _CommentInputFieldState extends State<CommentInputField> {
       maxLength: 200,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
-      // onEditingComplete: () async {
-      //   context.read<NewFloorProvider>().focusNode.unfocus();
-      //   if (_textEditingController.text.isNotEmpty) {
-      //     if (context.read<NewFloorProvider>().replyTo == 0) {
-      //       _sendFloor();
-      //     } else {
-      //       _replyFloor();
-      //     }
-      //   }
-      // },
       decoration: InputDecoration(
         counterText: '',
         hintText: S.current.feedback_write_comment,
@@ -564,7 +547,6 @@ class _CommentInputFieldState extends State<CommentInputField> {
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
-        _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
         Provider.of<NewFloorProvider>(context, listen: false).clear();
         ToastProvider.success("评论成功");
@@ -658,24 +640,20 @@ class _ImagesGridViewState extends State<ImagesGridView> {
           ),
         ),
       ),
-      Positioned(
-        right: 0,
-        bottom: 0,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-            ),
-            child: Icon(
-              Icons.close,
-              size: MediaQuery.of(context).size.width / 32,
-              color: ColorUtil.searchBarBackgroundColor,
-            ),
+      InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.black26,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+          ),
+          child: Icon(
+            Icons.close,
+            size: MediaQuery.of(context).size.width / 32,
+            color: ColorUtil.searchBarBackgroundColor,
           ),
         ),
       ),
