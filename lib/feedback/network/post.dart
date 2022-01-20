@@ -112,16 +112,38 @@ class Department {
   String introduction;
 
   factory Department.fromJson(Map<String, dynamic> json) => Department(
-    id: json["id"],
-    name: json["name"],
-    introduction: json["introduction"],
-  );
+        id: json["id"],
+        name: json["name"],
+        introduction: json["introduction"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "introduction": introduction,
-  };
+        "id": id,
+        "name": name,
+        "introduction": introduction,
+      };
+}
+
+class FloorList {
+  FloorList(
+    List<Floor> list,
+  ) {
+    _list = list;
+  }
+
+  factory FloorList.fromJson(Map<String, dynamic> json) {
+    final list = <Floor>[];
+    if (json['list'] != null) {
+      (json['list'] as List).forEach((v) {
+        list.add(Floor.fromJson(v));
+      });
+    }
+    return FloorList(list);
+  }
+
+  List<Floor> _list;
+
+  List<Floor> get list => _list;
 }
 
 class Floor {
@@ -162,50 +184,47 @@ class Floor {
   bool isOwner;
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
-    id: json["id"],
-    createAt: DateTime.parse(json["create_at"]),
-    uid: json["uid"],
-    postId: json["post_id"],
-    content: json["content"],
-    nickname: json["nickname"],
-    imageUrl: json["image_url"],
-    replyTo: json["reply_to"],
-    replyToName: json["reply_to_name"],
-    subTo: json["sub_to"],
-    likeCount: json["like_count"],
-    subFloors: json["sub_floors"] == null ? null : List<Floor>.from(json["sub_floors"].map((x) => Floor.fromJson(x))),
-    subFloorCnt: json["sub_floor_cnt"],
-    isLike: json["is_like"],
-    isDis: json["is_dis"],
-    isOwner: json["is_owner"],
-  );
+        id: json["id"],
+        createAt: DateTime.parse(json["create_at"]),
+        uid: json["uid"],
+        postId: json["post_id"],
+        content: json["content"],
+        nickname: json["nickname"],
+        imageUrl: json["image_url"],
+        replyTo: json["reply_to"],
+        replyToName: json["reply_to_name"],
+        subTo: json["sub_to"],
+        likeCount: json["like_count"],
+        subFloors: json["sub_floors"] == null
+            ? null
+            : List<Floor>.from(
+                json["sub_floors"].map((x) => Floor.fromJson(x))),
+        subFloorCnt: json["sub_floor_cnt"],
+        isLike: json["is_like"],
+        isDis: json["is_dis"],
+        isOwner: json["is_owner"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "create_at": createAt.toIso8601String(),
-    "uid": uid,
-    "post_id": postId,
-    "content": content,
-    "nickname": nickname,
-    "image_url": imageUrl,
-    "reply_to": replyTo,
-    "reply_to_name": replyToName,
-    "sub_to": subTo,
-    "like_count": likeCount,
-    "sub_floors": subFloors == null ? null : List<dynamic>.from(subFloors.map((x) => x.toJson())),
-    "sub_floor_cnt": subFloorCnt,
-    "is_like": isLike,
-    "is_dis": isDis,
-    "is_owner": isOwner,
-  };
-
-  // changeLikeStatus() {
-  //   if (isLiked)
-  //     likeCount -= 1;
-  //   else
-  //     likeCount += 1;
-  //   isLiked = !isLiked;
-  // }
+        "id": id,
+        "create_at": createAt.toIso8601String(),
+        "uid": uid,
+        "post_id": postId,
+        "content": content,
+        "nickname": nickname,
+        "image_url": imageUrl,
+        "reply_to": replyTo,
+        "reply_to_name": replyToName,
+        "sub_to": subTo,
+        "like_count": likeCount,
+        "sub_floors": subFloors == null
+            ? null
+            : List<dynamic>.from(subFloors.map((x) => x.toJson())),
+        "sub_floor_cnt": subFloorCnt,
+        "is_like": isLike,
+        "is_dis": isDis,
+        "is_owner": isOwner,
+      };
 }
 
 class Tag {
@@ -220,17 +239,18 @@ class Tag {
   String name;
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-    id: json["tag_id"],
-    point: json["point"],
-    name: json["name"],
-  );
+        id: json["tag_id"],
+        point: json["point"],
+        name: json["name"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "point": point,
-    "name": name,
-  };
+        "id": id,
+        "point": point,
+        "name": name,
+      };
 }
+
 class SearchTag {
   SearchTag({
     this.id,

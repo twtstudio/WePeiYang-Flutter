@@ -18,12 +18,8 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
-import 'components/post_card.dart';
-
-enum DetailPageStatus {
+enum ReplyDetailPageStatus {
   loading,
   idle,
   error,
@@ -31,20 +27,19 @@ enum DetailPageStatus {
 
 enum PostOrigin { home, profile, favorite, mailbox }
 
-class DetailPage extends StatefulWidget {
-  final Post post;
+class ReplyDetailPage extends StatefulWidget {
+  final Floor floor;
 
-  DetailPage(this.post);
+  ReplyDetailPage(this.floor);
 
   @override
-  _DetailPageState createState() => _DetailPageState(this.post);
+  _ReplyDetailPageState createState() => _ReplyDetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage>
+class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
-  Post post;
-  DetailPageStatus status;
-  List<Floor> _commentList;
+  ReplyDetailPageStatus status;
+  int index;
   bool _onTapInputField;
   int currentPage = 1, _totalPage = 1;
   double _previousOffset = 0;
@@ -52,29 +47,30 @@ class _DetailPageState extends State<DetailPage>
 
   var _refreshController = RefreshController(initialRefresh: false);
 
-  _DetailPageState(this.post);
+  _ReplyDetailPageState();
 
   _onRefresh() {
-    _initPostAndComments(
-      onSuccess: (comments) {
-        _commentList = comments;
+    _initComment(
+      onResult: (comments) {
+        widget.floor.subFloors = comments;
         _refreshController.refreshCompleted();
       },
       onFail: () {
         _refreshController.refreshFailed();
       },
+      page: 0
     );
   }
 
   _onLoading() {
     if (currentPage != _totalPage) {
       currentPage++;
-      _getComments(onSuccess: (comments) {
-        _commentList.addAll(comments);
+      _initComment(onResult: (comments) {
+        widget.floor.subFloors.addAll(comments);
         _refreshController.loadComplete();
       }, onFail: () {
         _refreshController.loadFailed();
-      });
+      }, page: currentPage);
     } else {
       _refreshController.loadNoData();
     }
@@ -98,77 +94,30 @@ class _DetailPageState extends State<DetailPage>
   void initState() {
     super.initState();
     _onTapInputField = false;
-    status = DetailPageStatus.loading;
-    _commentList = [];
+    status = ReplyDetailPageStatus.loading;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /// 如果是从通知栏点进来的
-      if (post == null) {
-        _initPostAndComments(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.error;
-          });
+      _initComment(onResult: (comments) {
+        widget.floor.subFloors.addAll(comments);
+        setState(() {
+          status = ReplyDetailPageStatus.idle;
         });
-      } else {
-        _getComments(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
+      }, onFail: () {
+        setState(() {
+          status = ReplyDetailPageStatus.idle;
         });
-      }
+      },
+      page: 0
+      );
     });
   }
 
-  // 逻辑有点问题
-  _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
-    _initPost(onFail).then((success) {
-      if (success) {
-        _getComments(
-          onSuccess: onSuccess,
-          onFail: onFail,
-          current: 1,
-        );
-      }
-    });
-  }
-
-  Future<bool> _initPost([Function onFail]) async {
+  Future<bool> _initComment({Function(List<Floor>) onResult, Function onFail, int page}) async {
     bool success = false;
-    await FeedbackService.getPostById(
-      id: post.id,
-      onResult: (Post p) {
-        post = p;
-        Provider.of<MessageProvider>(context, listen: false)
-            .setFeedbackQuestionRead(p.id);
-        success = true;
-      },
-      onFailure: (e) {
-        ToastProvider.error(e.error.toString());
-        success = false;
-        onFail?.call();
-        return;
-      },
-    );
-    return success;
-  }
-
-  _getComments(
-      {Function(List<Floor>) onSuccess, Function onFail, int current}) {
-    FeedbackService.getComments(
-      id: post.id,
-      page: current ?? currentPage,
-      onSuccess: (comments, totalFloor) {
-        _totalPage = (totalFloor / 10).floor();
-        onSuccess?.call(comments);
+    FeedbackService.getFloorReplyById(
+      floorId: widget.floor.id,
+      page: page,
+      onResult: (comments) {
+        onResult?.call(comments);
         setState(() {});
       },
       onFailure: (e) {
@@ -176,6 +125,7 @@ class _DetailPageState extends State<DetailPage>
         onFail?.call();
       },
     );
+    return success;
   }
 
   @override
@@ -201,195 +151,98 @@ class _DetailPageState extends State<DetailPage>
             width: 20),
       ),
     );
+    Widget mainList1 = ListView(children: [NCommentCard(
+      comment: widget.floor,
+      isSubFloor: false,
+      isFullView: true
+    )]);
 
-    if (status == DetailPageStatus.loading) {
-      if (post == null) {
-        body = Center(child: Loading());
-      } else {
-        body = ListView(
-          children: [
-            PostCard.detail(
-              post,
-              onLikePressed: (isLike, likeCount) {
-                post.isLike = isLike;
-                post.likeCount = likeCount;
-              },
-              onFavoritePressed: (isFav, favCount) {
-                post.isFav = isFav;
-                post.favCount = favCount;
-              },
-            ),
-            SizedBox(
-              height: 100,
-              child: Center(child: Loading()),
-            )
-          ],
-        );
-      }
-    } else if (status == DetailPageStatus.idle) {
-      Widget mainList1 = ListView.builder(
-        itemCount: _commentList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Column(
-              children: [
-                PostCard.detail(
-                  post,
-                  onLikePressed: (isLike, likeCount) {
-                    post.isLike = isLike;
-                    post.likeCount = likeCount;
-                  },
-                  onFavoritePressed: (isFav, favCount) {
-                    post.isFav = isFav;
-                    post.favCount = favCount;
-                  },
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          '回复 ' + post.commentCount.toString(),
-                          style:
-                              TextUtil.base.ProductSans.black2A.medium.sp(18),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Image.asset(
-                          'assets/images/lake_butt_icons/menu.png',
-                          width: 20,
-                        ),
-                      ),
-                    ]),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
-            );
-          }
-          index--;
-
-          ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
-          ///_officialCommentList,点赞注释了
-          var data = _commentList[index];
-          return NCommentCard(
-            comment: data,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: false,
-            // likeSuccessCallback: (isLiked, count) {
-            //   data.isLiked = isLiked;
-            //   data.likeCount = count;
-            // },
-          );
-        },
-      );
-
-      Widget mainList = Expanded(
-        child: NotificationListener<ScrollNotification>(
-          child: SmartRefresher(
-            physics: BouncingScrollPhysics(),
-            controller: _refreshController,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            enablePullDown: true,
-            onRefresh: _onRefresh,
-            enablePullUp: true,
-            onLoading: _onLoading,
-            child: mainList1,
-          ),onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
+    Widget mainList = Expanded(
+      child: NotificationListener<ScrollNotification>(
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController,
+          header: ClassicHeader(),
+          footer: ClassicFooter(),
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          enablePullUp: true,
+          onLoading: _onLoading,
+          child: mainList1,
         ),
-      );
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
+      ),
+    );
 
-      var inputField = CommentInputField(postId: post.id, key: launchKey);
+    var inputField =
+        CommentInputField(postId: widget.floor.postId, key: launchKey);
 
-      body = Column(
-        children: [
-          mainList,
-          AnimatedSize(
-            vsync: this,
-            duration: Duration(milliseconds: 450),
-            curve: Curves.easeInOutCubic,
-            child: Container(
-              margin: EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, -1),
-                        blurRadius: 2,
-                        spreadRadius: 3),
-                  ],
-                  color: ColorUtil.whiteF8Color),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: _onTapInputField
-                            ? Column(
-                                children: [inputField, checkButton],
-                              )
-                            : InkWell(
-                                onTap: () => _setOnTapInputField(),
-                                child: Container(
-                                    height: 22,
-                                    margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('友善回复，真诚沟通',
-                                          style: TextUtil
-                                              .base.NotoSansSC.w500.grey97
-                                              .sp(12)),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(11),
-                                      color: Colors.white,
-                                    )),
-                              ),
-                      ),
-                      if (!_onTapInputField)
-                        PostCard.outSide(
-                          post,
-                          onLikePressed: (isLike, likeCount) {
-                            post.isLike = isLike;
-                            post.likeCount = likeCount;
-                          },
-                          onFavoritePressed: (isFav, favCount) {
-                            post.isFav = isFav;
-                            post.favCount = favCount;
-                          },
-                        ),
-                    ],
-                  ),
-                  if (_onTapInputField &&
-                      context.read<NewFloorProvider>().replyTo == 0)
-                    Column(
-                      children: [
-                        ImagesGridView(),
-                      ],
-                    )
+    body = Column(
+      children: [
+        mainList,
+        AnimatedSize(
+          vsync: this,
+          duration: Duration(milliseconds: 450),
+          curve: Curves.easeInOutCubic,
+          child: Container(
+            margin: EdgeInsets.only(top: 4),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, -1),
+                      blurRadius: 2,
+                      spreadRadius: 3),
                 ],
-              ),
+                color: ColorUtil.whiteF8Color),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: _onTapInputField
+                          ? Column(
+                              children: [inputField, checkButton],
+                            )
+                          : InkWell(
+                              onTap: () => _setOnTapInputField(),
+                              child: Container(
+                                  height: 22,
+                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('友善回复，真诚沟通',
+                                        style: TextUtil
+                                            .base.NotoSansSC.w500.grey97
+                                            .sp(12)),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(11),
+                                    color: Colors.white,
+                                  )),
+                            ),
+                    ),
+                  ],
+                ),
+                if (_onTapInputField &&
+                    context.read<NewFloorProvider>().replyTo == 0)
+                  Column(
+                    children: [
+                      ImagesGridView(),
+                    ],
+                  )
+              ],
             ),
           ),
-        ],
-      );
-    } else {
-      body = Center(child: Text("error!"));
-    }
+        ),
+      ],
+    );
 
     var menuButton = IconButton(
       icon:
@@ -398,7 +251,6 @@ class _DetailPageState extends State<DetailPage>
       onPressed: () {
         showMenu(
           context: context,
-
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
           // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
@@ -418,33 +270,21 @@ class _DetailPageState extends State<DetailPage>
         ).then((value) {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
+                arguments: ReportPageArgs(widget.floor.id, true));
           }
         });
-      }
-    );
-
-    var shareButton = IconButton(
-      icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
-      onPressed: () {
-        String weCo = '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
-        ClipboardData data = ClipboardData(text: weCo);
-        Clipboard.setData(data);
-        Provider.of<MessageProvider>(context, listen: false)
-            .setFeedbackWeKoHasViewed('${post.id}');
-        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-      }
+      },
     );
 
     var appBar = AppBar(
       backgroundColor: ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
-        onPressed: () => Navigator.pop(context, post),
+        onPressed: () => Navigator.pop(context),
       ),
-      actions: [shareButton, menuButton],
+      actions: [menuButton],
       title: Text(
-        S.current.feedback_detail,
+        '回复',
         style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
       ),
       centerTitle: true,
@@ -454,7 +294,7 @@ class _DetailPageState extends State<DetailPage>
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, post);
+        Navigator.pop(context);
         return true;
       },
       child: Scaffold(
@@ -684,9 +524,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     );
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 400
-      ),
+      constraints: BoxConstraints(maxWidth: 400),
       child: Consumer<NewFloorProvider>(
         builder: (_, data, __) => GridView.builder(
           shrinkWrap: true,

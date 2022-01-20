@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +30,7 @@ class NCommentCard extends StatefulWidget {
   final LikeCallback likeSuccessCallback;
   final DislikeCallback dislikeSuccessCallback;
   final bool isSubFloor;
+  final bool isFullView;
 
   @override
   _NCommentCardState createState() => _NCommentCardState();
@@ -38,7 +41,8 @@ class NCommentCard extends StatefulWidget {
       this.commentFloor,
       this.likeSuccessCallback,
       this.dislikeSuccessCallback,
-      this.isSubFloor});
+      this.isSubFloor,
+      this.isFullView});
 }
 
 class _NCommentCardState extends State<NCommentCard> {
@@ -91,6 +95,8 @@ class _NCommentCardState extends State<NCommentCard> {
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
                   ),
+                  if (widget.comment.isOwner)
+                    CommentIdentificationContainer('我的评论', true),
                   if (widget.comment.nickname == 'Owner')
                     CommentIdentificationContainer('楼主', true),
                   if (widget.isSubFloor &&
@@ -114,8 +120,6 @@ class _NCommentCardState extends State<NCommentCard> {
                   if (widget.isSubFloor &&
                       widget.comment.replyToName == widget.ancestorName)
                     CommentIdentificationContainer('层主', false),
-                  if (widget.comment.isOwner)
-                    CommentIdentificationContainer('我的评论', true),
                 ],
               ),
               Text(
@@ -215,17 +219,20 @@ class _NCommentCardState extends State<NCommentCard> {
       subFloor = ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: widget.comment.subFloorCnt,
+        itemCount:
+        widget.isFullView
+            ? widget.comment.subFloorCnt
+            : widget.comment.subFloorCnt > 2
+                ? 2
+                :
+        min(widget.comment.subFloorCnt, widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
             ancestorName: widget.comment.nickname,
             comment: widget.comment.subFloors[index],
             commentFloor: index + 1,
             isSubFloor: true,
-            // likeSuccessCallback: (isLiked, count) {
-            //   data.isLiked = isLiked;
-            //   data.likeCount = count;
-            // },
+            isFullView: widget.isFullView,
           );
         },
       );
@@ -322,10 +329,10 @@ class _NCommentCardState extends State<NCommentCard> {
             child: Ink(
               padding: EdgeInsets.fromLTRB(16.w, 8, 16.w, 8),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                color: widget.isFullView && widget.isSubFloor ? Colors.transparent : Colors.white,
                 boxShadow: [
-                  BoxShadow(
+                  widget.isFullView && widget.isSubFloor ? BoxShadow(color: Colors.transparent) : BoxShadow(
                       blurRadius: 5,
                       color: Color.fromARGB(64, 236, 237, 239),
                       offset: Offset(0, 0),
@@ -337,7 +344,40 @@ class _NCommentCardState extends State<NCommentCard> {
           ),
         ),
         if (!widget.isSubFloor && subFloor != null)
-          Padding(padding: EdgeInsets.only(left: 24), child: subFloor),
+          Padding(
+              padding: widget.isFullView ? EdgeInsets.zero : EdgeInsets.only(left: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  subFloor,
+                  if (widget.comment.subFloorCnt > 0 && !widget.isFullView)
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.commentDetail,
+                          arguments: widget.comment,
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Chip(
+                          padding: const EdgeInsets.all(0),
+                          labelPadding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                          backgroundColor: Color(0xffebebeb),
+                          label: Text(
+                            widget.comment.subFloorCnt > 2 ?
+                              '查看全部 ' +
+                                  widget.comment.subFloorCnt.toString() +
+                                  ' 条回复 >' : '查看回复详情 >',
+                              style:
+                                  TextUtil.base.ProductSans.w400.sp(14).grey6C),
+                        ),
+                      ),
+                    )
+                ],
+              )),
       ],
     );
   }

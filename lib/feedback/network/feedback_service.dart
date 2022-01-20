@@ -204,6 +204,29 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getFloorReplyById({
+    @required int floorId,
+    int page,
+    @required OnResult<List<Floor>> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'floor/replys',
+        queryParameters: {
+          'floor_id': '$floorId',
+          'page': '$page',
+          'page_size': '10',
+          'pageBase': '0',
+        },
+      );
+      final floor = FloorList.fromJson(response.data['data']);
+      onResult(floor.list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getPostById({
     @required int id,
     @required OnResult<Post> onResult,
