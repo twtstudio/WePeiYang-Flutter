@@ -80,16 +80,19 @@ class _DetailPageState extends State<DetailPage>
     }
   }
 
-  _setOnTapInputField() {
-    setState(() {
-      _onTapInputField = !_onTapInputField;
-    });
+  _onLoadingThisPage() {
+      _getComments(onSuccess: (comments) {
+        _commentList.addAll(comments);
+        _refreshController.loadComplete();
+      }, onFail: () {
+        _refreshController.loadFailed();
+      });
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (_onTapInputField == true &&
         scrollInfo.metrics.pixels - _previousOffset <= 20) {
-      _setOnTapInputField();
+      //_setOnTapInputField();
       _previousOffset = scrollInfo.metrics.pixels;
     }
   }
@@ -187,12 +190,12 @@ class _DetailPageState extends State<DetailPage>
   @override
   Widget build(BuildContext context) {
     Widget body;
+    Widget bottomInput;
     Widget checkButton = InkWell(
       onTap: () {
         launchKey.currentState.send();
         setState(() {
-          _onRefresh();
-          _onTapInputField = false;
+          _onLoadingThisPage();
         });
       },
       child: Padding(
@@ -302,139 +305,143 @@ class _DetailPageState extends State<DetailPage>
             enablePullUp: true,
             onLoading: _onLoading,
             child: mainList1,
-          ),onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
+          ),
+          onNotification: (ScrollNotification scrollInfo) =>
+              _onScrollNotification(scrollInfo),
         ),
       );
 
       var inputField = CommentInputField(postId: post.id, key: launchKey);
 
-      body = Column(
-        children: [
-          mainList,
-          AnimatedSize(
-            vsync: this,
-            duration: Duration(milliseconds: 450),
-            curve: Curves.easeInOutCubic,
-            child: Container(
-              margin: EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, -1),
-                        blurRadius: 2,
-                        spreadRadius: 3),
-                  ],
-                  color: ColorUtil.whiteF8Color),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: _onTapInputField
-                            ? Column(
-                                children: [inputField, checkButton],
-                              )
-                            : InkWell(
-                                onTap: () => _setOnTapInputField(),
-                                child: Container(
-                                    height: 22,
-                                    margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 8),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text('友善回复，真诚沟通',
-                                          style: TextUtil
-                                              .base.NotoSansSC.w500.grey97
-                                              .sp(12)),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(11),
-                                      color: Colors.white,
-                                    )),
-                              ),
-                      ),
-                      if (!_onTapInputField)
-                        PostCard.outSide(
-                          post,
-                          onLikePressed: (isLike, likeCount) {
-                            post.isLike = isLike;
-                            post.likeCount = likeCount;
-                          },
-                          onFavoritePressed: (isFav, favCount) {
-                            post.isFav = isFav;
-                            post.favCount = favCount;
-                          },
-                        ),
-                    ],
-                  ),
-                  if (_onTapInputField &&
-                      context.read<NewFloorProvider>().replyTo == 0)
-                    Column(
-                      children: [
-                        ImagesGridView(),
-                      ],
-                    )
+      bottomInput = Consumer<NewFloorProvider>(
+          builder: (BuildContext context, value, Widget child) {
+        return AnimatedSize(
+          vsync: this,
+          duration: Duration(milliseconds: 450),
+          curve: Curves.easeInOutCubic,
+          child: Container(
+            margin: EdgeInsets.only(top: 4),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, -1),
+                      blurRadius: 2,
+                      spreadRadius: 3),
                 ],
-              ),
+                color: ColorUtil.whiteF8Color),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: value.inputFieldEnabled
+                          ? Column(
+                              children: [inputField, checkButton],
+                            )
+                          : InkWell(
+                              onTap: () {
+                                context.read<NewFloorProvider>().replyTo = widget.post.id;
+                                Provider.of<NewFloorProvider>(context, listen: false)
+                                  .inputFieldSwitch();
+                              },
+                              child: Container(
+                                  height: 22,
+                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('友善回复，真诚沟通',
+                                        style: TextUtil
+                                            .base.NotoSansSC.w500.grey97
+                                            .sp(12)),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(11),
+                                    color: Colors.white,
+                                  )),
+                            ),
+                    ),
+                    if (!_onTapInputField)
+                      PostCard.outSide(
+                        post,
+                        onLikePressed: (isLike, likeCount) {
+                          post.isLike = isLike;
+                          post.likeCount = likeCount;
+                        },
+                        onFavoritePressed: (isFav, favCount) {
+                          post.isFav = isFav;
+                          post.favCount = favCount;
+                        },
+                      ),
+                  ],
+                ),
+                if (_onTapInputField &&
+                    context.read<NewFloorProvider>().replyTo == 0)
+                  Column(
+                    children: [
+                      ImagesGridView(),
+                    ],
+                  )
+              ],
             ),
           ),
-        ],
+        );
+      });
+      body = Column(
+        children: [mainList, bottomInput],
       );
     } else {
       body = Center(child: Text("error!"));
     }
 
     var menuButton = IconButton(
-      icon:
-          SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-      splashRadius: 20,
-      onPressed: () {
-        showMenu(
-          context: context,
+        icon: SvgPicture.asset(
+            'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
+        splashRadius: 20,
+        onPressed: () {
+          showMenu(
+            context: context,
 
-          /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
-          /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-          // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
-          position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
-          items: <PopupMenuItem<String>>[
-            new PopupMenuItem<String>(
-              value: '举报',
-              child: new Text(
-                '举报',
-                style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 13,
-                  color: ColorUtil.boldTextColor,
+            /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
+            /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
+            // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
+            position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
+            items: <PopupMenuItem<String>>[
+              new PopupMenuItem<String>(
+                value: '举报',
+                child: new Text(
+                  '举报',
+                  style: FontManager.YaHeiRegular.copyWith(
+                    fontSize: 13,
+                    color: ColorUtil.boldTextColor,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ).then((value) {
-          if (value == "举报") {
-            Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
-          }
+            ],
+          ).then((value) {
+            if (value == "举报") {
+              Navigator.pushNamed(context, FeedbackRouter.report,
+                  arguments: ReportPageArgs(widget.post.id, true));
+            }
+          });
         });
-      }
-    );
 
     var shareButton = IconButton(
-      icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
-      onPressed: () {
-        String weCo = '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
-        ClipboardData data = ClipboardData(text: weCo);
-        Clipboard.setData(data);
-        Provider.of<MessageProvider>(context, listen: false)
-            .setFeedbackWeKoHasViewed('${post.id}');
-        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-      }
-    );
+        icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
+        onPressed: () {
+          String weCo =
+              '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
+          ClipboardData data = ClipboardData(text: weCo);
+          Clipboard.setData(data);
+          Provider.of<MessageProvider>(context, listen: false)
+              .setFeedbackWeKoHasViewed('${post.id}');
+          ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+        });
 
     var appBar = AppBar(
       backgroundColor: ColorUtil.greyF7F8Color,
@@ -489,6 +496,8 @@ class _CommentInputFieldState extends State<CommentInputField> {
 
   void send() {
     context.read<NewFloorProvider>().focusNode.unfocus();
+    Provider.of<NewFloorProvider>(context, listen: false)
+        .inputFieldSwitch();
     if (_textEditingController.text.isNotEmpty) {
       if (context.read<NewFloorProvider>().replyTo == 0) {
         _sendFloor();
@@ -506,16 +515,16 @@ class _CommentInputFieldState extends State<CommentInputField> {
       maxLength: 200,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
-      onEditingComplete: () async {
-        context.read<NewFloorProvider>().focusNode.unfocus();
-        if (_textEditingController.text.isNotEmpty) {
-          if (context.read<NewFloorProvider>().replyTo == 0) {
-            _sendFloor();
-          } else {
-            _replyFloor();
-          }
-        }
-      },
+      // onEditingComplete: () async {
+      //   context.read<NewFloorProvider>().focusNode.unfocus();
+      //   if (_textEditingController.text.isNotEmpty) {
+      //     if (context.read<NewFloorProvider>().replyTo == 0) {
+      //       _sendFloor();
+      //     } else {
+      //       _replyFloor();
+      //     }
+      //   }
+      // },
       decoration: InputDecoration(
         counterText: '',
         hintText: S.current.feedback_write_comment,
@@ -551,14 +560,13 @@ class _CommentInputFieldState extends State<CommentInputField> {
 
   _sendFloor() {
     FeedbackService.sendFloor(
-      id: widget.postId,
+      id: widget.postId.toString(),
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
         _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
         Provider.of<NewFloorProvider>(context, listen: false).clear();
-        // TODO: 暂时没想到什么好的办法来更新评论
         ToastProvider.success("评论成功");
       },
       onFailure: (e) => ToastProvider.error(
@@ -569,14 +577,14 @@ class _CommentInputFieldState extends State<CommentInputField> {
 
   _replyFloor() {
     FeedbackService.replyFloor(
-      id: context.read<NewFloorProvider>().replyTo,
+      id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
         _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
         Provider.of<NewFloorProvider>(context, listen: false).clear();
-        ToastProvider.success("评论成功");
+        ToastProvider.success("回复成功");
       },
       onFailure: (e) => ToastProvider.error(
         e.error.toString(),
@@ -684,9 +692,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     );
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 400
-      ),
+      constraints: BoxConstraints(maxWidth: 400),
       child: Consumer<NewFloorProvider>(
         builder: (_, data, __) => GridView.builder(
           shrinkWrap: true,

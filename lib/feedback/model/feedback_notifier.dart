@@ -50,10 +50,17 @@ class NewPostProvider {
 //
 // }
 
-class NewFloorProvider {
+class NewFloorProvider extends ChangeNotifier {
   int replyTo = 0;
   List<File> images = [];
+  bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
+  void inputFieldSwitch() {
+    inputFieldEnabled = !inputFieldEnabled;
+    if (inputFieldEnabled)
+    clear();
+      notifyListeners();
+    }
   void clear() {
     replyTo = 0;
     images = [];

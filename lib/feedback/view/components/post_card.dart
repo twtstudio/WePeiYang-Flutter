@@ -143,7 +143,7 @@ class _PostCardState extends State<PostCard> {
             baseUrl + post.imageUrls[0],
             width: 97,
             height: 76,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
           ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),

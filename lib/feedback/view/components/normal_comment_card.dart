@@ -207,6 +207,8 @@ class _NCommentCardState extends State<NCommentCard> {
       iconSize: 16,
       constraints: BoxConstraints(),
       onPressed: () {
+        Provider.of<NewFloorProvider>(context, listen: false)
+            .inputFieldSwitch();
         context.read<NewFloorProvider>().replyTo = widget.comment.id;
         context.read<NewFloorProvider>().focusNode.requestFocus();
       },
@@ -237,19 +239,6 @@ class _NCommentCardState extends State<NCommentCard> {
         },
       );
     }
-
-    // var reportWidget = IconButton(
-    //     iconSize: 20,
-    //     padding: const EdgeInsets.all(2),
-    //     constraints: BoxConstraints(),
-    //     icon: Icon(
-    //       Icons.warning_amber_rounded,
-    //       color: ColorUtil.lightTextColor,
-    //     ),
-    //     onPressed: () {
-    //       Navigator.pushNamed(context, FeedbackRouter.report,
-    //           arguments: ReportPageArgs(widget.comment.id, false));
-    //     });
 
     var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount,
         onLikePressed: (isLiked, count, success, failure) async {

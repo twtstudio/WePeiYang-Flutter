@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 List<SingleChildWidget> feedbackProviders = [
   Provider.value(value: FbTagsProvider()),
   Provider.value(value: NewPostProvider()),
-  Provider.value(value: NewFloorProvider()),
+  ChangeNotifierProvider.value(value: NewFloorProvider()),
   ChangeNotifierProvider.value(value: FbHomeListModel()),
   ChangeNotifierProxyProvider<FbHomeListModel, FbHomeStatusNotifier>(
     create: (_) => FbHomeStatusNotifier(),
