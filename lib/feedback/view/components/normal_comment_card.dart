@@ -47,6 +47,7 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard> {
   final String baseUrl = 'https://www.zrzz.site:7013/';
+  bool _picFullView = false;
 
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
@@ -200,7 +201,34 @@ class _NCommentCardState extends State<NCommentCard> {
       style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
     );
 
-    var commentImage = Image.network(baseUrl + widget.comment.imageUrl);
+    var commentImage = Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _picFullView = true;
+            });
+          },
+          child: _picFullView ? InkWell(
+              onTap: () {
+          Navigator.pushNamed(context, FeedbackRouter.imageView,
+              arguments: {
+                "urlList": [widget.comment.imageUrl],
+                "urlListLength": 1,
+                "indexNow": 0
+              });},
+            child: Image.network(
+              baseUrl + widget.comment.imageUrl,
+            ),
+          ) : ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              child: Image.network(
+                baseUrl + widget.comment.imageUrl,
+                width: 70.w,
+                height: 64.h,
+                fit: BoxFit.cover,
+              )),
+        ));
 
     var replyButton = IconButton(
       icon: SvgPicture.asset('assets/svg_pics/lake_butt_icons/reply.svg'),
@@ -208,8 +236,7 @@ class _NCommentCardState extends State<NCommentCard> {
       constraints: BoxConstraints(),
       onPressed: () {
         Provider.of<NewFloorProvider>(context, listen: false)
-            .inputFieldOpen();
-        context.read<NewFloorProvider>().replyTo = widget.comment.id;
+            .inputFieldOpenAndReplyTo(widget.comment.id);
         context.read<NewFloorProvider>().focusNode.requestFocus();
       },
       padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
@@ -221,13 +248,12 @@ class _NCommentCardState extends State<NCommentCard> {
       subFloor = ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount:
-        widget.isFullView
+        itemCount: widget.isFullView
             ? widget.comment.subFloorCnt
             : widget.comment.subFloorCnt > 2
                 ? 2
-                :
-        min(widget.comment.subFloorCnt, widget.comment.subFloors.length),
+                : min(widget.comment.subFloorCnt,
+                    widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
             ancestorName: widget.comment.nickname,
@@ -259,14 +285,12 @@ class _NCommentCardState extends State<NCommentCard> {
     var dislikeWidget = DislikeWidget(
       size: 15.w,
       isDislike: widget.comment.isDis,
-      onDislikePressed:
-          (dislikeNotifier) async {
+      onDislikePressed: (dislikeNotifier) async {
         await FeedbackService.commentHitDislike(
           id: widget.comment.id,
           isDis: widget.comment.isDis,
           onSuccess: () {
-            widget.dislikeSuccessCallback
-                ?.call(dislikeNotifier);
+            widget.dislikeSuccessCallback?.call(dislikeNotifier);
             widget.comment.isDis = !widget.comment.isDis;
             if (widget.comment.isDis && widget.comment.isLike) {
               widget.comment.isLike = !widget.comment.isLike;
@@ -298,10 +322,9 @@ class _NCommentCardState extends State<NCommentCard> {
         box,
         topWidget,
         box,
-        box,
         commentContent,
-        if (widget.comment.imageUrl != null) box,
-        if (widget.comment.imageUrl != null) commentImage,
+        if (widget.comment.imageUrl != '') commentImage,
+        box,
         bottomWidget,
       ],
     );
@@ -319,13 +342,17 @@ class _NCommentCardState extends State<NCommentCard> {
               padding: EdgeInsets.fromLTRB(16.w, 8, 16.w, 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: widget.isFullView && widget.isSubFloor ? Colors.transparent : Colors.white,
+                color: widget.isFullView && widget.isSubFloor
+                    ? Colors.transparent
+                    : Colors.white,
                 boxShadow: [
-                  widget.isFullView && widget.isSubFloor ? BoxShadow(color: Colors.transparent) : BoxShadow(
-                      blurRadius: 5,
-                      color: Color.fromARGB(64, 236, 237, 239),
-                      offset: Offset(0, 0),
-                      spreadRadius: 3),
+                  widget.isFullView && widget.isSubFloor
+                      ? BoxShadow(color: Colors.transparent)
+                      : BoxShadow(
+                          blurRadius: 5,
+                          color: Color.fromARGB(64, 236, 237, 239),
+                          offset: Offset(0, 0),
+                          spreadRadius: 3),
                 ],
               ),
               child: mainBody,
@@ -334,7 +361,9 @@ class _NCommentCardState extends State<NCommentCard> {
         ),
         if (!widget.isSubFloor && subFloor != null)
           Padding(
-              padding: widget.isFullView ? EdgeInsets.zero : EdgeInsets.only(left: 24),
+              padding: widget.isFullView
+                  ? EdgeInsets.zero
+                  : EdgeInsets.only(left: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -356,10 +385,11 @@ class _NCommentCardState extends State<NCommentCard> {
                               EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                           backgroundColor: Color(0xffebebeb),
                           label: Text(
-                            widget.comment.subFloorCnt > 2 ?
-                              '查看全部 ' +
-                                  widget.comment.subFloorCnt.toString() +
-                                  ' 条回复 >' : '查看回复详情 >',
+                              widget.comment.subFloorCnt > 2
+                                  ? '查看全部 ' +
+                                      widget.comment.subFloorCnt.toString() +
+                                      ' 条回复 >'
+                                  : '查看回复详情 >',
                               style:
                                   TextUtil.base.ProductSans.w400.sp(14).grey6C),
                         ),

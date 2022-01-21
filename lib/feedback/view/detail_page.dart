@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,9 +46,9 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
-  int currentPage = 1, _totalPage = 1;
+  int currentPage = 1;
 
-  //double _previousOffset = 0;
+  double _previousOffset = 0;
   final launchKey = GlobalKey<_CommentInputFieldState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
@@ -55,6 +56,8 @@ class _DetailPageState extends State<DetailPage>
   _DetailPageState(this.post);
 
   _onRefresh() {
+    currentPage = 1;
+    _refreshController.resetNoData();
     _initPostAndComments(
       onSuccess: (comments) {
         _commentList = comments;
@@ -67,40 +70,44 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onLoading() {
-    if (currentPage != _totalPage) {
-      currentPage++;
-      _getComments(onSuccess: (comments) {
+    currentPage++;
+    _getComments(onSuccess: (comments) {
+      if (comments.length == 0) {
+        _refreshController.loadNoData();
+        currentPage--;
+      } else {
         _commentList.addAll(comments);
         _refreshController.loadComplete();
-      }, onFail: () {
-        _refreshController.loadFailed();
-      });
-    } else {
-      _refreshController.loadNoData();
-    }
-  }
-
-  _onLoadingThisPage() {
-    _getComments(onSuccess: (comments) {
-      _commentList.addAll(comments);
-      _refreshController.loadComplete();
+      }
     }, onFail: () {
       _refreshController.loadFailed();
+      currentPage--;
     });
   }
 
-  // _onScrollNotification(ScrollNotification scrollInfo) {
-  //   if (context.watch<NewFloorProvider>().inputFieldEnabled == true &&
-  //       scrollInfo.metrics.pixels - _previousOffset <= 20) {
-  //     //_setOnTapInputField();
-  //     _previousOffset = scrollInfo.metrics.pixels;
-  //   }
+  // _onLoadingThisPage() {
+  //   _getComments(onSuccess: (comments) {
+  //     _commentList.removeRange(_commentList.length - comments.length, _commentList.length);
+  //     _commentList.addAll(comments);
+  //   }, onFail: () {
+  //     _refreshController.loadFailed();
+  //   });
   // }
+
+  _onScrollNotification(ScrollNotification scrollInfo) {
+    if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+        scrollInfo.metrics.pixels - _previousOffset >= 20) {
+      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+      _previousOffset = scrollInfo.metrics.pixels;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     status = DetailPageStatus.loading;
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
@@ -116,16 +123,19 @@ class _DetailPageState extends State<DetailPage>
           });
         });
       } else {
-        _getComments(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        });
+        _getComments(
+            onSuccess: (comments) {
+              _commentList.addAll(comments);
+              setState(() {
+                status = DetailPageStatus.idle;
+              });
+            },
+            onFail: () {
+              setState(() {
+                status = DetailPageStatus.idle;
+              });
+            },
+            current: currentPage);
       }
     });
   }
@@ -169,7 +179,6 @@ class _DetailPageState extends State<DetailPage>
       id: post.id,
       page: current ?? currentPage,
       onSuccess: (comments, totalFloor) {
-        _totalPage = (totalFloor / 10).floor();
         onSuccess?.call(comments);
         setState(() {});
       },
@@ -193,9 +202,6 @@ class _DetailPageState extends State<DetailPage>
     Widget checkButton = InkWell(
       onTap: () {
         launchKey.currentState.send();
-        setState(() {
-          _onLoadingThisPage();
-        });
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
@@ -305,8 +311,8 @@ class _DetailPageState extends State<DetailPage>
             onLoading: _onLoading,
             child: mainList1,
           ),
-          // onNotification: (ScrollNotification scrollInfo) =>
-          //     _onScrollNotification(scrollInfo),
+          onNotification: (ScrollNotification scrollInfo) =>
+              _onScrollNotification(scrollInfo),
         ),
       );
 
@@ -315,6 +321,7 @@ class _DetailPageState extends State<DetailPage>
       bottomInput = Consumer<NewFloorProvider>(
           builder: (BuildContext context, value, Widget child) {
         return AnimatedSize(
+          clipBehavior: Clip.antiAlias,
           vsync: this,
           duration: Duration(milliseconds: 450),
           curve: Curves.easeInOutCubic,
@@ -322,7 +329,8 @@ class _DetailPageState extends State<DetailPage>
             margin: EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                       color: Colors.black12,
@@ -337,35 +345,43 @@ class _DetailPageState extends State<DetailPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Offstage(
-                          offstage: !value.inputFieldEnabled,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [inputField, checkButton],
-                          )),
-                    ),
-                    if(!value.inputFieldEnabled) InkWell(
-                        onTap: () {
-                          Provider.of<NewFloorProvider>(context, listen: false)
-                              .inputFieldOpen();
-                          context.watch<NewFloorProvider>().replyTo = 0;
-                        },
-                        child: Container(
-                            height: 22,
-                            margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('友善回复，真诚沟通',
-                                  style: TextUtil.base.NotoSansSC.w500.grey97
-                                      .sp(12)),
+                      child: Column(
+                        children: [
+                          Offstage(
+                              offstage: !value.inputFieldEnabled,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [inputField, checkButton],
+                              )),
+                          Offstage(
+                            offstage: value.inputFieldEnabled,
+                            child: InkWell(
+                              onTap: () {
+                                Provider.of<NewFloorProvider>(context,
+                                        listen: false)
+                                    .inputFieldOpenAndReplyTo(0);
+                              },
+                              child: Container(
+                                  height: 22,
+                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('友善回复，真诚沟通',
+                                        style: TextUtil
+                                            .base.NotoSansSC.w500.grey97
+                                            .sp(12)),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(11),
+                                    color: Colors.white,
+                                  )),
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(11),
-                              color: Colors.white,
-                            )),
+                          ),
+                        ],
                       ),
-                    if (!context.watch<NewFloorProvider>().inputFieldEnabled)
+                    ),
+                    if (!context.read<NewFloorProvider>().inputFieldEnabled)
                       PostCard.outSide(
                         post,
                         onLikePressed: (isLike, likeCount) {
@@ -379,8 +395,7 @@ class _DetailPageState extends State<DetailPage>
                       ),
                   ],
                 ),
-                if (context.watch<NewFloorProvider>().inputFieldEnabled &&
-                    context.watch<NewFloorProvider>().replyTo == 0)
+                if (context.read<NewFloorProvider>().inputFieldEnabled)
                   ImagesGridView()
               ],
             ),
@@ -404,7 +419,6 @@ class _DetailPageState extends State<DetailPage>
 
             /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
             /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-            // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
             position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
             items: <PopupMenuItem<String>>[
               new PopupMenuItem<String>(
@@ -460,6 +474,7 @@ class _DetailPageState extends State<DetailPage>
         return true;
       },
       child: Scaffold(
+        backgroundColor: ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),
@@ -485,7 +500,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
   @override
   void dispose() {
     _textEditingController.dispose();
-    context.read<NewFloorProvider>().focusNode.dispose();
+    //context.read<NewFloorProvider>().focusNode.dispose();
     super.dispose();
   }
 
@@ -496,44 +511,44 @@ class _CommentInputFieldState extends State<CommentInputField> {
       } else {
         _replyFloor();
       }
-    }
+    } else
+      ToastProvider.error('文字不能为空哦');
     Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget inputField = TextField(
-      focusNode: context.read<NewFloorProvider>().focusNode,
-      controller: _textEditingController,
-      maxLength: 200,
-      textInputAction: TextInputAction.done,
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        counterText: '',
-        hintText: S.current.feedback_write_comment,
-        suffix: Text(
-          _commentLengthIndicator,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 14,
-            color: ColorUtil.lightTextColor,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-        fillColor: ColorUtil.whiteF8Color,
-        filled: true,
-        isDense: true,
-      ),
-      onChanged: (text) {
-        _commentLengthIndicator = '${text.characters.length}/200';
-        setState(() {});
-      },
-      enabled: true,
-      minLines: 1,
-      maxLines: 10,
-    );
+    Widget inputField = Consumer<NewFloorProvider>(
+        builder: (_, data, __) => TextField(
+              style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.2).black00,
+              focusNode: context.read<NewFloorProvider>().focusNode,
+              controller: _textEditingController,
+              maxLength: 200,
+              textInputAction: TextInputAction.newline,
+              decoration: InputDecoration(
+                counterText: '',
+                hintText: '回复楼层：' +
+                    context.read<NewFloorProvider>().replyTo.toString(),
+                suffix: Text(
+                  _commentLengthIndicator,
+                  style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                fillColor: ColorUtil.whiteF8Color,
+                filled: true,
+                isDense: true,
+              ),
+              onChanged: (text) {
+                _commentLengthIndicator = '${text.characters.length}/200';
+                setState(() {});
+              },
+              minLines: 1,
+              maxLines: 10,
+            ));
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -542,34 +557,39 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 
   _sendFloor() {
+    ToastProvider.running('创建楼层中 q(≧▽≦q)');
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
-        Provider.of<NewFloorProvider>(context, listen: false).clear();
-        ToastProvider.success("评论成功");
+        FocusManager.instance.primaryFocus.unfocus();
+        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+        _textEditingController.text = '';
+        ToastProvider.success("评论成功 (❁´◡`❁)");
       },
       onFailure: (e) => ToastProvider.error(
-        e.error.toString(),
+        '好像出错了(っ °Д °;)っ...错误信息：' + e.error.toString(),
       ),
     );
   }
 
   _replyFloor() {
+    ToastProvider.running('回复中 q(≧▽≦)/');
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
-        _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
-        Provider.of<NewFloorProvider>(context, listen: false).clear();
-        ToastProvider.success("回复成功");
+        FocusManager.instance.primaryFocus.unfocus();
+        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+        _textEditingController.text = '';
+        ToastProvider.success("回复成功 (❁´3`❁)");
       },
       onFailure: (e) => ToastProvider.error(
-        e.error.toString(),
+        '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
       ),
     );
   }

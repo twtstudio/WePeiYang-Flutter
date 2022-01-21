@@ -225,6 +225,12 @@ class Floor {
         "is_dis": isDis,
         "is_owner": isOwner,
       };
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return toJson().toString();
+  }
 }
 
 class Tag {

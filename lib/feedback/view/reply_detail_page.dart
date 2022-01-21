@@ -40,8 +40,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
   ReplyDetailPageStatus status;
   int index;
-  bool _onTapInputField;
-  int currentPage = 1, _totalPage = 1;
+  int currentPage = 1;
+
   double _previousOffset = 0;
   final launchKey = GlobalKey<_CommentInputFieldState>();
 
@@ -50,42 +50,41 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   _ReplyDetailPageState();
 
   _onRefresh() {
+    currentPage = 1;
+    _refreshController.resetNoData();
     _initComment(
-      onResult: (comments) {
-        widget.floor.subFloors = comments;
-        _refreshController.refreshCompleted();
-      },
-      onFail: () {
-        _refreshController.refreshFailed();
-      },
-      page: 0
-    );
+        onResult: (comments) {
+          widget.floor.subFloors = comments;
+          _refreshController.refreshCompleted();
+        },
+        onFail: () {
+          _refreshController.refreshFailed();
+        },
+        page: 0);
   }
 
   _onLoading() {
-    if (currentPage != _totalPage) {
-      currentPage++;
-      _initComment(onResult: (comments) {
-        widget.floor.subFloors.addAll(comments);
-        _refreshController.loadComplete();
-      }, onFail: () {
-        _refreshController.loadFailed();
-      }, page: currentPage);
-    } else {
-      _refreshController.loadNoData();
-    }
-  }
-
-  _setOnTapInputField() {
-    setState(() {
-      _onTapInputField = !_onTapInputField;
-    });
+    currentPage++;
+    _initComment(
+        onResult: (comments) {
+          if (comments.length == 0) {
+            _refreshController.loadNoData();
+            currentPage--;
+          } else {
+            widget.floor.subFloors.addAll(comments);
+            _refreshController.loadComplete();
+          }
+        },
+        onFail: () {
+          _refreshController.loadFailed();
+        },
+        page: currentPage);
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_onTapInputField == true &&
-        scrollInfo.metrics.pixels - _previousOffset <= 20) {
-      _setOnTapInputField();
+    if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+        scrollInfo.metrics.pixels - _previousOffset >= 20) {
+      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
   }
@@ -93,25 +92,28 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   @override
   void initState() {
     super.initState();
-    _onTapInputField = false;
     status = ReplyDetailPageStatus.loading;
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _initComment(onResult: (comments) {
-        widget.floor.subFloors.addAll(comments);
-        setState(() {
-          status = ReplyDetailPageStatus.idle;
-        });
-      }, onFail: () {
-        setState(() {
-          status = ReplyDetailPageStatus.idle;
-        });
-      },
-      page: 0
-      );
+      _initComment(
+          onResult: (comments) {
+            widget.floor.subFloors.addAll(comments);
+            setState(() {
+              status = ReplyDetailPageStatus.idle;
+            });
+          },
+          onFail: () {
+            setState(() {
+              status = ReplyDetailPageStatus.error;
+            });
+          },
+          page: 0);
     });
   }
 
-  Future<bool> _initComment({Function(List<Floor>) onResult, Function onFail, int page}) async {
+  Future<bool> _initComment(
+      {Function(List<Floor>) onResult, Function onFail, int page}) async {
     bool success = false;
     FeedbackService.getFloorReplyById(
       floorId: widget.floor.id,
@@ -142,7 +144,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         launchKey.currentState.send();
         setState(() {
           _onRefresh();
-          _onTapInputField = false;
         });
       },
       child: Padding(
@@ -151,11 +152,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             width: 20),
       ),
     );
-    Widget mainList1 = ListView(children: [NCommentCard(
-      comment: widget.floor,
-      isSubFloor: false,
-      isFullView: true
-    )]);
+    Widget mainList1 = ListView(children: [
+      NCommentCard(comment: widget.floor, isSubFloor: false, isFullView: true)
+    ]);
 
     Widget mainList = Expanded(
       child: NotificationListener<ScrollNotification>(
@@ -181,7 +180,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     body = Column(
       children: [
         mainList,
-        AnimatedSize(
+        Consumer<NewFloorProvider>(
+        builder: (BuildContext context, value, Widget child) {
+      return AnimatedSize(
           vsync: this,
           duration: Duration(milliseconds: 450),
           curve: Curves.easeInOutCubic,
@@ -205,12 +206,22 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: _onTapInputField
-                          ? Column(
-                              children: [inputField, checkButton],
-                            )
-                          : InkWell(
-                              onTap: () => _setOnTapInputField(),
+                      child: Column(
+                        children: [
+                          Offstage(
+                              offstage: !value.inputFieldEnabled,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [inputField, checkButton],
+                              )),
+                          Offstage(
+                            offstage: value.inputFieldEnabled,
+                            child: InkWell(
+                              onTap: () {
+                                Provider.of<NewFloorProvider>(context,
+                                    listen: false)
+                                    .inputFieldOpenAndReplyTo(widget.floor.id);
+                              },
                               child: Container(
                                   height: 22,
                                   margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
@@ -227,20 +238,18 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                     color: Colors.white,
                                   )),
                             ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                if (_onTapInputField &&
-                    context.watch<NewFloorProvider>().replyTo == 0)
-                  Column(
-                    children: [
-                      ImagesGridView(),
-                    ],
-                  )
+                if (context.read<NewFloorProvider>().inputFieldEnabled)
+                  ImagesGridView()
               ],
             ),
           ),
-        ),
+        );})
       ],
     );
 
@@ -251,9 +260,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       onPressed: () {
         showMenu(
           context: context,
+
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-          // TODO 高度还需要 MediaQuery.of(context).padding.top 吗？
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
@@ -298,6 +307,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         return true;
       },
       child: Scaffold(
+        backgroundColor: ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),
@@ -329,10 +339,10 @@ class _CommentInputFieldState extends State<CommentInputField> {
 
   void send() {
     if (_textEditingController.text.isNotEmpty) {
-        _replyFloor();
-    }
-    Provider.of<NewFloorProvider>(context, listen: false)
-        .inputFieldClose();
+      _replyFloor();
+    } else
+      ToastProvider.error('文字不能为空哦');
+    Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
   }
 
   @override
@@ -345,7 +355,8 @@ class _CommentInputFieldState extends State<CommentInputField> {
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
         counterText: '',
-        hintText: S.current.feedback_write_comment,
+        hintText:
+            '回复楼层：' + context.watch<NewFloorProvider>().replyTo.toString(),
         suffix: Text(
           _commentLengthIndicator,
           style: FontManager.YaHeiRegular.copyWith(
@@ -377,19 +388,20 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 
   _replyFloor() {
+    ToastProvider.running('回复中 q(≧▽≦)/');
     FeedbackService.replyFloor(
-      id: context.read<NewFloorProvider>().replyTo,
+      id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
       images: context.read<NewFloorProvider>().images,
       onSuccess: () {
-        print('11451419198101145141919810');
-        _textEditingController.text = '';
         setState(() => _commentLengthIndicator = '0/200');
-        Provider.of<NewFloorProvider>(context, listen: false).clear();
-        ToastProvider.success("评论成功");
+        FocusManager.instance.primaryFocus.unfocus();
+        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+        _textEditingController.text = '';
+        ToastProvider.success("回复成功 (❁´3`❁)");
       },
       onFailure: (e) => ToastProvider.error(
-        e.error.toString(),
+        '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
       ),
     );
   }

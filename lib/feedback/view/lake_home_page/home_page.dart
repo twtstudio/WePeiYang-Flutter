@@ -329,8 +329,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           enablePullDown: true,
           onRefresh: onRefresh,
           footer: ClassicFooter(
-            idleIcon: Icon(Icons.check, color: Colors.grey),
-            idleText: "你翻到了青年湖底！",
           ),
           enablePullUp: !model.isLastPage,
           onLoading: _onLoading,
@@ -654,6 +652,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             return Stack(
               alignment: AlignmentDirectional.center,
               children: [
+                Container(color: ColorUtil.backgroundColor),
                 Padding(
                     padding: EdgeInsets.zero,
                     child: ExtendedTabBarView(

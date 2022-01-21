@@ -46,26 +46,26 @@ class NewPostProvider {
   }
 }
 
-// class ReloadProvider with ChangeNotifier{
-//
-// }
-
 class NewFloorProvider extends ChangeNotifier {
   int replyTo = 0;
   List<File> images = [];
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
-  void inputFieldOpen() {
+  void inputFieldOpenAndReplyTo(int rep) {
     inputFieldEnabled = true;
-      notifyListeners();
+    replyTo = rep;
+    notifyListeners();
     }
   void inputFieldClose() {
     inputFieldEnabled = false;
     notifyListeners();
   }
-  void clear() {
+  void clearAndClose() {
+    focusNode.unfocus();
+    inputFieldEnabled = false;
     replyTo = 0;
     images = [];
+    notifyListeners();
   }
 }
 
