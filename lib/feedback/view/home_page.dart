@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -17,7 +18,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_type_
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key key}) : super(key: key);
@@ -73,11 +73,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   getClipboardWeKoContents() async {
     ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
     if (clipboardData != null && clipboardData.text.trim() != '') {
-      String weCo = clipboardData.text.trim();
+      String weKo = clipboardData.text.trim();
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
-      if (regExp.hasMatch(weCo)) {
-        var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if(!Provider.of<MessageProvider>(context, listen: false).feedbackHasViewed.contains(id)){
+      if (regExp.hasMatch(weKo)) {
+        var id = RegExp(r'\d{1,}').stringMatch(weKo);
+        if(CommonPreferences().feedbackLastWeKo.value != id){
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -93,9 +93,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 ).then((confirm) {
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    CommonPreferences().feedbackLastWeKo.value = id;
                   } else {
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    CommonPreferences().feedbackLastWeKo.value = id;
                   }
                 });
               },

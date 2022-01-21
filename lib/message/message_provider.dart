@@ -8,7 +8,6 @@ class MessageProvider extends ChangeNotifier {
   List<MessageDataItem> _feedbackQuestions = [];
   List<MessageDataItem> _feedbackFavourites = [];
   List<int> _feedbackMessageList = [];
-  List<String> _feedbackHasViewed = [];///是否查看过微口令
   String _messageData;
   ClassifiedCount _classifiedMessageCount;
 
@@ -18,19 +17,12 @@ class MessageProvider extends ChangeNotifier {
 
   List<int> get feedbackMessageList => _feedbackMessageList;
 
-  List<String> get feedbackHasViewed => _feedbackHasViewed;
-
   ClassifiedCount get classifiedMessageCount => _classifiedMessageCount;
 
   bool get isEmpty =>
       (feedbackFs?.length ?? 0) + (feedbackQs?.length ?? 0) == 0;
 
   String get messageData => _messageData;
-
-  setFeedbackWeKoHasViewed(String postId) {
-    _feedbackHasViewed.add(postId);
-    notifyListeners();
-  }
 
   refreshFeedbackCount() async {
     var result = await MessageService.getAllMessages() ?? TotalMessageData();
