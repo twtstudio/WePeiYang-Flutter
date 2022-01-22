@@ -2,9 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -87,9 +91,13 @@ class _NewPostPageState extends State<NewPostPage> {
                         SizedBox(height: 10),
                         ImagesGridView(),
                         SizedBox(height: 20),
-                        CampusSelector(campusNotifier),
-                        SizedBox(height: 10),
-                        SubmitButton(campusNotifier, postTypeNotifier),
+                        Row(
+                          children: [
+                            Spacer(),
+                            CampusSelector(campusNotifier),
+                            SubmitButton(campusNotifier, postTypeNotifier),
+                          ],
+                        ),
                       ]))
             ]));
   }
@@ -236,11 +244,7 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     timeDilation = 1.5;
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Spacer(),
+    return
         Hero(
           tag: "addNewPost",
           child: ElevatedButton(
@@ -263,9 +267,7 @@ class SubmitButton extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ],
-    );
+        );
   }
 }
 
@@ -292,34 +294,9 @@ class _TagViewState extends State<TagView> {
 
   }
 
-  _showTags(BuildContext context) async {
-    var result = await showModalBottomSheet<Department>(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => TabGridView(
-        department: department.value,
-      ),
-    );
-    if (result != null) department.value = result;
-  }
   @override
   Widget build(BuildContext context) {
-    var text = ValueListenableBuilder(
-      valueListenable: department,
-      builder: (_, Department tag, __) {
-        return Text(
-          tag == null
-              ? S.current.feedback_add_tag_hint
-              : '#${tag.name} ${S.current.feedback_change_tag_hint}',
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: ColorUtil.boldTextColor,
-          ),
-        );
-      },
-    );
+
     final notifier = context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     return ValueListenableBuilder<PostType>(
         valueListenable: notifier,
@@ -332,12 +309,9 @@ class _TagViewState extends State<TagView> {
           ),
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
-          child: notifier.value==PostType.feedback?InkResponse(
-            radius: 16,
-            onTap: () => _showTags(context),
-            child: Row(
-              children: [text, Spacer(), Icon(Icons.tag)],
-            ),
+          child: notifier.value==PostType.feedback?
+          TabGridView(
+            department: department.value,
           ) : SearchTagCard(),
         );
       }
@@ -362,53 +336,107 @@ class _CampusSelectorState extends State<CampusSelector> {
     return ValueListenableBuilder(
       valueListenable: widget.campusNotifier,
       builder: (context, value, _) {
-        return SizedBox(
-          height: 32,
-          child: ListView.builder(
-            itemCount: 3,
-            scrollDirection: Axis.horizontal,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return SizedBox(
-                height: 32,
-                width: (WePeiYangApp.screenWidth - 100) / 3,
-                child: ElevatedButton(
-                  child: Text(
-                    texts[index],
-                    style: FontManager.YaHeiRegular.copyWith(
-                      color:
-                          value == index ? Colors.white : ColorUtil.mainColor,
-                      fontSize: 14,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 1,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: _judgeBorder(index)),
-                      primary:
-                          value == index ? ColorUtil.mainColor : Colors.white),
-                  onPressed: () {
-                    widget.campusNotifier.value = index;
-                  },
-                ),
-              );
-            },
+        return PopupMenuButton(
+          padding: EdgeInsets.zero,
+          shape:RacTangle() ,
+          offset: Offset(
+            -120,-89
           ),
+          tooltip: "校区",
+          child:   Row(
+            children: [
+              SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/map.svg",
+                width: ScreenUtil().setWidth(12),
+              ),
+              SizedBox(width: ScreenUtil().setWidth(8.5)),
+              Text(texts[value],style: TextUtil.base.sp(9).w400.NotoSansSC.normal,),
+              SizedBox(width: ScreenUtil().setWidth(12)),
+            ],
+          ),
+          //1-->时间排序，2-->动态排序
+          onSelected: (value) {
+            widget.campusNotifier.value = value;
+          },
+          itemBuilder: (context) {
+            return <PopupMenuEntry<int>>[
+              PopupMenuItem<int>(
+                height: ScreenUtil().setHeight(30),
+                value: 0,
+                child: Center(
+                  child: Text(
+                   texts[0],
+                    style: TextUtil.base.w400.medium.NotoSansSC.sp(12),
+                  ),
+                ),
+              ),
+              PopupMenuItem<int>(
+                height: ScreenUtil().setHeight(30),
+                value: 1,
+                child: Center(child: Text(texts[1],style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
+              ),
+              PopupMenuItem<int>(
+                height: ScreenUtil().setHeight(30),
+                value: 2,
+                child: Center(child: Text(texts[2],style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
+              ),
+            ];
+          },
         );
       },
     );
   }
-
-  BorderRadius _judgeBorder(int index) {
-    if (index == 0)
-      return BorderRadius.horizontal(left: Radius.circular(12));
-    else if (index == 2)
-      return BorderRadius.horizontal(right: Radius.circular(12));
-    else
-      return BorderRadius.zero;
-  }
 }
+class RacTangle extends ShapeBorder {
+  @override
+  // ignore: missing_return
+  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
+    return null;
+  }
 
+  @override
+  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
+    var path = Path();
+    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(20)));
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
+    var paint = Paint()
+      ..color = Colors.transparent
+      ..strokeWidth = 12.0
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round;
+    var w = rect.width;
+    var d = rect.height;
+    var tang = Paint()
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.square
+      ..color = Colors.white
+      ..strokeWidth = 5;
+    //var h = rect.height;
+    canvas.drawLine(Offset(w, 0), Offset(w, 40), paint);
+    canvas.drawLine(Offset(w, 40), Offset(w+4, 45), tang);
+    canvas.drawLine(Offset(w+4, 45), Offset(w, 50), tang);
+    canvas.drawLine(Offset(w, 50), Offset(w,d), paint);
+    Rect rect1 = Rect.fromCircle(
+        center: Offset(w / 2, d / 2), radius: 140);
+    Rect rect2 = Rect.fromCircle(
+        center: Offset(w / 2, d / 2), radius: 160);
+    RRect rRect1 = RRect.fromRectAndRadius(rect1, Radius.circular(20));
+    RRect rRect2 = RRect.fromRectAndRadius(rect2, Radius.circular(20));
+    canvas.drawDRRect(rRect2, rRect1, paint);
+  }
+
+  @override
+  ShapeBorder scale(double t) {
+    return null;
+  }
+
+  @override
+  EdgeInsetsGeometry get dimensions => null;
+}
 class ConfirmButton extends StatelessWidget {
   final VoidCallback onPressed;
 

@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -32,7 +33,6 @@ class SearchTagCard extends StatefulWidget {
 
 class _SearchTagCardState extends State<SearchTagCard> {
   final TextEditingController _controller = TextEditingController();
-  ValueNotifier<int> notifier;
   Tag tag = Tag();
   _SearchTagCardState();
 
@@ -43,10 +43,6 @@ class _SearchTagCardState extends State<SearchTagCard> {
     _controller.addListener(() {
       refreshSearchTag(_controller.text);
     });
-   var dataModel = context.read<NewPostProvider>();
-   notifier=ValueNotifier(0)..addListener(() {
-     dataModel.tag.id = tag.id;
-   });
 
   }
 
@@ -156,13 +152,13 @@ class _SearchTagCardState extends State<SearchTagCard> {
                           await FeedbackService.postTags(
                             name: _controller.text,
                             onSuccess: (tags) {
-                              context.read<NewPostProvider>().tag.id = tags.id;
-                              notifier.value ++;
+                              context.read<NewPostProvider>().tag = Tag(
+                                  id:tags.id);
                               ToastProvider.success("成功添加“${_controller.text}”话题");
                             },
                             onFailure: (tags) {
-                              context.read<NewPostProvider>().tag.id = tags.id;
-                              notifier.value ++;
+                              context.read<NewPostProvider>().tag = Tag(
+                                  id:tags.id);
                               ToastProvider.error("该标签已存在或违规");
                             },
                           );
@@ -177,7 +173,7 @@ class _SearchTagCardState extends State<SearchTagCard> {
                               ),
                               SizedBox(width: 5),
                               SizedBox(
-                                  width: 250,
+                                  width: ScreenUtil().setWidth(230),
                                   child: Text(
                                     "添加“${_controller.text}”话题",
                                     style: TextUtil.base.w400.NotoSansSC
