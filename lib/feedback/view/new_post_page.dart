@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -39,11 +38,7 @@ class _NewPostPageState extends State<NewPostPage> {
       centerTitle: true,
       title: Text(
         S.current.feedback_new_post,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: ColorUtil.boldTextColor,
-        ),
+        style: TextUtil.base.NotoSansSC.w500.sp(18).black2A,
       ),
       brightness: Brightness.light,
       elevation: 0,
@@ -103,29 +98,24 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 }
 
-enum PostType{
-  lake,
-  feedback
-}
+enum PostType { lake, feedback }
 
-extension PostTypeExt on PostType{
+extension PostTypeExt on PostType {
   int get value => [0, 1][index];
 
   String get title => ["青年湖底", "校务专区"][index];
 }
 
-
 class LakeSelector extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => LakeSelectorState();
 }
 
 class LakeSelectorState extends State<LakeSelector> {
-
   @override
   Widget build(BuildContext context) {
-    final notifier = context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    final notifier =
+        context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     return ValueListenableBuilder<PostType>(
       valueListenable: notifier,
       builder: (context, type, _) {
@@ -146,15 +136,9 @@ class LakeSelectorState extends State<LakeSelector> {
                     children: [
                       Text(
                         PostType.values[index].title,
-                        style: FontManager.YaHeiRegular.copyWith(
-                          color: type.value == index
-                              ? ColorUtil.boldTextColor
-                              : ColorUtil.lightTextColor,
-                          fontWeight: type.value == index
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          fontSize: 15,
-                        ),
+                        style: type.value == index
+                            ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
+                            : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -197,15 +181,15 @@ class LakeSelectorState extends State<LakeSelector> {
 class SubmitButton extends StatelessWidget {
   final ValueNotifier campusNotifier, postTypeNotifier;
 
-  const SubmitButton(this.campusNotifier, this.postTypeNotifier, {Key key}) : super(key: key);
+  const SubmitButton(this.campusNotifier, this.postTypeNotifier, {Key key})
+      : super(key: key);
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
     if (dataModel.check) {
       postTypeNotifier.value == PostType.feedback
-          ?
-          FeedbackService.sendPost(
+          ? FeedbackService.sendPost(
               type: PostType.feedback.value,
               title: dataModel.title,
               content: dataModel.content,
@@ -244,30 +228,23 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     timeDilation = 1.5;
-    return
-        Hero(
-          tag: "addNewPost",
-          child: ElevatedButton(
-            style: ButtonStyle(
-              elevation: MaterialStateProperty.all(1),
-              backgroundColor: MaterialStateProperty.all(ColorUtil.mainColor),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            onPressed: () => submit(context),
-            child: Text(
-              S.current.feedback_submit,
-              style: FontManager.YaHeiRegular.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ColorUtil.backgroundColor,
-                fontSize: 14,
-              ),
+    return Hero(
+      tag: "addNewPost",
+      child: ElevatedButton(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all(1),
+          backgroundColor: MaterialStateProperty.all(ColorUtil.mainColor),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
-        );
+        ),
+        onPressed: () => submit(context),
+        child: Text(S.current.feedback_submit,
+            style: TextUtil.base.NotoSansSC.w500.sp(14).white),
+      ),
+    );
   }
 }
 
@@ -291,31 +268,30 @@ class _TagViewState extends State<TagView> {
       ..addListener(() {
         dataModel.department = department.value;
       });
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final notifier = context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    final notifier =
+        context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     return ValueListenableBuilder<PostType>(
         valueListenable: notifier,
         builder: (context, type, _) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            shape: BoxShape.rectangle,
-          ),
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.fromLTRB(22, 18, 22, 16),
-          child: notifier.value==PostType.feedback?
-          TabGridView(
-            department: department.value,
-          ) : SearchTagCard(),
-        );
-      }
-    );
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              shape: BoxShape.rectangle,
+            ),
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.fromLTRB(22, 0, 22, 16),
+            child: notifier.value == PostType.feedback
+                ? TabGridView(
+                    department: department.value,
+                  )
+                : SearchTagCard(),
+          );
+        });
   }
 }
 
@@ -338,19 +314,20 @@ class _CampusSelectorState extends State<CampusSelector> {
       builder: (context, value, _) {
         return PopupMenuButton(
           padding: EdgeInsets.zero,
-          shape:RacTangle() ,
-          offset: Offset(
-            -120,-89
-          ),
+          shape: RacTangle(),
+          offset: Offset(-120, -89),
           tooltip: "校区",
-          child:   Row(
+          child: Row(
             children: [
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: ScreenUtil().setWidth(12),
               ),
               SizedBox(width: ScreenUtil().setWidth(8.5)),
-              Text(texts[value],style: TextUtil.base.sp(9).w400.NotoSansSC.normal,),
+              Text(
+                texts[value],
+                style: TextUtil.base.sp(9).w400.NotoSansSC.normal,
+              ),
               SizedBox(width: ScreenUtil().setWidth(12)),
             ],
           ),
@@ -365,7 +342,7 @@ class _CampusSelectorState extends State<CampusSelector> {
                 value: 0,
                 child: Center(
                   child: Text(
-                   texts[0],
+                    texts[0],
                     style: TextUtil.base.w400.medium.NotoSansSC.sp(12),
                   ),
                 ),
@@ -373,12 +350,16 @@ class _CampusSelectorState extends State<CampusSelector> {
               PopupMenuItem<int>(
                 height: ScreenUtil().setHeight(30),
                 value: 1,
-                child: Center(child: Text(texts[1],style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
+                child: Center(
+                    child: Text(texts[1],
+                        style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
               ),
               PopupMenuItem<int>(
                 height: ScreenUtil().setHeight(30),
                 value: 2,
-                child: Center(child: Text(texts[2],style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
+                child: Center(
+                    child: Text(texts[2],
+                        style: TextUtil.base.w400.medium.NotoSansSC.sp(12))),
               ),
             ];
           },
@@ -387,6 +368,7 @@ class _CampusSelectorState extends State<CampusSelector> {
     );
   }
 }
+
 class RacTangle extends ShapeBorder {
   @override
   // ignore: missing_return
@@ -417,13 +399,11 @@ class RacTangle extends ShapeBorder {
       ..strokeWidth = 5;
     //var h = rect.height;
     canvas.drawLine(Offset(w, 0), Offset(w, 40), paint);
-    canvas.drawLine(Offset(w, 40), Offset(w+4, 45), tang);
-    canvas.drawLine(Offset(w+4, 45), Offset(w, 50), tang);
-    canvas.drawLine(Offset(w, 50), Offset(w,d), paint);
-    Rect rect1 = Rect.fromCircle(
-        center: Offset(w / 2, d / 2), radius: 140);
-    Rect rect2 = Rect.fromCircle(
-        center: Offset(w / 2, d / 2), radius: 160);
+    canvas.drawLine(Offset(w, 40), Offset(w + 4, 45), tang);
+    canvas.drawLine(Offset(w + 4, 45), Offset(w, 50), tang);
+    canvas.drawLine(Offset(w, 50), Offset(w, d), paint);
+    Rect rect1 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 140);
+    Rect rect2 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 160);
     RRect rRect1 = RRect.fromRectAndRadius(rect1, Radius.circular(20));
     RRect rRect2 = RRect.fromRectAndRadius(rect2, Radius.circular(20));
     canvas.drawDRRect(rRect2, rRect1, paint);
@@ -436,31 +416,6 @@ class RacTangle extends ShapeBorder {
 
   @override
   EdgeInsetsGeometry get dimensions => null;
-}
-class ConfirmButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const ConfirmButton({Key key, this.onPressed}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      style: ButtonStyle(
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        minimumSize: MaterialStateProperty.all(Size(0, 0)),
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        S.current.feedback_ok,
-        style: FontManager.YaHeiRegular.copyWith(
-          color: Color(0xff303c66),
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
 }
 
 class TitleInputField extends StatefulWidget {
@@ -497,19 +452,11 @@ class _TitleInputFieldState extends State<TitleInputField> {
         controller: _titleController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        style: FontManager.YaHeiRegular.copyWith(
-          color: ColorUtil.boldTextColor,
-          fontWeight: FontWeight.w900,
-          fontSize: 16,
-        ),
+        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
         minLines: 1,
         maxLines: 10,
         decoration: InputDecoration.collapsed(
-          hintStyle: FontManager.YaHeiRegular.copyWith(
-            color: ColorUtil.searchBarIconColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
           hintText: S.current.feedback_enter_title,
         ),
         onChanged: (text) {
@@ -523,16 +470,10 @@ class _TitleInputFieldState extends State<TitleInputField> {
       ),
     );
 
-    Widget rightTextCounter = ValueListenableBuilder(
+    Widget textCounter = ValueListenableBuilder(
       valueListenable: titleCounter,
       builder: (_, String value, __) {
-        return Text(
-          value,
-          style: FontManager.YaHeiRegular.copyWith(
-            color: Color(0xffd0d1d6),
-            fontSize: 12,
-          ),
-        );
+        return Text(value, style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
       },
     );
 
@@ -546,7 +487,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
       padding: const EdgeInsets.fromLTRB(22, 15, 22, 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: [inputField, SizedBox(width: 3), rightTextCounter],
+        children: [inputField, SizedBox(width: 3), textCounter],
       ),
     );
   }
@@ -566,10 +507,11 @@ class _ContentInputFieldState extends State<ContentInputField> {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     _contentController = TextEditingController(text: dataModel.content);
-    contentCounter = ValueNotifier('${dataModel.content.characters.length}/200')
-      ..addListener(() {
-        dataModel.content = _contentController.text;
-      });
+    contentCounter =
+        ValueNotifier('${dataModel.content.characters.length}/1000')
+          ..addListener(() {
+            dataModel.content = _contentController.text;
+          });
   }
 
   @override
@@ -585,26 +527,18 @@ class _ContentInputFieldState extends State<ContentInputField> {
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,
       minLines: 1,
-      maxLines: 22,
-      style: FontManager.YaHeiRegular.copyWith(
-          color: ColorUtil.boldTextColor,
-          letterSpacing: 0.9,
-          fontWeight: FontWeight.w700,
-          height: 1.6,
-          fontSize: 15),
+      maxLines: 100 ,
+      style: TextUtil.base.NotoSansSC.w500.sp(18).h(1.4).black2A,
       decoration: InputDecoration.collapsed(
-        hintStyle: FontManager.YaHeiRegular.copyWith(
-          color: Color(0xffd0d1d6),
-          fontWeight: FontWeight.w900,
-          fontSize: 16,
-        ),
+        hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
         hintText: '${S.current.feedback_detail}...',
       ),
       onChanged: (text) {
-        contentCounter.value = '${text.characters.length}/200';
+        contentCounter.value = '${text.characters.length}/1000';
       },
+      scrollPhysics: NeverScrollableScrollPhysics(),
       inputFormatters: [
-        CustomizedLengthTextInputFormatter(200),
+        CustomizedLengthTextInputFormatter(1000),
       ],
       cursorColor: ColorUtil.profileBackgroundColor,
     );
@@ -612,20 +546,24 @@ class _ContentInputFieldState extends State<ContentInputField> {
     Widget bottomTextCounter = ValueListenableBuilder(
       valueListenable: contentCounter,
       builder: (_, String value, __) {
-        return Text(
-          value,
-          style: FontManager.YaHeiRegular.copyWith(
-            color: Color(0xffd0d1d6),
-            fontSize: 12,
-          ),
-        );
+        return Text(value, style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
       },
     );
 
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      children: [inputField, SizedBox(height: 100), bottomTextCounter],
+      children: [
+        Container(
+            constraints: BoxConstraints(
+                minHeight: WePeiYangApp.screenHeight > 800
+                    ? WePeiYangApp.screenHeight - 600
+                    : 200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [inputField, SizedBox(height: 20), bottomTextCounter],
+            )),
+      ],
     );
   }
 }
@@ -652,11 +590,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        titleTextStyle: FontManager.YaHeiRegular.copyWith(
-            color: Color.fromRGBO(79, 88, 107, 1.0),
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            decoration: TextDecoration.none),
+        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
         title: Text(S.current.feedback_delete_image_content),
         actions: [
           TextButton(

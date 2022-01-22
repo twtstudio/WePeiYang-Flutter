@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-
-import '../../../../main.dart';
 
 class TabGridView extends StatefulWidget {
   final Department department;
@@ -32,20 +30,21 @@ class _TabGridViewState extends State<TabGridView>
   @override
   Widget build(BuildContext context) {
     //设计图里没有发送按键，删了
-
     var tagsWrap = Consumer<FbTagsProvider>(
       builder: (_, data, __) => Wrap(
         alignment: WrapAlignment.start,
-        spacing: 10,
-        children: List.generate(data.departmentList.length, (index) {
+        spacing: 6,
+        children: List.generate(data.departmentList.length,
+                (index) {
           return _tagButton(data.departmentList[index]);
         }),
       ),
     );
 
     return Container(
+      clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(
-          maxHeight: WePeiYangApp.screenHeight - WePeiYangApp.paddingTop),
+          maxHeight: 240),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(
@@ -53,8 +52,9 @@ class _TabGridViewState extends State<TabGridView>
         ),
       ),
       child: ListView(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 25),
+        padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
         shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
         children: [tagsWrap],
       ),
     );
@@ -83,11 +83,9 @@ class _TabGridViewState extends State<TabGridView>
         backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           tag.name,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: chose ? Colors.white : Color(0xff62677c),
-          ),
+          style: chose ? TextUtil.base.white.NotoSansSC.w400.sp(11) : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
         ),
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {
           if (chose == false) {
             setState(() {
