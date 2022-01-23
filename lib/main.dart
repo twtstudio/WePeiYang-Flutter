@@ -6,13 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-
+import 'package:we_pei_yang_flutter/commons/hotfix/hotfix_message_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -24,6 +27,7 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
@@ -86,12 +90,14 @@ class WePeiYangApp extends StatefulWidget {
 }
 
 final messageChannel = MethodChannel('com.twt.service/message');
+final pushChannel = MethodChannel('com.twt.service/push');
 
 class IntentEvent {
   static const FeedbackPostPage = 1;
   static const WBYPushOnlyText = 2;
   static const WBYPushHtml = 3;
   static const SchedulePage = 4;
+  static const UpdateDialog = 5;
   static const NoSuchEvent = -1;
 }
 
@@ -129,27 +135,42 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   checkEventList() async {
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
-    await messageChannel?.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+    await messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+      debugPrint('resume -----------$eventMap--------- resume');
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
-          // TODO: 传入id ,等更新完项目之后
-          Navigator.pushNamed(baseContext, FeedbackRouter.detail,
-              arguments: Post.nullExceptId(eventMap['data']));
+          Navigator.pushNamed(
+            baseContext,
+            FeedbackRouter.detail,
+            arguments: Post.nullExceptId(eventMap['data']),
+          );
           break;
         case IntentEvent.WBYPushOnlyText:
           String content = eventMap['data'];
           showDialog(content);
           break;
         case IntentEvent.WBYPushHtml:
+          final data = eventMap['data'] as Map;
+          Navigator.pushNamed(
+            baseContext,
+            MessageRouter.htmlMailPage,
+            arguments: data,
+          );
           break;
         case IntentEvent.SchedulePage:
           if (!PageStackObserver.pageStack.contains(ScheduleRouter.schedule)) {
             Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
           }
           break;
+        case IntentEvent.UpdateDialog:
+          final data = eventMap['data'] as Map;
+          final versionCode = data['versionCode'] ?? 0;
+          final fixCode = data['fixCode'] ?? 0;
+          final url = data['url'] ?? "";
+          break;
         default:
       }
-});
+    });
   }
 
   showDialog(String content) {
@@ -172,12 +193,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (context) => ExamNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
+        ChangeNotifierProvider(create: (_) => UpdateManager()),
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
-            messageChannel
+            pushChannel
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'refreshFeedbackMessageCount':
@@ -200,7 +222,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [AppRouteAnalysis(), PageStackObserver()],
+          navigatorObservers: [
+            AppRouteAnalysis(),
+            PageStackObserver(),
+            FlutterSmartDialog.observer
+          ],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -221,27 +247,29 @@ class WePeiYangAppState extends State<WePeiYangApp>
           },
           locale: localModel.locale(),
           home: StartUpWidget(),
-          builder: (context, child) {
-            ScreenUtil.init(
-                BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width,
-                    maxHeight: MediaQuery.of(context).size.height),
-                designSize: const Size(390, 844),
-                orientation: Orientation.portrait);
-            TextUtil.init(context);
-            return GestureDetector(
-              child: child,
-              onTapDown: (TapDownDetails details) {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus &&
-                    currentFocus.focusedChild != null) {
-                  FocusManager.instance.primaryFocus.unfocus();
-                }
-              },
-            );
-          }
+          builder: FlutterSmartDialog.init(builder: _builder),
         );
       }),
+    );
+  }
+
+  Widget _builder(BuildContext context, Widget child) {
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: const Size(390, 844),
+        orientation: Orientation.portrait);
+    TextUtil.init(context);
+    return GestureDetector(
+      child: child,
+      onTapDown: (TapDownDetails details) {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
     );
   }
 }

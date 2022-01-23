@@ -1,4 +1,4 @@
-package com.twt.service.message.server
+package com.twt.service.push.server
 
 import okhttp3.Interceptor
 import okhttp3.Request

@@ -1,14 +1,16 @@
+// @dart = 2.12
+
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/async_timer.dart';
 
 /// WePeiYangApp统一使用的toast，共有三种类型
 class ToastProvider with AsyncTimer {
   static success(
     String msg, {
     ToastGravity gravity = ToastGravity.BOTTOM,
-    backgroundColor: const Color.fromRGBO(61, 96, 46, 1.0),
-    textColor: Colors.white,
+    Color backgroundColor: Colors.green,
+    Color textColor: Colors.white,
   }) {
     AsyncTimer.runRepeatChecked(msg, () async {
       print('ToastProvider success: $msg');
@@ -27,7 +29,7 @@ class ToastProvider with AsyncTimer {
       print('ToastProvider error: $msg');
       await Fluttertoast.showToast(
           msg: msg,
-          backgroundColor: const Color.fromRGBO(84, 52, 52, 1.0),
+          backgroundColor: Color.fromRGBO(53, 53, 53, 1),
           gravity: gravity,
           textColor: Colors.white,
           fontSize: 15.0);
@@ -40,7 +42,7 @@ class ToastProvider with AsyncTimer {
       print('ToastProvider running: $msg');
       await Fluttertoast.showToast(
         msg: msg,
-        backgroundColor: const Color.fromRGBO(71, 90, 105, 1.0),
+        backgroundColor: Colors.blue,
         textColor: Colors.white,
         fontSize: 15.0,
         gravity: gravity,

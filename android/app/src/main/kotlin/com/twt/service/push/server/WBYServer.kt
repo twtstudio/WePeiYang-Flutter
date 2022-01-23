@@ -1,4 +1,4 @@
-package com.twt.service.message.server
+package com.twt.service.push.server
 
 import com.twt.service.common.WBYBaseData
 import com.twt.service.common.BaseServer

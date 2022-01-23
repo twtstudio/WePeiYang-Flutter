@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
@@ -7,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 export 'package:dio/dio.dart' show DioError, ResponseType, InterceptorsWrapper;
 export 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
     show WpyDioError;
+export 'async_timer.dart';
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();
@@ -36,6 +39,19 @@ abstract class DioAbstract {
       ..interceptors.addAll(interceptors)
       ..interceptors.add(ErrorInterceptor())
       ..interceptors.add(LogInterceptor(responseBody: responseBody));
+
+    // 不要删除！！！！
+    // 配置 fiddler 代理
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.findProxy = (uri) {
+    //     //proxy all request to localhost:8888
+    //     return 'PROXY 192.168.1.104:8888';
+    //   };
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    //   return client;
+    // };
   }
 }
 
@@ -102,19 +118,6 @@ extension DioRequests on DioAbstract {
       Logger.reportError(error, stack);
       throw error;
     });
-  }
-}
-
-mixin AsyncTimer {
-  static Map<String, bool> _map = {};
-
-  static Future<void> runRepeatChecked<R>(
-      String key, Future<void> body()) async {
-    if (!_map.containsKey(key)) _map[key] = true;
-    if (!_map[key]) return;
-    _map[key] = false;
-    await body();
-    _map[key] = true;
   }
 }
 

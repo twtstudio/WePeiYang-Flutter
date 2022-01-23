@@ -10,11 +10,9 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
-import com.google.gson.Gson
-import com.twt.service.IntentEvent
-import com.twt.service.IntentType
 import com.twt.service.MainActivity
 import com.twt.service.R
+import com.twt.service.common.BASEURL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,8 +36,7 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val intent = Intent(context, MainActivity::class.java)
-            val intentContent = IntentType(type = IntentEvent.SchedulePage.type, data = "schedule")
-            intent.data = Uri.parse(Gson().toJson(intentContent))
+            intent.data = Uri.parse("${BASEURL}schedule")
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             val remoteViews = RemoteViews(context.packageName, R.layout.widget_schedule)
             remoteViews.setOnClickPendingIntent(R.id.widget_framelayout, pendingIntent)
@@ -63,9 +60,10 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
 
             // List部分的点击监听，点击后跳转至Flutter课程表页
             val startActivityIntent = Intent(context, MainActivity::class.java)
-            startActivityIntent.data = Uri.parse(Gson().toJson(intentContent))
+            startActivityIntent.data = Uri.parse("${BASEURL}schedule")
             val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             remoteViews.setPendingIntentTemplate(R.id.widget_listview, startActivityPendingIntent)
+
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }

@@ -1,5 +1,6 @@
 package com.twt.service.common
 
+import androidx.annotation.Keep
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -22,6 +23,7 @@ abstract class BaseServer(baseUrl:String) {
     inline operator fun <reified T> invoke(): T = retrofit.create(T::class.java)
 }
 
+@Keep
 data class WBYBaseData<T>(
         val error_code: Int,
         val message: String,

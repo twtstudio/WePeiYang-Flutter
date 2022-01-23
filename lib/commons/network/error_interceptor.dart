@@ -13,6 +13,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
     else if (e.type == DioErrorType.receiveTimeout)
       e.error = "响应超时";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 500)
+      // TODO: 这里是不是改成 连接不到服务器 ？
       e.error = "网络连接发生了未知错误";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 401)
       e.error = "密码或验证码输入错误";
