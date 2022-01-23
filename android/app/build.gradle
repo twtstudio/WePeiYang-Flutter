@@ -69,6 +69,9 @@ android {
                 VIVO_APP_ID     : "105266463",
                 VIVO_APP_KEY    : "40e5b229553e31f1842b80915781e2e8",
 
+                OPPO_APP_KEY   : "7cuaXvykA58gkOW4c4oGkG8o0",
+                OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
+
                 // 移除 Gradle 中 GETUI_APP_KEY、GETUI_APP_SECRET、配置，GETUI_APP_ID 改为 GETUI_APPID, AndroidManifest 中仅保留 GETUI_APPID 占位符。
                 // project
 //                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",

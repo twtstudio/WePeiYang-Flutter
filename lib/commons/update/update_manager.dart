@@ -143,9 +143,11 @@ class UpdateManager extends ChangeNotifier {
       },
       success: (task) async {
         if (task.fileName == version.apkName) {
+          debugPrint('123123123');
           progress = 1.0;
           state = UpdateState.load;
           await Future.delayed(const Duration(seconds: 1));
+          cancelDialog(DialogTag.apk);
           SmartDialog.show(
             clickBgDismissTemp: false,
             backDismiss: false,
@@ -156,7 +158,6 @@ class UpdateManager extends ChangeNotifier {
               progress = 0;
             },
           );
-          cancelDialog(DialogTag.apk);
         }
       },
       running: (task, p) {

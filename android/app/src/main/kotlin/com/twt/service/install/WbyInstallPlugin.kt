@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -38,21 +39,23 @@ class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activit
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "install" -> {
-                val path = call.argument<String>("path")
-                if (path == null) {
+                val apkName = call.argument<String>("apkName")
+                if (apkName == null) {
                     result.error(NO_PATH_ERROR, "no path", "")
                 } else {
                     methodCall = result
-                    installAPK(path)
+                    installAPK(apkName)
                 }
             }
             else -> result.notImplemented()
         }
     }
 
-    private fun installAPK(path: String) {
+    private fun installAPK(apkName: String) {
         try {
-            resultFile = File(path)
+            val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                ?: throw Exception("can't find download dir")
+            resultFile = File(dir.path + File.separator + "apk" + File.separator + apkName)
             activityBinding.addActivityResultListener(this)
             installApkWithSdkVersion()
         } catch (e: Exception) {

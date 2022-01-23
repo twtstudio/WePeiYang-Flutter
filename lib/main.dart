@@ -158,10 +158,11 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
           }
           break;
         case IntentEvent.UpdateDialog:
-          final data = eventMap['data'] as Map;
-          final versionCode = data['versionCode'] ?? 0;
-          final fixCode = data['fixCode'] ?? 0;
-          final url = data['url'] ?? "";
+          // final data = eventMap['data'] as Map;
+          // final versionCode = data['versionCode'] ?? 0;
+          // final fixCode = data['fixCode'] ?? 0;
+          // final url = data['url'] ?? "";
+          // TODO
           break;
         default:
       }

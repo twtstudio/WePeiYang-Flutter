@@ -30,7 +30,7 @@ class _UpdateInstallDialogState extends UpdateDialogState<UpdateInstallDialog> {
 
   @override
   void okButtonTap() {
-    InstallUtil.install(version.path);
+    InstallUtil.install(version.apkName);
   }
 
   @override
