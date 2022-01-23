@@ -37,11 +37,13 @@ object WbySharePreference {
     var fixSo: String?
         get() {
             fixSoSharedPreferences?.let { pref ->
+                Log.d("WBY_SP", pref.all.toString())
                 pref.getString(fixSoKey, null)
                     ?.split(listSplit)?.forEach { path ->
                         // 保证.so文件上次运行时没发生问题，如果发生了问题就换下一个
                         val file = File(path)
                         val canUse = pref.getBoolean(path, false)
+                        Log.d("WBY_SP", "$path  $canUse")
                         if (canUse && file.exists() && file.extension == "so") {
                             pref.edit().let {
                                 it.putBoolean(path, false)
@@ -66,7 +68,7 @@ object WbySharePreference {
                 }
             }?.let { path ->
                 fixSoSharedPreferences?.let { pref ->
-                    pref.getString(fixSoKey, null)
+                    pref.getString(fixSoKey, "")
                         ?.takeIf { !it.contains(path) }
                         ?.let { list ->
                             pref.edit()?.let {

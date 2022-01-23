@@ -1,3 +1,4 @@
+// @dart = 2.12
 library extensions;
 
 import 'package:flutter/material.dart';

@@ -102,21 +102,28 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             return
         }
 
-        val fix = File(context.filesDir, "hotfix" + File.separator + download.name)
+        val fixDir = File(context.filesDir,"hotfix")
+        if (!fixDir.exists()){
+            fixDir.mkdir()
+        }
 
-        fix.takeIf { !it.exists() }?.runCatching {
-            FileInputStream(download).use { input ->
-                FileOutputStream(absolutePath).use { output ->
-                    input.copyTo(output)
-                    output.flush()
+        val fix = File(fixDir, download.name)
+
+        fix.runCatching {
+            if (!exists()){
+                FileInputStream(download).use { input ->
+                    FileOutputStream(absolutePath).use { output ->
+                        input.copyTo(output)
+                        output.flush()
+                    }
                 }
+                WbySharePreference.fixSo = absolutePath
             }
-            WbySharePreference.fixSo = absolutePath
             absolutePath
-        }?.onSuccess {
+        }.onSuccess {
             log("move so file success : $it")
             result.success(it)
-        }?.onFailure {
+        }.onFailure {
             log("move so file failure : $it")
             result.error(COPY_FILE_ERROR, it.message, "")
         }

@@ -149,6 +149,7 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         Gson().fromJson(data, DownloadList::class.java).list
                     }.onSuccess {
                         Log.d(TAG, "base list : $it")
+                        Log.d(TAG,"current download list : $downloadList")
                         filterFiles(it.toMutableList(), result)
                     }.onFailure {
                         result.error(PARSE_ARGUMENT_ERROR, "parse argument error ${it.message}", "")
@@ -215,10 +216,10 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         it.temporaryPath(),
                     )
                     if (it.showNotification) {
-                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    } else {
                         setTitle(it.title)
                         setDescription(it.description)
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    } else {
                         setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                     }
                 }

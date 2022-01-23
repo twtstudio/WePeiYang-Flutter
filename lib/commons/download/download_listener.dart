@@ -9,8 +9,6 @@ class DownloadListener {
   final void Function()? begin;
   final void Function(DownloadItem task, double progress)? running;
   final void Function(List<String> paths)? allSuccess;
-  final AddTaskCallback addTaskCallback;
-  final DownloadingCallback downloadingCallBack;
 
   DownloadListener._(
     this.listenerId,
@@ -20,8 +18,6 @@ class DownloadListener {
     this.begin,
     this.running,
     this.allSuccess,
-    this.addTaskCallback,
-    this.downloadingCallBack,
   );
 
   factory DownloadListener(
@@ -31,26 +27,7 @@ class DownloadListener {
     void Function()? begin,
     void Function(DownloadItem task, double progress)? running,
     void Function(List<String> paths)? allSuccess,
-    void Function(String message)? argumentError,
-    void Function(String message)? configError,
-    void Function(String message)? registerError,
-    void Function(String message)? addTasksError,
-    void Function(String message)? downloadError,
-    void Function(String message)? removeRegisterError,
   ) {
-    final addTaskCallback = AddTaskCallback(
-      error,
-      argumentError,
-      configError,
-      registerError,
-      addTasksError,
-    );
-
-    final downloadingCallback = DownloadingCallback(
-      error,
-      downloadError,
-      removeRegisterError,
-    );
 
     final id = "${DateTime.now().millisecondsSinceEpoch}+${list.length}";
 
@@ -70,36 +47,6 @@ class DownloadListener {
       begin,
       running,
       allSuccess,
-      addTaskCallback,
-      downloadingCallback,
     );
   }
-}
-
-class AddTaskCallback {
-  final void Function(String message) defaultError;
-  final void Function(String message)? argumentError;
-  final void Function(String message)? configError;
-  final void Function(String message)? registerError;
-  final void Function(String message)? addTasksError;
-
-  AddTaskCallback(
-    this.defaultError,
-    this.argumentError,
-    this.configError,
-    this.registerError,
-    this.addTasksError,
-  );
-}
-
-class DownloadingCallback {
-  final void Function(String message) defaultError;
-  final void Function(String message)? downloadError;
-  final void Function(String message)? removeRegisterError;
-
-  DownloadingCallback(
-    this.defaultError,
-    this.downloadError,
-    this.removeRegisterError,
-  );
 }

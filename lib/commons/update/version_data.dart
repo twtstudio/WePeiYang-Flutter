@@ -90,6 +90,10 @@ class Version {
       json['flutter_fix_so'] ?? ''
     );
   }
+
+  String get apkName {
+    return  "$version-${versionCode}wby.apk";
+  }
 }
 
 // {

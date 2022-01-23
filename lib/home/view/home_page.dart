@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
-import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
-
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+import 'package:provider/provider.dart';
 
 bool ifCanBeRefreshed = false;
 
@@ -51,7 +50,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // WbyFontLoader.initFonts();
       PushManager.getInstance().initGeTuiSdk();
-      UpdateManager.checkUpdate();
+      context.read<UpdateManager>().checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {
         CommonPreferences().reportTime.value = DateTime.now().toString();
@@ -64,10 +63,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         "605440876ee47d382b8b74c3",
         "Umeng",
       ).then(
-            (_) {
-              debugPrint('init umeng success');
-              UmengCommonSdk.setPageCollectionModeManual();
-            },
+        (_) {
+          debugPrint('init umeng success');
+          UmengCommonSdk.setPageCollectionModeManual();
+        },
       );
 
       // 检查当前是否有未处理的事件
@@ -157,14 +156,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ])
                     : Center(
-                      child: SizedBox(
+                        child: SizedBox(
                           width: 20,
                           height: 20,
                           child: Image(
-                            image: AssetImage('assets/images/icon_feedback.png'),
+                            image:
+                                AssetImage('assets/images/icon_feedback.png'),
                           ),
                         ),
-                    ),
+                      ),
               ),
             ),
             Padding(

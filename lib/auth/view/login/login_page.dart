@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:provider/provider.dart';
 
 class LoginHomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      UpdateManager.checkUpdate();
+      context.read<UpdateManager>().checkUpdate();
     });
     return Scaffold(
       body: Column(

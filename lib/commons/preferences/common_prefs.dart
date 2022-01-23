@@ -100,8 +100,7 @@ class CommonPreferences {
   // 应用更新相关配置
   /// 使用beta版还是release版微北洋
   var apkType = PrefsBean('apkType',"release");
-  /// 是否自动更新
-  var autoUpdateApp = PrefsBean("autoUpdateApp",true);
+  var todayShowUpdateAgain = PrefsBean('todayShowUpdateAgain','');
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {

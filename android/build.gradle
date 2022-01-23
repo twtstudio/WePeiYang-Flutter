@@ -13,8 +13,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // 增加agcp插件配置。
         classpath 'com.huawei.agconnect:agcp:1.6.0.300'
-        // tinkersupport插件, 其中lastest.release指拉取最新版本，也可以指定明确版本号，例如1.0.4
-        classpath "com.tencent.bugly:tinker-support:1.2.3"
     }
 }
 

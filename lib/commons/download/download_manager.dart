@@ -1,7 +1,10 @@
 // @dart = 2.12
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/download/download_listener.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'download_item.dart';
+export 'download_item.dart';
 
 const _downloadChannel = MethodChannel('com.twt.service/download');
 
@@ -14,6 +17,8 @@ class DownloadManager {
       switch (call.method) {
         case 'updateProgress':
           final id = call.arguments['listenerId'].toString();
+          debugPrint('listeners : ${listeners.keys}');
+          debugPrint('${call.arguments}');
           if (listeners.containsKey(id)) {
             _updateProgress(listeners[id]!, call);
           } else if (id == "all") {
@@ -58,12 +63,13 @@ class DownloadManager {
         }
         break;
       case 'ALL_SUCCESS':
+        debugPrint('all success');
         final resultPaths =
             listener.tasks.values.map((e) => e.resultPath).toList();
         listener.allSuccess?.call(resultPaths);
         break;
       case 'ERROR':
-        _catchDownloadError(call, listener.downloadingCallBack);
+        listener.error(call.arguments);
         break;
       case 'BEGIN':
         listener.begin?.call();
@@ -86,17 +92,11 @@ class DownloadManager {
 
   void downloads(
     List<DownloadItem> tasks, {
-    required void Function(String message) error,
+    required void Function(dynamic) error,
     required void Function(DownloadItem task) success,
     void Function()? begin,
     void Function(DownloadItem task, double progress)? running,
     void Function(List<String> paths)? allSuccess,
-    void Function(String message)? argumentError,
-    void Function(String message)? configError,
-    void Function(String message)? registerError,
-    void Function(String message)? addTasksError,
-    void Function(String message)? downloadError,
-    void Function(String message)? removeRegisterError,
   }) {
     final listener = DownloadListener(
       tasks,
@@ -105,12 +105,6 @@ class DownloadManager {
       begin,
       running,
       allSuccess,
-      argumentError,
-      configError,
-      registerError,
-      addTasksError,
-      downloadError,
-      removeRegisterError,
     );
     listeners[listener.listenerId] = listener;
 
@@ -121,26 +115,18 @@ class DownloadManager {
           "downloadList": DownloadList(tasks).toJson(),
         },
       );
-    } on PlatformException catch (e) {
-      _catchPlatformError(e.code, e.message ?? "", listener.addTaskCallback);
-    } catch (e) {
-      error.call(e.toString());
+    }  catch (e) {
+      error.call(e);
     }
   }
 
   void download(
     DownloadItem task, {
-    required void Function(String message) error,
+    required void Function(dynamic) error,
     required void Function(DownloadItem task) success,
     void Function()? begin,
     void Function(DownloadItem task, double progress)? running,
     void Function(List<String> paths)? allSuccess,
-    void Function(String message)? argumentError,
-    void Function(String message)? configError,
-    void Function(String message)? registerError,
-    void Function(String message)? addTasksError,
-    void Function(String message)? downloadError,
-    void Function(String message)? removeRegisterError,
   }) {
     downloads(
       [task],
@@ -149,53 +135,6 @@ class DownloadManager {
       begin: begin,
       running: running,
       allSuccess: allSuccess,
-      argumentError: argumentError,
-      configError: configError,
-      registerError: registerError,
-      addTasksError: addTasksError,
-      downloadError: downloadError,
-      removeRegisterError: removeRegisterError,
     );
-  }
-
-  void _catchPlatformError(
-    String code,
-    String message,
-    AddTaskCallback callback,
-  ) {
-    switch (code) {
-      case "PARSE_ARGUMENT_ERROR":
-        (callback.argumentError ?? callback.defaultError).call(message);
-        break;
-      case "CONFIG_DOWNLOAD_ERROR":
-        (callback.configError ?? callback.defaultError).call(message);
-        break;
-      case "REGISTER_OBSERVER_ERROR":
-        (callback.registerError ?? callback.defaultError).call(message);
-        break;
-      case "ADD_TASKS_ERROR":
-        (callback.addTasksError ?? callback.defaultError).call(message);
-        break;
-      default:
-        callback.defaultError.call(message);
-    }
-  }
-
-  void _catchDownloadError(
-    MethodCall call,
-    DownloadingCallback callback,
-  ) {
-    final code = call.arguments['code'];
-    final message = call.arguments['message'];
-    switch (code) {
-      case "DOWNLOAD_ERROR":
-        (callback.downloadError ?? callback.defaultError).call(message);
-        break;
-      case "REMOVE_REGISTER_ERROR":
-        (callback.removeRegisterError ?? callback.defaultError).call(message);
-        break;
-      default:
-        callback.defaultError.call(message);
-    }
   }
 }

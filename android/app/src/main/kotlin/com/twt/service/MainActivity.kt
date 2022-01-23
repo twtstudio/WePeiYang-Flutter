@@ -1,9 +1,7 @@
 package com.twt.service
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
 import com.twt.service.hot_fix.WbyFixPlugin
@@ -18,9 +16,6 @@ import com.umeng.commonsdk.UMConfigure
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.io.File
 
 class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,10 +62,12 @@ class MainActivity : FlutterActivity() {
     // dart_snapshot.cc的SearchMapping()方法内部循环遍历native_library_path查找libapp.so，
     // 如果找到就返回，最终到不到就返回一个nullptr。我们知道native_library_path就是解析从Java层传
     // 递过来的配置参数列表shellArgs中的key是aot-shared-library-name对应的值，
+    // 热更新优雅的实现方式，very nice！
     override fun getFlutterShellArgs(): FlutterShellArgs {
         val shellArgs = super.getFlutterShellArgs()
-        Log.d("WBY_RESTART","getFlutterShellArgs")
-        WbySharePreference.fixSo?.takeIf { File(it).exists() && File(it).isFile }?.let {
+        Log.d("WBY_RESTART", "getFlutterShellArgs")
+        WbySharePreference.fixSo?.let {
+            Log.d(WbyFixPlugin.TAG, "load .so file : $it")
             shellArgs.add("--aot-shared-library-name=$it")
         }
         return shellArgs
