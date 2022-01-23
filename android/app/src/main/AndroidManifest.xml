@@ -237,7 +237,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/download_path" />
+                android:resource="@xml/apk_download_path" />
         </provider>
 
         <service

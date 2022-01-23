@@ -1,27 +1,25 @@
-import 'dart:io';
 import 'dart:async';
-import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, TextTreeRenderer;
+import 'dart:io';
+
+import 'package:flutter/foundation.dart' show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/commons/hotfix/hotfix_message_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
@@ -70,8 +68,7 @@ void main() async {
   }, (Object error, StackTrace stack) {
     /// 这里是处理所有 unhandled sync & async error 的地方
     Logger.reportError(error, stack);
-  }, zoneSpecification: ZoneSpecification(
-      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
+  }, zoneSpecification: ZoneSpecification(print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
     /// 覆盖zone中的所有[print]和[debugPrint]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
@@ -101,8 +98,7 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
-class WePeiYangAppState extends State<WePeiYangApp>
-    with WidgetsBindingObserver {
+class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver {
   @override
   void dispose() async {
     await HiveManager.instance.closeBoxes();
@@ -115,8 +111,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var baseContext =
-          WePeiYangApp.navigatorState.currentState.overlay.context;
+      var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
@@ -180,8 +175,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         content,
       );
     } else {
-      throw PlatformException(
-          code: 'error', message: '失败', details: 'content is null');
+      throw PlatformException(code: 'error', message: '失败', details: 'content is null');
     }
   }
 
@@ -222,11 +216,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
-          navigatorObservers: [
-            AppRouteAnalysis(),
-            PageStackObserver(),
-            FlutterSmartDialog.observer
-          ],
+          navigatorObservers: [AppRouteAnalysis(), PageStackObserver(), FlutterSmartDialog.observer],
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -234,15 +224,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          localeListResolutionCallback: (List<Locale> preferredLocales,
-              Iterable<Locale> supportedLocales) {
-            var supportedLanguages =
-                supportedLocales.map((e) => e.languageCode).toList();
-            var preferredLanguages =
-                preferredLocales.map((e) => e.languageCode).toList();
-            var availableLanguages = preferredLanguages
-                .where((element) => supportedLanguages.contains(element))
-                .toList();
+          localeListResolutionCallback: (List<Locale> preferredLocales, Iterable<Locale> supportedLocales) {
+            var supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
+            var preferredLanguages = preferredLocales.map((e) => e.languageCode).toList();
+            var availableLanguages =
+                preferredLanguages.where((element) => supportedLanguages.contains(element)).toList();
             return Locale(availableLanguages.first);
           },
           locale: localModel.locale(),
@@ -255,9 +241,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   Widget _builder(BuildContext context, Widget child) {
     ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
+        BoxConstraints(maxWidth: MediaQuery.of(context).size.width, maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
     TextUtil.init(context);
@@ -265,8 +249,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       child: child,
       onTapDown: (TapDownDetails details) {
         FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
           FocusManager.instance.primaryFocus.unfocus();
         }
       },
@@ -288,8 +271,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       _autoLogin(context);
     });
     // TODO 合并
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
-        .copyWith(systemNavigationBarColor: Colors.white));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(systemNavigationBarColor: Colors.white));
   }
 
   @override
@@ -297,9 +279,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     return Container(
       color: Colors.white,
       child: Center(
-        child: Image(
-            fit: BoxFit.contain,
-            image: AssetImage('assets/images/splash_screen.png')),
+        child: Image(fit: BoxFit.contain, image: AssetImage('assets/images/splash_screen.png')),
       ),
       constraints: BoxConstraints.expand(),
     );
@@ -324,33 +304,27 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
     /// 如果存过账号密码，优先用账密刷新token
     if (prefs.account.value != '' && prefs.password.value != '') {
-      Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          AuthService.pwLogin(prefs.account.value, prefs.password.value,
-              onResult: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          }, onFailure: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
-          }));
+      Future.delayed(Duration(milliseconds: 500))
+          .then((_) => AuthService.pwLogin(prefs.account.value, prefs.password.value, onResult: (_) {
+                Navigator.pushNamedAndRemoveUntil(context, HomeRouter.home, (route) => false);
+              }, onFailure: (_) {
+                Navigator.pushNamedAndRemoveUntil(context, AuthRouter.login, (route) => false);
+              }));
     } else if (prefs.isLogin.value && prefs.token.value != '') {
       /// 如果是短信登陆的，尝试用token刷新
       Future.delayed(Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+            Navigator.pushNamedAndRemoveUntil(context, HomeRouter.home, (route) => false);
           },
           onFailure: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
+            Navigator.pushNamedAndRemoveUntil(context, AuthRouter.login, (route) => false);
           },
         ),
       );
     } else {
       /// 没登陆过的话，多看一会的启动页再跳转到登录页
-      Future.delayed(Duration(seconds: 1)).then(
-          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
+      Future.delayed(Duration(seconds: 1)).then((_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
   }
 }
