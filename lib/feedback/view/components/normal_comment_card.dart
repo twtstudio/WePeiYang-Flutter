@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -48,6 +49,8 @@ class NCommentCard extends StatefulWidget {
 class _NCommentCardState extends State<NCommentCard> {
   final String baseUrl = 'https://www.zrzz.site:7013/';
   bool _picFullView = false;
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
 
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
@@ -79,8 +82,16 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var topWidget = Row(
       children: [
-        Icon(Icons.account_circle_rounded,
-            size: 34, color: Color.fromRGBO(98, 103, 124, 1.0)),
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(17)),
+          child: SvgPicture.network(
+            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.id}',
+            width: 34,
+            height: 34,
+            fit: BoxFit.cover,
+            placeholderBuilder: defaultPlaceholderBuilder,
+          ),
+        ),
         SizedBox(width: 4),
         Expanded(
           child: Column(
@@ -209,25 +220,64 @@ class _NCommentCardState extends State<NCommentCard> {
               _picFullView = true;
             });
           },
-          child: _picFullView ? InkWell(
-              onTap: () {
-          Navigator.pushNamed(context, FeedbackRouter.imageView,
-              arguments: {
-                "urlList": [widget.comment.imageUrl],
-                "urlListLength": 1,
-                "indexNow": 0
-              });},
-            child: Image.network(
-              baseUrl + widget.comment.imageUrl,
-            ),
-          ) : ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-              child: Image.network(
-                baseUrl + widget.comment.imageUrl,
-                width: 70.w,
-                height: 64.h,
-                fit: BoxFit.cover,
-              )),
+          child: _picFullView
+              ? InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, FeedbackRouter.imageView,
+                        arguments: {
+                          "urlList": [widget.comment.imageUrl],
+                          "urlListLength": 1,
+                          "indexNow": 0
+                        });
+                  },
+                  child: Image.network(
+                    baseUrl + widget.comment.imageUrl,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                      return Text('💔[图片加载失败]',style: TextUtil.base.grey6C.w400.sp(12),);
+                    },
+                  ),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  child: Image.network(
+                    baseUrl + widget.comment.imageUrl,
+                    width: 70.w,
+                    height: 64.h,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 40.h,
+                        width: 40.h,
+                        padding: EdgeInsets.all(4),
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                      return Text('💔[图片加载失败]',style: TextUtil.base.grey6C.w400.sp(12),);
+                    },
+                  ),
+                ),
         ));
 
     var replyButton = IconButton(

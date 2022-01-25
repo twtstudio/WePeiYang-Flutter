@@ -15,15 +15,11 @@ class TabGridView extends StatefulWidget {
 
 class _TabGridViewState extends State<TabGridView>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
   ValueNotifier<Department> currentTab;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200))
-          ..forward();
     currentTab = ValueNotifier(widget.department);
   }
 
@@ -69,11 +65,7 @@ class _TabGridViewState extends State<TabGridView>
       valueListenable: currentTab,
       builder: (_, value, __) {
         return tag.id == value?.id
-            ? FadeTransition(
-                opacity:
-                    Tween(begin: 0.0, end: 1.0).animate(_animationController),
-                child: _tagChip(true, tag),
-              )
+            ? _tagChip(true, tag)
             : _tagChip(false, tag);
       },
     );
@@ -83,7 +75,7 @@ class _TabGridViewState extends State<TabGridView>
         backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           tag.name,
-          style: chose ? TextUtil.base.white.NotoSansSC.w400.sp(11) : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
+          style: chose ? TextUtil.base.white.NotoSansSC.w400.sp(14) : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {

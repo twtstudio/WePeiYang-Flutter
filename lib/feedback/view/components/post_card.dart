@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 enum PostCardType { simple, detail, outSide }
@@ -144,6 +145,11 @@ class _PostCardState extends State<PostCard> {
             width: 97,
             height: 76,
             fit: BoxFit.cover,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Padding(padding: EdgeInsets.all(20), child: Loading());
+            },
           ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
