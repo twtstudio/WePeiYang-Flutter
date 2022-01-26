@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 
 enum PostCardType { simple, detail, outSide }
 
@@ -110,11 +111,32 @@ class _PostCardState extends State<PostCard> {
           )
         : SizedBox();
 
-    var content = Text(post.content,
-        maxLines: widget.type == PostCardType.detail ? null : 2,
-        overflow:
-            widget.type == PostCardType.detail ? null : TextOverflow.ellipsis,
-        style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2));
+    var content = ExpandableText(
+      text: post.content,
+      maxLines: widget.type == PostCardType.detail ? 8 : 2,
+      style: TextUtil.base.NotoSansSC.w400
+          .sp(16)
+          .black2A
+          .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
+      expand: false,
+      buttonIsShown: widget.type == PostCardType.detail,
+    );
+    //     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    //   Text(post.content,
+    //       maxLines: widget.type == PostCardType.detail ? 100 : 2,
+    //       overflow: TextOverflow.ellipsis,
+    //       style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2)),
+    //   if (post.content.length > 200)
+    //   TextButton(
+    //       style: ButtonStyle(
+    //           alignment: Alignment.topLeft,
+    //           padding: MaterialStateProperty.all(EdgeInsets.zero)),
+    //       onPressed: () {
+    //         setState(() {});
+    //       },
+    //       child:
+    //           Text('收起', style: TextUtil.base.greyA8.w800.NotoSansSC.sp(14))),
+    // ]);
 
     List<Widget> rowList = [];
 
@@ -123,12 +145,12 @@ class _PostCardState extends State<PostCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(children: [TagShowWidget(tag), SizedBox(width: 8), campus]),
-          SizedBox(height: 8),
+          SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
             Row(
               children: [title],
             ),
-          SizedBox(height: 8),
+          if (widget.type == PostCardType.detail) SizedBox(height: 8),
           content,
         ],
         crossAxisAlignment: CrossAxisAlignment.start,
