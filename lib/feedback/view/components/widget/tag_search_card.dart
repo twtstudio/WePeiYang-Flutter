@@ -134,7 +134,7 @@ class _SearchTagCardState extends State<SearchTagCard> {
                           child: Row(
                             children: [
                               SvgPicture.asset(
-                                "assets/svg_pics/lake_butt_icons/sharp.svg",
+                                "assets/svg_pics/lake_butt_icons/hashtag.svg",
                                 width: 14,
                               ),
                               SizedBox(width: 5),
@@ -168,7 +168,7 @@ class _SearchTagCardState extends State<SearchTagCard> {
                           child: Row(
                             children: [
                               SvgPicture.asset(
-                                "assets/svg_pics/lake_butt_icons/sharp.svg",
+                                "assets/svg_pics/lake_butt_icons/hashtag.svg",
                                 width: 14,
                               ),
                               SizedBox(width: 5),

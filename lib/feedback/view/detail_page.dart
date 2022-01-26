@@ -50,6 +50,7 @@ class _DetailPageState extends State<DetailPage>
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<_CommentInputFieldState>();
+  final imageSelectionKey = GlobalKey<_ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
 
@@ -203,11 +204,8 @@ class _DetailPageState extends State<DetailPage>
       onTap: () {
         launchKey.currentState.send();
       },
-      child: Padding(
-        padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
-        child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
-            width: 20),
-      ),
+      child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
+          width: 20),
     );
 
     if (status == DetailPageStatus.loading) {
@@ -350,8 +348,30 @@ class _DetailPageState extends State<DetailPage>
                           Offstage(
                               offstage: !value.inputFieldEnabled,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [inputField, checkButton],
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  inputField,
+                                  ImageSelectAndView(key: imageSelectionKey),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 4),
+                                      IconButton(
+                                          icon: Image.asset(
+                                            'assets/images/lake_butt_icons/image.png',
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          onPressed: () => imageSelectionKey
+                                              .currentState
+                                              .loadAssets()),
+                                      Spacer(),
+                                      checkButton,
+                                      SizedBox(width: 16),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10)
+                                ],
                               )),
                           Offstage(
                             offstage: value.inputFieldEnabled,
@@ -395,8 +415,6 @@ class _DetailPageState extends State<DetailPage>
                       ),
                   ],
                 ),
-                if (context.read<NewFloorProvider>().inputFieldEnabled)
-                  ImagesGridView()
               ],
             ),
           ),
@@ -520,7 +538,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
   Widget build(BuildContext context) {
     Widget inputField = Consumer<NewFloorProvider>(
         builder: (_, data, __) => TextField(
-              style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.2).black00,
+              style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
               focusNode: context.read<NewFloorProvider>().focusNode,
               controller: _textEditingController,
               maxLength: 200,
@@ -551,7 +569,7 @@ class _CommentInputFieldState extends State<CommentInputField> {
             ));
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: inputField,
     );
   }
@@ -595,19 +613,19 @@ class _CommentInputFieldState extends State<CommentInputField> {
   }
 }
 
-class ImagesGridView extends StatefulWidget {
+class ImageSelectAndView extends StatefulWidget {
+  const ImageSelectAndView({Key key}) : super(key: key);
+
   @override
-  _ImagesGridViewState createState() => _ImagesGridViewState();
+  _ImageSelectAndViewState createState() => _ImageSelectAndViewState();
 }
 
-class _ImagesGridViewState extends State<ImagesGridView> {
-  static const maxImage = 1;
-
+class _ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
     context.read<NewFloorProvider>().images.add(File(xFile.path));
-    if (!mounted) return;
+    if (!mounted) return 0;
     setState(() {});
   }
 
@@ -615,11 +633,6 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        titleTextStyle: FontManager.YaHeiRegular.copyWith(
-            color: Color.fromRGBO(79, 88, 107, 1.0),
-            fontSize: 10,
-            fontWeight: FontWeight.normal,
-            decoration: TextDecoration.none),
         title: Text(S.current.feedback_delete_image_content),
         actions: [
           TextButton(
@@ -637,106 +650,77 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     );
   }
 
-  Widget imgBuilder(index, List<File> data, length, {onTap}) {
-    return Stack(fit: StackFit.expand, children: [
-      InkWell(
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
-            arguments: {
-              "uriList": data,
-              "uriListLength": length,
-              "indexNow": index
-            }),
-        child: Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: Colors.black26),
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          child: ClipRRect(
-            child: Image.file(
-              data[index],
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-        ),
-      ),
-      InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.black26,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-          ),
-          child: Icon(
-            Icons.close,
-            size: MediaQuery.of(context).size.width / 32,
-            color: ColorUtil.searchBarBackgroundColor,
-          ),
-        ),
-      ),
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
-    var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4, //方便右边宽度留白哈哈
-      childAspectRatio: 1,
-      crossAxisSpacing: 6,
-      mainAxisSpacing: 6,
-    );
-
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 400),
       child: Consumer<NewFloorProvider>(
-        builder: (_, data, __) => GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: gridDelegate,
-          itemCount: maxImage == data.images.length
-              ? data.images.length
-              : data.images.length + 1,
-          itemBuilder: (_, index) {
-            if (index == 0 && index == data.images.length) {
-              //评论最多一张图yo
-              return _ImagePickerWidget(onTap: loadAssets);
-            } else {
-              return imgBuilder(
-                index,
-                data.images,
-                data.images.length,
-                onTap: () async {
-                  var result = await _showDialog();
-                  if (result == 'ok') {
-                    data.images.removeAt(index);
-                    setState(() {});
-                  }
-                },
-              );
-            }
-          },
-          physics: NeverScrollableScrollPhysics(),
-        ),
+        builder: (_, data, __) => data.images.isEmpty
+            ? SizedBox()
+            : SizedBox(
+                height: 80,
+                width: 100,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () => Navigator.pushNamed(
+                            context, FeedbackRouter.localImageView, arguments: {
+                          "uriList": data.images,
+                          "uriListLength": 1,
+                          "indexNow": 0
+                        }),
+                        child: Container(
+                          height: 80,
+                          width: 82,
+                          margin: EdgeInsets.all(0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            border: Border.all(width: 1, color: Colors.black26),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                              image: FileImage(
+                                data.images[0],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: InkWell(
+                        onTap: () async {
+                          var result = await _showDialog();
+                          if (result == 'ok') {
+                            data.images.removeAt(0);
+                            setState(() {});
+                          }
+                        },
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                bottomRight: Radius.circular(8)),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 14,
+                            color: ColorUtil.searchBarBackgroundColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
       ),
-    );
-  }
-}
-
-class _ImagePickerWidget extends StatelessWidget {
-  const _ImagePickerWidget({
-    Key key,
-    this.onTap,
-  }) : super(key: key);
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.crop_original),
-      onPressed: onTap,
     );
   }
 }

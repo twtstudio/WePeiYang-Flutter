@@ -26,10 +26,10 @@ class GameCard extends StatelessWidget {
   final String title;
   final String uri;
   final bool used;
-  final random = new Random();
+  final random = Random();
 
   final List<Color> colorOfMonkey = [Color.fromRGBO(
-      202, 184, 255, 0.5),Color.fromRGBO(
+      223, 214, 255, 0.5019607843137255),Color.fromRGBO(
       241, 184, 255, 0.5),Color.fromRGBO(
       184, 197, 255, 0.5),Color.fromRGBO(
       184, 255, 251, 0.5),Color.fromRGBO(
@@ -42,6 +42,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color _color = colorOfMonkey[random.nextInt(colorOfMonkey.length)];
     return SizedBox(
       height: 130,
       child: InkWell(
@@ -61,9 +62,9 @@ class GameCard extends StatelessWidget {
                 Container(
                   width: 100,
                   decoration: BoxDecoration(
-                      color: colorOfMonkey[random.nextInt(colorOfMonkey.length)],
+                      color: _color,
                     borderRadius: BorderRadius.all(Radius.circular(13)),
-                      image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/error.png'),fit: BoxFit.scaleDown)
+                      image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/monkie.png'),fit: BoxFit.scaleDown)
                   ),
                 ),
               ],

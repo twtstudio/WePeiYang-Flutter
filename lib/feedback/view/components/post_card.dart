@@ -148,7 +148,11 @@ class _PostCardState extends State<PostCard> {
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent loadingProgress) {
               if (loadingProgress == null) return child;
-              return Padding(padding: EdgeInsets.all(20), child: Loading());
+              return Container(
+                  width: 97,
+                  height: 76,
+                  padding: EdgeInsets.all(20),
+                  child: Loading());
             },
           ),
           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -156,12 +160,12 @@ class _PostCardState extends State<PostCard> {
       ]);
     }
     var createTime = Text(
-      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
       textAlign: TextAlign.right,
       style: TextUtil.base.black2A.bold.ProductSans.sp(12),
     );
     var createTimeDetail = Text(
-      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt),
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
       textAlign: TextAlign.right,
       style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
     );

@@ -78,16 +78,14 @@ class _NCommentCardState extends State<NCommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    var box = SizedBox(height: 8);
-
     var topWidget = Row(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(17)),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
             'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.id}',
-            width: 34,
-            height: 34,
+            width: 30,
+            height: 30,
             fit: BoxFit.cover,
             placeholderBuilder: defaultPlaceholderBuilder,
           ),
@@ -202,7 +200,7 @@ class _NCommentCardState extends State<NCommentCard> {
             });
           },
           constraints: BoxConstraints(),
-          padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+          padding: EdgeInsets.zero,
         )
       ],
     );
@@ -246,7 +244,10 @@ class _NCommentCardState extends State<NCommentCard> {
                     },
                     errorBuilder: (BuildContext context, Object exception,
                         StackTrace stackTrace) {
-                      return Text('💔[图片加载失败]',style: TextUtil.base.grey6C.w400.sp(12),);
+                      return Text(
+                        '💔[图片加载失败]',
+                        style: TextUtil.base.grey6C.w400.sp(12),
+                      );
                     },
                   ),
                 )
@@ -274,7 +275,10 @@ class _NCommentCardState extends State<NCommentCard> {
                     },
                     errorBuilder: (BuildContext context, Object exception,
                         StackTrace stackTrace) {
-                      return Text('💔[图片加载失败]',style: TextUtil.base.grey6C.w400.sp(12),);
+                      return Text(
+                        '💔[图片加载失败]',
+                        style: TextUtil.base.grey6C.w400.sp(12),
+                      );
                     },
                   ),
                 ),
@@ -289,7 +293,7 @@ class _NCommentCardState extends State<NCommentCard> {
             .inputFieldOpenAndReplyTo(widget.comment.id);
         context.read<NewFloorProvider>().focusNode.requestFocus();
       },
-      padding: EdgeInsets.fromLTRB(0, 0, 12, 0),
+      padding: EdgeInsets.zero,
       color: ColorUtil.boldLakeTextColor,
     );
 
@@ -369,13 +373,31 @@ class _NCommentCardState extends State<NCommentCard> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        box,
+        SizedBox(height: 6),
         topWidget,
-        box,
+        SizedBox(height: 10),
         commentContent,
         if (widget.comment.imageUrl != '') commentImage,
-        box,
+        _picFullView == true
+            ? Row(
+              children: [
+                Spacer(),
+                TextButton(
+                    style: ButtonStyle(
+                      alignment: Alignment.topRight,
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                    onPressed: () {
+                      setState(() {
+                        _picFullView = false;
+                      });
+                    },
+                    child: Text('收起',
+                        style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12))),
+              ],
+            )
+            : SizedBox(height: 8),
         bottomWidget,
+        SizedBox(height: 4)
       ],
     );
 
