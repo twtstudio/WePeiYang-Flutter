@@ -314,6 +314,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
     var searchBar = SearchBar(
       tapField: () => Navigator.pushNamed(context, FeedbackRouter.search),
+      showSearch: false,
     );
     _offsets[0] = _controller1.hasClients ? _controller1.offset : 2;
     _offsets[1] = _controller2.hasClients ? _controller2.offset : 2;
@@ -631,8 +632,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                 value: 1,
                                 child: Text(
                                   '时间排序',
-                                  style: TextStyle(
-                                      color: ColorUtil.lightTextColor),
                                 ),
                               ),
                               PopupMenuItem<int>(

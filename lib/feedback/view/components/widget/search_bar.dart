@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+List<Text> tagsList = List.filled(
+    5,
+    Text(
+      "",
+      style: TextUtil.base.w400.NotoSansSC.sp(16).grey97,
+    ));
+List<Text> hotIndexList = List.filled(
+    5,
+    Text(
+      "",
+      style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,
+    ));
 
+List<SearchTag> tagUtils = [];
 typedef SubmitCallback = void Function(String);
 typedef ChangeCallback = void Function(String);
 class SearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
   final VoidCallback tapField;
   final ChangeCallback onChanged;
-  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged})
+  final bool showSearch;
+  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged, this.showSearch})
       : super(key: key);
 
   @override
@@ -26,7 +42,53 @@ class _SearchBarState extends State<SearchBar> {
     _controller.dispose();
     super.dispose();
   }
+  @override
+  void initState() {
+    super.initState();
+    initSearchTag();
+    _controller.addListener(() {
+      refreshSearchTag(_controller.text);
+    });
+  }
+  _searchTags(List<SearchTag> list) {
+    tagUtils = list;
+    for (int total = 0; total < tagUtils.length && total < 5 ; total++) {
+      tagsList[total] = Text(
+        tagUtils[total].name,
+        style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+      );
+      hotIndexList[total] = Text(
+        "${tagUtils[total].id}",
+        style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
+      );
+    }
+  }
 
+  initSearchTag() {
+    FeedbackService.searchTags(
+        name: "",
+        onResult: (list) {
+          setState(() {
+            _searchTags(list);
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+  }
+
+  refreshSearchTag(String text) {
+    FeedbackService.searchTags(
+        name: text,
+        onResult: (list) {
+          setState(() {
+            _searchTags(list);
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+  }
   @override
   Widget build(BuildContext context) {
     Widget searchInputField = ConstrainedBox(
@@ -70,7 +132,34 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     );
-
+    var searchList =  ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            _controller.text =  tagUtils[index].name;
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 3, 3, 3),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(width: 5),
+                    Center(child: tagsList[index]),
+                    Spacer(),
+                    hotIndexList[index]
+                  ],
+                ),
+                SizedBox(height:8.w),
+              ],
+            ),
+          ),
+        );
+      },
+    );
     if (widget.tapField != null) {
       searchInputField = InkWell(
         child: AbsorbPointer(
@@ -80,6 +169,13 @@ class _SearchBarState extends State<SearchBar> {
       );
     }
 
-    return searchInputField;
+    return widget.showSearch ==false ?searchInputField:
+    Column(
+      children: [
+        searchInputField,
+        SizedBox(height:25.w),
+        searchList,
+      ],
+    );
   }
 }

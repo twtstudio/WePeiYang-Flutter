@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -8,6 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.d
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+
 
 class SearchPage extends StatefulWidget {
   @override
@@ -60,6 +63,49 @@ class _SearchPageState extends State<SearchPage> {
           Navigator.pop(context);
         });
       },
+    );
+    var sharp =  SvgPicture.asset(
+      "assets/svg_pics/lake_butt_icons/sharp.svg",
+      width: 14,
+    );
+    var topView = SafeArea(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+               mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height:6.25.w),
+                  InkWell(
+                    child: Row(
+                      children: [
+                        SizedBox(width: 15.w),
+                        ImageIcon(AssetImage('assets/images/lake_butt_icons/back.png'),
+                            size: 18),
+                        SizedBox(width: 20.w),
+                      ],
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  SizedBox(height:36.25.w),
+                  sharp,
+                  SizedBox(height:20.w),
+                  sharp,
+                  SizedBox(height:20.w),
+                  sharp,
+                  SizedBox(height:20.w),
+                  sharp,
+                  SizedBox(height:20.w),
+                  sharp,
+                ],
+              ),
+              ConstrainedBox(constraints: BoxConstraints(maxWidth: 320.w,),
+                child: searchBar,
+              )
+
+            ],
+          )
     );
 
     const titleTextStyle = TextStyle(
@@ -166,31 +212,17 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
     );
 
-    return Scaffold(
-        backgroundColor: ColorUtil.white253,
-        appBar: AppBar(
-          title: searchBar,
-          backgroundColor: ColorUtil.white253,
-          elevation: 0.1,
-          titleSpacing: 10,
-          leading: InkWell(
-            child: Row(
-              children: [
-                SizedBox(width: 18),
-                ImageIcon(AssetImage('assets/images/lake_butt_icons/back.png'),
-                    size: 18),
-              ],
-            ),
-            onTap: () => Navigator.pop(context),
-          ),
-          leadingWidth: 36,
-          iconTheme: IconThemeData(
-            color: ColorUtil.boldTag54,
-          ),
-        ),
-        body: SafeArea(child: searchHistory));
+    return Container(
+      color: ColorUtil.white253,
+        child:
+        Column(
+          children: [
+          //  searchList,
+            topView,
+            searchHistory,
+          ],
+        ));
   }
-
   showClearDialog() {
     showDialog(
       context: context,
