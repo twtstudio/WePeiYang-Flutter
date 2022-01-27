@@ -113,9 +113,9 @@ class TextPod extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white38,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: ColorUtil.mainColor)),
+          border: Border.all(color: ColorUtil.grey108)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-      child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).mainColor),
+      child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).black4E),
     );
   }
 }

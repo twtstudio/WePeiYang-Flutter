@@ -112,12 +112,14 @@ class _NCommentCardState extends State<NCommentCard> {
                   if (widget.isSubFloor &&
                       widget.comment.nickname == widget.ancestorName)
                     CommentIdentificationContainer('层主', true),
-                  if (widget.comment.replyToName != '')
+                  if (widget.comment.replyToName != '' &&
+                      widget.comment.replyToName != widget.comment.nickname)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Icon(Icons.play_arrow, size: 8),
                     ),
-                  if (widget.comment.replyToName != '')
+                  if (widget.comment.replyToName != '' &&
+                      widget.comment.replyToName != widget.comment.nickname)
                     Text(
                       widget.comment.replyToName,
                       maxLines: 1,
@@ -125,9 +127,11 @@ class _NCommentCardState extends State<NCommentCard> {
                       style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
                     ),
                   if (widget.isSubFloor &&
+                      widget.comment.replyToName != widget.comment.nickname &&
                       widget.comment.replyToName == 'Owner')
                     CommentIdentificationContainer('楼主', false),
                   if (widget.isSubFloor &&
+                      widget.comment.replyToName != widget.comment.nickname &&
                       widget.comment.replyToName == widget.ancestorName)
                     CommentIdentificationContainer('层主', false),
                 ],
@@ -380,21 +384,21 @@ class _NCommentCardState extends State<NCommentCard> {
         if (widget.comment.imageUrl != '') commentImage,
         _picFullView == true
             ? Row(
-              children: [
-                Spacer(),
-                TextButton(
-                    style: ButtonStyle(
-                      alignment: Alignment.topRight,
-                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                    onPressed: () {
-                      setState(() {
-                        _picFullView = false;
-                      });
-                    },
-                    child: Text('收起',
-                        style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12))),
-              ],
-            )
+                children: [
+                  Spacer(),
+                  TextButton(
+                      style: ButtonStyle(
+                          alignment: Alignment.topRight,
+                          padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                      onPressed: () {
+                        setState(() {
+                          _picFullView = false;
+                        });
+                      },
+                      child: Text('收起',
+                          style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12))),
+                ],
+              )
             : SizedBox(height: 8),
         bottomWidget,
         SizedBox(height: 4)

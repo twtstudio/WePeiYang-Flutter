@@ -86,12 +86,13 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     var singlePictureLoader;
+    var longPicOutsideLook;
 
     if (post.imageUrls.length == 1) {
       Image image = new Image.network(
         baseUrl + post.imageUrls[0],
         width: double.infinity,
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
         alignment: Alignment.topCenter,
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
@@ -167,6 +168,25 @@ class _PostCardState extends State<PostCard> {
                 )
               ]),
             );
+
+      var longImageOuterLook = Stack(
+        alignment: Alignment.topLeft,
+        children: [image, Positioned(top: 4, left: 4, child: TextPod('长图'))],
+      );
+
+      longPicOutsideLook = new FutureBuilder<ui.Image>(
+        future: completer.future,
+        builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+          return Container(
+              width: 97,
+              height: 76,
+              child: snapshot.hasData
+                  ? snapshot.data.height / snapshot.data.width > 2.5
+                      ? longImageOuterLook
+                      : image
+                  : Loading());
+        },
+      );
 
       singlePictureLoader = ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(14)),
@@ -248,23 +268,24 @@ class _PostCardState extends State<PostCard> {
       rowList.addAll([
         SizedBox(width: 10),
         ClipRRect(
-          child: Image.network(
-            baseUrl + post.imageUrls[0],
-            width: 97,
-            height: 76,
-            fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                  width: 97,
-                  height: 76,
-                  padding: EdgeInsets.all(20),
-                  child: Loading());
-            },
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: post.imageUrls.length == 1
+                ? longPicOutsideLook
+                : Image.network(
+                    baseUrl + post.imageUrls[0],
+                    width: 97,
+                    height: 76,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                          width: 97,
+                          height: 76,
+                          padding: EdgeInsets.all(20),
+                          child: Loading());
+                    },
+                  )),
       ]);
     }
     var createTime = Text(
