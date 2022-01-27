@@ -47,7 +47,9 @@ class MPWidget extends StatelessWidget {
 class SolvedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('assets/svg_pics/lake_butt_icons/solved_tag.svg',);
+    return SvgPicture.asset(
+      'assets/svg_pics/lake_butt_icons/solved_tag.svg',
+    );
   }
 }
 
@@ -96,6 +98,24 @@ class TagShowWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(1080),
         color: Color(0xffeaeaea),
       ),
+    );
+  }
+}
+
+class TextPod extends StatelessWidget {
+  final String text;
+
+  TextPod(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white38,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: ColorUtil.mainColor)),
+      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+      child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).mainColor),
     );
   }
 }

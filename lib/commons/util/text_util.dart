@@ -42,6 +42,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get black00 => this.copyWith(color: const Color(0xFF000000));
   TextStyle get black4E => this.copyWith(color: const Color(0xFF4E4E4E));
   TextStyle get black2A => this.copyWith(color: const Color(0xFF2A2A2A));
+  TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
 
   /// 字体
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');

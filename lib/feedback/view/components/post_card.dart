@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
 
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +18,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.da
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 
@@ -74,6 +77,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  bool _picFullView;
   Post post;
   final String baseUrl = 'https://www.zrzz.site:7013/';
 
@@ -81,6 +85,104 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    var singlePictureLoader;
+
+    if (post.imageUrls.length == 1) {
+      Image image = new Image.network(
+        baseUrl + post.imageUrls[0],
+        width: double.infinity,
+        fit: BoxFit.fitWidth,
+        alignment: Alignment.topCenter,
+      );
+      Completer<ui.Image> completer = new Completer<ui.Image>();
+      image.image
+          .resolve(new ImageConfiguration())
+          .addListener(ImageStreamListener((ImageInfo info, bool _) {
+        completer.complete(info.image);
+      }));
+
+      var limitedImage = _picFullView ?? false
+          ? Column(
+              children: [
+                image,
+                Row(
+                  children: [
+                    Spacer(),
+                    TextButton(
+                        style: ButtonStyle(
+                            alignment: Alignment.topRight,
+                            padding:
+                                MaterialStateProperty.all(EdgeInsets.zero)),
+                        onPressed: () {
+                          setState(() {
+                            _picFullView = false;
+                          });
+                        },
+                        child: Text('收起',
+                            style: TextUtil.base.textButtonBlue.w600.NotoSansSC
+                                .sp(14))),
+                  ],
+                ),
+              ],
+            )
+          : SizedBox(
+              height: WePeiYangApp.screenWidth * 1.2,
+              child: Stack(children: [
+                image,
+                Positioned(top: 8, left: 8, child: TextPod('长图')),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _picFullView = true;
+                      });
+                    },
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(left: 12, bottom: 8),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black54,
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Spacer(),
+                          Text(
+                            '点击查看全部',
+                            style: TextUtil.base.w600.white.sp(14),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ]),
+            );
+
+      singlePictureLoader = ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(14)),
+        child: new FutureBuilder<ui.Image>(
+          future: completer.future,
+          builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+            return snapshot.hasData
+                ? snapshot.data.height / snapshot.data.width > 2.5
+                    ? limitedImage
+                    : image
+                : Text('Loading...');
+          },
+        ),
+      );
+    }
+
     var title = Expanded(
       child: Text(
         post.title,
@@ -121,22 +223,6 @@ class _PostCardState extends State<PostCard> {
       expand: false,
       buttonIsShown: widget.type == PostCardType.detail,
     );
-    //     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    //   Text(post.content,
-    //       maxLines: widget.type == PostCardType.detail ? 100 : 2,
-    //       overflow: TextOverflow.ellipsis,
-    //       style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2)),
-    //   if (post.content.length > 200)
-    //   TextButton(
-    //       style: ButtonStyle(
-    //           alignment: Alignment.topLeft,
-    //           padding: MaterialStateProperty.all(EdgeInsets.zero)),
-    //       onPressed: () {
-    //         setState(() {});
-    //       },
-    //       child:
-    //           Text('收起', style: TextUtil.base.greyA8.w800.NotoSansSC.sp(14))),
-    // ]);
 
     List<Widget> rowList = [];
 
@@ -436,13 +522,7 @@ class _PostCardState extends State<PostCard> {
                       "indexNow": 0
                     });
               },
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(14)),
-                child: FadeInImage.memoryNetwork(
-                    fit: BoxFit.cover,
-                    placeholder: kTransparentImage,
-                    image: baseUrl + post.imageUrls[0]),
-              )));
+              child: singlePictureLoader));
         }
 
         imagesWidget.add(
@@ -491,7 +571,7 @@ class _PostCardState extends State<PostCard> {
         ? DefaultTextStyle(
             style: FontManager.YaHeiRegular,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: ClipCopy(
                 toast: '复制提问成功',
                 copy: post.content,
