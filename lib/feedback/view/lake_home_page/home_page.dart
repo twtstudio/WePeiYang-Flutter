@@ -15,7 +15,6 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
@@ -185,7 +184,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if(!Provider.of<MessageProvider>(context, listen: false).feedbackHasViewed.contains(id)){
+        if (!Provider.of<MessageProvider>(context, listen: false)
+            .feedbackHasViewed
+            .contains(id)) {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -200,10 +201,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   },
                 ).then((confirm) {
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    Navigator.pushNamed(context, FeedbackRouter.detail,
+                        arguments: post);
+                    Provider.of<MessageProvider>(context, listen: false)
+                        .setFeedbackWeKoHasViewed(id);
                   } else {
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    Provider.of<MessageProvider>(context, listen: false)
+                        .setFeedbackWeKoHasViewed(id);
                   }
                 });
               },
@@ -312,9 +316,28 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
-    var searchBar = SearchBar(
-      tapField: () => Navigator.pushNamed(context, FeedbackRouter.search),
-      showSearch: false,
+    var searchBar = InkWell(
+      onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
+      child: Container(
+        height: 30,
+        decoration: BoxDecoration(
+            color: ColorUtil.backgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        child: Row(children: [
+          SizedBox(width: 14),
+          Icon(
+            Icons.search,
+            size: 19,
+            color: ColorUtil.grey108,
+          ),
+          SizedBox(width: 12),
+          Text(
+            '搜索问题',
+            style: TextStyle().grey6C.NotoSansSC.w400.sp(16),
+          ),
+          Spacer()
+        ]),
+      ),
     );
     _offsets[0] = _controller1.hasClients ? _controller1.offset : 2;
     _offsets[1] = _controller2.hasClients ? _controller2.offset : 2;
@@ -329,8 +352,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           ),
           enablePullDown: true,
           onRefresh: onRefresh,
-          footer: ClassicFooter(
-          ),
+          footer: ClassicFooter(),
           enablePullUp: !model.isLastPage,
           onLoading: _onLoading,
           child: ListView.builder(

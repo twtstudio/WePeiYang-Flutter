@@ -183,8 +183,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           return AnimatedSize(
             clipBehavior: Clip.antiAlias,
             vsync: this,
-            duration: Duration(milliseconds: 450),
-            curve: Curves.easeInOutCubic,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOutSine,
             child: Container(
               margin: EdgeInsets.only(top: 4),
               decoration: BoxDecoration(

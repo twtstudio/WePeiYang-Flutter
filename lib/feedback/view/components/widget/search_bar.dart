@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 List<Text> tagsList = List.filled(
     5,
     Text(
@@ -20,14 +21,16 @@ List<Text> hotIndexList = List.filled(
     ));
 
 List<SearchTag> tagUtils = [];
+
 typedef SubmitCallback = void Function(String);
 typedef ChangeCallback = void Function(String);
+
 class SearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
   final VoidCallback tapField;
   final ChangeCallback onChanged;
-  final bool showSearch;
-  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged, this.showSearch})
+
+  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged})
       : super(key: key);
 
   @override
@@ -36,23 +39,30 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   TextEditingController _controller = TextEditingController();
+  bool _showSearch;
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
+    _showSearch = false;
     super.initState();
     initSearchTag();
     _controller.addListener(() {
-      refreshSearchTag(_controller.text);
+      _controller.text.startsWith('#')
+          ? _showSearch = true
+          : _showSearch = false;
+      if (_showSearch) refreshSearchTag(_controller.text.substring(1));
     });
   }
+
   _searchTags(List<SearchTag> list) {
     tagUtils = list;
-    for (int total = 0; total < tagUtils.length && total < 5 ; total++) {
+    for (int total = 0; total < tagUtils.length && total < 5; total++) {
       tagsList[total] = Text(
         tagUtils[total].name,
         style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
@@ -89,14 +99,15 @@ class _SearchBarState extends State<SearchBar> {
           ToastProvider.error(e.error.toString());
         });
   }
+
   @override
   Widget build(BuildContext context) {
     Widget searchInputField = ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: 30.w,
+        maxHeight: 30,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(right: 12.0),
+        padding: const EdgeInsets.only(left: 30, right: 12.0),
         child: TextField(
           controller: _controller,
           decoration: InputDecoration(
@@ -123,7 +134,7 @@ class _SearchBarState extends State<SearchBar> {
               ToastProvider.error(S.current.feedback_empty_keyword);
             }
           },
-          onChanged: (content){
+          onChanged: (content) {
             if (content.isNotEmpty) {
               widget.onChanged?.call(content);
             }
@@ -132,28 +143,29 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     );
-    var searchList =  ListView.builder(
+    var searchList = ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: 5,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            _controller.text =  tagUtils[index].name;
+            _controller.text = tagUtils[index].name;
           },
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 3, 3, 3),
-            child: Column(
+            padding: const EdgeInsets.fromLTRB(0, 3, 3, 10),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    SizedBox(width: 5),
-                    Center(child: tagsList[index]),
-                    Spacer(),
-                    hotIndexList[index]
-                  ],
+                SizedBox(width: 2),
+                SvgPicture.asset(
+                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                  width: 14,
                 ),
-                SizedBox(height:8.w),
+                SizedBox(width: 4),
+                Center(child: tagsList[index]),
+                Spacer(),
+                hotIndexList[index],
+                SizedBox(width: 6)
               ],
             ),
           ),
@@ -169,12 +181,15 @@ class _SearchBarState extends State<SearchBar> {
       );
     }
 
-    return widget.showSearch ==false ?searchInputField:
-    Column(
+    return Column(
       children: [
         searchInputField,
-        SizedBox(height:25.w),
-        searchList,
+        _showSearch
+            ? Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: searchList,
+              )
+            : SizedBox(),
       ],
     );
   }

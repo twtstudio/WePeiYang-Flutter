@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -10,7 +8,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.d
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
-
 
 class SearchPage extends StatefulWidget {
   @override
@@ -64,49 +61,26 @@ class _SearchPageState extends State<SearchPage> {
         });
       },
     );
-    var sharp =  SvgPicture.asset(
-      "assets/svg_pics/lake_butt_icons/sharp.svg",
-      width: 14,
-    );
-    var topView = SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-               mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height:6.25.w),
-                  InkWell(
-                    child: Row(
-                      children: [
-                        SizedBox(width: 15.w),
-                        ImageIcon(AssetImage('assets/images/lake_butt_icons/back.png'),
-                            size: 18),
-                        SizedBox(width: 20.w),
-                      ],
-                    ),
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  SizedBox(height:36.25.w),
-                  sharp,
-                  SizedBox(height:20.w),
-                  sharp,
-                  SizedBox(height:20.w),
-                  sharp,
-                  SizedBox(height:20.w),
-                  sharp,
-                  SizedBox(height:20.w),
-                  sharp,
-                ],
-              ),
-              ConstrainedBox(constraints: BoxConstraints(maxWidth: 320.w,),
-                child: searchBar,
-              )
 
-            ],
+    var topView = SafeArea(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          searchBar,
+          InkWell(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: ImageIcon(
+                  AssetImage('assets/images/lake_butt_icons/back.png'),
+                  size: 18),
+            ),
+            onTap: () => Navigator.pop(context),
           )
-    );
+        ],
+      ),
+    ));
 
     const titleTextStyle = TextStyle(
         fontSize: 17.0,
@@ -167,8 +141,7 @@ class _SearchPageState extends State<SearchPage> {
                   '',
                   S.current.feedback_search_result,
                 );
-                if (index == 0)
-                  return SizedBox(width: double.infinity);
+                if (index == 0) return SizedBox(width: double.infinity);
                 index--;
                 return InkResponse(
                   radius: 30,
@@ -188,7 +161,8 @@ class _SearchPageState extends State<SearchPage> {
                     backgroundColor: Color.fromRGBO(234, 234, 234, 1),
                     label: Text(list[list.length - index - 1],
                         style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
-                    deleteIcon: Icon(Icons.close, color: ColorUtil.lightTextColor, size: 16),
+                    deleteIcon: Icon(Icons.close,
+                        color: ColorUtil.lightTextColor, size: 16),
                     onDeleted: () {
                       setState(() {
                         list.removeAt(list.length - index - 1);
@@ -212,17 +186,17 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
     );
 
-    return Container(
-      color: ColorUtil.white253,
-        child:
-        Column(
+    return ColoredBox(
+        color: ColorUtil.white253,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          //  searchList,
             topView,
             searchHistory,
           ],
         ));
   }
+
   showClearDialog() {
     showDialog(
       context: context,

@@ -97,7 +97,7 @@ class _DetailPageState extends State<DetailPage>
 
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
-        scrollInfo.metrics.pixels - _previousOffset >= 20) {
+        (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
@@ -317,8 +317,8 @@ class _DetailPageState extends State<DetailPage>
         return AnimatedSize(
           clipBehavior: Clip.antiAlias,
           vsync: this,
-          duration: Duration(milliseconds: 450),
-          curve: Curves.easeInOutCubic,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOutSine,
           child: Container(
             margin: EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
