@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -16,8 +13,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 enum ReplyDetailPageStatus {
   loading,
@@ -43,7 +40,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   int currentPage = 1;
 
   double _previousOffset = 0;
-  final launchKey = GlobalKey<_CommentInputFieldState>();
+  final launchKey = GlobalKey<CommentInputFieldState>();
+  final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
 
@@ -181,75 +179,84 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       children: [
         mainList,
         Consumer<NewFloorProvider>(
-        builder: (BuildContext context, value, Widget child) {
-      return AnimatedSize(
-          vsync: this,
-          duration: Duration(milliseconds: 450),
-          curve: Curves.easeInOutCubic,
-          child: Container(
-            margin: EdgeInsets.only(top: 4),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, -1),
-                      blurRadius: 2,
-                      spreadRadius: 3),
-                ],
-                color: ColorUtil.whiteF8Color),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Offstage(
-                              offstage: !value.inputFieldEnabled,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [inputField, checkButton],
-                              )),
-                          Offstage(
-                            offstage: value.inputFieldEnabled,
-                            child: InkWell(
-                              onTap: () {
-                                Provider.of<NewFloorProvider>(context,
-                                    listen: false)
-                                    .inputFieldOpenAndReplyTo(widget.floor.id);
-                              },
-                              child: Container(
-                                  height: 22,
-                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text('友善回复，真诚沟通',
-                                        style: TextUtil
-                                            .base.NotoSansSC.w500.grey97
-                                            .sp(12)),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(11),
-                                    color: Colors.white,
-                                  )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            builder: (BuildContext context, value, Widget child) {
+          return AnimatedSize(
+            clipBehavior: Clip.antiAlias,
+            vsync: this,
+            duration: Duration(milliseconds: 450),
+            curve: Curves.easeInOutCubic,
+            child: Container(
+              margin: EdgeInsets.only(top: 4),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, -1),
+                        blurRadius: 2,
+                        spreadRadius: 3),
                   ],
-                ),
-                if (context.read<NewFloorProvider>().inputFieldEnabled)
-                  ImagesGridView()
-              ],
+                  color: ColorUtil.whiteF8Color),
+              child: Column(
+                children: [
+                  Offstage(
+                      offstage: !value.inputFieldEnabled,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          inputField,
+                          ImageSelectAndView(key: imageSelectionKey),
+                          SizedBox(height: 4),
+                          Row(
+                            children: [
+                              SizedBox(width: 4),
+                              IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/lake_butt_icons/image.png',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  onPressed: () => imageSelectionKey
+                                      .currentState
+                                      .loadAssets()),
+                              Spacer(),
+                              checkButton,
+                              SizedBox(width: 16),
+                            ],
+                          ),
+                          SizedBox(height: 10)
+                        ],
+                      )),
+                  Offstage(
+                    offstage: value.inputFieldEnabled,
+                    child: InkWell(
+                      onTap: () {
+                        Provider.of<NewFloorProvider>(context, listen: false)
+                            .inputFieldOpenAndReplyTo(widget.floor.id);
+                      },
+                      child: Container(
+                          height: 22,
+                          margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('友善回复，真诚沟通',
+                                style: TextUtil.base.NotoSansSC.w500.grey97
+                                    .sp(12)),
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(11),
+                            color: Colors.white,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );})
+          );
+        })
       ],
     );
 
@@ -311,244 +318,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         appBar: appBar,
         body: body,
       ),
-    );
-  }
-}
-
-var shareChannel = MethodChannel("com.twt.service/share");
-
-class CommentInputField extends StatefulWidget {
-  final int postId;
-
-  const CommentInputField({Key key, this.postId}) : super(key: key);
-
-  @override
-  _CommentInputFieldState createState() => _CommentInputFieldState();
-}
-
-class _CommentInputFieldState extends State<CommentInputField> {
-  var _textEditingController = TextEditingController();
-  String _commentLengthIndicator = '0/200';
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    context.read<NewFloorProvider>().focusNode.dispose();
-    super.dispose();
-  }
-
-  void send() {
-    if (_textEditingController.text.isNotEmpty) {
-      _replyFloor();
-    } else
-      ToastProvider.error('文字不能为空哦');
-    Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget inputField = TextField(
-      focusNode: context.read<NewFloorProvider>().focusNode,
-      controller: _textEditingController,
-      maxLength: 200,
-      textInputAction: TextInputAction.done,
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        counterText: '',
-        hintText:
-            '回复楼层：' + context.watch<NewFloorProvider>().replyTo.toString(),
-        suffix: Text(
-          _commentLengthIndicator,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 14,
-            color: ColorUtil.lightTextColor,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-        fillColor: ColorUtil.whiteF8Color,
-        filled: true,
-        isDense: true,
-      ),
-      onChanged: (text) {
-        _commentLengthIndicator = '${text.characters.length}/200';
-        setState(() {});
-      },
-      enabled: true,
-      minLines: 1,
-      maxLines: 10,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: inputField,
-    );
-  }
-
-  _replyFloor() {
-    ToastProvider.running('回复中 q(≧▽≦)/');
-    FeedbackService.replyFloor(
-      id: context.read<NewFloorProvider>().replyTo.toString(),
-      content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
-      onSuccess: () {
-        setState(() => _commentLengthIndicator = '0/200');
-        FocusManager.instance.primaryFocus.unfocus();
-        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-        _textEditingController.text = '';
-        ToastProvider.success("回复成功 (❁´3`❁)");
-      },
-      onFailure: (e) => ToastProvider.error(
-        '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-      ),
-    );
-  }
-}
-
-class ImagesGridView extends StatefulWidget {
-  @override
-  _ImagesGridViewState createState() => _ImagesGridViewState();
-}
-
-class _ImagesGridViewState extends State<ImagesGridView> {
-  static const maxImage = 1;
-
-  loadAssets() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    context.read<NewFloorProvider>().images.add(File(xFile.path));
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  Future<String> _showDialog() {
-    return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        titleTextStyle: FontManager.YaHeiRegular.copyWith(
-            color: Color.fromRGBO(79, 88, 107, 1.0),
-            fontSize: 10,
-            fontWeight: FontWeight.normal,
-            decoration: TextDecoration.none),
-        title: Text(S.current.feedback_delete_image_content),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop('cancel');
-              },
-              child: Text(S.current.feedback_cancel)),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop('ok');
-              },
-              child: Text(S.current.feedback_ok)),
-        ],
-      ),
-    );
-  }
-
-  Widget imgBuilder(index, List<File> data, length, {onTap}) {
-    return Stack(fit: StackFit.expand, children: [
-      InkWell(
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
-            arguments: {
-              "uriList": data,
-              "uriListLength": length,
-              "indexNow": index
-            }),
-        child: Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: Colors.black26),
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          child: ClipRRect(
-            child: Image.file(
-              data[index],
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-        ),
-      ),
-      InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.black26,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-          ),
-          child: Icon(
-            Icons.close,
-            size: MediaQuery.of(context).size.width / 32,
-            color: ColorUtil.searchBarBackgroundColor,
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 4, //方便右边宽度留白哈哈
-      childAspectRatio: 1,
-      crossAxisSpacing: 6,
-      mainAxisSpacing: 6,
-    );
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 400),
-      child: Consumer<NewFloorProvider>(
-        builder: (_, data, __) => GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: gridDelegate,
-          itemCount: maxImage == data.images.length
-              ? data.images.length
-              : data.images.length + 1,
-          itemBuilder: (_, index) {
-            if (index == 0 && index == data.images.length) {
-              //评论最多一张图yo
-              return _ImagePickerWidget(onTap: loadAssets);
-            } else {
-              return imgBuilder(
-                index,
-                data.images,
-                data.images.length,
-                onTap: () async {
-                  var result = await _showDialog();
-                  if (result == 'ok') {
-                    data.images.removeAt(index);
-                    setState(() {});
-                  }
-                },
-              );
-            }
-          },
-          physics: NeverScrollableScrollPhysics(),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImagePickerWidget extends StatelessWidget {
-  const _ImagePickerWidget({
-    Key key,
-    this.onTap,
-  }) : super(key: key);
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.crop_original),
-      onPressed: onTap,
     );
   }
 }

@@ -12,13 +12,12 @@ class CommentIdentificationContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 12,
-      margin: EdgeInsets.only(left: 3),
-      padding: EdgeInsets.symmetric(horizontal: 4),
+      margin: EdgeInsets.only(left: 2, top: 1),
+      padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
       child:
           Text(this.text, style: TextUtil.base.NotoSansSC.w500.whiteFD.sp(8)),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3),
+        borderRadius: BorderRadius.circular(4),
         color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
       ),
     );

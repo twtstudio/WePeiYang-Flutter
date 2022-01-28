@@ -26,6 +26,7 @@ typedef DislikeCallback = void Function(bool);
 
 class NCommentCard extends StatefulWidget {
   final String ancestorName;
+  final int ancestorId;
   final Floor comment;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
@@ -38,6 +39,7 @@ class NCommentCard extends StatefulWidget {
 
   NCommentCard(
       {this.ancestorName,
+      this.ancestorId,
       this.comment,
       this.commentFloor,
       this.likeSuccessCallback,
@@ -83,7 +85,7 @@ class _NCommentCardState extends State<NCommentCard> {
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.id}',
+            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
             width: 30,
             height: 30,
             fit: BoxFit.cover,
@@ -112,28 +114,38 @@ class _NCommentCardState extends State<NCommentCard> {
                   if (widget.isSubFloor &&
                       widget.comment.nickname == widget.ancestorName)
                     CommentIdentificationContainer('层主', true),
+                  //后面有东西时出现
                   if (widget.comment.replyToName != '' &&
-                      widget.comment.replyToName != widget.comment.nickname)
+                      widget.comment.replyTo != widget.ancestorId)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Icon(Icons.play_arrow, size: 8),
                     ),
+                  //回复的不是层主那条时出现
                   if (widget.comment.replyToName != '' &&
-                      widget.comment.replyToName != widget.comment.nickname)
+                      widget.comment.replyTo != widget.ancestorId)
                     Text(
                       widget.comment.replyToName,
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
                     ),
+                  //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
                   if (widget.isSubFloor &&
-                      widget.comment.replyToName != widget.comment.nickname &&
-                      widget.comment.replyToName == 'Owner')
+                      widget.comment.replyToName == 'Owner' &&
+                      (widget.ancestorName != 'Owner' ||
+                          (widget.ancestorName == 'Owner' &&
+                              widget.comment.replyTo != widget.ancestorId)))
                     CommentIdentificationContainer('楼主', false),
+                  //回的是层主但回复的不是这条评论
                   if (widget.isSubFloor &&
-                      widget.comment.replyToName != widget.comment.nickname &&
-                      widget.comment.replyToName == widget.ancestorName)
+                      widget.comment.replyToName == widget.ancestorName &&
+                      widget.comment.replyTo != widget.ancestorId)
                     CommentIdentificationContainer('层主', false),
+                  if (widget.isSubFloor &&
+                      widget.comment.replyTo != widget.ancestorId)
+                    CommentIdentificationContainer(
+                        '回复：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
               Text(
@@ -313,12 +325,27 @@ class _NCommentCardState extends State<NCommentCard> {
                 : min(widget.comment.subFloorCnt,
                     widget.comment.subFloors.length),
         itemBuilder: (context, index) {
-          return NCommentCard(
-            ancestorName: widget.comment.nickname,
-            comment: widget.comment.subFloors[index],
-            commentFloor: index + 1,
-            isSubFloor: true,
-            isFullView: widget.isFullView,
+          return Column(
+            children: [
+              NCommentCard(
+                ancestorName: widget.comment.nickname,
+                ancestorId: widget.comment.id,
+                comment: widget.comment.subFloors[index],
+                commentFloor: index + 1,
+                isSubFloor: true,
+                isFullView: widget.isFullView,
+              ),
+              if (widget.isFullView &&
+                  index !=
+                      min(widget.comment.subFloorCnt,
+                              widget.comment.subFloors.length) -
+                          1)
+                Container(
+                  color: ColorUtil.greyEAColor,
+                  height: 1.5,
+                  margin: EdgeInsets.symmetric(horizontal: 32),
+                )
+            ],
           );
         },
       );
@@ -365,10 +392,15 @@ class _NCommentCardState extends State<NCommentCard> {
     var likeAndDislikeWidget = [likeWidget, dislikeWidget];
 
     var bottomWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         ...likeAndDislikeWidget,
         Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
+          child: Text('ID: ' + widget.comment.id.toString(),
+              style: TextUtil.base.NotoSansSC.w500.grey6C.sp(9)),
+        ),
         replyButton,
       ],
     );

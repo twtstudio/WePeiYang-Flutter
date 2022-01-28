@@ -49,8 +49,8 @@ class _DetailPageState extends State<DetailPage>
   int currentPage = 1;
 
   double _previousOffset = 0;
-  final launchKey = GlobalKey<_CommentInputFieldState>();
-  final imageSelectionKey = GlobalKey<_ImageSelectAndViewState>();
+  final launchKey = GlobalKey<CommentInputFieldState>();
+  final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
 
@@ -288,10 +288,6 @@ class _DetailPageState extends State<DetailPage>
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: false,
-            // likeSuccessCallback: (isLiked, count) {
-            //   data.isLiked = isLiked;
-            //   data.likeCount = count;
-            // },
           );
         },
       );
@@ -508,17 +504,17 @@ class CommentInputField extends StatefulWidget {
   const CommentInputField({Key key, this.postId}) : super(key: key);
 
   @override
-  _CommentInputFieldState createState() => _CommentInputFieldState();
+  CommentInputFieldState createState() => CommentInputFieldState();
 }
 
-class _CommentInputFieldState extends State<CommentInputField> {
+class CommentInputFieldState extends State<CommentInputField> {
   var _textEditingController = TextEditingController();
   String _commentLengthIndicator = '0/200';
 
   @override
   void dispose() {
     _textEditingController.dispose();
-    //context.read<NewFloorProvider>().focusNode.dispose();
+    context.read<NewFloorProvider>().focusNode.dispose();
     super.dispose();
   }
 
@@ -545,8 +541,10 @@ class _CommentInputFieldState extends State<CommentInputField> {
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
                 counterText: '',
-                hintText: '回复楼层：' +
-                    context.read<NewFloorProvider>().replyTo.toString(),
+                hintText: context.read<NewFloorProvider>().replyTo == 0
+                    ? '回复冒泡：'
+                    : '回复楼层：' +
+                        context.read<NewFloorProvider>().replyTo.toString(),
                 suffix: Text(
                   _commentLengthIndicator,
                   style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
@@ -617,10 +615,10 @@ class ImageSelectAndView extends StatefulWidget {
   const ImageSelectAndView({Key key}) : super(key: key);
 
   @override
-  _ImageSelectAndViewState createState() => _ImageSelectAndViewState();
+  ImageSelectAndViewState createState() => ImageSelectAndViewState();
 }
 
-class _ImageSelectAndViewState extends State<ImageSelectAndView> {
+class ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
