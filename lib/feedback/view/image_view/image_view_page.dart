@@ -16,6 +16,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int urlListLength = 0;
   int indexNow = 0;
   int tempSelect;
+  bool isLongPic;
   final String baseUrl = 'https://www.zrzz.site:7013/';
 
   @override
@@ -25,6 +26,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
     urlList = obj['urlList'];
     urlListLength = obj['urlListLength'];
     indexNow = obj['indexNow'];
+    isLongPic = obj['isLongPic'] ?? false;
     tempSelect = indexNow;
 
     return GestureDetector(
@@ -49,10 +51,16 @@ class _ImageViewPageState extends State<ImageViewPage> {
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
+                  basePosition:
+                      isLongPic ? Alignment.topCenter : Alignment.center,
                   imageProvider: NetworkImage(baseUrl + urlList[index]),
-                  maxScale: PhotoViewComputedScale.contained * 5.0,
+                  maxScale: isLongPic
+                      ? PhotoViewComputedScale.contained * 20
+                      : PhotoViewComputedScale.contained * 5.0,
                   minScale: PhotoViewComputedScale.contained * 1.0,
-                  initialScale: PhotoViewComputedScale.contained,
+                  initialScale: isLongPic
+                      ? PhotoViewComputedScale.covered
+                      : PhotoViewComputedScale.contained,
                 );
               },
               scrollDirection: Axis.horizontal,
@@ -91,8 +99,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               onTap: () async {
-                var path =
-                    await ImagePickers.saveImageToGallery(baseUrl + urlList[tempSelect]);
+                var path = await ImagePickers.saveImageToGallery(
+                    baseUrl + urlList[tempSelect]);
                 await shareChannel
                     .invokeMethod("shareImgToQQ", {"imageUrl": path});
               },

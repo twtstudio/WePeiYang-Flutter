@@ -47,6 +47,7 @@ class NewPostProvider {
 }
 
 class NewFloorProvider extends ChangeNotifier {
+  int locate;
   int replyTo = 0;
   List<File> images = [];
   bool inputFieldEnabled = false;

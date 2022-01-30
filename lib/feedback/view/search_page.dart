@@ -68,7 +68,6 @@ class _SearchPageState extends State<SearchPage> {
       child: Stack(
         alignment: Alignment.topLeft,
         children: [
-          searchBar,
           InkWell(
             child: Padding(
               padding: const EdgeInsets.only(top: 6),
@@ -77,7 +76,8 @@ class _SearchPageState extends State<SearchPage> {
                   size: 18),
             ),
             onTap: () => Navigator.pop(context),
-          )
+          ),
+          searchBar
         ],
       ),
     ));

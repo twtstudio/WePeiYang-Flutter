@@ -86,14 +86,19 @@ class _DetailPageState extends State<DetailPage>
     });
   }
 
-  // _onLoadingThisPage() {
-  //   _getComments(onSuccess: (comments) {
-  //     _commentList.removeRange(_commentList.length - comments.length, _commentList.length);
-  //     _commentList.addAll(comments);
-  //   }, onFail: () {
-  //     _refreshController.loadFailed();
-  //   });
-  // }
+  _onLoadingSelectedPage(int current) {
+    print(current + 10000000000000000);
+    _getComments(
+        onSuccess: (comments) {
+          _commentList.removeRange(
+              _commentList.length - comments.length, _commentList.length);
+          _commentList.addAll(comments);
+        },
+        onFail: () {
+          _refreshController.loadFailed();
+        },
+        current: current);
+  }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
@@ -203,6 +208,10 @@ class _DetailPageState extends State<DetailPage>
     Widget checkButton = InkWell(
       onTap: () {
         launchKey.currentState.send();
+        setState(() {
+          _onLoadingSelectedPage(
+              (context.read<NewFloorProvider>().locate / 10).floor() + 1 ?? 0);
+        });
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
           width: 20),
@@ -284,6 +293,7 @@ class _DetailPageState extends State<DetailPage>
           ///_officialCommentList,点赞注释了
           var data = _commentList[index];
           return NCommentCard(
+            placeAppeared: index,
             comment: data,
             commentFloor: index + 1,
             isSubFloor: false,

@@ -104,26 +104,22 @@ class _PostCardState extends State<PostCard> {
 
       var limitedImage = _picFullView ?? false
           ? Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 image,
-                Row(
-                  children: [
-                    Spacer(),
-                    TextButton(
-                        style: ButtonStyle(
-                            alignment: Alignment.topRight,
-                            padding:
-                                MaterialStateProperty.all(EdgeInsets.zero)),
-                        onPressed: () {
-                          setState(() {
-                            _picFullView = false;
-                          });
-                        },
-                        child: Text('收起',
-                            style: TextUtil.base.textButtonBlue.w600.NotoSansSC
-                                .sp(14))),
-                  ],
-                ),
+                TextButton(
+                    style: ButtonStyle(
+                        alignment: Alignment.topRight,
+                        padding:
+                            MaterialStateProperty.all(EdgeInsets.zero)),
+                    onPressed: () {
+                      setState(() {
+                        _picFullView = false;
+                      });
+                    },
+                    child: Text('收起',
+                        style: TextUtil.base.textButtonBlue.w600.NotoSansSC
+                            .sp(14))),
               ],
             )
           : SizedBox(
@@ -142,24 +138,35 @@ class _PostCardState extends State<PostCard> {
                     child: Container(
                       height: 60,
                       width: double.infinity,
-                      padding: EdgeInsets.only(left: 12, bottom: 8),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
+                          begin: Alignment(0, -0.7),
+                          end: Alignment(0, 1),
                           colors: [
-                            Colors.black54,
                             Colors.transparent,
+                            Colors.black54,
                           ],
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Spacer(),
+                          SizedBox(width: 10),
                           Text(
-                            '点击查看全部',
-                            style: TextUtil.base.w600.white.sp(14),
+                            '点击展开\n',
+                            style: TextUtil.base.w600.greyEB.sp(14).h(0.6),
+                          ),
+                          Spacer(),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16))),
+                            padding: EdgeInsets.fromLTRB(12, 4, 10, 6),
+                            child: Text(
+                              '长图模式',
+                              style: TextUtil.base.w300.white.sp(12),
+                            ),
                           )
                         ],
                       ),
@@ -181,7 +188,7 @@ class _PostCardState extends State<PostCard> {
               width: 97,
               height: 76,
               child: snapshot.hasData
-                  ? snapshot.data.height / snapshot.data.width > 2.5
+                  ? snapshot.data.height / snapshot.data.width > 2.0
                       ? longImageOuterLook
                       : image
                   : Loading());
@@ -194,9 +201,29 @@ class _PostCardState extends State<PostCard> {
           future: completer.future,
           builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
             return snapshot.hasData
-                ? snapshot.data.height / snapshot.data.width > 2.5
-                    ? limitedImage
-                    : image
+                ? snapshot.data.height / snapshot.data.width > 2.0
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, FeedbackRouter.imageView,
+                              arguments: {
+                                "urlList": post.imageUrls,
+                                "urlListLength": post.imageUrls.length,
+                                "indexNow": 0,
+                                "isLongPic": true
+                              });
+                        },
+                        child: limitedImage)
+                    : InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, FeedbackRouter.imageView,
+                              arguments: {
+                                "urlList": post.imageUrls,
+                                "urlListLength": post.imageUrls.length,
+                                "indexNow": 0,
+                                "isLongPic": false
+                              });
+                        },
+                        child: image)
                 : Text('Loading...');
           },
         ),
@@ -534,16 +561,7 @@ class _PostCardState extends State<PostCard> {
             imageList,
           ]);
         } else if (post.imageUrls.length == 1) {
-          imagesWidget.add(InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, FeedbackRouter.imageView,
-                    arguments: {
-                      "urlList": post.imageUrls,
-                      "urlListLength": post.imageUrls.length,
-                      "indexNow": 0
-                    });
-              },
-              child: singlePictureLoader));
+          imagesWidget.add(singlePictureLoader);
         }
 
         imagesWidget.add(

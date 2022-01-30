@@ -40,7 +40,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
 
-  bool _lakeIsLoaded, _feedbackIsLoaded;
+  bool _lakeIsLoaded, _feedbackIsLoaded, _initialRefresh;
   bool _hotDisplays = false;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
@@ -308,18 +308,28 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   Widget build(BuildContext context) {
+
     super.build(context);
+
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
+
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
+
+    if (_initialRefresh ?? false) {
+      listToTop();
+      _initialRefresh = false;
+    }
+
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
         height: 30,
+        margin: EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -446,8 +456,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
       child: AnimatedSize(
-        curve: Curves.easeInOutExpo,
-        duration: Duration(milliseconds: 700),
+        curve: Curves.easeOutCirc,
+        duration: Duration(milliseconds: 400),
         vsync: this,
         child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
       ),
@@ -539,6 +549,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   image: AssetImage(
                                       "assets/images/lake_butt_icons/add_post.png")))),
                       onTap: () {
+                        _initialRefresh = true;
                         Navigator.pushNamed(context, FeedbackRouter.newPost);
                       }),
                 ),
@@ -702,7 +713,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (_controller.offset > 1500) _controller.jumpTo(1500);
     _controller.animateTo(-85,
-        duration: Duration(milliseconds: 1000), curve: Curves.fastOutSlowIn);
+        duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 }
 
