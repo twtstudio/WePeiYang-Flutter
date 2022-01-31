@@ -37,7 +37,8 @@ class SearchBar extends StatefulWidget {
   _SearchBarState createState() => _SearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBarState extends State<SearchBar>
+    with SingleTickerProviderStateMixin {
   TextEditingController _controller = TextEditingController();
   bool _showSearch;
 
@@ -107,9 +108,10 @@ class _SearchBarState extends State<SearchBar> {
         maxHeight: 30,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 30, right: 12.0),
+        padding: const EdgeInsets.only(left: 38, right: 12),
         child: TextField(
           controller: _controller,
+          style: TextStyle().black2A.NotoSansSC.w400.sp(16),
           decoration: InputDecoration(
             hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(16),
             hintText: S.current.feedback_search_hint,
@@ -143,35 +145,42 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     );
-    var searchList = ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            _controller.text = tagUtils[index].name;
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 3, 3, 10),
-            child: Row(
-              children: [
-                SizedBox(width: 2),
-                SvgPicture.asset(
-                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                  width: 14,
+    var searchList = Container(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16))),
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                _controller.text = tagUtils[index].name;
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 3, 3, 10),
+                child: Row(
+                  children: [
+                    SizedBox(width: 14),
+                    SvgPicture.asset(
+                      "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                      width: 14,
+                    ),
+                    SizedBox(width: 4),
+                    Center(child: tagsList[index]),
+                    Spacer(),
+                    hotIndexList[index],
+                    SizedBox(width: 12)
+                  ],
                 ),
-                SizedBox(width: 4),
-                Center(child: tagsList[index]),
-                Spacer(),
-                hotIndexList[index],
-                SizedBox(width: 6)
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              ),
+            );
+          },
+        ));
     if (widget.tapField != null) {
       searchInputField = InkWell(
         child: AbsorbPointer(
@@ -183,13 +192,19 @@ class _SearchBarState extends State<SearchBar> {
 
     return Column(
       children: [
-        searchInputField,
-        _showSearch
-            ? Padding(
-                padding: const EdgeInsets.only(top: 14),
-                child: searchList,
-              )
-            : SizedBox(),
+        Container(
+            color: Colors.white,
+            child: searchInputField,
+            padding: EdgeInsets.symmetric(vertical: 6)),
+        ColoredBox(
+          color: ColorUtil.backgroundColor,
+          child: AnimatedSize(
+            curve: Curves.easeOutCirc,
+            duration: Duration(milliseconds: 400),
+            vsync: this,
+            child: _showSearch ? searchList : SizedBox(),
+          ),
+        )
       ],
     );
   }

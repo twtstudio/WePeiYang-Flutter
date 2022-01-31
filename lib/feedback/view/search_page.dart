@@ -63,23 +63,20 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     var topView = SafeArea(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Stack(
-        alignment: Alignment.topLeft,
-        children: [
-          InkWell(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: ImageIcon(
-                  AssetImage('assets/images/lake_butt_icons/back.png'),
-                  size: 18),
-            ),
-            onTap: () => Navigator.pop(context),
+        child: Stack(
+      alignment: Alignment.topLeft,
+      children: [
+        searchBar,
+        InkWell(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12, left: 12),
+            child: ImageIcon(
+                AssetImage('assets/images/lake_butt_icons/back.png'),
+                size: 18),
           ),
-          searchBar
-        ],
-      ),
+          onTap: () => Navigator.pop(context),
+        )
+      ],
     ));
 
     const titleTextStyle = TextStyle(
@@ -89,7 +86,6 @@ class _SearchPageState extends State<SearchPage> {
 
     var searchHistoryIcon = Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      margin: EdgeInsets.only(top: 0),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,12 +183,14 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return ColoredBox(
-        color: ColorUtil.white253,
+        color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
-            searchHistory,
+            Expanded(
+                child: Container(
+                    color: ColorUtil.backgroundColor, child: searchHistory)),
           ],
         ));
   }
