@@ -24,12 +24,28 @@ class FbTagsProvider {
   }
 }
 
+class FbHotTagsProvider extends ChangeNotifier {
+  List<Tag> hotTagsList = [];
+
+  Future<void> initHotTags({OnSuccess success, OnFailure failure}) async {
+    await FeedbackService.getHotTags(onSuccess: (list) {
+      hotTagsList.clear();
+      hotTagsList.addAll(list);
+      notifyListeners();
+      success?.call();
+    }, onFailure: (e) {
+      failure.call(e);
+      ToastProvider.error(e.error.toString());
+    });
+  }
+}
+
 class NewPostProvider {
   String title = "";
   String content = "";
   int type = 1;
   Department department;
-  Tag tag =Tag();
+  Tag tag = Tag();
 
   List<File> images = [];
 
@@ -52,15 +68,18 @@ class NewFloorProvider extends ChangeNotifier {
   List<File> images = [];
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
+
   void inputFieldOpenAndReplyTo(int rep) {
     inputFieldEnabled = true;
     replyTo = rep;
     notifyListeners();
-    }
+  }
+
   void inputFieldClose() {
     inputFieldEnabled = false;
     notifyListeners();
   }
+
   void clearAndClose() {
     focusNode.unfocus();
     inputFieldEnabled = false;

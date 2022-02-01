@@ -545,16 +545,16 @@ class CommentInputFieldState extends State<CommentInputField> {
     Widget inputField = Consumer<NewFloorProvider>(
         builder: (_, data, __) => TextField(
               style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
-              focusNode: context.read<NewFloorProvider>().focusNode,
+              focusNode: data.focusNode,
               controller: _textEditingController,
               maxLength: 200,
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
                 counterText: '',
-                hintText: context.read<NewFloorProvider>().replyTo == 0
+                hintText: data.replyTo == 0
                     ? '回复冒泡：'
                     : '回复楼层：' +
-                        context.read<NewFloorProvider>().replyTo.toString(),
+                        data.replyTo.toString(),
                 suffix: Text(
                   _commentLengthIndicator,
                   style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,

@@ -35,13 +35,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
+  FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
 
   bool _lakeIsLoaded, _feedbackIsLoaded, _initialRefresh;
-  bool _hotDisplays = false;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -77,12 +77,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget _feedbackListView;
   Widget _departmentSelectionContainer;
 
+  getHotList() {
+    _hotTagsProvider.initHotTags(success: () {
+      _refreshController.refreshCompleted();
+    }, failure: (e) {
+      ToastProvider.error(e.error.toString());
+      _refreshController.refreshFailed();
+    });
+  }
+
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
+
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
-        _hotDisplays = true;
         _refreshController.refreshCompleted();
       }, failure: (_) {
         controller?.stop();
@@ -91,9 +100,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
-      _hotDisplays = false;
       _refreshController.refreshFailed();
     });
+    if (_swap == 1)
+      getHotList();
   }
 
   _onLoading() {
@@ -224,7 +234,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _swap = 0;
     _lakeIsLoaded = false;
     _feedbackIsLoaded = false;
-    _hotDisplays = false;
     _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
@@ -233,6 +242,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
+      _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
       _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
         ToastProvider.error(e.error.toString());
@@ -308,7 +318,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   Widget build(BuildContext context) {
-
     super.build(context);
 
     ScreenUtil.init(
@@ -321,7 +330,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
 
     if (_initialRefresh ?? false) {
-      listToTop();
+      if (_controller.offset != null) listToTop();
       _initialRefresh = false;
     }
 
@@ -402,8 +411,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             physics: NeverScrollableScrollPhysics(),
             itemCount: model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
-              if (index == 0)
-                return Offstage(offstage: !_hotDisplays, child: HotCard());
+              if (index == 0) return InkWell(onTap: getHotList,child: HotCard());
               index--;
               final post = model.allList[swapLister[1]][index];
               return PostCard.simple(post, key: ValueKey(post.id));
