@@ -284,7 +284,7 @@ class _TagViewState extends State<TagView> {
               shape: BoxShape.rectangle,
             ),
             margin: const EdgeInsets.only(bottom: 6),
-            padding: const EdgeInsets.fromLTRB(18, 0, 10, 16),
+            padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
             child: notifier.value == PostType.feedback
                 ? TabGridView(
                     department: department.value,

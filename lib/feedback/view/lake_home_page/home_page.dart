@@ -330,7 +330,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
 
     if (_initialRefresh ?? false) {
-      if (_controller.offset != null) listToTop();
+      if (_controller.hasClients) listToTop();
       _initialRefresh = false;
     }
 
@@ -411,7 +411,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             physics: NeverScrollableScrollPhysics(),
             itemCount: model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
-              if (index == 0) return InkWell(onTap: getHotList,child: HotCard());
+              if (index == 0) return HotCard();
               index--;
               final post = model.allList[swapLister[1]][index];
               return PostCard.simple(post, key: ValueKey(post.id));

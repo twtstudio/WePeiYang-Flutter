@@ -23,6 +23,7 @@ class _SearchTagCardState extends State<SearchTagCard>
   final TextEditingController _controller = TextEditingController();
   Tag tag = Tag();
   bool _showAdd;
+  bool _useThisTag;
   List<Widget> tagList = [SizedBox(height: 4)];
 
   _SearchTagCardState();
@@ -32,6 +33,7 @@ class _SearchTagCardState extends State<SearchTagCard>
     super.initState();
     initSearchTag();
     _controller.addListener(() {
+      _useThisTag = false;
       refreshSearchTag(_controller.text);
     });
   }
@@ -41,94 +43,102 @@ class _SearchTagCardState extends State<SearchTagCard>
     tagList.add(SizedBox(height: 4));
     tagUtil = list;
     _showAdd = true;
-    for (int total = 0; total < tagUtil.length; total++) {
-      tagList.add(GestureDetector(
-        onTap: () {
-          _controller.text = tagUtil[total].name;
-          context.read<NewPostProvider>().tag =
-              Tag(id: tagUtil[total].id, name: tagUtil[total].name);
-        },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 3, 0),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                width: 14,
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                  child: Text(
-                tagUtil[total].name,
-                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
-                overflow: TextOverflow.ellipsis,
-              )),
-              SizedBox(width: 4),
-              Text(
-                (tagUtil[total].point ?? 0).toString(),
-                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
-              )
-            ],
-          ),
-        ),
-      ));
-      if (_controller.text == tagUtil[total].name) {
-        _showAdd = false;
-        tagList[0] = tagList[total + 1];
-        tagList.removeAt(total + 1);
-      }
-    }
-    if (tagList.length > 5) tagList = tagList.sublist(0, 5);
-    _showAdd
-        ? tagList.add(GestureDetector(
-            onTap: () async {
-              await FeedbackService.postTags(
-                name: _controller.text,
-                onSuccess: (tags) {
-                  context.read<NewPostProvider>().tag = Tag(id: tags.id);
-                  ToastProvider.success("成功添加 “${_controller.text}” 话题");
-                  FeedbackService.searchTags(
-                      name: _controller.text,
-                      onResult: (list) {
-                        setState(() {
-                          _searchTags(list);
-                        });
-                      },
-                      onFailure: (e) {
-                        ToastProvider.error(e.error.toString());
-                      });
-                },
-                onFailure: (tags) {
-                  context.read<NewPostProvider>().tag = Tag(id: tags.id);
-                  ToastProvider.error("该标签已存在或违规");
-                },
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 3, 0),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                    width: 14,
-                  ),
-                  SizedBox(width: 16),
-                  SizedBox(
-                      width: ScreenUtil().setWidth(230),
-                      child: Text(
-                        "添加“${_controller.text}”话题",
-                        style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      )),
-                ],
-              ),
+    if (!_useThisTag) {
+      for (int total = 0; total < tagUtil.length; total++) {
+        tagList.add(GestureDetector(
+          onTap: () {
+            _controller.text = tagUtil[total].name;
+            FocusScope.of(context).unfocus();
+            context.read<NewPostProvider>().tag =
+                Tag(id: tagUtil[total].id, name: tagUtil[total].name);
+            _useThisTag = true;
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 3, 8),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                  width: 14,
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                    child: Text(
+                  tagUtil[total].name,
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                  overflow: TextOverflow.ellipsis,
+                )),
+                SizedBox(width: 4),
+                Text(
+                  (tagUtil[total].point ?? 0).toString(),
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                )
+              ],
             ),
-          ))
-        : tagList.add(
-        //Text('已经存在 ${_controller.text} 标签了哦')
-      SizedBox()
-    );
+          ),
+        ));
+        if (_controller.text == tagUtil[total].name) {
+          _showAdd = false;
+          tagList[0] = tagList[total + 1];
+          tagList.removeAt(total + 1);
+        }
+      }
+      if (tagList.length > 5) tagList = tagList.sublist(0, 5);
+      _showAdd
+          ? tagList.add(GestureDetector(
+              onTap: () async {
+                await FeedbackService.postTags(
+                  name: _controller.text,
+                  onSuccess: (tags) {
+                    context.read<NewPostProvider>().tag = Tag(id: tags.id);
+                    ToastProvider.success("成功添加 “${_controller.text}” 话题");
+                    FeedbackService.searchTags(
+                        name: _controller.text,
+                        onResult: (list) {
+                          setState(() {
+                            _searchTags(list);
+                            _controller.text = tagUtil[0].name;
+                            FocusScope.of(context).unfocus();
+                            context.read<NewPostProvider>().tag =
+                                Tag(id: tagUtil[0].id, name: tagUtil[0].name);
+                            _useThisTag = true;
+                          });
+                        },
+                        onFailure: (e) {
+                          ToastProvider.error(e.error.toString());
+                        });
+                  },
+                  onFailure: (tags) {
+                    context.read<NewPostProvider>().tag = Tag(id: tags.id);
+                    ToastProvider.error("该标签已存在或违规");
+                  },
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 3, 10),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                      width: 14,
+                    ),
+                    SizedBox(width: 16),
+                    SizedBox(
+                        width: ScreenUtil().setWidth(230),
+                        child: Text(
+                          "添加“${_controller.text}”话题",
+                          style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        )),
+                  ],
+                ),
+              ),
+            ))
+          : tagList.add(
+              //Text('已经存在 ${_controller.text} 标签了哦')
+              SizedBox());
+    }
   }
 
   initSearchTag() {
@@ -183,18 +193,24 @@ class _SearchTagCardState extends State<SearchTagCard>
       enabled: true,
       textInputAction: TextInputAction.search,
     );
+
     return InkWell(
       onTap: initSearchTag,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 14),
-          if (tagUtil.length == 1 && tagUtil[0].name == _controller.text)
-            Text('使用此tag:'),
+          SizedBox(height: 6),
+          if (_useThisTag ?? false)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '使用此tag:',
+                style: TextUtil.base.w600.NotoSansSC.sp(12).greyA6,
+              ),
+            ),
           searchBar,
           Offstage(
-            offstage: _controller.text == '' ||
-                (tagUtil.length == 1 && tagUtil[0].name == _controller.text),
+            offstage: _controller.text == '',
             child: AnimatedSize(
                 duration: Duration(milliseconds: 300),
                 vsync: this,

@@ -39,7 +39,7 @@ class _HotCardState extends State<HotCard> {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 8),
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 2),
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         color: Colors.white,
