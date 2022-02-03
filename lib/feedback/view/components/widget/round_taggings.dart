@@ -62,8 +62,9 @@ class UnSolvedWidget extends StatelessWidget {
 
 class TagShowWidget extends StatelessWidget {
   final String tag;
+  final double width;
 
-  TagShowWidget(this.tag);
+  TagShowWidget(this.tag, this.width);
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,7 @@ class TagShowWidget extends StatelessWidget {
             height: 16,
             width: 16,
             alignment: Alignment.center,
-            margin: EdgeInsets.fromLTRB(2, 2, 5, 2),
+            margin: EdgeInsets.fromLTRB(2, 2, 4, 2),
             padding: EdgeInsets.symmetric(vertical: 3),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -85,10 +86,14 @@ class TagShowWidget extends StatelessWidget {
               "assets/svg_pics/lake_butt_icons/hashtag.svg",
             ),
           ),
-          Text(
-            tag,
-            style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
-            textAlign: TextAlign.center,
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: width - 30),
+            child: Text(
+              tag,
+              style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           SizedBox(width: 8)
         ],

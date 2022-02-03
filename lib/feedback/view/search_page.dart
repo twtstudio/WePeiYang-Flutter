@@ -125,51 +125,52 @@ class _SearchPageState extends State<SearchPage> {
           );
         }
 
+        List<Widget> searchHistory = [SizedBox(width: double.infinity)];
+        searchHistory.addAll(List.generate(
+          list.length,
+              (index) {
+            var searchArgument = SearchResultPageArgs(
+              list[list.length - index - 1],
+              '',
+              S.current.feedback_search_result,
+            );
+            return InkResponse(
+              radius: 30,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.searchResult,
+                  arguments: searchArgument,
+                ).then((_) {
+                  Navigator.pop(context);
+                });
+              },
+              child: Chip(
+                elevation: 1,
+                backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                label: Text(list[list.length - index - 1],
+                    style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
+                deleteIcon: Icon(Icons.close,
+                    color: ColorUtil.lightTextColor, size: 16),
+                onDeleted: () {
+                  setState(() {
+                    list.removeAt(list.length - index - 1);
+                  });
+                  _prefs.setStringList('feedback_search_history', list);
+                  ToastProvider.success("删除成功");
+                },
+              ),
+            );
+          },
+        ));
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Wrap(
             spacing: 6,
-            children: List.generate(
-              list.length,
-              (index) {
-                var searchArgument = SearchResultPageArgs(
-                  list[list.length - index - 1],
-                  '',
-                  S.current.feedback_search_result,
-                );
-                if (index == 0) return SizedBox(width: double.infinity);
-                index--;
-                return InkResponse(
-                  radius: 30,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      FeedbackRouter.searchResult,
-                      arguments: searchArgument,
-                    ).then((_) {
-                      Navigator.pop(context);
-                    });
-                  },
-                  child: Chip(
-                    elevation: 1,
-                    backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-                    label: Text(list[list.length - index - 1],
-                        style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
-                    deleteIcon: Icon(Icons.close,
-                        color: ColorUtil.lightTextColor, size: 16),
-                    onDeleted: () {
-                      setState(() {
-                        list.removeAt(list.length - index - 1);
-                      });
-                      _prefs.setStringList('feedback_search_history', list);
-                      ToastProvider.success("删除成功");
-                    },
-                  ),
-                );
-              },
-            ),
+            children: searchHistory
           ),
         );
       },

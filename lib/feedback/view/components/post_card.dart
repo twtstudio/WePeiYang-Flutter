@@ -277,7 +277,7 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(children: [TagShowWidget(tag), SizedBox(width: 8), campus]),
+          Row(children: [TagShowWidget(tag,  WePeiYangApp.screenWidth - (post.campus > 0 ? 40 : 0) - (widget.type == PostCardType.simple ? 180 : 0)), SizedBox(width: 8), campus]),
           SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
             Row(
