@@ -204,9 +204,11 @@ class _NCommentCardState extends State<NCommentCard> {
             return <PopupMenuEntry<String>>[
               PopupMenuItem<String>(
                 value: '分享',
-                child: new Text(
-                  '分享',
-                  style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                child: Center(
+                  child: new Text(
+                    '分享',
+                    style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                  ),
                 ),
               ),
               widget.comment.isOwner
@@ -220,10 +222,12 @@ class _NCommentCardState extends State<NCommentCard> {
               )
                   : PopupMenuItem<String>(
                 value: '举报',
-                child: new Text(
-                  '举报',
-                  style:
-                  TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                child: Center(
+                  child: new Text(
+                    '举报',
+                    style:
+                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                  ),
                 ),
               ),
             ];
@@ -539,7 +543,8 @@ class RacTangle extends ShapeBorder {
   @override
   Path getOuterPath(Rect rect, {TextDirection textDirection}) {
     var path = Path();
-    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(10)));
+    Rect rects=Rect.fromLTWH(27.5.w, 0, 87.6.w, rect.height);
+    path.addRRect(RRect.fromRectAndRadius(rects, Radius.circular(20)));
     return path;
   }
 

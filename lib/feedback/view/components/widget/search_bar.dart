@@ -7,6 +7,9 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../feedback_router.dart';
+import '../../search_result_page.dart';
+
 List<Text> tagsList = List.filled(
     5,
     Text(
@@ -160,6 +163,17 @@ class _SearchBarState extends State<SearchBar>
             return GestureDetector(
               onTap: () {
                 _controller.text = tagUtils[index].name;
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.searchResult,
+                  arguments: SearchResultPageArgs(
+                    '',
+                    '${tagUtils[index].id}',
+                    S.current.feedback_search_result,
+                  ),
+                ).then((_) {
+                  Navigator.pop(context);
+                });
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 3, 3, 10),

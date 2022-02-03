@@ -434,20 +434,53 @@ class _DetailPageState extends State<DetailPage>
       body = Center(child: Text("error!"));
     }
 
-    var menuButton = IconButton(
-        icon: SvgPicture.asset(
+    // var menuButton = PopupMenuButton(
+    //     child: SvgPicture.asset(
+    //         'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
+    //     splashRadius: 20,
+    //     onPressed: () {
+    //       showMenu(
+    //         context: context,
+    //         shape: RacTangle(),
+    //         /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
+    //         /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
+    //         position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
+    //         items: <PopupMenuItem<String>>[
+    //           new PopupMenuItem<String>(
+    //             value: '举报',
+    //             child: new Text(
+    //               '举报',
+    //               style: FontManager.YaHeiRegular.copyWith(
+    //                 fontSize: 13,
+    //                 color: ColorUtil.boldTextColor,
+    //               ),
+    //             ),
+    //           ),
+    //         ],
+    //       ).then((value) {
+    //         if (value == "举报") {
+    //           Navigator.pushNamed(context, FeedbackRouter.report,
+    //               arguments: ReportPageArgs(widget.post.id, true));
+    //         }
+    //       });
+    //     });
+    var menuButton = PopupMenuButton(
+      ///改成了用PopupMenuButton的方式，方便偏移的处理
+        shape: RacTangle(),
+        offset: Offset(100,20),
+        child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-        splashRadius: 20,
-        onPressed: () {
-          showMenu(
-            context: context,
-
-            /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
-            /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-            position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
-            items: <PopupMenuItem<String>>[
-              new PopupMenuItem<String>(
-                value: '举报',
+      onSelected: (value){
+        if (value == "举报") {
+          Navigator.pushNamed(context, FeedbackRouter.report,
+              arguments: ReportPageArgs(widget.post.id, true));
+        }
+      },
+        itemBuilder: (context) {
+          return <PopupMenuItem<String>>[
+             PopupMenuItem<String>(
+              value: '举报',
+              child: Center(
                 child: new Text(
                   '举报',
                   style: FontManager.YaHeiRegular.copyWith(
@@ -456,15 +489,9 @@ class _DetailPageState extends State<DetailPage>
                   ),
                 ),
               ),
-            ],
-          ).then((value) {
-            if (value == "举报") {
-              Navigator.pushNamed(context, FeedbackRouter.report,
-                  arguments: ReportPageArgs(widget.post.id, true));
-            }
-          });
+            ),
+          ];
         });
-
     var shareButton = IconButton(
         icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
         onPressed: () {

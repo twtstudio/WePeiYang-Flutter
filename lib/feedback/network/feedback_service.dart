@@ -142,6 +142,7 @@ class FeedbackService with AsyncTimer {
   static getPosts(
       {keyword,
       departmentId,
+      tagId,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -152,6 +153,7 @@ class FeedbackService with AsyncTimer {
         queryParameters: {
           'type': '$type',
           'content': keyword ?? '',
+          'tag_id' : '$tagId',
           ///搜索
           'page_size': '10',
           'page': '$page',
