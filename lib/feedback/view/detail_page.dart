@@ -295,6 +295,7 @@ class _DetailPageState extends State<DetailPage>
           return NCommentCard(
             placeAppeared: index,
             comment: data,
+            ancestorId: post.id,
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: false,

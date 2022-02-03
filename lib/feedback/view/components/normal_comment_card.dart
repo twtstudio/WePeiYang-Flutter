@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
@@ -20,6 +21,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -38,7 +40,8 @@ class NCommentCard extends StatefulWidget {
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard({this.placeAppeared,
+  NCommentCard({
+    this.placeAppeared,
     this.ancestorName,
     this.ancestorId,
     this.comment,
@@ -160,66 +163,72 @@ class _NCommentCardState extends State<NCommentCard> {
           ),
         ),
         SizedBox(width: 4),
-        IconButton(
-          icon: SvgPicture.asset(
-              'assets/svg_pics/lake_butt_icons/more_horizontal.svg'),
-          iconSize: 16,
-          onPressed: () {
-            showMenu(
-              context: context,
-              position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
-              //TODO:需要处理
-              items: <PopupMenuItem<String>>[
-                PopupMenuItem<String>(
-                  value: '分享',
-                  child: new Text(
-                    '分享',
-                    style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ),
-                widget.comment.isOwner
-                    ? PopupMenuItem<String>(
-                  value: '删除',
-                  child: new Text(
-                    '删除',
-                    style:
-                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                )
-                    : PopupMenuItem<String>(
-                  value: '举报',
-                  child: new Text(
-                    '举报',
-                    style:
-                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ),
-              ],
-            ).then((value) async {
-              if (value == '举报') {
-                //TODO:举报
-                Navigator.pushNamed(context, FeedbackRouter.report,
-                    arguments: ReportPageArgs(widget.comment.id, false));
-              } else if (value == '删除') {
-                bool confirm = await _showDeleteConfirmDialog();
-                if (confirm) {
-                  FeedbackService.deleteFloor(
-                    id: widget.comment.id,
-                    onSuccess: () {
-                      ToastProvider.success(S.current.feedback_delete_success);
-                      setState(() {});
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    },
-                  );
-                }
-              }
-            });
-          },
-          constraints: BoxConstraints(),
+        PopupMenuButton(
           padding: EdgeInsets.zero,
-        )
+          tooltip: "排序方式",
+          shape: RacTangle(),
+          child: SvgPicture.asset(
+    'assets/svg_pics/lake_butt_icons/more_horizontal.svg',width: 16,),
+          //1-->时间排序，2-->动态排序
+          onSelected: (value) async {
+            if(value == '分享') {
+              String weCo =
+                  '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
+              ClipboardData data = ClipboardData(text: weCo);
+              Clipboard.setData(data);
+              Provider.of<MessageProvider>(context, listen: false)
+                  .setFeedbackWeKoHasViewed('${widget.ancestorId}');
+              ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+            }
+            if (value == '举报') {
+              //TODO:举报
+              Navigator.pushNamed(context, FeedbackRouter.report,
+                  arguments: ReportPageArgs(widget.comment.id, false));
+            } else if (value == '删除') {
+              bool confirm = await _showDeleteConfirmDialog();
+              if (confirm) {
+                FeedbackService.deleteFloor(
+                  id: widget.comment.id,
+                  onSuccess: () {
+                    ToastProvider.success(S.current.feedback_delete_success);
+                    setState(() {});
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  },
+                );
+              }
+            }
+          },
+          itemBuilder: (context) {
+            return <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: '分享',
+                child: new Text(
+                  '分享',
+                  style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                ),
+              ),
+              widget.comment.isOwner
+                  ? PopupMenuItem<String>(
+                value: '删除',
+                child: new Text(
+                  '删除',
+                  style:
+                  TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                ),
+              )
+                  : PopupMenuItem<String>(
+                value: '举报',
+                child: new Text(
+                  '举报',
+                  style:
+                  TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                ),
+              ),
+            ];
+          },
+        ),
       ],
     );
 
@@ -519,4 +528,46 @@ class _NCommentCardState extends State<NCommentCard> {
       ],
     );
   }
+}
+class RacTangle extends ShapeBorder {
+  @override
+  // ignore: missing_return
+  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
+    return null;
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
+    var path = Path();
+    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(10)));
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
+    var paint = Paint()
+      ..color = Colors.transparent
+      ..strokeWidth = 12.0
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round;
+    var w = rect.width;
+    var tang = Paint()
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.square
+      ..color = Colors.white
+      ..strokeWidth = 5;
+    //var h = rect.height;
+    canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
+    canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
+    canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
+    canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
+  }
+
+  @override
+  ShapeBorder scale(double t) {
+    return null;
+  }
+
+  @override
+  EdgeInsetsGeometry get dimensions => null;
 }
