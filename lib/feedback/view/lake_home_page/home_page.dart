@@ -664,17 +664,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           //0-->时间排序，1-->动态排序
                           onSelected: (value) {
                             CommonPreferences().feedbackSearchType.value = value.toString();
+                            onRefresh();
                           },
                           itemBuilder: (context) {
                             return <PopupMenuEntry<int>>[
                               PopupMenuItem<int>(
-                                value: 1,
+                                value: 0,
                                 child: Text(
                                   '时间排序',
                                 ),
                               ),
                               PopupMenuItem<int>(
-                                value: 2,
+                                value: 1,
                                 child: Text('动态排序'),
                               ),
                             ];
