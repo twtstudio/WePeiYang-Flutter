@@ -331,7 +331,6 @@ class _CampusSelectorState extends State<CampusSelector> {
               SizedBox(width: ScreenUtil().setWidth(12)),
             ],
           ),
-          //1-->时间排序，2-->动态排序
           onSelected: (value) {
             widget.campusNotifier.value = value;
           },

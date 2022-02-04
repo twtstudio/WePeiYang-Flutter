@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';

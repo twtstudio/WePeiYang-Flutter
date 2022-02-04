@@ -12,6 +12,7 @@ class Post {
   Post({
     this.id,
     this.createAt,
+    this.uid,
     this.type,
     this.campus,
     this.solved,
@@ -33,9 +34,10 @@ class Post {
 
   int id;
   DateTime createAt;
+  int uid;
   int type;
   int campus;
-  int solved;
+  bool solved;
   String title;
   String content;
   int favCount;
@@ -53,7 +55,8 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
     id: json["id"],
-    createAt: DateTime.parse(json["create_at"]),
+    createAt: DateTime.parse(json["created_at"]),
+    uid: json["uid"],
     type: json["type"],
     campus: json["campus"],
     solved: json["solved"],
@@ -75,7 +78,8 @@ class Post {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "create_at": createAt.toIso8601String(),
+    "created_at": createAt.toIso8601String(),
+    "uid": uid,
     "type": type,
     "campus": campus,
     "solved": solved,
@@ -185,7 +189,7 @@ class Floor {
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
         id: json["id"],
-        createAt: DateTime.parse(json["create_at"]),
+        createAt: DateTime.parse(json["created_at"]),
         uid: json["uid"],
         postId: json["post_id"],
         content: json["content"],
@@ -207,7 +211,7 @@ class Floor {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "create_at": createAt.toIso8601String(),
+        "created_at": createAt.toIso8601String(),
         "uid": uid,
         "post_id": postId,
         "content": content,
@@ -288,6 +292,4 @@ class PostTagId{
   Map<String, dynamic> toJson() => {
     "id": id,
   };
-
-  int fromJson(Map<String, dynamic> json) {}
 }

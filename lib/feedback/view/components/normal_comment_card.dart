@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -21,7 +22,6 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -53,7 +53,7 @@ class NCommentCard extends StatefulWidget {
 }
 
 class _NCommentCardState extends State<NCommentCard> {
-  final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = 'https://www.zrzz.site:7012/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -89,7 +89,8 @@ class _NCommentCardState extends State<NCommentCard> {
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget
+                .comment.nickname}',
             width: 30,
             height: 30,
             fit: BoxFit.cover,
@@ -164,25 +165,19 @@ class _NCommentCardState extends State<NCommentCard> {
         SizedBox(width: 4),
         PopupMenuButton(
           padding: EdgeInsets.zero,
-          tooltip: "排序方式",
           shape: RacTangle(),
           child: SvgPicture.asset(
-            'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-            width: 16,
-          ),
-          //1-->时间排序，2-->动态排序
+    'assets/svg_pics/lake_butt_icons/more_horizontal.svg',width: 16,),
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
                   '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
-              Provider.of<MessageProvider>(context, listen: false)
-                  .setFeedbackWeKoHasViewed('${widget.ancestorId}');
+              CommonPreferences().feedbackLastWeCo.value = widget.ancestorId.toString();
               ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
             }
             if (value == '举报') {
-              //TODO:举报
               Navigator.pushNamed(context, FeedbackRouter.report,
                   arguments: ReportPageArgs(widget.comment.id, false));
             } else if (value == '删除') {

@@ -79,7 +79,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
-  final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = 'https://www.zrzz.site:7012/';
 
   _PostCardState(this.post);
 
@@ -347,11 +347,11 @@ class _PostCardState extends State<PostCard> {
                   SizedBox(width: 10),
                   if (post.type == 0 && widget.type == PostCardType.simple)
                     MPWidget(post.id.toString().padLeft(6, '0')),
-                  if (post.solved == 1 &&
+                  if (post.solved == true &&
                       post.type == 1 &&
                       widget.type == PostCardType.simple)
                     SolvedWidget(),
-                  if (post.solved == 0 &&
+                  if (post.solved == false &&
                       post.type == 1 &&
                       widget.type == PostCardType.simple)
                     UnSolvedWidget(),

@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -19,7 +20,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 import '../new_post_page.dart';
 import '../search_result_page.dart';
@@ -112,6 +112,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     } else {
       _listProvider.getNextPage(
         swapLister[_swap],
+
         success: () {
           _refreshController.loadComplete();
         },
@@ -194,9 +195,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if (!Provider.of<MessageProvider>(context, listen: false)
-            .feedbackHasViewed
-            .contains(id)) {
+        if(CommonPreferences().feedbackLastWeCo.value != id){
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -211,13 +210,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   },
                 ).then((confirm) {
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail,
-                        arguments: post);
-                    Provider.of<MessageProvider>(context, listen: false)
-                        .setFeedbackWeKoHasViewed(id);
+                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
+                    CommonPreferences().feedbackLastWeCo.value = id;
                   } else {
-                    Provider.of<MessageProvider>(context, listen: false)
-                        .setFeedbackWeKoHasViewed(id);
+                    CommonPreferences().feedbackLastWeCo.value = id;
                   }
                 });
               },
@@ -665,8 +661,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             image: AssetImage(
                                 "assets/images/lake_butt_icons/menu.png"),
                           ),
-                          //1-->时间排序，2-->动态排序
-                          onSelected: (value) {},
+                          //0-->时间排序，1-->动态排序
+                          onSelected: (value) {
+                            CommonPreferences().feedbackSearchType.value = value.toString();
+                          },
                           itemBuilder: (context) {
                             return <PopupMenuEntry<int>>[
                               PopupMenuItem<int>(

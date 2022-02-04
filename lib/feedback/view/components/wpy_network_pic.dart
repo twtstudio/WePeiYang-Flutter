@@ -33,7 +33,7 @@ class WPYPic extends StatefulWidget {
 class _WPYPicState extends State<WPYPic> {
   String imageUrl;
   int index, total;
-  final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = 'https://www.zrzz.site:7012/';
 
   _WPYPicState(this.imageUrl, this.index, this.total);
 
@@ -48,7 +48,7 @@ class _WPYPicState extends State<WPYPic> {
               fit: BoxFit.cover,
               height: (WePeiYangApp.screenWidth - 80) / total,
               placeholder: kTransparentImage,
-              image: 'https://www.zrzz.site:7013/' + imageUrl),
+              image: 'https://www.zrzz.site:7012/' + imageUrl),
         ),
       );
     }

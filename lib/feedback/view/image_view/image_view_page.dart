@@ -17,7 +17,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int indexNow = 0;
   int tempSelect;
   bool isLongPic;
-  final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = 'https://www.zrzz.site:7012/';
 
   @override
   Widget build(BuildContext context) {

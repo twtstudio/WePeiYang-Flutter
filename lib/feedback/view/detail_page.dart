@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -499,8 +500,7 @@ class _DetailPageState extends State<DetailPage>
               '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
           ClipboardData data = ClipboardData(text: weCo);
           Clipboard.setData(data);
-          Provider.of<MessageProvider>(context, listen: false)
-              .setFeedbackWeKoHasViewed('${post.id}');
+          CommonPreferences().feedbackLastWeCo.value = post.id.toString();
           ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
         });
 
