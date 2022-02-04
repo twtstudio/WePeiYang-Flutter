@@ -201,7 +201,7 @@ class _NCommentCardState extends State<NCommentCard> {
               PopupMenuItem<String>(
                 value: '分享',
                 child: Center(
-                  child: new Text(
+                  child: Text(
                     '分享',
                     style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
                   ),
@@ -210,15 +210,17 @@ class _NCommentCardState extends State<NCommentCard> {
               widget.comment.isOwner
                   ? PopupMenuItem<String>(
                       value: '删除',
-                      child: new Text(
-                        '删除',
-                        style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                      child: Center(
+                        child: Text(
+                          '删除',
+                          style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                        ),
                       ),
                     )
                   : PopupMenuItem<String>(
                       value: '举报',
                       child: Center(
-                        child: new Text(
+                        child: Text(
                           '举报',
                           style:
                               TextUtil.base.black2A.regular.NotoSansSC.sp(12),
