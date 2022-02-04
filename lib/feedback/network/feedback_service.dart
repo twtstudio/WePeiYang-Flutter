@@ -153,7 +153,7 @@ class FeedbackService with AsyncTimer {
         queryParameters: {
           'type': '$type',
           'content': keyword ?? '',
-          'tag_id' : '$tagId',
+          'tag_id' : tagId ?? '',
           ///搜索
           'page_size': '10',
           'page': '$page',

@@ -15,14 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-
-enum ReplyDetailPageStatus {
-  loading,
-  idle,
-  error,
-}
-
-enum PostOrigin { home, profile, favorite, mailbox }
+import 'package:we_pei_yang_flutter/main.dart';
 
 class ReplyDetailPage extends StatefulWidget {
   final Floor floor;
@@ -35,9 +28,9 @@ class ReplyDetailPage extends StatefulWidget {
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
-  ReplyDetailPageStatus status;
   int index;
   int currentPage = 1;
+  List<Floor> floors;
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -50,9 +43,11 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
-    _initComment(
+    _getComment(
         onResult: (comments) {
-          widget.floor.subFloors = comments;
+          setState(() {
+            floors = comments;
+          });
           _refreshController.refreshCompleted();
         },
         onFail: () {
@@ -63,13 +58,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
   _onLoading() {
     currentPage++;
-    _initComment(
+    _getComment(
         onResult: (comments) {
           if (comments.length == 0) {
             _refreshController.loadNoData();
             currentPage--;
           } else {
-            widget.floor.subFloors.addAll(comments);
+            floors.addAll(comments);
             _refreshController.loadComplete();
           }
         },
@@ -90,27 +85,21 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   @override
   void initState() {
     super.initState();
-    status = ReplyDetailPageStatus.loading;
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _initComment(
-          onResult: (comments) {
-            widget.floor.subFloors.addAll(comments);
-            setState(() {
-              status = ReplyDetailPageStatus.idle;
-            });
-          },
-          onFail: () {
-            setState(() {
-              status = ReplyDetailPageStatus.error;
-            });
-          },
-          page: 0);
-    });
+    _getComment(
+        onResult: (comments) {
+          setState(() {
+            floors = comments;
+          });
+        },
+        onFail: () {
+          ToastProvider.error('获取回复失败');
+        },
+        page: 0);
   }
 
-  Future<bool> _initComment(
+  Future<bool> _getComment(
       {Function(List<Floor>) onResult, Function onFail, int page}) async {
     bool success = false;
     FeedbackService.getFloorReplyById(
@@ -150,9 +139,40 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             width: 20),
       ),
     );
-    Widget mainList1 = ListView(children: [
-      NCommentCard(comment: widget.floor, isSubFloor: false, isFullView: true)
-    ]);
+    Widget mainList1 = ListView.builder(
+      itemCount: floors != null ? floors.length + 1 : 0 + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return NCommentCard(
+            placeAppeared: index,
+            comment: widget.floor,
+            ancestorId: widget.floor.postId,
+            commentFloor: index + 1,
+            isSubFloor: false,
+            isFullView: true,
+          );
+        }
+        index--;
+
+        var data = floors[index];
+        return Column(
+          children: [
+            NCommentCard(
+              placeAppeared: index,
+              comment: data,
+              ancestorId: widget.floor.id,
+              commentFloor: index + 1,
+              isSubFloor: true,
+              isFullView: true,
+            ),
+            Container(
+                width: WePeiYangApp.screenWidth - 60,
+                height: 1,
+                color: Colors.black12)
+          ],
+        );
+      },
+    );
 
     Widget mainList = Expanded(
       child: NotificationListener<ScrollNotification>(
