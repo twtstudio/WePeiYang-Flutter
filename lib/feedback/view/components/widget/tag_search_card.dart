@@ -77,11 +77,6 @@ class _SearchTagCardState extends State<SearchTagCard>
             ),
           ),
         ));
-        if (_controller.text == tagUtil[total].name) {
-          _showAdd = false;
-          tagList[0] = tagList[total + 1];
-          tagList.removeAt(total + 1);
-        }
       }
       if (tagList.length > 5) tagList = tagList.sublist(0, 5);
       _showAdd

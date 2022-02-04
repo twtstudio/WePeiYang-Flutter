@@ -388,6 +388,10 @@ class _DetailPageState extends State<DetailPage>
                                 Provider.of<NewFloorProvider>(context,
                                         listen: false)
                                     .inputFieldOpenAndReplyTo(0);
+                                FocusScope.of(context).requestFocus(
+                                    Provider.of<NewFloorProvider>(context,
+                                            listen: false)
+                                        .focusNode);
                               },
                               child: Container(
                                   height: 22,
@@ -466,20 +470,21 @@ class _DetailPageState extends State<DetailPage>
     //       });
     //     });
     var menuButton = PopupMenuButton(
-      ///改成了用PopupMenuButton的方式，方便偏移的处理
+
+        ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
-        offset: Offset(100,20),
+        offset: Offset(100, 20),
         child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-      onSelected: (value){
-        if (value == "举报") {
-          Navigator.pushNamed(context, FeedbackRouter.report,
-              arguments: ReportPageArgs(widget.post.id, true));
-        }
-      },
+        onSelected: (value) {
+          if (value == "举报") {
+            Navigator.pushNamed(context, FeedbackRouter.report,
+                arguments: ReportPageArgs(widget.post.id, true));
+          }
+        },
         itemBuilder: (context) {
           return <PopupMenuItem<String>>[
-             PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: '举报',
               child: Center(
                 child: new Text(
@@ -547,12 +552,12 @@ class CommentInputField extends StatefulWidget {
 
 class CommentInputFieldState extends State<CommentInputField> {
   var _textEditingController = TextEditingController();
+  FocusNode _commentFocus = FocusNode();
   String _commentLengthIndicator = '0/200';
 
   @override
   void dispose() {
     _textEditingController.dispose();
-    context.read<NewFloorProvider>().focusNode.dispose();
     super.dispose();
   }
 
@@ -571,9 +576,11 @@ class CommentInputFieldState extends State<CommentInputField> {
   @override
   Widget build(BuildContext context) {
     Widget inputField = Consumer<NewFloorProvider>(
-        builder: (_, data, __) => TextField(
+        builder: (_, data, __) {
+          data.focusNode = _commentFocus;
+          return TextField(
               style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
-              focusNode: data.focusNode,
+              focusNode: _commentFocus,
               controller: _textEditingController,
               maxLength: 200,
               textInputAction: TextInputAction.newline,
@@ -581,8 +588,7 @@ class CommentInputFieldState extends State<CommentInputField> {
                 counterText: '',
                 hintText: data.replyTo == 0
                     ? '回复冒泡：'
-                    : '回复楼层：' +
-                        data.replyTo.toString(),
+                    : '回复楼层：' + data.replyTo.toString(),
                 suffix: Text(
                   _commentLengthIndicator,
                   style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
@@ -602,7 +608,8 @@ class CommentInputFieldState extends State<CommentInputField> {
               },
               minLines: 1,
               maxLines: 10,
-            ));
+            );
+        });
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),

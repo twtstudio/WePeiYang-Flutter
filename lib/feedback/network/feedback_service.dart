@@ -101,6 +101,22 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getRecTag({
+    @required OnResult<Tag> onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('tag/recommend');
+      Tag tag;
+      Map<String, dynamic> json = response.data['data']['tag'];
+        tag = Tag.fromJson(json);
+
+      onSuccess(tag);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static searchTags(
       {@required name,
       @required OnResult<List<SearchTag>> onResult,

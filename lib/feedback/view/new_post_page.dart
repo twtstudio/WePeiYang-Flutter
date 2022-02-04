@@ -227,7 +227,6 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    timeDilation = 1.5;
     return Hero(
       tag: "addNewPost",
       child: ElevatedButton(
@@ -321,14 +320,14 @@ class _CampusSelectorState extends State<CampusSelector> {
             children: [
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
-                width: ScreenUtil().setWidth(12),
+                width: 16,
               ),
-              SizedBox(width: ScreenUtil().setWidth(8.5)),
+              SizedBox(width: 10),
               Text(
                 texts[value],
-                style: TextUtil.base.sp(9).w400.NotoSansSC.normal,
+                style: TextUtil.base.sp(14).w400.NotoSansSC.normal,
               ),
-              SizedBox(width: ScreenUtil().setWidth(12)),
+              SizedBox(width: 18),
             ],
           ),
           onSelected: (value) {

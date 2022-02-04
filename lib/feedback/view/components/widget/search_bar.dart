@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -10,20 +14,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
 
-List<Text> tagsList = List.filled(
-    5,
-    Text(
-      "",
-      style: TextUtil.base.w400.NotoSansSC.sp(16).grey97,
-    ));
-List<Text> hotIndexList = List.filled(
-    5,
-    Text(
-      "",
-      style: TextUtil.base.w400.NotoSansSC.sp(14).grey97,
-    ));
-
-List<SearchTag> tagUtils = [];
+List<SearchTag> tagUtil = [];
 
 typedef SubmitCallback = void Function(String);
 typedef ChangeCallback = void Function(String);
@@ -44,6 +35,7 @@ class _SearchBarState extends State<SearchBar>
     with SingleTickerProviderStateMixin {
   TextEditingController _controller = TextEditingController();
   bool _showSearch;
+  List<Widget> tagList = [SizedBox(height: 4)];
 
   @override
   void dispose() {
@@ -65,16 +57,48 @@ class _SearchBarState extends State<SearchBar>
   }
 
   _searchTags(List<SearchTag> list) {
-    tagUtils = list;
-    for (int total = 0; total < tagUtils.length && total < 5; total++) {
-      tagsList[total] = Text(
-        tagUtils[total].name,
-        style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
-      );
-      hotIndexList[total] = Text(
-        "${tagUtils[total].id}",
-        style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
-      );
+    tagList.clear();
+    tagList.add(SizedBox(height: 4));
+    tagUtil = list;
+    for (int total = 0; total < min(tagUtil.length, 5); total++) {
+      tagList.add(GestureDetector(
+        onTap: () {
+            _controller.text = tagUtil[total].name;
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.searchResult,
+              arguments: SearchResultPageArgs(
+                '',
+                '${tagUtil[total].id}',
+                S.current.feedback_search_result,
+              ),
+            ).then((_) {
+              Navigator.pop(context);
+            });},
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                width: 14,
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                  child: Text(
+                tagUtil[total].name,
+                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                overflow: TextOverflow.ellipsis,
+              )),
+              SizedBox(width: 4),
+              Text(
+                (tagUtil[total].point ?? 0).toString(),
+                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+              )
+            ],
+          ),
+        ),
+      ));
     }
   }
 
@@ -111,90 +135,54 @@ class _SearchBarState extends State<SearchBar>
         maxHeight: 30,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 38, right: 12),
-        child: TextField(
-          controller: _controller,
-          style: TextStyle().black2A.NotoSansSC.w400.sp(16),
-          decoration: InputDecoration(
-            hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(16),
-            hintText: S.current.feedback_search_hint,
-            contentPadding: const EdgeInsets.all(0),
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(1080),
-            ),
-            fillColor: ColorUtil.searchBarBackgroundColor,
-            filled: true,
-            prefixIcon: Icon(
-              Icons.search,
-              size: 19,
-              color: ColorUtil.grey108,
-            ),
-          ),
-          enabled: true,
-          onSubmitted: (content) {
-            if (content.isNotEmpty) {
-              widget.onSubmitted?.call(content);
-            } else {
-              ToastProvider.error(S.current.feedback_empty_keyword);
-            }
-          },
-          onChanged: (content) {
-            if (content.isNotEmpty) {
-              widget.onChanged?.call(content);
-            }
-          },
-          textInputAction: TextInputAction.search,
-        ),
-      ),
-    );
-    var searchList = Container(
-        padding: EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16))),
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                _controller.text = tagUtils[index].name;
-                Navigator.pushNamed(
-                  context,
-                  FeedbackRouter.searchResult,
-                  arguments: SearchResultPageArgs(
-                    '',
-                    '${tagUtils[index].id}',
-                    S.current.feedback_search_result,
-                  ),
-                ).then((_) {
-                  Navigator.pop(context);
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 3, 3, 10),
-                child: Row(
-                  children: [
-                    SizedBox(width: 14),
-                    SvgPicture.asset(
-                      "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                      width: 14,
-                    ),
-                    SizedBox(width: 4),
-                    Center(child: tagsList[index]),
-                    Spacer(),
-                    hotIndexList[index],
-                    SizedBox(width: 12)
-                  ],
+          padding: const EdgeInsets.only(left: 38, right: 12),
+          child: Consumer<FbHotTagsProvider>(
+            builder: (_, data, __) => TextField(
+              controller: _controller,
+              style: TextStyle().black2A.NotoSansSC.w400.sp(16),
+              decoration: InputDecoration(
+                hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                hintText: data.recTag.name == ''
+                    ? '加载推荐中，失败请下拉刷新'
+                    : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
+                contentPadding: const EdgeInsets.only(right: 6),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(1080),
+                ),
+                fillColor: ColorUtil.searchBarBackgroundColor,
+                filled: true,
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 19,
+                  color: ColorUtil.grey108,
                 ),
               ),
-            );
-          },
-        ));
+              enabled: true,
+              onSubmitted: (content) {
+                if (content.isNotEmpty) {
+                  widget.onSubmitted?.call(content);
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.searchResult,
+                    arguments: SearchResultPageArgs(
+                      '',
+                      '${data.recTag.id}',
+                      S.current.feedback_search_result,
+                    ),
+                  );
+                }
+              },
+              onChanged: (content) {
+                if (content.isNotEmpty) {
+                  widget.onChanged?.call(content);
+                }
+              },
+              textInputAction: TextInputAction.search,
+            ),
+          )),
+    );
     if (widget.tapField != null) {
       searchInputField = InkWell(
         child: AbsorbPointer(
@@ -216,7 +204,17 @@ class _SearchBarState extends State<SearchBar>
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
             vsync: this,
-            child: _showSearch ? searchList : SizedBox(),
+            child: _showSearch
+                ? Container(
+              padding: EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16),
+                        )),
+                    child: Column(children: tagList ?? [SizedBox()]))
+                : SizedBox(),
           ),
         )
       ],

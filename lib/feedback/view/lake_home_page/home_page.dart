@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_car
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../new_post_page.dart';
@@ -86,6 +87,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     });
   }
 
+  getRecTag() {
+    _hotTagsProvider.initRecTag(
+        success: () {},
+        failure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+  }
+
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
@@ -102,8 +111,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       controller?.stop();
       _refreshController.refreshFailed();
     });
-    if (_swap == 1)
-      getHotList();
+    getRecTag();
+    getHotList();
   }
 
   _onLoading() {
@@ -112,7 +121,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     } else {
       _listProvider.getNextPage(
         swapLister[_swap],
-
         success: () {
           _refreshController.loadComplete();
         },
@@ -195,7 +203,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if(CommonPreferences().feedbackLastWeCo.value != id){
+        if (CommonPreferences().feedbackLastWeCo.value != id) {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -210,7 +218,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   },
                 ).then((confirm) {
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
+                    Navigator.pushNamed(context, FeedbackRouter.detail,
+                        arguments: post);
                     CommonPreferences().feedbackLastWeCo.value = id;
                   } else {
                     CommonPreferences().feedbackLastWeCo.value = id;
@@ -240,6 +249,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
+      getRecTag();
       _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
@@ -346,10 +356,27 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             color: ColorUtil.grey108,
           ),
           SizedBox(width: 12),
-          Text(
-            '搜索问题',
-            style: TextStyle().grey6C.NotoSansSC.w400.sp(16),
-          ),
+          Consumer<FbHotTagsProvider>(
+              builder: (_, data, __) => Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: WePeiYangApp.screenWidth - 260),
+                        child: Text(
+                          data.recTag.name == ''
+                              ? '加载推荐中，失败请下拉刷新'
+                              : '#${data.recTag.name}#',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                        ),
+                      ),
+                      Text(
+                        data.recTag.name == '' ? '' : '  为你推荐',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      ),
+                    ],
+                  )),
           Spacer()
         ]),
       ),
@@ -663,7 +690,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           ),
                           //0-->时间排序，1-->动态排序
                           onSelected: (value) {
-                            CommonPreferences().feedbackSearchType.value = value.toString();
+                            CommonPreferences().feedbackSearchType.value =
+                                value.toString();
                             onRefresh();
                           },
                           itemBuilder: (context) {

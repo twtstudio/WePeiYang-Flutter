@@ -320,7 +320,10 @@ class _NCommentCardState extends State<NCommentCard> {
         context.read<NewFloorProvider>().locate = widget.placeAppeared ?? 0;
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
-        context.read<NewFloorProvider>().focusNode.requestFocus();
+        FocusScope.of(context).requestFocus(
+            Provider.of<NewFloorProvider>(context,
+                listen: false)
+                .focusNode);
       },
       padding: EdgeInsets.zero,
       color: ColorUtil.boldLakeTextColor,

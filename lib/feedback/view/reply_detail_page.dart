@@ -255,10 +255,14 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       onTap: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
                             .inputFieldOpenAndReplyTo(widget.floor.id);
+                        FocusScope.of(context).requestFocus(
+                            Provider.of<NewFloorProvider>(context,
+                                    listen: false)
+                                .focusNode);
                       },
                       child: Container(
                           height: 22,
-                          margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
+                          margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
@@ -330,6 +334,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     return WillPopScope(
       onWillPop: () async {
+        context.read<NewFloorProvider>().clearAndClose();
         Navigator.pop(context);
         return true;
       },

@@ -26,11 +26,23 @@ class FbTagsProvider {
 
 class FbHotTagsProvider extends ChangeNotifier {
   List<Tag> hotTagsList = [];
+  Tag recTag;
 
   Future<void> initHotTags({OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getHotTags(onSuccess: (list) {
       hotTagsList.clear();
       hotTagsList.addAll(list);
+      notifyListeners();
+      success?.call();
+    }, onFailure: (e) {
+      failure.call(e);
+      ToastProvider.error(e.error.toString());
+    });
+  }
+
+  Future<void> initRecTag({OnSuccess success, OnFailure failure}) async {
+    await FeedbackService.getRecTag(onSuccess: (tag) {
+      recTag = tag;
       notifyListeners();
       success?.call();
     }, onFailure: (e) {
