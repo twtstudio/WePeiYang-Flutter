@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
-import 'package:we_pei_yang_flutter/commons/hotfix/hotfix_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channels/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_apk_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_install_dialog.dart';
@@ -67,7 +67,7 @@ class UpdateManager extends ChangeNotifier {
             state = UpdateState.nothing;
             if (showToast) SmartDialog.showToast("检查更新失败");
           });
-    } else if(state == UpdateState.download && _version != null){
+    } else if (state == UpdateState.download && _version != null) {
       _showApkDialog(_version!, showToast);
     }
   }
@@ -92,7 +92,7 @@ class UpdateManager extends ChangeNotifier {
     } else if (localVersion < version.versionCode && localVersion + version.flutterFixCode >= version.versionCode) {
       // 则代表可以通过热修复更新 也可以通过下载新的安装包更新
       // 自动更新，下载完成后再弹对话框
-      HotfixManager.getInstance().hotFix(
+      hotFix(
         version.flutterFixSoFile,
         localVersion,
         version.flutterFixCode,

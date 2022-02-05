@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/hotfix/hotfix_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
@@ -29,7 +29,7 @@ class _UpdateHotfixFinishDialogState extends UpdateDialogState<UpdateHotfixFinis
 
   @override
   void okButtonTap() {
-    HotfixManager.getInstance().restartApp();
+    restartApp();
   }
 
   @override

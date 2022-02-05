@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:image_pickers/image_pickers.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:we_pei_yang_flutter/commons/share/share.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+import 'package:we_pei_yang_flutter/commons/channels/image_save.dart';
+import 'package:we_pei_yang_flutter/commons/channels/share.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -44,24 +43,16 @@ class _ImageViewPageState extends State<ImageViewPage> {
                       width: 20.0,
                       height: 20.0,
                       child: CircularProgressIndicator(
-                        value: event == null
-                            ? 0
-                            : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes,
+                        value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes,
                       ))),
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  basePosition:
-                      isLongPic ? Alignment.topCenter : Alignment.center,
+                  basePosition: isLongPic ? Alignment.topCenter : Alignment.center,
                   imageProvider: NetworkImage(baseUrl + urlList[index]),
-                  maxScale: isLongPic
-                      ? PhotoViewComputedScale.contained * 20
-                      : PhotoViewComputedScale.contained * 5.0,
+                  maxScale: isLongPic ? PhotoViewComputedScale.contained * 20 : PhotoViewComputedScale.contained * 5.0,
                   minScale: PhotoViewComputedScale.contained * 1.0,
-                  initialScale: isLongPic
-                      ? PhotoViewComputedScale.covered
-                      : PhotoViewComputedScale.contained,
+                  initialScale: isLongPic ? PhotoViewComputedScale.covered : PhotoViewComputedScale.contained,
                 );
               },
               scrollDirection: Axis.horizontal,
@@ -89,9 +80,10 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               onTap: () {
-                ImagePickers.saveImageToGallery(baseUrl + urlList[tempSelect]);
-                ToastProvider.success('已保存到手机相册');
-                Navigator.pop(context);
+                saveImageFromUrl(baseUrl + urlList[tempSelect], album: true).then((value) {
+                  ToastProvider.success("成功保存到相册");
+                  Navigator.pop(context);
+                });
               },
             ),
             ListTile(

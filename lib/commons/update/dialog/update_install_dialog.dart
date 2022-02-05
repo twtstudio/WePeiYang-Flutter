@@ -1,9 +1,9 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/hotfix/hotfix_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
-import 'package:we_pei_yang_flutter/commons/update/install_util..dart';
+import 'package:we_pei_yang_flutter/commons/channels/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class _UpdateInstallDialogState extends UpdateDialogState<UpdateInstallDialog> {
 
   @override
   void okButtonTap() {
-    InstallUtil.install(version.apkName);
+    install(version.apkName);
   }
 
   @override

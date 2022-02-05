@@ -4,7 +4,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show StringCodec, BasicMessageChannel;
-import 'package:we_pei_yang_flutter/commons/image_save/image_save.dart';
+import 'package:we_pei_yang_flutter/commons/channels/image_save.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -64,7 +64,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                         base64.decode(message.message.split(",")[1]);
                     final fileName =
                         "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
-                    await WbyImageSave.saveImageToAlbum(bytes, fileName);
+                    await saveImageToAlbum(bytes, fileName);
                   } catch (_) {
                     ToastProvider.error('图片保存失败');
                   }
