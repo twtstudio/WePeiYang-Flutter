@@ -98,7 +98,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
-
+      getRecTag();
+      getHotList();
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
@@ -111,8 +112,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       controller?.stop();
       _refreshController.refreshFailed();
     });
-    getRecTag();
-    getHotList();
   }
 
   _onLoading() {
@@ -248,9 +247,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
-      _tagsProvider = Provider.of<FbDepartmentsProvider>(context, listen: false);
-      getRecTag();
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
+      _tagsProvider =
+          Provider.of<FbDepartmentsProvider>(context, listen: false);
+      _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, success: () {
+        getRecTag();
+      }, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });
@@ -366,7 +367,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             maxWidth: WePeiYangApp.screenWidth - 260),
                         child: Text(
                           data.recTag == null
-                              ? '加载推荐中，失败请下拉刷新'
+                              ? '搜索发现'
                               : '#${data.recTag.name}#',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
@@ -434,7 +435,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             controller: _controller2,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[1]].length == 0 ? 0 : model.allList[swapLister[1]].length + 1,
+            itemCount: model.allList[swapLister[1]].length == 0
+                ? 0
+                : model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
               if (index == 0) return HotCard();
               index--;
@@ -468,12 +471,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     context,
                     FeedbackRouter.searchResult,
                     arguments: SearchResultPageArgs(
-                      '',
-                      '',
-                      provider.departmentList[index].id.toString(),
-                      '#${provider.departmentList[index].name}',
-                      1
-                    ),
+                        '',
+                        '',
+                        provider.departmentList[index].id.toString(),
+                        '#${provider.departmentList[index].name}',
+                        1),
                   );
                 },
               );

@@ -145,7 +145,7 @@ class _SearchBarState extends State<SearchBar>
               decoration: InputDecoration(
                 hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                 hintText: data.recTag.name == ''
-                    ? '加载推荐中，失败请下拉刷新'
+                    ? '搜索发现'
                     : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
                 contentPadding: const EdgeInsets.only(right: 6),
                 border: OutlineInputBorder(

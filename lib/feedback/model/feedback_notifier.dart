@@ -197,7 +197,6 @@ class FbHomeListModel extends ChangeNotifier {
       },
       onFailure: (e) {
         _status = FbHomePageStatus.error;
-        ToastProvider.error('请清空应用数据或重新安装微北洋');
         failure?.call(e);
         notifyListeners();
       },
