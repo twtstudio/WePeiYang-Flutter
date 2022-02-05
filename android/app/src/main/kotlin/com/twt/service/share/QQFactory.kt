@@ -9,6 +9,7 @@ import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
 
 @Keep
 data class QQShareData(
@@ -22,7 +23,11 @@ data class QQShareData(
     val questionId: Int = 0,
 )
 
-class QQFactory(private val mTencent: Tencent, private val activity: Activity) :IUiListener{
+class QQFactory(
+    private val mTencent: Tencent,
+    private val activity: Activity,
+    private val listener: IUiListener
+) {
 
     fun share(call: MethodCall) {
         QQShareData(
@@ -73,22 +78,9 @@ class QQFactory(private val mTencent: Tencent, private val activity: Activity) :
         }
         Log.d("WBY", params.toString())
 
-        mTencent.shareToQQ(activity, params, this)
+        // 在这里配置好像是只有错误回调会触发，如果想要完成回调触发那么就选择 activityResult
+        mTencent.shareToQQ(activity, params, listener)
     }
 
-    override fun onComplete(obj: Any?) {
-        WbySharePlugin.log("success : $obj")
-    }
 
-    override fun onError(error: UiError?) {
-        WbySharePlugin.log("error : $error")
-    }
-
-    override fun onCancel() {
-        WbySharePlugin.log("cancel")
-    }
-
-    override fun onWarning(code: Int) {
-        WbySharePlugin.log("warning: $code")
-    }
 }

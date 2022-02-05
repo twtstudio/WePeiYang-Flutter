@@ -2,29 +2,30 @@ package com.twt.service.share
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.tencent.connect.common.Constants
+import com.tencent.tauth.DefaultUiListener
 import com.tencent.tauth.Tencent
+import com.tencent.tauth.UiError
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-    PluginRegistry.RequestPermissionsResultListener {
+    PluginRegistry.RequestPermissionsResultListener,PluginRegistry.ActivityResultListener {
     private lateinit var shareChannel: MethodChannel
     private lateinit var context: Context
     private lateinit var activityBinding: ActivityPluginBinding
-    private var continueToDo: (() -> Unit)? = null
+    private lateinit var result: MethodChannel.Result
+    private var continueDo: (() -> Unit)? = null
 
-    private val mTencent: Tencent by lazy {
+    private val mTencent: Tencent? by lazy {
         Tencent.createInstance(
             APP_ID,
             context,
@@ -52,21 +53,24 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
                     result.error("-1", "cannot share to qq", null)
                 }
             }
-            "shareImgToQQ" -> {
-                try {
-                    continueToDo = {
-                        Tencent.setIsPermissionGranted(true)
-                        QQFactory(mTencent, activityBinding.activity).shareImg(call)
-                    }
-
-                    if (!requestPermissions()) {
-                        continueToDo?.invoke()
-                    }
-//                    result.success("success")
-                } catch (e: Exception) {
-                    throw e
-//                    result.error("-1", "cannot share img to qq", "$e")
+            "shareImgToQQ" -> kotlin.runCatching {
+                if (mTencent == null) {
+                    result.error("", "QQ分享配置错误", null)
+                    return
                 }
+                continueDo = {
+                    Tencent.setIsPermissionGranted(true)
+                    activityBinding.addActivityResultListener(this)
+                    QQFactory(mTencent!!, activityBinding.activity, qqShareListener).shareImg(
+                        call
+                    )
+                }
+                this.result = result
+                if (!requestPermissions()) {
+                    continueDo!!.invoke()
+                }
+            }.onFailure {
+                result.error("-1", "cannot share img to qq", "$it")
             }
             else -> result.notImplemented()
         }
@@ -74,11 +78,6 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
-
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(5000)
-            requestPermissions()
-        }
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -104,8 +103,8 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
 
         activityBinding.removeRequestPermissionsResultListener(this)
 
-        if (permissions == null || grantResults == null) {
-            continueToDo = null
+        if (permissions == null || grantResults == null || continueDo == null) {
+            result.error("", "permissions and grantResults both null", null)
             return true
         }
 
@@ -116,8 +115,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         }
 
         if (mPermissions.isEmpty()) {
-            continueToDo?.invoke()
-            continueToDo = null
+            continueDo?.invoke()
         }
 
         return true
@@ -147,6 +145,37 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
     }
 
     private val mPermissions = mutableListOf<String>()
+
+    private val qqShareListener = object : DefaultUiListener() {
+        override fun onComplete(obj: Any?) {
+            log("success : $obj")
+            result.success("")
+        }
+
+        override fun onError(error: UiError?) {
+            log("error : $error")
+            result.error("","qq share error","$error")
+        }
+
+        override fun onCancel() {
+            log("cancel")
+            result.success("cancel")
+        }
+
+        override fun onWarning(code: Int) {
+            log("warning: $code")
+            result.success("warning : $code")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        if (requestCode == Constants.REQUEST_QQ_SHARE) {
+            Tencent.onActivityResultData(requestCode, resultCode, data, qqShareListener)
+            activityBinding.removeActivityResultListener(this)
+            return true
+        }
+        return false
+    }
 
     companion object {
         const val APP_ID = "1104743406"
