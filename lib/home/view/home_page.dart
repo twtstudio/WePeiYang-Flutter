@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import 'package:provider/provider.dart';

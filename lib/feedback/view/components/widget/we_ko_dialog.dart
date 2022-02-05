@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class WeKoDialog extends StatelessWidget {
   final Post post;
   final void Function() onConfirm;
   final void Function() onCancel;
-  final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = 'https://www.zrzz.site:7012/';
 
   WeKoDialog(
       {Key key,
@@ -31,22 +30,14 @@ class WeKoDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 10),
-              Text('有人给你分享了微口令',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.grey,
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
+              Text('有人给你分享了微口令!',
+                  style: TextUtil.base.black2A.regular.sp(14).NotoSansSC),
               Padding(
-                padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
                 child: Text(post.title,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Color.fromRGBO(79, 88, 107, 1),
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.none)),
+                    style: TextUtil.base.black2A.bold.sp(17).NotoSansSC),
               ),
-              if(post.imageUrls != null) Image.network(
+              if(post.imageUrls.isNotEmpty) Image.network(
                 baseUrl + post.imageUrls[0],
                 height: 100,
                 width: 100,
@@ -55,11 +46,7 @@ class WeKoDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Text(post.content,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Colors.grey,
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal,
-                        decoration: TextDecoration.none),
+                    style: TextUtil.base.grey6C.regular.sp(12).NotoSansSC,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -70,12 +57,7 @@ class WeKoDialog extends StatelessWidget {
                   margin: const EdgeInsets.all(10),
                     child: Text(
                       '查看详情',
-                      style: FontManager.YaQiHei.copyWith(
-                        color: ColorUtil.boldTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        decoration: TextDecoration.none,
-                      ),
+                      style: TextUtil.base.black2A.regular.sp(14).NotoSansSC,
                     ),
                   ),
                 ),

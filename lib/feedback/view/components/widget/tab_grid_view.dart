@@ -15,15 +15,11 @@ class TabGridView extends StatefulWidget {
 
 class _TabGridViewState extends State<TabGridView>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
   ValueNotifier<Department> currentTab;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200))
-          ..forward();
     currentTab = ValueNotifier(widget.department);
   }
 
@@ -34,8 +30,7 @@ class _TabGridViewState extends State<TabGridView>
       builder: (_, data, __) => Wrap(
         alignment: WrapAlignment.start,
         spacing: 6,
-        children: List.generate(data.departmentList.length,
-                (index) {
+        children: List.generate(data.departmentList.length, (index) {
           return _tagButton(data.departmentList[index]);
         }),
       ),
@@ -43,19 +38,27 @@ class _TabGridViewState extends State<TabGridView>
 
     return Container(
       clipBehavior: Clip.antiAlias,
-      constraints: BoxConstraints(
-          maxHeight: 240),
+      constraints: BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(
           const Radius.circular(10.0),
         ),
       ),
+      foregroundDecoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment(0, 0.75),
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white10,
+            Colors.white,
+          ],
+        ),
+      ),
       child: ListView(
-        padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
-        children: [tagsWrap],
+        children: [SizedBox(height: 12), tagsWrap, SizedBox(height: 14)],
       ),
     );
   }
@@ -68,13 +71,7 @@ class _TabGridViewState extends State<TabGridView>
     return ValueListenableBuilder(
       valueListenable: currentTab,
       builder: (_, value, __) {
-        return tag.id == value?.id
-            ? FadeTransition(
-                opacity:
-                    Tween(begin: 0.0, end: 1.0).animate(_animationController),
-                child: _tagChip(true, tag),
-              )
-            : _tagChip(false, tag);
+        return tag.id == value?.id ? _tagChip(true, tag) : _tagChip(false, tag);
       },
     );
   }
@@ -83,19 +80,21 @@ class _TabGridViewState extends State<TabGridView>
         backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
         label: Text(
           tag.name,
-          style: chose ? TextUtil.base.white.NotoSansSC.w400.sp(11) : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
+          style: chose
+              ? TextUtil.base.white.NotoSansSC.w400.sp(14)
+              : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {
           if (chose == false) {
             setState(() {
-           context.read<NewPostProvider>().department = tag;
+              context.read<NewPostProvider>().department = tag;
               updateGroupValue(tag);
             });
-          } else if (chose == true){
+          } else if (chose == true) {
             setState(() {
-             context.read<NewPostProvider>().department = Department();
-             updateGroupValue(Department());
+              context.read<NewPostProvider>().department = Department();
+              updateGroupValue(Department());
             });
           }
         },

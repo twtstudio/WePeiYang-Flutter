@@ -62,6 +62,23 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
 
+    var topView = SafeArea(
+        child: Stack(
+      alignment: Alignment.topLeft,
+      children: [
+        searchBar,
+        InkWell(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12, left: 12),
+            child: ImageIcon(
+                AssetImage('assets/images/lake_butt_icons/back.png'),
+                size: 18),
+          ),
+          onTap: () => Navigator.pop(context),
+        )
+      ],
+    ));
+
     const titleTextStyle = TextStyle(
         fontSize: 17.0,
         color: Color.fromRGBO(98, 103, 124, 1),
@@ -69,7 +86,6 @@ class _SearchPageState extends State<SearchPage> {
 
     var searchHistoryIcon = Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      margin: EdgeInsets.only(top: 0),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,51 +125,52 @@ class _SearchPageState extends State<SearchPage> {
           );
         }
 
+        List<Widget> searchHistory = [SizedBox(width: double.infinity)];
+        searchHistory.addAll(List.generate(
+          list.length,
+              (index) {
+            var searchArgument = SearchResultPageArgs(
+              list[list.length - index - 1],
+              '',
+              S.current.feedback_search_result,
+            );
+            return InkResponse(
+              radius: 30,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.searchResult,
+                  arguments: searchArgument,
+                ).then((_) {
+                  Navigator.pop(context);
+                });
+              },
+              child: Chip(
+                elevation: 1,
+                backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                label: Text(list[list.length - index - 1],
+                    style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
+                deleteIcon: Icon(Icons.close,
+                    color: ColorUtil.lightTextColor, size: 16),
+                onDeleted: () {
+                  setState(() {
+                    list.removeAt(list.length - index - 1);
+                  });
+                  _prefs.setStringList('feedback_search_history', list);
+                  ToastProvider.success("删除成功");
+                },
+              ),
+            );
+          },
+        ));
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Wrap(
             spacing: 6,
-            children: List.generate(
-              list.length,
-              (index) {
-                var searchArgument = SearchResultPageArgs(
-                  list[list.length - index - 1],
-                  '',
-                  S.current.feedback_search_result,
-                );
-                if (index == 0)
-                  return SizedBox(width: double.infinity);
-                index--;
-                return InkResponse(
-                  radius: 30,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      FeedbackRouter.searchResult,
-                      arguments: searchArgument,
-                    ).then((_) {
-                      Navigator.pop(context);
-                    });
-                  },
-                  child: Chip(
-                    elevation: 1,
-                    backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-                    label: Text(list[list.length - index - 1],
-                        style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
-                    deleteIcon: Icon(Icons.close, color: ColorUtil.lightTextColor, size: 16),
-                    onDeleted: () {
-                      setState(() {
-                        list.removeAt(list.length - index - 1);
-                      });
-                      _prefs.setStringList('feedback_search_history', list);
-                      ToastProvider.success("删除成功");
-                    },
-                  ),
-                );
-              },
-            ),
+            children: searchHistory
           ),
         );
       },
@@ -166,29 +183,17 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
     );
 
-    return Scaffold(
-        backgroundColor: ColorUtil.white253,
-        appBar: AppBar(
-          title: searchBar,
-          backgroundColor: ColorUtil.white253,
-          elevation: 0.1,
-          titleSpacing: 10,
-          leading: InkWell(
-            child: Row(
-              children: [
-                SizedBox(width: 18),
-                ImageIcon(AssetImage('assets/images/lake_butt_icons/back.png'),
-                    size: 18),
-              ],
-            ),
-            onTap: () => Navigator.pop(context),
-          ),
-          leadingWidth: 36,
-          iconTheme: IconThemeData(
-            color: ColorUtil.boldTag54,
-          ),
-        ),
-        body: SafeArea(child: searchHistory));
+    return ColoredBox(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            topView,
+            Expanded(
+                child: Container(
+                    color: ColorUtil.backgroundColor, child: searchHistory)),
+          ],
+        ));
   }
 
   showClearDialog() {

@@ -55,6 +55,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
       type: '2',///先设置成了全部搜索
       departmentId: departmentId,
       page: currentPage,
+      tagId: widget.args.tagId,
       keyword: keyword,
       onSuccess: (list, page) {
         totalPage = page;
@@ -76,6 +77,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         departmentId: departmentId,
         type: '2',///同上
         page: currentPage,
+        tagId: widget.args.tagId,
         keyword: keyword,
         onSuccess: (list, page) {
           totalPage = page;
@@ -102,6 +104,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         departmentId: departmentId,
         type: '2',
         page: currentPage,
+        tagId: widget.args.tagId,
         keyword: keyword,
         onSuccess: (list, page) {
           totalPage = page;

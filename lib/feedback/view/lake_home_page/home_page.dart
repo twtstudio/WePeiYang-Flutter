@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -15,12 +16,11 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 
 import '../new_post_page.dart';
 import '../search_result_page.dart';
@@ -36,13 +36,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   FbHomeListModel _listProvider;
   FbTagsProvider _tagsProvider;
+  FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
 
-  bool _lakeIsLoaded, _feedbackIsLoaded;
-  bool _hotDisplays = false;
+  bool _lakeIsLoaded, _feedbackIsLoaded, _initialRefresh;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -78,12 +78,29 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget _feedbackListView;
   Widget _departmentSelectionContainer;
 
+  getHotList() {
+    _hotTagsProvider.initHotTags(success: () {
+      _refreshController.refreshCompleted();
+    }, failure: (e) {
+      ToastProvider.error(e.error.toString());
+      _refreshController.refreshFailed();
+    });
+  }
+
+  getRecTag() {
+    _hotTagsProvider.initRecTag(
+        success: () {},
+        failure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+  }
+
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
+
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
-        _hotDisplays = true;
         _refreshController.refreshCompleted();
       }, failure: (_) {
         controller?.stop();
@@ -92,9 +109,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
-      _hotDisplays = false;
       _refreshController.refreshFailed();
     });
+    getRecTag();
+    getHotList();
   }
 
   _onLoading() {
@@ -185,7 +203,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if(!Provider.of<MessageProvider>(context, listen: false).feedbackHasViewed.contains(id)){
+        if (CommonPreferences().feedbackLastWeCo.value != id) {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -200,10 +218,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   },
                 ).then((confirm) {
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail, arguments: post);
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    Navigator.pushNamed(context, FeedbackRouter.detail,
+                        arguments: post);
+                    CommonPreferences().feedbackLastWeCo.value = id;
                   } else {
-                    Provider.of<MessageProvider>(context, listen: false).setFeedbackWeKoHasViewed(id);
+                    CommonPreferences().feedbackLastWeCo.value = id;
                   }
                 });
               },
@@ -220,7 +239,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _swap = 0;
     _lakeIsLoaded = false;
     _feedbackIsLoaded = false;
-    _hotDisplays = false;
     _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
@@ -229,7 +247,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
+      _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
+      getRecTag();
       _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
@@ -305,15 +325,61 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
+
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
-    var searchBar = SearchBar(
-      tapField: () => Navigator.pushNamed(context, FeedbackRouter.search),
+
+    if (_initialRefresh ?? false) {
+      if (_controller.hasClients) listToTop();
+      _initialRefresh = false;
+    }
+
+    var searchBar = InkWell(
+      onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
+      child: Container(
+        height: 30,
+        margin: EdgeInsets.only(right: 14),
+        decoration: BoxDecoration(
+            color: ColorUtil.backgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        child: Row(children: [
+          SizedBox(width: 14),
+          Icon(
+            Icons.search,
+            size: 19,
+            color: ColorUtil.grey108,
+          ),
+          SizedBox(width: 12),
+          Consumer<FbHotTagsProvider>(
+              builder: (_, data, __) => Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: WePeiYangApp.screenWidth - 260),
+                        child: Text(
+                          data.recTag.name == ''
+                              ? '加载推荐中，失败请下拉刷新'
+                              : '#${data.recTag.name}#',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                        ),
+                      ),
+                      Text(
+                        data.recTag.name == '' ? '' : '  为你推荐',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      ),
+                    ],
+                  )),
+          Spacer()
+        ]),
+      ),
     );
     _offsets[0] = _controller1.hasClients ? _controller1.offset : 2;
     _offsets[1] = _controller2.hasClients ? _controller2.offset : 2;
@@ -328,8 +394,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           ),
           enablePullDown: true,
           onRefresh: onRefresh,
-          footer: ClassicFooter(
-          ),
+          footer: ClassicFooter(),
           enablePullUp: !model.isLastPage,
           onLoading: _onLoading,
           child: ListView.builder(
@@ -369,8 +434,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             physics: NeverScrollableScrollPhysics(),
             itemCount: model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
-              if (index == 0)
-                return Offstage(offstage: !_hotDisplays, child: HotCard());
+              if (index == 0) return HotCard();
               index--;
               final post = model.allList[swapLister[1]][index];
               return PostCard.simple(post, key: ValueKey(post.id));
@@ -423,8 +487,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
       child: AnimatedSize(
-        curve: Curves.easeInOutExpo,
-        duration: Duration(milliseconds: 700),
+        curve: Curves.easeOutCirc,
+        duration: Duration(milliseconds: 400),
         vsync: this,
         child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
       ),
@@ -516,6 +580,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   image: AssetImage(
                                       "assets/images/lake_butt_icons/add_post.png")))),
                       onTap: () {
+                        _initialRefresh = true;
                         Navigator.pushNamed(context, FeedbackRouter.newPost);
                       }),
                 ),
@@ -623,20 +688,22 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             image: AssetImage(
                                 "assets/images/lake_butt_icons/menu.png"),
                           ),
-                          //1-->时间排序，2-->动态排序
-                          onSelected: (value) {},
+                          //0-->时间排序，1-->动态排序
+                          onSelected: (value) {
+                            CommonPreferences().feedbackSearchType.value =
+                                value.toString();
+                            onRefresh();
+                          },
                           itemBuilder: (context) {
                             return <PopupMenuEntry<int>>[
                               PopupMenuItem<int>(
-                                value: 1,
+                                value: 0,
                                 child: Text(
                                   '时间排序',
-                                  style: TextStyle(
-                                      color: ColorUtil.lightTextColor),
                                 ),
                               ),
                               PopupMenuItem<int>(
-                                value: 2,
+                                value: 1,
                                 child: Text('动态排序'),
                               ),
                             ];
@@ -681,7 +748,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (_controller.offset > 1500) _controller.jumpTo(1500);
     _controller.animateTo(-85,
-        duration: Duration(milliseconds: 1000), curve: Curves.fastOutSlowIn);
+        duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 }
 

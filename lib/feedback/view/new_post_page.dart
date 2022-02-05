@@ -227,7 +227,6 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    timeDilation = 1.5;
     return Hero(
       tag: "addNewPost",
       child: ElevatedButton(
@@ -284,7 +283,7 @@ class _TagViewState extends State<TagView> {
               shape: BoxShape.rectangle,
             ),
             margin: const EdgeInsets.only(bottom: 6),
-            padding: const EdgeInsets.fromLTRB(22, 0, 22, 16),
+            padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
             child: notifier.value == PostType.feedback
                 ? TabGridView(
                     department: department.value,
@@ -321,17 +320,16 @@ class _CampusSelectorState extends State<CampusSelector> {
             children: [
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
-                width: ScreenUtil().setWidth(12),
+                width: 16,
               ),
-              SizedBox(width: ScreenUtil().setWidth(8.5)),
+              SizedBox(width: 10),
               Text(
                 texts[value],
-                style: TextUtil.base.sp(9).w400.NotoSansSC.normal,
+                style: TextUtil.base.sp(14).w400.NotoSansSC.normal,
               ),
-              SizedBox(width: ScreenUtil().setWidth(12)),
+              SizedBox(width: 18),
             ],
           ),
-          //1-->时间排序，2-->动态排序
           onSelected: (value) {
             widget.campusNotifier.value = value;
           },
@@ -452,11 +450,11 @@ class _TitleInputFieldState extends State<TitleInputField> {
         controller: _titleController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
         minLines: 1,
         maxLines: 10,
         decoration: InputDecoration.collapsed(
-          hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
+          hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).grey6C,
           hintText: S.current.feedback_enter_title,
         ),
         onChanged: (text) {
@@ -528,7 +526,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       textInputAction: TextInputAction.done,
       minLines: 1,
       maxLines: 100 ,
-      style: TextUtil.base.NotoSansSC.w500.sp(18).h(1.4).black2A,
+      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
         hintText: '${S.current.feedback_detail}...',
@@ -557,8 +555,8 @@ class _ContentInputFieldState extends State<ContentInputField> {
         Container(
             constraints: BoxConstraints(
                 minHeight: WePeiYangApp.screenHeight > 800
-                    ? WePeiYangApp.screenHeight - 600
-                    : 200),
+                    ? WePeiYangApp.screenHeight - 700
+                    : 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [inputField, SizedBox(height: 20), bottomTextCounter],

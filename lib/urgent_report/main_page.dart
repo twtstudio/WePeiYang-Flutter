@@ -96,7 +96,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
   bool _checkTodayHasReportedOrNot() {
     try {
       var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
-      debugPrint("------------------------" + lastTime.toString());
       var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
       var difference = lastDay.difference(DateTime.now()).inDays;
       return difference == 0;

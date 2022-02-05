@@ -12,7 +12,7 @@ class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  String baseUrl = 'https://www.zrzz.site:7012/api/v1/f/';
   var headers = {};
 
   @override
@@ -85,10 +85,8 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static getTags() async {}
-
   static getHotTags({
-    @required OnResult<List<Tag>> onResult,
+    @required OnResult<List<Tag>> onSuccess,
     @required OnFailure onFailure,
   }) async {
     try {
@@ -97,7 +95,23 @@ class FeedbackService with AsyncTimer {
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Tag.fromJson(json));
       }
-      onResult(list);
+      onSuccess(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getRecTag({
+    @required OnResult<Tag> onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('tag/recommend');
+      Tag tag;
+      Map<String, dynamic> json = response.data['data']['tag'];
+        tag = Tag.fromJson(json);
+
+      onSuccess(tag);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -144,6 +158,7 @@ class FeedbackService with AsyncTimer {
   static getPosts(
       {keyword,
       departmentId,
+      tagId,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -153,7 +168,9 @@ class FeedbackService with AsyncTimer {
         'posts',
         queryParameters: {
           'type': '$type',
+          'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
           'content': keyword ?? '',
+          'tag_id' : tagId ?? '',
           ///搜索
           'page_size': '10',
           'page': '$page',

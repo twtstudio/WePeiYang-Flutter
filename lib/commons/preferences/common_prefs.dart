@@ -40,6 +40,7 @@ class CommonPreferences {
       PrefsBean<List<String>>("feedbackSearchHistory", []);
   // 1 -> 按时间排序; 2 -> 按热度排序
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
+  var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据

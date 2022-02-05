@@ -14,7 +14,6 @@ import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:provider/provider.dart';
 
 class UserPage extends StatefulWidget {
@@ -96,8 +95,8 @@ class _UserPageState extends State<UserPage> {
                         textAlign: TextAlign.center,
                         style: FontManager.Texta.copyWith(
                             color: MyColors.deepDust, fontSize: 15))),
-                SizedBox(height: 5),
-                NavigationWidget(),
+                SizedBox(height: 40),
+                //NavigationWidget(),
                 Container(
                   height: 80,
                   padding:
@@ -105,12 +104,12 @@ class _UserPageState extends State<UserPage> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.userInfo),
                       splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(12),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 20),
@@ -136,12 +135,12 @@ class _UserPageState extends State<UserPage> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.aboutTwt),
                       splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(12),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 20),
@@ -166,7 +165,7 @@ class _UserPageState extends State<UserPage> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () {
                         WidgetsBinding.instance
@@ -175,7 +174,7 @@ class _UserPageState extends State<UserPage> {
                         });
                       },
                       splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(12),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 20),
@@ -215,14 +214,14 @@ class _UserPageState extends State<UserPage> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () => showDialog(
                           context: context,
                           barrierDismissible: true,
                           builder: (BuildContext context) => PrivacyDialog()),
                       splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(12),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 20),
@@ -245,14 +244,14 @@ class _UserPageState extends State<UserPage> {
                   child: Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(9)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () => showDialog(
                           context: context,
                           barrierDismissible: true,
                           builder: (BuildContext context) => LogoutDialog()),
                       splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(9),
+                      borderRadius: BorderRadius.circular(12),
                       child: Row(
                         children: <Widget>[
                           SizedBox(width: 20),
