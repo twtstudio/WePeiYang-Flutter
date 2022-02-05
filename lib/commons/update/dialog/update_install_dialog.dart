@@ -1,7 +1,6 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
 import 'package:we_pei_yang_flutter/commons/channels/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';

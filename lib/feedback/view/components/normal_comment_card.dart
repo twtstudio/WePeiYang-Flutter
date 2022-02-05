@@ -288,31 +288,36 @@ class _NCommentCardState extends State<NCommentCard>
                         },
                       ),
                     )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(baseUrl + widget.comment.imageUrl,
-                          width: 70, height: 64, fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 40,
-                          width: 40,
-                          padding: EdgeInsets.all(4),
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
-                        );
-                      }, errorBuilder: (BuildContext context, Object exception,
-                              StackTrace stackTrace) {
-                        return Text(
-                          '💔[图片加载失败]',
-                          style: TextUtil.base.grey6C.w400.sp(12),
-                        );
-                      }))),
+                  : Row(
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          child: Image.network(baseUrl + widget.comment.imageUrl,
+                              width: 70, height: 64, fit: BoxFit.cover,
+                              loadingBuilder: (BuildContext context, Widget child,
+                                  ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 40,
+                              width: 40,
+                              padding: EdgeInsets.all(4),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            );
+                          }, errorBuilder: (BuildContext context, Object exception,
+                                  StackTrace stackTrace) {
+                            return Text(
+                              '💔[图片加载失败]',
+                              style: TextUtil.base.grey6C.w400.sp(12),
+                            );
+                          })),
+                      Spacer()
+                    ],
+                  )),
         ));
 
     var replyButton = IconButton(
