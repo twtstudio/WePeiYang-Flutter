@@ -17,15 +17,18 @@ class SearchResultPage extends StatefulWidget {
 
   @override
   _SearchResultPageState createState() =>
-      _SearchResultPageState(args.keyword, args.tagId, args.title);
+      _SearchResultPageState(args.keyword, args.tagId, args.departmentId, args.title, args.type);
 }
 
 class SearchResultPageArgs {
   final String keyword;
   final String tagId;
+  final String departmentId;
   final String title;
 
-  SearchResultPageArgs(this.keyword, this.tagId, this.title);
+  final int type;
+
+  SearchResultPageArgs(this.keyword, this.tagId, this.departmentId, this.title, this.type);
 }
 
 enum SearchPageStatus {
@@ -36,8 +39,10 @@ enum SearchPageStatus {
 
 class _SearchResultPageState extends State<SearchResultPage> {
   final String keyword;
+  final String tagId;
   final String departmentId;
   final String title;
+  final int type;
 
   int currentPage = 1, totalPage = 1;
   SearchPageStatus status;
@@ -47,15 +52,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   List<Post> _list = [];
 
-  _SearchResultPageState(this.keyword, this.departmentId, this.title);
+  _SearchResultPageState(this.keyword, this.tagId, this.departmentId, this.title, this.type);
 
   _onRefresh() {
     currentPage = 1;
     FeedbackService.getPosts(
-      type: '2',///先设置成了全部搜索
+      type: '$type',
       departmentId: departmentId,
       page: currentPage,
-      tagId: widget.args.tagId,
+      tagId: tagId,
       keyword: keyword,
       onSuccess: (list, page) {
         totalPage = page;
@@ -75,9 +80,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
       currentPage++;
       FeedbackService.getPosts(
         departmentId: departmentId,
-        type: '2',///同上
+        type: '$type',
         page: currentPage,
-        tagId: widget.args.tagId,
+        tagId: tagId,
         keyword: keyword,
         onSuccess: (list, page) {
           totalPage = page;
@@ -102,9 +107,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FeedbackService.getPosts(
         departmentId: departmentId,
-        type: '2',
+        type: '$type',
         page: currentPage,
-        tagId: widget.args.tagId,
+        tagId: tagId,
         keyword: keyword,
         onSuccess: (list, page) {
           totalPage = page;

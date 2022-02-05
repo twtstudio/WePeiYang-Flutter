@@ -70,7 +70,9 @@ class _HotCardState extends State<HotCard> {
                         arguments: SearchResultPageArgs(
                           '',
                           '${data.hotTagsList[index].id}',
+                          '',
                           S.current.feedback_search_result,
+                          0
                         ),
                       ),
                   child: Padding(

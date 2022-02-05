@@ -70,7 +70,9 @@ class _SearchBarState extends State<SearchBar>
               arguments: SearchResultPageArgs(
                 '',
                 '${tagUtil[total].id}',
+                '',
                 S.current.feedback_search_result,
+                0
               ),
             ).then((_) {
               Navigator.pop(context);
@@ -169,7 +171,9 @@ class _SearchBarState extends State<SearchBar>
                     arguments: SearchResultPageArgs(
                       '',
                       '${data.recTag.id}',
+                      '',
                       S.current.feedback_search_result,
+                      0
                     ),
                   );
                 }

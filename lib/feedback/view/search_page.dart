@@ -54,7 +54,9 @@ class _SearchPageState extends State<SearchPage> {
           arguments: SearchResultPageArgs(
             text,
             '',
+            '',
             S.current.feedback_search_result,
+            2
           ),
         ).then((_) {
           Navigator.pop(context);
@@ -132,7 +134,9 @@ class _SearchPageState extends State<SearchPage> {
             var searchArgument = SearchResultPageArgs(
               list[list.length - index - 1],
               '',
+              '',
               S.current.feedback_search_result,
+              2
             );
             return InkResponse(
               radius: 30,

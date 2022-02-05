@@ -26,7 +26,7 @@ class _TabGridViewState extends State<TabGridView>
   @override
   Widget build(BuildContext context) {
     //设计图里没有发送按键，删了
-    var tagsWrap = Consumer<FbTagsProvider>(
+    var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, data, __) => Wrap(
         alignment: WrapAlignment.start,
         spacing: 6,

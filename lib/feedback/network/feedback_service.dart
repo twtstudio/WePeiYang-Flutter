@@ -174,7 +174,8 @@ class FeedbackService with AsyncTimer {
           'type': '$type',
           'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
           'content': keyword ?? '',
-          'tag_id' : tagId ?? '',
+          'tag_id': tagId ?? '',
+          'department_id': departmentId ?? '',
           ///搜索
           'page_size': '10',
           'page': '$page',

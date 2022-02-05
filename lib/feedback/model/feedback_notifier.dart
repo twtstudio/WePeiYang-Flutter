@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
-class FbTagsProvider {
+class FbDepartmentsProvider {
   List<Department> departmentList = [];
 
   Future<void> initDepartments() async {
@@ -187,25 +187,21 @@ class FbHomeListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkTokenAndGetPostList(FbTagsProvider provider, int type,
+  checkTokenAndGetPostList(FbDepartmentsProvider provider, int type,
       {OnSuccess success, OnFailure failure}) async {
-    if (CommonPreferences().feedbackToken.value == "") {
-      await FeedbackService.getToken(
-        onResult: (token) {
-          CommonPreferences().feedbackToken.value = token;
-          provider.initDepartments();
-          initPostList(type);
-        },
-        onFailure: (e) {
-          _status = FbHomePageStatus.error;
-          failure?.call(e);
-          notifyListeners();
-        },
-      );
-    } else {
-      provider.initDepartments();
-      initPostList(type);
-    }
+    await FeedbackService.getToken(
+      onResult: (token) {
+        CommonPreferences().feedbackToken.value = token;
+        provider.initDepartments();
+        initPostList(type);
+      },
+      onFailure: (e) {
+        _status = FbHomePageStatus.error;
+        ToastProvider.error('请清空应用数据或重新安装微北洋');
+        failure?.call(e);
+        notifyListeners();
+      },
+    );
   }
 
   Future<void> initPostList(int type,

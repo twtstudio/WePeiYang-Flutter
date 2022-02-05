@@ -35,7 +35,7 @@ class FeedbackHomePage extends StatefulWidget {
 class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   FbHomeListModel _listProvider;
-  FbTagsProvider _tagsProvider;
+  FbDepartmentsProvider _tagsProvider;
   FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
@@ -131,8 +131,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  _onTapped() {
-    _onOpen();
+  _onFeedbackTapped() {
+    _onFeedbackOpen();
     if (_tagsContainerCanAnimate) {
       if (_tagsWrapIsShow == false)
         setState(() {
@@ -172,7 +172,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (_refreshController.isRefresh) _refreshController.refreshCompleted();
   }
 
-  _onOpen() {
+  _onFeedbackOpen() {
     if (!scroll && _nestedController.offset != 0) {
       scroll = true;
       _nestedController
@@ -183,12 +183,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels == 0) _onOpen();
+    if (scrollInfo.metrics.pixels == 0) _onFeedbackOpen();
     if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
         scrollInfo.metrics.pixels >= 10 &&
         scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
       if (scrollInfo.metrics.pixels <= _previousOffset)
-        _onOpen();
+        _onFeedbackOpen();
       else
         _onClose();
       _previousOffset = scrollInfo.metrics.pixels;
@@ -248,7 +248,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
-      _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
+      _tagsProvider = Provider.of<FbDepartmentsProvider>(context, listen: false);
       getRecTag();
       _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
         ToastProvider.error(e.error.toString());
@@ -448,7 +448,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       );
     });
 
-    var tagsWrap = Consumer<FbTagsProvider>(
+    var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
@@ -469,8 +469,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     FeedbackRouter.searchResult,
                     arguments: SearchResultPageArgs(
                       '',
+                      '',
                       provider.departmentList[index].id.toString(),
                       '#${provider.departmentList[index].name}',
+                      1
                     ),
                   );
                 },
@@ -532,7 +534,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   duration: Duration(milliseconds: 500),
                   onEnd: _offstageTheBackground,
                   child: InkWell(
-                    onTap: _onTapped,
+                    onTap: _onFeedbackTapped,
                     child: Container(
                       color: Colors.black45,
                     ),
@@ -645,7 +647,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                               )
                                             ],
                                           ),
-                                          onTap: _onTapped,
+                                          onTap: _onFeedbackTapped,
                                         )
                                       : Row(
                                           children: [
