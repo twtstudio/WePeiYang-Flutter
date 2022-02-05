@@ -326,6 +326,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
+    //控制动画速率
+    //timeDilation = 0.9;
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
@@ -363,7 +365,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         constraints: BoxConstraints(
                             maxWidth: WePeiYangApp.screenWidth - 260),
                         child: Text(
-                          data.recTag.name == ''
+                          data.recTag == null
                               ? '加载推荐中，失败请下拉刷新'
                               : '#${data.recTag.name}#',
                           overflow: TextOverflow.ellipsis,
@@ -371,7 +373,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         ),
                       ),
                       Text(
-                        data.recTag.name == '' ? '' : '  为你推荐',
+                        data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                       ),
@@ -432,7 +434,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             controller: _controller2,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[1]].length + 1,
+            itemCount: model.allList[swapLister[1]].length == 0 ? 0 : model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
               if (index == 0) return HotCard();
               index--;

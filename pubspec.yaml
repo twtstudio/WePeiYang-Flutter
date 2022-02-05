@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
 # 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.1.8+82
+version: 4.1.9+84
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
