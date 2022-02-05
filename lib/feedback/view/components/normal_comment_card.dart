@@ -182,7 +182,7 @@ class _NCommentCardState extends State<NCommentCard>
             }
             if (value == '举报') {
               Navigator.pushNamed(context, FeedbackRouter.report,
-                  arguments: ReportPageArgs(widget.comment.id, false));
+                  arguments: ReportPageArgs(widget.ancestorId, false, floorId: widget.comment.id));
             } else if (value == '删除') {
               bool confirm = await _showDeleteConfirmDialog();
               if (confirm) {

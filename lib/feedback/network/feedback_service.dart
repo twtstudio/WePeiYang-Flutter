@@ -561,6 +561,7 @@ class FeedbackService with AsyncTimer {
   /// 举报问题 / 评论
   static report(
       {@required id,
+       floorId,
       @required isQuestion,
       @required reason,
       @required OnSuccess onSuccess,
@@ -577,7 +578,8 @@ class FeedbackService with AsyncTimer {
         } else {
           formData = FormData.fromMap({
             'type': 2,
-            'floor_id': id,
+            'post_id': id,
+            'floor_id': floorId,
             'reason': reason,
           });
         }
