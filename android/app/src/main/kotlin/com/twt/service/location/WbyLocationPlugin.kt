@@ -1,6 +1,7 @@
 package com.twt.service.location
 
 import android.content.Context
+import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,10 +24,9 @@ class WbyLocationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         when (call.method) {
             "getLocation" -> {
                 kotlin.runCatching {
-                    AMapFactory.init(placeChannel, context).startLocation()
-                }.onSuccess {
-                    result.success("begin")
+                    AMapFactory.init(context, result).startLocation()
                 }.onFailure {
+                    log(it.toString())
                     result.error(START_LOCATION_ERROR,"start location failure",it.message)
                 }
             }
@@ -37,5 +37,6 @@ class WbyLocationPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     companion object {
         const val TAG = "WBY_MAP"
         const val START_LOCATION_ERROR = "START_LOCATION_ERROR"
+        fun log(msg:String) = Log.d(TAG,msg)
     }
 }

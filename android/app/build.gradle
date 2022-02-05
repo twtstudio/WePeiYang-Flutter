@@ -146,7 +146,9 @@ dependencies {
 
     implementation "androidx.fragment:fragment-ktx:1.4.0"
 
-    implementation 'com.amap.api:location:5.4.0'
+    // 高德 sdk
+    // https://lbs.amap.com/api/android-location-sdk/changelog
+    implementation 'com.amap.api:location:5.6.2'
 
     implementation('io.github.lucksiege:pictureselector:v2.7.2') {
         configurations {
@@ -154,20 +156,18 @@ dependencies {
         }
     }
 
-    implementation 'com.getui:gtsdk:3.2.7.0'
+    // 个推 sdk
+    // https://docs.getui.com/getui/version/
+    implementation 'com.getui:gtsdk:3.2.8.0'
     implementation 'com.getui:gtc:3.1.7.0'
-
+    // https://docs.getui.com/getui/mobile/vendor/record/
     implementation 'com.getui.opt:hwp:3.1.0'
-    implementation 'com.getui.opt:xmp:3.1.0'
+    implementation 'com.getui.opt:xmp:3.1.1'
     implementation 'com.assist-v3:oppo:3.1.0'
     implementation 'com.assist-v3:vivo:3.1.0'
     implementation 'com.getui.opt:mzp:3.2.0'
-
     implementation 'com.huawei.hms:push:6.1.0.300'
 
+    //
     implementation fileTree(dir: 'libs', include: '*.jar')
-
-//    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.5.8'
-
-//    implementation "com.jakewharton.timber:timber:4.7.1"
 }

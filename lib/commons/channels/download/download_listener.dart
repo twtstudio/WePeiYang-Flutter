@@ -49,4 +49,9 @@ class DownloadListener {
       allSuccess,
     );
   }
+
+  @override
+  String toString() {
+    return "id: $listenerId ,tasks: $tasks";
+  }
 }

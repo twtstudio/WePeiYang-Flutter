@@ -68,7 +68,7 @@ class DownloadManager {
         listener.allSuccess?.call(resultPaths);
         break;
       case 'ERROR':
-        listener.error(call.arguments);
+        listener.error(call.arguments.toString());
         break;
       case 'BEGIN':
         listener.begin?.call();

@@ -35,6 +35,11 @@ class DownloadItem {
   }
 
   String toJson() => json.encode(toMap());
+
+  @override
+  String toString() {
+    return toJson();
+  }
 }
 
 class DownloadList {

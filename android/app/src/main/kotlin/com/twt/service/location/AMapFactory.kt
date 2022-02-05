@@ -4,11 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.Keep
-import com.amap.api.location.AMapLocation
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
-import com.amap.api.location.AMapLocationListener
-import com.amap.api.location.AMapLocationQualityReport
+import com.amap.api.location.*
 import com.google.gson.Gson
 import io.flutter.plugin.common.MethodChannel
 import java.text.SimpleDateFormat
@@ -16,7 +12,9 @@ import java.util.*
 
 // 大部分代码都是来自高德地图 demo
 object AMapFactory {
-    fun init(placeChannel: MethodChannel, context: Context): AMapLocationClient {
+    fun init(context: Context, result: MethodChannel.Result): AMapLocationClient {
+        AMapLocationClient.updatePrivacyShow(context, true, true)
+        AMapLocationClient.updatePrivacyAgree(context, true)
         val locationClient = AMapLocationClient(context)
         val locationOption = getDefaultOption()
         locationClient.setLocationOption(locationOption)
@@ -40,10 +38,11 @@ object AMapFactory {
                 val json = Gson().toJson(locationData)
                 Log.d(WbyLocationPlugin.TAG, json)
                 // 发送到flutter
-                placeChannel.invokeMethod("showResult", json)
+                result.success(json)
                 locationClient.stopLocation()
             }, onError = {
-                placeChannel.invokeMethod("showError", "定位失败,${it.locationDetail}")
+                WbyLocationPlugin.log(it.errorInfo)
+                result.error("定位失败", it.errorInfo, it.locationDetail)
                 locationClient.stopLocation()
             })
         }

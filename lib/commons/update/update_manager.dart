@@ -137,13 +137,13 @@ class UpdateManager extends ChangeNotifier {
         type: DownloadType.apk,
       ),
       error: (message) {
+        debugPrint("ffffffffffffffffffffkkkkkkkkkkkkkkkkkkk");
         SmartDialog.showToast("下载失败");
-        SmartDialog.dismiss(tag: DialogTag.apk.text);
+        cancelDialog(DialogTag.apk);
         state = UpdateState.nothing;
       },
       success: (task) async {
         if (task.fileName == version.apkName) {
-          debugPrint('123123123');
           progress = 1.0;
           state = UpdateState.load;
           await Future.delayed(const Duration(seconds: 1));
