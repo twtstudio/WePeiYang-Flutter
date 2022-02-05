@@ -166,6 +166,7 @@ class _NCommentCardState extends State<NCommentCard>
         PopupMenuButton(
           padding: EdgeInsets.zero,
           shape: RacTangle(),
+          offset: Offset(0,0),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 16,
@@ -512,6 +513,7 @@ class _NCommentCardState extends State<NCommentCard>
 }
 
 class RacTangle extends ShapeBorder {
+  ///todo popMenu调不了宽度，现阶段采用的是我强行用裁剪剪出理想形状，回头我重写一个
   @override
   // ignore: missing_return
   Path getInnerPath(Rect rect, {TextDirection textDirection}) {
@@ -528,11 +530,6 @@ class RacTangle extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var paint = Paint()
-      ..color = Colors.transparent
-      ..strokeWidth = 12.0
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round;
     var w = rect.width;
     var tang = Paint()
       ..isAntiAlias = true
@@ -540,10 +537,9 @@ class RacTangle extends ShapeBorder {
       ..color = Colors.white
       ..strokeWidth = 5;
     //var h = rect.height;
-    canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
-    canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
-    canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
-    canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
+
+    canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
+    canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
   }
 
   @override

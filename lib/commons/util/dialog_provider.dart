@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class DialogWidget extends Dialog {
@@ -10,26 +12,25 @@ class DialogWidget extends Dialog {
   final Function cancelFun; //取消回调
   final Function confirmFun; //确定回调
   DialogWidget( {
-    @required Key key,
     @required this.title,
     @required this.content,
     @required this.cancelText,
     @required this.confirmText,
     @required this.cancelFun,
     @required this.confirmFun
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Material(
         type: MaterialType.transparency,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding:EdgeInsets.all(28),
+              padding:EdgeInsets.all(28.w),
               decoration: ShapeDecoration(
                 color: Color(0xfff2f2f2),
                 shape: RoundedRectangleBorder(
@@ -44,7 +45,7 @@ class DialogWidget extends Dialog {
                     padding: EdgeInsets.all(0),
                     child: Row(
                       children: [
-                        Text(title, style: TextStyle(color: Color(0xff666666),fontSize: 18)),
+                        Text(title, style: TextUtil.base.black2A.NotoSansSC.w500.normal.sp(18)),
                       ],
                     ),
                   ),
@@ -69,10 +70,9 @@ class DialogWidget extends Dialog {
 
   Widget _buildBottomButtonGroup() {
     var widgets = <Widget>[];
-    if (cancelText != null && cancelText.isNotEmpty) widgets.add(SizedBox(width: 13,));
     if (cancelText != null && cancelText.isNotEmpty) widgets.add(_buildBottomCancelButton());
     if (confirmText != null && confirmText.isNotEmpty && confirmText != null && confirmText.isNotEmpty) widgets.add(_buildBottomOnline());
-    if (confirmText != null && confirmText.isNotEmpty && confirmText != null && confirmText.isNotEmpty) widgets.add(SizedBox(width: 30,));
+    if (confirmText != null && confirmText.isNotEmpty && confirmText != null && confirmText.isNotEmpty) widgets.add(SizedBox(width: 30.w,));
     if (confirmText != null && confirmText.isNotEmpty) widgets.add(_buildBottomPositiveButton());
 
     return Flex(
@@ -82,15 +82,15 @@ class DialogWidget extends Dialog {
   }
   Widget _buildBottomOnline() {
     return Container(
-      color: Color(0xffeeeeee),
+      color: ColorUtil.backgroundColor,
     );
   }
   Widget _buildBottomCancelButton() {
     return Container(
-      height: 44,
-      width: 136,
+      height: 44.w,
+      width: 136.w,
       child: TextButton(
-        onPressed: () => this.cancelFun,
+        onPressed: this.cancelFun,
         child: Text(cancelText,
             style: TextStyle(
                 color: Color.fromRGBO(54, 60, 84, 1), fontSize: 13)),
@@ -112,10 +112,10 @@ class DialogWidget extends Dialog {
 
   Widget _buildBottomPositiveButton() {
     return Container(
-      height: 44,
-      width: 136,
+      height: 44.w,
+      width: 136.w,
       child: TextButton(
-        onPressed: () => this.confirmFun,
+        onPressed:  this.confirmFun,
         child: Text(confirmText,
             style: TextStyle(
                 color: Color.fromRGBO(54, 60, 84, 1), fontSize: 13)),

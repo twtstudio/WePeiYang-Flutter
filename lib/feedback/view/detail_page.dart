@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -473,10 +474,9 @@ class _DetailPageState extends State<DetailPage>
     //       });
     //     });
     var menuButton = PopupMenuButton(
-
         ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
-        offset: Offset(100, 20),
+        offset: Offset(0, 20.w),
         child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
         onSelected: (value) {

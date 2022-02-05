@@ -216,7 +216,16 @@ class _SearchBarState extends State<SearchBar>
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
-                        )),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0.0, 10.0), //阴影xy轴偏移量
+                              blurRadius: 15.0, //阴影模糊程度
+                              spreadRadius: 1.0 //阴影扩散程度
+                          )
+                        ]
+                    ),
                     child: Column(children: tagList ?? [SizedBox()]))
                 : SizedBox(),
           ),
