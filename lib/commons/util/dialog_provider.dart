@@ -6,8 +6,10 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class DialogWidget extends Dialog {
   final String title; //标题
-  final String content; //内容
+  final Widget content; //内容
   final String cancelText; //是否需要"取消"按钮
+  final TextStyle confirmTextStyle;//确认按钮文字样式
+  final TextStyle cancelTextStyle;//取消按钮文字样式
   final String confirmText; //是否需要"确定"按钮
   final Function cancelFun; //取消回调
   final Function confirmFun; //确定回调
@@ -15,6 +17,8 @@ class DialogWidget extends Dialog {
     @required this.title,
     @required this.content,
     @required this.cancelText,
+    @required this.confirmTextStyle,
+    @required this.cancelTextStyle,
     @required this.confirmText,
     @required this.cancelFun,
     @required this.confirmFun
@@ -52,10 +56,8 @@ class DialogWidget extends Dialog {
                   Container(
                     constraints: BoxConstraints(minHeight: 100),
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: IntrinsicHeight(
-                        child:  Text(content, style: TextStyle(color: Color(0xff666666))),
-                      ),
+                      padding: const EdgeInsets.only(top: 16),
+                      child: content
                     ),
                   ),
                   this._buildBottomButtonGroup()
@@ -92,8 +94,7 @@ class DialogWidget extends Dialog {
       child: TextButton(
         onPressed: this.cancelFun,
         child: Text(cancelText,
-            style: TextStyle(
-                color: Color.fromRGBO(54, 60, 84, 1), fontSize: 13)),
+            style: cancelTextStyle),
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -117,8 +118,7 @@ class DialogWidget extends Dialog {
       child: TextButton(
         onPressed:  this.confirmFun,
         child: Text(confirmText,
-            style: TextStyle(
-                color: Color.fromRGBO(54, 60, 84, 1), fontSize: 13)),
+            style: confirmTextStyle),
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {

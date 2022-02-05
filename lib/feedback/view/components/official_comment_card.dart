@@ -49,7 +49,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     List<Widget> column = [];
 
     var box = SizedBox(height: 8);
-
     var createTime = Row(
       children: [
         OfficialLogo(),
@@ -63,7 +62,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ],
     );
-
     var likeWidget = IconWidget(
       IconType.like,
       count: widget.comment.likeCount,
