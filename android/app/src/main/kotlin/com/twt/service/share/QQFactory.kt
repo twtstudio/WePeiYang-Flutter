@@ -41,13 +41,14 @@ class QQFactory(private val mTencent: Tencent, private val activity: Activity) :
     }
 
     fun shareImg(call: MethodCall) {
-        call.argument<String>("imageUrl")?.let {
+        call.argument<String>("path")?.let {
             QQShareData(
                 imageUrl = it,
                 title = call.argument<String>("title") ?: "大图分享",
                 appName = "微北洋",
                 type = QQShare.SHARE_TO_QQ_TYPE_IMAGE,
             ).let { data ->
+                WbySharePlugin.log("share data: $data");
                 shareToQQ(data)
             }
         }
@@ -75,19 +76,19 @@ class QQFactory(private val mTencent: Tencent, private val activity: Activity) :
         mTencent.shareToQQ(activity, params, this)
     }
 
-    override fun onComplete(p0: Any?) {
-        TODO("Not yet implemented")
+    override fun onComplete(obj: Any?) {
+        WbySharePlugin.log("success : $obj")
     }
 
-    override fun onError(p0: UiError?) {
-        TODO("Not yet implemented")
+    override fun onError(error: UiError?) {
+        WbySharePlugin.log("error : $error")
     }
 
     override fun onCancel() {
-        TODO("Not yet implemented")
+        WbySharePlugin.log("cancel")
     }
 
-    override fun onWarning(p0: Int) {
-        TODO("Not yet implemented")
+    override fun onWarning(code: Int) {
+        WbySharePlugin.log("warning: $code")
     }
 }

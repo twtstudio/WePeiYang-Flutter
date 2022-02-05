@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show StringCodec, BasicMessageChannel;
+import 'package:we_pei_yang_flutter/commons/image_save/image_save.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -63,7 +64,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                         base64.decode(message.message.split(",")[1]);
                     final fileName =
                         "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
-                    await WbyImageSave.saveImage(bytes, fileName);
+                    await WbyImageSave.saveImageToAlbum(bytes, fileName);
                   } catch (_) {
                     ToastProvider.error('图片保存失败');
                   }
@@ -72,19 +73,5 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
         ),
       ),
     );
-  }
-}
-
-class WbyImageSave {
-  static final channel =
-      BasicMessageChannel('com.twt.service/saveBase64Img', StringCodec());
-
-  static Future<void> saveImage(Uint8List data, String fileName) async {
-    List<Directory> tempDir =
-        await getExternalStorageDirectories(type: StorageDirectory.pictures);
-    var newImg = File("${tempDir.first.path}/$fileName")
-      ..writeAsBytesSync(data);
-    var result = await channel.send(newImg.absolute.path);
-    if (result != null) ToastProvider.success("保存成功");
   }
 }

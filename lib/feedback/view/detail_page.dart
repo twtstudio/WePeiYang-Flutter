@@ -482,8 +482,6 @@ class _DetailPageState extends State<DetailPage>
   }
 }
 
-var shareChannel = MethodChannel("com.twt.service/share");
-
 class CommentInputField extends StatefulWidget {
   final int postId;
 

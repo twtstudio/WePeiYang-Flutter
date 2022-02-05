@@ -125,22 +125,23 @@
             </intent-filter>
         </activity>
 
+<!--    这两个 activity 一定不能删除，这是QQ API 的必要条件 -->
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="behind" />
-
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tencent1104743406" />
+                <data android:scheme="tencentminiapp1104743406" />
             </intent-filter>
         </activity>
 
@@ -175,7 +176,7 @@
         <!-- 用户自定义服务名 -->
         <service
             android:name="com.twt.service.push.WBYPushService"
-            android:exported="true"
+            android:exported="false"
             android:label="PushService"
             android:process=":pushservice" />
 
@@ -253,5 +254,9 @@
         <intent>
             <action android:name="com.getui.sdk.action" />
         </intent>
+    </queries>
+
+    <queries>
+        <package android:name="com.tencent.mobileqq" />
     </queries>
 </manifest>

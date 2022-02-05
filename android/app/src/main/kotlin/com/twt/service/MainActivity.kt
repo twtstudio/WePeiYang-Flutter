@@ -5,7 +5,7 @@ import android.util.Log
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
 import com.twt.service.hot_fix.WbyFixPlugin
-import com.twt.service.imageSave.WbyImageSavePlugin
+import com.twt.service.image.WbyImageSavePlugin
 import com.twt.service.install.WbyInstallPlugin
 import com.twt.service.location.WbyLocationPlugin
 import com.twt.service.message.WbyMessagePlugin
