@@ -47,6 +47,7 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
+  bool _bottomIsOpen;
   int currentPage = 1;
 
   double _previousOffset = 0;
@@ -88,7 +89,6 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onLoadingSelectedPage(int current) {
-    print(current + 10000000000000000);
     _getComments(
         onSuccess: (comments) {
           _commentList.removeRange(
@@ -102,8 +102,10 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
+    if (_bottomIsOpen ?? false)
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
+      _bottomIsOpen = false;
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
@@ -385,6 +387,7 @@ class _DetailPageState extends State<DetailPage>
                             offstage: value.inputFieldEnabled,
                             child: InkWell(
                               onTap: () {
+                                _bottomIsOpen = true;
                                 Provider.of<NewFloorProvider>(context,
                                         listen: false)
                                     .inputFieldOpenAndReplyTo(0);

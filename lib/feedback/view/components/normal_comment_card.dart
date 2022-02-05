@@ -52,7 +52,8 @@ class NCommentCard extends StatefulWidget {
       this.isFullView});
 }
 
-class _NCommentCardState extends State<NCommentCard> {
+class _NCommentCardState extends State<NCommentCard>
+    with SingleTickerProviderStateMixin {
   final String baseUrl = 'https://www.zrzz.site:7012/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -89,8 +90,7 @@ class _NCommentCardState extends State<NCommentCard> {
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget
-                .comment.nickname}',
+            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
             width: 30,
             height: 30,
             fit: BoxFit.cover,
@@ -167,14 +167,17 @@ class _NCommentCardState extends State<NCommentCard> {
           padding: EdgeInsets.zero,
           shape: RacTangle(),
           child: SvgPicture.asset(
-    'assets/svg_pics/lake_butt_icons/more_horizontal.svg',width: 16,),
+            'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+            width: 16,
+          ),
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
                   '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
-              CommonPreferences().feedbackLastWeCo.value = widget.ancestorId.toString();
+              CommonPreferences().feedbackLastWeCo.value =
+                  widget.ancestorId.toString();
               ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
             }
             if (value == '举报') {
@@ -213,7 +216,8 @@ class _NCommentCardState extends State<NCommentCard> {
                       child: Center(
                         child: Text(
                           '删除',
-                          style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                          style:
+                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
                         ),
                       ),
                     )
@@ -240,76 +244,74 @@ class _NCommentCardState extends State<NCommentCard> {
 
     var commentImage = Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
-        child: InkWell(
-          onTap: () {
-            setState(() {
-              _picFullView = true;
-            });
-          },
-          child: _picFullView
-              ? InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, FeedbackRouter.imageView,
-                        arguments: {
-                          "urlList": [widget.comment.imageUrl],
-                          "urlListLength": 1,
-                          "indexNow": 0
-                        });
-                  },
-                  child: Image.network(
-                    baseUrl + widget.comment.imageUrl,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      return Text(
-                        '💔[图片加载失败]',
-                        style: TextUtil.base.grey6C.w400.sp(12),
-                      );
-                    },
-                  ),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  child: Image.network(
-                    baseUrl + widget.comment.imageUrl,
-                    width: 70,
-                    height: 64,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        height: 40,
-                        width: 40,
-                        padding: EdgeInsets.all(4),
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      return Text(
-                        '💔[图片加载失败]',
-                        style: TextUtil.base.grey6C.w400.sp(12),
-                      );
-                    },
-                  ),
-                ),
+        child: AnimatedSize(
+          vsync: this,
+          duration: Duration(milliseconds: 150),
+          curve: Curves.decelerate,
+          child: InkWell(
+              onTap: () {
+                setState(() {
+                  _picFullView = true;
+                });
+              },
+              child: _picFullView
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, FeedbackRouter.imageView,
+                            arguments: {
+                              "urlList": [widget.comment.imageUrl],
+                              "urlListLength": 1,
+                              "indexNow": 0
+                            });
+                      },
+                      child: Image.network(
+                        baseUrl + widget.comment.imageUrl,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace stackTrace) {
+                          return Text(
+                            '💔[图片加载失败]',
+                            style: TextUtil.base.grey6C.w400.sp(12),
+                          );
+                        },
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      child: Image.network(baseUrl + widget.comment.imageUrl,
+                          width: 70, height: 64, fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 40,
+                          width: 40,
+                          padding: EdgeInsets.all(4),
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                : null,
+                          ),
+                        );
+                      }, errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                        return Text(
+                          '💔[图片加载失败]',
+                          style: TextUtil.base.grey6C.w400.sp(12),
+                        );
+                      }))),
         ));
 
     var replyButton = IconButton(
@@ -321,9 +323,7 @@ class _NCommentCardState extends State<NCommentCard> {
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
         FocusScope.of(context).requestFocus(
-            Provider.of<NewFloorProvider>(context,
-                listen: false)
-                .focusNode);
+            Provider.of<NewFloorProvider>(context, listen: false).focusNode);
       },
       padding: EdgeInsets.zero,
       color: ColorUtil.boldLakeTextColor,
@@ -449,8 +449,8 @@ class _NCommentCardState extends State<NCommentCard> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
-            child: Ink(
-              padding: EdgeInsets.fromLTRB(16.w, 8, 16.w, 8),
+            child: Container(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: widget.isFullView && widget.isSubFloor
