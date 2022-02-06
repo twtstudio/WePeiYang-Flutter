@@ -574,6 +574,18 @@ class ImagesGridView extends StatefulWidget {
 class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
+  void submit(BuildContext context, List<File> image) {
+    FeedbackService.postPic(
+        images: image,
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+  }
+
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
@@ -609,12 +621,13 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
     return Stack(fit: StackFit.expand, children: [
       InkWell(
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
-            arguments: {
-              "uriList": data,
-              "uriListLength": length,
-              "indexNow": index
-            }),
+        onTap: () => submit(context, data),
+            // Navigator.pushNamed(context, FeedbackRouter.localImageView,
+            // arguments: {
+            //   "uriList": data,
+            //   "uriListLength": length,
+            //   "indexNow": index
+            // }),
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,

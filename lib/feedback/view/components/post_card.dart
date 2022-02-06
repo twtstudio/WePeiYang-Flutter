@@ -80,6 +80,7 @@ class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
   final String baseUrl = 'https://www.zrzz.site:7012/';
+  final String picBaseUrl = 'http://www.zrzz.site:7015/download/';
 
   _PostCardState(this.post);
 
@@ -90,7 +91,7 @@ class _PostCardState extends State<PostCard> {
 
     if (post.imageUrls.length == 1) {
       Image image = new Image.network(
-        baseUrl + post.imageUrls[0],
+        picBaseUrl + 'thumb/' + post.imageUrls[0],
         width: double.infinity,
         fit: BoxFit.cover,
         alignment: Alignment.topCenter,
@@ -299,7 +300,7 @@ class _PostCardState extends State<PostCard> {
             child: post.imageUrls.length == 1
                 ? longPicOutsideLook
                 : Image.network(
-                    baseUrl + post.imageUrls[0],
+                    picBaseUrl + 'thumb/' + post.imageUrls[0],
                     width: 97,
                     height: 76,
                     fit: BoxFit.cover,
@@ -648,7 +649,7 @@ class _PostCardState extends State<PostCard> {
                 height:
                     (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
                 placeholder: kTransparentImage,
-                image: baseUrl + post.imageUrls[index]),
+                image: picBaseUrl + 'thumb/' + post.imageUrls[index]),
           ),
         ),
       ),
