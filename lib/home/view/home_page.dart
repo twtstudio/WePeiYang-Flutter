@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // WbyFontLoader.initFonts();
-      PushManager.getInstance().initGeTuiSdk();
+      context.read<PushManager>().initGeTuiSdk();
       context.read<UpdateManager>().checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {

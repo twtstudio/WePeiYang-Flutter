@@ -103,21 +103,22 @@ object WbySharePreference {
         }
     }
 
-    var canPush: Int
-        get() = flutterSharedPreferences?.getInt(canPushKey, CanPushType.Unknown.value).also {
+    var canPush: CanPushType
+        get() = with(flutterSharedPreferences?.getInt(canPushKey, CanPushType.Unknown.value)) {
+            return@with when(this) {
+                1 -> CanPushType.Not
+                2 -> CanPushType.Want
+                else -> CanPushType.Unknown
+            }
+        }.also {
             Log.d(TAG, "canPush : $it")
-        } ?: CanPushType.Unknown.value
-        private set(value) {
-            // 为了马上应用更改，所以选择 commit
+        }
+        set(type) {
             flutterSharedPreferences?.edit()?.let {
-                it.putInt(canPushKey, value)
+                it.putInt(canPushKey, type.value)
                 it.commit()
             }
         }
-
-    fun setCanPush(type: CanPushType) {
-        canPush = type.value
-    }
 
     val allowAgreement: Boolean
         get() = !authToken.isNullOrEmpty()

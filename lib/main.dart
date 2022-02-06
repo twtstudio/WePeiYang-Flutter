@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/channels/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -189,6 +190,7 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
         ChangeNotifierProvider(create: (context) => ExamNotifier()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ChangeNotifierProvider(create: (_) => PushManager()),
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(

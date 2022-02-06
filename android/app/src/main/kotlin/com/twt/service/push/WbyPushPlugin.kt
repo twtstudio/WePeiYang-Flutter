@@ -1,12 +1,10 @@
 package com.twt.service.push
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -49,9 +47,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private val pushManager by lazy { PushManager.getInstance() }
     private var initSdk = false
     private var goToPushPermissionPage = false
-
-    //    private lateinit var getPermissionResult: MethodChannel.Result
-    private lateinit var openNotificationCallback: Pair<MethodChannel.Result, () -> Unit>
+    private lateinit var permissionResult: MethodChannel.Result
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, "com.twt.service/push")
@@ -84,21 +80,21 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     // 如果用户同意了条款，就初始化个推 sdk，如果用户没有允许推送，或者没有权限，就关闭推送
     private fun initSdkWhenOpenApp() {
-        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown.value }
+        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
             ?.runCatching {
                 initGeTuiSdk()
                 this
             }?.onSuccess {
                 initSdk = true
                 log("init push sdk success when open app")
-                if ((it.canPush != CanPushType.Want.value) || !isNotificationEnabled) {
-                    it.setCanPush(CanPushType.Not)
+                if ((it.canPush != CanPushType.Want) || !isNotificationEnabled) {
+                    it.canPush = CanPushType.Not
                     runCatching { pushManager.turnOffPush(context) }.onSuccess {
-                        Toast.makeText(
-                            context,
-                            "don't allow push ,so turn off push service",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            context,
+//                            "don't allow push ,so turn off push service",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                         log("don't allow push ,so turn off push service")
                     }
                 }
@@ -114,83 +110,90 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             override fun success(result: Any?) {
                 when (result) {
                     "ok" -> {
-                        WbySharePreference.setCanPush(CanPushType.Want)
-                        val (result2, _) = openNotificationCallback
-                        requestPushPermissionBy(result2, ::openNotificationConfigPage)
+                        WbySharePreference.canPush = CanPushType.Want
+                        requestPushPermissionBy(permissionResult, ::openNotificationConfigPage)
                     }
                     "refuse" -> {
                         log("user refuse that request to open push")
-                        WbySharePreference.setCanPush(CanPushType.Not)
-                        val (result2, _) = openNotificationCallback
-                        result2.success("refuse open push")
+                        WbySharePreference.canPush = CanPushType.Not
+                        permissionResult.success("refuse open push")
                     }
                 }
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                val (result, _) = openNotificationCallback
-                result.error(OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR, errorMessage, errorDetails)
+                permissionResult.error(
+                    OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR,
+                    errorMessage,
+                    errorDetails
+                )
             }
 
             override fun notImplemented() {
-                val (result, _) = openNotificationCallback
-                result.error(FATAL_ERROR, "", "")
+                permissionResult.error(FATAL_ERROR, "", "")
             }
         })
     }
 
-    fun continueDoUnCompleteWork() {
-        if (goToPushPermissionPage) {
-            goToPushPermissionPage = false
-            val (result2, todo) = openNotificationCallback
-            log("continue do $todo")
-            checkNotificationAnd(result2, todo) {
-                WbySharePreference.setCanPush(CanPushType.Not)
-                result2.success("refuse open push")
-                log("don't allow permission")
+    fun onWindowFocusChanged() {
+        log("onWindowFocusChanged")
+        runCatching {
+            if (goToPushPermissionPage) {
+                goToPushPermissionPage = false
+                checkNotificationAndTurnOnPushService {
+                    WbySharePreference.canPush = CanPushType.Not
+                    permissionResult.success("refuse open push")
+                    log("don't allow permission")
+                }
+                return
             }
+            if (WbySharePreference.canPush == CanPushType.Want && !isNotificationEnabled) {
+                WbySharePreference.canPush = CanPushType.Not
+                channel.invokeMethod("refreshPushPermission", null)
+            }
+        }.onFailure {
+            log("$it")
         }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             // 个推 sdk 初始化，开启推送，关闭推送，获取当前是否接收推送
-            "initGeTuiSdk" -> {
+            "initGeTuiSdk" -> WbySharePreference.apply {
+                if (canPush == CanPushType.Not) {
+                    result.success("refuse open push")
+                    return
+                }
                 // 这个方法每次进入主页都会调用，所以要先判断用户是否进入过主页，美金如果主页则 canPush = Unknown
                 // 若进入过主页，则 canPush = Want / Not
-                if (WbySharePreference.canPush == CanPushType.Unknown.value) {
+                if (canPush == CanPushType.Unknown) {
                     // 个推默认在初始化 sdk 后开启推送
                     // 认为用户在同意隐私协议后同意接收推送
-                    WbySharePreference.setCanPush(CanPushType.Want)
-                    log("initGeTuiSdk")
-                    runCatching {
-                        initGeTuiSdk()
-                    }.onSuccess {
-                        if (isNotificationEnabled) {
-                            result.success("open push service success")
-                        } else {
-                            pushManager.turnOffPush(context)
-                            requestPushPermissionBy(result, ::showRequestNotificationDialog)
-                        }
-                    }.onFailure {
-                        result.error(INIT_GT_SDK_ERROR, it.message, it.toString())
+                    canPush = CanPushType.Want
+                }
+
+                log("initGeTuiSdk")
+                runCatching {
+                    initGeTuiSdk()
+                }.onSuccess {
+                    if (isNotificationEnabled) {
+                        result.success("open push service success")
+                    } else {
+                        pushManager.turnOffPush(context)
+                        requestPushPermissionBy(result, ::showRequestNotificationDialog)
                     }
+                }.onFailure {
+                    result.error(INIT_GT_SDK_ERROR, it.message, it.toString())
                 }
             }
             // 用户在设置中打开了推送选项，
             "turnOnPushService" -> {
                 // 既然用户选择打开推送，则必然用户想要接收推送
-                WbySharePreference.setCanPush(CanPushType.Want)
                 log("turn on push service")
                 requestPushPermissionBy(result, ::openNotificationConfigPage)
             }
             "turnOffPushService" -> {
-                WbySharePreference.setCanPush(CanPushType.Not)
-                runCatching {
-                    if (pushManager.isPushTurnedOn(context)) {
-                        pushManager.turnOffPush(context)
-                    }
-                }.onSuccess {
+                runCatching(::turnOffPushService).onSuccess {
                     log("turn off push service success")
                     result.success("")
                 }.onFailure {
@@ -233,9 +236,8 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                         return
                     }
                     NotificationManagerCompat.from(context).cancel(id)
-                    id
+                    log("cancel notification success id : $id")
                 }.onSuccess {
-                    log("cancel notification success id : $it")
                     result.success("cancel success")
                 }.onFailure {
                     log("cancel notification failure throwable: $it")
@@ -268,70 +270,75 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         }
     }
 
+    private fun turnOffPushService() {
+        if (pushManager.isPushTurnedOn(context)) {
+            pushManager.turnOffPush(context)
+        }
+        WbySharePreference.canPush = CanPushType.Not
+    }
+
     private fun turnOnPushService() {
         if (!pushManager.isPushTurnedOn(context)) {
             pushManager.turnOnPush(context)
         }
+        WbySharePreference.canPush = CanPushType.Want
     }
 
     // 检查是否具有权限：WRITE_EXTERNAL_STORAGE , READ_PHONE_STATE
     // sd卡权限不要可能cid会变化
     // read_phone那个可能影响cid唯一性
     // 和产品商量后，暂时不要这两个权限
-    @Suppress("unused")
-    private fun checkPermissionAnd(todo: () -> Unit) {
-        if (checkPermission) {
-            todo()
-        } else {
-            // TODO: 我寻思着是不是把微北洋最低支持版本提高到 6.0
-            if (Build.VERSION.SDK_INT >= 23) {
-                binding.activity.requestPermissions(
-                    arrayOf(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_PHONE_STATE
-                    ),
-                    REQUEST_NOTIFICATION_PERMISSION
-                )
-            }
-        }
-    }
+//    @Suppress("unused")
+//    private fun checkPermissionAnd(do: () -> Unit) {
+//        if (checkPermission) {
+//
+//        } else {
+//            if (Build.VERSION.SDK_INT >= 23) {
+//                binding.activity.requestPermissions(
+//                    arrayOf(
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                        Manifest.permission.READ_PHONE_STATE
+//                    ),
+//                    REQUEST_NOTIFICATION_PERMISSION
+//                )
+//            }
+//        }
+//    }
 
-    private fun checkNotificationAnd(
-        result: MethodChannel.Result,
-        todo: () -> Unit,
-        notAllow: (() -> Unit) -> Unit
-    ) {
-        log("check notification $todo")
+    private fun checkNotificationAndTurnOnPushService(notAllow: () -> Unit) {
+        log("check notification permission")
         // 做双重检查，主要是两个方式不一样，一个是 NotificationManagerCompat
         // 一个是 NotificationManagerCompat + AppOpsManager 反射挺搞
-        result.runCatching {
-            if (isNotificationEnabled) {
-                runCatching(todo).onSuccess {
-                    log("invoke $todo success")
-                    success("open push service success")
-                }.onFailure {
-                    log("invoke $todo method error : $it")
-                    error(
-                        OPEN_PUSH_SERVICE_ERROR,
-                        "invoke method $todo error when enable notification",
-                        it.message
-                    )
+        with(permissionResult) {
+            runCatching {
+                if (isNotificationEnabled) {
+                    runCatching(::turnOnPushService).onSuccess {
+                        log("turnOnPushService success")
+                        success("open push service success")
+                    }.onFailure {
+                        log("turnOnPushService error : $it")
+                        error(
+                            OPEN_PUSH_SERVICE_ERROR,
+                            "turnOnPushService error when enable notification",
+                            it.message
+                        )
+                    }
+                } else {
+                    notAllow()
                 }
-            } else {
-                notAllow(todo)
+            }.onFailure {
+                log("check notification error : $it")
+                error(CHECK_NOTIFICATION_ENABLE_ERROR, "", it.message)
             }
-        }.onFailure {
-            log("check notification error : $it")
-            result.error(CHECK_NOTIFICATION_ENABLE_ERROR, "", it.message)
         }
     }
 
     private fun requestPushPermissionBy(result: MethodChannel.Result, send: () -> Unit) {
-        checkNotificationAnd(result, ::turnOnPushService) { todo ->
-            openNotificationCallback = result to todo
+        permissionResult = result
+        checkNotificationAndTurnOnPushService {
             runCatching(send).onFailure {
                 log("open notification config page error : $it")
-                result.error(OPEN_NOTIFICATION_CONFIG_PAGE_ERROR, "", it.message)
+                permissionResult.error(OPEN_NOTIFICATION_CONFIG_PAGE_ERROR, "", it.message)
             }
         }
     }
@@ -363,6 +370,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         goToPushPermissionPage = true
         binding.activity.startActivity(intent)
         // 这里很坑，因为你打开权限页后，activity自动重启
+        // 所以在MainActivity中的onWindowFocusChanged中捕获回到APP
     }
 
     private val isNotificationEnabled: Boolean
@@ -370,29 +378,29 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
 
     // 和产品商量过，暂时不用这两个权限
-    private val checkPermission: Boolean
-        get() {
-            val pkgManager: PackageManager = context.packageManager
-
-            // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
-            val sdCardWritePermission = pkgManager.checkPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                context.packageName
-            ) == PackageManager.PERMISSION_GRANTED
-
-            // read phone state用于获取 imei 设备信息
-            val phoneSatePermission = pkgManager.checkPermission(
-                Manifest.permission.READ_PHONE_STATE,
-                context.packageName
-            ) == PackageManager.PERMISSION_GRANTED
-            // 在5.0及以下的android系统上并没有动态请求权限的方法，不过我们可以在获得这些权限时，try catch
-            // 如果报错意味着我们没有这些权限，这时候提示用户打开权限也是可以实现判断的目的的。
-            return sdCardWritePermission && phoneSatePermission
-        }
+//    private val checkPermission: Boolean
+//        get() {
+//            val pkgManager: PackageManager = context.packageManager
+//
+//            // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
+//            val sdCardWritePermission = pkgManager.checkPermission(
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                context.packageName
+//            ) == PackageManager.PERMISSION_GRANTED
+//
+//            // read phone state用于获取 imei 设备信息
+//            val phoneSatePermission = pkgManager.checkPermission(
+//                Manifest.permission.READ_PHONE_STATE,
+//                context.packageName
+//            ) == PackageManager.PERMISSION_GRANTED
+//            // 在5.0及以下的android系统上并没有动态请求权限的方法，不过我们可以在获得这些权限时，try catch
+//            // 如果报错意味着我们没有这些权限，这时候提示用户打开权限也是可以实现判断的目的的。
+//            return sdCardWritePermission && phoneSatePermission
+//        }
 
     // 点击通知进入微北洋，若应用未在后台，会传递intent，并在 onCreate 中解析
     // 若在后台，就调用 onNewIntent
-    // 什么情况会调用 handleInent:
+    // 什么情况会调用 handleIntent:
     //    1.推送（通知栏）：
     //       Ⅰ：青年湖底推送
     //       Ⅱ：天外天官方推送
@@ -519,9 +527,6 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 val versionCode = call.argument<Int>("versionCode") ?: 0
                 val fixCode = call.argument<Int>("fixCode") ?: 0
                 val url = call.argument<String>("url") ?: ""
-                // 默认是重要修复
-                val importance = call.argument<Int>("importance") ?: 1
-
                 val intentUri = intent.apply {
                     data = Uri.parse("twtstudio://weipeiyang.app/mailbox?")
                     putExtra("url", url)

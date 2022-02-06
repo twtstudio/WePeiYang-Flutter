@@ -58,6 +58,7 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         runCatching {
             val url = call.argument<String>("url")
             var path = call.argument<String>("path")
+            // TODO: path如果一样怎么办？
             val saveToAlbum = call.argument<Boolean>("album") ?: false
             if (url == null) {
                 result.error("", "url is null", null)

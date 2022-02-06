@@ -77,11 +77,8 @@ class MainActivity : FlutterActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         takeIf { hasFocus && (flutterEngine != null) }?.runCatching {
-            Log.d(TAG, "12313123")
-            (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as WbyPushPlugin?)
-                ?.continueDoUnCompleteWork()?.also {
-                    Log.d(TAG, "continueDoUnCompleteWork")
-                }
+            (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as? WbyPushPlugin)
+                ?.onWindowFocusChanged()
         }
         Log.d(TAG, "onWindowFocusChanged : $hasFocus")
     }
