@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 // ignore: must_be_immutable
 class GamePage extends StatelessWidget {
-  List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待', '我是小派'];
+  List<String> _title = ['大学重开模拟器', '北洋维基', '反馈问题可以到青年湖底内测群，QQ：563107013', '如果有404叠在我头上是正常现象，无需反馈'];
   List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, '', ''];
   List<bool> _used = [true, true, false, false];
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 4,
+      itemCount: _title.length,
       itemBuilder: (BuildContext context, int index) {
         return GameCard(_title[index], _uri[index], _used[index]);
       },
@@ -56,9 +57,9 @@ class GameCard extends StatelessWidget {
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(this.title,style: TextUtil.base.w600.black2A.NotoSansSC.sp(18),),
-                Spacer(),
+                SizedBox(width: WePeiYangApp.screenWidth - 160,child: Text(this.title,style: TextUtil.base.w600.black2A.NotoSansSC.sp(18), maxLines: 3,)),
                 Container(
                   width: 100,
                   decoration: BoxDecoration(

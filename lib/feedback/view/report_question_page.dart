@@ -9,9 +9,10 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ReportPageArgs {
   final int id;
+  final int floorId;
   final bool isQuestion; // 是举报问题还是举报评论
 
-  ReportPageArgs(this.id, this.isQuestion);
+  ReportPageArgs(this.id, this.isQuestion, {this.floorId});
 }
 
 class ReportQuestionPage extends StatefulWidget {
@@ -66,6 +67,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
         }
         FeedbackService.report(
             id: widget.args.id,
+            floorId: widget.args.floorId ?? '',
             isQuestion: widget.args.isQuestion,
             reason: textInput,
             onSuccess: () {

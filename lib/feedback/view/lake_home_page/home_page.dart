@@ -7,7 +7,10 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -18,6 +21,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
+import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -35,7 +39,7 @@ class FeedbackHomePage extends StatefulWidget {
 class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   FbHomeListModel _listProvider;
-  FbTagsProvider _tagsProvider;
+  FbDepartmentsProvider _tagsProvider;
   FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
   double _tabPaddingWidth = 0;
@@ -43,6 +47,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   List<double> _offsets = [2, 2, 2];
 
   bool _lakeIsLoaded, _feedbackIsLoaded, _initialRefresh;
+  ///判断是否为初次登陆
+  bool _lakeFirst =true;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -98,7 +104,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
-
+      getRecTag();
+      getHotList();
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
@@ -111,8 +118,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       controller?.stop();
       _refreshController.refreshFailed();
     });
-    getRecTag();
-    getHotList();
   }
 
   _onLoading() {
@@ -131,8 +136,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  _onTapped() {
-    _onOpen();
+  _onFeedbackTapped() {
+    _onFeedbackOpen();
     if (_tagsContainerCanAnimate) {
       if (_tagsWrapIsShow == false)
         setState(() {
@@ -172,7 +177,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (_refreshController.isRefresh) _refreshController.refreshCompleted();
   }
 
-  _onOpen() {
+  _onFeedbackOpen() {
     if (!scroll && _nestedController.offset != 0) {
       scroll = true;
       _nestedController
@@ -183,18 +188,124 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels == 0) _onOpen();
+    if (scrollInfo.metrics.pixels == 0) _onFeedbackOpen();
     if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
         scrollInfo.metrics.pixels >= 10 &&
         scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
       if (scrollInfo.metrics.pixels <= _previousOffset)
-        _onOpen();
+        _onFeedbackOpen();
       else
         _onClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
   }
 
+  ///初次进入湖底的告示
+  firstInLake() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("firstLogin", _lakeFirst);
+    bool firstLogin = pref.getBool("firstLogin");
+    final checkedNotifier = ValueNotifier(firstLogin);
+    if (firstLogin == true) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DialogWidget(
+                title: '同学你好：',
+                content: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 15.w),
+                    Text(
+                      "经过一段时间的沉寂，我们很高兴能够带着崭新的青年湖底与您相见。\n" +
+                      "\n" +
+                      "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为青年湖底论坛中的两个分区，同时我们也在努力让青年湖底在功能上接近于一个成熟的论坛。\n" +
+                      "\n" +
+                      "现在它拥有：\n" +
+                      "\n" +
+                      "点踩、举报；回复评论、带图评论；分享、自定义tag...还有一些细节等待您去自行挖掘。\n" +
+                      "\n" +
+                      "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
+                      style:
+                          TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // Checkbox(
+                        //   value: false,
+                        //   onChanged: (_) {
+                        //     _lakeFirst =!_lakeFirst;
+                        //   },
+                        // ),
+                        ValueListenableBuilder<bool>(
+                            valueListenable: checkedNotifier,
+                            builder: (context, type, _)  {
+                            return GestureDetector(
+                              onTap: (){
+                                checkedNotifier.value =!checkedNotifier.value;
+                              },
+                              child: Stack(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/svg_pics/lake_butt_icons/checkedbox_false.svg",
+                                    width: 16.w,
+                                  ),
+                                  if(checkedNotifier.value == false)
+                                    Positioned(
+                                      top: 3.w,
+                                      left: 3.w,
+                                      child: SvgPicture.asset(
+                                        "assets/svg_pics/lake_butt_icons/check.svg",
+                                        width: 10.w,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          }
+                        ),
+                       SizedBox(width: 10.w),
+                        Text('我已阅读并承诺遵守',style:  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400),
+                        SizedBox(width: 5.w),
+                        TextButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(Size(1, 1)),
+                            padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          ),
+                            onPressed: (){
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) => PrivacyDialog());
+                            },
+                            child: Text(
+                              '《青年湖底社区规范》',style:  TextUtil.base.normal.NotoSansSC.sp(14).w400.textButtonBlue
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+                cancelText: "返回主页",
+                confirmTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                cancelTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                confirmText: "前往湖底",
+                cancelFun: () {
+                  Navigator.pushNamed(context, HomeRouter.home);
+                },
+                confirmFun: () {
+                  if(checkedNotifier.value == false){
+                    Navigator.pop(context);
+                    pref.setBool("firstLogin", checkedNotifier.value);
+                  }else{
+                    ToastProvider.error('请同意《青年湖底社区规范》');
+                  }
+                });
+          });
+    }
+  }
   ///微口令的识别
   getClipboardWeKoContents() async {
     ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
@@ -248,9 +359,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
-      _tagsProvider = Provider.of<FbTagsProvider>(context, listen: false);
-      getRecTag();
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, failure: (e) {
+      _tagsProvider =
+          Provider.of<FbDepartmentsProvider>(context, listen: false);
+      _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, success: () {
+        getRecTag();
+      }, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });
@@ -326,6 +439,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
+    //控制动画速率
+    //timeDilation = 0.9;
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
@@ -363,15 +478,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         constraints: BoxConstraints(
                             maxWidth: WePeiYangApp.screenWidth - 260),
                         child: Text(
-                          data.recTag.name == ''
-                              ? '加载推荐中，失败请下拉刷新'
+                          data.recTag == null
+                              ? '搜索发现'
                               : '#${data.recTag.name}#',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                         ),
                       ),
                       Text(
-                        data.recTag.name == '' ? '' : '  为你推荐',
+                        data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                       ),
@@ -432,7 +547,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             controller: _controller2,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[1]].length + 1,
+            itemCount: model.allList[swapLister[1]].length == 0
+                ? 0
+                : model.allList[swapLister[1]].length + 1,
             itemBuilder: (context, index) {
               if (index == 0) return HotCard();
               index--;
@@ -446,7 +563,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       );
     });
 
-    var tagsWrap = Consumer<FbTagsProvider>(
+    var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
@@ -466,10 +583,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     context,
                     FeedbackRouter.searchResult,
                     arguments: SearchResultPageArgs(
-                      '',
-                      provider.departmentList[index].id.toString(),
-                      '#${provider.departmentList[index].name}',
-                    ),
+                        '',
+                        '',
+                        provider.departmentList[index].id.toString(),
+                        '#${provider.departmentList[index].name}',
+                        1),
                   );
                 },
               );
@@ -530,7 +648,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   duration: Duration(milliseconds: 500),
                   onEnd: _offstageTheBackground,
                   child: InkWell(
-                    onTap: _onTapped,
+                    onTap: _onFeedbackTapped,
                     child: Container(
                       color: Colors.black45,
                     ),
@@ -643,7 +761,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                               )
                                             ],
                                           ),
-                                          onTap: _onTapped,
+                                          onTap: _onFeedbackTapped,
                                         )
                                       : Row(
                                           children: [

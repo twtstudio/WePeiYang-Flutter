@@ -70,7 +70,9 @@ class _SearchBarState extends State<SearchBar>
               arguments: SearchResultPageArgs(
                 '',
                 '${tagUtil[total].id}',
+                '',
                 S.current.feedback_search_result,
+                0
               ),
             ).then((_) {
               Navigator.pop(context);
@@ -143,7 +145,7 @@ class _SearchBarState extends State<SearchBar>
               decoration: InputDecoration(
                 hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                 hintText: data.recTag.name == ''
-                    ? '加载推荐中，失败请下拉刷新'
+                    ? '搜索发现'
                     : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
                 contentPadding: const EdgeInsets.only(right: 6),
                 border: OutlineInputBorder(
@@ -169,7 +171,9 @@ class _SearchBarState extends State<SearchBar>
                     arguments: SearchResultPageArgs(
                       '',
                       '${data.recTag.id}',
+                      '',
                       S.current.feedback_search_result,
+                      0
                     ),
                   );
                 }
@@ -212,7 +216,16 @@ class _SearchBarState extends State<SearchBar>
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
-                        )),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0.0, 10.0), //阴影xy轴偏移量
+                              blurRadius: 15.0, //阴影模糊程度
+                              spreadRadius: 1.0 //阴影扩散程度
+                          )
+                        ]
+                    ),
                     child: Column(children: tagList ?? [SizedBox()]))
                 : SizedBox(),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,7 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
+  bool _bottomIsOpen;
   int currentPage = 1;
 
   double _previousOffset = 0;
@@ -88,7 +90,6 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onLoadingSelectedPage(int current) {
-    print(current + 10000000000000000);
     _getComments(
         onSuccess: (comments) {
           _commentList.removeRange(
@@ -102,8 +103,10 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
+    if (_bottomIsOpen ?? false)
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
+      _bottomIsOpen = false;
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
@@ -385,6 +388,7 @@ class _DetailPageState extends State<DetailPage>
                             offstage: value.inputFieldEnabled,
                             child: InkWell(
                               onTap: () {
+                                _bottomIsOpen = true;
                                 Provider.of<NewFloorProvider>(context,
                                         listen: false)
                                     .inputFieldOpenAndReplyTo(0);
@@ -470,10 +474,9 @@ class _DetailPageState extends State<DetailPage>
     //       });
     //     });
     var menuButton = PopupMenuButton(
-
         ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
-        offset: Offset(100, 20),
+        offset: Offset(0, 20.w),
         child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
         onSelected: (value) {

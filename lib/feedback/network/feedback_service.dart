@@ -174,7 +174,8 @@ class FeedbackService with AsyncTimer {
           'type': '$type',
           'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
           'content': keyword ?? '',
-          'tag_id' : tagId ?? '',
+          'tag_id': tagId ?? '',
+          'department_id': departmentId ?? '',
           ///搜索
           'page_size': '10',
           'page': '$page',
@@ -560,6 +561,7 @@ class FeedbackService with AsyncTimer {
   /// 举报问题 / 评论
   static report(
       {@required id,
+       floorId,
       @required isQuestion,
       @required reason,
       @required OnSuccess onSuccess,
@@ -576,7 +578,8 @@ class FeedbackService with AsyncTimer {
         } else {
           formData = FormData.fromMap({
             'type': 2,
-            'floor_id': id,
+            'post_id': id,
+            'floor_id': floorId,
             'reason': reason,
           });
         }

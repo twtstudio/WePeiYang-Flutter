@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+
+import '../../../feedback_router.dart';
+import '../../search_result_page.dart';
 
 //北洋热搜
 class HotCard extends StatefulWidget {
@@ -58,27 +62,41 @@ class _HotCardState extends State<HotCard> {
               itemCount:
               data.hotTagsList.length <= 5 ? data.hotTagsList.length : 5,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Row(
-                    children: [
-                      leads[index],
-                      SizedBox(width: 5),
-                      Center(
-                          child: Text(
-                            data.hotTagsList[index].name,
-                            style: TextUtil.base.w400.NotoSansSC
-                                .sp(16)
-                                .black2A,
-                          )),
-                      Spacer(),
-                      Text(
-                        data.hotTagsList[index].point.toString() ?? '0',
-                        style: TextUtil.base.w400.NotoSansSC
-                            .sp(14)
-                            .black2A,
-                      )
-                    ],
+                return InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(
+                        context,
+                        FeedbackRouter.searchResult,
+                        arguments: SearchResultPageArgs(
+                          '',
+                          '${data.hotTagsList[index].id}',
+                          '',
+                          S.current.feedback_search_result,
+                          0
+                        ),
+                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Row(
+                      children: [
+                        leads[index],
+                        SizedBox(width: 5),
+                        Center(
+                            child: Text(
+                              data.hotTagsList[index].name,
+                              style: TextUtil.base.w400.NotoSansSC
+                                  .sp(16)
+                                  .black2A,
+                            )),
+                        Spacer(),
+                        Text(
+                          data.hotTagsList[index].point.toString() ?? '0',
+                          style: TextUtil.base.w400.NotoSansSC
+                              .sp(14)
+                              .black2A,
+                        )
+                      ],
+                    ),
                   ),
                 );
               },
