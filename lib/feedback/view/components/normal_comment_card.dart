@@ -55,6 +55,7 @@ class NCommentCard extends StatefulWidget {
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
   final String baseUrl = 'https://www.zrzz.site:7012/';
+  final String picBaseUrl = 'http://www.zrzz.site:7015/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -266,7 +267,7 @@ class _NCommentCardState extends State<NCommentCard>
                             });
                       },
                       child: Image.network(
-                        baseUrl + widget.comment.imageUrl,
+                        picBaseUrl + 'origin/' + widget.comment.imageUrl,
                         loadingBuilder: (BuildContext context, Widget child,
                             ImageChunkEvent loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -292,7 +293,7 @@ class _NCommentCardState extends State<NCommentCard>
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(4)),
-                          child: Image.network(baseUrl + widget.comment.imageUrl,
+                          child: Image.network(picBaseUrl + 'thumb/' + widget.comment.imageUrl,
                               width: 70, height: 64, fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context, Widget child,
                                   ImageChunkEvent loadingProgress) {

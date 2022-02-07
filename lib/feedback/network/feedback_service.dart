@@ -93,7 +93,7 @@ class FeedbackService with AsyncTimer {
     @required List<File> images,
     @required OnSuccess onSuccess,
     @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('sendPic', () async {
+    AsyncTimer.runRepeatChecked('postPic', () async {
       try {
         var formData = FormData();
         if (images.isNotEmpty) {

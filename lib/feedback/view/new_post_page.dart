@@ -574,9 +574,9 @@ class ImagesGridView extends StatefulWidget {
 class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
-  void submit(BuildContext context, List<File> image) {
+  void submit(BuildContext context, List<File> images) {
     FeedbackService.postPic(
-        images: image,
+        images: images,
         onSuccess: () {
           ToastProvider.success(S.current.feedback_post_success);
           Navigator.pop(context);
