@@ -45,7 +45,7 @@ class FeedbackDio extends DioAbstract {
 class FeedbackPicPostDio extends DioAbstract {
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'http://www.zrzz.site:7015/';
+  String baseUrl = 'https://www.zrzz.site:7015/';
   var headers = {};
 
   @override

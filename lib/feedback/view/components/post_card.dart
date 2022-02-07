@@ -6,7 +6,6 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -80,7 +79,7 @@ class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
   final String baseUrl = 'https://www.zrzz.site:7012/';
-  final String picBaseUrl = 'http://www.zrzz.site:7015/download/';
+  final String picBaseUrl = 'https://www.zrzz.site:7015/download/';
 
   _PostCardState(this.post);
 
@@ -91,10 +90,37 @@ class _PostCardState extends State<PostCard> {
 
     if (post.imageUrls.length == 1) {
       Image image = new Image.network(
-        picBaseUrl + 'thumb/' + post.imageUrls[0],
+        widget.type == PostCardType.detail
+            ? picBaseUrl + 'origin/' + post.imageUrls[0]
+            : picBaseUrl + 'thumb/' + post.imageUrls[0],
         width: double.infinity,
         fit: BoxFit.cover,
         alignment: Alignment.topCenter,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: Container(
+                height: 40,
+                width: 40,
+                padding: EdgeInsets.all(4),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: Colors.black12,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes
+                      : null,
+                ),
+              ),
+            );
+          }, errorBuilder: (BuildContext context, Object exception,
+          StackTrace stackTrace) {
+        return Text(
+          '💔[图片加载失败]',
+          style: TextUtil.base.grey6C.w400.sp(12),
+        );
+      }
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
       image.image
@@ -105,14 +131,13 @@ class _PostCardState extends State<PostCard> {
 
       var limitedImage = _picFullView ?? false
           ? Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 image,
                 TextButton(
                     style: ButtonStyle(
                         alignment: Alignment.topRight,
-                        padding:
-                            MaterialStateProperty.all(EdgeInsets.zero)),
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
                     onPressed: () {
                       setState(() {
                         _picFullView = false;
@@ -278,7 +303,15 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(children: [TagShowWidget(tag,  WePeiYangApp.screenWidth - (post.campus > 0 ? 40 : 0) - (widget.type == PostCardType.simple ? 180 : 0)), SizedBox(width: 8), campus]),
+          Row(children: [
+            TagShowWidget(
+                tag,
+                WePeiYangApp.screenWidth -
+                    (post.campus > 0 ? 40 : 0) -
+                    (widget.type == PostCardType.simple ? 180 : 0)),
+            SizedBox(width: 8),
+            campus
+          ]),
           SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
             Row(
@@ -631,28 +664,54 @@ class _PostCardState extends State<PostCard> {
 
   _image(index, context) {
     return Expanded(
-      flex: 1,
-      child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-            "urlList": post.imageUrls,
-            "urlListLength": post.imageUrls.length,
-            "indexNow": index
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(6)),
-            child: FadeInImage.memoryNetwork(
+        flex: 1,
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
+              "urlList": post.imageUrls,
+              "urlListLength": post.imageUrls.length,
+              "indexNow": index
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+              child: Image.network(
+                widget.type == PostCardType.detail
+                    ? picBaseUrl + 'origin/' + post.imageUrls[index]
+                    : picBaseUrl + 'thumb/' + post.imageUrls[index],
                 fit: BoxFit.cover,
                 height:
                     (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
-                placeholder: kTransparentImage,
-                image: picBaseUrl + 'thumb/' + post.imageUrls[index]),
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        padding: EdgeInsets.all(4),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          backgroundColor: Colors.black12,
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      ),
+                    );
+                  }, errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+                return Text(
+                  '💔[图片加载失败]',
+                  style: TextUtil.base.grey6C.w400.sp(12),
+                );
+              }
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

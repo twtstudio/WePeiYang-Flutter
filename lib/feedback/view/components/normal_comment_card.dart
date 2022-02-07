@@ -54,7 +54,7 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  final String picBaseUrl = 'http://www.zrzz.site:7015/download/';
+  final String picBaseUrl = 'https://www.zrzz.site:7015/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -154,9 +154,15 @@ class _NCommentCardState extends State<NCommentCard>
                 ],
               ),
               Text(
-                DateTime.now()
-                    .difference(widget.comment.createAt)
-                    .dayHourMinuteSecondFormatted(),
+                DateTime.now().difference(widget.comment.createAt).inDays >= 1
+                    ? widget.comment.createAt
+                        .toLocal()
+                        .toIso8601String()
+                        .replaceRange(10, 11, ' ')
+                        .substring(0, 19)
+                    : DateTime.now()
+                        .difference(widget.comment.createAt)
+                        .dayHourMinuteSecondFormatted(),
                 style: TextUtil.base.ProductSans.grey97.regular.sp(10),
               ),
             ],
@@ -166,7 +172,7 @@ class _NCommentCardState extends State<NCommentCard>
         PopupMenuButton(
           padding: EdgeInsets.zero,
           shape: RacTangle(),
-          offset: Offset(0,0),
+          offset: Offset(0, 0),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 16,
@@ -183,7 +189,8 @@ class _NCommentCardState extends State<NCommentCard>
             }
             if (value == '举报') {
               Navigator.pushNamed(context, FeedbackRouter.report,
-                  arguments: ReportPageArgs(widget.ancestorId, false, floorId: widget.comment.id));
+                  arguments: ReportPageArgs(widget.ancestorId, false,
+                      floorId: widget.comment.id));
             } else if (value == '删除') {
               bool confirm = await _showDeleteConfirmDialog();
               if (confirm) {
@@ -289,35 +296,39 @@ class _NCommentCardState extends State<NCommentCard>
                       ),
                     )
                   : Row(
-                    children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          child: Image.network(picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                              width: 70, height: 64, fit: BoxFit.cover,
-                              loadingBuilder: (BuildContext context, Widget child,
-                                  ImageChunkEvent loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              height: 40,
-                              width: 40,
-                              padding: EdgeInsets.all(4),
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes
-                                    : null,
-                              ),
-                            );
-                          }, errorBuilder: (BuildContext context, Object exception,
-                                  StackTrace stackTrace) {
-                            return Text(
-                              '💔[图片加载失败]' + widget.comment.imageUrl,
-                              style: TextUtil.base.grey6C.w400.sp(12),
-                            );
-                          })),
-                      Spacer()
-                    ],
-                  )),
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            child: Image.network(
+                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                                width: 70,
+                                height: 64,
+                                fit: BoxFit.cover, loadingBuilder:
+                                    (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 40,
+                                width: 40,
+                                padding: EdgeInsets.all(4),
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              );
+                            }, errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                              return Text(
+                                '💔[图片加载失败]' + widget.comment.imageUrl,
+                                style: TextUtil.base.grey6C.w400.sp(12),
+                              );
+                            })),
+                        Spacer()
+                      ],
+                    )),
         ));
 
     var replyButton = IconButton(
