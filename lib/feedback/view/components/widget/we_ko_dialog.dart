@@ -6,7 +6,7 @@ class WeKoDialog extends StatelessWidget {
   final Post post;
   final void Function() onConfirm;
   final void Function() onCancel;
-  final String baseUrl = 'https://www.zrzz.site:7012/';
+  final String baseUrl = 'https://www.zrzz.site:7013/';
 
   WeKoDialog(
       {Key key,

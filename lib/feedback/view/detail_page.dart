@@ -103,8 +103,10 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_bottomIsOpen ?? false)
-    if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+    if (_bottomIsOpen ?? false) if (context
+                .read<NewFloorProvider>()
+                .inputFieldEnabled ==
+            true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
       _bottomIsOpen = false;
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
@@ -474,6 +476,7 @@ class _DetailPageState extends State<DetailPage>
     //       });
     //     });
     var menuButton = PopupMenuButton(
+
         ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
         offset: Offset(0, 20.w),
@@ -564,6 +567,17 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   void send() {
     if (_textEditingController.text.isNotEmpty) {
+      if (context.read<NewFloorProvider>().images.isNotEmpty)
+        FeedbackService.postPic(
+            images: context.read<NewFloorProvider>().images,
+            onResult: (images) {
+              print(images);
+              context.read<NewFloorProvider>().images.clear();
+              context.read<NewFloorProvider>().imageUrls = images;
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
       if (context.read<NewFloorProvider>().replyTo == 0) {
         _sendFloor();
       } else {
@@ -576,41 +590,38 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   @override
   Widget build(BuildContext context) {
-    Widget inputField = Consumer<NewFloorProvider>(
-        builder: (_, data, __) {
-          data.focusNode = _commentFocus;
-          return TextField(
-              style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
-              focusNode: _commentFocus,
-              controller: _textEditingController,
-              maxLength: 200,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: data.replyTo == 0
-                    ? '回复冒泡：'
-                    : '回复楼层：' + data.replyTo.toString(),
-                suffix: Text(
-                  _commentLengthIndicator,
-                  style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                fillColor: ColorUtil.whiteF8Color,
-                filled: true,
-                isDense: true,
-              ),
-              onChanged: (text) {
-                _commentLengthIndicator = '${text.characters.length}/200';
-                setState(() {});
-              },
-              minLines: 1,
-              maxLines: 10,
-            );
-        });
+    Widget inputField = Consumer<NewFloorProvider>(builder: (_, data, __) {
+      data.focusNode = _commentFocus;
+      return TextField(
+        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
+        focusNode: _commentFocus,
+        controller: _textEditingController,
+        maxLength: 200,
+        textInputAction: TextInputAction.newline,
+        decoration: InputDecoration(
+          counterText: '',
+          hintText:
+              data.replyTo == 0 ? '回复冒泡：' : '回复楼层：' + data.replyTo.toString(),
+          suffix: Text(
+            _commentLengthIndicator,
+            style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          fillColor: ColorUtil.whiteF8Color,
+          filled: true,
+          isDense: true,
+        ),
+        onChanged: (text) {
+          _commentLengthIndicator = '${text.characters.length}/200';
+          setState(() {});
+        },
+        minLines: 1,
+        maxLines: 10,
+      );
+    });
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -623,7 +634,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
+      images: context.read<NewFloorProvider>().imageUrls,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
@@ -642,7 +653,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
+      images: context.read<NewFloorProvider>().imageUrls,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();

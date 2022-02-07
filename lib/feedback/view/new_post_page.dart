@@ -186,6 +186,18 @@ class SubmitButton extends StatelessWidget {
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
+    if (dataModel.images.isNotEmpty)
+      FeedbackService.postPic(
+          images: dataModel.images,
+          onResult: (images) {
+            print(images);
+            dataModel.images.clear();
+            dataModel.imageUrls.clear();
+            dataModel.imageUrls.addAll(images);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
     dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
     if (dataModel.check) {
       postTypeNotifier.value == PostType.feedback
@@ -194,7 +206,7 @@ class SubmitButton extends StatelessWidget {
               title: dataModel.title,
               content: dataModel.content,
               departmentId: dataModel.department.id,
-              images: dataModel.images,
+              images: dataModel.imageUrls,
               campus: campusNotifier.value,
               onSuccess: () {
                 ToastProvider.success(S.current.feedback_post_success);
@@ -209,7 +221,7 @@ class SubmitButton extends StatelessWidget {
               title: dataModel.title,
               content: dataModel.content,
               tagId: dataModel.tag.id,
-              images: dataModel.images,
+              images: dataModel.imageUrls,
               campus: campusNotifier.value,
               onSuccess: () {
                 ToastProvider.success(S.current.feedback_post_success);
@@ -525,7 +537,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,
       minLines: 1,
-      maxLines: 100 ,
+      maxLines: 100,
       style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
@@ -574,18 +586,6 @@ class ImagesGridView extends StatefulWidget {
 class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
-  void submit(BuildContext context, List<File> images) {
-    FeedbackService.postPic(
-        images: images,
-        onSuccess: () {
-          ToastProvider.success(S.current.feedback_post_success);
-          Navigator.pop(context);
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        });
-  }
-
   loadAssets() async {
     XFile xFile = await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 30);
@@ -621,13 +621,12 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
     return Stack(fit: StackFit.expand, children: [
       InkWell(
-        onTap: () => submit(context, data),
-            // Navigator.pushNamed(context, FeedbackRouter.localImageView,
-            // arguments: {
-            //   "uriList": data,
-            //   "uriListLength": length,
-            //   "indexNow": index
-            // }),
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+            arguments: {
+              "uriList": data,
+              "uriListLength": length,
+              "indexNow": index
+            }),
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,

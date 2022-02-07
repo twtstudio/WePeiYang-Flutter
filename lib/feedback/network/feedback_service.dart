@@ -12,7 +12,7 @@ class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site';
+  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
   var headers = {};
 
   @override
@@ -42,16 +42,52 @@ class FeedbackDio extends DioAbstract {
   ];
 }
 
+class FeedbackPicPostDio extends DioAbstract {
+  // @override
+  // String baseUrl = 'http://47.94.198.197:10805/api/user/';
+  @override
+  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
+  String baseUrl = 'http://www.zrzz.site:7015/';
+  var headers = {};
+
+  @override
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      var code = response?.data['code'] ?? 0;
+      switch (code) {
+        case 200: // 成功
+          return handler.next(response);
+      // case 10: // 含有敏感词，需要把敏感词也展示出来
+      //   return handler.reject(
+      //       WpyDioError(
+      //           error: response.data['msg'] +
+      //               '\n' +
+      //               response.data['data']['bad_word_list']
+      //                   .toSet()
+      //                   .toList()
+      //                   .toString()),
+      //       true);
+        default: // 其他错误
+          return handler.reject(WpyDioError(error: response.data['msg']), true);
+      }
+    })
+  ];
+}
+
 final feedbackDio = FeedbackDio();
+final feedbackPicPostDio = FeedbackPicPostDio();
 
 class FeedbackService with AsyncTimer {
   static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
     try {
       var response;
       if(CommonPreferences().feedbackToken.value != null && CommonPreferences().feedbackToken.value != "") {
-        response = await feedbackDio.get(':7013/api/v1/f/auth/${CommonPreferences().feedbackToken.value}');
+        response = await feedbackDio.get('auth/${CommonPreferences().feedbackToken.value}');
       } else {
-        response = await feedbackDio.get(':7013/api/v1/f/auth/token', queryParameters: {
+        response = await feedbackDio.get('auth/token', queryParameters: {
           'token': CommonPreferences().token.value,
         });
       }
@@ -74,7 +110,7 @@ class FeedbackService with AsyncTimer {
       {@required OnResult<List<Department>> onResult,
       @required OnFailure onFailure}) async {
     try {
-      var response = await feedbackDio.get(':7013/api/v1/f/departments');
+      var response = await feedbackDio.get('departments');
       if (response.data['data']['total'] != 0) {
         List<Department> departmentList = [];
         for (Map<String, dynamic> json in response.data['data']['list']) {
@@ -91,7 +127,7 @@ class FeedbackService with AsyncTimer {
 
   static Future<void> postPic({
     @required List<File> images,
-    @required OnSuccess onSuccess,
+    @required OnResult<List<String>> onResult,
     @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('postPic', () async {
       try {
@@ -108,8 +144,12 @@ class FeedbackService with AsyncTimer {
                   ))
             ]);
         }
-        await feedbackDio.post(':7015/upload/image', formData: formData);
-        onSuccess?.call();
+        var response = await feedbackPicPostDio.post('upload/image', formData: formData);
+        List<String> list = [];
+        for (String json in response.data['data']['urls']) {
+          list.add(json);
+        }
+        onResult(list);
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -121,7 +161,7 @@ class FeedbackService with AsyncTimer {
     @required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get(':7013/api/v1/f/tags/hot');
+      var response = await feedbackDio.get('tags/hot');
       List<Tag> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Tag.fromJson(json));
@@ -137,7 +177,7 @@ class FeedbackService with AsyncTimer {
     @required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get(':7013/api/v1/f/tag/recommend');
+      var response = await feedbackDio.get('tag/recommend');
       Tag tag;
       Map<String, dynamic> json = response.data['data']['tag'];
         tag = Tag.fromJson(json);
@@ -154,7 +194,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     try {
       var response = await feedbackDio.get(
-        ':7013/api/v1/f/tags',
+        'tags',
         queryParameters: {
           'name': '$name',
         },
@@ -175,7 +215,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
-        var response =await feedbackDio.post(':7013/api/v1/f/tag',
+        var response =await feedbackDio.post('tag',
             formData: FormData.fromMap({
               'name': '$name',
             }));
@@ -196,7 +236,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     try {
       var response = await feedbackDio.get(
-        ':7013/api/v1/f/posts',
+        'posts',
         queryParameters: {
           'type': '$type',
           'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
@@ -224,7 +264,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var response = await feedbackDio.get(
-        ':7013/api/v1/f/posts/user',
+        'posts/user',
       );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
@@ -241,7 +281,7 @@ class FeedbackService with AsyncTimer {
     @required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get(':7013/api/v1/f/posts/fav');
+      var response = await feedbackDio.get('posts/fav');
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));
@@ -260,7 +300,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var response = await feedbackDio.get(
-        ':7013/api/v1/f/floor/replys',
+        'floor/replys',
         queryParameters: {
           'floor_id': '$floorId',
           'page': '$page',
@@ -282,7 +322,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var response = await feedbackDio.get(
-        ':7013/api/v1/f/post',
+        'post',
         queryParameters: {
           'id': '$id',
         },
@@ -303,7 +343,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var commentResponse = await feedbackDio.get(
-        ':7013/api/v1/f/floors',
+        'floors',
         queryParameters: {
           'post_id': '$id',
           'page': '$page',
@@ -328,7 +368,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitLike', () async {
       try {
-        await feedbackDio.post(':7013/api/v1/f/post/like',
+        await feedbackDio.post('post/like',
             formData: FormData.fromMap({
               'post_id': '$id',
               'op': isLike ? 0 : 1,
@@ -348,7 +388,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitFavorite', () async {
       try {
-        await feedbackDio.post(':7013/api/v1/f/post/fav',
+        await feedbackDio.post('post/fav',
             formData: FormData.fromMap({
               'post_id': id,
               'op': isFavorite ? 0 : 1,
@@ -368,7 +408,7 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postHitDislike', () async {
       try {
-        await feedbackDio.post(':7013/api/v1/f/post/dis',
+        await feedbackDio.post('post/dis',
             formData: FormData.fromMap({
               'post_id': '$id',
               'op': isDisliked ? 0 : 1,
@@ -387,7 +427,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitLike', () async {
       try {
-        await feedbackDio.post(':7013/api/v1/f/floor/like',
+        await feedbackDio.post('floor/like',
             formData: FormData.fromMap({
               'floor_id': '$id',
               'op': isLike ? 0 : 1,
@@ -406,7 +446,7 @@ class FeedbackService with AsyncTimer {
         @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitDislike', () async {
       try {
-        await feedbackDio.post(':7013/api/v1/f/floor/dis',
+        await feedbackDio.post('floor/dis',
             formData: FormData.fromMap({
               'floor_id': '$id',
               'op': isDis ? 0 : 1,
@@ -426,7 +466,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('officialCommentHitLike', () async {
       try {
-        await feedbackDio.post(isLiked ? ':7013/api/v1/f/answer/dislike' : ':7013/api/v1/f/answer/like',
+        await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
               'token': CommonPreferences().feedbackToken.value,
@@ -441,7 +481,7 @@ class FeedbackService with AsyncTimer {
   static sendFloor(
       {@required id,
       @required content,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendFloor', () async {
@@ -449,20 +489,9 @@ class FeedbackService with AsyncTimer {
         var formData = FormData.fromMap({
           'post_id': id,
           'content': content,
+          'images' : images.toString() ?? '',
         });
-        if (images.isNotEmpty) {
-          for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
-              MapEntry(
-                  'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
-            ]);
-        }
-        await feedbackDio.post(':7013/api/v1/f/floor', formData: formData);
+        await feedbackDio.post('floor', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
@@ -473,7 +502,7 @@ class FeedbackService with AsyncTimer {
   static replyFloor(
       {@required id,
       @required content,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyFloor', () async {
@@ -481,20 +510,9 @@ class FeedbackService with AsyncTimer {
         var formData = FormData.fromMap({
           'reply_to_floor': id,
           'content': content,
+          'images' : images.toString() ?? '',
         });
-        if (images.isNotEmpty) {
-          for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
-              MapEntry(
-                  'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
-            ]);
-        }
-        await feedbackDio.post(':7013/api/v1/f/floor/reply', formData: formData);
+        await feedbackDio.post('floor/reply', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
@@ -509,7 +527,7 @@ class FeedbackService with AsyncTimer {
       departmentId,
       tagId,
       @required campus,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendPost', () async {
@@ -524,17 +542,13 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
+            formData.fields.addAll([
               MapEntry(
                   'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
+                  images[i])
             ]);
         }
-        await feedbackDio.post(':7013/api/v1/f/post', formData: formData);
+        await feedbackDio.post('post', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
@@ -551,7 +565,7 @@ class FeedbackService with AsyncTimer {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
         await feedbackDio.post(
-          ':7013/api/v1/f/answer/commit',
+          'answer/commit',
           formData: FormData.fromMap({
             'token': CommonPreferences().feedbackToken.value,
             'answer_id': id,
@@ -573,7 +587,7 @@ class FeedbackService with AsyncTimer {
     AsyncTimer.runRepeatChecked('deletePost', () async {
       try {
         await feedbackDio.get(
-          ':7013/api/v1/f/post/delete',
+          'post/delete',
           queryParameters: {
             'post_id': id,
           },
@@ -611,7 +625,7 @@ class FeedbackService with AsyncTimer {
           });
         }
         await feedbackDio.post(
-          ':7013/api/v1/f/report',
+          'report',
           formData: formData,
         );
         onSuccess?.call();
@@ -628,7 +642,7 @@ class FeedbackService with AsyncTimer {
     AsyncTimer.runRepeatChecked('deleteFloor', () async {
       try {
         await feedbackDio.get(
-          ':7013/api/v1/f/floor/delete',
+          'floor/delete',
           queryParameters: {
             'floor_id': '$id',
           },

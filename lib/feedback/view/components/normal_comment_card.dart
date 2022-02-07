@@ -54,7 +54,6 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  final String baseUrl = 'https://www.zrzz.site:7012/';
   final String picBaseUrl = 'http://www.zrzz.site:7015/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -283,7 +282,7 @@ class _NCommentCardState extends State<NCommentCard>
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace stackTrace) {
                           return Text(
-                            '💔[图片加载失败]',
+                            '💔[图片加载失败]' + widget.comment.imageUrl,
                             style: TextUtil.base.grey6C.w400.sp(12),
                           );
                         },
@@ -312,7 +311,7 @@ class _NCommentCardState extends State<NCommentCard>
                           }, errorBuilder: (BuildContext context, Object exception,
                                   StackTrace stackTrace) {
                             return Text(
-                              '💔[图片加载失败]',
+                              '💔[图片加载失败]' + widget.comment.imageUrl,
                               style: TextUtil.base.grey6C.w400.sp(12),
                             );
                           })),
