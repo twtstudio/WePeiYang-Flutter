@@ -34,7 +34,7 @@ class MPWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       child: Text('#MP' + this.text,
-          style: TextUtil.base.NotoSansSC.w700.whiteFD.sp(13)),
+          style: TextUtil.base.ProductSans.w700.whiteFD.sp(13)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(1080),
         color: ColorUtil.mainColor,

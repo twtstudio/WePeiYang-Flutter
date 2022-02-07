@@ -43,8 +43,6 @@ class FeedbackDio extends DioAbstract {
 }
 
 class FeedbackPicPostDio extends DioAbstract {
-  // @override
-  // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
   String baseUrl = 'http://www.zrzz.site:7015/';
@@ -60,16 +58,6 @@ class FeedbackPicPostDio extends DioAbstract {
       switch (code) {
         case 200: // 成功
           return handler.next(response);
-      // case 10: // 含有敏感词，需要把敏感词也展示出来
-      //   return handler.reject(
-      //       WpyDioError(
-      //           error: response.data['msg'] +
-      //               '\n' +
-      //               response.data['data']['bad_word_list']
-      //                   .toSet()
-      //                   .toList()
-      //                   .toString()),
-      //       true);
         default: // 其他错误
           return handler.reject(WpyDioError(error: response.data['msg']), true);
       }
@@ -489,8 +477,15 @@ class FeedbackService with AsyncTimer {
         var formData = FormData.fromMap({
           'post_id': id,
           'content': content,
-          'images' : images.toString() ?? '',
         });
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.fields.addAll([
+              MapEntry(
+                  'images',
+                  images[i])
+            ]);
+        }
         await feedbackDio.post('floor', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {
@@ -609,7 +604,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('report', () async {
       try {
-        var formData;
+        var formData = FormData();
         if (isQuestion) {
           formData = FormData.fromMap({
             'type': 1,
