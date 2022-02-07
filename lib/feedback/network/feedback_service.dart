@@ -505,8 +505,15 @@ class FeedbackService with AsyncTimer {
         var formData = FormData.fromMap({
           'reply_to_floor': id,
           'content': content,
-          'images' : images.toString() ?? '',
         });
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.fields.addAll([
+              MapEntry(
+                  'images',
+                  images[i])
+            ]);
+        }
         await feedbackDio.post('floor/reply', formData: formData);
         onSuccess?.call();
       } on DioError catch (e) {

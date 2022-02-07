@@ -192,49 +192,47 @@ class SubmitButton extends StatelessWidget {
           onResult: (images) {
             print(images);
             dataModel.images.clear();
-            dataModel.imageUrls.clear();
-            dataModel.imageUrls.addAll(images);
+            dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
+            if (dataModel.check) {
+              postTypeNotifier.value == PostType.feedback
+                  ? FeedbackService.sendPost(
+                type: PostType.feedback.value,
+                title: dataModel.title,
+                content: dataModel.content,
+                departmentId: dataModel.department.id,
+                images: images,
+                campus: campusNotifier.value,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_post_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              )
+                  : FeedbackService.sendPost(
+                type: PostType.lake.value,
+                title: dataModel.title,
+                content: dataModel.content,
+                tagId: dataModel.tag.id,
+                images: images,
+                campus: campusNotifier.value,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_post_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+              dataModel.clear();
+            } else {
+              ToastProvider.error(S.current.feedback_empty_content_error);
+            }
           },
           onFailure: (e) {
             ToastProvider.error(e.error.toString());
           });
-    dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
-    if (dataModel.check) {
-      postTypeNotifier.value == PostType.feedback
-          ? FeedbackService.sendPost(
-              type: PostType.feedback.value,
-              title: dataModel.title,
-              content: dataModel.content,
-              departmentId: dataModel.department.id,
-              images: dataModel.imageUrls,
-              campus: campusNotifier.value,
-              onSuccess: () {
-                ToastProvider.success(S.current.feedback_post_success);
-                Navigator.pop(context);
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            )
-          : FeedbackService.sendPost(
-              type: PostType.lake.value,
-              title: dataModel.title,
-              content: dataModel.content,
-              tagId: dataModel.tag.id,
-              images: dataModel.imageUrls,
-              campus: campusNotifier.value,
-              onSuccess: () {
-                ToastProvider.success(S.current.feedback_post_success);
-                Navigator.pop(context);
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            );
-      dataModel.clear();
-    } else {
-      ToastProvider.error(S.current.feedback_empty_content_error);
-    }
   }
 
   @override

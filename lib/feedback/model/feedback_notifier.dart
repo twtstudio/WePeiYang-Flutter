@@ -60,7 +60,6 @@ class NewPostProvider {
   Tag tag = Tag();
 
   List<File> images = [];
-  List<String> imageUrls = [];
 
   bool get check =>
       title.isNotEmpty &&
@@ -79,7 +78,6 @@ class NewFloorProvider extends ChangeNotifier {
   int locate;
   int replyTo = 0;
   List<File> images = [];
-  List<String> imageUrls = [];
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
 

@@ -571,18 +571,16 @@ class CommentInputFieldState extends State<CommentInputField> {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
             onResult: (images) {
-              print(images);
               context.read<NewFloorProvider>().images.clear();
-              context.read<NewFloorProvider>().imageUrls = images;
+              if (context.read<NewFloorProvider>().replyTo == 0) {
+                _sendFloor(images);
+              } else {
+                _replyFloor(images);
+              }
             },
             onFailure: (e) {
               ToastProvider.error(e.error.toString());
             });
-      if (context.read<NewFloorProvider>().replyTo == 0) {
-        _sendFloor();
-      } else {
-        _replyFloor();
-      }
     } else
       ToastProvider.error('文字不能为空哦');
     Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
@@ -629,12 +627,12 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _sendFloor() {
+  _sendFloor(List<String> list) {
     ToastProvider.running('创建楼层中 q(≧▽≦q)');
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().imageUrls,
+      images: list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
@@ -648,12 +646,12 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor() {
+  _replyFloor(List<String> list) {
     ToastProvider.running('回复中 q(≧▽≦)/');
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().imageUrls,
+      images: list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
