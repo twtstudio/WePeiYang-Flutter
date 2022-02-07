@@ -186,21 +186,64 @@ class SubmitButton extends StatelessWidget {
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    if (dataModel.images.isNotEmpty)
+    if (dataModel.images.isNotEmpty) {
       FeedbackService.postPic(
           images: dataModel.images,
           onResult: (images) {
             print(images);
             dataModel.images.clear();
-            dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
+            dataModel.type =
+                postTypeNotifier.value == PostType.feedback ? 1 : 0;
             if (dataModel.check) {
               postTypeNotifier.value == PostType.feedback
                   ? FeedbackService.sendPost(
+                      type: PostType.feedback.value,
+                      title: dataModel.title,
+                      content: dataModel.content,
+                      departmentId: dataModel.department.id,
+                      images: images,
+                      campus: campusNotifier.value,
+                      onSuccess: () {
+                        ToastProvider.success(S.current.feedback_post_success);
+                        Navigator.pop(context);
+                      },
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                      },
+                    )
+                  : FeedbackService.sendPost(
+                      type: PostType.lake.value,
+                      title: dataModel.title,
+                      content: dataModel.content,
+                      tagId: dataModel.tag.id,
+                      images: images,
+                      campus: campusNotifier.value,
+                      onSuccess: () {
+                        ToastProvider.success(S.current.feedback_post_success);
+                        Navigator.pop(context);
+                      },
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                      },
+                    );
+              dataModel.clear();
+            } else {
+              ToastProvider.error(S.current.feedback_empty_content_error);
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+    } else {
+      dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
+      if (dataModel.check) {
+        postTypeNotifier.value == PostType.feedback
+            ? FeedbackService.sendPost(
                 type: PostType.feedback.value,
                 title: dataModel.title,
                 content: dataModel.content,
                 departmentId: dataModel.department.id,
-                images: images,
+                images: [],
                 campus: campusNotifier.value,
                 onSuccess: () {
                   ToastProvider.success(S.current.feedback_post_success);
@@ -210,12 +253,12 @@ class SubmitButton extends StatelessWidget {
                   ToastProvider.error(e.error.toString());
                 },
               )
-                  : FeedbackService.sendPost(
+            : FeedbackService.sendPost(
                 type: PostType.lake.value,
                 title: dataModel.title,
                 content: dataModel.content,
                 tagId: dataModel.tag.id,
-                images: images,
+                images: [],
                 campus: campusNotifier.value,
                 onSuccess: () {
                   ToastProvider.success(S.current.feedback_post_success);
@@ -225,14 +268,11 @@ class SubmitButton extends StatelessWidget {
                   ToastProvider.error(e.error.toString());
                 },
               );
-              dataModel.clear();
-            } else {
-              ToastProvider.error(S.current.feedback_empty_content_error);
-            }
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
+        dataModel.clear();
+      } else {
+        ToastProvider.error(S.current.feedback_empty_content_error);
+      }
+    }
   }
 
   @override

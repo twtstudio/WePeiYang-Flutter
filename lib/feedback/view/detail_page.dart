@@ -567,7 +567,7 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   void send() {
     if (_textEditingController.text.isNotEmpty) {
-      if (context.read<NewFloorProvider>().images.isNotEmpty)
+      if (context.read<NewFloorProvider>().images.isNotEmpty) {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
             onResult: (images) {
@@ -581,6 +581,12 @@ class CommentInputFieldState extends State<CommentInputField> {
             onFailure: (e) {
               ToastProvider.error(e.error.toString());
             });
+      } else if (context.read<NewFloorProvider>().replyTo == 0) {
+        context.read<NewFloorProvider>().images.clear();
+        _sendFloor([]);
+      } else {
+        _replyFloor([]);
+      }
     } else
       ToastProvider.error('文字不能为空哦');
     Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
@@ -632,7 +638,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: _textEditingController.text,
-      images: list,
+      images: list == [] ? '' : list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
@@ -651,7 +657,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
-      images: list,
+      images: list == [] ? '' : list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
