@@ -61,7 +61,10 @@ dependencies:
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
+  wechat_assets_picker: ^6.2.0
   extended_tabs: ^2.3.0
+  extended_image: ^4.0.0
+  flutter_native_image: ^0.0.6+1
   flutter_smart_dialog: ^3.3.5
   # 升级到flutter 2.2.1后，checkbox自带shape属性
   circular_check_box: ^1.0.4

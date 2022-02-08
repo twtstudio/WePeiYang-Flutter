@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -625,11 +626,22 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    Provider.of<NewPostProvider>(context, listen: false)
-        .images
-        .add(File(xFile.path));
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        maxAssets: maxImage - context.read<NewPostProvider>().images.length,
+        requestType: RequestType.image,
+      themeColor: ColorUtil.selectionButtonColor
+    );
+    for (int i = 0; i < assets.length; i++) {
+      File file = await assets[i].file;
+      for (int j = 0; file.lengthSync() > 2 * 1000000 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 30);
+        if (j == 10) {
+          ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
+      Provider.of<NewPostProvider>(context, listen: false).images.add(file);
+    }
     if (!mounted) return;
     setState(() {});
   }

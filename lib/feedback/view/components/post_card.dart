@@ -96,31 +96,6 @@ class _PostCardState extends State<PostCard> {
         width: double.infinity,
         fit: BoxFit.cover,
         alignment: Alignment.topCenter,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: Container(
-                height: 40,
-                width: 40,
-                padding: EdgeInsets.all(4),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  backgroundColor: Colors.black12,
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes
-                      : null,
-                ),
-              ),
-            );
-          }, errorBuilder: (BuildContext context, Object exception,
-          StackTrace stackTrace) {
-        return Text(
-          '💔[图片加载失败]',
-          style: TextUtil.base.grey6C.w400.sp(12),
-        );
-      }
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
       image.image
@@ -208,6 +183,7 @@ class _PostCardState extends State<PostCard> {
       );
 
       longPicOutsideLook = new FutureBuilder<ui.Image>(
+        //initialData: ,
         future: completer.future,
         builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
           return Container(
@@ -226,7 +202,7 @@ class _PostCardState extends State<PostCard> {
         child: new FutureBuilder<ui.Image>(
           future: completer.future,
           builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-            return snapshot.hasData
+            return snapshot.connectionState == ConnectionState.done
                 ? snapshot.data.height / snapshot.data.width > 2.0
                     ? InkWell(
                         onTap: () {
@@ -250,7 +226,7 @@ class _PostCardState extends State<PostCard> {
                               });
                         },
                         child: image)
-                : Text('Loading...');
+                : Loading();
           },
         ),
       );
@@ -678,38 +654,37 @@ class _PostCardState extends State<PostCard> {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               child: Image.network(
-                widget.type == PostCardType.detail
-                    ? picBaseUrl + 'origin/' + post.imageUrls[index]
-                    : picBaseUrl + 'thumb/' + post.imageUrls[index],
-                fit: BoxFit.cover,
-                height:
-                    (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
+                  widget.type == PostCardType.detail
+                      ? picBaseUrl + 'origin/' + post.imageUrls[index]
+                      : picBaseUrl + 'thumb/' + post.imageUrls[index],
+                  fit: BoxFit.cover,
+                  height: (ScreenUtil.defaultSize.width - 80) /
+                      post.imageUrls.length,
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        padding: EdgeInsets.all(4),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          backgroundColor: Colors.black12,
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    padding: EdgeInsets.all(4),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: Colors.black12,
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
                               loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      ),
-                    );
-                  }, errorBuilder: (BuildContext context, Object exception,
-                  StackTrace stackTrace) {
+                          : null,
+                    ),
+                  ),
+                );
+              }, errorBuilder: (BuildContext context, Object exception,
+                      StackTrace stackTrace) {
                 return Text(
                   '💔[图片加载失败]',
                   style: TextUtil.base.grey6C.w400.sp(12),
                 );
-              }
-              ),
+              }),
             ),
           ),
         ));

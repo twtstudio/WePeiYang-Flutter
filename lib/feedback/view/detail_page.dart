@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -23,6 +23,7 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/post_card.dart';
 
@@ -681,9 +682,22 @@ class ImageSelectAndView extends StatefulWidget {
 
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    context.read<NewFloorProvider>().images.add(File(xFile.path));
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        maxAssets: 1,
+        requestType: RequestType.image,
+        themeColor: ColorUtil.selectionButtonColor,
+    );
+    for (int i = 0; i < assets.length; i++) {
+      File file = await assets[i].file;
+      for (int j = 0; file.lengthSync() > 2 * 1000000 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 30);
+        if (j == 10) {
+          ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
+      Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+    }
     if (!mounted) return 0;
     setState(() {});
   }
