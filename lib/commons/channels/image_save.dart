@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-final _channel = MethodChannel('com.twt.service/saveImg');
+const _channel = MethodChannel('com.twt.service/saveImg');
 
 Future<void> saveImageToAlbum(Uint8List data, String fileName) async {
   try {

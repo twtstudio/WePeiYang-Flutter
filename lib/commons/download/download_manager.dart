@@ -1,18 +1,17 @@
 // @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/channels/download.dart';
 import 'download_listener.dart';
 import 'download_item.dart';
 export 'download_item.dart';
-
-const _downloadChannel = MethodChannel('com.twt.service/download');
 
 // TODO: 选择下载失败时是终止还是忽略
 // TODO: 改成单例模式，实现可以在两个不同地方下载任务，并且回调 (实现了一半)
 // TODO: 可以对一个观察者添加或修改回调
 class DownloadManager {
   DownloadManager._() {
-    _downloadChannel.setMethodCallHandler((call) {
+    downloadChannel.setMethodCallHandler((call) {
       switch (call.method) {
         case 'updateProgress':
           final id = call.arguments['listenerId'].toString();
@@ -21,9 +20,9 @@ class DownloadManager {
           if (listeners.containsKey(id)) {
             _updateProgress(listeners[id]!, call);
           } else if (id == "all") {
-            listeners.values.forEach(
-              (element) => _updateProgress(element, call),
-            );
+            for(var listener in listeners.values){
+              _updateProgress(listener, call);
+            }
           } else if (id == "unknown") {
             // TODO
           } else {
@@ -81,9 +80,7 @@ class DownloadManager {
   static DownloadManager? _instance;
 
   factory DownloadManager.getInstance() {
-    if (_instance == null) {
-      _instance = DownloadManager._();
-    }
+    _instance ??= DownloadManager._();
     return _instance!;
   }
 
@@ -96,7 +93,7 @@ class DownloadManager {
     void Function()? begin,
     void Function(DownloadItem task, double progress)? running,
     void Function(List<String> paths)? allSuccess,
-  }) {
+  }) async {
     final listener = DownloadListener(
       tasks,
       error,
@@ -108,12 +105,7 @@ class DownloadManager {
     listeners[listener.listenerId] = listener;
 
     try {
-      _downloadChannel.invokeMethod(
-        "addDownloadTask",
-        {
-          "downloadList": DownloadList(tasks).toJson(),
-        },
-      );
+      await startDownload(DownloadList(tasks));
     }  catch (e) {
       error.call(e);
     }

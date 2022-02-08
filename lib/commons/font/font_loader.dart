@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
-import 'package:we_pei_yang_flutter/commons/channels/download/download_item.dart';
-import 'package:we_pei_yang_flutter/commons/channels/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/download/download_item.dart';
+import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
 
 // TODO: 只实现了基础功能
 class WbyFontLoader {

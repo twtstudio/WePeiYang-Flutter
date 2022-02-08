@@ -51,8 +51,8 @@ Future<Version> parseJson(String json) async {
     version = data.info.release;
   }
   final localVersionCode = await UpdateUtil.getVersionCode();
-  print("localVersionCode  $localVersionCode");
-  print("remoteVersionCode ${version.versionCode}");
+  debugPrint("localVersionCode  $localVersionCode");
+  debugPrint("remoteVersionCode ${version.versionCode}");
   if (version.versionCode <= localVersionCode) {
     return null;
   }

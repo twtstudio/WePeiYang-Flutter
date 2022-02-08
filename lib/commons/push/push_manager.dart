@@ -1,14 +1,17 @@
+// @dart = 2.12
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'push_intent.dart';
 import 'request_push_dialog.dart';
+import '../channels/push.dart';
 
 export 'push_intent.dart';
 
 class PushManager extends ChangeNotifier {
   PushManager() {
-    _pushChannel.setMethodCallHandler((call) async {
+    pushChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         // 当初始化sdk后，如果发现用户的通知权限是默认关闭的，则告知用户推送的意义，请求打开权限
         // TODO: 产品说应该隔段时间主动询问一下能否打开推送
@@ -34,13 +37,11 @@ class PushManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const _pushChannel = MethodChannel('com.twt.service/push');
-
   // 在用户同意隐私协议后，开启个推
   Future<void> initGeTuiSdk() async {
     try {
       debugPrint("initGeTuiSdk---");
-      final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
+      final result = await initSdk();
       switch (result) {
         case 'open push service success':
           openPush = true;
@@ -79,7 +80,7 @@ class PushManager extends ChangeNotifier {
   // 在设置里，可以手动打开推送
   Future<void> turnOnPushService(Function success, Function failure, Function error) async {
     try {
-      final result = await _pushChannel.invokeMethod("turnOnPushService");
+      final result = await turnOnPush();
       switch (result) {
         case 'open push service success':
           openPush = true;
@@ -113,7 +114,7 @@ class PushManager extends ChangeNotifier {
 
   Future<void> turnOffPushService(Function success, Function error) async {
     try {
-      await _pushChannel.invokeMethod("turnOffPushService");
+      await turnOffPush();
       openPush = false;
       success();
     } catch (e) {
@@ -123,7 +124,7 @@ class PushManager extends ChangeNotifier {
 
   Future<void> getCurrentCanReceivePush(Function(bool) success, Function(Object) error, Function noResult) async {
     try {
-      final result = await _pushChannel.invokeMethod<bool>("getCurrentCanReceivePush");
+      final result = await canPush;
       if (result != null) {
         success(result);
       } else {
@@ -134,9 +135,9 @@ class PushManager extends ChangeNotifier {
     }
   }
 
-  Future<String> getCid() async {
+  Future<String?> getCid() async {
     try {
-      return await _pushChannel.invokeMethod<String>("getCid");
+      return await cid;
     } catch (e) {
       return null;
     }
@@ -144,7 +145,7 @@ class PushManager extends ChangeNotifier {
 
   Future<void> cancelNotification(int id, Function success, Function error) async {
     try {
-      await _pushChannel.invokeMethod("cancelNotification", {"id", id});
+      await cancelNotificationOf(id);
       success();
     } catch (e) {
       error();
@@ -153,19 +154,16 @@ class PushManager extends ChangeNotifier {
 
   Future<void> cancelAllNotification(Function success, Function error) async {
     try {
-      await _pushChannel.invokeMethod("cancelAllNotification");
+      await cancelAllNotifications();
       success();
     } catch (e) {
       error();
     }
   }
 
-  Future<String> getIntentUri<T extends PushIntent>(T intent) async {
+  Future<String?> getIntentUri<T extends PushIntent>(T intent) async {
     try {
-      return await _pushChannel.invokeMethod<String>(
-        "getIntentUri",
-        intent.toMap(),
-      );
+      return getIntent(intent);
     } catch (e) {
       return null;
     }

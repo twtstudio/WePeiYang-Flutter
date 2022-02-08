@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/channels/image_save.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-final _shareChannel = MethodChannel("com.twt.service/share");
+const _shareChannel = MethodChannel("com.twt.service/share");
 
 Future<void> shareImgFromUrlToQQ(String url) async {
   try {

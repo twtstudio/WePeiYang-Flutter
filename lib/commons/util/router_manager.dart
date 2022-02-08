@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
+import 'package:we_pei_yang_flutter/commons/test_router.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
@@ -18,11 +19,11 @@ export 'package:we_pei_yang_flutter/urgent_report/report_router.dart';
 
 /// WePeiYangApp Route统一管理
 class RouterManager {
-  static Map<String, Widget Function(Object arguments)> _routers = {};
+  static final Map<String, Widget Function(Object arguments)> _routers = {};
 
   static Route<dynamic> create(RouteSettings settings) {
     /// 这里添加其他模块的routers
-    if (_routers.length == 0) {
+    if (_routers.isEmpty) {
       _routers.addAll(AuthRouter.routers);
       _routers.addAll(FeedbackRouter.routers);
       _routers.addAll(GPARouter.routers);
@@ -31,6 +32,7 @@ class RouterManager {
       _routers.addAll(ScheduleRouter.routers);
       _routers.addAll(ReportRouter.routers);
       _routers.addAll(MessageRouter.routers);
+      _routers.addAll(TestRouter.routers);
     }
     return MaterialPageRoute(
         builder: (ctx) => _routers[settings.name](settings.arguments),

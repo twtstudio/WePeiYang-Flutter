@@ -1,3 +1,5 @@
+// @dart = 2.12
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -7,7 +9,7 @@ Future<String> showRequestNotificationDialog() async {
     final result = await showDialog<RequestPushResult>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => RequestPushDialog(),
+      builder: (_) => const RequestPushDialog(),
     );
     return (result ?? RequestPushResult.unknown).text;
   } else {
@@ -16,6 +18,8 @@ Future<String> showRequestNotificationDialog() async {
 }
 
 class RequestPushDialog extends Dialog {
+  const RequestPushDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -25,24 +29,22 @@ class RequestPushDialog extends Dialog {
           height: 200,
           width: 200,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              shape: BoxShape.rectangle,
-              color: Colors.white),
+          decoration:
+              BoxDecoration(borderRadius: BorderRadius.circular(10), shape: BoxShape.rectangle, color: Colors.white),
           child: Column(
             children: [
-              Text("请同意打开推送"),
+              const Text("请同意打开推送"),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context,RequestPushResult.ok);
+                  Navigator.pop(context, RequestPushResult.ok);
                 },
-                child: Text("ok"),
+                child: const Text("ok"),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context,RequestPushResult.refuse);
+                  Navigator.pop(context, RequestPushResult.refuse);
                 },
-                child: Text("refuse"),
+                child: const Text("refuse"),
               ),
             ],
           ),
