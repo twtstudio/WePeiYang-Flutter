@@ -160,6 +160,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             NCommentCard(
               placeAppeared: index,
               comment: data,
+              ancestorName: widget.floor.nickname,
               ancestorId: widget.floor.id,
               commentFloor: index + 1,
               isSubFloor: true,

@@ -689,8 +689,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     );
     for (int i = 0; i < assets.length; i++) {
       File file = await assets[i].file;
-      for (int j = 0; file.lengthSync() > 2 * 1000000 && j < 10; j++) {
-        file = await FlutterNativeImage.compressImage(file.path, quality: 30);
+      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
           return;
