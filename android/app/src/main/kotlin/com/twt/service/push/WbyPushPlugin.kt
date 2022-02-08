@@ -38,6 +38,8 @@ import io.flutter.plugin.common.PluginRegistry
 // 3.如果用户通过通知栏关闭了微北洋的推送服务，那默认用户想要关闭推送
 // 不管用户是否允许推送，只要确认了隐私权限就初始化 sdk
 
+// Assist_
+
 class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     PluginRegistry.NewIntentListener, ActivityAware {
     private lateinit var channel: MethodChannel

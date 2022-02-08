@@ -73,10 +73,10 @@ android {
                 OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
 
                 // project
-                // GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
+                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
 
                 // develop
-                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
+//                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
         ]
 
         ndk {

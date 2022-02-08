@@ -154,14 +154,14 @@
 <!--            android:value="Umeng" />-->
 
 <!--        product-->
-<!--        <meta-data-->
-<!--            android:name="PUSH_APPID"-->
-<!--            android:value="43HGFmIKsnAmjrjDLr60X4" />-->
-
-<!--        develop-->
         <meta-data
             android:name="PUSH_APPID"
-            android:value="bj16oBtQ3VAvqPbGtEHB69" />
+            android:value="43HGFmIKsnAmjrjDLr60X4" />
+
+<!--        develop-->
+<!--        <meta-data-->
+<!--            android:name="PUSH_APPID"-->
+<!--            android:value="bj16oBtQ3VAvqPbGtEHB69" />-->
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
