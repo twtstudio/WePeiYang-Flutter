@@ -12,7 +12,7 @@ class FeedbackDio extends DioAbstract {
   // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7012/api/v1/f/';
+  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
   var headers = {};
 
   @override
@@ -42,7 +42,31 @@ class FeedbackDio extends DioAbstract {
   ];
 }
 
+class FeedbackPicPostDio extends DioAbstract {
+  @override
+  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
+  String baseUrl = 'https://www.zrzz.site:7015/';
+  var headers = {};
+
+  @override
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      var code = response?.data['code'] ?? 0;
+      switch (code) {
+        case 200: // 成功
+          return handler.next(response);
+        default: // 其他错误
+          return handler.reject(WpyDioError(error: response.data['msg']), true);
+      }
+    })
+  ];
+}
+
 final feedbackDio = FeedbackDio();
+final feedbackPicPostDio = FeedbackPicPostDio();
 
 class FeedbackService with AsyncTimer {
   static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
@@ -87,6 +111,37 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
+  }
+
+  static Future<void> postPic({
+    @required List<File> images,
+    @required OnResult<List<String>> onResult,
+    @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('postPic', () async {
+      try {
+        var formData = FormData();
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.files.addAll([
+              MapEntry(
+                  'images',
+                  MultipartFile.fromFileSync(
+                    images[i].path,
+                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
+                    contentType: MediaType("image", "jpeg"),
+                  ))
+            ]);
+        }
+        var response = await feedbackPicPostDio.post('upload/image', formData: formData);
+        List<String> list = [];
+        for (String json in response.data['data']['urls']) {
+          list.add(json);
+        }
+        onResult(list);
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   static getHotTags({
@@ -414,7 +469,7 @@ class FeedbackService with AsyncTimer {
   static sendFloor(
       {@required id,
       @required content,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendFloor', () async {
@@ -425,14 +480,10 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
+            formData.fields.addAll([
               MapEntry(
                   'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
+                  images[i])
             ]);
         }
         await feedbackDio.post('floor', formData: formData);
@@ -446,7 +497,7 @@ class FeedbackService with AsyncTimer {
   static replyFloor(
       {@required id,
       @required content,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyFloor', () async {
@@ -457,14 +508,10 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
+            formData.fields.addAll([
               MapEntry(
                   'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
+                  images[i])
             ]);
         }
         await feedbackDio.post('floor/reply', formData: formData);
@@ -482,7 +529,7 @@ class FeedbackService with AsyncTimer {
       departmentId,
       tagId,
       @required campus,
-      @required List<File> images,
+      @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendPost', () async {
@@ -497,14 +544,10 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.files.addAll([
+            formData.fields.addAll([
               MapEntry(
                   'images',
-                  MultipartFile.fromFileSync(
-                    images[i].path,
-                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
-                    contentType: MediaType("image", "jpeg"),
-                  ))
+                  images[i])
             ]);
         }
         await feedbackDio.post('post', formData: formData);
@@ -568,7 +611,7 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('report', () async {
       try {
-        var formData;
+        var formData = FormData();
         if (isQuestion) {
           formData = FormData.fromMap({
             'type': 1,

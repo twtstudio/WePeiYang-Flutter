@@ -21,4 +21,5 @@ class ColorUtil {
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const black2AColor = Color(0xFF2A2A2A);
   static const greyF7F8Color = Color(0xFFF7F7F8);
+  static const selectionButtonColor = Color(0xFF2D4E9A);
 }

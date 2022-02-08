@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
 # 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.1.11+86
+version: 4.1.12+87
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -61,7 +61,10 @@ dependencies:
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
+  wechat_assets_picker: ^6.2.0
   extended_tabs: ^2.3.0
+  extended_image: ^4.0.0
+  flutter_native_image: ^0.0.6+1
   flutter_smart_dialog: ^3.3.5
   # 升级到flutter 2.2.1后，checkbox自带shape属性
   circular_check_box: ^1.0.4
@@ -70,7 +73,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.1.2
-  flutter_lints: ^1.0.0
+#  flutter_lints: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -23,6 +23,7 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/post_card.dart';
 
@@ -103,8 +104,10 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_bottomIsOpen ?? false)
-    if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+    if (_bottomIsOpen ?? false) if (context
+                .read<NewFloorProvider>()
+                .inputFieldEnabled ==
+            true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
       _bottomIsOpen = false;
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
@@ -474,6 +477,7 @@ class _DetailPageState extends State<DetailPage>
     //       });
     //     });
     var menuButton = PopupMenuButton(
+
         ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
         offset: Offset(0, 20.w),
@@ -564,10 +568,25 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   void send() {
     if (_textEditingController.text.isNotEmpty) {
-      if (context.read<NewFloorProvider>().replyTo == 0) {
-        _sendFloor();
+      if (context.read<NewFloorProvider>().images.isNotEmpty) {
+        FeedbackService.postPic(
+            images: context.read<NewFloorProvider>().images,
+            onResult: (images) {
+              context.read<NewFloorProvider>().images.clear();
+              if (context.read<NewFloorProvider>().replyTo == 0) {
+                _sendFloor(images);
+              } else {
+                _replyFloor(images);
+              }
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
+      } else if (context.read<NewFloorProvider>().replyTo == 0) {
+        context.read<NewFloorProvider>().images.clear();
+        _sendFloor([]);
       } else {
-        _replyFloor();
+        _replyFloor([]);
       }
     } else
       ToastProvider.error('文字不能为空哦');
@@ -576,41 +595,38 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   @override
   Widget build(BuildContext context) {
-    Widget inputField = Consumer<NewFloorProvider>(
-        builder: (_, data, __) {
-          data.focusNode = _commentFocus;
-          return TextField(
-              style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
-              focusNode: _commentFocus,
-              controller: _textEditingController,
-              maxLength: 200,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: data.replyTo == 0
-                    ? '回复冒泡：'
-                    : '回复楼层：' + data.replyTo.toString(),
-                suffix: Text(
-                  _commentLengthIndicator,
-                  style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                fillColor: ColorUtil.whiteF8Color,
-                filled: true,
-                isDense: true,
-              ),
-              onChanged: (text) {
-                _commentLengthIndicator = '${text.characters.length}/200';
-                setState(() {});
-              },
-              minLines: 1,
-              maxLines: 10,
-            );
-        });
+    Widget inputField = Consumer<NewFloorProvider>(builder: (_, data, __) {
+      data.focusNode = _commentFocus;
+      return TextField(
+        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
+        focusNode: _commentFocus,
+        controller: _textEditingController,
+        maxLength: 200,
+        textInputAction: TextInputAction.newline,
+        decoration: InputDecoration(
+          counterText: '',
+          hintText:
+              data.replyTo == 0 ? '回复冒泡：' : '回复楼层：' + data.replyTo.toString(),
+          suffix: Text(
+            _commentLengthIndicator,
+            style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          fillColor: ColorUtil.whiteF8Color,
+          filled: true,
+          isDense: true,
+        ),
+        onChanged: (text) {
+          _commentLengthIndicator = '${text.characters.length}/200';
+          setState(() {});
+        },
+        minLines: 1,
+        maxLines: 10,
+      );
+    });
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -618,12 +634,12 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _sendFloor() {
+  _sendFloor(List<String> list) {
     ToastProvider.running('创建楼层中 q(≧▽≦q)');
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
+      images: list == [] ? '' : list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
@@ -637,12 +653,12 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor() {
+  _replyFloor(List<String> list) {
     ToastProvider.running('回复中 q(≧▽≦)/');
     FeedbackService.replyFloor(
       id: context.read<NewFloorProvider>().replyTo.toString(),
       content: _textEditingController.text,
-      images: context.read<NewFloorProvider>().images,
+      images: list == [] ? '' : list,
       onSuccess: () {
         setState(() => _commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
@@ -666,9 +682,22 @@ class ImageSelectAndView extends StatefulWidget {
 
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    context.read<NewFloorProvider>().images.add(File(xFile.path));
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        maxAssets: 1,
+        requestType: RequestType.image,
+        themeColor: ColorUtil.selectionButtonColor,
+    );
+    for (int i = 0; i < assets.length; i++) {
+      File file = await assets[i].file;
+      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+        if (j == 10) {
+          ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
+      Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+    }
     if (!mounted) return 0;
     setState(() {});
   }

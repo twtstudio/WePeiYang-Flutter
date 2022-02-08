@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -186,42 +187,92 @@ class SubmitButton extends StatelessWidget {
 
   void submit(BuildContext context) {
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
-    if (dataModel.check) {
-      postTypeNotifier.value == PostType.feedback
-          ? FeedbackService.sendPost(
-              type: PostType.feedback.value,
-              title: dataModel.title,
-              content: dataModel.content,
-              departmentId: dataModel.department.id,
-              images: dataModel.images,
-              campus: campusNotifier.value,
-              onSuccess: () {
-                ToastProvider.success(S.current.feedback_post_success);
-                Navigator.pop(context);
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            )
-          : FeedbackService.sendPost(
-              type: PostType.lake.value,
-              title: dataModel.title,
-              content: dataModel.content,
-              tagId: dataModel.tag.id,
-              images: dataModel.images,
-              campus: campusNotifier.value,
-              onSuccess: () {
-                ToastProvider.success(S.current.feedback_post_success);
-                Navigator.pop(context);
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            );
-      dataModel.clear();
+    if (dataModel.images.isNotEmpty) {
+      FeedbackService.postPic(
+          images: dataModel.images,
+          onResult: (images) {
+            print(images);
+            dataModel.images.clear();
+            dataModel.type =
+                postTypeNotifier.value == PostType.feedback ? 1 : 0;
+            if (dataModel.check) {
+              postTypeNotifier.value == PostType.feedback
+                  ? FeedbackService.sendPost(
+                      type: PostType.feedback.value,
+                      title: dataModel.title,
+                      content: dataModel.content,
+                      departmentId: dataModel.department.id,
+                      images: images,
+                      campus: campusNotifier.value,
+                      onSuccess: () {
+                        ToastProvider.success(S.current.feedback_post_success);
+                        Navigator.pop(context);
+                      },
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                      },
+                    )
+                  : FeedbackService.sendPost(
+                      type: PostType.lake.value,
+                      title: dataModel.title,
+                      content: dataModel.content,
+                      tagId: dataModel.tag.id,
+                      images: images,
+                      campus: campusNotifier.value,
+                      onSuccess: () {
+                        ToastProvider.success(S.current.feedback_post_success);
+                        Navigator.pop(context);
+                      },
+                      onFailure: (e) {
+                        ToastProvider.error(e.error.toString());
+                      },
+                    );
+              dataModel.clear();
+            } else {
+              ToastProvider.error(S.current.feedback_empty_content_error);
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
     } else {
-      ToastProvider.error(S.current.feedback_empty_content_error);
+      dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
+      if (dataModel.check) {
+        postTypeNotifier.value == PostType.feedback
+            ? FeedbackService.sendPost(
+                type: PostType.feedback.value,
+                title: dataModel.title,
+                content: dataModel.content,
+                departmentId: dataModel.department.id,
+                images: [],
+                campus: campusNotifier.value,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_post_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              )
+            : FeedbackService.sendPost(
+                type: PostType.lake.value,
+                title: dataModel.title,
+                content: dataModel.content,
+                tagId: dataModel.tag.id,
+                images: [],
+                campus: campusNotifier.value,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_post_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+        dataModel.clear();
+      } else {
+        ToastProvider.error(S.current.feedback_empty_content_error);
+      }
     }
   }
 
@@ -525,7 +576,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.done,
       minLines: 1,
-      maxLines: 100 ,
+      maxLines: 100,
       style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
@@ -575,11 +626,22 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
-    Provider.of<NewPostProvider>(context, listen: false)
-        .images
-        .add(File(xFile.path));
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        maxAssets: maxImage - context.read<NewPostProvider>().images.length,
+        requestType: RequestType.image,
+      themeColor: ColorUtil.selectionButtonColor
+    );
+    for (int i = 0; i < assets.length; i++) {
+      File file = await assets[i].file;
+      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+        if (j == 10) {
+          ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
+      Provider.of<NewPostProvider>(context, listen: false).images.add(file);
+    }
     if (!mounted) return;
     setState(() {});
   }

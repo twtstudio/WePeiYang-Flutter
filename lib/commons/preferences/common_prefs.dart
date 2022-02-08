@@ -34,7 +34,7 @@ class CommonPreferences {
   var avatar = PrefsBean<String>('avatar');
 
   /// 校务专区
-  var feedbackToken = PrefsBean<String>("feedbackToken");
+  var feedbackToken = PrefsBean<String>("lakeToken");
   var feedbackUid = PrefsBean<String>('feedbackUid');
   var feedbackSearchHistory =
       PrefsBean<List<String>>("feedbackSearchHistory", []);
