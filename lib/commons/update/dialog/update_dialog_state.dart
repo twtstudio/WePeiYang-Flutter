@@ -45,11 +45,11 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
     title = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           "版本更新",
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
         ),
-        SizedBox(height: 3),
+        const SizedBox(height: 3),
         FutureBuilder(
           future: UpdateUtil.getVersion(),
           builder: (_, snapshot) {
@@ -61,7 +61,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
             }
             return Text(
               versionChange,
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
             );
           },
         ),
@@ -70,7 +70,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
 
     detail = Text(
       updateDetail(version),
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 10,
         height: 2,
       ),
@@ -85,7 +85,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(buttonRadius),
           color: Colors.white,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Color(0x19000000),
               offset: Offset(0, 2),
@@ -95,7 +95,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
         ),
         child: Text(
           cancelButtonText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -111,8 +111,8 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(buttonRadius),
-          color: Color(0xff62677b),
-          boxShadow: [
+          color: const Color(0xff62677b),
+          boxShadow: const [
             BoxShadow(
               color: Color(0x19000000),
               offset: Offset(0, 2),
@@ -122,7 +122,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
         ),
         child: Text(
           okButtonText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: Colors.white,
@@ -147,7 +147,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
     const checkboxElsePadding = 10.0;
     final checkboxHeight = buttonHeight * 0.4;
 
-    final checkboxTextWidget = Padding(
+    const checkboxTextWidget = Padding(
       padding: EdgeInsets.only(top: 0),
       child: Text(
         '今日不再弹出',
@@ -191,9 +191,9 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
                     : Icon(
                   Icons.panorama_fish_eye,
                   size: checkboxHeight,
-                  color: Color(0xffdedede),
+                  color: const Color(0xffdedede),
                 ),
-                SizedBox(width: checkboxElsePadding - 4),
+                const SizedBox(width: checkboxElsePadding - 4),
                 checkboxTextWidget,
               ],
             ),
@@ -202,7 +202,7 @@ abstract class UpdateDialogState<T extends StatefulWidget> extends State<T> {
       ],
     );
 
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   String updateDetail(Version version) {

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/push/request_push_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class PushTestPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _PushTestPageState extends State<PushTestPage> {
         SelectableText(cid),
         TextButton(
           onPressed: () async {
+            showRequestNotificationDialog();
             final id = await manager.getCid();
             setState(() {
               cid = id ?? 'null';

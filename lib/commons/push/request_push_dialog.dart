@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+// TODO: 重新写
 Future<String> showRequestNotificationDialog() async {
   final context = WePeiYangApp.navigatorState.currentContext;
   if (context != null) {
