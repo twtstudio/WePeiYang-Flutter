@@ -141,10 +141,10 @@ class _SearchBarState extends State<SearchBar>
           child: Consumer<FbHotTagsProvider>(
             builder: (_, data, __) => TextField(
               controller: _controller,
-              style: TextStyle().black2A.NotoSansSC.w400.sp(16),
+              style: TextStyle().black2A.NotoSansSC.w400.sp(15),
               decoration: InputDecoration(
                 hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
-                hintText: data.recTag.name == ''
+                hintText: data.recTag == null
                     ? '搜索发现'
                     : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
                 contentPadding: const EdgeInsets.only(right: 6),

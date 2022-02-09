@@ -193,7 +193,7 @@ class _PostCardState extends State<PostCard> {
                   ? snapshot.data.height / snapshot.data.width > 2.0
                       ? longImageOuterLook
                       : image
-                  : Loading());
+                  : Image.asset('assets/images/lake_butt_icons/monkie.png'));
         },
       );
 

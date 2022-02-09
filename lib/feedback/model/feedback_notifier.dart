@@ -203,6 +203,16 @@ class FbHomeListModel extends ChangeNotifier {
     );
   }
 
+  addSomeLoading() {
+    _status = FbHomePageStatus.loading;
+    notifyListeners();
+  }
+
+  loadingFailed() {
+    _status = FbHomePageStatus.error;
+    notifyListeners();
+  }
+
   Future<void> initPostList(int type,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {

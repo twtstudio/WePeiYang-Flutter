@@ -1,6 +1,7 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
@@ -45,10 +46,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   double _tabPaddingWidth = 0;
   double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
+  List<bool> shouldBeInitialized;
 
-  bool _lakeIsLoaded, _feedbackIsLoaded, _initialRefresh;
+  bool _initialRefresh;
+
   ///判断是否为初次登陆
-  bool _lakeFirst =true;
+  bool _lakeFirst = true;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -105,7 +108,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
       getRecTag();
-      getHotList();
+      if (_swap == 1) getHotList();
       _listProvider.initPostList(swapLister[_swap], success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
@@ -218,14 +221,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     SizedBox(height: 15.w),
                     Text(
                       "经过一段时间的沉寂，我们很高兴能够带着崭新的青年湖底与您相见。\n" +
-                      "\n" +
-                      "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为青年湖底论坛中的两个分区，同时我们也在努力让青年湖底在功能上接近于一个成熟的论坛。\n" +
-                      "\n" +
-                      "现在它拥有：\n" +
-                      "\n" +
-                      "点踩、举报；回复评论、带图评论；分享、自定义tag...还有一些细节等待您去自行挖掘。\n" +
-                      "\n" +
-                      "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
+                          "\n" +
+                          "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为青年湖底论坛中的两个分区，同时我们也在努力让青年湖底在功能上接近于一个成熟的论坛。\n" +
+                          "\n" +
+                          "现在它拥有：\n" +
+                          "\n" +
+                          "点踩、举报；回复评论、带图评论；分享、自定义tag...还有一些细节等待您去自行挖掘。\n" +
+                          "\n" +
+                          "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
                       style:
                           TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
                     ),
@@ -240,48 +243,56 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         // ),
                         ValueListenableBuilder<bool>(
                             valueListenable: checkedNotifier,
-                            builder: (context, type, _)  {
-                            return GestureDetector(
-                              onTap: (){
-                                checkedNotifier.value =!checkedNotifier.value;
-                              },
-                              child: Stack(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/svg_pics/lake_butt_icons/checkedbox_false.svg",
-                                    width: 16.w,
-                                  ),
-                                  if(checkedNotifier.value == false)
-                                    Positioned(
-                                      top: 3.w,
-                                      left: 3.w,
-                                      child: SvgPicture.asset(
-                                        "assets/svg_pics/lake_butt_icons/check.svg",
-                                        width: 10.w,
-                                      ),
+                            builder: (context, type, _) {
+                              return GestureDetector(
+                                onTap: () {
+                                  checkedNotifier.value =
+                                      !checkedNotifier.value;
+                                },
+                                child: Stack(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/svg_pics/lake_butt_icons/checkedbox_false.svg",
+                                      width: 16.w,
                                     ),
-                                ],
-                              ),
-                            );
-                          }
-                        ),
-                       SizedBox(width: 10.w),
-                        Text('我已阅读并承诺遵守',style:  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400),
+                                    if (checkedNotifier.value == false)
+                                      Positioned(
+                                        top: 3.w,
+                                        left: 3.w,
+                                        child: SvgPicture.asset(
+                                          "assets/svg_pics/lake_butt_icons/check.svg",
+                                          width: 10.w,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            }),
+                        SizedBox(width: 10.w),
+                        Text('我已阅读并承诺遵守',
+                            style: TextUtil.base.normal.black2A.NotoSansSC
+                                .sp(14)
+                                .w400),
                         SizedBox(width: 5.w),
                         TextButton(
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all(Size(1, 1)),
-                            padding: MaterialStateProperty.all(EdgeInsets.zero),
-                          ),
-                            onPressed: (){
+                            style: ButtonStyle(
+                              minimumSize:
+                                  MaterialStateProperty.all(Size(1, 1)),
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.zero),
+                            ),
+                            onPressed: () {
                               showDialog(
                                   context: context,
                                   barrierDismissible: true,
-                                  builder: (BuildContext context) => PrivacyDialog());
+                                  builder: (BuildContext context) =>
+                                      PrivacyDialog());
                             },
-                            child: Text(
-                              '《青年湖底社区规范》',style:  TextUtil.base.normal.NotoSansSC.sp(14).w400.textButtonBlue
-                            ))
+                            child: Text('《青年湖底社区规范》',
+                                style: TextUtil.base.normal.NotoSansSC
+                                    .sp(14)
+                                    .w400
+                                    .textButtonBlue))
                       ],
                     )
                   ],
@@ -296,16 +307,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   Navigator.pushNamed(context, HomeRouter.home);
                 },
                 confirmFun: () {
-                  if(checkedNotifier.value == false){
+                  if (checkedNotifier.value == false) {
                     Navigator.pop(context);
                     pref.setBool("firstLogin", checkedNotifier.value);
-                  }else{
+                  } else {
                     ToastProvider.error('请同意《青年湖底社区规范》');
                   }
                 });
           });
     }
   }
+
   ///微口令的识别
   getClipboardWeKoContents() async {
     ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
@@ -348,13 +360,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   void initState() {
     _swap = 0;
-    _lakeIsLoaded = false;
-    _feedbackIsLoaded = false;
     _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
     _tagsContainerBackgroundOpacity = 0;
     _refreshController = _refreshController1;
+    shouldBeInitialized = [false, true, true, false];
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
@@ -371,6 +382,19 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tabController.addListener(() {
       if (_tabController.index.toDouble() == _tabController.animation.value) {
         //判断TabBar是否切换
+        if (shouldBeInitialized[_tabController.index]) {
+          context.read<FbHomeListModel>().addSomeLoading();
+          FeedbackService.getToken(onResult: (_) {
+            _listProvider.initPostList(swapLister[_tabController.index],
+                success: () => shouldBeInitialized[_tabController.index] = false);
+            getRecTag();
+            if (_tabController.index == 1) getHotList();
+          }, onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            context.read<FbHomeListModel>().loadingFailed();
+          });
+        }
+
         switch (_tabController.index) {
           case 0:
             {
@@ -395,12 +419,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 _tagsWrapIsShow = false;
                 _tagsContainerBackgroundIsShow = false;
                 _tagsContainerBackgroundOpacity = 0;
-                if (_lakeIsLoaded == false) {
-                  _controller2.animateTo(-85,
-                      curve: Curves.decelerate,
-                      duration: Duration(milliseconds: 500));
-                  _lakeIsLoaded = true;
-                }
               });
             }
             break;
@@ -412,12 +430,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 _controller = _controller3;
                 _swap = 2;
               });
-              if (_feedbackIsLoaded == false) {
-                _controller3.animateTo(-85,
-                    curve: Curves.decelerate,
-                    duration: Duration(milliseconds: 500));
-                _feedbackIsLoaded = true;
-              }
             }
             break;
           default:
@@ -440,7 +452,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     super.build(context);
 
     //控制动画速率
-    //timeDilation = 0.9;
+    timeDilation = 0.9;
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
