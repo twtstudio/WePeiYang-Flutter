@@ -22,7 +22,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/post_card.dart';
