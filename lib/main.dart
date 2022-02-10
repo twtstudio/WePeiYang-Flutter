@@ -25,7 +25,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';

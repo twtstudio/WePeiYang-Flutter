@@ -1,24 +1,27 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
-enum FeedbackMessageType { detail_post, detail_favourite, home, mailbox }
+enum FeedbackMessageType { total, like, floor, reply, notice }
 
 extension MessageData on FeedbackMessageType {
   String messageCount(MessageProvider model) {
     switch (this) {
-      case FeedbackMessageType.detail_post:
+      case FeedbackMessageType.like:
         return "";
         break;
-      case FeedbackMessageType.detail_favourite:
-        return "";
+      case FeedbackMessageType.floor:
+        return model.messageCount.floor.toString();
         break;
-      case FeedbackMessageType.home:
-        return (model.feedbackFs.length + model.feedbackQs.length).toString();
+      case FeedbackMessageType.reply:
+        return model.messageCount.reply.toString();
         break;
-      case FeedbackMessageType.mailbox:
-        return model.classifiedMessageCount.total.toString();
+      case FeedbackMessageType.notice:
+        return model.messageCount.notice.toString();
+        break;
+      case FeedbackMessageType.total:
+        return model.messageCount.total.toString();
         break;
       default:
         return '';

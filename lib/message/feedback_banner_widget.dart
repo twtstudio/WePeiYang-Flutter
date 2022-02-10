@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 class FeedbackBannerWidget extends StatelessWidget {
   final int questionId;
@@ -18,20 +17,20 @@ class FeedbackBannerWidget extends StatelessWidget {
     if (showBanner) {
       return Consumer<MessageProvider>(builder: (__, model, _) {
         Widget result;
-        if (model.inMessageList(questionId)) {
-          VoidFutureCallBack tap = () async {
-            await model.setFeedbackQuestionRead(questionId);
-          };
-          result = ClipRect(
-            child: Banner(
-              message: S.current.not_read,
-              location: BannerLocation.bottomEnd,
-              child: builder(tap),
-            ),
-          );
-        } else {
+        // if (model.inMessageList(questionId)) {
+        //   VoidFutureCallBack tap = () async {
+        //     await model.setAllMessageRead(questionId);
+        //   };
+        //   result = ClipRect(
+        //     child: Banner(
+        //       message: S.current.not_read,
+        //       location: BannerLocation.bottomEnd,
+        //       child: builder(tap),
+        //     ),
+        //   );
+        // } else {
           result = builder(null);
-        }
+        // }
 
         return result;
       });

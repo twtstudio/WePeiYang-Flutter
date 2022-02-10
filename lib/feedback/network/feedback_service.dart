@@ -196,6 +196,7 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+
   static Future<void> postTags({
     @required name,
     @required void Function(PostTagId postTagId) onSuccess,
@@ -237,6 +238,7 @@ class FeedbackService with AsyncTimer {
         },
       );
       List<Post> list = [];
+      print(response.data.toString());
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));
       }

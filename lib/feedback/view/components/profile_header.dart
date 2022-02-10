@@ -109,7 +109,7 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           radius: 25,
           child: Center(
             child: FeedbackBadgeWidget(
-              type: FeedbackMessageType.mailbox,
+              type: FeedbackMessageType.total,
               child: Icon(Icons.notifications_none_outlined,
                   color: ColorUtil.bold42TextColor),
             ),

@@ -170,10 +170,7 @@ class _DetailPageState extends State<DetailPage>
     bool success = false;
     await FeedbackService.getPostById(
       id: post.id,
-      onResult: (Post p) {
-        post = p;
-        Provider.of<MessageProvider>(context, listen: false)
-            .setFeedbackQuestionRead(p.id);
+      onResult: (_) {
         success = true;
       },
       onFailure: (e) {

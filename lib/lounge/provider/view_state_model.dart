@@ -62,16 +62,16 @@ class ViewStateModel with ChangeNotifier {
 
     /// 见 https://github.com/flutterchina/dio/blob/master/README-ZH.md#dioerrortype
     if (e is DioError) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.receiveTimeout) {
+      if (e.messageType == DioErrorType.connectTimeout ||
+          e.messageType == DioErrorType.sendTimeout ||
+          e.messageType == DioErrorType.receiveTimeout) {
         // timeout
         errorType = ViewStateErrorType.networkTimeOutError;
         message = e.error;
-      } else if (e.type == DioErrorType.response) {
+      } else if (e.messageType == DioErrorType.response) {
         // incorrect status, such as 404, 503...
         message = e.error;
-      } else if (e.type == DioErrorType.cancel) {
+      } else if (e.messageType == DioErrorType.cancel) {
         // to be continue...
         message = e.error;
       } else {

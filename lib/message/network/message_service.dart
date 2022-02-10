@@ -1,49 +1,130 @@
 import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
-
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
-import 'package:we_pei_yang_flutter/message/message_model.dart';
+import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
-
 class MessageService {
-
-  static Future<FeedbackDetailMessages> getDetailMessages(
-      MessageType type, int page) async {
-    var queryParameters = {
-      "limits": 10,
-      "page": page,
-    };
-    var response = await messageDio.get("get", queryParameters: queryParameters);
-    return FeedbackDetailMessages.fromJson(response.data);
-  }
-
-  static Future<TotalMessageData> getAllMessages() async {
-    var token = CommonPreferences().feedbackToken.value;
-    TotalMessageData data;
+  static getUnreadMessagesCount(
+      {@required OnResult<MessageCount> onResult,
+      @required OnFailure onFailure}) async {
     try {
-      var response =
-          await messageDio.get("qid", queryParameters: {"token": token});
-      data = TotalMessageData.fromJson(response.data);
-    } catch (e) {
-      data = null;
+      var response = await messageDio.get("count");
+      onResult(MessageCount.fromJson(response.data['data']['count']));
+    } on DioError catch (e) {
+      onFailure(e);
     }
-    return data;
   }
 
-  static setQuestionRead(int questionId) async {
-    var token = CommonPreferences().feedbackToken.value;
-    await messageDio.post("question",
-        queryParameters: {"token": token, "question_id": questionId});
-    await pushChannel
-        .invokeMethod<String>("cancelNotification", {"id": questionId});
+  static getLikeMessages(
+      {@required int page,
+      @required void Function(List<LikeMessage> list, int total) onSuccess,
+      @required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("likes", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<LikeMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        list.add(LikeMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getFloorMessages(
+      {@required page,
+      @required void Function(List<FloorMessage> list, int totalPage) onSuccess,
+      @required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("floors", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<FloorMessage> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(FloorMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['data']['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static setLikeMessageRead(int id, int type,
+      {OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("like/read",
+          formData: FormData.fromMap({"id": id, "type": type}));
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+
+    ///涉及推送原生部分代码，随后再改
+    // await pushChannel
+    //     .invokeMethod<String>("cancelNotification", {"id": questionId});
+  }
+
+  static setReplyMessageRead(int id,
+      {OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("reply/read",
+          formData: FormData.fromMap({"id": id}));
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+
+    ///涉及推送原生部分代码，随后再改
+    // await pushChannel
+    //     .invokeMethod<String>("cancelNotification", {"id": questionId});
+  }
+
+  static setFloorMessageRead(int id,
+      {OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("floor/read",
+          formData: FormData.fromMap({"id": id}));
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+
+    ///涉及推送原生部分代码，随后再改
+    // await pushChannel
+    //     .invokeMethod<String>("cancelNotification", {"id": questionId});
+  }
+
+  static setNoticeMessageRead(int id,
+      {OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("notice/read",
+          formData: FormData.fromMap({"id": id}));
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+
+    ///涉及推送原生部分代码，随后再改
+    // await pushChannel
+    //     .invokeMethod<String>("cancelNotification", {"id": questionId});
+  }
+
+  static setAllMessageRead({OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("all");
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
   }
 
   static Future<UserMessages> getUserMails(int page) async {
@@ -52,21 +133,11 @@ class MessageService {
     var messages = UserMessages.fromJson(response.data);
     return messages;
   }
-
-  static Future<bool> setFeedbackMessageReadAll() async {
-    try {
-      await messageDio.post("readAll",
-          formData: FormData.fromMap(
-              {"token": CommonPreferences().feedbackToken.value}));
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
 }
 
-final userDio = UserNotificationDio();
 final messageDio = MessageDio();
+final userDio = UserNotificationDio();
+
 
 class UserNotificationDio extends DioAbstract {
   @override
@@ -77,15 +148,18 @@ class UserNotificationDio extends DioAbstract {
   };
 }
 
+
 class MessageDio extends DioAbstract {
   // @override
   // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
 
   @override
-  String baseUrl = 'https://www.zrzz.site:7012/api/v1/f/';
+  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/message/';
 
   @override
-  Map<String, String> headers = {'token': CommonPreferences().feedbackToken.value};
+  Map<String, String> headers = {
+    'token': CommonPreferences().feedbackToken.value
+  };
 
   @override
   List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
@@ -121,48 +195,11 @@ class FeedbackMessageBaseData {
   String message;
   dynamic data;
 
-  bool get success => code == 0;
+  bool get success => code == 200;
 
   FeedbackMessageBaseData.fromJson(Map<String, dynamic> json) {
-    code = json['ErrorCode'];
+    code = json['code'];
     message = json['msg'];
     data = json['data'];
-  }
-}
-
-class FeedbackDetailMessages {
-  int currentPage;
-  List<FeedbackMessageItem> data;
-  int to;
-  int total;
-  int from;
-
-  FeedbackDetailMessages.fromJson(Map<String, dynamic> json) {
-    currentPage = json['current_page'] ?? 0;
-    data = (json['data'] as List ?? [])
-        .map<FeedbackMessageItem>((m) => FeedbackMessageItem.fromJson(m))
-        .toList();
-    from = json['from'] ?? 0;
-    to = json['to'] ?? 0;
-    total = json['total'] ?? 0;
-  }
-}
-
-class FeedbackMessageItem {
-  int id, type, visible;
-  String createdAt, updatedAt;
-  Comment comment;
-  Post post;
-
-  FeedbackMessageItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    visible = json['visible'] ?? 0;
-    createdAt = json['created_at'];
-    type = json['type'] ?? 0;
-    updatedAt = json['updated_at'];
-    comment = json['contain'] == "" || json['contain'] == null
-        ? null
-        : Comment.fromJson(json['contain']);
-    post = Post.fromJson(json['question'] ?? '');
   }
 }

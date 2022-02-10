@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import 'components/post_card.dart';
 import 'components/profile_header.dart';

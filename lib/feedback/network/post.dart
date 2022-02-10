@@ -55,7 +55,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
     id: json["id"],
-    createAt: DateTime.parse(json["created_at"]),
+    createAt: json["created_at"] == "" ? null : DateTime.parse(json["created_at"]),
     uid: json["uid"],
     type: json["type"],
     campus: json["campus"],
@@ -66,13 +66,13 @@ class Post {
     likeCount: json["like_count"],
     rating: json["rating"],
     tag: json["tag"] == null ? null : Tag.fromJson(json["tag"]),
-    floors: List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
+    floors: json["floors"] == null ? null : List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
     commentCount: json["comment_count"],
     isLike: json["is_like"],
     isDis: json["is_dis"],
     isFav: json["is_fav"],
     isOwner: json["is_owner"],
-    imageUrls: List<String>.from(json["image_urls"].map((x) => x)),
+    imageUrls: json["image_urls"] == null ? null : List<String>.from(json["image_urls"].map((x) => x)),
     department: json["department"] == null ? null : Department.fromJson(json["department"]),
   );
 
@@ -189,7 +189,7 @@ class Floor {
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
         id: json["id"],
-        createAt: DateTime.parse(json["created_at"]),
+        createAt: json["created_at"] == "" ? null : DateTime.parse(json["created_at"]),
         uid: json["uid"],
         postId: json["post_id"],
         content: json["content"],

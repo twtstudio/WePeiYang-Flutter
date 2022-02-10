@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FeedbackBadgeWidget(
-              type: FeedbackMessageType.home,
+              type: FeedbackMessageType.total,
               child: Center(
                 child: ImageIcon(
                     AssetImage('assets/images/lake_butt_icons/dive_page.png'),

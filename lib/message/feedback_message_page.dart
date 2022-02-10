@@ -14,18 +14,14 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
-import 'package:we_pei_yang_flutter/message/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
-enum MessageType {
-  like,
-  comment,
-  reply,
-  lake
-}
+import 'model/message_model.dart';
+
+enum MessageType { like, floor, reply, notice }
 
 extension MessageTypeExtension on MessageType {
-  String get name =>
-      ['点赞', '评论', '校务回复', '湖底通知'][this.index];
+  String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -39,11 +35,11 @@ extension MessageTypeExtension on MessageType {
     switch (this) {
       case MessageType.like:
         return '为你点赞';
-      case MessageType.comment:
+      case MessageType.floor:
         return '回复了了你的冒泡';
       case MessageType.reply:
         return '回复了你的问题';
-      case MessageType.lake:
+      case MessageType.notice:
         return '发表了一则通知';
       default:
         return "";
@@ -53,11 +49,13 @@ extension MessageTypeExtension on MessageType {
   int getMessageCount(MessageProvider model) {
     switch (this) {
       case MessageType.like:
-        return model.classifiedMessageCount?.favor ?? 0;
-      case MessageType.comment:
-        return model.classifiedMessageCount?.contain ?? 0;
+        return 0;
+      case MessageType.floor:
+        return model.messageCount?.floor ?? 0;
       case MessageType.reply:
-        return model.classifiedMessageCount?.reply ?? 0;
+        return model.messageCount?.reply ?? 0;
+      case MessageType.notice:
+        return model.messageCount?.notice ?? 0;
       default:
         return 0;
     }
@@ -86,7 +84,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   }
 
   onRefresh() {
-    Provider.of<MessageProvider>(context, listen: false).refreshFeedbackCount();
+    context.read<MessageProvider>().refreshFeedbackCount();
     refresh.value++;
   }
 
@@ -105,12 +103,11 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text(
-              '消息中心',
-              style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)
-            ),
+            title: Text('消息中心',
+                style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
             leading: IconButton(
-              icon: Image.asset('assets/images/lake_butt_icons/back.png',width: 14),
+              icon: Image.asset('assets/images/lake_butt_icons/back.png',
+                  width: 14),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -220,7 +217,7 @@ class MessagesList extends StatefulWidget {
 
 class _MessagesListState extends State<MessagesList>
     with AutomaticKeepAliveClientMixin {
-  List<FeedbackMessageItem> items = [];
+  List<LikeMessage> items = [];
   RefreshController _refreshController = RefreshController(
       initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
 
@@ -228,10 +225,16 @@ class _MessagesListState extends State<MessagesList>
     if (widget == null) return;
     // monitor network fetch
     try {
-      var result = await MessageService.getDetailMessages(widget.type, 0);
-      items.clear();
-      items.addAll(
-          result.data.where((element) => element.type == widget.type.index));
+      await MessageService.getLikeMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.clear();
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+
       if (mounted) {
         if (refreshCount) {
           Provider.of<MessageProvider>(context, listen: false)
@@ -249,16 +252,20 @@ class _MessagesListState extends State<MessagesList>
 
   _onLoading() async {
     try {
-      var result = await MessageService.getDetailMessages(
-          widget.type, items.length ~/ 10 + 2);
-      items.addAll(
-          result.data.where((element) => element.type == widget.type.index));
+      await MessageService.getLikeMessages(
+          page: items.length ~/ 10 + 2,
+          onSuccess: (list, total) {
+            items.addAll(list);
+            if (list.isEmpty) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
       if (mounted) setState(() {});
-      if (result.data.isEmpty) {
-        _refreshController.loadNoData();
-      } else {
-        _refreshController.loadComplete();
-      }
     } catch (e) {
       _refreshController.loadFailed();
     }
@@ -271,10 +278,14 @@ class _MessagesListState extends State<MessagesList>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var list = await MessageService.getDetailMessages(widget.type, 0);
-      items.addAll(list.data.where((element) {
-        return element.type == widget.type.index;
-      }));
+      await MessageService.getLikeMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
       if (mounted) {
         Provider.of<MessageProvider>(context, listen: false)
             .refreshFeedbackCount();
@@ -309,16 +320,15 @@ class _MessagesListState extends State<MessagesList>
         itemBuilder: (c, i) {
           return MessageItem(
             data: items[i],
-            onTapDown: items[i].visible.isOne
-                ? () async {
-                    try {
-                      await MessageService.setQuestionRead(items[i].post.id);
-                    } catch (e) {
-                      ToastProvider.error("设置问题已读失败");
-                    }
-                  }
-                : null,
-            type: widget.type,
+            onTapDown: () async {
+              await MessageService.setLikeMessageRead(
+                  items[i].type == 0 ? items[i].post.id : items[i].floor.id,
+                  items[i].type,
+                  onSuccess: () {}, onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              });
+            },
+            messageType: widget.type,
           );
         },
         separatorBuilder: (_, __) => Divider(
@@ -368,33 +378,34 @@ class _MessagesListState extends State<MessagesList>
 }
 
 class MessageItem extends StatelessWidget {
-  final FeedbackMessageItem data;
+  final LikeMessage data;
   final VoidFutureCallBack onTapDown;
-  final MessageType type;
+  final MessageType messageType;
+  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
 
-  const MessageItem({Key key, this.data, this.onTapDown, this.type})
+  const MessageItem({Key key, this.data, this.onTapDown, this.messageType})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget sender;
-    switch (type) {
-      case MessageType.reply:
-        sender = Container(
-          height: 20,
-          width: (data.comment.adminName?.length ?? 3) * 17.0,
-          child: Center(
-            child: Text(
-              "${data.comment.adminName ?? S.current.unknown_department}",
-              style: TextStyle(color: Colors.white, fontSize: 10),
-            ),
-          ),
-          decoration: BoxDecoration(
-              color: Color(0xff596385),
-              borderRadius: BorderRadius.circular(10),
-              shape: BoxShape.rectangle),
-        );
-        break;
+    switch (messageType) {
+      // case MessageType.reply:
+      //   sender = Container(
+      //     height: 20,
+      //     width: (data.floor.adminName?.length ?? 3) * 17.0,
+      //     child: Center(
+      //       child: Text(
+      //         "${data.floor.adminName ?? S.current.unknown_department}",
+      //         style: TextStyle(color: Colors.white, fontSize: 10),
+      //       ),
+      //     ),
+      //     decoration: BoxDecoration(
+      //         color: Color(0xff596385),
+      //         borderRadius: BorderRadius.circular(10),
+      //         shape: BoxShape.rectangle),
+      //   );
+      //   break;
       default:
         sender = Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -408,18 +419,24 @@ class MessageItem extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "${data.comment?.userName ?? S.current.anonymous_user}",
-                      style: TextStyle(color: ColorUtil.boldLakeTextColor, fontSize: 18,fontWeight: FontWeight.bold),
+                      '${S.current.anonymous_user}',
+                      style: TextStyle(
+                          color: ColorUtil.boldLakeTextColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      type.action,
-                      style: TextStyle(color: Color(0xff434650), fontSize: 16,fontWeight: FontWeight.w500),
+                      messageType.action,
+                      style: TextStyle(
+                          color: Color(0xff434650),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
                 SizedBox(height: 1),
                 Text(
-                  data.updatedAt?.time ?? "",
+                  '某时某刻',
                   style: TextStyle(color: Color(0xffb1b2be), fontSize: 12),
                 ),
               ],
@@ -467,7 +484,7 @@ class MessageItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Image.network(
-                      data.post.imageUrls[0],
+                      baseUrl + data.post.imageUrls[0],
                       fit: BoxFit.cover,
                       height: 50,
                       width: 70,
@@ -477,11 +494,11 @@ class MessageItem extends StatelessWidget {
             ),
             // if (data.comment != null)
             //   Divider(thickness: 1, height: 15, color: Color(0xffacaeba)),
-            if (data.comment != null)
+            if (data.floor != null)
               RichText(
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
-                text: HTML.toTextSpan(context, data.comment.content ?? "",
+                text: HTML.toTextSpan(context, data.floor.content ?? "",
                     defaultTextStyle: FontManager.YaHeiRegular.copyWith(
                       color: Color(0xff363c54),
                       fontSize: 13,
@@ -509,12 +526,12 @@ class MessageItem extends StatelessWidget {
                 Spacer(),
                 Builder(
                   builder: (_) {
-                    var isSolved = /*data.post.isSolved == */true;//TODO:等接口solve字段
+                    var isSolved = data.post.solved ?? false;
                     return Text(
                       isSolved ? S.current.have_replied : S.current.not_reply,
                       style: TextStyle(
                           color:
-                          isSolved ? Color(0xff434650) : ColorUtil.grey108,
+                              isSolved ? Color(0xff434650) : ColorUtil.grey108,
                           fontSize: 13),
                     );
                   },
@@ -528,14 +545,14 @@ class MessageItem extends StatelessWidget {
 
     Widget messageWrapper;
 
-    if (data.visible == 1) {
-      messageWrapper = Badge(
-        position: BadgePosition.topEnd(end: -2, top: -14),
-        padding: const EdgeInsets.all(5),
-        badgeContent: Text(""),
-        child: questionItem,
-      );
-    }
+    // if (data.visible == 1) {
+    //   messageWrapper = Badge(
+    //     position: BadgePosition.topEnd(end: -2, top: -14),
+    //     padding: const EdgeInsets.all(5),
+    //     badgeContent: Text(""),
+    //     child: questionItem,
+    //   );
+    // }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -553,13 +570,13 @@ class MessageItem extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(7))
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(7))),
           child: Column(
             children: [
               title,
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: messageWrapper ?? questionItem,
               ),
             ],
