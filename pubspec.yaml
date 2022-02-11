@@ -46,6 +46,7 @@ dependencies:
   image_cropper:
   image_picker: ^0.8.4+1
   like_button: ^2.0.3
+  linkfy_text: ^1.1.5
   intl: ^0.17.0
   location_permissions: ^4.0.1
   package_info: ^2.0.2

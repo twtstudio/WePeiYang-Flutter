@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/linkify_text.dart';
 
 class ExpandableText extends StatefulWidget {
   @required
@@ -54,11 +55,12 @@ class _ExpandableTextState extends State<ExpandableText> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             expand
-                ? Text(text ?? '', style: style)
-                : Text(text ?? '',
-                    maxLines: maxLines,
-                    overflow: TextOverflow.ellipsis,
-                    style: style),
+                ? LinkText(style: style, text: text ?? '')
+                : LinkText(
+                    style: style,
+                    text: text ?? '',
+                    maxLine: maxLines,
+                  ),
             if (buttonIsShown)
               InkWell(
                 onTap: () {
@@ -85,7 +87,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           ],
         );
       } else {
-        return Text(text ?? '', style: style);
+        return LinkText(style: style, text: text ?? '');
       }
     });
   }
