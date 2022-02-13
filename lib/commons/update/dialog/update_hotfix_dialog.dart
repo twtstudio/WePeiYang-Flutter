@@ -2,45 +2,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 import '../hotfix_util.dart';
 
 // 下载安装apk时的dialog
-class UpdateHotfixFinishDialog extends StatefulWidget {
+class UpdateHotfixFinishDialog extends StatelessWidget {
   final Version version;
 
   const UpdateHotfixFinishDialog(this.version, {Key? key}) : super(key: key);
 
   @override
-  _UpdateHotfixFinishDialogState createState() => _UpdateHotfixFinishDialogState();
-}
-
-class _UpdateHotfixFinishDialogState extends UpdateDialogState<UpdateHotfixFinishDialog> {
-  @override
-  Version get version => widget.version;
-
-  @override
-  String get okButtonText => "立刻重启";
-
-  @override
-  String get cancelButtonText => "稍后重启";
-
-  @override
-  void okButtonTap() {
-    restartApp();
-  }
-
-  @override
-  void cancelButtonTap() {
-    context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final size = DialogSize.getSize(context);
     final messageRow = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: const [
@@ -60,6 +40,17 @@ class _UpdateHotfixFinishDialogState extends UpdateDialogState<UpdateHotfixFinis
       ],
     );
 
+    final buttons = WbyDialogStandardTwoButton(
+      cancel: () {
+        context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
+      },
+      ok: () {
+        restartApp();
+      },
+      cancelText: "稍后重启",
+      okText: "立刻重启",
+    );
+
     final column = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,37 +58,25 @@ class _UpdateHotfixFinishDialogState extends UpdateDialogState<UpdateHotfixFinis
         // 为了给checkbox流出足够大的点击区域
         // 主要是因为Transform只能移动ui，不能移动点击区域
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          padding: EdgeInsets.symmetric(horizontal: size.horizontalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: dialogWidth * 0.07),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  title,
-                ],
-              ),
-              SizedBox(height: dialogWidth * 0.04),
+              SizedBox(height: size.verticalPadding),
+              UpdateTitle(version),
+              SizedBox(height: size.verticalPadding),
               messageRow,
-              SizedBox(height: dialogWidth * 0.07),
-              detail,
-              updateButtons,
+              SizedBox(height: size.verticalPadding),
+              UpdateDetail(version),
+              buttons,
             ],
           ),
         ),
-        checkbox,
+        TodayShowAgainCheck(),
       ],
     );
 
-    return Container(
-      width: dialogWidth,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(dialogRadius),
-        color: Colors.white,
-      ),
-      child: column,
-    );
+    return WbyDialogLayout(child: column, padding: false);
   }
 }

@@ -103,6 +103,7 @@ class CommonPreferences {
   /// 使用beta版还是release版微北洋
   var apkType = PrefsBean('apkType',"release");
   var todayShowUpdateAgain = PrefsBean('todayShowUpdateAgain','');
+  var canPush = PrefsBean('can_push',false);
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {
@@ -120,6 +121,8 @@ class CommonPreferences {
     stuType.clear();
     major.clear();
     feedbackToken.clear();
+    canPush.clear();
+    todayShowUpdateAgain.clear();
   }
 
   /// 清除办公网缓存

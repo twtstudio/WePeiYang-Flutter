@@ -174,7 +174,7 @@ class UpdateManager extends ChangeNotifier {
 
   bool get todayShowDialogAgain {
     final date = CommonPreferences().todayShowUpdateAgain.value;
-    final todayNotAgain = DateTime.tryParse(date)?.isToday == true;
+    final todayNotAgain = DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
     if (todayNotAgain) {
       return false;
     } else {
@@ -216,6 +216,7 @@ class UpdateManager extends ChangeNotifier {
 
   void _showApkDialog(Version version, bool showToast) {
     if (todayShowDialogAgain || showToast) {
+      debugPrint('$todayShowDialogAgain  || $showToast');
       SmartDialog.show(
         clickBgDismissTemp: false,
         backDismiss: false,

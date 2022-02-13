@@ -1,62 +1,53 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
-// TODO: 重新写
-Future<String> showRequestNotificationDialog() async {
-  final context = WePeiYangApp.navigatorState.currentContext;
-  if (context != null) {
-    final result = await showDialog<RequestPushResult>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const RequestPushDialog(),
-    );
-    return (result ?? RequestPushResult.unknown).text;
-  } else {
-    return RequestPushResult.unknown.text;
-  }
-}
-
-class RequestPushDialog extends Dialog {
-  const RequestPushDialog({Key? key}) : super(key: key);
+class RequestPushDialog extends StatelessWidget {
+  RequestPushDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Center(
-        child: Container(
-          height: 200,
-          width: 200,
-          alignment: Alignment.center,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.circular(10), shape: BoxShape.rectangle, color: Colors.white),
-          child: Column(
-            children: [
-              const Text("请同意打开推送"),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, RequestPushResult.ok);
-                },
-                child: const Text("ok"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, RequestPushResult.refuse);
-                },
-                child: const Text("refuse"),
-              ),
-            ],
-          ),
-        ),
-      ),
+    final size = DialogSize.getSize(context);
+
+    final buttons = WbyDialogStandardTwoButton(
+      cancel: context.read<PushManager>().closeDialogAndTurnOffPush,
+      ok: context.read<PushManager>().closeDialogAndRetryTurnOnPush,
+      cancelText: "取消",
+      okText: "打开",
     );
+
+    final message = Text(
+      "获取微北洋推送服务需要通知权限，请手动打开通知权限",
+      style: TextStyle(fontSize: 15),
+    );
+
+    final column = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.notifications_none,size: 30),
+              ],
+            ),
+            SizedBox(height: size.verticalPadding),
+            message,
+            SizedBox(height: size.verticalPadding),
+            buttons,
+          ],
+        ),
+      ],
+    );
+
+    return WbyDialogLayout(child: column);
   }
-}
-
-enum RequestPushResult { refuse, ok, unknown }
-
-extension RequestPushResultExt on RequestPushResult {
-  String get text => ['refuse', 'ok', 'unknown'][index];
 }

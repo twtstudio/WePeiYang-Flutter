@@ -2,48 +2,38 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 import 'update_progress_bar.dart';
 
 // 下载安装apk时的dialog
-class UpdateApkDialog extends StatefulWidget {
+class UpdateApkDialog extends StatelessWidget {
   final Version version;
 
   const UpdateApkDialog(this.version, {Key? key}) : super(key: key);
 
   @override
-  _UpdateApkDialogState createState() => _UpdateApkDialogState();
-}
-
-class _UpdateApkDialogState extends UpdateDialogState<UpdateApkDialog> {
-  @override
-  Version get version => widget.version;
-
-  @override
-  void cancelButtonTap() {
-    context.read<UpdateManager>().cancelDialog(DialogTag.apk);
-  }
-
-  @override
-  String get cancelButtonText => '稍后更新';
-
-  @override
-  void okButtonTap() {
-    context.read<UpdateManager>().download(widget.version);
-  }
-
-  @override
-  String get okButtonText => '立刻更新';
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     final state = context.select((UpdateManager manager) => manager.state);
+    final size = DialogSize.getSize(context);
     if (state == UpdateState.checkUpdate) {
+      final buttons = WbyDialogStandardTwoButton(
+        cancel: () {
+          context.read<UpdateManager>().cancelDialog(DialogTag.apk);
+        },
+        ok: () {
+          context.read<UpdateManager>().download(version);
+        },
+        cancelText: '稍后更新',
+        okText: '立刻更新',
+      );
+
       final column = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,43 +41,32 @@ class _UpdateApkDialogState extends UpdateDialogState<UpdateApkDialog> {
           // 为了给checkbox流出足够大的点击区域
           // 主要是因为Transform只能移动ui，不能移动点击区域
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: size.horizontalPadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: dialogWidth * 0.07),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    title,
-                  ],
-                ),
-                SizedBox(height: dialogWidth * 0.07),
-                detail,
-                updateButtons,
+                SizedBox(height: size.verticalPadding),
+                UpdateTitle(version),
+                SizedBox(height: size.verticalPadding),
+                UpdateDetail(version),
+                SizedBox(height: size.verticalPadding),
+                buttons,
               ],
             ),
           ),
-          checkbox,
+          TodayShowAgainCheck(),
         ],
       );
 
-      return Container(
-        width: dialogWidth,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(dialogRadius),
-          color: Colors.white,
-        ),
-        child: column,
-      );
+      return WbyDialogLayout(child: column,padding: false);
     } else {
       final progressBar = Selector<UpdateManager, double>(
         builder: (_, progress, __) {
           debugPrint('show _progress : $progress');
           final progressHeight = 2.0;
           return SizedBox(
-            width: dialogWidth - horizontalPadding * 2,
+            width: size.dialogWidth - size.horizontalPadding * 2,
             height: progressHeight,
             child: GradientLinearProgressBar(
               value: progress,
@@ -104,7 +83,9 @@ class _UpdateApkDialogState extends UpdateDialogState<UpdateApkDialog> {
       );
 
       final dismiss = TextButton(
-        onPressed: cancelButtonTap,
+        onPressed: () {
+          context.read<UpdateManager>().cancelDialog(DialogTag.apk);
+        },
         child: Text(
           "隐藏窗口",
           style: TextStyle(
@@ -114,39 +95,27 @@ class _UpdateApkDialogState extends UpdateDialogState<UpdateApkDialog> {
         ),
       );
 
-      final column = Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: dialogWidth * 0.07),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [title],
-            ),
-            SizedBox(height: dialogWidth * 0.07),
-            detail,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [progressBar],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [dismiss],
-            )
-          ],
-        ),
+      final column = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          UpdateTitle(version),
+          SizedBox(height: size.verticalPadding),
+          UpdateDetail(version),
+          SizedBox(height: size.verticalPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [progressBar],
+          ),
+          SizedBox(height: size.verticalPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [dismiss],
+          ),
+        ],
       );
 
-      return Container(
-        width: dialogWidth,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(dialogRadius),
-          color: Colors.white,
-        ),
-        child: column,
-      );
+      return WbyDialogLayout(child: column);
     }
   }
 }

@@ -81,26 +81,18 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     // 如果用户同意了条款，就初始化个推 sdk，如果用户没有允许推送，或者没有权限，就关闭推送
+    // 但只要同意了条款，就会初始化sdk，
     private fun initSdkWhenOpenApp() {
-        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
-            ?.runCatching {
-                initGeTuiSdk()
-                this
-            }?.onSuccess {
-                initSdk = true
-                log("init push sdk success when open app")
-                if ((it.canPush != CanPushType.Want) || !isNotificationEnabled) {
-                    it.canPush = CanPushType.Not
-                    runCatching { pushManager.turnOffPush(context) }.onSuccess {
-//                        Toast.makeText(
-//                            context,
-//                            "don't allow push ,so turn off push service",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-                        log("don't allow push ,so turn off push service")
-                    }
-                }
-            }?.onFailure { throw it }
+        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }?.apply {
+            initGeTuiSdk()
+            initSdk = true
+            log("init push sdk success when open app")
+            if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
+                canPush = CanPushType.Not
+                pushManager.turnOffPush(context)
+                log("don't allow push ,so turn off push service")
+            }
+        }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -140,6 +132,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     fun onWindowFocusChanged() {
         log("onWindowFocusChanged")
         runCatching {
+            // 去权限授权页面后返回
             if (goToPushPermissionPage) {
                 goToPushPermissionPage = false
                 checkNotificationAndTurnOnPushService {
@@ -149,6 +142,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 }
                 return
             }
+            // 用户手动去权限页面关闭权限，回到app后自动设置不想打开推送
             if (WbySharePreference.canPush == CanPushType.Want && !isNotificationEnabled) {
                 WbySharePreference.canPush = CanPushType.Not
                 channel.invokeMethod("refreshPushPermission", null)
@@ -177,12 +171,15 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 log("initGeTuiSdk")
                 runCatching {
                     initGeTuiSdk()
-                }.onSuccess {
                     if (isNotificationEnabled) {
                         result.success("open push service success")
                     } else {
                         pushManager.turnOffPush(context)
-                        requestPushPermissionBy(result, ::showRequestNotificationDialog)
+                        requestPushPermissionBy(result) {
+                            // canPush = CanPushType.Want 但是没有通知权限，
+                            // 有可能是用户手动关闭了，那么久告知他推送需要开启通知权限
+                            result.success("showRequestNotificationDialog")
+                        }
                     }
                 }.onFailure {
                     result.error(INIT_GT_SDK_ERROR, it.message, it.toString())

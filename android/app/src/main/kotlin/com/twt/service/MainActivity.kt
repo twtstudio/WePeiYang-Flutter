@@ -1,6 +1,5 @@
 package com.twt.service
 
-import android.os.Bundle
 import android.util.Log
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
@@ -12,24 +11,11 @@ import com.twt.service.message.WbyMessagePlugin
 import com.twt.service.push.WbyPushPlugin
 import com.twt.service.share.WbySharePlugin
 import com.twt.service.widget.WbyWidgetPlugin
-import com.umeng.commonsdk.UMConfigure
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
 
 class MainActivity : FlutterActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initUmengService()
-    }
-
-    // https://developer.umeng.com/docs/119267/detail/174923#h1-72q-kmz-wjc
-    private fun initUmengService() {
-        UMConfigure.preInit(this, "60464782b8c8d45c1390e7e3", "Umeng")
-        if (BuildConfig.DEBUG) {
-            UMConfigure.setLogEnabled(true)
-        }
-    }
 
     // 加入微北洋使用的所有自己写的 plugin
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

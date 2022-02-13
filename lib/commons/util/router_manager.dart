@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
-import 'package:we_pei_yang_flutter/commons/test_router.dart';
+import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';

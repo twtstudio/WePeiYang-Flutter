@@ -38,7 +38,6 @@ class _PushTestPageState extends State<PushTestPage> {
         SelectableText(cid),
         TextButton(
           onPressed: () async {
-            showRequestNotificationDialog();
             final id = await manager.getCid();
             setState(() {
               cid = id ?? 'null';

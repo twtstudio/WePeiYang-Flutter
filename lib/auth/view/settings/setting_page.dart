@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/test_router.dart';
+import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+
 
 class SettingPageArgs {
   final bool showBrief;
@@ -318,6 +319,9 @@ class _SettingPageState extends State<SettingPage> {
                 child: GestureDetector(
                   onLongPress: (){
                     Navigator.pushNamed(context, TestRouter.pushTest);
+                  },
+                  onTap: (){
+                    context.read<PushManager>().showRequestNotificationDialog();
                   },
                   child: Card(
                     elevation: 0,

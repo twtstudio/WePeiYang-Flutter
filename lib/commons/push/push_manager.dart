@@ -2,10 +2,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
+import '../channels/push.dart';
 import 'push_intent.dart';
 import 'request_push_dialog.dart';
-import '../channels/push.dart';
 
 export 'push_intent.dart';
 
@@ -13,12 +15,6 @@ class PushManager extends ChangeNotifier {
   PushManager() {
     pushChannel.setMethodCallHandler((call) async {
       switch (call.method) {
-        // 当初始化sdk后，如果发现用户的通知权限是默认关闭的，则告知用户推送的意义，请求打开权限
-        // TODO: 产品说应该隔段时间主动询问一下能否打开推送
-        case "showRequestNotificationDialog":
-          return await showRequestNotificationDialog();
-        case 'initSdkSuccess':
-          break;
         case 'refreshPushPermission':
           openPush = false;
           break;
@@ -30,11 +26,43 @@ class PushManager extends ChangeNotifier {
   }
 
   bool _openPush = false;
+
   bool get openPush => _openPush;
 
   set openPush(bool value) {
     _openPush = value;
     notifyListeners();
+  }
+
+  static const Tag = 'PushManager_RequestNotification';
+
+  void showRequestNotificationDialog(){
+    SmartDialog.show(
+      clickBgDismissTemp: false,
+      backDismiss: false,
+      tag: Tag,
+      widget: RequestPushDialog(),
+    );
+  }
+
+  void closeDialogAndRetryTurnOnPush() {
+    SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
+    turnOnPushService((){
+      openPush = true;
+    }, (){
+      ToastProvider.success("可以在设置中打开推送");
+    }, (){
+      //
+    });
+  }
+
+  void closeDialogAndTurnOffPush() {
+    SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
+    turnOffPushService((){
+      openPush = false;
+    }, (){
+      //
+    });
   }
 
   // 在用户同意隐私协议后，开启个推
@@ -51,6 +79,9 @@ class PushManager extends ChangeNotifier {
           // 2. 在推送权限页中不允许通知权限
           // 3. 不允许推送（没有权限或手动关闭）
           openPush = false;
+          break;
+        case 'showRequestNotificationDialog':
+          showRequestNotificationDialog();
           break;
       }
     } on PlatformException catch (e) {
@@ -78,7 +109,8 @@ class PushManager extends ChangeNotifier {
   }
 
   // 在设置里，可以手动打开推送
-  Future<void> turnOnPushService(Function success, Function failure, Function error) async {
+  Future<void> turnOnPushService(
+      Function success, Function failure, Function error) async {
     try {
       final result = await turnOnPush();
       switch (result) {
@@ -122,13 +154,14 @@ class PushManager extends ChangeNotifier {
     }
   }
 
-  Future<void> getCurrentCanReceivePush(Function(bool) success, Function(Object) error, Function noResult) async {
+  Future<void> getCurrentCanReceivePush(
+      Function(bool) success, Function(Object) error, Function noResult) async {
     try {
       final result = await canPush;
       if (result != null) {
         success(result);
       } else {
-        (noResult ?? error).call();
+        noResult.call();
       }
     } catch (e) {
       error(e);
@@ -143,7 +176,8 @@ class PushManager extends ChangeNotifier {
     }
   }
 
-  Future<void> cancelNotification(int id, Function success, Function error) async {
+  Future<void> cancelNotification(
+      int id, Function success, Function error) async {
     try {
       await cancelNotificationOf(id);
       success();

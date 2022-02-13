@@ -1,45 +1,36 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog_state.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channels/install.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 // 下载安装apk时的dialog
-class UpdateInstallDialog extends StatefulWidget {
+class UpdateInstallDialog extends StatelessWidget {
   final Version version;
 
   const UpdateInstallDialog(this.version, {Key? key}) : super(key: key);
 
   @override
-  _UpdateInstallDialogState createState() => _UpdateInstallDialogState();
-}
-
-class _UpdateInstallDialogState extends UpdateDialogState<UpdateInstallDialog> {
-  @override
-  Version get version => widget.version;
-
-  @override
-  String get okButtonText => "立刻安装";
-
-  @override
-  String get cancelButtonText => "稍后安装";
-
-  @override
-  void okButtonTap() {
-    install(version.apkName);
-  }
-
-  @override
-  void cancelButtonTap() {
-    context.read<UpdateManager>().cancelDialog(DialogTag.install);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final size = DialogSize.getSize(context);
+
+    final buttons = WbyDialogStandardTwoButton(
+      cancel: () {
+        context.read<UpdateManager>().cancelDialog(DialogTag.install);
+      },
+      ok: () {
+        install(version.apkName);
+      },
+      cancelText: "稍后安装",
+      okText: "立刻安装",
+    );
 
     final column = Column(
       mainAxisSize: MainAxisSize.min,
@@ -48,35 +39,24 @@ class _UpdateInstallDialogState extends UpdateDialogState<UpdateInstallDialog> {
         // 为了给checkbox流出足够大的点击区域
         // 主要是因为Transform只能移动ui，不能移动点击区域
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          padding: EdgeInsets.symmetric(horizontal: size.horizontalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: dialogWidth * 0.07),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  title,
-                ],
-              ),
-              SizedBox(height: dialogWidth * 0.07),
-              detail,
-              updateButtons,
+              SizedBox(height: size.verticalPadding),
+              UpdateTitle(version),
+              SizedBox(height: size.verticalPadding),
+              UpdateDetail(version),
+              SizedBox(height: size.verticalPadding),
+              buttons,
             ],
           ),
         ),
-        checkbox,
+        TodayShowAgainCheck(),
       ],
     );
 
-    return Container(
-      width: dialogWidth,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(dialogRadius),
-        color: Colors.white,
-      ),
-      child: column,
-    );
+    return WbyDialogLayout(child: column, padding: false);
   }
 }

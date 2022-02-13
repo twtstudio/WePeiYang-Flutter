@@ -18,7 +18,8 @@ class UpdateUtil {
           int.tryParse(packageInfo.buildNumber) ?? _flutterCodeVersion;
       _versionCode = max(_androidCodeVersion, _flutterCodeVersion);
     }
-    return _versionCode!;
+    // return _versionCode!;
+    return 80;
   }
 
   static Future<String> getVersion() async {
