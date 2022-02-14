@@ -138,16 +138,11 @@ class _DetailPageState extends State<DetailPage>
         _getComments(
             onSuccess: (comments) {
               _commentList.addAll(comments);
-              setState(() {
-                status = DetailPageStatus.idle;
-              });
             },
             onFail: () {
-              setState(() {
-                status = DetailPageStatus.idle;
-              });
             },
             current: currentPage);
+        status = DetailPageStatus.idle;
       }
     });
   }
@@ -504,12 +499,14 @@ class _DetailPageState extends State<DetailPage>
     var shareButton = IconButton(
         icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
         onPressed: () {
-          String weCo =
-              '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${post.title}】';
-          ClipboardData data = ClipboardData(text: weCo);
-          Clipboard.setData(data);
-          CommonPreferences().feedbackLastWeCo.value = post.id.toString();
-          ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+          if (!_refreshController.isLoading && !_refreshController.isRefresh) {
+            String weCo =
+                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}';
+            ClipboardData data = ClipboardData(text: weCo);
+            Clipboard.setData(data);
+            CommonPreferences().feedbackLastWeCo.value = post.id.toString();
+            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+          }
         });
 
     var appBar = AppBar(
@@ -678,10 +675,11 @@ class ImageSelectAndView extends StatefulWidget {
 
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
-        maxAssets: 1,
-        requestType: RequestType.image,
-        themeColor: ColorUtil.selectionButtonColor,
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      requestType: RequestType.image,
+      themeColor: ColorUtil.selectionButtonColor,
     );
     for (int i = 0; i < assets.length; i++) {
       File file = await assets[i].file;

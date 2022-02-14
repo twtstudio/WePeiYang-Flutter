@@ -43,10 +43,10 @@ class _LinkTextState extends State<LinkText> {
               return;
             },
           );
-      } else if (await canLaunch(link.value)) {
-        await launch(link.value);
       } else {
-        ToastProvider.error('请检查网络状态');
+        var url = link.value;
+        launch(url).onError(
+            (error, stackTrace) => ToastProvider.error('请检查网址是否有误或检查网络状态'));
       }
     });
   }

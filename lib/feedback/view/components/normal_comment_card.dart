@@ -112,13 +112,21 @@ class _NCommentCardState extends State<NCommentCard>
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
                   ),
-                  if (widget.comment.isOwner)
-                    CommentIdentificationContainer('我的评论', true),
-                  if (widget.comment.nickname == 'Owner')
-                    CommentIdentificationContainer('楼主', true),
-                  if (widget.isSubFloor &&
-                      widget.comment.nickname == widget.ancestorName)
-                    CommentIdentificationContainer('层主', true),
+                  CommentIdentificationContainer(
+                      widget.comment.isOwner
+                          ? '我的评论'
+                          : widget.comment.nickname == 'Owner'
+                              ? widget.isSubFloor &&
+                                      widget.comment.nickname ==
+                                          widget.ancestorName
+                                  ? '楼主 层主'
+                                  : '楼主'
+                              : widget.isSubFloor &&
+                                      widget.comment.nickname ==
+                                          widget.ancestorName
+                                  ? '层主'
+                                  : '',
+                      true),
                   //后面有东西时出现
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorId)
@@ -130,27 +138,39 @@ class _NCommentCardState extends State<NCommentCard>
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorId)
                     Text(
-                      widget.comment.replyToName,
+                      widget.comment.replyToName + (widget.comment.isOwner && widget.comment.replyToName == widget.comment.nickname ? '(我)' : ''),
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
                     ),
                   //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
-                  if (widget.isSubFloor &&
-                      widget.comment.replyToName == 'Owner' &&
-                      (widget.ancestorName != 'Owner' ||
-                          (widget.ancestorName == 'Owner' &&
-                              widget.comment.replyTo != widget.ancestorId)))
-                    CommentIdentificationContainer('楼主', false),
                   //回的是层主但回复的不是这条评论
-                  if (widget.isSubFloor &&
-                      widget.comment.replyToName == widget.ancestorName &&
-                      widget.comment.replyTo != widget.ancestorId)
-                    CommentIdentificationContainer('层主', false),
+                  if (!widget.comment.isOwner && widget.comment.replyToName != widget.comment.nickname)
+                  CommentIdentificationContainer(
+                      widget.isSubFloor
+                          ? widget.comment.replyToName == 'Owner' &&
+                                  (widget.ancestorName != 'Owner' ||
+                                      (widget.ancestorName == 'Owner' &&
+                                          widget.comment.replyTo !=
+                                              widget.ancestorId))
+                              ? widget.comment.replyToName ==
+                                          widget.ancestorName &&
+                                      widget.comment.replyTo !=
+                                          widget.ancestorId
+                                  ? '楼主 层主'
+                                  : '楼主'
+                              : widget.comment.replyToName ==
+                                          widget.ancestorName &&
+                                      widget.comment.replyTo !=
+                                          widget.ancestorId
+                                  ? '层主'
+                                  : ''
+                          : '',
+                      false),
                   if (widget.isSubFloor &&
                       widget.comment.replyTo != widget.ancestorId)
                     CommentIdentificationContainer(
-                        '回复：' + widget.comment.replyTo.toString(), false),
+                        '回复-> ID：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
               Text(
@@ -245,12 +265,12 @@ class _NCommentCardState extends State<NCommentCard>
       ],
     );
 
-      var commentContent = ExpandableText(
-        text: widget.comment.content,
-      maxLines: widget.isFullView ? 8 : 3,
+    var commentContent = ExpandableText(
+      text: widget.comment.content,
+      maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
       style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
-        expand: false,
-        buttonIsShown: true,
+      expand: false,
+      buttonIsShown: true,
     );
 
     var commentImage = Padding(
@@ -292,7 +312,9 @@ class _NCommentCardState extends State<NCommentCard>
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace stackTrace) {
                           return Text(
-                            '💔[图片加载失败]' + widget.comment.imageUrl,
+                            '💔[图片加载失败]' +
+                                widget.comment.imageUrl.replaceRange(10,
+                                    widget.comment.imageUrl.length - 6, '...'),
                             style: TextUtil.base.grey6C.w400.sp(12),
                           );
                         },
@@ -325,7 +347,11 @@ class _NCommentCardState extends State<NCommentCard>
                             }, errorBuilder: (BuildContext context,
                                     Object exception, StackTrace stackTrace) {
                               return Text(
-                                '💔[图片加载失败]' + widget.comment.imageUrl,
+                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                    widget.comment.imageUrl.replaceRange(
+                                        10,
+                                        widget.comment.imageUrl.length - 6,
+                                        '...'),
                                 style: TextUtil.base.grey6C.w400.sp(12),
                               );
                             })),

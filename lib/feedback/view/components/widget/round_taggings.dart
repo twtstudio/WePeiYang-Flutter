@@ -11,16 +11,18 @@ class CommentIdentificationContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 2, top: 1),
-      padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
-      child:
-          Text(this.text, style: TextUtil.base.NotoSansSC.w500.whiteFD.sp(8)),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
-      ),
-    );
+    return text == ''
+        ? SizedBox()
+        : Container(
+            margin: EdgeInsets.only(left: 2, top: 1),
+            padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
+            child: Text(this.text,
+                style: TextUtil.base.NotoSansSC.w700.whiteFD.sp(8)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
+            ),
+          );
   }
 }
 
@@ -31,15 +33,8 @@ class MPWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      child: Text('#MP' + this.text,
-          style: TextUtil.base.ProductSans.w700.whiteFD.sp(13)),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(1080),
-        color: ColorUtil.mainColor,
-      ),
-    );
+    return Text('#MP' + this.text,
+        style: TextUtil.base.ProductSans.w700.mainColor.sp(13));
   }
 }
 
@@ -48,6 +43,8 @@ class SolvedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       'assets/svg_pics/lake_butt_icons/solved_tag.svg',
+      width: 60,
+      fit: BoxFit.fitWidth,
     );
   }
 }
@@ -56,7 +53,10 @@ class UnSolvedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-        'assets/svg_pics/lake_butt_icons/solved_not_tag.svg');
+      'assets/svg_pics/lake_butt_icons/solved_not_tag.svg',
+      width: 60,
+      fit: BoxFit.fitWidth,
+    );
   }
 }
 

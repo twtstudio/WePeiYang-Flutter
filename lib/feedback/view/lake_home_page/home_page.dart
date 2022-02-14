@@ -386,7 +386,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           context.read<FbHomeListModel>().addSomeLoading();
           FeedbackService.getToken(onResult: (_) {
             _listProvider.initPostList(swapLister[_tabController.index],
-                success: () => shouldBeInitialized[_tabController.index] = false);
+                success: () =>
+                    shouldBeInitialized[_tabController.index] = false);
             getRecTag();
             if (_tabController.index == 1) getHotList();
           }, onFailure: (e) {
@@ -769,8 +770,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                               Text("校务"),
                                               Icon(
                                                 Icons.arrow_drop_down,
-                                                size: 12,
-                                              )
+                                                size: 10,
+                                              ),
+                                              if (_tabPaddingWidth > 10) SizedBox(width: _tabPaddingWidth - 10)
                                             ],
                                           ),
                                           onTap: _onFeedbackTapped,
@@ -785,22 +787,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                 ),
                                 Tab(
                                   child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       SizedBox(width: _tabPaddingWidth),
                                       Text("游戏"),
-                                      Container(
-                                        width: 13,
-                                        height: 13,
-                                        padding: EdgeInsets.only(left: 2.2),
-                                        decoration: BoxDecoration(
-                                            color: ColorUtil.boldTag54,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(2.0))),
-                                        child: Text(
-                                          "荐",
-                                          style: TextUtil
-                                              .base.w400.white.NotoSansSC
-                                              .sp(9),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 1, bottom: 3),
+                                        child: SvgPicture.asset(
+                                            'assets/svg_pics/lake_butt_icons/recommended.svg',
+                                          width: 12,
                                         ),
                                       )
                                     ],
