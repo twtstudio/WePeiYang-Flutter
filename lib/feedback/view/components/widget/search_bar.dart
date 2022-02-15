@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -63,20 +62,16 @@ class _SearchBarState extends State<SearchBar>
     for (int total = 0; total < min(tagUtil.length, 5); total++) {
       tagList.add(GestureDetector(
         onTap: () {
-            _controller.text = tagUtil[total].name;
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.searchResult,
-              arguments: SearchResultPageArgs(
-                '',
-                '${tagUtil[total].id}',
-                '',
-                S.current.feedback_search_result,
-                0
-              ),
-            ).then((_) {
-              Navigator.pop(context);
-            });},
+          _controller.text = tagUtil[total].name;
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments: SearchResultPageArgs('', '${tagUtil[total].id}', '',
+                '搜索结果 #${tagUtil[total].name}', 0),
+          ).then((_) {
+            Navigator.pop(context);
+          });
+        },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
           child: Row(
@@ -168,13 +163,8 @@ class _SearchBarState extends State<SearchBar>
                   Navigator.pushNamed(
                     context,
                     FeedbackRouter.searchResult,
-                    arguments: SearchResultPageArgs(
-                      '',
-                      '${data.recTag.id}',
-                      '',
-                      S.current.feedback_search_result,
-                      0
-                    ),
+                    arguments: SearchResultPageArgs('', '${data.recTag.id}', '',
+                        '推荐：#${data.recTag.name}', 0),
                   );
                 }
               },
@@ -210,7 +200,8 @@ class _SearchBarState extends State<SearchBar>
             vsync: this,
             child: _showSearch
                 ? Container(
-              padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -220,16 +211,17 @@ class _SearchBarState extends State<SearchBar>
                         boxShadow: [
                           BoxShadow(
                               color: Colors.black12,
-                              offset: Offset(0.0, 10.0), //阴影xy轴偏移量
-                              blurRadius: 15.0, //阴影模糊程度
+                              offset: Offset(0.0, 4.0), //阴影xy轴偏移量
+                              blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度
-                          )
-                        ]
-                    ),
-                    child: Column(children: tagList ?? [SizedBox()]))
-                : SizedBox(),
+                              )
+                        ]),
+                    child: Column(
+                        children:
+                            tagList ?? [SizedBox(width: double.infinity)]))
+                : SizedBox(height: 2),
           ),
-        )
+        ),
       ],
     );
   }

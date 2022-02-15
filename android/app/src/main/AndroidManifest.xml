@@ -41,6 +41,8 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+
 <!--    华为更改角标权限 ，据官网说是-->
 <!--    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>-->
 
@@ -49,6 +51,7 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
         <intent>

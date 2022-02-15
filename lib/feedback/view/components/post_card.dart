@@ -249,6 +249,14 @@ class _PostCardState extends State<PostCard> {
             ? '${post.department.name}'
             : '无部门';
 
+    var id = post.type == 0
+        ? post.tag != null && post.tag.id != null
+            ? post.tag.id
+            : -1
+        : post.department != null
+            ? post.department.id
+            : -1;
+
     var campus = post.campus > 0
         ? Container(
             decoration: BoxDecoration(
@@ -284,7 +292,9 @@ class _PostCardState extends State<PostCard> {
                 tag,
                 WePeiYangApp.screenWidth -
                     (post.campus > 0 ? 40 : 0) -
-                    (widget.type == PostCardType.simple ? 180 : 0)),
+                    (widget.type == PostCardType.simple ? 180 : 0),
+                post.type == 0,
+                id),
             SizedBox(width: 8),
             campus
           ]),
