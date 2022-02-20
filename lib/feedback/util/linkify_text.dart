@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import '../feedback_router.dart';
 
@@ -61,29 +60,39 @@ class _LinkTextState extends State<LinkText> {
                 return DialogWidget(
                     title: '同学你好：',
                     content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('你即将离开微北洋，去往：\n$url'),
+                        Text(' 你即将离开微北洋，去往：'),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: Text(url,
+                              style: url.startsWith('https://b23.tv/') ||
+                                      url.startsWith('https://www.bilibili.com/')
+                                  ? TextUtil.base.biliPink.w600.h(1.6)
+                                  : TextUtil.base.black2A.w600.h(1.6)),
+                        ),
                         SimpleUrlPreview(
                           url: url,
                           bgColor: Colors.white,
                           titleLines: 2,
                           imageLoaderColor: Colors.black12,
                           previewHeight: 130,
-                          previewContainerPadding: EdgeInsets.all(10),
+                          previewContainerPadding:
+                              EdgeInsets.symmetric(vertical: 10),
                           onTap: () async {
                             await launch(url);
+                            Navigator.pop(context);
                           },
-                          titleStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: ColorUtil.mainColor,
-                          ),
+                          titleStyle: url.startsWith('https://b23.tv/') ||
+                              url.startsWith('https://www.bilibili.com/')
+                              ? TextUtil.base.biliPink.w600.h(1.6).sp(20)
+                              : TextUtil.base.black2A.w600.h(1.6).sp(20),
                           siteNameStyle: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
-                        Text('请注意您的账号和财产安全'),
+                        Text(' 请注意您的账号和财产安全\n'),
                         SizedBox(height: 12)
                       ],
                     ),
@@ -98,6 +107,7 @@ class _LinkTextState extends State<LinkText> {
                     },
                     confirmFun: () async {
                       await launch(url);
+                      Navigator.pop(context);
                     });
               });
         } else {

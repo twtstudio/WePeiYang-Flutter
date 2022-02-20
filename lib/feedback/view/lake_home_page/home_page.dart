@@ -1,5 +1,4 @@
 import 'package:extended_tabs/extended_tabs.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -772,7 +771,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                                 Icons.arrow_drop_down,
                                                 size: 10,
                                               ),
-                                              if (_tabPaddingWidth > 10) SizedBox(width: _tabPaddingWidth - 10)
+                                              if (_tabPaddingWidth > 10)
+                                                SizedBox(
+                                                    width:
+                                                        _tabPaddingWidth - 10)
                                             ],
                                           ),
                                           onTap: _onFeedbackTapped,
@@ -792,9 +794,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       SizedBox(width: _tabPaddingWidth),
                                       Text("游戏"),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 1, bottom: 3),
+                                        padding: const EdgeInsets.only(
+                                            left: 1, bottom: 3),
                                         child: SvgPicture.asset(
-                                            'assets/svg_pics/lake_butt_icons/recommended.svg',
+                                          'assets/svg_pics/lake_butt_icons/recommended.svg',
                                           width: 12,
                                         ),
                                       )
@@ -958,6 +961,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   AnimationController controller;
   Animation animation;
 
+  FbHomeListModel _listProvider;
+  FbDepartmentsProvider _tagsProvider;
+
   @override
   void initState() {
     super.initState();
@@ -985,6 +991,13 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       backgroundColor: Colors.white,
       foregroundColor: ColorUtil.mainColor,
       onPressed: () {
+        FeedbackService.getToken(
+            forceRefresh: true,
+            onResult: (_) {
+              _tagsProvider.initDepartments();
+              _listProvider.initPostList(2, success: () {}, failure: (_) {});
+            },
+            onFailure: (e) {});
         if (!controller.isAnimating) {
           controller.repeat();
           widget.onPressed?.call(controller);
@@ -993,9 +1006,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       mini: true,
     );
 
-    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 5);
+    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 8);
 
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

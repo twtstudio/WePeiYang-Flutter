@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 return false;
               }
             } else {
-              _tabController.animateTo(0);
+              await _tabController.animateTo(0);
               return false;
             }
             return true;

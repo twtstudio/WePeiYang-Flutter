@@ -5,6 +5,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
@@ -69,11 +70,21 @@ final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 
 class FeedbackService with AsyncTimer {
-  static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
+  static getToken(
+      {OnResult<String> onResult,
+      OnFailure onFailure,
+      bool forceRefresh = false}) async {
     try {
       var response;
-      if(CommonPreferences().feedbackToken.value != null && CommonPreferences().feedbackToken.value != "") {
-        response = await feedbackDio.get('auth/${CommonPreferences().feedbackToken.value}');
+      if (forceRefresh) {
+        response = await feedbackDio.get('auth/passwd', queryParameters: {
+          'user': CommonPreferences().userNumber.value,
+          'password': CommonPreferences().password.value,
+        });
+      } else if (CommonPreferences().feedbackToken.value != null &&
+          CommonPreferences().feedbackToken.value != "") {
+        response = await feedbackDio
+            .get('auth/${CommonPreferences().feedbackToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
           'token': CommonPreferences().token.value,
@@ -87,10 +98,13 @@ class FeedbackService with AsyncTimer {
             response.data['data']['uid'].toString();
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
-        throw WpyDioError(error: '校务专区登录失败, 请刷新');
+        ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
-      if (onFailure != null) onFailure(e);
+      if (onFailure != null) {
+        if (forceRefresh) ToastProvider.error('请尝试登出后重新登录');
+        onFailure(e);
+      }
     }
   }
 
@@ -113,10 +127,10 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static Future<void> postPic({
-    @required List<File> images,
-    @required OnResult<List<String>> onResult,
-    @required OnFailure onFailure}) async {
+  static Future<void> postPic(
+      {@required List<File> images,
+      @required OnResult<List<String>> onResult,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('postPic', () async {
       try {
         var formData = FormData();
@@ -132,7 +146,8 @@ class FeedbackService with AsyncTimer {
                   ))
             ]);
         }
-        var response = await feedbackPicPostDio.post('upload/image', formData: formData);
+        var response =
+            await feedbackPicPostDio.post('upload/image', formData: formData);
         List<String> list = [];
         for (String json in response.data['data']['urls']) {
           list.add(json);
@@ -168,7 +183,7 @@ class FeedbackService with AsyncTimer {
       var response = await feedbackDio.get('tag/recommend');
       Tag tag;
       Map<String, dynamic> json = response.data['data']['tag'];
-        tag = Tag.fromJson(json);
+      tag = Tag.fromJson(json);
 
       onSuccess(tag);
     } on DioError catch (e) {
@@ -204,17 +219,18 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
-        var response =await feedbackDio.post('tag',
+        var response = await feedbackDio.post('tag',
             formData: FormData.fromMap({
               'name': '$name',
             }));
         Map<String, dynamic> json = response.data['data'];
         onSuccess?.call(PostTagId.fromJson(json));
-      } on DioError catch(e){
+      } on DioError catch (e) {
         onFailure(e);
       }
     });
   }
+
   static getPosts(
       {keyword,
       departmentId,
@@ -232,6 +248,7 @@ class FeedbackService with AsyncTimer {
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
+
           ///搜索
           'page_size': '10',
           'page': '$page',
@@ -431,9 +448,9 @@ class FeedbackService with AsyncTimer {
 
   static Future<void> commentHitDislike(
       {@required id,
-        @required bool isDis,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required bool isDis,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitDislike', () async {
       try {
         await feedbackDio.post('floor/dis',
@@ -482,11 +499,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor', formData: formData);
         onSuccess?.call();
@@ -510,11 +523,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor/reply', formData: formData);
         onSuccess?.call();
@@ -546,11 +555,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('post', formData: formData);
         onSuccess?.call();
@@ -606,7 +611,7 @@ class FeedbackService with AsyncTimer {
   /// 举报问题 / 评论
   static report(
       {@required id,
-       floorId,
+      floorId,
       @required isQuestion,
       @required reason,
       @required OnSuccess onSuccess,
