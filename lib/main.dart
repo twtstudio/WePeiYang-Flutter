@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
-import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
+import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';

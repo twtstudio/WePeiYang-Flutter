@@ -1,5 +1,5 @@
+// @dart = 2.12
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart' show required;
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class ErrorInterceptor extends InterceptorsWrapper {
@@ -13,8 +13,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
     else if (e.type == DioErrorType.receiveTimeout)
       e.error = "响应超时";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 500)
-      // TODO: 这里是不是改成 连接不到服务器 ？
-      e.error = "网络连接发生了未知错误";
+      e.error = "服务器发生了未知错误";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 401)
       e.error = "密码或验证码输入错误";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 302)
@@ -31,5 +30,6 @@ class WpyDioError extends DioError {
   @override
   final String error;
 
-  WpyDioError({@required this.error});
+  WpyDioError({required this.error, String path = 'unknown'})
+      : super(requestOptions: RequestOptions(path: path));
 }
