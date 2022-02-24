@@ -1,7 +1,8 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:flutter/services.dart' show MethodChannel;
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show OnFailure;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
@@ -18,10 +19,10 @@ class ScheduleNotifier with ChangeNotifier {
 
   List<ScheduleCourse> get coursesWithNotify => _courses;
 
-  int get termStart => CommonPreferences().termStart.value;
+  int get termStart => CommonPreferences.termStart.value;
 
   /// 学期名
-  String get termName => CommonPreferences().termName.value;
+  String get termName => CommonPreferences.termName.value;
 
   /// 当前显示的星期
   int _selectedWeek = 1;
@@ -58,15 +59,17 @@ class ScheduleNotifier with ChangeNotifier {
       (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
 
   // TODO 一学期一共有多少周，暂时写死，之后手动获取
-  int weekCount = 27;
+  int weekCount = 24;
 
   /// 夜猫子模式，这个变量的主要作用是通知widget更新
   set nightMode(bool value) {
-    CommonPreferences().nightMode.value = value;
+    CommonPreferences.nightMode.value = value;
     notifyListeners();
   }
 
-  bool get nightMode => CommonPreferences().nightMode.value;
+  bool get nightMode => CommonPreferences.nightMode.value;
+
+  final widgetChannel = MethodChannel('com.twt.service/widget');
 
   /// 通过爬虫刷新数据
   RefreshCallback refreshSchedule({bool hint = false, OnFailure onFailure}) {
@@ -76,9 +79,9 @@ class ScheduleNotifier with ChangeNotifier {
         if (hint) ToastProvider.success("刷新课程表数据成功");
         _courses = courses;
         notifyListeners(); // 通知各widget进行更新
-        CommonPreferences().scheduleData.value =
+        CommonPreferences.scheduleData.value =
             json.encode(ScheduleBean(termStart, termName, courses)); // 刷新本地缓存
-        messageChannel?.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
+        widgetChannel.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
       }, onFailure: (e) {
         if (onFailure != null) onFailure(e);
       });
@@ -87,10 +90,9 @@ class ScheduleNotifier with ChangeNotifier {
 
   /// 从缓存中读课表的数据，进入主页之前调用
   void readPref() {
-    var pref = CommonPreferences();
-    if (pref.scheduleData.value == '') return;
-    ScheduleBean schedule =
-        ScheduleBean.fromJson(json.decode(pref.scheduleData.value));
+    if (CommonPreferences.scheduleData.value == '') return;
+    ScheduleBean schedule = ScheduleBean.fromJson(
+        json.decode(CommonPreferences.scheduleData.value));
     _courses = schedule.courses;
     notifyListeners();
   }

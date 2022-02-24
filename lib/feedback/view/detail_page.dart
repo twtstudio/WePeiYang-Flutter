@@ -139,8 +139,7 @@ class _DetailPageState extends State<DetailPage>
             onSuccess: (comments) {
               _commentList.addAll(comments);
             },
-            onFail: () {
-            },
+            onFail: () {},
             current: currentPage);
         status = DetailPageStatus.idle;
       }
@@ -504,7 +503,7 @@ class _DetailPageState extends State<DetailPage>
                 '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}';
             ClipboardData data = ClipboardData(text: weCo);
             Clipboard.setData(data);
-            CommonPreferences().feedbackLastWeCo.value = post.id.toString();
+            CommonPreferences.feedbackLastWeCo.value = post.id.toString();
             ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
           }
         });

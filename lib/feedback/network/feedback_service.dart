@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
 
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
@@ -18,7 +18,7 @@ class FeedbackDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      options.headers['token'] = CommonPreferences.feedbackToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -51,7 +51,7 @@ class FeedbackPicPostDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      options.headers['token'] = CommonPreferences.feedbackToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -72,18 +72,19 @@ class FeedbackService with AsyncTimer {
   static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
     try {
       var response;
-      if(CommonPreferences().feedbackToken.value != null && CommonPreferences().feedbackToken.value != "") {
-        response = await feedbackDio.get('auth/${CommonPreferences().feedbackToken.value}');
+      if (CommonPreferences.feedbackToken.value != null &&
+          CommonPreferences.feedbackToken.value != "") {
+        response = await feedbackDio
+            .get('auth/${CommonPreferences.feedbackToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
-          'token': CommonPreferences().token.value,
+          'token': CommonPreferences.token.value,
         });
       }
       if (response.data['data'] != null &&
           response.data['data']['token'] != null) {
-        CommonPreferences().feedbackToken.value =
-            response.data['data']['token'];
-        CommonPreferences().feedbackUid.value =
+        CommonPreferences.feedbackToken.value = response.data['data']['token'];
+        CommonPreferences.feedbackUid.value =
             response.data['data']['uid'].toString();
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
@@ -113,10 +114,10 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static Future<void> postPic({
-    @required List<File> images,
-    @required OnResult<List<String>> onResult,
-    @required OnFailure onFailure}) async {
+  static Future<void> postPic(
+      {@required List<File> images,
+      @required OnResult<List<String>> onResult,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('postPic', () async {
       try {
         var formData = FormData();
@@ -132,7 +133,8 @@ class FeedbackService with AsyncTimer {
                   ))
             ]);
         }
-        var response = await feedbackPicPostDio.post('upload/image', formData: formData);
+        var response =
+            await feedbackPicPostDio.post('upload/image', formData: formData);
         List<String> list = [];
         for (String json in response.data['data']['urls']) {
           list.add(json);
@@ -168,7 +170,7 @@ class FeedbackService with AsyncTimer {
       var response = await feedbackDio.get('tag/recommend');
       Tag tag;
       Map<String, dynamic> json = response.data['data']['tag'];
-        tag = Tag.fromJson(json);
+      tag = Tag.fromJson(json);
 
       onSuccess(tag);
     } on DioError catch (e) {
@@ -204,17 +206,18 @@ class FeedbackService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
-        var response =await feedbackDio.post('tag',
+        var response = await feedbackDio.post('tag',
             formData: FormData.fromMap({
               'name': '$name',
             }));
         Map<String, dynamic> json = response.data['data'];
         onSuccess?.call(PostTagId.fromJson(json));
-      } on DioError catch(e){
+      } on DioError catch (e) {
         onFailure(e);
       }
     });
   }
+
   static getPosts(
       {keyword,
       departmentId,
@@ -228,10 +231,11 @@ class FeedbackService with AsyncTimer {
         'posts',
         queryParameters: {
           'type': '$type',
-          'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
+          'search_mode': CommonPreferences.feedbackSearchType.value ?? 0,
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
+
           ///搜索
           'page_size': '10',
           'page': '$page',
@@ -431,9 +435,9 @@ class FeedbackService with AsyncTimer {
 
   static Future<void> commentHitDislike(
       {@required id,
-        @required bool isDis,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required bool isDis,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitDislike', () async {
       try {
         await feedbackDio.post('floor/dis',
@@ -459,7 +463,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
-              'token': CommonPreferences().feedbackToken.value,
+              'token': CommonPreferences.feedbackToken.value,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
@@ -482,11 +486,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor', formData: formData);
         onSuccess?.call();
@@ -510,11 +510,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor/reply', formData: formData);
         onSuccess?.call();
@@ -546,11 +542,7 @@ class FeedbackService with AsyncTimer {
         });
         if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
-            formData.fields.addAll([
-              MapEntry(
-                  'images',
-                  images[i])
-            ]);
+            formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('post', formData: formData);
         onSuccess?.call();
@@ -571,7 +563,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(
           'answer/commit',
           formData: FormData.fromMap({
-            'token': CommonPreferences().feedbackToken.value,
+            'token': CommonPreferences.feedbackToken.value,
             'answer_id': id,
             'score': rating.toInt(),
             'commit': '评分',
@@ -606,7 +598,7 @@ class FeedbackService with AsyncTimer {
   /// 举报问题 / 评论
   static report(
       {@required id,
-       floorId,
+      floorId,
       @required isQuestion,
       @required reason,
       @required OnSuccess onSuccess,

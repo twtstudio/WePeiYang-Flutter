@@ -55,9 +55,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       context.read<UpdateManager>().checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {
-        CommonPreferences().reportTime.value = DateTime.now().toString();
+        CommonPreferences.reportTime.value = DateTime.now().toString();
       } else {
-        CommonPreferences().reportTime.value = "";
+        CommonPreferences.reportTime.value = "";
       }
 
       UmengCommonSdk.initCommon(
@@ -103,7 +103,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: ImageIcon(
                 AssetImage('assets/images/lake_butt_icons/main_page.png'),
                 size: 32,
-                color: _currentIndex == 0 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                color: _currentIndex == 0
+                    ? ColorUtil.mainColor
+                    : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),
@@ -139,9 +141,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               type: FeedbackMessageType.total,
               child: Center(
                 child: ImageIcon(
-                    AssetImage('assets/images/lake_butt_icons/dive_page.png'),
+                  AssetImage('assets/images/lake_butt_icons/dive_page.png'),
                   size: 32,
-                  color: _currentIndex == 1 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                  color: _currentIndex == 1
+                      ? ColorUtil.mainColor
+                      : ColorUtil.lightTextColor,
                 ),
               ),
             ),
@@ -171,7 +175,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: ImageIcon(
                 AssetImage('assets/images/lake_butt_icons/my_page.png'),
                 size: 28,
-                color: _currentIndex == 2 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                color: _currentIndex == 2
+                    ? ColorUtil.mainColor
+                    : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),

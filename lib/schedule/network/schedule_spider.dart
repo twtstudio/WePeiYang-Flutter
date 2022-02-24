@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' show DioError, Response;
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
@@ -8,12 +9,10 @@ import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 /// 爬取课程表信息
 void getScheduleCourses(
     {OnResult<List<ScheduleCourse>> onResult, OnFailure onFailure}) async {
-  var pref = CommonPreferences();
-
   try {
     /// 学生没有辅修的情况：
-    if (pref.ids.value != "useless") {
-      var response = await getDetailSchedule(pref.ids.value);
+    if (CommonPreferences.ids.value != "useless") {
+      var response = await getDetailSchedule(CommonPreferences.ids.value);
       onResult(_data2ScheduleCourses(response.data.toString()));
       return;
     }
@@ -25,23 +24,23 @@ void getScheduleCourses(
     /// 获取semester.id
     var semesterRsp = await fetch(
         "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-        cookieList: pref.getCookies(),
+        cookieList: CommonPreferences.getCookies(),
         params: {'projectId': '1'});
     semesterRsp.headers.map['set-cookie'].forEach((string) {
       if (string.contains('semester'))
-        pref.semesterId.value = getRegExpStr(r'semester.id=\w+', string);
+        CommonPreferences.semesterId.value = string.match(r'semester.id=\w+');
     });
 
     /// 切换至主修
     await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-        cookieList: pref.getCookies(), params: {'projectId': '1'});
+        cookieList: CommonPreferences.getCookies(), params: {'projectId': '1'});
 
     /// 获取主修的ids
     var idsRsp1 = await fetch(
         "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-        cookieList: pref.getCookies(),
+        cookieList: CommonPreferences.getCookies(),
         params: {'projectId': '1', '_': DateTime.now().millisecondsSinceEpoch});
-    idsValue = getRegExpStr(r'(?<=ids",")\w*', idsRsp1.data.toString());
+    idsValue = idsRsp1.data.toString().match(r'(?<=ids",")\w*');
 
     /// 获取主修课程
     var courseRsp1 = await getDetailSchedule(idsValue);
@@ -49,14 +48,14 @@ void getScheduleCourses(
 
     /// 切换至辅修
     await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-        cookieList: pref.getCookies(), params: {'projectId': '2'});
+        cookieList: CommonPreferences.getCookies(), params: {'projectId': '2'});
 
     /// 获取辅修的ids
     var idsRsp2 = await fetch(
         "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action",
-        cookieList: pref.getCookies(),
+        cookieList: CommonPreferences.getCookies(),
         params: {'projectId': '2'});
-    idsValue = getRegExpStr(r'(?<=ids",")\w*', idsRsp2.data.toString());
+    idsValue = idsRsp2.data.toString().match(r'(?<=ids",")\w*');
 
     /// 获取辅修课程
     var courseRsp2 = await getDetailSchedule(idsValue);
@@ -71,17 +70,16 @@ void getScheduleCourses(
 /// * 如果学生只有主修，[ids]应从缓存中读取
 /// * 如果学生还有重修，则需要分别给出[ids]，缓存中的ids无用
 Future<Response> getDetailSchedule(String ids) {
-  var pref = CommonPreferences();
   var map = {
     "ignoreHead": "1",
     "setting.kind": "std",
     "startWeek": "",
-    "semester.id": getRegExpStr(r'[0-9]+', pref.semesterId.value),
+    "semester.id": CommonPreferences.semesterId.value.match(r'[0-9]+'),
     "ids": ids
   };
   return fetch(
       "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
-      cookieList: pref.getCookies(),
+      cookieList: CommonPreferences.getCookies(),
       isPost: true,
       params: map);
 }
@@ -94,17 +92,16 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
   try {
     /// 先整理出所有的arrange对象
     List<Arrange> arrangeList = [];
-    List<String> arrangeDataList =
-        getRegExpStr(r'(?<=var teachers)[^]*?(?=fillTable)', data)
-            ?.split("var teachers");
+    List<String> arrangeDataList = data
+        .match(r'(?<=var teachers)[^]*?(?=fillTable)')
+        .split("var teachers");
     arrangeDataList?.forEach((item) {
-      var day =
-          (int.parse(getRegExpStr(r'(?<=index =)\w', item)) + 1).toString();
-      var startEnd = getRegExpList(r'(?<=unitCount\+)\w*', item);
+      var day = (int.parse(item.match(r'(?<=index =)\w')) + 1).toString();
+      var startEnd = item.matches(r'(?<=unitCount\+)\w*');
       var start = (int.parse(startEnd.first) + 1).toString();
       var end = (int.parse(startEnd.last) + 1).toString();
-      var teacherData = getRegExpStr(r'(?<=actTeachers )[^]*?(?=;)', item);
-      var teacherList = getRegExpList(r'(?<=name:")[^]*?(?=")', teacherData);
+      var teacherData = item.match(r'(?<=actTeachers )[^]*?(?=;)');
+      var teacherList = teacherData.matches(r'(?<=name:")[^]*?(?=")');
       var teacher = '';
       teacherList.forEach((t) {
         teacher = teacher + t + ',';
@@ -114,7 +111,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
 
       /// 课程名称、课程星期分布的信息
       List<String> courseInfo =
-          getRegExpStr(r'(?<=activity )[^]*?(?=;)', item).split('\"');
+          item.match(r'(?<=activity )[^]*?(?=;)').split('\"');
       var courseName = courseInfo[3];
       var weekInfo = courseInfo[9];
 
@@ -146,15 +143,15 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
     /// 下面的[?.]和[return]是本学期没有课程时的空判断
     List<ScheduleCourse> courses = [];
     List<String> trList =
-        getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', data)?.split("</tr><tr>");
+        data.match(r'(?<=<tbody)[^]*?(?=</tbody>)').split("</tr><tr>");
     trList?.forEach((tr) {
-      List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);
+      List<String> tdList = tr.matches(r'(?<=<td>)[^]*?(?=</td>)');
       if (tdList.isEmpty) return;
-      var classId = getRegExpStr(r'(?<=>)[0-9]*', tdList[1]);
+      var classId = tdList[1].match(r'(?<=>)[0-9]*');
       var courseId = tdList[2];
 
       /// 类似 “体育C 体育舞蹈” 这种有副标题的需要做判断
-      List<String> names = getRegExpList(r'[^>]+(?=<)', tdList[3]);
+      List<String> names = tdList[3].matches(r'[^>]+(?=<)');
       var courseName = (names.length == 0)
           ? tdList[3]
           : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";
@@ -169,7 +166,7 @@ List<ScheduleCourse> _data2ScheduleCourses(String data) {
       else if (tr.contains("卫津路")) campus = "卫津路";
       List<String> weekStr = tdList[6].replaceAll(RegExp(r'\s'), '').split('-');
       Week week = Week(weekStr[0], weekStr[1]);
-      var roomList = getRegExpList(r'[\S]+', tdList[8]);
+      var roomList = tdList[8].matches(r'[\S]+');
       var roomIndex = 0;
 
       arrangeList.forEach((arrange) {
@@ -211,21 +208,20 @@ void getExam({OnResult<List<Exam>> onResult, OnFailure onFailure}) async {
   try {
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action",
-        cookieList: CommonPreferences().getCookies());
+        cookieList: CommonPreferences.getCookies());
     var exams = <Exam>[];
     String tbody =
-        getRegExpStr(r'(?<=<tbody)[^]*?(?=</tbody>)', response.data.toString());
+        response.data.toString().match(r'(?<=<tbody)[^]*?(?=</tbody>)');
     if (!tbody.contains('<td>')) {
       onResult([]);
       return;
     }
     List<String> trList = tbody.split("</tr><tr>");
     trList.forEach((tr) {
-      List<String> tdList = getRegExpList(r'(?<=<td>)[^]*?(?=</td>)', tr);
+      List<String> tdList = tr.matches(r'(?<=<td>)[^]*?(?=</td>)');
       tdList = tdList
-          .map((e) => e.contains('color')
-              ? getRegExpStr(r'(?<=>)[^]*?(?=</font)', e)
-              : e)
+          .map((e) =>
+              e.contains('color') ? e.match(r'(?<=>)[^]*?(?=</font)') : e)
           .toList();
       var ext = tdList[8] == '正常' ? '' : tdList[9];
       exams.add(Exam(tdList[0], tdList[1], tdList[2], tdList[3], tdList[5],

@@ -17,7 +17,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   final checkNotifier = ValueNotifier<bool>(false); // 是否勾选隐私政策
 
   _login() async {
-    if (CommonPreferences().usePwLogin.value) {
+    if (CommonPreferences.usePwLogin.value) {
       _passwordFocus.unfocus();
       if (account == "" || password == "")
         ToastProvider.error("账号密码不能为空");
@@ -86,7 +86,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       fontSize: 16)),
             ),
             SizedBox(height: 30),
-            CommonPreferences().usePwLogin.value ? _pwWidget : _codeWidget,
+            CommonPreferences.usePwLogin.value ? _pwWidget : _codeWidget,
             SizedBox(height: 25),
             SizedBox(
                 height: 50,
@@ -232,8 +232,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       fontSize: 11,
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
-              onTap: () =>
-                  Navigator.pushNamed(context, AuthRouter.findHome),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             Spacer(),
             GestureDetector(
@@ -241,14 +240,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   style: FontManager.YaHeiRegular.copyWith(
                       fontSize: 11, color: Color.fromRGBO(79, 88, 107, 1))),
               onTap: () {
-                if (CommonPreferences().usePwLogin.value) {
+                if (CommonPreferences.usePwLogin.value) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences().usePwLogin.value = false;
+                  CommonPreferences.usePwLogin.value = false;
                 } else {
                   code = '';
-                  CommonPreferences().usePwLogin.value = true;
+                  CommonPreferences.usePwLogin.value = true;
                 }
                 setState(() {});
               },
@@ -379,14 +378,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   style: FontManager.YaHeiRegular.copyWith(
                       fontSize: 11, color: Color.fromRGBO(79, 88, 107, 1))),
               onTap: () {
-                if (CommonPreferences().usePwLogin.value) {
+                if (CommonPreferences.usePwLogin.value) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences().usePwLogin.value = false;
+                  CommonPreferences.usePwLogin.value = false;
                 } else {
                   code = '';
-                  CommonPreferences().usePwLogin.value = true;
+                  CommonPreferences.usePwLogin.value = true;
                 }
                 setState(() {});
               },

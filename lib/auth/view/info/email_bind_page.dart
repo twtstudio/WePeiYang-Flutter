@@ -14,7 +14,6 @@ class EmailBindPage extends StatefulWidget {
 }
 
 class _EmailBindPageState extends State<EmailBindPage> {
-  var pref = CommonPreferences();
   String email = "";
 
   _bind() async {
@@ -33,7 +32,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
   Widget _detail(BuildContext context) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    if (pref.email.value != "")
+    if (CommonPreferences.email.value != "")
       return Column(children: [
         SizedBox(height: 60),
         Text("${S.current.bind_email}: ",
@@ -43,7 +42,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 fontSize: 15,
                 color: Color.fromRGBO(79, 88, 107, 1))),
         SizedBox(height: 5),
-        Text(pref.email.value,
+        Text(CommonPreferences.email.value,
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -163,7 +162,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 32, 0, 30),
                     child: Text(
-                        (pref.email.value != "")
+                        (CommonPreferences.email.value != "")
                             ? S.current.is_bind
                             : S.current.not_bind,
                         style: FontManager.YaHeiRegular.copyWith(

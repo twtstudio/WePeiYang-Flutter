@@ -21,7 +21,7 @@ class ClassTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
       var width = WePeiYangApp.screenWidth - 15 * 2;
-      var dayCount = CommonPreferences().dayNumber.value;
+      var dayCount = CommonPreferences.dayNumber.value;
       var cardWidth = (width - (dayCount - 1) * cardStep) / dayCount;
       return Padding(
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
@@ -110,14 +110,16 @@ class CourseDisplayWidget extends StatelessWidget {
             top: 4 * singleCourseHeight + 3 * cardStep,
             width: width,
             height: middleStep,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Expanded(child: Divider()),
-              Text("午休",
-                  style: FontManager.YaQiHei.copyWith(
-                      color: titleColor.withAlpha(70), fontSize: 13)),
-              Expanded(child: Divider()),
-            ]),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: Divider()),
+                Text("午休",
+                    style: FontManager.YaQiHei.copyWith(
+                        color: titleColor.withAlpha(70), fontSize: 13)),
+                Expanded(child: Divider()),
+              ],
+            ),
           ),
           ..._generatePositioned(context),
         ],
@@ -127,7 +129,7 @@ class CourseDisplayWidget extends StatelessWidget {
 
   List<Widget> _generatePositioned(BuildContext context) {
     if (notifier.coursesWithNotify.length == 0) return [];
-    int dayNumber = CommonPreferences().dayNumber.value;
+    int dayNumber = CommonPreferences.dayNumber.value;
     List<Positioned> list = [];
     List<List<List<ScheduleCourse>>> merged =
         getMergedCourses(notifier, dayNumber);

@@ -12,8 +12,6 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  var pref = CommonPreferences();
-
   @override
   Widget build(BuildContext context) {
     final mainTextStyle = FontManager.YaHeiRegular.copyWith(
@@ -99,7 +97,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             Text(S.current.user_name, style: mainTextStyle),
                             Expanded(
                               child: Text(
-                                pref.nickname.value,
+                                CommonPreferences.nickname.value,
                                 style: hintTextStyle,
                                 textAlign: TextAlign.end,
                                 overflow: TextOverflow.ellipsis,
@@ -134,7 +132,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                 style: mainTextStyle),
                             Spacer(),
                             Text(
-                                pref.isBindTju.value
+                                CommonPreferences.isBindTju.value
                                     ? S.current.is_bind
                                     : S.current.not_bind,
                                 style: hintTextStyle),
@@ -201,7 +199,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           Text(S.current.phone2, style: mainTextStyle),
                           Spacer(),
                           Text(
-                              (pref.phone.value != "")
+                              (CommonPreferences.phone.value != "")
                                   ? S.current.is_bind
                                   : S.current.not_bind,
                               style: hintTextStyle),
@@ -236,7 +234,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                           Text(S.current.email2, style: mainTextStyle),
                           Spacer(),
                           Text(
-                              (pref.email.value != "")
+                              (CommonPreferences.email.value != "")
                                   ? S.current.is_bind
                                   : S.current.not_bind,
                               style: hintTextStyle),

@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart' show Color;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 

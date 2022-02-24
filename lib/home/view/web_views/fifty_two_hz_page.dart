@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 // ignore: must_be_immutable
 class FiftyTwoHzPage extends StatelessWidget {
   final String url =
-      'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences().token.value}';
+      'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences.token.value}';
   WebViewController _controller;
 
   @override

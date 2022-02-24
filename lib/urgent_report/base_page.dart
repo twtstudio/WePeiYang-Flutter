@@ -71,11 +71,11 @@ class _SelfInformationState extends State<SelfInformation> {
   @override
   void initState() {
     super.initState();
-    name = CommonPreferences().realName.value;
-    id = 'ID: ${CommonPreferences().userNumber.value}';
-    department = CommonPreferences().department.value;
-    type = CommonPreferences().stuType.value;
-    major = CommonPreferences().major.value;
+    name = CommonPreferences.realName.value;
+    id = 'ID: ${CommonPreferences.userNumber.value}';
+    department = CommonPreferences.department.value;
+    type = CommonPreferences.stuType.value;
+    major = CommonPreferences.major.value;
   }
 
   @override

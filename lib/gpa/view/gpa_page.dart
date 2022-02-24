@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -46,13 +47,12 @@ class _GPAPageState extends State<GPAPage> {
         .call();
   }
 
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (CommonPreferences().firstUse.value) {
-        CommonPreferences().firstUse.value = false;
+      if (CommonPreferences.firstUse.value) {
+        CommonPreferences.firstUse.value = false;
         showDialog(
             context: context,
             barrierDismissible: true,

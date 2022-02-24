@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/lounge/model/building.dart';
 import 'package:we_pei_yang_flutter/lounge/service/net/lounge_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 import 'package:we_pei_yang_flutter/lounge/view_model/lounge_time_model.dart';
 
@@ -40,7 +40,7 @@ class LoungeRepository {
   static Stream<MapEntry<int, List<Building>>> _getWeekClassPlan(
       {@required DateTime dateTime}) async* {
     var thatWeek = dateTime.convertedWeekAndDay;
-    var term = CommonPreferences().termName.value;
+    var term = CommonPreferences.termName.value;
     for (var weekday in thatWeek) {
       var requestDate = '$term/${weekday.week}/${weekday.day}';
       var response = await openDio.get('getDayData/$requestDate');

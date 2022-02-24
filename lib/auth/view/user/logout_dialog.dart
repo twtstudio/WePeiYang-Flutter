@@ -10,8 +10,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 class LogoutDialog extends Dialog {
   void _logout() {
     ToastProvider.success("退出登录成功");
-    CommonPreferences().clearUserPrefs();
-    CommonPreferences().clearTjuPrefs();
+    CommonPreferences.clearUserPrefs();
+    CommonPreferences.clearTjuPrefs();
     Navigator.pushNamedAndRemoveUntil(
         WePeiYangApp.navigatorState.currentContext,
         AuthRouter.login,

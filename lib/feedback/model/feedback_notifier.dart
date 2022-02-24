@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -12,7 +12,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences().feedbackToken.value,
+      CommonPreferences.feedbackToken.value,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -191,7 +191,7 @@ class FbHomeListModel extends ChangeNotifier {
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
-        CommonPreferences().feedbackToken.value = token;
+        CommonPreferences.feedbackToken.value = token;
         provider.initDepartments();
         initPostList(type);
       },

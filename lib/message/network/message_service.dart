@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
@@ -138,16 +138,14 @@ class MessageService {
 final messageDio = MessageDio();
 final userDio = UserNotificationDio();
 
-
 class UserNotificationDio extends DioAbstract {
   @override
   Map<String, String> headers = {
     "DOMAIN": AuthDio.DOMAIN,
     "ticket": AuthDio.ticket,
-    "token": CommonPreferences().token.value
+    "token": CommonPreferences.token.value
   };
 }
-
 
 class MessageDio extends DioAbstract {
   // @override
@@ -158,7 +156,7 @@ class MessageDio extends DioAbstract {
 
   @override
   Map<String, String> headers = {
-    'token': CommonPreferences().feedbackToken.value
+    'token': CommonPreferences.feedbackToken.value
   };
 
   @override

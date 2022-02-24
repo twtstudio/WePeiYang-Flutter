@@ -39,10 +39,11 @@ class _TodayShowAgainCheckState extends State<TodayShowAgainCheck> {
           onTap: () {
             setState(() {
               todayNotShowAgain = !todayNotShowAgain;
-              if(todayNotShowAgain){
-                CommonPreferences().todayShowUpdateAgain.value = DateTime.now().toString();
-              }else {
-                CommonPreferences().todayShowUpdateAgain.value = '';
+              if (todayNotShowAgain) {
+                CommonPreferences.todayShowUpdateAgain.value =
+                    DateTime.now().toString();
+              } else {
+                CommonPreferences.todayShowUpdateAgain.value = '';
               }
             });
           },
@@ -58,15 +59,15 @@ class _TodayShowAgainCheckState extends State<TodayShowAgainCheck> {
               children: [
                 todayNotShowAgain
                     ? Icon(
-                  Icons.check_circle,
-                  size: checkboxHeight,
-                  color: Colors.black,
-                )
+                        Icons.check_circle,
+                        size: checkboxHeight,
+                        color: Colors.black,
+                      )
                     : Icon(
-                  Icons.panorama_fish_eye,
-                  size: checkboxHeight,
-                  color: const Color(0xffdedede),
-                ),
+                        Icons.panorama_fish_eye,
+                        size: checkboxHeight,
+                        color: const Color(0xffdedede),
+                      ),
                 const SizedBox(width: checkboxElsePadding - 4),
                 checkboxTextWidget,
               ],

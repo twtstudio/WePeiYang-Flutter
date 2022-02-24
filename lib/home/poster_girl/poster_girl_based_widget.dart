@@ -20,17 +20,17 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
   GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
 
   var rand = new Random();
-  var pref = CommonPreferences();
 
   bool _offStage = true;
   int welcomeHintNum = 0;
   int talkingNum = 0;
   double _welcomeOpacity = 1;
-///会说的话，不能少于两条
+
+  ///会说的话，不能少于两条
   List<String> welcomeHints = [
-    CommonPreferences().nickname.value + ",欢迎光临",
+    CommonPreferences.nickname.value + ",欢迎光临",
     "...",
-    "您的学号是" + CommonPreferences().tjuuname.value,
+    "您的学号是" + CommonPreferences.tjuuname.value,
   ];
 
   AnimationController _girlController;
@@ -62,7 +62,8 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (!pref.showPosterGirl.value || pref.showPosterGirl == null)
+    if (!CommonPreferences.showPosterGirl.value ||
+        CommonPreferences.showPosterGirl == null)
       return SizedBox();
     else
       return Offstage(
@@ -166,21 +167,21 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
     return lastTalkingNum;
   }
 
-String get _getGreetText {
-  int hour = DateTime.now().hour;
-  if (hour >= 0 && hour < 5)
-    return '夜深了，早点睡';
-  else if (hour >= 5 && hour < 8)
-    return '起得好早';
-  else if (hour >= 8 && hour < 12)
-    return '早上好';
-  else if (hour >= 12 && hour < 14)
-    return '中午好';
-  else if (hour >= 12 && hour < 17)
-    return '下午好';
-  else if (hour >= 17 && hour < 19)
-    return '傍晚好';
-  else
-    return '晚上好';
-}
+  String get _getGreetText {
+    int hour = DateTime.now().hour;
+    if (hour >= 0 && hour < 5)
+      return '夜深了，早点睡';
+    else if (hour >= 5 && hour < 8)
+      return '起得好早';
+    else if (hour >= 8 && hour < 12)
+      return '早上好';
+    else if (hour >= 12 && hour < 14)
+      return '中午好';
+    else if (hour >= 12 && hour < 17)
+      return '下午好';
+    else if (hour >= 17 && hour < 19)
+      return '傍晚好';
+    else
+      return '晚上好';
+  }
 }

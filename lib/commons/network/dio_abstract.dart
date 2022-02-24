@@ -1,13 +1,5 @@
 // @dart = 2.12
-import 'dart:async';
-import 'package:dio/dio.dart';
-import 'error_interceptor.dart';
-import 'net_check_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
-
-export 'package:dio/dio.dart' show DioError, ResponseType, InterceptorsWrapper;
-export 'error_interceptor.dart' show WpyDioError;
-export 'async_timer.dart';
+part of 'wpy_dio.dart';
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();

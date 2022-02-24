@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -11,8 +10,6 @@ class ColorSettingPage extends StatefulWidget {
 }
 
 class _ColorSettingPageState extends State<ColorSettingPage> {
-  var pref = CommonPreferences();
-
   /// 获取显示16位颜色值的文本
   /// @param [target] 此文本对应的gpa/schedule配色种类
   /// @param [index] index: 0 -> gpa, 1 -> schedule

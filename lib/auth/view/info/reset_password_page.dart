@@ -37,7 +37,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     } else if (newPW1 != newPW2) {
       ToastProvider.error("两次输入新密码不一致");
       return;
-    } else if (oldPW != CommonPreferences().password.value) {
+    } else if (oldPW != CommonPreferences.password.value) {
       ToastProvider.error("旧密码输入错误");
       return;
     }

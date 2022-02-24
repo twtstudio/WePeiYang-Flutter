@@ -125,7 +125,7 @@ class WPYPageState extends State<WPYPage> {
                     ),
                   )),
 
-                  !CommonPreferences().showPosterGirl.value
+                  !CommonPreferences.showPosterGirl.value
                       ? SliverToBoxAdapter()
                       : SliverToBoxAdapter(
                           child: SizedBox(
@@ -180,7 +180,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               SizedBox(width: 5),
               Expanded(
                   child: Text(
-                CommonPreferences().nickname.value,
+                CommonPreferences.nickname.value,
                 style: hintStyle,
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,

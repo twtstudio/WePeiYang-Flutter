@@ -35,13 +35,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
     captchaKey = GlobalKey();
     captchaWidget = CaptchaWidget(captchaKey);
     codeController = TextEditingController();
-    var pref = CommonPreferences();
-    if (pref.isBindTju.value) {
+    if (CommonPreferences.isBindTju.value) {
       super.initState();
       return;
     }
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -107,13 +106,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
 
-  Widget _detail(BuildContext context, CommonPreferences pref) {
+  Widget _detail(BuildContext context) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    if (pref.isBindTju.value)
+    if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
-        Text("${S.current.bind_account}: ${pref.tjuuname.value}",
+        Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
             style: FontManager.YaHeiRegular.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
@@ -333,7 +332,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
-    var pref = CommonPreferences();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
@@ -364,7 +362,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                   child: Text(
-                      pref.isBindTju.value
+                      CommonPreferences.isBindTju.value
                           ? S.current.is_bind
                           : S.current.not_bind,
                       style: TextStyle(
@@ -376,7 +374,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
 
             /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-            SizedBox(height: pref.isBindTju.value ? 20 : 0),
+            SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -389,7 +387,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     height: 50, width: 50),
               ],
             ),
-            _detail(context, pref)
+            _detail(context)
           ],
         ),
       ),

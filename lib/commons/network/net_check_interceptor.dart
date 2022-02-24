@@ -1,8 +1,5 @@
 // @dart = 2.12
-import 'package:dio/dio.dart' show InterceptorsWrapper;
-import 'package:connectivity/connectivity.dart';
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
-    show WpyDioError;
+part of 'wpy_dio.dart';
 
 class NetStatusListener {
   static final NetStatusListener _instance = NetStatusListener._();

@@ -61,8 +61,9 @@ class _UserPageState extends State<UserPage> {
                         ),
                         SizedBox(width: 15),
                         GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, AuthRouter.setting, arguments: SettingPageArgs(false)),
+                          onTap: () => Navigator.pushNamed(
+                              context, AuthRouter.setting,
+                              arguments: SettingPageArgs(false)),
                           child: Image.asset('assets/images/setting.png',
                               width: 24, height: 24),
                         )
@@ -78,7 +79,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(CommonPreferences().nickname.value,
+                  child: Text(CommonPreferences.nickname.value,
                       textAlign: TextAlign.center,
                       style: FontManager.YaHeiRegular.copyWith(
                         color: Colors.white,
@@ -91,7 +92,7 @@ class _UserPageState extends State<UserPage> {
                         context: context,
                         barrierDismissible: true,
                         builder: (BuildContext context) => DebugDialog()),
-                    child: Text(CommonPreferences().userNumber.value,
+                    child: Text(CommonPreferences.userNumber.value,
                         textAlign: TextAlign.center,
                         style: FontManager.Texta.copyWith(
                             color: MyColors.deepDust, fontSize: 15))),
@@ -170,7 +171,9 @@ class _UserPageState extends State<UserPage> {
                       onTap: () {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
-                          context.read<UpdateManager>().checkUpdate(showToast: true);
+                          context
+                              .read<UpdateManager>()
+                              .checkUpdate(showToast: true);
                         });
                       },
                       splashFactory: InkRipple.splashFactory,

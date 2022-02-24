@@ -1,6 +1,5 @@
 // @dart = 2.12
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+part of 'wpy_dio.dart';
 
 class ErrorInterceptor extends InterceptorsWrapper {
   @override

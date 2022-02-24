@@ -1,6 +1,7 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show OnFailure;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
@@ -54,11 +55,11 @@ class ExamNotifier with ChangeNotifier {
 
   /// notifier中也写一个hideExam，就可以在从设置页面pop至主页时，令主页的WpyExamWidget进行rebuild
   set hideExam(bool value) {
-    CommonPreferences().hideExam.value = value;
+    CommonPreferences.hideExam.value = value;
     notifyListeners();
   }
 
-  bool get hideExam => CommonPreferences().hideExam.value;
+  bool get hideExam => CommonPreferences.hideExam.value;
 
   /// 通过爬虫刷新数据
   RefreshCallback refreshExam({bool hint = false, OnFailure onFailure}) {
@@ -68,7 +69,7 @@ class ExamNotifier with ChangeNotifier {
         if (hint) ToastProvider.success("刷新考表数据成功");
         this._examTable = ExamTable(exams);
         notifyListeners(); // 通知各widget进行更新
-        CommonPreferences().examData.value = json.encode(_examTable); // 刷新本地缓存
+        CommonPreferences.examData.value = json.encode(_examTable); // 刷新本地缓存
       }, onFailure: (e) {
         if (onFailure != null) onFailure(e);
       });
@@ -77,9 +78,9 @@ class ExamNotifier with ChangeNotifier {
 
   /// 从缓存中读考表的数据，进入主页之前调用
   void readPref() {
-    var pref = CommonPreferences();
-    if (pref.examData.value == '') return;
-    this._examTable = ExamTable.fromJson(json.decode(pref.examData.value));
+    if (CommonPreferences.examData.value == '') return;
+    this._examTable =
+        ExamTable.fromJson(json.decode(CommonPreferences.examData.value));
     notifyListeners();
   }
 

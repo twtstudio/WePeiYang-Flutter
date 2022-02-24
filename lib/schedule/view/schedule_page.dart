@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -17,7 +18,7 @@ import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 class SchedulePage extends StatefulWidget {
   /// 星期栏是否收缩
   final ValueNotifier<bool> isShrink =
-      ValueNotifier<bool>(CommonPreferences().scheduleShrink.value);
+      ValueNotifier<bool>(CommonPreferences.scheduleShrink.value);
 
   @override
   _SchedulePageState createState() => _SchedulePageState();
@@ -37,8 +38,8 @@ class _SchedulePageState extends State<SchedulePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (CommonPreferences().firstUse.value) {
-        CommonPreferences().firstUse.value = false;
+      if (CommonPreferences.firstUse.value) {
+        CommonPreferences.firstUse.value = false;
         showDialog(
             context: context,
             barrierDismissible: true,
@@ -95,7 +96,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                     .findAncestorWidgetOfExactType<SchedulePage>()
                     .isShrink;
                 notifier.value = !value;
-                CommonPreferences().scheduleShrink.value = !value;
+                CommonPreferences.scheduleShrink.value = !value;
               },
             );
           },
@@ -103,7 +104,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
-            if (CommonPreferences().isBindTju.value) {
+            if (CommonPreferences.isBindTju.value) {
               Provider.of<ScheduleNotifier>(context, listen: false)
                   .refreshSchedule(
                       hint: true,

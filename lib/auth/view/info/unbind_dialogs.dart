@@ -21,7 +21,7 @@ final _hintStyle = FontManager.YaQiHei.copyWith(
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
     ToastProvider.success("解除绑定成功");
-    CommonPreferences().clearTjuPrefs();
+    CommonPreferences.clearTjuPrefs();
     Provider.of<GPANotifier>(context, listen: false).clear();
     Provider.of<ScheduleNotifier>(context, listen: false).clear();
     Provider.of<ExamNotifier>(context, listen: false).clear();
@@ -80,7 +80,7 @@ class TjuUnbindDialog extends Dialog {
 class PhoneUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
     ToastProvider.success("解除绑定成功");
-    CommonPreferences().phone.value = "";
+    CommonPreferences.phone.value = "";
     Navigator.pop(context);
   }
 
@@ -136,7 +136,7 @@ class PhoneUnbindDialog extends Dialog {
 class EmailUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
     ToastProvider.success("解除绑定成功");
-    CommonPreferences().email.value = "";
+    CommonPreferences.email.value = "";
     Navigator.pop(context);
   }
 
@@ -193,8 +193,8 @@ class LogoffDialog extends Dialog {
   void _logoff() {
     AuthService.logoff(onSuccess: () {
       ToastProvider.success("注销账号成功");
-      CommonPreferences().clearUserPrefs();
-      CommonPreferences().clearTjuPrefs();
+      CommonPreferences.clearUserPrefs();
+      CommonPreferences.clearTjuPrefs();
       Navigator.pushNamedAndRemoveUntil(
           WePeiYangApp.navigatorState.currentContext,
           AuthRouter.login,

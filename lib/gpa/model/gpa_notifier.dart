@@ -1,6 +1,7 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show OnFailure;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -117,11 +118,11 @@ class GPANotifier with ChangeNotifier {
 
   /// notifier中也写一个hideGPA，就可以在从设置页面pop至主页时，令主页的GPAWidget进行rebuild
   set hideGPA(bool value) {
-    CommonPreferences().hideGPA.value = value;
+    CommonPreferences.hideGPA.value = value;
     notifyListeners();
   }
 
-  bool get hideGPA => CommonPreferences().hideGPA.value;
+  bool get hideGPA => CommonPreferences.hideGPA.value;
 
   GestureTapCallback refreshGPA({bool hint = false, OnFailure onFailure}) {
     return () {
@@ -131,7 +132,7 @@ class GPANotifier with ChangeNotifier {
         _gpaStats = gpaBean.stats;
         total = gpaBean.total;
         notifyListeners();
-        CommonPreferences().gpaData.value = json.encode(gpaBean);
+        CommonPreferences.gpaData.value = json.encode(gpaBean);
       }, onFailure: (e) {
         if (onFailure != null) onFailure(e);
       });
@@ -140,9 +141,9 @@ class GPANotifier with ChangeNotifier {
 
   /// 从缓存中读课表的数据，进入主页之前调用
   void readPref() {
-    var pref = CommonPreferences();
-    if (pref.gpaData.value == '') return;
-    GPABean gpaBean = GPABean.fromJson(json.decode(pref.gpaData.value));
+    if (CommonPreferences.gpaData.value == '') return;
+    GPABean gpaBean =
+        GPABean.fromJson(json.decode(CommonPreferences.gpaData.value));
     _gpaStats = gpaBean.stats;
     total = gpaBean.total;
     notifyListeners();

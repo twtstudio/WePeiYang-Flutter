@@ -104,11 +104,11 @@ extension CampusExtension on Campus {
 
   Campus get change {
     var next = (this.index + 1) % 2;
-    CommonPreferences().lastChoseCampus.value = next;
+    CommonPreferences.lastChoseCampus.value = next;
     return campuses[next];
   }
 
-  Campus get init => Campus.values[CommonPreferences().lastChoseCampus.value];
+  Campus get init => Campus.values[CommonPreferences.lastChoseCampus.value];
 
   String get id => ['1', '2'][this.index];
 
@@ -116,10 +116,10 @@ extension CampusExtension on Campus {
 }
 
 DateTime checkDateTimeAvailable(DateTime dateTime) {
-   if(dateTime != null){
-     if (dateTime.isBefore(Time.semesterStart())) {
-       return Time.semesterStart();
-     }
-   }
-   return dateTime;
+  if (dateTime != null) {
+    if (dateTime.isBefore(Time.semesterStart())) {
+      return Time.semesterStart();
+    }
+  }
+  return dateTime;
 }

@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;

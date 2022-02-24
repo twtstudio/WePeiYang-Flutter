@@ -22,7 +22,7 @@ class Time {
 
   // TODO: 暂时不知道学习开始时间怎么处理，所以就暂时搞个假的
   static DateTime semesterStart() {
-    var firstDay = DateTime.tryParse(CommonPreferences().termStartDate.value);
+    var firstDay = DateTime.tryParse(CommonPreferences.termStartDate.value);
     if (firstDay != null) {
       // 防止错误
       return firstDay.next.weekStart;
@@ -158,7 +158,8 @@ extension DateTimeExtension on DateTime {
 
   bool get isThisWeek {
     var begin = DateTime(year).weekStart;
-    return _weekConversion(begin) == checkDateTimeAvailable(DateTime.now())._weekConversion(begin);
+    return _weekConversion(begin) ==
+        checkDateTimeAvailable(DateTime.now())._weekConversion(begin);
   }
 
   List<DateTime> get thisWeek => Time.week

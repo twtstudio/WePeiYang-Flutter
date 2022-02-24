@@ -89,7 +89,8 @@ class UpdateManager extends ChangeNotifier {
     if (localVersion + version.flutterFixCode < version.versionCode) {
       // 安卓端进行了更改，只能通过下载新的安装包更新
       _updateWithApk(version, showToast);
-    } else if (localVersion < version.versionCode && localVersion + version.flutterFixCode >= version.versionCode) {
+    } else if (localVersion < version.versionCode &&
+        localVersion + version.flutterFixCode >= version.versionCode) {
       // 则代表可以通过热修复更新 也可以通过下载新的安装包更新
       // 自动更新，下载完成后再弹对话框
       hotFix(
@@ -112,7 +113,8 @@ class UpdateManager extends ChangeNotifier {
 
   Future<void> _updateWithApk(Version version, bool showToast) async {
     // 这里其实只返回一个，为了适配安卓低版本才返回一个列表，具体看源码中的注释
-    final downloadDirectories = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+    final downloadDirectories =
+        await getExternalStorageDirectories(type: StorageDirectory.downloads);
     if (downloadDirectories == null) return;
     for (var directory in downloadDirectories) {
       final path = directory.path + "/apk/" + version.apkName;
@@ -173,8 +175,9 @@ class UpdateManager extends ChangeNotifier {
   }
 
   bool get todayShowDialogAgain {
-    final date = CommonPreferences().todayShowUpdateAgain.value;
-    final todayNotAgain = DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
+    final date = CommonPreferences.todayShowUpdateAgain.value;
+    final todayNotAgain =
+        DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
     if (todayNotAgain) {
       return false;
     } else {

@@ -32,7 +32,7 @@ Color generateColor(ScheduleCourse course) {
 
 /// 返回本周无需上的课（灰色）
 Widget getQuietCourse(double height, double width, ScheduleCourse course) {
-  return (CommonPreferences().otherWeekSchedule.value)
+  return (CommonPreferences.otherWeekSchedule.value)
       ? Container(
           height: height,
           width: width,

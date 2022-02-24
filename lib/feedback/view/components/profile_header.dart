@@ -41,7 +41,9 @@ class ProfileHeader extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    UserAvatarImage(size: (ScreenUtil.defaultSize.width - 60) / 3, iconColor: Colors.white),
+                    UserAvatarImage(
+                        size: (ScreenUtil.defaultSize.width - 60) / 3,
+                        iconColor: Colors.white),
                     SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
                     SizedBox(
                       width: (ScreenUtil.defaultSize.width - 60) / 2,
@@ -49,14 +51,14 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(CommonPreferences().nickname.value,
+                          Text(CommonPreferences.nickname.value,
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               style: TextUtil.base.ProductSans.black2A.w700
                                   .sp(22)),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
-                            child: Text(CommonPreferences().userNumber.value,
+                            child: Text(CommonPreferences.userNumber.value,
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),
@@ -64,7 +66,7 @@ class ProfileHeader extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 7.0),
                             child: Text(
-                                "MPID: ${CommonPreferences().feedbackUid.value.toString().padLeft(6, '0')}",
+                                "MPID: ${CommonPreferences.feedbackUid.value.toString().padLeft(6, '0')}",
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),

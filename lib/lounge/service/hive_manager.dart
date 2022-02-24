@@ -70,8 +70,7 @@ class HiveManager {
         var e = await Hive.boxExists(key);
         if (e) {
           _instance._buildingBoxes[key] = await Hive.openLazyBox<Building>(key);
-        } else {
-        }
+        } else {}
       }
       return _instance;
     });
@@ -99,7 +98,7 @@ class HiveManager {
   setTemporaryDataFinish(DateTime dateTime) async {
     await _temporaryData.put(temporary, null);
     _temporaryDateTime = dateTime;
-    CommonPreferences().temporaryUpdateTime.value = dateTime.toString();
+    CommonPreferences.temporaryUpdateTime.value = dateTime.toString();
   }
 
   clearTemporaryData() async => await _temporaryData.clear();
@@ -208,9 +207,9 @@ class HiveManager {
 
   bool shouldUpdateTemporaryData({@required DateTime dateTime}) {
     if (_temporaryDateTime == null) {
-      if (CommonPreferences().temporaryUpdateTime.value != "") {
+      if (CommonPreferences.temporaryUpdateTime.value != "") {
         _temporaryDateTime =
-            DateTime.parse(CommonPreferences().temporaryUpdateTime.value);
+            DateTime.parse(CommonPreferences.temporaryUpdateTime.value);
       } else {
         return true;
       }
@@ -332,7 +331,7 @@ class HiveManager {
       }
     } else {
       var updateTime = DateTime.tryParse(
-        CommonPreferences().temporaryUpdateTime.value,
+        CommonPreferences.temporaryUpdateTime.value,
       );
 
       var ifNotUpdate = updateTime?.isTheSameWeek(time) ?? false;

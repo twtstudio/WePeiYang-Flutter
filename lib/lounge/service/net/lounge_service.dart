@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show compute;
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 
@@ -18,9 +18,8 @@ class LoginDio extends DioAbstract {
   List<InterceptorsWrapper> interceptors = [
     ApiInterceptor(),
     InterceptorsWrapper(onRequest: (options, handler) {
-      var pref = CommonPreferences();
-      options.headers['token'] = pref.token.value;
-      options.headers['Cookie'] = pref.captchaCookie.value;
+      options.headers['token'] = CommonPreferences.token.value;
+      options.headers['Cookie'] = CommonPreferences.captchaCookie.value;
       return handler.next(options);
     })
   ];

@@ -58,9 +58,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   void initState() {
     super.initState();
     captchaWidget = CaptchaWidget(captchaKey);
-    var pref = CommonPreferences();
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =

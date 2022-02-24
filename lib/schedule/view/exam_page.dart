@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -19,7 +20,7 @@ class ExamPage extends StatefulWidget {
 class _ExamPageState extends State<ExamPage> {
   _ExamPageState() {
     Provider.of<ExamNotifier>(WePeiYangApp.navigatorState.currentContext,
-        listen: false)
+            listen: false)
         .refreshExam()
         .call();
   }
@@ -59,7 +60,7 @@ class _ExamPageState extends State<ExamPage> {
               icon: Icon(Icons.autorenew,
                   color: FavorColors.scheduleTitleColor(), size: 28),
               onPressed: () {
-                if (CommonPreferences().isBindTju.value) {
+                if (CommonPreferences.isBindTju.value) {
                   Provider.of<ExamNotifier>(context, listen: false)
                       .refreshExam(
                           hint: true,

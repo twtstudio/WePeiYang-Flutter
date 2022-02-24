@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -326,7 +325,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if (CommonPreferences().feedbackLastWeCo.value != id) {
+        if (CommonPreferences.feedbackLastWeCo.value != id) {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -343,9 +342,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(context, FeedbackRouter.detail,
                         arguments: post);
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   } else {
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   }
                 });
               },
@@ -454,12 +453,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     //控制动画速率
     timeDilation = 0.9;
-    ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
-        designSize: Size(390, 844),
-        orientation: Orientation.portrait);
 
     _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
 
@@ -772,7 +765,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                                 Icons.arrow_drop_down,
                                                 size: 10,
                                               ),
-                                              if (_tabPaddingWidth > 10) SizedBox(width: _tabPaddingWidth - 10)
+                                              if (_tabPaddingWidth > 10)
+                                                SizedBox(
+                                                    width:
+                                                        _tabPaddingWidth - 10)
                                             ],
                                           ),
                                           onTap: _onFeedbackTapped,
@@ -792,9 +788,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       SizedBox(width: _tabPaddingWidth),
                                       Text("游戏"),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 1, bottom: 3),
+                                        padding: const EdgeInsets.only(
+                                            left: 1, bottom: 3),
                                         child: SvgPicture.asset(
-                                            'assets/svg_pics/lake_butt_icons/recommended.svg',
+                                          'assets/svg_pics/lake_butt_icons/recommended.svg',
                                           width: 12,
                                         ),
                                       )
@@ -815,7 +812,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           ),
                           //0-->时间排序，1-->动态排序
                           onSelected: (value) {
-                            CommonPreferences().feedbackSearchType.value =
+                            CommonPreferences.feedbackSearchType.value =
                                 value.toString();
                             onRefresh();
                           },

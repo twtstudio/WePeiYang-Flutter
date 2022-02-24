@@ -20,7 +20,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     S.current.mon_sat,
     S.current.mon_sun
   ];
-  int _index = CommonPreferences().dayNumber.value - 5;
+  int _index = CommonPreferences.dayNumber.value - 5;
 
   Widget _judgeIndex(int index) {
     if (index != _index)
@@ -51,7 +51,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     return InkWell(
       onTap: () {
         setState(() => _index = index);
-        CommonPreferences().dayNumber.value = index + 5;
+        CommonPreferences.dayNumber.value = index + 5;
       },
       borderRadius: _judgeBorder(index),
       splashFactory: InkRipple.splashFactory,

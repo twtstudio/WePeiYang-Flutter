@@ -1,11 +1,12 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TextUtil {
-  static TextStyle base;
+  static late TextStyle base;
 
   static init(BuildContext context) {
-    base = Theme.of(context).textTheme.bodyText2;
+    base = Theme.of(context).textTheme.bodyText2 ?? TextStyle();
   }
 }
 
@@ -54,6 +55,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle h(double h) => this.copyWith(height: h);
 
-  TextStyle space({double wordSpacing, double letterSpacing}) =>
+  TextStyle space({double? wordSpacing, double? letterSpacing}) =>
       this.copyWith(wordSpacing: wordSpacing, letterSpacing: letterSpacing);
 }
