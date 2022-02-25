@@ -118,7 +118,7 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       HiveManager.init();
-      FeedbackService.getToken();
+      FeedbackService.getToken(forceRefresh: true);
     });
   }
 

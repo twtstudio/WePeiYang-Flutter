@@ -76,13 +76,8 @@ class FeedbackService with AsyncTimer {
       bool forceRefresh = false}) async {
     try {
       var response;
-      if (forceRefresh) {
-        response = await feedbackDio.get('auth/passwd', queryParameters: {
-          'user': CommonPreferences().userNumber.value,
-          'password': CommonPreferences().password.value,
-        });
-      } else if (CommonPreferences().feedbackToken.value != null &&
-          CommonPreferences().feedbackToken.value != "") {
+      if (CommonPreferences().feedbackToken.value != null &&
+          CommonPreferences().feedbackToken.value != "" && !forceRefresh) {
         response = await feedbackDio
             .get('auth/${CommonPreferences().feedbackToken.value}');
       } else {
@@ -101,10 +96,9 @@ class FeedbackService with AsyncTimer {
         ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
-      if (onFailure != null) {
-        if (forceRefresh) ToastProvider.error('请尝试登出后重新登录');
-        onFailure(e);
-      }
+      if (!forceRefresh) {
+        getToken(forceRefresh: true);
+      } else if (onFailure != null) onFailure(e);
     }
   }
 
@@ -255,7 +249,6 @@ class FeedbackService with AsyncTimer {
         },
       );
       List<Post> list = [];
-      print(response.data.toString());
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));
       }

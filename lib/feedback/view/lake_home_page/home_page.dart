@@ -997,7 +997,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
               _tagsProvider.initDepartments();
               _listProvider.initPostList(2, success: () {}, failure: (_) {});
             },
-            onFailure: (e) {});
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
         if (!controller.isAnimating) {
           controller.repeat();
           widget.onPressed?.call(controller);
