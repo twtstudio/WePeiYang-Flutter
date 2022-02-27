@@ -63,7 +63,7 @@ class FloorMessage {
   factory FloorMessage.fromJson(Map<String, dynamic> json) => FloorMessage(
     type: json["type"],
     isRead: json["is_read"],
-    toFloor: Floor.fromJson(json["to_floor"]),
+    toFloor: json["to_floor"] == null ? null : Floor.fromJson(json["to_floor"]),
     post: Post.fromJson(json["post"]),
     floor: Floor.fromJson(json["floor"]),
   );

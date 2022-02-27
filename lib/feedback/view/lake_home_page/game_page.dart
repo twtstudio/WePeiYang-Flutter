@@ -52,7 +52,7 @@ class GameCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             padding: EdgeInsets.fromLTRB(16.0, 20.0, 10.0, 8.0),
             decoration: BoxDecoration(
-              color: ColorUtil.white253,
+              color: ColorUtil.whiteFDFE,
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
             child: Row(

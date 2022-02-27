@@ -7,10 +7,12 @@ import 'package:we_pei_yang_flutter/message/message_dialog.dart';
 
 class MessageProvider extends ChangeNotifier {
   List<LikeMessage> _likeMessages = [];
+  List<FloorMessage> _floorMessages = [];
 
   MessageCount _messageCount;
 
   List<LikeMessage> get likeMessages => _likeMessages;
+  List<FloorMessage> get floorMessages => _floorMessages;
 
   MessageCount get messageCount => _messageCount;
 
@@ -55,6 +57,6 @@ showMessageDialog(BuildContext context, String data) async {
 
 extension IntExtension on int {
   bool get isZero => this == 0;
-
+  bool get haveMessage => this == -1;
   bool get isOne => this == 1;
 }

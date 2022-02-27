@@ -407,6 +407,7 @@ class _NCommentCardState extends State<NCommentCard>
         isLike: widget.comment.isLike,
         onSuccess: () {
           widget.likeSuccessCallback?.call(!isLiked, count);
+          widget.comment.isLike = !isLiked;
           success.call();
         },
         onFailure: (e) {

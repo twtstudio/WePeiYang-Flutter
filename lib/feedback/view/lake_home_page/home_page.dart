@@ -612,7 +612,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _departmentSelectionContainer = Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: ColorUtil.white253,
+          color: ColorUtil.whiteFDFE,
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
@@ -687,7 +687,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           return <Widget>[
             SliverAppBar(
               toolbarHeight: 48,
-              backgroundColor: ColorUtil.white253,
+              backgroundColor: ColorUtil.whiteFDFE,
               titleSpacing: 0,
               leading: IconButton(
                   icon: ImageIcon(
@@ -722,7 +722,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 pinned: true,
                 delegate: HomeHeaderDelegate(
                     child: Container(
-                  color: ColorUtil.white253,
+                  color: ColorUtil.whiteFDFE,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

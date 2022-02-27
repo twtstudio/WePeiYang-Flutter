@@ -188,7 +188,7 @@ class Floor {
   bool isOwner;
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
-        id: json["id"],
+        id: json["id"] ,
         createAt: json["created_at"] == "" ? null : DateTime.parse(json["created_at"]),
         uid: json["uid"],
         postId: json["post_id"],

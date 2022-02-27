@@ -49,10 +49,10 @@ class MessageService {
         "page": page,
       });
       List<FloorMessage> list = [];
-      for (Map<String, dynamic> json in response.data['data']['list']) {
+      for (Map<String, dynamic> json in response.data['list']) {
         list.add(FloorMessage.fromJson(json));
       }
-      onSuccess(list, response.data['data']['total']);
+      onSuccess(list, response.data['total']);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -97,7 +97,6 @@ class MessageService {
     } on DioError catch (e) {
       onFailure(e);
     }
-
     ///涉及推送原生部分代码，随后再改
     // await pushChannel
     //     .invokeMethod<String>("cancelNotification", {"id": questionId});

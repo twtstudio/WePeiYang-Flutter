@@ -2,13 +2,14 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
@@ -31,25 +32,10 @@ extension MessageTypeExtension on MessageType {
     return result;
   }
 
-  String get action {
-    switch (this) {
-      case MessageType.like:
-        return '为你点赞';
-      case MessageType.floor:
-        return '回复了了你的冒泡';
-      case MessageType.reply:
-        return '回复了你的问题';
-      case MessageType.notice:
-        return '发表了一则通知';
-      default:
-        return "";
-    }
-  }
-
   int getMessageCount(MessageProvider model) {
     switch (this) {
       case MessageType.like:
-        return 0;
+        return model.likeMessages.length;
       case MessageType.floor:
         return model.messageCount?.floor ?? 0;
       case MessageType.reply:
@@ -73,14 +59,21 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
 
   TabController _tabController;
 
-  ValueNotifier<int> currentIndex = ValueNotifier(2);
+  ValueNotifier<int> currentIndex = ValueNotifier(0);
   ValueNotifier<int> refresh = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
     _tabController =
-        TabController(length: types.length, vsync: this, initialIndex: 2);
+        TabController(length: types.length, vsync: this, initialIndex: 0)
+    ..addListener(() {
+      ///这个if避免点击tab时回调两次
+      ///https://blog.csdn.net/u010960265/article/details/104982299
+      if(_tabController.index.toDouble() == _tabController.animation.value){
+        currentIndex.value = _tabController.index;
+      }
+    });
   }
 
   onRefresh() {
@@ -124,13 +117,11 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 },
                 indicator: CustomIndicator(
                   borderSide: BorderSide(
-                    width: 3,
-                    color: Color(0xff363c54),
+                    width: 3.w,
+                    color: ColorUtil.blue363CColor,
                   ),
                 ),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 2),
                 isScrollable: false,
-                unselectedLabelColor: Colors.black,
               ),
             ),
           ),
@@ -139,7 +130,18 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
       body: TabBarView(
         controller: _tabController,
         children: types.map((t) {
-          return MessagesList(type: t);
+          switch(t) {
+            case MessageType.like:
+              return LikeMessagesList();
+            case MessageType.floor:
+              return FloorMessagesList();
+            // case MessageType.reply:
+            //   return ReplyMessageList();
+            // case MessageType.notice:
+            //   return NoticeMessageList();
+            default:
+              return Container();
+          }
         }).toList(),
       ),
     );
@@ -175,9 +177,9 @@ class _MessageTabState extends State<MessageTab> {
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: current == widget.type.index
-                ? Color(0xff2a2a2a)
-                : Color(0xffb1b2be),
-            fontSize: 14,
+                ? ColorUtil.black2AColor
+                : ColorUtil.greyB2B6Color,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
         );
@@ -185,12 +187,13 @@ class _MessageTabState extends State<MessageTab> {
     );
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 5),
+      padding: EdgeInsets.only(bottom: 2.w),
       child: Consumer<MessageProvider>(builder: (_, model, __) {
         var count = widget.type.getMessageCount(model);
         if (count.isZero) {
           return tab;
-        } else {
+        }
+        else {
           return Center(
             child: Badge(
               child: tab,
@@ -206,16 +209,15 @@ class _MessageTabState extends State<MessageTab> {
   }
 }
 
-class MessagesList extends StatefulWidget {
-  final MessageType type;
+class LikeMessagesList extends StatefulWidget {
 
-  MessagesList({Key key, this.type}) : super(key: key);
+  LikeMessagesList({Key key}) : super(key: key);
 
   @override
-  _MessagesListState createState() => _MessagesListState();
+  _LikeMessagesListState createState() => _LikeMessagesListState();
 }
 
-class _MessagesListState extends State<MessagesList>
+class _LikeMessagesListState extends State<LikeMessagesList>
     with AutomaticKeepAliveClientMixin {
   List<LikeMessage> items = [];
   RefreshController _refreshController = RefreshController(
@@ -310,15 +312,15 @@ class _MessagesListState extends State<MessagesList>
       child = Center(
         child: Loading(),
       );
-    } else if (items.isEmpty) {
+    } else if (items.isEmpty || items == null) {
       child = Center(
         child: Text("无未读消息"),
       );
     } else {
-      child = ListView.separated(
+      child = ListView.builder(
         physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
-          return MessageItem(
+          return LikeMessageItem(
             data: items[i],
             onTapDown: () async {
               await MessageService.setLikeMessageRead(
@@ -328,16 +330,8 @@ class _MessagesListState extends State<MessagesList>
                 ToastProvider.error(e.error.toString());
               });
             },
-            messageType: widget.type,
           );
         },
-        separatorBuilder: (_, __) => Divider(
-          indent: 20,
-          endIndent: 20,
-          thickness: 1,
-          height: 3,
-          color: Color(0xffacaeba),
-        ),
         itemCount: items.length,
       );
     }
@@ -377,209 +371,593 @@ class _MessagesListState extends State<MessagesList>
   bool get wantKeepAlive => true;
 }
 
-class MessageItem extends StatelessWidget {
+class LikeMessageItem extends StatefulWidget {
   final LikeMessage data;
   final VoidFutureCallBack onTapDown;
-  final MessageType messageType;
+
+  const LikeMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+
+  @override
+  _LikeMessageItemState createState() => _LikeMessageItemState();
+}
+
+class _LikeMessageItemState extends State<LikeMessageItem> {
+  Post post;
   final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
 
-  const MessageItem({Key key, this.data, this.onTapDown, this.messageType})
-      : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await FeedbackService.getPostById(
+        id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
+          onResult: (result) {
+            post = result;
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget sender;
-    switch (messageType) {
-      // case MessageType.reply:
-      //   sender = Container(
-      //     height: 20,
-      //     width: (data.floor.adminName?.length ?? 3) * 17.0,
-      //     child: Center(
-      //       child: Text(
-      //         "${data.floor.adminName ?? S.current.unknown_department}",
-      //         style: TextStyle(color: Colors.white, fontSize: 10),
-      //       ),
-      //     ),
-      //     decoration: BoxDecoration(
-      //         color: Color(0xff596385),
-      //         borderRadius: BorderRadius.circular(10),
-      //         shape: BoxShape.rectangle),
-      //   );
-      //   break;
-      default:
-        sender = Row(
+    Widget sender = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(Icons.account_circle_outlined, size: 33),
+        SizedBox(width: 6.w),
+        Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.account_circle_outlined, size: 41),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      '${S.current.anonymous_user}',
-                      style: TextStyle(
-                          color: ColorUtil.boldLakeTextColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      messageType.action,
-                      style: TextStyle(
-                          color: Color(0xff434650),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1),
                 Text(
-                  '某时某刻',
-                  style: TextStyle(color: Color(0xffb1b2be), fontSize: 12),
+                  '${S.current.anonymous_user} ',
+                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                ),
+                Text(
+                  '为你点赞',
+                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
                 ),
               ],
             ),
+            SizedBox(height: 2.w),
+            Text(
+              '某时某刻',
+              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+            ),
           ],
-        );
-    }
+        ),
+      ],
+    );
 
-    Widget title = sender;
+    Widget pointText = Text(
+      ' · ',
+      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+    );
+
+    Widget likeFloorFav = Row(
+      children: [
+        Text(
+          post == null ? '0' : post.likeCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 点赞',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.commentCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 评论',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.favCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 收藏',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+      ],
+    );
 
     Widget questionItem = Container(
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(7),
-        color: ColorUtil.backgroundColor,
-        boxShadow: [
-          BoxShadow(
-              blurRadius: 5,
-              color: Color.fromARGB(64, 236, 237, 239),
-              offset: Offset.zero,
-              spreadRadius: 3),
-        ],
+        borderRadius: BorderRadius.circular(5),
+        color: widget.data.type == 0 ? ColorUtil.greyF7F8Color : ColorUtil.whiteFDFE,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.all(10.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    data.post.title,
-                    maxLines: 2,
-                    softWrap: true,
-                    style: TextStyle(
-                      color: Color(0xff363c54),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                Text(
+                  post == null ? '...' : post.title,
+                  maxLines: 2,
+                  softWrap: true,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
                 ),
-                if (data.post.imageUrls != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Image.network(
-                      baseUrl + data.post.imageUrls[0],
-                      fit: BoxFit.cover,
-                      height: 50,
-                      width: 70,
-                    ),
-                  ),
+                SizedBox(height: 6.w),
+                likeFloorFav,
               ],
             ),
-            // if (data.comment != null)
-            //   Divider(thickness: 1, height: 15, color: Color(0xffacaeba)),
-            if (data.floor != null)
-              RichText(
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                text: HTML.toTextSpan(context, data.floor.content ?? "",
-                    defaultTextStyle: FontManager.YaHeiRegular.copyWith(
-                      color: Color(0xff363c54),
-                      fontSize: 13,
-                    )),
+            if (widget.data.post.imageUrls != null)
+              Image.network(
+                baseUrl + widget.data.post.imageUrls[0],
+                fit: BoxFit.cover,
+                height: 50,
+                width: 70,
               ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Image.asset("assets/images/account/comment.png", height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 10),
-                  child: Text(
-                    data.post.commentCount.toString(),
-                    style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
-                  ),
-                ),
-                Image.asset("assets/images/account/thumb_up.png", height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 10),
-                  child: Text(
-                    data.post.likeCount.toString(),
-                    style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
-                  ),
-                ),
-                Spacer(),
-                Builder(
-                  builder: (_) {
-                    var isSolved = data.post.solved ?? false;
-                    return Text(
-                      isSolved ? S.current.have_replied : S.current.not_reply,
-                      style: TextStyle(
-                          color:
-                              isSolved ? Color(0xff434650) : ColorUtil.grey108,
-                          fontSize: 13),
-                    );
-                  },
-                )
-              ],
-            )
           ],
         ),
       ),
     );
 
-    Widget messageWrapper;
+    if(widget.data.type == 1) {
+      questionItem = Container(decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
+        color: ColorUtil.greyF7F8Color,
+      ),
+          child: Padding(
+            padding: EdgeInsets.all(10.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.data.floor.nickname + ': ' + widget.data.floor.content,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                ),
+                SizedBox(height: 8.w),
+                questionItem,
+              ],
+            ),
+          )
+      );
+    }
 
-    // if (data.visible == 1) {
-    //   messageWrapper = Badge(
-    //     position: BadgePosition.topEnd(end: -2, top: -14),
-    //     padding: const EdgeInsets.all(5),
-    //     badgeContent: Text(""),
-    //     child: questionItem,
-    //   );
-    // }
+    Widget messageWrapper = Badge(
+      position: BadgePosition.topEnd(end: -2, top: -14),
+      padding: const EdgeInsets.all(5),
+      badgeContent: Text(""),
+      child: questionItem,
+    );
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
       child: GestureDetector(
         onTap: () async {
-          await onTapDown?.call();
+          await widget.onTapDown?.call();
+          ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
+          // if (widget.data.type == 0) {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
-            arguments: data.post,
+            arguments: post,
           ).then((_) => context
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
+          // }
+          // else {
+          //   await Navigator.pushNamed(
+          //     context,
+          //     FeedbackRouter.commentDetail,
+          //     arguments: widget.data.floor,
+          //   ).then((_) => context
+          //       .findAncestorStateOfType<_FeedbackMessagePageState>()
+          //       .onRefresh());
+          // }
         },
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(7))),
-          child: Column(
-            children: [
-              title,
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: messageWrapper ?? questionItem,
+              borderRadius: BorderRadius.all(Radius.circular(16.w))),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
+                sender,
+                SizedBox(height: 16.w),
+                messageWrapper ?? questionItem,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FloorMessagesList extends StatefulWidget {
+
+  FloorMessagesList({Key key}) : super(key: key);
+
+  @override
+  _FloorMessagesListState createState() => _FloorMessagesListState();
+}
+
+class _FloorMessagesListState extends State<FloorMessagesList>
+    with AutomaticKeepAliveClientMixin {
+  List<FloorMessage> items = [];
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
+
+  onRefresh({bool refreshCount = true}) async {
+    if (widget == null) return;
+    // monitor network fetch
+    try {
+      await MessageService.getFloorMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.clear();
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+
+      if (mounted) {
+        if (refreshCount) {
+          Provider.of<MessageProvider>(context, listen: false)
+              .refreshFeedbackCount();
+        }
+        setState(() {});
+      }
+      _refreshController.refreshCompleted();
+    } catch (e) {
+      _refreshController.refreshFailed();
+    }
+    // if failed,use refreshFailed()
+    // _refreshController.refreshCompleted();
+  }
+
+  _onLoading() async {
+    try {
+      await MessageService.getFloorMessages(
+          page: items.length ~/ 10 + 2,
+          onSuccess: (list, total) {
+            items.addAll(list);
+            if (list.isEmpty) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) setState(() {});
+    } catch (e) {
+      _refreshController.loadFailed();
+    }
+
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    // items.add((items.length + 1).toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MessageService.getFloorMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) {
+        Provider.of<MessageProvider>(context, listen: false)
+            .refreshFeedbackCount();
+        setState(() {});
+        context
+            .findAncestorStateOfType<_FeedbackMessagePageState>()
+            .refresh
+            .addListener(() => onRefresh(
+          refreshCount: false,
+        ));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    Widget child;
+
+    if (_refreshController.isRefresh) {
+      child = Center(
+        child: Loading(),
+      );
+    } else if (items.isEmpty) {
+      child = Center(
+        child: Text("无未读消息"),
+      );
+    } else {
+      child = ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (c, i) {
+          return FloorMessageItem(
+            data: items[i],
+            onTapDown: () async {
+              if (!items[i].isRead){
+                await MessageService.setFloorMessageRead(
+                    items[i].floor.id,
+                    onSuccess: () {}, onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                });
+              }
+            },
+          );
+        },
+        itemCount: items.length,
+      );
+    }
+
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text(S.current.up_load);
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text(S.current.load_fail);
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text(S.current.load_more);
+          } else {
+            body = Text(S.current.no_more_data);
+          }
+          return SizedBox(
+            height: 55,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: onRefresh,
+      onLoading: _onLoading,
+      child: child,
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class FloorMessageItem extends StatefulWidget {
+  final FloorMessage data;
+  final VoidFutureCallBack onTapDown;
+
+  const FloorMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+
+  @override
+  _FloorMessageItemState createState() => _FloorMessageItemState();
+}
+
+class _FloorMessageItemState extends State<FloorMessageItem> {
+  Post post;
+  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await FeedbackService.getPostById(
+          id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
+          onResult: (result) {
+            post = result;
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget sender = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(Icons.account_circle_outlined, size: 33),
+        SizedBox(width: 6.w),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  widget.data.floor.nickname + ' ',
+                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                ),
+                Text(
+                  widget.data.type == 0 ? '回复了你的冒泡' : '回复了你的评论',
+                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                ),
+              ],
+            ),
+            SizedBox(height: 2.w),
+            Text(
+              '某时某刻',
+              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    Widget pointText = Text(
+      ' · ',
+      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+    );
+
+    Widget likeFloorFav = Row(
+      children: [
+        Text(
+          post == null ? '0' : post.likeCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 点赞',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.commentCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 评论',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.favCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 收藏',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+      ],
+    );
+
+    Widget questionItem = Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
+        color: widget.data.type == 0 ? ColorUtil.greyF7F8Color : ColorUtil.whiteFDFE,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  post == null ? '...' : post.title,
+                  maxLines: 2,
+                  softWrap: true,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                ),
+                SizedBox(height: 6.w),
+                likeFloorFav,
+              ],
+            ),
+            if (widget.data.post.imageUrls != null)
+              Image.network(
+                baseUrl + widget.data.post.imageUrls[0],
+                fit: BoxFit.cover,
+                height: 50,
+                width: 70,
               ),
-            ],
+          ],
+        ),
+      ),
+    );
+
+    if(widget.data.type == 1) {
+      questionItem = Container(decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
+        color: ColorUtil.greyF7F8Color,
+      ),
+          child: Padding(
+            padding: EdgeInsets.all(10.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.data.toFloor.nickname + ': ' + widget.data.toFloor.content,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                ),
+                SizedBox(height: 8.w),
+                questionItem,
+              ],
+            ),
+          )
+      );
+    }
+
+    Widget messageWrapper;
+    if(!widget.data.isRead) {
+      messageWrapper = Badge(
+        position: BadgePosition.topEnd(end: -2, top: -14),
+        padding: const EdgeInsets.all(5),
+        badgeContent: Text(""),
+        child: questionItem,
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      child: GestureDetector(
+        onTap: () async {
+          await widget.onTapDown?.call();
+          ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
+          // if (widget.data.type == 0) {
+          await Navigator.pushNamed(
+            context,
+            FeedbackRouter.detail,
+            arguments: post,
+          ).then((_) => context
+              .findAncestorStateOfType<_FeedbackMessagePageState>()
+              .onRefresh());
+          // }
+          // else {
+          //   await Navigator.pushNamed(
+          //     context,
+          //     FeedbackRouter.commentDetail,
+          //     arguments: widget.data.floor,
+          //   ).then((_) => context
+          //       .findAncestorStateOfType<_FeedbackMessagePageState>()
+          //       .onRefresh());
+          // }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: ColorUtil.whiteFDFE,
+              borderRadius: BorderRadius.all(Radius.circular(16.w))),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                sender,
+                SizedBox(height: 7.w),
+                Text(
+                  widget.data.floor.content,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
+                ),
+                SizedBox(height: 8.w),
+                messageWrapper ?? questionItem,
+              ],
+            ),
           ),
         ),
       ),
