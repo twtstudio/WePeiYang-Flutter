@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class FeedbackReadAllButton extends StatefulWidget {
   const FeedbackReadAllButton({Key key}) : super(key: key);
@@ -18,7 +17,7 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(Icons.check_box_outlined, size: ScreenUtil().setSp(15)*1.5, color: ColorUtil.bold42TextColor),
+        icon: Image.asset('assets/images/lake_butt_icons/check-square.png', width: 15.w),
         onPressed: () {
           showDialog<bool>(
                   context: context,
@@ -26,11 +25,7 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
                   builder: (BuildContext context) => ReadAllDialog())
               .then((ok) async {
             if (ok) {
-              var result = await MessageService.setAllMessageRead();
-              if (result) {
-                Provider.of<MessageProvider>(context, listen: false)
-                    .refreshFeedbackCount();
-              }
+              context.read<MessageProvider>().setAllMessageRead();
             }
           });
         });

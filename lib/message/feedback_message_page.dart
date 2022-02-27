@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
@@ -52,13 +53,14 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     super.initState();
     _tabController =
         TabController(length: types.length, vsync: this, initialIndex: 0)
-    ..addListener(() {
-      ///这个if避免点击tab时回调两次
-      ///https://blog.csdn.net/u010960265/article/details/104982299
-      if(_tabController.index.toDouble() == _tabController.animation.value){
-        currentIndex.value = _tabController.index;
-      }
-    });
+          ..addListener(() {
+            ///这个if避免点击tab时回调两次
+            ///https://blog.csdn.net/u010960265/article/details/104982299
+            if (_tabController.index.toDouble() ==
+                _tabController.animation.value) {
+              currentIndex.value = _tabController.index;
+            }
+          });
   }
 
   onRefresh() {
@@ -115,7 +117,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
       body: TabBarView(
         controller: _tabController,
         children: types.map((t) {
-          switch(t) {
+          switch (t) {
             case MessageType.like:
               return LikeMessagesList();
             case MessageType.floor:
@@ -173,22 +175,22 @@ class _MessageTabState extends State<MessageTab> {
 
     int count = context.read<MessageProvider>().getMessageCount(widget.type);
     return Padding(
-      padding: EdgeInsets.only(bottom: 2.w),
-      child: count == 0 ? tab : Center(
-            child: Badge(
-              child: tab,
-              badgeContent: Text(
-                count.toString(),
-                style: TextStyle(color: Colors.white, fontSize: 7),
-              ),
-            ),
-          )
-    );
+        padding: EdgeInsets.only(bottom: 2.w),
+        child: count == 0
+            ? tab
+            : Center(
+                child: Badge(
+                  child: tab,
+                  badgeContent: Text(
+                    count.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 7),
+                  ),
+                ),
+              ));
   }
 }
 
 class LikeMessagesList extends StatefulWidget {
-
   LikeMessagesList({Key key}) : super(key: key);
 
   @override
@@ -368,7 +370,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-        id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
+          id: widget.data.type == 0
+              ? widget.data.post.id
+              : widget.data.floor.postId,
           onResult: (result) {
             post = result;
           },
@@ -378,13 +382,22 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     });
   }
 
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
+
   @override
   Widget build(BuildContext context) {
     Widget sender = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.account_circle_outlined, size: 33),
+        SvgPicture.network(
+          'http://www.zrzz.site:7014/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          width: 30,
+          height: 30,
+          fit: BoxFit.cover,
+          placeholderBuilder: defaultPlaceholderBuilder,
+        ),
         SizedBox(width: 6.w),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -452,7 +465,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: widget.data.type == 0 ? ColorUtil.greyF7F8Color : ColorUtil.whiteFDFE,
+        color: widget.data.type == 0
+            ? ColorUtil.greyF7F8Color
+            : ColorUtil.whiteFDFE,
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -473,7 +488,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.post.imageUrls != null)
+            if (widget.data.post.imageUrls != null &&
+                widget.data.post.imageUrls.isNotEmpty)
               Image.network(
                 baseUrl + widget.data.post.imageUrls[0],
                 fit: BoxFit.cover,
@@ -485,12 +501,13 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       ),
     );
 
-    if(widget.data.type == 1) {
-      questionItem = Container(decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.greyF7F8Color,
-      ),
+    if (widget.data.type == 1) {
+      questionItem = Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5),
+            color: ColorUtil.greyF7F8Color,
+          ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
             child: Column(
@@ -504,8 +521,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 questionItem,
               ],
             ),
-          )
-      );
+          ));
     }
 
     Widget messageWrapper = Badge(
@@ -520,6 +536,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
+
           ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
           // if (widget.data.type == 0) {
           await Navigator.pushNamed(
@@ -561,7 +578,6 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
 }
 
 class FloorMessagesList extends StatefulWidget {
-
   FloorMessagesList({Key key}) : super(key: key);
 
   @override
@@ -647,8 +663,8 @@ class _FloorMessagesListState extends State<FloorMessagesList>
             .findAncestorStateOfType<_FeedbackMessagePageState>()
             .refresh
             .addListener(() => onRefresh(
-          refreshCount: false,
-        ));
+                  refreshCount: false,
+                ));
       }
     });
   }
@@ -674,9 +690,8 @@ class _FloorMessagesListState extends State<FloorMessagesList>
           return FloorMessageItem(
             data: items[i],
             onTapDown: () async {
-              if (!items[i].isRead){
-                await MessageService.setFloorMessageRead(
-                    items[i].floor.id,
+              if (!items[i].isRead) {
+                await MessageService.setFloorMessageRead(items[i].floor.id,
                     onSuccess: () {}, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
@@ -727,7 +742,8 @@ class FloorMessageItem extends StatefulWidget {
   final FloorMessage data;
   final VoidFutureCallBack onTapDown;
 
-  const FloorMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+  const FloorMessageItem({Key key, this.data, this.onTapDown})
+      : super(key: key);
 
   @override
   _FloorMessageItemState createState() => _FloorMessageItemState();
@@ -742,7 +758,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-          id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
+          id: widget.data.type == 0
+              ? widget.data.post.id
+              : widget.data.floor.postId,
           onResult: (result) {
             post = result;
           },
@@ -752,13 +770,22 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     });
   }
 
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
+
   @override
   Widget build(BuildContext context) {
     Widget sender = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.account_circle_outlined, size: 33),
+        SvgPicture.network(
+          'http://www.zrzz.site:7014/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          width: 30,
+          height: 30,
+          fit: BoxFit.cover,
+          placeholderBuilder: defaultPlaceholderBuilder,
+        ),
         SizedBox(width: 6.w),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -780,13 +807,13 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             Text(
               DateTime.now().difference(widget.data.floor.createAt).inDays >= 1
                   ? widget.data.floor.createAt
-                  .toLocal()
-                  .toIso8601String()
-                  .replaceRange(10, 11, ' ')
-                  .substring(0, 19)
+                      .toLocal()
+                      .toIso8601String()
+                      .replaceRange(10, 11, ' ')
+                      .substring(0, 19)
                   : DateTime.now()
-                  .difference(widget.data.floor.createAt)
-                  .dayHourMinuteSecondFormatted(),
+                      .difference(widget.data.floor.createAt)
+                      .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
             ),
           ],
@@ -834,7 +861,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: widget.data.type == 0 ? ColorUtil.greyF7F8Color : ColorUtil.whiteFDFE,
+        color: widget.data.type == 0
+            ? ColorUtil.greyF7F8Color
+            : ColorUtil.whiteFDFE,
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -867,31 +896,33 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       ),
     );
 
-    if(widget.data.type == 1) {
-      questionItem = Container(decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.greyF7F8Color,
-      ),
+    if (widget.data.type == 1) {
+      questionItem = Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5),
+            color: ColorUtil.greyF7F8Color,
+          ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.data.toFloor.nickname + ': ' + widget.data.toFloor.content,
+                  widget.data.toFloor.nickname +
+                      ': ' +
+                      widget.data.toFloor.content,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
                 ),
                 SizedBox(height: 8.w),
                 questionItem,
               ],
             ),
-          )
-      );
+          ));
     }
 
     Widget messageWrapper;
-    if(!widget.data.isRead) {
+    if (!widget.data.isRead) {
       messageWrapper = Badge(
         position: BadgePosition.topEnd(end: -2, top: -14),
         padding: const EdgeInsets.all(5),
@@ -905,6 +936,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
+
           ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
           // if (widget.data.type == 0) {
           await Navigator.pushNamed(
@@ -952,7 +984,6 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
 }
 
 class NoticeMessagesList extends StatefulWidget {
-
   NoticeMessagesList({Key key}) : super(key: key);
 
   @override
@@ -1038,8 +1069,8 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
             .findAncestorStateOfType<_FeedbackMessagePageState>()
             .refresh
             .addListener(() => onRefresh(
-          refreshCount: false,
-        ));
+                  refreshCount: false,
+                ));
       }
     });
   }
@@ -1065,9 +1096,8 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
           return NoticeMessageItem(
             data: items[i],
             onTapDown: () async {
-              if (!items[i].isRead){
-                await MessageService.setNoticeMessageRead(
-                    items[i].id,
+              if (!items[i].isRead) {
+                await MessageService.setNoticeMessageRead(items[i].id,
                     onSuccess: () {}, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
@@ -1118,18 +1148,21 @@ class NoticeMessageItem extends StatefulWidget {
   final NoticeMessage data;
   final VoidFutureCallBack onTapDown;
 
-  const NoticeMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+  const NoticeMessageItem({Key key, this.data, this.onTapDown})
+      : super(key: key);
 
   @override
   _NoticeMessageItemState createState() => _NoticeMessageItemState();
 }
 
 class _NoticeMessageItemState extends State<NoticeMessageItem> {
-
   @override
   void initState() {
     super.initState();
   }
+
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
 
   @override
   Widget build(BuildContext context) {
@@ -1137,7 +1170,13 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.account_circle_outlined, size: 33),
+        SvgPicture.network(
+          'http://www.zrzz.site:7014/beam/20/${widget.data.id}',
+          width: 30,
+          height: 30,
+          fit: BoxFit.cover,
+          placeholderBuilder: defaultPlaceholderBuilder,
+        ),
         SizedBox(width: 6.w),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1159,13 +1198,13 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
             Text(
               DateTime.now().difference(widget.data.createdAt).inDays >= 1
                   ? widget.data.createdAt
-                  .toLocal()
-                  .toIso8601String()
-                  .replaceRange(10, 11, ' ')
-                  .substring(0, 19)
+                      .toLocal()
+                      .toIso8601String()
+                      .replaceRange(10, 11, ' ')
+                      .substring(0, 19)
                   : DateTime.now()
-                  .difference(widget.data.createdAt)
-                  .dayHourMinuteSecondFormatted(),
+                      .difference(widget.data.createdAt)
+                      .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
             ),
           ],
@@ -1209,7 +1248,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
     );
 
     Widget messageWrapper;
-    if(!widget.data.isRead) {
+    if (!widget.data.isRead) {
       messageWrapper = Badge(
         position: BadgePosition.topEnd(end: -2, top: -14),
         padding: const EdgeInsets.all(5),
