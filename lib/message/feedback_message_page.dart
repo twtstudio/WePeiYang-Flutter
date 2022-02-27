@@ -20,7 +20,7 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import 'model/message_model.dart';
 
-enum MessageType { like, floor, reply, notice }
+enum MessageType { like, floor, reply, notice}
 
 extension MessageTypeExtension on MessageType {
   String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
@@ -122,8 +122,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               return LikeMessagesList();
             case MessageType.floor:
               return FloorMessagesList();
-            // case MessageType.reply:
-            //   return ReplyMessagesList();
+            case MessageType.reply:
+              return ReplyMessagesList();
             case MessageType.notice:
               return NoticeMessagesList();
             default:
@@ -155,6 +155,7 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<MessageProvider>();
     Widget tab = ValueListenableBuilder(
       valueListenable: pageState.currentIndex,
       builder: (_, int current, __) {
@@ -758,9 +759,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-          id: widget.data.type == 0
-              ? widget.data.post.id
-              : widget.data.floor.postId,
+          id: widget.data.post.id,
           onResult: (result) {
             post = result;
           },
@@ -970,6 +969,371 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 SizedBox(height: 7.w),
                 Text(
                   widget.data.floor.content,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
+                ),
+                SizedBox(height: 8.w),
+                messageWrapper ?? questionItem,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReplyMessagesList extends StatefulWidget {
+  ReplyMessagesList({Key key}) : super(key: key);
+
+  @override
+  _ReplyMessagesListState createState() => _ReplyMessagesListState();
+}
+
+class _ReplyMessagesListState extends State<ReplyMessagesList>
+    with AutomaticKeepAliveClientMixin {
+  List<ReplyMessage> items = [];
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
+
+  onRefresh({bool refreshCount = true}) async {
+    if (widget == null) return;
+    // monitor network fetch
+    try {
+      await MessageService.getReplyMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.clear();
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+
+      if (mounted) {
+        if (refreshCount) {
+          Provider.of<MessageProvider>(context, listen: false)
+              .refreshFeedbackCount();
+        }
+        setState(() {});
+      }
+      _refreshController.refreshCompleted();
+    } catch (e) {
+      _refreshController.refreshFailed();
+    }
+    // if failed,use refreshFailed()
+    // _refreshController.refreshCompleted();
+  }
+
+  _onLoading() async {
+    try {
+      await MessageService.getReplyMessages(
+          page: items.length ~/ 10 + 2,
+          onSuccess: (list, total) {
+            items.addAll(list);
+            if (list.isEmpty) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) setState(() {});
+    } catch (e) {
+      _refreshController.loadFailed();
+    }
+
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    // items.add((items.length + 1).toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MessageService.getReplyMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) {
+        Provider.of<MessageProvider>(context, listen: false)
+            .refreshFeedbackCount();
+        setState(() {});
+        context
+            .findAncestorStateOfType<_FeedbackMessagePageState>()
+            .refresh
+            .addListener(() => onRefresh(
+          refreshCount: false,
+        ));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    Widget child;
+
+    if (_refreshController.isRefresh) {
+      child = Center(
+        child: Loading(),
+      );
+    } else if (items.isEmpty) {
+      child = Center(
+        child: Text("无未读消息"),
+      );
+    } else {
+      child = ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (c, i) {
+          return ReplyMessageItem(
+            data: items[i],
+            onTapDown: () async {
+              if (!items[i].isRead) {
+                await MessageService.setReplyMessageRead(items[i].reply.id,
+                    onSuccess: () {}, onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    });
+              }
+            },
+          );
+        },
+        itemCount: items.length,
+      );
+    }
+
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text(S.current.up_load);
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text(S.current.load_fail);
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text(S.current.load_more);
+          } else {
+            body = Text(S.current.no_more_data);
+          }
+          return SizedBox(
+            height: 55,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: onRefresh,
+      onLoading: _onLoading,
+      child: child,
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class ReplyMessageItem extends StatefulWidget {
+  final ReplyMessage data;
+  final VoidFutureCallBack onTapDown;
+
+  const ReplyMessageItem({Key key, this.data, this.onTapDown})
+      : super(key: key);
+
+  @override
+  _ReplyMessageItemState createState() => _ReplyMessageItemState();
+}
+
+class _ReplyMessageItemState extends State<ReplyMessageItem> {
+  Post post;
+  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await FeedbackService.getPostById(
+          id: widget.data.post.id,
+          onResult: (result) {
+            post = result;
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+    });
+  }
+
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
+
+  @override
+  Widget build(BuildContext context) {
+    Widget sender = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.network(
+          'http://www.zrzz.site:7014/beam/20/${widget.data.post.id}+${widget.data.reply.sender}',
+          width: 30,
+          height: 30,
+          fit: BoxFit.cover,
+          placeholderBuilder: defaultPlaceholderBuilder,
+        ),
+        SizedBox(width: 6.w),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  '官方部门 ',
+                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                ),
+                Text(
+                  '回复了你的问题',
+                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                ),
+              ],
+            ),
+            SizedBox(height: 2.w),
+            Text(
+              DateTime.now().difference(widget.data.reply.createdAt).inDays >= 1
+                  ? widget.data.reply.createdAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.data.reply.createdAt)
+                  .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    Widget pointText = Text(
+      ' · ',
+      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+    );
+
+    Widget likeFloorFav = Row(
+      children: [
+        Text(
+          post == null ? '0' : post.likeCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 点赞',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.commentCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 评论',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+        pointText,
+        Text(
+          post == null ? '0' : post.favCount.toString(),
+          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+        ),
+        Text(
+          ' 收藏',
+          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+        ),
+      ],
+    );
+
+    Widget questionItem = Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
+        color: ColorUtil.greyF7F8Color,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  post == null ? '...' : post.title,
+                  maxLines: 2,
+                  softWrap: true,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                ),
+                SizedBox(height: 6.w),
+                likeFloorFav,
+              ],
+            ),
+            if (widget.data.post.imageUrls != null)
+              Image.network(
+                baseUrl + widget.data.post.imageUrls[0],
+                fit: BoxFit.cover,
+                height: 50,
+                width: 70,
+              ),
+          ],
+        ),
+      ),
+    );
+
+    Widget messageWrapper;
+    if (!widget.data.isRead) {
+      messageWrapper = Badge(
+        position: BadgePosition.topEnd(end: -2, top: -14),
+        padding: const EdgeInsets.all(5),
+        badgeContent: Text(""),
+        child: questionItem,
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      child: GestureDetector(
+        onTap: () async {
+          await widget.onTapDown?.call();
+
+          await Navigator.pushNamed(
+            context,
+            FeedbackRouter.detail,
+            arguments: post,
+          ).then((_) => context
+              .findAncestorStateOfType<_FeedbackMessagePageState>()
+              .onRefresh());
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: ColorUtil.whiteFDFE,
+              borderRadius: BorderRadius.all(Radius.circular(16.w))),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                sender,
+                SizedBox(height: 7.w),
+                Text(
+                  widget.data.reply.content,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
                 ),
                 SizedBox(height: 8.w),

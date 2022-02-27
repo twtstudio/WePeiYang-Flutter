@@ -470,7 +470,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: 30,
+        height: 30.w,
         margin: EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
@@ -689,13 +689,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               toolbarHeight: 48,
               backgroundColor: ColorUtil.whiteFDFE,
               titleSpacing: 0,
-              leading: IconButton(
-                  icon: ImageIcon(
-                      AssetImage("assets/images/lake_butt_icons/box.png"),
-                      size: 28,
-                      color: ColorUtil.boldTag54),
-                  onPressed: () =>
-                      Navigator.pushNamed(context, FeedbackRouter.profile)),
+              leading:
+                  ///TODO：这里因为按钮太大所以很奇怪 先去掉了
+                  /*FeedbackBadgeWidget(
+                child: */
+                  IconButton(
+                      icon: ImageIcon(
+                          AssetImage("assets/images/lake_butt_icons/box.png"),
+                          size: 24.w,
+                          color: ColorUtil.boldTag54),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, FeedbackRouter.profile)),
+              // ),
               title: searchBar,
               actions: [
                 Hero(
@@ -703,8 +708,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   child: InkWell(
                       highlightColor: Colors.transparent,
                       child: Container(
-                          height: 27,
-                          width: 27,
+                          height: 24.w,
+                          width: 24.w,
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(

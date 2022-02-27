@@ -58,6 +58,25 @@ class MessageService {
     }
   }
 
+  static getReplyMessages(
+      {@required page,
+        @required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
+        @required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("replys", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<ReplyMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        list.add(ReplyMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getNoticeMessages(
       {@required page,
         @required void Function(List<NoticeMessage> list, int totalPage) onSuccess,

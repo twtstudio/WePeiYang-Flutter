@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:umeng_common_sdk/umeng_common_sdk.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
@@ -12,7 +13,6 @@ import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
-import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import 'package:provider/provider.dart';
 
@@ -135,14 +135,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FeedbackBadgeWidget(
-              type: FeedbackMessageType.total,
-              child: Center(
-                child: ImageIcon(
-                    AssetImage('assets/images/lake_butt_icons/dive_page.png'),
-                  size: 32,
-                  color: _currentIndex == 1 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
-                ),
+            Center(
+              child: ImageIcon(
+                  AssetImage('assets/images/lake_butt_icons/dive_page.png'),
+                size: 40.w,
+                color: _currentIndex == 1 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),

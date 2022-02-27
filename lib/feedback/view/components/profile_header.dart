@@ -115,7 +115,6 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           radius: 25,
           child: Center(
             child: FeedbackBadgeWidget(
-              type: FeedbackMessageType.total,
               child: SvgPicture.asset(
                 'assets/svg_pics/lake_butt_icons/bell.svg',
                 width: 16.w,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
@@ -36,16 +35,7 @@ class MessageProvider extends ChangeNotifier {
       await refreshFeedbackCount();
       ToastProvider.success('所有消息已读成功');
     }, onFailure: (e) => ToastProvider.error(e.error.toString()));
-  }
-
-  bool isMessageEmptyOfType(FeedbackMessageType type) {
-    if (isEmpty) return true;
-    switch (type) {
-      case FeedbackMessageType.total:
-        return messageCount.total.isZero;
-      default:
-        return true;
-    }
+    notifyListeners();
   }
 
   int getMessageCount(MessageType type) {
