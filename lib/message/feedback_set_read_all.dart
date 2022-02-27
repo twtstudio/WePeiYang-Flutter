@@ -57,7 +57,7 @@ class ReadAllDialog extends Dialog {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            Text(S.current.feedback_set_all_read,
+            Text('确定要设置所有消息已读嘛？',
                 textAlign: TextAlign.center,
                 style: FontManager.YaHeiRegular.copyWith(
                     color: Color.fromRGBO(79, 88, 107, 1),

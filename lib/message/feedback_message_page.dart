@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -30,21 +30,6 @@ extension MessageTypeExtension on MessageType {
       if (element != this) result.add(element);
     });
     return result;
-  }
-
-  int getMessageCount(MessageProvider model) {
-    switch (this) {
-      case MessageType.like:
-        return model.likeMessages.length;
-      case MessageType.floor:
-        return model.messageCount?.floor ?? 0;
-      case MessageType.reply:
-        return model.messageCount?.reply ?? 0;
-      case MessageType.notice:
-        return model.messageCount?.notice ?? 0;
-      default:
-        return 0;
-    }
   }
 }
 
@@ -136,9 +121,9 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             case MessageType.floor:
               return FloorMessagesList();
             // case MessageType.reply:
-            //   return ReplyMessageList();
-            // case MessageType.notice:
-            //   return NoticeMessageList();
+            //   return ReplyMessagesList();
+            case MessageType.notice:
+              return NoticeMessagesList();
             default:
               return Container();
           }
@@ -186,15 +171,10 @@ class _MessageTabState extends State<MessageTab> {
       },
     );
 
+    int count = context.read<MessageProvider>().getMessageCount(widget.type);
     return Padding(
       padding: EdgeInsets.only(bottom: 2.w),
-      child: Consumer<MessageProvider>(builder: (_, model, __) {
-        var count = widget.type.getMessageCount(model);
-        if (count.isZero) {
-          return tab;
-        }
-        else {
-          return Center(
+      child: count == 0 ? tab : Center(
             child: Badge(
               child: tab,
               badgeContent: Text(
@@ -202,9 +182,7 @@ class _MessageTabState extends State<MessageTab> {
                 style: TextStyle(color: Colors.white, fontSize: 7),
               ),
             ),
-          );
-        }
-      }),
+          )
     );
   }
 }
@@ -800,7 +778,15 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             ),
             SizedBox(height: 2.w),
             Text(
-              '某时某刻',
+              DateTime.now().difference(widget.data.floor.createAt).inDays >= 1
+                  ? widget.data.floor.createAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.data.floor.createAt)
+                  .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
             ),
           ],
@@ -956,6 +942,300 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 ),
                 SizedBox(height: 8.w),
                 messageWrapper ?? questionItem,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NoticeMessagesList extends StatefulWidget {
+
+  NoticeMessagesList({Key key}) : super(key: key);
+
+  @override
+  _NoticeMessagesListState createState() => _NoticeMessagesListState();
+}
+
+class _NoticeMessagesListState extends State<NoticeMessagesList>
+    with AutomaticKeepAliveClientMixin {
+  List<NoticeMessage> items = [];
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
+
+  onRefresh({bool refreshCount = true}) async {
+    if (widget == null) return;
+    // monitor network fetch
+    try {
+      await MessageService.getNoticeMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.clear();
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+
+      if (mounted) {
+        if (refreshCount) {
+          Provider.of<MessageProvider>(context, listen: false)
+              .refreshFeedbackCount();
+        }
+        setState(() {});
+      }
+      _refreshController.refreshCompleted();
+    } catch (e) {
+      _refreshController.refreshFailed();
+    }
+    // if failed,use refreshFailed()
+    // _refreshController.refreshCompleted();
+  }
+
+  _onLoading() async {
+    try {
+      await MessageService.getNoticeMessages(
+          page: items.length ~/ 10 + 2,
+          onSuccess: (list, total) {
+            items.addAll(list);
+            if (list.isEmpty) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) setState(() {});
+    } catch (e) {
+      _refreshController.loadFailed();
+    }
+
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    // items.add((items.length + 1).toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MessageService.getNoticeMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) {
+        Provider.of<MessageProvider>(context, listen: false)
+            .refreshFeedbackCount();
+        setState(() {});
+        context
+            .findAncestorStateOfType<_FeedbackMessagePageState>()
+            .refresh
+            .addListener(() => onRefresh(
+          refreshCount: false,
+        ));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    Widget child;
+
+    if (_refreshController.isRefresh) {
+      child = Center(
+        child: Loading(),
+      );
+    } else if (items.isEmpty) {
+      child = Center(
+        child: Text("无未读消息"),
+      );
+    } else {
+      child = ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (c, i) {
+          return NoticeMessageItem(
+            data: items[i],
+            onTapDown: () async {
+              if (!items[i].isRead){
+                await MessageService.setNoticeMessageRead(
+                    items[i].id,
+                    onSuccess: () {}, onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                });
+              }
+            },
+          );
+        },
+        itemCount: items.length,
+      );
+    }
+
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text(S.current.up_load);
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text(S.current.load_fail);
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text(S.current.load_more);
+          } else {
+            body = Text(S.current.no_more_data);
+          }
+          return SizedBox(
+            height: 55,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: onRefresh,
+      onLoading: _onLoading,
+      child: child,
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class NoticeMessageItem extends StatefulWidget {
+  final NoticeMessage data;
+  final VoidFutureCallBack onTapDown;
+
+  const NoticeMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+
+  @override
+  _NoticeMessageItemState createState() => _NoticeMessageItemState();
+}
+
+class _NoticeMessageItemState extends State<NoticeMessageItem> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget sender = Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(Icons.account_circle_outlined, size: 33),
+        SizedBox(width: 6.w),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  widget.data.sender,
+                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                ),
+                Text(
+                  ' 发表了一则通知',
+                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                ),
+              ],
+            ),
+            SizedBox(height: 2.w),
+            Text(
+              DateTime.now().difference(widget.data.createdAt).inDays >= 1
+                  ? widget.data.createdAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.data.createdAt)
+                  .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    Widget noticeItem = Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
+        color: ColorUtil.greyF7F8Color,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.data.title,
+                  maxLines: 1,
+                  softWrap: true,
+                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                ),
+                SizedBox(height: 4.w),
+                Text(
+                  widget.data.content,
+                  maxLines: 2,
+                  softWrap: true,
+                  style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Widget messageWrapper;
+    if(!widget.data.isRead) {
+      messageWrapper = Badge(
+        position: BadgePosition.topEnd(end: -2, top: -14),
+        padding: const EdgeInsets.all(5),
+        badgeContent: Text(""),
+        child: noticeItem,
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      child: GestureDetector(
+        onTap: () async {
+          await widget.onTapDown?.call();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: ColorUtil.whiteFDFE,
+              borderRadius: BorderRadius.all(Radius.circular(16.w))),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                sender,
+                SizedBox(height: 8.w),
+                messageWrapper ?? noticeItem,
               ],
             ),
           ),

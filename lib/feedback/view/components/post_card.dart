@@ -627,17 +627,14 @@ class _PostCardState extends State<PostCard> {
       ),
     );
     return widget.type != PostCardType.outSide
-        ? DefaultTextStyle(
-            style: FontManager.YaHeiRegular,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: ClipCopy(
-                toast: '复制提问成功',
-                copy: post.content,
-                child: body,
-              ),
-            ),
-          )
+        ? Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
+          child: ClipCopy(
+            toast: '复制提问成功',
+            copy: post.content,
+            child: body,
+          ),
+        )
         : Row(
             children: [
               SizedBox(

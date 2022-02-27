@@ -9,7 +9,7 @@ extension MessageData on FeedbackMessageType {
   String messageCount(MessageProvider model) {
     switch (this) {
       case FeedbackMessageType.like:
-        return "";
+        return model.messageCount.like.toString();
         break;
       case FeedbackMessageType.floor:
         return model.messageCount.floor.toString();

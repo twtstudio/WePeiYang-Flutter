@@ -14,7 +14,7 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("count");
-      onResult(MessageCount.fromJson(response.data['data']['count']));
+      onResult(MessageCount.fromJson(response.data['count']));
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -51,6 +51,25 @@ class MessageService {
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
         list.add(FloorMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getNoticeMessages(
+      {@required page,
+        @required void Function(List<NoticeMessage> list, int totalPage) onSuccess,
+        @required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("notices", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<NoticeMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        list.add(NoticeMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
     } on DioError catch (e) {
