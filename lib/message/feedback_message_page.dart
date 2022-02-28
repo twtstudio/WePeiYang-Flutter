@@ -19,7 +19,7 @@ import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import 'model/message_model.dart';
-
+///枚举MessageType，每个type都是tabView -> list -> item的层次
 enum MessageType { like, floor, reply, notice}
 
 extension MessageTypeExtension on MessageType {
@@ -155,7 +155,6 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<MessageProvider>();
     Widget tab = ValueListenableBuilder(
       valueListenable: pageState.currentIndex,
       builder: (_, int current, __) {
@@ -174,7 +173,7 @@ class _MessageTabState extends State<MessageTab> {
       },
     );
 
-    int count = context.read<MessageProvider>().getMessageCount(widget.type);
+    int count = context.select((MessageProvider messageProvider) => messageProvider.getMessageCount(widget.type));
     return Padding(
         padding: EdgeInsets.only(bottom: 2.w),
         child: count == 0
@@ -293,7 +292,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
       child = Center(
         child: Loading(),
       );
-    } else if (items.isEmpty || items == null) {
+    } else if (items.isEmpty) {
       child = Center(
         child: Text("无未读消息"),
       );
@@ -560,14 +559,14 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         },
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFDFE,
               borderRadius: BorderRadius.all(Radius.circular(16.w))),
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
                 sender,
-                SizedBox(height: 16.w),
+                SizedBox(height: 8.w),
                 messageWrapper ?? questionItem,
               ],
             ),
@@ -828,7 +827,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     Widget likeFloorFav = Row(
       children: [
         Text(
-          post == null ? '0' : post.likeCount.toString(),
+          widget.data.post.likeCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -846,7 +845,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.favCount.toString(),
+          widget.data.post.favCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -874,7 +873,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post == null ? '...' : post.title,
+                  widget.data.post.title,
                   maxLines: 2,
                   softWrap: true,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
@@ -1232,7 +1231,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
     Widget likeFloorFav = Row(
       children: [
         Text(
-          post == null ? '0' : post.likeCount.toString(),
+          widget.data.post.likeCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -1250,7 +1249,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.favCount.toString(),
+          widget.data.post.favCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -1276,7 +1275,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post == null ? '...' : post.title,
+                  widget.data.post.title,
                   maxLines: 2,
                   softWrap: true,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,

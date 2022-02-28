@@ -15,9 +15,8 @@ class FeedbackBadgeWidget extends StatefulWidget {
 class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
   @override
   Widget build(BuildContext context) {
-    context.watch<MessageProvider>();
     int count =
-        context.read<MessageProvider>().messageCount?.total ?? 0;
+        context.select((MessageProvider messageProvider) => messageProvider.messageCount.total);
     return count == 0
         ? widget.child
         : Badge(

@@ -204,8 +204,7 @@ class _PostListState extends State<_PostList> {
             onSuccess: () {
               _postList.removeAt(index);
               ToastProvider.success(S.current.feedback_delete_success);
-              Provider.of<MessageProvider>(context, listen: false)
-                  .refreshFeedbackCount();
+              context.read<MessageProvider>().refreshFeedbackCount();
               setState(() {
                 _postList = List.from(_postList);
               });

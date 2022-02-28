@@ -407,7 +407,12 @@ class _NCommentCardState extends State<NCommentCard>
         isLike: widget.comment.isLike,
         onSuccess: () {
           widget.likeSuccessCallback?.call(!isLiked, count);
-          widget.comment.isLike = !isLiked;
+          widget.comment.isLike = !widget.comment.isLike;
+          widget.comment.likeCount ++;
+          if(widget.comment.isLike && widget.comment.isDis) {
+            widget.comment.isDis = !widget.comment.isDis;
+            setState(() {});
+          }
           success.call();
         },
         onFailure: (e) {
@@ -430,6 +435,7 @@ class _NCommentCardState extends State<NCommentCard>
             if (widget.comment.isDis && widget.comment.isLike) {
               widget.comment.isLike = !widget.comment.isLike;
               widget.comment.likeCount--;
+              setState(() {});
             }
           },
           onFailure: (e) {

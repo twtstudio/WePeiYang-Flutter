@@ -473,6 +473,10 @@ class _PostCardState extends State<PostCard> {
                   widget.onLikePressed?.call(!isLike, likeCount);
                   post.isLike = !isLike;
                   post.likeCount = likeCount;
+                  if(post.isLike && post.isDis) {
+                    post.isDis = !post.isDis;
+                    setState(() {});
+                  }
                   success.call();
                 },
                 onFailure: (e) {
@@ -492,8 +496,12 @@ class _PostCardState extends State<PostCard> {
                 isLike: post.isLike,
                 onSuccess: () {
                   widget.onLikePressed?.call(!isLike, likeCount);
-                  post.isLike = !isLike;
+                  post.isLike = !post.isLike;
                   post.likeCount = likeCount;
+                  if(post.isLike && post.isDis) {
+                    post.isDis = !post.isDis;
+                    setState(() {});
+                  }
                   success.call();
                 },
                 onFailure: (e) {
@@ -516,6 +524,11 @@ class _PostCardState extends State<PostCard> {
                 onSuccess: () {
                   widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
+                  if(post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount --;
+                    setState(() {});
+                  }
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
@@ -533,6 +546,11 @@ class _PostCardState extends State<PostCard> {
                 onSuccess: () {
                   widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
+                  if(post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount --;
+                    setState(() {});
+                  }
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());

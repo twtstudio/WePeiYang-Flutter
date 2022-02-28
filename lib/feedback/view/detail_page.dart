@@ -162,8 +162,9 @@ class _DetailPageState extends State<DetailPage>
     bool success = false;
     await FeedbackService.getPostById(
       id: post.id,
-      onResult: (_) {
+      onResult: (Post result) {
         success = true;
+        post = result;
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());

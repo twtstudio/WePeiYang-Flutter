@@ -9,7 +9,7 @@ class MessageProvider extends ChangeNotifier {
   List<LikeMessage> _likeMessages = [];
   List<FloorMessage> _floorMessages = [];
 
-  MessageCount _messageCount;
+  MessageCount _messageCount = MessageCount(like: 0, floor: 0, reply: 0, notice: 0);
 
   List<LikeMessage> get likeMessages => _likeMessages;
   List<FloorMessage> get floorMessages => _floorMessages;
