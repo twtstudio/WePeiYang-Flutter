@@ -211,6 +211,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (firstLogin == true) {
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return DialogWidget(
                 title: '同学你好：',
@@ -443,6 +444,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         }
       }
     });
+    firstInLake();
     getClipboardWeKoContents();
     super.initState();
   }
