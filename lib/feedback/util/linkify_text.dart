@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import '../feedback_router.dart';
 
@@ -59,6 +60,8 @@ class _LinkTextState extends State<LinkText> {
               builder: (BuildContext context) {
                 return DialogWidget(
                     title: '同学你好：',
+                    titleTextStyle:
+                        TextUtil.base.normal.black2A.NotoSansSC.sp(26).w600,
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -67,7 +70,8 @@ class _LinkTextState extends State<LinkText> {
                           padding: const EdgeInsets.only(left: 6),
                           child: Text(url,
                               style: url.startsWith('https://b23.tv/') ||
-                                      url.startsWith('https://www.bilibili.com/')
+                                      url.startsWith(
+                                          'https://www.bilibili.com/')
                                   ? TextUtil.base.biliPink.w600.h(1.6)
                                   : TextUtil.base.black2A.w600.h(1.6)),
                         ),
@@ -84,21 +88,24 @@ class _LinkTextState extends State<LinkText> {
                             Navigator.pop(context);
                           },
                           titleStyle: url.startsWith('https://b23.tv/') ||
-                              url.startsWith('https://www.bilibili.com/')
-                              ? TextUtil.base.biliPink.w600.h(1.6).sp(20)
-                              : TextUtil.base.black2A.w600.h(1.6).sp(20),
+                                  url.startsWith('https://www.bilibili.com/')
+                              ? TextUtil.base.biliPink.w600.h(1.6).sp(14)
+                              : TextUtil.base.black2A.w600.h(1.6).sp(24),
                           siteNameStyle: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
                         Text(' 请注意您的账号和财产安全\n'),
-                        SizedBox(height: 12)
                       ],
                     ),
                     cancelText: "取消",
                     confirmTextStyle:
-                        TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                        TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                    confirmButtonColor: url.startsWith('https://b23.tv/') ||
+                            url.startsWith('https://www.bilibili.com/')
+                        ? ColorUtil.biliPink
+                        : ColorUtil.selectionButtonColor,
                     cancelTextStyle:
                         TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                     confirmText: "继续",

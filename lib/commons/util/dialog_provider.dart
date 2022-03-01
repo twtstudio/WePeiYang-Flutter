@@ -13,6 +13,9 @@ class DialogWidget extends Dialog {
   final String confirmText; //是否需要"确定"按钮
   final Function cancelFun; //取消回调
   final Function confirmFun; //确定回调
+
+  Color confirmButtonColor;
+  TextStyle titleTextStyle;
   DialogWidget( {
     @required this.title,
     @required this.content,
@@ -21,7 +24,9 @@ class DialogWidget extends Dialog {
     @required this.cancelTextStyle,
     @required this.confirmText,
     @required this.cancelFun,
-    @required this.confirmFun
+    @required this.confirmFun,
+    this.confirmButtonColor,
+    this.titleTextStyle
   });
 
   @override
@@ -32,6 +37,7 @@ class DialogWidget extends Dialog {
         type: MaterialType.transparency,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
               padding:EdgeInsets.all(28.w),
@@ -49,16 +55,13 @@ class DialogWidget extends Dialog {
                     padding: EdgeInsets.all(0),
                     child: Row(
                       children: [
-                        Text(title, style: TextUtil.base.black2A.NotoSansSC.w500.normal.sp(18)),
+                        Text(title, style: titleTextStyle ?? TextUtil.base.black2A.NotoSansSC.w500.normal.sp(18)),
                       ],
                     ),
                   ),
-                  Container(
-                    constraints: BoxConstraints(minHeight: 100),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: content
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16, bottom: 24),
+                    child: content
                   ),
                   this._buildBottomButtonGroup()
                 ],
@@ -127,7 +130,7 @@ class DialogWidget extends Dialog {
             return  ColorUtil.backgroundColor;
           }),
           backgroundColor:
-          MaterialStateProperty.all(ColorUtil.backgroundColor),
+          MaterialStateProperty.all(confirmButtonColor ?? ColorUtil.backgroundColor),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10))),
         ),

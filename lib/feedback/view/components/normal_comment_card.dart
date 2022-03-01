@@ -27,7 +27,6 @@ typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
 
 class NCommentCard extends StatefulWidget {
-  final int placeAppeared;
   final String ancestorName;
   final int ancestorId;
   final Floor comment;
@@ -41,8 +40,7 @@ class NCommentCard extends StatefulWidget {
   _NCommentCardState createState() => _NCommentCardState();
 
   NCommentCard(
-      {this.placeAppeared,
-      this.ancestorName,
+      {this.ancestorName,
       this.ancestorId,
       this.comment,
       this.commentFloor,
@@ -371,7 +369,6 @@ class _NCommentCardState extends State<NCommentCard>
       iconSize: 16,
       constraints: BoxConstraints(),
       onPressed: () {
-        context.read<NewFloorProvider>().locate = widget.placeAppeared ?? 0;
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
         FocusScope.of(context).requestFocus(
@@ -394,7 +391,6 @@ class _NCommentCardState extends State<NCommentCard>
                     widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
-            placeAppeared: widget.placeAppeared,
             ancestorName: widget.comment.nickname,
             ancestorId: widget.comment.id,
             comment: widget.comment.subFloors[index],
@@ -414,8 +410,8 @@ class _NCommentCardState extends State<NCommentCard>
         onSuccess: () {
           widget.likeSuccessCallback?.call(!isLiked, count);
           widget.comment.isLike = !widget.comment.isLike;
-          widget.comment.likeCount ++;
-          if(widget.comment.isLike && widget.comment.isDis) {
+          widget.comment.likeCount++;
+          if (widget.comment.isLike && widget.comment.isDis) {
             widget.comment.isDis = !widget.comment.isDis;
             setState(() {});
           }

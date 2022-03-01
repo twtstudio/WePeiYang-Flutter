@@ -127,10 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
-      body: DefaultTextStyle(
-        style: FontManager.YaHeiRegular,
-        child: body,
-      ),
+      body: body,
     );
   }
 }

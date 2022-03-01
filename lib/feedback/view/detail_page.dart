@@ -25,6 +25,9 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 
+// import 'components/widget/icon_widget.dart';
+// import 'components/widget/long_text_shower.dart';
+// import 'components/widget/round_taggings.dart';
 
 enum DetailPageStatus {
   loading,
@@ -51,6 +54,7 @@ class _DetailPageState extends State<DetailPage>
   List<Floor> _officialCommentList;
   bool _bottomIsOpen;
   int currentPage = 1;
+  Widget topCard;
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -88,19 +92,6 @@ class _DetailPageState extends State<DetailPage>
       _refreshController.loadFailed();
       currentPage--;
     });
-  }
-
-  _onLoadingSelectedPage(int current) {
-    _getComments(
-        onSuccess: (comments) {
-          _commentList.removeRange(
-              _commentList.length - comments.length, _commentList.length);
-          _commentList.addAll(comments);
-        },
-        onFail: () {
-          _refreshController.loadFailed();
-        },
-        current: current);
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
@@ -142,8 +133,7 @@ class _DetailPageState extends State<DetailPage>
             onSuccess: (comments) {
               _commentList.addAll(comments);
             },
-            onFail: () {
-            },
+            onFail: () {},
             current: currentPage);
         status = DetailPageStatus.idle;
       }
@@ -221,12 +211,169 @@ class _DetailPageState extends State<DetailPage>
   Widget build(BuildContext context) {
     Widget body;
     Widget bottomInput;
+
+    // var topWidget = Row(
+    //   children: [
+    //     ClipRRect(
+    //       borderRadius: BorderRadius.all(Radius.circular(15)),
+    //       child: SvgPicture.network(
+    //         'http://www.zrzz.site:7014/beam/20/${post.id}+${post.uid}',
+    //         width: 30,
+    //         height: 30,
+    //         fit: BoxFit.cover,
+    //       ),
+    //     ),
+    //     SizedBox(width: 4),
+    //     Expanded(
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.start,
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: [
+    //           Text(
+    //             '我',
+    //             maxLines: 1,
+    //             overflow: TextOverflow.clip,
+    //             style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
+    //           ),
+    //           CommentIdentificationContainer('我的评论', true),
+    //           Text(
+    //             '刚刚',
+    //             style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     SizedBox(width: 4),
+    //     PopupMenuButton(
+    //       padding: EdgeInsets.zero,
+    //       shape: RacTangle(),
+    //       offset: Offset(0, 0),
+    //       child: SvgPicture.asset(
+    //         'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+    //         width: 16,
+    //       ),
+    //       onSelected: (value) async {
+    //         if (value == '分享') {
+    //           String weCo =
+    //               '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}\n【${context.read<NewFloorProvider>().floorSentContent}】';
+    //           ClipboardData data = ClipboardData(text: weCo);
+    //           Clipboard.setData(data);
+    //           CommonPreferences().feedbackLastWeCo.value = post.id.toString();
+    //           ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+    //         }
+    //       },
+    //       itemBuilder: (context) {
+    //         return <PopupMenuEntry<String>>[
+    //           PopupMenuItem<String>(
+    //             value: '分享',
+    //             child: Center(
+    //               child: Text(
+    //                 '分享',
+    //                 style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+    //               ),
+    //             ),
+    //           ),
+    //           PopupMenuItem<String>(
+    //             value: '删除',
+    //             child: Center(
+    //               child: Text(
+    //                 '删除',
+    //                 style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+    //               ),
+    //             ),
+    //           ),
+    //         ];
+    //       },
+    //     ),
+    //   ],
+    // );
+    //
+    // var replyButton = IconButton(
+    //   icon: SvgPicture.asset('assets/svg_pics/lake_butt_icons/reply.svg'),
+    //   iconSize: 16,
+    //   constraints: BoxConstraints(),
+    //   onPressed: () {
+    //     Provider.of<NewFloorProvider>(context, listen: false)
+    //         .inputFieldOpenAndReplyTo(post.id);
+    //     FocusScope.of(context).requestFocus(
+    //         Provider.of<NewFloorProvider>(context, listen: false).focusNode);
+    //   },
+    //   padding: EdgeInsets.zero,
+    //   color: ColorUtil.boldLakeTextColor,
+    // );
+    //
+    // var likeAndDislikeWidget = [
+    //   IconWidget(IconType.like,
+    //       count: 0,
+    //       onLikePressed: (isLiked, count, success, failure) async {},
+    //       isLike: false),
+    //   DislikeWidget(
+    //     size: 15.w,
+    //     isDislike: false,
+    //     onDislikePressed: (dislikeNotifier) async {},
+    //   )
+    // ];
+    //
+    // var bottomWidget = Row(
+    //   crossAxisAlignment: CrossAxisAlignment.end,
+    //   children: [
+    //     ...likeAndDislikeWidget,
+    //     Spacer(),
+    //     replyButton,
+    //   ],
+    // );
+
     Widget checkButton = InkWell(
       onTap: () {
         launchKey.currentState.send();
         setState(() {
-          _onLoadingSelectedPage(
-              (context.read<NewFloorProvider>().locate / 10).floor() + 1 ?? 0);
+          // topCard = Container(
+          //     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(16),
+          //       color: Colors.white,
+          //       boxShadow: [
+          //         BoxShadow(
+          //             blurRadius: 5,
+          //             color: Color.fromARGB(64, 236, 237, 239),
+          //             offset: Offset(0, 0),
+          //             spreadRadius: 3),
+          //       ],
+          //     ),
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         SizedBox(height: 6),
+          //         topWidget,
+          //         SizedBox(height: 10),
+          //         ExpandableText(
+          //           text: context.read<NewFloorProvider>().floorSentContent,
+          //           maxLines: 3,
+          //           style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
+          //           expand: false,
+          //           buttonIsShown: true,
+          //         ),
+          //         InkWell(
+          //           onTap: () {
+          //             Navigator.pushNamed(
+          //                 context, FeedbackRouter.localImageView,
+          //                 arguments: {
+          //                   "uriList": [
+          //                     context.read<NewFloorProvider>().images
+          //                   ],
+          //                   "uriListLength": 1,
+          //                   "indexNow": 0
+          //                 });
+          //           },
+          //           child: Image.file(
+          //             context.read<NewFloorProvider>().images[0],
+          //           ),
+          //         ),
+          //         bottomWidget,
+          //         SizedBox(height: 4)
+          //       ],
+          //     ));
         });
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
@@ -258,7 +405,7 @@ class _DetailPageState extends State<DetailPage>
         );
       }
     } else if (status == DetailPageStatus.idle) {
-      Widget mainList1 = ListView.builder(
+      Widget contentList = ListView.builder(
         itemCount:_officialCommentList.length+ _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -300,6 +447,7 @@ class _DetailPageState extends State<DetailPage>
                 SizedBox(
                   height: 10,
                 ),
+                //topCard,
               ],
             );
           }
@@ -318,7 +466,6 @@ class _DetailPageState extends State<DetailPage>
           else {
             var data = _commentList[index - _officialCommentList.length];
             return NCommentCard(
-              placeAppeared: index,
               comment: data,
               ancestorId: post.id,
               commentFloor: index + 1,
@@ -340,7 +487,7 @@ class _DetailPageState extends State<DetailPage>
             onRefresh: _onRefresh,
             enablePullUp: true,
             onLoading: _onLoading,
-            child: mainList1,
+            child: contentList,
           ),
           onNotification: (ScrollNotification scrollInfo) =>
               _onScrollNotification(scrollInfo),
@@ -562,6 +709,8 @@ class CommentInputFieldState extends State<CommentInputField> {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
             onResult: (images) {
+              context.read<NewFloorProvider>().floorSentContent =
+                  _textEditingController.text;
               context.read<NewFloorProvider>().images.clear();
               if (context.read<NewFloorProvider>().replyTo == 0) {
                 _sendFloor(images);

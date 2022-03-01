@@ -24,4 +24,5 @@ class ColorUtil {
   static const selectionButtonColor = Color(0xFF2D4E9A);
   static const greyB2B6Color = Color(0xFFB2B6BB);
   static const blue363CColor = Color(0xFF363C54);
+  static const biliPink = Color(0xFFF97198);
 }

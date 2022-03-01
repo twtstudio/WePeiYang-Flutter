@@ -58,7 +58,7 @@ dependencies:
   screenshot: ^1.2.3  # 还没用到
   shared_preferences: ^2.0.7
   simple_html_css: ^3.0.1
-  table_calendar: 3.0.2
+  table_calendar: 3.0.0
   transparent_image: ^1.0.0
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
