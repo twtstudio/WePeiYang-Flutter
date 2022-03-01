@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -50,7 +49,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool _initialRefresh;
 
   ///判断是否为初次登陆
-  bool _lakeFirst = true;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -204,11 +202,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   ///初次进入湖底的告示
   firstInLake() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("firstLogin", _lakeFirst);
-    bool firstLogin = pref.getBool("firstLogin");
-    final checkedNotifier = ValueNotifier(firstLogin);
-    if (firstLogin == true) {
+    final checkedNotifier = ValueNotifier(true);
+    if (CommonPreferences().isFirstLogin.value) {
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -235,12 +230,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // Checkbox(
-                        //   value: false,
-                        //   onChanged: (_) {
-                        //     _lakeFirst =!_lakeFirst;
-                        //   },
-                        // ),
                         ValueListenableBuilder<bool>(
                             valueListenable: checkedNotifier,
                             builder: (context, type, _) {
@@ -309,7 +298,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 confirmFun: () {
                   if (checkedNotifier.value == false) {
                     Navigator.pop(context);
-                    pref.setBool("firstLogin", checkedNotifier.value);
+                    CommonPreferences().isFirstLogin.value = false;
                   } else {
                     ToastProvider.error('请同意《青年湖底社区规范》');
                   }
@@ -368,6 +357,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     shouldBeInitialized = [false, true, true, false];
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      firstInLake();
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider =
@@ -444,7 +434,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         }
       }
     });
-    firstInLake();
     getClipboardWeKoContents();
     super.initState();
   }

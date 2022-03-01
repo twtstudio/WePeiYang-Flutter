@@ -219,8 +219,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
 
       if (mounted) {
         if (refreshCount) {
-          Provider.of<MessageProvider>(context, listen: false)
-              .refreshFeedbackCount();
+          context.read<MessageProvider>().refreshFeedbackCount();
         }
         setState(() {});
       }
@@ -269,8 +268,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
             ToastProvider.error(e.error.toString());
           });
       if (mounted) {
-        Provider.of<MessageProvider>(context, listen: false)
-            .refreshFeedbackCount();
+        context.read<MessageProvider>().refreshFeedbackCount();
         setState(() {});
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
@@ -370,14 +368,16 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-          id: widget.data.type == 0
-              ? widget.data.post.id
-              : widget.data.floor.postId,
+          id: widget.data.post.id,
           onResult: (result) {
             post = result;
+            setState(() {});
           },
           onFailure: (e) {
-            ToastProvider.error(e.error.toString());
+            post = Post();
+            post.title = '这个冒泡淹没在了湖底，找不到了';
+            post.id = -1;
+            setState(() {});
           });
     });
   }
@@ -488,7 +488,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.post.imageUrls != null &&
+            if (widget.data.type == 0 &&
                 widget.data.post.imageUrls.isNotEmpty)
               Image.network(
                 baseUrl + widget.data.post.imageUrls[0],
@@ -538,7 +538,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           await widget.onTapDown?.call();
 
           ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
-          // if (widget.data.type == 0) {
+          if (post.id != -1) {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
@@ -546,7 +546,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           ).then((_) => context
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
-          // }
+          }
           // else {
           //   await Navigator.pushNamed(
           //     context,
@@ -606,8 +606,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
 
       if (mounted) {
         if (refreshCount) {
-          Provider.of<MessageProvider>(context, listen: false)
-              .refreshFeedbackCount();
+          context.read<MessageProvider>().refreshFeedbackCount();
         }
         setState(() {});
       }
@@ -656,8 +655,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
             ToastProvider.error(e.error.toString());
           });
       if (mounted) {
-        Provider.of<MessageProvider>(context, listen: false)
-            .refreshFeedbackCount();
+        context.read<MessageProvider>().refreshFeedbackCount();
         setState(() {});
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
@@ -836,7 +834,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.commentCount.toString(),
+          widget.data.post.commentCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -882,7 +880,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.post.imageUrls != null)
+            if (widget.data.post.imageUrls.isNotEmpty)
               Image.network(
                 baseUrl + widget.data.post.imageUrls[0],
                 fit: BoxFit.cover,
@@ -1010,8 +1008,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
 
       if (mounted) {
         if (refreshCount) {
-          Provider.of<MessageProvider>(context, listen: false)
-              .refreshFeedbackCount();
+          context.read<MessageProvider>().refreshFeedbackCount();
         }
         setState(() {});
       }
@@ -1060,8 +1057,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
             ToastProvider.error(e.error.toString());
           });
       if (mounted) {
-        Provider.of<MessageProvider>(context, listen: false)
-            .refreshFeedbackCount();
+        context.read<MessageProvider>().refreshFeedbackCount();
         setState(() {});
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
@@ -1240,7 +1236,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.commentCount.toString(),
+          widget.data.post.commentCount.toString(),
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -1284,7 +1280,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.post.imageUrls != null)
+            if (widget.data.post.imageUrls.isNotEmpty)
               Image.network(
                 baseUrl + widget.data.post.imageUrls[0],
                 fit: BoxFit.cover,
@@ -1375,8 +1371,7 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
 
       if (mounted) {
         if (refreshCount) {
-          Provider.of<MessageProvider>(context, listen: false)
-              .refreshFeedbackCount();
+          context.read<MessageProvider>().refreshFeedbackCount();
         }
         setState(() {});
       }
@@ -1425,8 +1420,7 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
             ToastProvider.error(e.error.toString());
           });
       if (mounted) {
-        Provider.of<MessageProvider>(context, listen: false)
-            .refreshFeedbackCount();
+        context.read<MessageProvider>().refreshFeedbackCount();
         setState(() {});
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
