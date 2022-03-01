@@ -187,6 +187,7 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
+
   _getOfficialComment({Function onSuccess, Function onFail}) {
     FeedbackService.getOfficialComment(
       id: post.id,
@@ -201,6 +202,7 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
+
   @override
   void dispose() {
     _refreshController.dispose();
@@ -406,7 +408,7 @@ class _DetailPageState extends State<DetailPage>
       }
     } else if (status == DetailPageStatus.idle) {
       Widget contentList = ListView.builder(
-        itemCount:_officialCommentList.length+ _commentList.length + 1,
+        itemCount: _officialCommentList.length + _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Column(
@@ -457,11 +459,13 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             return OfficialReplyCard.reply(
+              tag: post.department.name ?? '',
               comment: data,
               placeAppeared: index,
-                ancestorId:post.id,
+              ancestorId: post.id,
             );
           }
+
           ///_officialCommentList,点赞注释了
           else {
             var data = _commentList[index - _officialCommentList.length];
@@ -536,15 +540,19 @@ class _DetailPageState extends State<DetailPage>
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
-                                      IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/lake_butt_icons/image.png',
-                                            width: 24,
-                                            height: 24,
-                                          ),
-                                          onPressed: () => imageSelectionKey
-                                              .currentState
-                                              .loadAssets()),
+                                      if (context
+                                              .read<NewFloorProvider>()
+                                              .images.length ==
+                                          0)
+                                        IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/image.png',
+                                              width: 24,
+                                              height: 24,
+                                            ),
+                                            onPressed: () => imageSelectionKey
+                                                .currentState
+                                                .loadAssets()),
                                       Spacer(),
                                       checkButton,
                                       SizedBox(width: 16),
@@ -613,6 +621,7 @@ class _DetailPageState extends State<DetailPage>
     }
 
     var menuButton = PopupMenuButton(
+
         ///改成了用PopupMenuButton的方式，方便偏移的处理
         shape: RacTangle(),
         offset: Offset(0, 20.w),

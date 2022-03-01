@@ -99,11 +99,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _currentIndex == 0
+                          ? Color.fromRGBO(55, 0, 182, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 0
+                          ? Color.fromRGBO(82, 123, 134, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 0
+                          ? Color.fromRGBO(106, 98, 26, 1.0)
+                          : ColorUtil.whiteF8Color,
+                    ],
+                  )),
+              height: 32.w,
+              width: 32.w,
+              padding: EdgeInsets.all(4.w),
               child: ImageIcon(
                 AssetImage('assets/images/lake_butt_icons/main_page.png'),
-                size: 32,
-                color: _currentIndex == 0 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                color: _currentIndex == 0
+                    ? ColorUtil.whiteF8Color
+                    : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),
@@ -135,15 +156,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _currentIndex == 1
+                          ? Color.fromRGBO(38, 56, 95, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 1
+                          ? Color.fromRGBO(99, 138, 149, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 1
+                          ? Color.fromRGBO(11, 42, 99, 1.0)
+                          : ColorUtil.whiteF8Color,
+                    ],
+                  )),
+              height: 32.w,
+              width: 32.w,
+              padding: EdgeInsets.all(2.w),
               child: ImageIcon(
-                  AssetImage('assets/images/lake_butt_icons/dive_page.png'),
-                size: 40.w,
-                color: _currentIndex == 1 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                AssetImage('assets/images/lake_butt_icons/seek_for_truth.png'),
+                color: _currentIndex == 1
+                    ? ColorUtil.whiteF8Color
+                    : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),
-            Text('青年湖底', style: _currentIndex == 1 ? currentStyle : otherStyle),
+            Text('求实', style: _currentIndex == 1 ? currentStyle : otherStyle),
           ],
         ),
       ),
@@ -164,11 +206,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 4),
-            Center(
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _currentIndex == 2
+                          ? Color.fromRGBO(108, 120, 68, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 2
+                          ? Color.fromRGBO(57, 102, 119, 1.0)
+                          : ColorUtil.whiteF8Color,
+                      _currentIndex == 2
+                          ? Color.fromRGBO(160, 83, 0, 1.0)
+                          : ColorUtil.whiteF8Color,
+                    ],
+                  )),
+              height: 32.w,
+              width: 32.w,
+              padding: EdgeInsets.all(6.w),
               child: ImageIcon(
                 AssetImage('assets/images/lake_butt_icons/my_page.png'),
-                size: 28,
-                color: _currentIndex == 2 ? ColorUtil.mainColor : ColorUtil.lightTextColor,
+                color: _currentIndex == 2
+                    ? ColorUtil.whiteF8Color
+                    : ColorUtil.lightTextColor,
               ),
             ),
             SizedBox(height: 2),

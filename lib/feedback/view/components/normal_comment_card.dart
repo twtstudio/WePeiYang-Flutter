@@ -90,8 +90,8 @@ class _NCommentCardState extends State<NCommentCard>
           child: SvgPicture.network(
             'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
             width: 30,
-            height: 30,
-            fit: BoxFit.cover,
+            height: 24,
+            fit: BoxFit.fitHeight,
             placeholderBuilder: defaultPlaceholderBuilder,
           ),
         ),

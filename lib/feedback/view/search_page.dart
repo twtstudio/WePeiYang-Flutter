@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                 size: 18),
           ),
           onTap: () => Navigator.pop(context),
-        )
+        ),
       ],
     ));
 
@@ -83,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
         fontWeight: FontWeight.bold);
 
     var searchHistoryIcon = Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,12 +93,7 @@ class _SearchPageState extends State<SearchPage> {
             style: titleTextStyle,
           ),
           InkWell(
-            child: Image.asset(
-              'lib/feedback/assets/img/trash_can.png',
-              fit: BoxFit.cover,
-              height: 18,
-              width: 18,
-            ),
+            child: Icon(Icons.delete, size: 16),
             onTap: showClearDialog,
           ),
         ],

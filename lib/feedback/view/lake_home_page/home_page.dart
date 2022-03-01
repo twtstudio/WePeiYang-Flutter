@@ -752,7 +752,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                     child: Row(
                                   children: [
                                     SizedBox(width: _tabPaddingWidth),
-                                    Text("湖底"),
+                                    Text("青年湖底"),
                                     SizedBox(width: _tabPaddingWidth),
                                   ],
                                 )),
@@ -762,7 +762,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           child: Row(
                                             children: [
                                               SizedBox(width: _tabPaddingWidth),
-                                              Text("校务"),
+                                              Text("校务专区"),
                                               Icon(
                                                 Icons.arrow_drop_down,
                                                 size: 10,
@@ -778,7 +778,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       : Row(
                                           children: [
                                             SizedBox(width: _tabPaddingWidth),
-                                            Text("校务"),
+                                            Text("校务专区"),
                                             SizedBox(width: _tabPaddingWidth),
                                           ],
                                         ),

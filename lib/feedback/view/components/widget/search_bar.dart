@@ -33,6 +33,7 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar>
     with SingleTickerProviderStateMixin {
   TextEditingController _controller = TextEditingController();
+  FocusNode _fNode = FocusNode();
   bool _showSearch;
   List<Widget> tagList = [SizedBox(height: 4)];
 
@@ -133,48 +134,87 @@ class _SearchBarState extends State<SearchBar>
       ),
       child: Padding(
           padding: const EdgeInsets.only(left: 38, right: 12),
-          child: Consumer<FbHotTagsProvider>(
-            builder: (_, data, __) => TextField(
-              controller: _controller,
-              style: TextStyle().black2A.NotoSansSC.w400.sp(15),
-              decoration: InputDecoration(
-                hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
-                hintText: data.recTag == null
-                    ? '搜索发现'
-                    : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
-                contentPadding: const EdgeInsets.only(right: 6),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(1080),
-                ),
-                fillColor: ColorUtil.searchBarBackgroundColor,
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.search,
-                  size: 19,
-                  color: ColorUtil.grey108,
+          child: Row(
+            children: [
+              Expanded(
+                child: Consumer<FbHotTagsProvider>(
+                  builder: (_, data, __) => TextField(
+                    controller: _controller,
+                    focusNode: _fNode,
+                    style: TextStyle().black2A.NotoSansSC.w400.sp(15),
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      hintText: data.recTag == null
+                          ? '搜索发现'
+                          : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
+                      contentPadding: const EdgeInsets.only(right: 6),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(1080),
+                      ),
+                      fillColor: ColorUtil.searchBarBackgroundColor,
+                      filled: true,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: 19,
+                        color: ColorUtil.grey108,
+                      ),
+                    ),
+                    enabled: true,
+                    onSubmitted: (content) {
+                      if (content.isNotEmpty) {
+                        widget.onSubmitted?.call(content);
+                      } else {
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.searchResult,
+                          arguments: SearchResultPageArgs(
+                              '',
+                              '${data.recTag.id}',
+                              '',
+                              '推荐：#${data.recTag.name}',
+                              0),
+                        );
+                      }
+                    },
+                    onChanged: (content) {
+                      if (content.isNotEmpty) {
+                        widget.onChanged?.call(content);
+                      }
+                    },
+                    textInputAction: TextInputAction.search,
+                  ),
                 ),
               ),
-              enabled: true,
-              onSubmitted: (content) {
-                if (content.isNotEmpty) {
-                  widget.onSubmitted?.call(content);
-                } else {
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.searchResult,
-                    arguments: SearchResultPageArgs('', '${data.recTag.id}', '',
-                        '推荐：#${data.recTag.name}', 0),
-                  );
-                }
-              },
-              onChanged: (content) {
-                if (content.isNotEmpty) {
-                  widget.onChanged?.call(content);
-                }
-              },
-              textInputAction: TextInputAction.search,
-            ),
+              SizedBox(width: 6),
+              SizedBox(
+                width: 24,
+                  child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (!_fNode.hasFocus)
+                    FocusScope.of(context).requestFocus(_fNode);
+                    if (_controller.text == '') {
+                      _controller.text = '#';
+                    }
+                            else _controller.clear();
+                      });
+                },
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+                  elevation: MaterialStateProperty.all(2),
+                ),
+                child: _controller.text == ''
+                    ? SvgPicture.asset(
+                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                  width: 12,
+                ) : Icon(Icons.clear, size: 14, color: ColorUtil.mainColor),
+              ))
+            ],
           )),
     );
     if (widget.tapField != null) {
@@ -219,9 +259,10 @@ class _SearchBarState extends State<SearchBar>
                     child: Column(
                         children:
                             tagList ?? [SizedBox(width: double.infinity)]))
-                : SizedBox(height: 2),
+                : SizedBox(),
           ),
         ),
+        if (!_showSearch) SizedBox(height: 8),
       ],
     );
   }
