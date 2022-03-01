@@ -1,12 +1,12 @@
 // @dart = 2.12
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
-import 'hotfix_util.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_apk_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_install_dialog.dart';
@@ -14,9 +14,11 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
 
 import 'dialog/update_hotfix_dialog.dart';
+import 'hotfix_util.dart';
 import 'update_service.dart';
 import 'update_util.dart';
 import 'version_data.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 
 enum UpdateState {
   nothing,
@@ -53,10 +55,12 @@ class UpdateManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: 检查更新的同时应该删除旧的安装包
   Future<void> checkUpdate({bool showToast = false}) async {
     if (state == UpdateState.nothing) {
       state = UpdateState.checkUpdate;
+      // 先删除原来的apk和so
+      await _deleteOriginalFile();
+      // 再检查更新
       await UpdateService.checkUpdate(
           onResult: (version) => _updateApp(version, showToast),
           onSuccess: () {
@@ -89,7 +93,8 @@ class UpdateManager extends ChangeNotifier {
     if (localVersion + version.flutterFixCode < version.versionCode) {
       // 安卓端进行了更改，只能通过下载新的安装包更新
       _updateWithApk(version, showToast);
-    } else if (localVersion < version.versionCode && localVersion + version.flutterFixCode >= version.versionCode) {
+    } else if (localVersion < version.versionCode &&
+        localVersion + version.flutterFixCode >= version.versionCode) {
       // 则代表可以通过热修复更新 也可以通过下载新的安装包更新
       // 自动更新，下载完成后再弹对话框
       hotFix(
@@ -112,7 +117,8 @@ class UpdateManager extends ChangeNotifier {
 
   Future<void> _updateWithApk(Version version, bool showToast) async {
     // 这里其实只返回一个，为了适配安卓低版本才返回一个列表，具体看源码中的注释
-    final downloadDirectories = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+    final downloadDirectories =
+        await getExternalStorageDirectories(type: StorageDirectory.downloads);
     if (downloadDirectories == null) return;
     for (var directory in downloadDirectories) {
       final path = directory.path + "/apk/" + version.apkName;
@@ -174,7 +180,8 @@ class UpdateManager extends ChangeNotifier {
 
   bool get todayShowDialogAgain {
     final date = CommonPreferences().todayShowUpdateAgain.value;
-    final todayNotAgain = DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
+    final todayNotAgain =
+        DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
     if (todayNotAgain) {
       return false;
     } else {
@@ -227,4 +234,81 @@ class UpdateManager extends ChangeNotifier {
       state = UpdateState.nothing;
     }
   }
+
+  Future<void> _deleteOriginalFile() async {
+    final dir =
+        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
+            ?.first;
+    if (dir == null) {
+      // 没有这个文件夹就很尬
+    }
+    final apkDir = Directory(dir!.path + Platform.pathSeparator + 'apk');
+    final currentVersionCode = await UpdateUtil.getVersionCode();
+    if (apkDir.existsSync()) {
+      for (var file in apkDir.listSync()) {
+        final name = file.path.split(Platform.pathSeparator).last;
+        debugPrint('current file: ' + name);
+        final list = name.split('-');
+        if (name.endsWith('.apk') && list.length == 3) {
+          final versionCode = int.tryParse(list[1]) ?? 0;
+          if (versionCode < currentVersionCode) {
+            file.delete();
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> forceUpdateApk(int testVersionCode) async {
+    state = UpdateState.checkUpdate;
+    var response = await updateDio.get(UpdateService.githubTestUrl);
+    var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
+    if (testVersionCode + version.flutterFixCode < version.versionCode) {
+      _updateWithApk(version, true);
+    } else if (testVersionCode < version.versionCode &&
+        testVersionCode + version.flutterFixCode >= version.versionCode) {
+      hotFix(
+        version.flutterFixSoFile,
+        testVersionCode,
+        version.flutterFixCode,
+        fixLoadSoFileSuccess: () {
+          _showHotfixDialog(version, true);
+        },
+        fixError: (e) {
+          _updateWithApk(version, true);
+        },
+        downloadError: (e) {
+          ToastProvider.error(e.toString());
+        },
+        fixDownloadSuccess: (path){
+          debugPrint('download : $path');
+        }
+      );
+    }
+  }
+
+  Future<void> forceUpdateSo() async {
+    state = UpdateState.checkUpdate;
+    var response = await updateDio.get(UpdateService.githubTestUrl);
+    var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
+    var localVersion = await UpdateUtil.getVersionCode();
+    hotFix(
+        version.flutterFixSoFile,
+        localVersion,
+        version.flutterFixCode,
+        fixLoadSoFileSuccess: () {
+          _showHotfixDialog(version, true);
+        },
+        fixError: (e) {
+          _updateWithApk(version, true);
+        },
+        downloadError: (e) {
+          ToastProvider.error(e.toString());
+        },
+        fixDownloadSuccess: (path){
+          debugPrint('download : $path');
+        }
+    );
+  }
+
 }

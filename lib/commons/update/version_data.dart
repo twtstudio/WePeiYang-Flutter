@@ -92,7 +92,7 @@ class Version {
   }
 
   String get apkName {
-    return  "$version-${versionCode}wby.apk";
+    return  "$version-${versionCode}-wby.apk";
   }
 }
 

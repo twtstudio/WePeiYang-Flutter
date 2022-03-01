@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
@@ -318,7 +319,9 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: GestureDetector(
                   onLongPress: (){
-                    Navigator.pushNamed(context, TestRouter.pushTest);
+                    if(kDebugMode){
+                      Navigator.pushNamed(context, TestRouter.pushTest);
+                    }
                   },
                   onTap: (){
                     context.read<PushManager>().showRequestNotificationDialog();

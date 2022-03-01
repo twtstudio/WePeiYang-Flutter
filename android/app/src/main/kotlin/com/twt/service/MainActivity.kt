@@ -51,10 +51,12 @@ class MainActivity : FlutterActivity() {
     // 热更新优雅的实现方式，very nice！
     override fun getFlutterShellArgs(): FlutterShellArgs {
         val shellArgs = super.getFlutterShellArgs()
-        Log.d("WBY_RESTART", "getFlutterShellArgs")
-        WbySharePreference.fixSo?.let {
-            Log.d(WbyFixPlugin.TAG, "load .so file : $it")
-            shellArgs.add("--aot-shared-library-name=$it")
+        takeIf { !BuildConfig.DEBUG }?.let {
+            Log.d("WBY_RESTART", "getFlutterShellArgs")
+            WbySharePreference.fixSo?.let {
+                Log.d(WbyFixPlugin.TAG, "load .so file : $it")
+                shellArgs.add("--aot-shared-library-name=$it")
+            }
         }
         return shellArgs
     }
