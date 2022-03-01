@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/official_comment_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
@@ -32,7 +31,6 @@ class FeedbackRouter {
     detail: (args) => DetailPage(args),
     commentDetail: (args) => ReplyDetailPage(args),
     newPost: (_) => NewPostPage(),
-    officialComment: (args) => OfficialCommentPage(args),
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     imageView: (_) => ImageViewPage(),

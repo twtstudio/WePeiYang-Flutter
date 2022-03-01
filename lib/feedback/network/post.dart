@@ -165,6 +165,7 @@ class Floor {
     this.likeCount,
     this.subFloors,
     this.subFloorCnt,
+    this.rating,
     this.isLike,
     this.isDis,
     this.isOwner,
@@ -183,6 +184,7 @@ class Floor {
   int likeCount;
   List<Floor> subFloors;
   int subFloorCnt;
+  int rating;
   bool isLike;
   bool isDis;
   bool isOwner;
@@ -197,6 +199,7 @@ class Floor {
         imageUrl: json["image_url"],
         replyTo: json["reply_to"],
         replyToName: json["reply_to_name"],
+        rating:json["rating"],
         subTo: json["sub_to"],
         likeCount: json["like_count"],
         subFloors: json["sub_floors"] == null

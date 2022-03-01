@@ -333,7 +333,27 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
-
+  static getOfficialComment({
+    @required id,
+    @required void Function(List<Floor> officialCommentList) onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var commentResponse = await feedbackDio.get(
+        'post/replys',
+        queryParameters: {
+          'post_id': '$id',
+        },
+      );
+      List<Floor> officialCommentList = [];
+      for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
+        officialCommentList.add(Floor.fromJson(json));
+      }
+      onSuccess(officialCommentList);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
@@ -567,12 +587,11 @@ class FeedbackService with AsyncTimer {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
         await feedbackDio.post(
-          'answer/commit',
+          'post/solve',
           formData: FormData.fromMap({
             'token': CommonPreferences().feedbackToken.value,
-            'answer_id': id,
-            'score': rating.toInt(),
-            'commit': '评分',
+            'post_id': id,
+            'rating': rating.toInt(),
           }),
         );
         onSuccess?.call();

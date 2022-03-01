@@ -22,7 +22,9 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
+
 
 enum DetailPageStatus {
   loading,
@@ -46,6 +48,7 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
+  List<Floor> _officialCommentList;
   bool _bottomIsOpen;
   int currentPage = 1;
 
@@ -118,6 +121,7 @@ class _DetailPageState extends State<DetailPage>
     status = DetailPageStatus.loading;
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
+    _officialCommentList = [];
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
@@ -133,6 +137,7 @@ class _DetailPageState extends State<DetailPage>
           });
         });
       } else {
+        _getOfficialComment();
         _getComments(
             onSuccess: (comments) {
               _commentList.addAll(comments);
@@ -149,6 +154,7 @@ class _DetailPageState extends State<DetailPage>
   _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
+        _getOfficialComment(onFail: onFail);
         _getComments(
           onSuccess: onSuccess,
           onFail: onFail,
@@ -191,7 +197,20 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
-
+  _getOfficialComment({Function onSuccess, Function onFail}) {
+    FeedbackService.getOfficialComment(
+      id: post.id,
+      onSuccess: (floor) {
+        _officialCommentList = floor;
+        onSuccess?.call();
+        setState(() {});
+      },
+      onFailure: (e) {
+        onFail?.call();
+        ToastProvider.error(e.error.toString());
+      },
+    );
+  }
   @override
   void dispose() {
     _refreshController.dispose();
@@ -240,7 +259,7 @@ class _DetailPageState extends State<DetailPage>
       }
     } else if (status == DetailPageStatus.idle) {
       Widget mainList1 = ListView.builder(
-        itemCount: _commentList.length + 1,
+        itemCount:_officialCommentList.length+ _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Column(
@@ -287,16 +306,26 @@ class _DetailPageState extends State<DetailPage>
           index--;
 
           ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
+          if (index < _officialCommentList.length) {
+            var data = _officialCommentList[index];
+            return OfficialReplyCard.reply(
+              comment: data,
+              placeAppeared: index,
+                ancestorId:post.id,
+            );
+          }
           ///_officialCommentList,点赞注释了
-          var data = _commentList[index];
-          return NCommentCard(
-            placeAppeared: index,
-            comment: data,
-            ancestorId: post.id,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: false,
-          );
+          else {
+            var data = _commentList[index - _officialCommentList.length];
+            return NCommentCard(
+              placeAppeared: index,
+              comment: data,
+              ancestorId: post.id,
+              commentFloor: index + 1,
+              isSubFloor: false,
+              isFullView: false,
+            );
+          }
         },
       );
 

@@ -138,35 +138,41 @@ class _NCommentCardState extends State<NCommentCard>
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorId)
                     Text(
-                      widget.comment.replyToName + (widget.comment.isOwner && widget.comment.replyToName == widget.comment.nickname ? '(我)' : ''),
+                      widget.comment.replyToName +
+                          (widget.comment.isOwner &&
+                                  widget.comment.replyToName ==
+                                      widget.comment.nickname
+                              ? '(我)'
+                              : ''),
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       style: TextUtil.base.grey97.w400.NotoSansSC.sp(14),
                     ),
                   //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
                   //回的是层主但回复的不是这条评论
-                  if (!widget.comment.isOwner && widget.comment.replyToName != widget.comment.nickname)
-                  CommentIdentificationContainer(
-                      widget.isSubFloor
-                          ? widget.comment.replyToName == 'Owner' &&
-                                  (widget.ancestorName != 'Owner' ||
-                                      (widget.ancestorName == 'Owner' &&
-                                          widget.comment.replyTo !=
-                                              widget.ancestorId))
-                              ? widget.comment.replyToName ==
-                                          widget.ancestorName &&
-                                      widget.comment.replyTo !=
-                                          widget.ancestorId
-                                  ? '楼主 层主'
-                                  : '楼主'
-                              : widget.comment.replyToName ==
-                                          widget.ancestorName &&
-                                      widget.comment.replyTo !=
-                                          widget.ancestorId
-                                  ? '层主'
-                                  : ''
-                          : '',
-                      false),
+                  if (!widget.comment.isOwner &&
+                      widget.comment.replyToName != widget.comment.nickname)
+                    CommentIdentificationContainer(
+                        widget.isSubFloor
+                            ? widget.comment.replyToName == 'Owner' &&
+                                    (widget.ancestorName != 'Owner' ||
+                                        (widget.ancestorName == 'Owner' &&
+                                            widget.comment.replyTo !=
+                                                widget.ancestorId))
+                                ? widget.comment.replyToName ==
+                                            widget.ancestorName &&
+                                        widget.comment.replyTo !=
+                                            widget.ancestorId
+                                    ? '楼主 层主'
+                                    : '楼主'
+                                : widget.comment.replyToName ==
+                                            widget.ancestorName &&
+                                        widget.comment.replyTo !=
+                                            widget.ancestorId
+                                    ? '层主'
+                                    : ''
+                            : '',
+                        false),
                   if (widget.isSubFloor &&
                       widget.comment.replyTo != widget.ancestorId)
                     CommentIdentificationContainer(
