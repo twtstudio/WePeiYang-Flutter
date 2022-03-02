@@ -232,13 +232,11 @@ class _PostCardState extends State<PostCard> {
       );
     }
 
-    var title = Expanded(
-      child: Text(
-        post.title,
-        maxLines: widget.type == PostCardType.detail ? 3 : 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
-      ),
+    var title = Text(
+      post.title,
+      maxLines: widget.type == PostCardType.detail ? 3 : 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
     );
 
     var tag = post.type == 0
@@ -369,8 +367,7 @@ class _PostCardState extends State<PostCard> {
             Row(
               children: [
                 if (widget.type == PostCardType.detail)
-                  Expanded(
-                      child: GestureDetector(
+                  GestureDetector(
                     onLongPress: () => Clipboard.setData(ClipboardData(
                         text: '#MP' + post.id.toString().padLeft(6, '0'))),
                     child: Text(
@@ -378,8 +375,9 @@ class _PostCardState extends State<PostCard> {
                       style:
                           TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
                     ),
-                  )),
+                  ),
                 if (widget.type == PostCardType.simple) title,
+                Spacer(),
                 SizedBox(width: 10),
                 if (post.type == 0 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
@@ -673,54 +671,52 @@ class _PostCardState extends State<PostCard> {
   }
 
   _image(index, context) {
-    return Expanded(
-        flex: 1,
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-              "urlList": post.imageUrls,
-              "urlListLength": post.imageUrls.length,
-              "indexNow": index
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              child: Image.network(
-                  widget.type == PostCardType.detail
-                      ? picBaseUrl + 'origin/' + post.imageUrls[index]
-                      : picBaseUrl + 'thumb/' + post.imageUrls[index],
-                  fit: BoxFit.cover,
-                  height: (ScreenUtil.defaultSize.width - 80) /
-                      post.imageUrls.length,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: EdgeInsets.all(4),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: Colors.black12,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  ),
-                );
-              }, errorBuilder: (BuildContext context, Object exception,
-                      StackTrace stackTrace) {
-                return Text(
-                  '💔[图片加载失败]',
-                  style: TextUtil.base.grey6C.w400.sp(12),
-                );
-              }),
-            ),
-          ),
-        ));
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
+          "urlList": post.imageUrls,
+          "urlListLength": post.imageUrls.length,
+          "indexNow": index
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+          child: Image.network(
+              widget.type == PostCardType.detail
+                  ? picBaseUrl + 'origin/' + post.imageUrls[index]
+                  : picBaseUrl + 'thumb/' + post.imageUrls[index],
+              fit: BoxFit.cover,
+              height:
+                  (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: Container(
+                height: 40,
+                width: 40,
+                padding: EdgeInsets.all(4),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: Colors.black12,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null,
+                ),
+              ),
+            );
+          }, errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+            return Text(
+              '💔[图片加载失败]',
+              style: TextUtil.base.grey6C.w400.sp(12),
+            );
+          }),
+        ),
+      ),
+    );
   }
 }

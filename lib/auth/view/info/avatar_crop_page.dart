@@ -21,7 +21,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     var image = await ImagePicker().pickImage(source: source, imageQuality: 50);
     if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
-    File croppedFile = await ImageCropper.cropImage(
+    File croppedFile = await ImageCropper().cropImage(
       sourcePath: image.path,
       cropStyle: CropStyle.circle,
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
