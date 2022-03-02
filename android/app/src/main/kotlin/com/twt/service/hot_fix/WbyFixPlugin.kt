@@ -110,6 +110,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         val fix = File(fixDir, download.name)
 
         fix.runCatching {
+            // 如果不存在，就移动文件到这里
             if (!exists()){
                 FileInputStream(download).use { input ->
                     FileOutputStream(absolutePath).use { output ->
@@ -121,6 +122,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }
             absolutePath
         }.onSuccess {
+            download.deleteOnExit()
             log("move so file success : $it")
             result.success(it)
         }.onFailure {

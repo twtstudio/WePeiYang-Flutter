@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
-import 'package:we_pei_yang_flutter/message/message_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/message/message_dialog.dart';
 
 class MessageProvider extends ChangeNotifier {
   List<LikeMessage> _likeMessages = [];

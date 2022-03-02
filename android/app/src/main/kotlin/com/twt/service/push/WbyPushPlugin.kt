@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.PushManager
@@ -41,7 +40,7 @@ import io.flutter.plugin.common.PluginRegistry
 // Assist_
 
 class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
-    PluginRegistry.NewIntentListener, ActivityAware {
+        PluginRegistry.NewIntentListener, ActivityAware {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
     private lateinit var receiver: PushBroadCastReceiver
@@ -117,9 +116,9 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
                 permissionResult.error(
-                    OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR,
-                    errorMessage,
-                    errorDetails
+                        OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR,
+                        errorMessage,
+                        errorDetails
                 )
             }
 
@@ -317,9 +316,9 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                     }.onFailure {
                         log("turnOnPushService error : $it")
                         error(
-                            OPEN_PUSH_SERVICE_ERROR,
-                            "turnOnPushService error when enable notification",
-                            it.message
+                                OPEN_PUSH_SERVICE_ERROR,
+                                "turnOnPushService error when enable notification",
+                                it.message
                         )
                     }
                 } else {
@@ -374,7 +373,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     private val isNotificationEnabled: Boolean
         get() = NotificationManagerCompat.from(context)
-            .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
+                .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
 
     // 和产品商量过，暂时不用这两个权限
 //    private val checkPermission: Boolean
@@ -413,15 +412,17 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 val id = intent.getIntExtra("question_id", -1)
                 log("question_id : $id")
                 WBYApplication.eventList.add(
-                    Event(IntentEvent.FeedbackPostPage.type, id)
+                        Event(IntentEvent.FeedbackPostPage.type, id)
                 )
             }
             "mailbox" -> {
+                val createdAt = intent.getStringExtra("createdAt")
                 val url = intent.getStringExtra("url")
                 val title = intent.getStringExtra("title")
-                val data = mapOf("url" to url, "title" to title)
+                val content = intent.getStringExtra("content")
+                val data = mapOf("url" to url, "title" to title, "createdAt" to createdAt, "content" to content)
                 WBYApplication.eventList.add(
-                    Event(IntentEvent.MailBox.type, data)
+                        Event(IntentEvent.MailBox.type, data)
                 )
             }
             "update" -> {
@@ -430,12 +431,12 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 val fixCode = intent.getIntExtra("fixCode", 0)
                 val url = intent.getStringExtra("url") ?: ""
                 val data = mapOf(
-                    "versionCode" to versionCode,
-                    "fixCode" to fixCode,
-                    "url" to url,
+                        "versionCode" to versionCode,
+                        "fixCode" to fixCode,
+                        "url" to url,
                 )
                 WBYApplication.eventList.add(
-                    Event(IntentEvent.Update.type, data)
+                        Event(IntentEvent.Update.type, data)
                 )
             }
         }
@@ -507,6 +508,8 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             "mailbox" -> {
                 val url = call.argument<String>("url")
                 val title = call.argument<String>("title")
+                val content = call.argument<String>("content")
+                val createAt = call.argument<String>("createdAt")
                 if (url.isNullOrBlank() || title.isNullOrBlank()) {
                     result.error("-1", "url and title can't be null!", "")
                     return
@@ -516,6 +519,8 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                     data = Uri.parse("twtstudio://weipeiyang.app/mailbox?")
                     putExtra("url", url)
                     putExtra("title", title)
+                    putExtra("createdAt", createAt)
+                    putExtra("content", content)
                     putExtra("type", "mailbox")
                 }.toUri(Intent.URI_INTENT_SCHEME)
 

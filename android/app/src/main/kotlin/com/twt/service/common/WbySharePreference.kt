@@ -2,17 +2,18 @@ package com.twt.service.common
 
 import android.content.Context
 import android.util.Log
+import com.twt.service.BuildConfig
 import com.twt.service.WBYApplication
 import java.io.File
 
 object WbySharePreference {
     private val flutterSharedPreferences by lazy {
         WBYApplication.context?.get()
-            ?.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+                ?.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
     }
     private val fixSoSharedPreferences by lazy {
         WBYApplication.context?.get()
-            ?.getSharedPreferences("fixSoFiles", Context.MODE_PRIVATE)
+                ?.getSharedPreferences("fixSoFiles", Context.MODE_PRIVATE)
     }
 
     const val TAG = "WBY_SHARE_PREFERENCE"
@@ -39,20 +40,20 @@ object WbySharePreference {
             fixSoSharedPreferences?.let { pref ->
                 Log.d("WBY_SP", pref.all.toString())
                 pref.getString(fixSoKey, null)
-                    ?.split(listSplit)?.forEach { path ->
-                        // 保证.so文件上次运行时没发生问题，如果发生了问题就换下一个
-                        val file = File(path)
-                        val canUse = pref.getBoolean(path, false)
-                        Log.d("WBY_SP", "$path  $canUse")
-                        if (canUse && file.exists() && file.extension == "so") {
-                            pref.edit().let {
-                                it.putBoolean(path, false)
-                                it.putString(currentUseKey, path)
-                                it.commit()
+                        ?.split(listSplit)?.forEach { path ->
+                            // 保证.so文件上次运行时没发生问题，如果发生了问题就换下一个
+                            val file = File(path)
+                            val canUse = pref.getBoolean(path, false)
+                            Log.d("WBY_SP", "$path  $canUse")
+                            if (canUse && file.exists() && file.extension == "so") {
+                                pref.edit().let {
+                                    it.putBoolean(path, false)
+                                    it.putString(currentUseKey, path)
+                                    it.commit()
+                                }
+                                return path
                             }
-                            return path
                         }
-                    }
             }
             // 如果都没有满足的文件就加载原来的libapp.so文件
             return null
@@ -68,16 +69,57 @@ object WbySharePreference {
                 }
             }?.let { path ->
                 fixSoSharedPreferences?.let { pref ->
-                    pref.getString(fixSoKey, "")
-                        ?.takeIf { !it.contains(path) }
-                        ?.let { list ->
-                            pref.edit()?.let {
-                                it.putString(fixSoKey, "$list$listSplit$path")
-                                it.putBoolean(path, true)
-                                it.commit()
+                    pref.getString(fixSoKey, "")?.takeIf { !it.contains(path) }?.let { list ->
+                        // 把list清洗一次
+                        val files = mutableListOf(path)
+
+                        list.takeIf { it.isNotBlank() }?.split(listSplit)?.forEach { soFile ->
+                            soFile.split(File.separator).last().split("-").takeIf { it.size == 3 }?.runCatching {
+                                // fileName = "$versionCode-$fixCode-libapp.so"
+                                val versionCode = this[0].toIntOrNull()
+                                val fixCode = this[1].toIntOrNull()
+                                if (versionCode == null || fixCode == null) {
+                                    throw Exception("")
+                                }
+                                File(soFile).takeIf { it.exists() }?.let {
+                                    if (versionCode - fixCode > BuildConfig.VERSION_CODE) {
+                                        it.deleteOnExit()
+                                    } else {
+                                        files.add(soFile)
+                                    }
+                                }
                             }
                         }
+
+                        val c1: Comparator<String> = Comparator { o1, o2 ->
+                            val s1 = o1.split(File.separator).last().split("-")
+                            val s2 = o2.split(File.separator).last().split("-")
+                            if (s1[0] == s2[0]) {
+                                s1[1].compareTo(s2[1])
+                            } else {
+                                s1[0].compareTo(s2[0])
+                            }
+                        }
+
+                        files.sortWith(c1)
+                        val result = files.joinToString(listSplit)
+
+                        pref.edit()?.let {
+                            it.putString(fixSoKey, result)
+                            it.putBoolean(path, true)
+                            it.commit()
+                        }
+                    }
                 }
+            }
+        }
+
+    var fixSoFiles: List<String>
+        get() = fixSoSharedPreferences?.getString(fixSoKey, "")?.split(listSplit) ?: emptyList()
+        set(value) {
+            fixSoSharedPreferences?.edit()?.let {
+                it.putString(fixSoKey, value.joinToString(listSplit))
+                it.commit()
             }
         }
 
@@ -105,7 +147,7 @@ object WbySharePreference {
 
     var canPush: CanPushType
         get() = with(flutterSharedPreferences?.getInt(canPushKey, CanPushType.Unknown.value)) {
-            return@with when(this) {
+            return@with when (this) {
                 1 -> CanPushType.Not
                 2 -> CanPushType.Want
                 else -> CanPushType.Unknown

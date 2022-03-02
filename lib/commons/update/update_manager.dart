@@ -99,7 +99,7 @@ class UpdateManager extends ChangeNotifier {
       // 自动更新，下载完成后再弹对话框
       hotFix(
         version.flutterFixSoFile,
-        localVersion,
+        version.versionCode,
         version.flutterFixCode,
         fixLoadSoFileSuccess: () {
           _showHotfixDialog(version, showToast);
@@ -261,7 +261,7 @@ class UpdateManager extends ChangeNotifier {
 
   Future<void> forceUpdateApk(int testVersionCode) async {
     state = UpdateState.checkUpdate;
-    var response = await updateDio.get(UpdateService.githubTestUrl);
+    var response = await updateDio.get(UpdateService.wbyUpdateUrl);
     var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
     if (testVersionCode + version.flutterFixCode < version.versionCode) {
       _updateWithApk(version, true);
@@ -269,7 +269,7 @@ class UpdateManager extends ChangeNotifier {
         testVersionCode + version.flutterFixCode >= version.versionCode) {
       hotFix(
         version.flutterFixSoFile,
-        testVersionCode,
+        version.versionCode,
         version.flutterFixCode,
         fixLoadSoFileSuccess: () {
           _showHotfixDialog(version, true);
@@ -289,12 +289,11 @@ class UpdateManager extends ChangeNotifier {
 
   Future<void> forceUpdateSo() async {
     state = UpdateState.checkUpdate;
-    var response = await updateDio.get(UpdateService.githubTestUrl);
+    var response = await updateDio.get(UpdateService.wbyUpdateUrl);
     var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
-    var localVersion = await UpdateUtil.getVersionCode();
     hotFix(
         version.flutterFixSoFile,
-        localVersion,
+        version.versionCode,
         version.flutterFixCode,
         fixLoadSoFileSuccess: () {
           _showHotfixDialog(version, true);

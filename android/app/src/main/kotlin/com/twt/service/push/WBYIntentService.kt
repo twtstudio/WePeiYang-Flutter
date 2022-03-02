@@ -40,7 +40,7 @@ class WBYIntentService : GTIntentService() {
         // val result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001)
         // Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
         Log.d(
-            TAG, """
+                WbyPushPlugin.TAG, """
             onReceiveMessageData -> appid = $appid
             taskid = $taskid
             messageid = $messageid
@@ -54,12 +54,12 @@ class WBYIntentService : GTIntentService() {
         } else {
             val data = String(payload)
             Log.d(WbyPushPlugin.TAG, "receiver payload = $data")
-//            val intent = IntentUtil.messageData(msg)
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            val intent = IntentUtil.messageData(data)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
         Log.d(
-            WbyPushPlugin.TAG,
-            "----------------------------------------------------------------------------------------------"
+                WbyPushPlugin.TAG,
+                "----------------------------------------------------------------------------------------------"
         )
     }
 
@@ -77,16 +77,16 @@ class WBYIntentService : GTIntentService() {
        10006：自定义回执的结果回执 */
         when (cmdMessage?.action) {
             PushConsts.SET_TAG_RESULT -> {
-    //            setTagResult(cmdMessage as SetTagCmdMessage?)
+                //            setTagResult(cmdMessage as SetTagCmdMessage?)
             }
             PushConsts.BIND_ALIAS_RESULT -> {
-    //            bindAliasResult(cmdMessage as BindAliasCmdMessage?)
+                //            bindAliasResult(cmdMessage as BindAliasCmdMessage?)
             }
             PushConsts.UNBIND_ALIAS_RESULT -> {
-    //            unbindAliasResult(cmdMessage as UnBindAliasCmdMessage?)
+                //            unbindAliasResult(cmdMessage as UnBindAliasCmdMessage?)
             }
             PushConsts.THIRDPART_FEEDBACK -> {
-    //            feedbackResult(cmdMessage as FeedbackCmdMessage?)
+                //            feedbackResult(cmdMessage as FeedbackCmdMessage?)
             }
         }
     }
@@ -94,28 +94,28 @@ class WBYIntentService : GTIntentService() {
     // 通知到达时回调该接口（仅支持个推 SDK 通道下发的通知）
     override fun onNotificationMessageArrived(p0: Context?, message: GTNotificationMessage?) {
         Log.d(
-            WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
+                WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = " + message?.title
         )
     }
 
     // 通知点击回调接口（仅支持个推 SDK 通道下发的通知）
     override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
         Log.d(
-            WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
+                WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = " + message?.title
         )
     }
 

@@ -1,20 +1,26 @@
 // @dart = 2.12
 
-import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
+import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 void hotFix(
-    String url,
-    int versionCode,
-    int fixCode, {
-      required void Function(dynamic) fixError,
-      required Function fixLoadSoFileSuccess,
-      required void Function(dynamic) downloadError,
-      void Function()? downloadBegin,
-      void Function(DownloadItem task, double progress)? downloadRunning,
-      void Function(String soPath)? fixDownloadSuccess,
-    }) {
+  String url,
+  int versionCode,
+  int fixCode, {
+  required void Function(dynamic) fixError,
+  required Function fixLoadSoFileSuccess,
+  required void Function(dynamic) downloadError,
+  void Function()? downloadBegin,
+  void Function(DownloadItem task, double progress)? downloadRunning,
+  void Function(String soPath)? fixDownloadSuccess,
+}) {
+  if (kDebugMode) {
+    fixError.call(Exception('debug版本不能热更新'));
+    ToastProvider.error('debug版本不能热更新');
+    return;
+  }
   final fileName = "$versionCode-$fixCode-libapp.so";
   DownloadManager.getInstance().download(
     DownloadItem(

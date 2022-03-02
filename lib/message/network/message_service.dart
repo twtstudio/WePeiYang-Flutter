@@ -1,12 +1,11 @@
 import 'dart:convert' show jsonDecode;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
-import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
 class MessageService {
   static getUnreadMessagesCount(
@@ -60,8 +59,8 @@ class MessageService {
 
   static getReplyMessages(
       {@required page,
-        @required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
-        @required OnFailure onFailure}) async {
+      @required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
+      @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("replys", queryParameters: {
         "page_size": 10,
@@ -78,9 +77,12 @@ class MessageService {
   }
 
   static getNoticeMessages(
-      {@required page,
-        @required void Function(List<NoticeMessage> list, int totalPage) onSuccess,
-        @required OnFailure onFailure}) async {
+      {@required
+          page,
+      @required
+          void Function(List<NoticeMessage> list, int totalPage) onSuccess,
+      @required
+          OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("notices", queryParameters: {
         "page_size": 10,
@@ -135,6 +137,7 @@ class MessageService {
     } on DioError catch (e) {
       onFailure(e);
     }
+
     ///涉及推送原生部分代码，随后再改
     // await pushChannel
     //     .invokeMethod<String>("cancelNotification", {"id": questionId});
@@ -163,28 +166,9 @@ class MessageService {
       onFailure(e);
     }
   }
-
-  static Future<UserMessages> getUserMails(int page) async {
-    var response = await userDio
-        .get('https://api.twt.edu.cn/api/notification/history/user');
-    var messages = UserMessages.fromJson(response.data);
-    return messages;
-  }
 }
 
 final messageDio = MessageDio();
-final userDio = UserNotificationDio();
-
-
-class UserNotificationDio extends DioAbstract {
-  @override
-  Map<String, String> headers = {
-    "DOMAIN": AuthDio.DOMAIN,
-    "ticket": AuthDio.ticket,
-    "token": CommonPreferences().token.value
-  };
-}
-
 
 class MessageDio extends DioAbstract {
   // @override

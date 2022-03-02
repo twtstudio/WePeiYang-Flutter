@@ -19,6 +19,7 @@ class _PushTestPageState extends State<PushTestPage> {
   final qId = TextEditingController();
   final url = TextEditingController();
   final title = TextEditingController();
+  final content = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +72,18 @@ class _PushTestPageState extends State<PushTestPage> {
           controller: title,
           decoration: const InputDecoration(hintText: "输入 title"),
         ),
+        TextField(
+          controller: content,
+          decoration: const InputDecoration(hintText: "输入 content"),
+        ),
         TextButton(
           onPressed: () async {
-            final intent = await manager.getIntentUri(MailboxIntent(url.text, title.text));
+            final intent = await manager.getIntentUri(MailboxIntent(
+              url.text,
+              title.text,
+              content.text,
+              DateTime.now().toIso8601String(),
+            ));
             setState(() {
               mailboxIntent = intent ?? 'null';
             });

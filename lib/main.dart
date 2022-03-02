@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
@@ -26,7 +27,7 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/message/message_router.dart';
+import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
@@ -92,8 +93,7 @@ final pushChannel = MethodChannel('com.twt.service/push');
 
 class IntentEvent {
   static const FeedbackPostPage = 1;
-  static const WBYPushOnlyText = 2;
-  static const WBYPushHtml = 3;
+  static const WBYMailBox = 3;
   static const SchedulePage = 4;
   static const UpdateDialog = 5;
   static const NoSuchEvent = -1;
@@ -141,16 +141,12 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
             arguments: Post.nullExceptId(eventMap['data']),
           );
           break;
-        case IntentEvent.WBYPushOnlyText:
-          String content = eventMap['data'];
-          showDialog(content);
-          break;
-        case IntentEvent.WBYPushHtml:
+        case IntentEvent.WBYMailBox:
           final data = eventMap['data'] as Map;
           Navigator.pushNamed(
             baseContext,
-            MessageRouter.htmlMailPage,
-            arguments: data,
+            MessageRouter.mailPage,
+            arguments: UserMail.fromJson(data),
           );
           break;
         case IntentEvent.SchedulePage:
