@@ -148,7 +148,7 @@ dependencies {
 
     // 高德 sdk
     // https://lbs.amap.com/api/android-location-sdk/changelog
-    implementation 'com.amap.api:location:5.6.2'
+    implementation 'com.amap.api:location:6.0.0'
 
     implementation('io.github.lucksiege:pictureselector:v2.7.2') {
         configurations {

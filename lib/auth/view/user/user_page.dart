@@ -170,9 +170,9 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onLongPress: (){
-                        // if(kDebugMode){
-                        // }
-                        Navigator.pushNamed(context, TestRouter.updateTest);
+                        if(kDebugMode || CommonPreferences().account.value == '3019233035'){
+                          Navigator.pushNamed(context, TestRouter.updateTest);
+                        }
                       },
                       onTap: () {
                         context.read<UpdateManager>().checkUpdate(showToast: true);

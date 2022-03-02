@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -11,7 +11,6 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-
 
 class SettingPageArgs {
   final bool showBrief;
@@ -30,11 +29,17 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static final titleTextStyle = FontManager.YaHeiBold.copyWith(
-      fontSize: 14, color: Color.fromRGBO(177, 180, 186, 1), fontWeight: FontWeight.bold);
+      fontSize: 14,
+      color: Color.fromRGBO(177, 180, 186, 1),
+      fontWeight: FontWeight.bold);
   static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14, color: Color.fromRGBO(98, 103, 122, 1), fontWeight: FontWeight.bold);
-  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
-  static final arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      fontSize: 14,
+      color: Color.fromRGBO(98, 103, 122, 1),
+      fontWeight: FontWeight.bold);
+  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
+  static final arrow =
+      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   var pref = CommonPreferences();
   double descriptionMaxWidth;
@@ -46,7 +51,9 @@ class _SettingPageState extends State<SettingPage> {
       appBar: AppBar(
           title: Text(S.current.setting,
               style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16, color: Color.fromRGBO(36, 43, 69, 1), fontWeight: FontWeight.bold)),
+                  fontSize: 16,
+                  color: Color.fromRGBO(36, 43, 69, 1),
+                  fontWeight: FontWeight.bold)),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -54,7 +61,8 @@ class _SettingPageState extends State<SettingPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
-                child: Icon(Icons.arrow_back, color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                child: Icon(Icons.arrow_back,
+                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: ListView(
@@ -71,9 +79,12 @@ class _SettingPageState extends State<SettingPage> {
               padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
               child: Card(
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
                 child: InkWell(
-                  onTap: () => Navigator.pushNamed(context, AuthRouter.colorSetting).then((_) {
+                  onTap: () =>
+                      Navigator.pushNamed(context, AuthRouter.colorSetting)
+                          .then((_) {
                     /// 使用pop返回此页面时进行rebuild
                     this.setState(() {});
                   }),
@@ -89,9 +100,11 @@ class _SettingPageState extends State<SettingPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(S.current.setting_color, style: mainTextStyle),
+                              Text(S.current.setting_color,
+                                  style: mainTextStyle),
                               SizedBox(height: 3),
-                              Text(S.current.setting_color_hint, style: hintTextStyle)
+                              Text(S.current.setting_color_hint,
+                                  style: hintTextStyle)
                             ],
                           ),
                         ),
@@ -114,13 +127,17 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: <Widget>[
-                    SizedBox(width: descriptionMaxWidth, child: Text(S.current.setting_gpa, style: mainTextStyle)),
+                    SizedBox(
+                        width: descriptionMaxWidth,
+                        child:
+                            Text(S.current.setting_gpa, style: mainTextStyle)),
                     Spacer(),
                     Switch(
                       value: pref.hideGPA.value,
                       onChanged: (value) {
                         setState(() => pref.hideGPA.value = value);
-                        Provider.of<GPANotifier>(context, listen: false).hideGPA = value;
+                        Provider.of<GPANotifier>(context, listen: false)
+                            .hideGPA = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
                       inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -143,13 +160,17 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: <Widget>[
-                    SizedBox(width: descriptionMaxWidth, child: Text(S.current.setting_exam, style: mainTextStyle)),
+                    SizedBox(
+                        width: descriptionMaxWidth,
+                        child:
+                            Text(S.current.setting_exam, style: mainTextStyle)),
                     Spacer(),
                     Switch(
                       value: pref.hideExam.value,
                       onChanged: (value) {
                         setState(() => pref.hideExam.value = value);
-                        Provider.of<ExamNotifier>(context, listen: false).hideExam = value;
+                        Provider.of<ExamNotifier>(context, listen: false)
+                            .hideExam = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
                       inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -195,7 +216,8 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
             child: Card(
               elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -206,7 +228,8 @@ class _SettingPageState extends State<SettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(S.current.setting_night_mode, style: mainTextStyle),
+                          Text(S.current.setting_night_mode,
+                              style: mainTextStyle),
                           SizedBox(height: 3),
                           Text(
                             S.current.setting_night_mode_hint,
@@ -220,7 +243,8 @@ class _SettingPageState extends State<SettingPage> {
                       value: pref.nightMode.value,
                       onChanged: (value) {
                         setState(() => pref.nightMode.value = value);
-                        Provider.of<ScheduleNotifier>(context, listen: false).nightMode = value;
+                        Provider.of<ScheduleNotifier>(context, listen: false)
+                            .nightMode = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
                       inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -242,9 +266,12 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: Card(
                   elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
                   child: InkWell(
-                    onTap: () => Navigator.pushNamed(context, AuthRouter.scheduleSetting).then((_) {
+                    onTap: () =>
+                        Navigator.pushNamed(context, AuthRouter.scheduleSetting)
+                            .then((_) {
                       /// 使用pop返回此页面时进行rebuild
                       this.setState(() {});
                     }),
@@ -260,9 +287,11 @@ class _SettingPageState extends State<SettingPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(S.current.setting_day_number, style: mainTextStyle),
+                                Text(S.current.setting_day_number,
+                                    style: mainTextStyle),
                                 SizedBox(height: 3),
-                                Text('${pref.dayNumber.value}', style: hintTextStyle)
+                                Text('${pref.dayNumber.value}',
+                                    style: hintTextStyle)
                               ],
                             ),
                           ),
@@ -278,7 +307,8 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: Card(
                   elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Row(
@@ -289,9 +319,11 @@ class _SettingPageState extends State<SettingPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(S.current.setting_other_week, style: mainTextStyle),
+                              Text(S.current.setting_other_week,
+                                  style: mainTextStyle),
                               SizedBox(height: 3),
-                              Text(S.current.setting_other_week_hint, style: hintTextStyle)
+                              Text(S.current.setting_other_week_hint,
+                                  style: hintTextStyle)
                             ],
                           ),
                         ),
@@ -299,7 +331,8 @@ class _SettingPageState extends State<SettingPage> {
                         Switch(
                           value: pref.otherWeekSchedule.value,
                           onChanged: (value) {
-                            setState(() => pref.otherWeekSchedule.value = value);
+                            setState(
+                                () => pref.otherWeekSchedule.value = value);
                           },
                           activeColor: Color.fromRGBO(105, 109, 127, 1),
                           inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
@@ -318,17 +351,19 @@ class _SettingPageState extends State<SettingPage> {
               Padding(
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: GestureDetector(
-                  onLongPress: (){
-                    if(kDebugMode){
+                  onLongPress: () {
+                    if (kDebugMode ||
+                        CommonPreferences().account.value == '3019233035') {
                       Navigator.pushNamed(context, TestRouter.pushTest);
                     }
                   },
-                  onTap: (){
+                  onTap: () {
                     context.read<PushManager>().showRequestNotificationDialog();
                   },
                   child: Card(
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
@@ -348,10 +383,12 @@ class _SettingPageState extends State<SettingPage> {
                           Spacer(),
                           Builder(builder: (context) {
                             return Switch(
-                              value: context.select((PushManager manger) => manger.openPush),
+                              value: context.select(
+                                  (PushManager manger) => manger.openPush),
                               onChanged: (value) {
                                 if (value) {
-                                  context.read<PushManager>().turnOnPushService(() {
+                                  context.read<PushManager>().turnOnPushService(
+                                      () {
                                     ToastProvider.success("开启推送成功");
                                   }, () {
                                     ToastProvider.success("开启推送需要通知权限");
@@ -359,7 +396,9 @@ class _SettingPageState extends State<SettingPage> {
                                     ToastProvider.error("打开失败");
                                   });
                                 } else {
-                                  context.read<PushManager>().turnOffPushService(() {
+                                  context
+                                      .read<PushManager>()
+                                      .turnOffPushService(() {
                                     ToastProvider.success("关闭推送成功");
                                   }, () {
                                     ToastProvider.error("关闭失败");
@@ -367,9 +406,12 @@ class _SettingPageState extends State<SettingPage> {
                                 }
                               },
                               activeColor: Color.fromRGBO(105, 109, 127, 1),
-                              inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                              activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                              inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                              inactiveThumbColor:
+                                  Color.fromRGBO(205, 206, 212, 1),
+                              activeTrackColor:
+                                  Color.fromRGBO(240, 241, 242, 1),
+                              inactiveTrackColor:
+                                  Color.fromRGBO(240, 241, 242, 1),
                             );
                           }),
                         ],
