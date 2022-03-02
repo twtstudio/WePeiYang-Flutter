@@ -97,7 +97,7 @@ class WPYPageState extends State<WPYPage> {
                 slivers: <Widget>[
                   /// 自定义标题栏
                   SliverPadding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 12),
                     sliver: SliverPersistentHeader(
                         delegate: _WPYHeader(onChanged: (_) {
                           setState(() {});
@@ -165,7 +165,6 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
-      color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
@@ -216,7 +215,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   double get maxExtent => 65;
 
   @override
-  double get minExtent => 50;
+  double get minExtent => 49;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
@@ -269,7 +268,7 @@ class SliverCardsWidget extends StatelessWidget {
     Widget cardList = ListView.builder(
       controller: controller,
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(left: 15, top: 8),
       physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
@@ -314,17 +313,25 @@ class SliverCardsWidget extends StatelessWidget {
       child: SizedBox(
         height: 90,
         width: double.infinity,
-        child: Row(
+        child: Stack(
+          alignment: Alignment.centerLeft,
           children: [
-            Expanded(child: cardList),
-            SizedBox(
-              height: 90,
-              width: 45,
-              child: Center(
-                child: IconButton(
-                    icon: Icon(Icons.arrow_forward_ios_sharp,
-                        color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
-                    onPressed: () {
+            cardList,
+            Align(
+              alignment: Alignment.centerRight,
+              child: ShaderMask(
+                shaderCallback: (rect) {
+                      return LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.center,
+                        colors: [Colors.transparent, ColorUtil.backgroundColor],
+                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    },
+                blendMode: BlendMode.dstIn,
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
                       controller.offset <= 130 * (itemCount - 1)
                           ? controller.animateTo(controller.offset + 130,
                               duration: Duration(milliseconds: 400),
@@ -333,7 +340,16 @@ class SliverCardsWidget extends StatelessWidget {
                               140 * (itemCount - 1).toDouble(),
                               duration: Duration(milliseconds: 800),
                               curve: Curves.slowMiddle);
-                    }),
+                    },
+                  child: Container(
+                        height: 90,
+                        width: 70,
+                        child: Icon(Icons.arrow_forward_ios_sharp,
+                            color: Color.fromRGBO(98, 103, 124, 1.0),
+                            size: 25),
+                        color: ColorUtil.backgroundColor,
+                      ),
+                ),
               ),
             ),
           ],
@@ -383,7 +399,8 @@ class WPYScrollBehavior extends ScrollBehavior {
       BuildContext context, Widget child, AxisDirection axisDirection) {
     return GlowingOverscrollIndicator(
       child: child,
-      showTrailing: false,
+      showLeading: false,
+      showTrailing: true,
       axisDirection: AxisDirection.down,
       color: ColorUtil.mainColor,
     );

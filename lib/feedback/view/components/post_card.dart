@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
@@ -270,16 +270,25 @@ class _PostCardState extends State<PostCard> {
           )
         : SizedBox();
 
-    var content = ExpandableText(
-      text: post.content,
-      maxLines: widget.type == PostCardType.detail ? 8 : 2,
-      style: TextUtil.base.NotoSansSC.w400
-          .sp(16)
-          .black2A
-          .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
-      expand: false,
-      buttonIsShown: widget.type == PostCardType.detail,
-    );
+    var content = InkWell(
+        onLongPress: () {
+          Clipboard.setData(
+              ClipboardData(text: '【' + post.title + '】 ' + post.content));
+          ToastProvider.success('复制冒泡内容成功');
+        },
+        child: SizedBox(
+          width: double.infinity,
+          child: ExpandableText(
+            text: post.content,
+            maxLines: widget.type == PostCardType.detail ? 8 : 2,
+            style: TextUtil.base.NotoSansSC.w400
+                .sp(16)
+                .black2A
+                .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
+            expand: false,
+            buttonIsShown: widget.type == PostCardType.detail,
+          ),
+        ));
 
     List<Widget> rowList = [];
 
@@ -300,8 +309,13 @@ class _PostCardState extends State<PostCard> {
           ]),
           SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
-            Row(
-              children: [title],
+            InkWell(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(
+                    text: '【' + post.title + '】 ' + post.content));
+                ToastProvider.success('复制提问成功');
+              },
+              child: title,
             ),
           if (widget.type == PostCardType.detail) SizedBox(height: 8),
           content,
@@ -348,56 +362,41 @@ class _PostCardState extends State<PostCard> {
     var middleWidget =
         Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
 
-    var mainWidget = (tap) => GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  if (widget.type == PostCardType.detail)
-                    Expanded(
-                        child: Text(
+    var mainWidget = (tap) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                if (widget.type == PostCardType.detail)
+                  Expanded(
+                      child: GestureDetector(
+                    onLongPress: () => Clipboard.setData(ClipboardData(
+                        text: '#MP' + post.id.toString().padLeft(6, '0'))),
+                    child: Text(
                       '#MP' + post.id.toString().padLeft(6, '0'),
                       style:
                           TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
-                    )),
-                  if (widget.type == PostCardType.simple) title,
-                  SizedBox(width: 10),
-                  if (post.type == 0 && widget.type == PostCardType.simple)
-                    MPWidget(post.id.toString().padLeft(6, '0')),
-                  if (post.solved == true &&
-                      post.type == 1 &&
-                      widget.type == PostCardType.simple)
-                    SolvedWidget(),
-                  if (post.solved == false &&
-                      post.type == 1 &&
-                      widget.type == PostCardType.simple)
-                    UnSolvedWidget(),
-                  if (widget.type == PostCardType.detail) createTimeDetail,
-                ],
-              ),
-              SizedBox(height: 8),
-              middleWidget,
-            ],
-          ),
-          onTap: () async {
-            if (widget.type == PostCardType.simple) {
-              widget.onContentPressed?.call();
-              await tap?.call();
-              Navigator.pushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              ).then((p) {
-                setState(() {
-                  post = p;
-                });
-              });
-            }
-          },
-          onLongPress: widget.onContentLongPressed,
+                    ),
+                  )),
+                if (widget.type == PostCardType.simple) title,
+                SizedBox(width: 10),
+                if (post.type == 0 && widget.type == PostCardType.simple)
+                  MPWidget(post.id.toString().padLeft(6, '0')),
+                if (post.solved == true &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  SolvedWidget(),
+                if (post.solved == false &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  UnSolvedWidget(),
+                if (widget.type == PostCardType.detail) createTimeDetail,
+              ],
+            ),
+            SizedBox(height: 8),
+            middleWidget,
+          ],
         );
 
     var favoriteWidget = (widget.type == PostCardType.outSide)
@@ -473,7 +472,7 @@ class _PostCardState extends State<PostCard> {
                   widget.onLikePressed?.call(!isLike, likeCount);
                   post.isLike = !isLike;
                   post.likeCount = likeCount;
-                  if(post.isLike && post.isDis) {
+                  if (post.isLike && post.isDis) {
                     post.isDis = !post.isDis;
                     setState(() {});
                   }
@@ -498,7 +497,7 @@ class _PostCardState extends State<PostCard> {
                   widget.onLikePressed?.call(!isLike, likeCount);
                   post.isLike = !post.isLike;
                   post.likeCount = likeCount;
-                  if(post.isLike && post.isDis) {
+                  if (post.isLike && post.isDis) {
                     post.isDis = !post.isDis;
                     setState(() {});
                   }
@@ -524,9 +523,9 @@ class _PostCardState extends State<PostCard> {
                 onSuccess: () {
                   widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
-                  if(post.isLike && post.isDis) {
+                  if (post.isLike && post.isDis) {
                     post.isLike = !post.isLike;
-                    post.likeCount --;
+                    post.likeCount--;
                     setState(() {});
                   }
                 },
@@ -546,9 +545,9 @@ class _PostCardState extends State<PostCard> {
                 onSuccess: () {
                   widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
-                  if(post.isLike && post.isDis) {
+                  if (post.isLike && post.isDis) {
                     post.isLike = !post.isLike;
-                    post.likeCount --;
+                    post.likeCount--;
                     setState(() {});
                   }
                 },
@@ -627,32 +626,42 @@ class _PostCardState extends State<PostCard> {
       ],
     );
 
-    var body = FeedbackBannerWidget(
-      showBanner: widget.showBanner,
-      questionId: post.id,
-      builder: (tap) => Container(
-        padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            mainWidget(tap),
-            SizedBox(height: 8),
-            ...imagesWidget,
-            if (widget.type != PostCardType.detail) bottomWidget,
-          ],
-        ),
-        decoration: decoration,
-      ),
-    );
+    var body = GestureDetector(
+        onTap: () async {
+          if (widget.type == PostCardType.simple) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            ).then((p) {
+              setState(() {
+                post = p;
+              });
+            });
+          }
+        },
+        child: FeedbackBannerWidget(
+          showBanner: widget.showBanner,
+          questionId: post.id,
+          builder: (tap) => Container(
+            padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                mainWidget(tap),
+                SizedBox(height: 8),
+                ...imagesWidget,
+                if (widget.type != PostCardType.detail) bottomWidget,
+              ],
+            ),
+            decoration: decoration,
+          ),
+        ));
     return widget.type != PostCardType.outSide
         ? Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
-          child: ClipCopy(
-            toast: '复制提问成功',
-            copy: post.content,
+            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
             child: body,
-          ),
-        )
+          )
         : Row(
             children: [
               SizedBox(

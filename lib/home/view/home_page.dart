@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
@@ -80,176 +79,67 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = WePeiYangApp.screenWidth / 3;
 
-    var currentStyle = TextStyle(
-        fontSize: 12, color: MyColors.deepBlue, fontWeight: FontWeight.w800);
-    var otherStyle = TextStyle(
-        fontSize: 12, color: MyColors.deepDust, fontWeight: FontWeight.w800);
-
     var homePage = SizedBox(
-      height: 70,
+      height: 70.w,
       width: width,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(18)),
-          )),
-          elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(Colors.white),
+      child: IconButton(
+        splashRadius: 1,
+        icon: Image.asset(
+          'assets/images/home_logo.png',
+          color: _currentIndex == 0
+              ? Color.fromRGBO(38, 56, 95, 1.0)
+              : ColorUtil.searchBarIconColor,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      _currentIndex == 0
-                          ? Color.fromRGBO(55, 0, 182, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 0
-                          ? Color.fromRGBO(82, 123, 134, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 0
-                          ? Color.fromRGBO(106, 98, 26, 1.0)
-                          : ColorUtil.whiteF8Color,
-                    ],
-                  )),
-              height: 32.w,
-              width: 32.w,
-              padding: EdgeInsets.all(4.w),
-              child: ImageIcon(
-                AssetImage('assets/images/lake_butt_icons/main_page.png'),
-                color: _currentIndex == 0
-                    ? ColorUtil.whiteF8Color
-                    : ColorUtil.lightTextColor,
-              ),
-            ),
-            SizedBox(height: 2),
-            Text('主页', style: _currentIndex == 0 ? currentStyle : otherStyle),
-          ],
-        ),
+        color: Colors.white,
         onPressed: () => _tabController.animateTo(0),
       ),
     );
 
     var feedbackPage = SizedBox(
-      height: 70,
+      height: 70.w,
       width: width,
-      child: ElevatedButton(
+      child: IconButton(
+        splashRadius: 1,
+        icon: Image.asset(
+          'assets/images/lake_logo.png',
+          color: _currentIndex == 1
+              ? Color.fromRGBO(38, 56, 95, 1.0)
+              : ColorUtil.searchBarIconColor,
+        ),
+        color: Colors.white,
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState.listToTop();
           } else
             _tabController.animateTo(1);
         },
-        style: ButtonStyle(
-            elevation: MaterialStateProperty.all(0),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder()),
-            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-              if (states.contains(MaterialState.pressed))
-                return Colors.transparent;
-              return Colors.white;
-            })),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      _currentIndex == 1
-                          ? Color.fromRGBO(38, 56, 95, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 1
-                          ? Color.fromRGBO(99, 138, 149, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 1
-                          ? Color.fromRGBO(11, 42, 99, 1.0)
-                          : ColorUtil.whiteF8Color,
-                    ],
-                  )),
-              height: 32.w,
-              width: 32.w,
-              padding: EdgeInsets.all(2.w),
-              child: ImageIcon(
-                AssetImage('assets/images/lake_butt_icons/seek_for_truth.png'),
-                color: _currentIndex == 1
-                    ? ColorUtil.whiteF8Color
-                    : ColorUtil.lightTextColor,
-              ),
-            ),
-            SizedBox(height: 2),
-            Text('求实', style: _currentIndex == 1 ? currentStyle : otherStyle),
-          ],
-        ),
       ),
     );
 
     var selfPage = SizedBox(
-      height: 70,
+      height: 68.w,
       width: width,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topRight: Radius.circular(18)),
-          )),
-          elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(Colors.white),
+      child: IconButton(
+        splashRadius: 1,
+        icon: Image.asset(
+          'assets/images/myself_logo.png',
+          color: _currentIndex == 2
+              ? Color.fromRGBO(38, 56, 95, 1.0)
+              : ColorUtil.searchBarIconColor,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 4),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      _currentIndex == 2
-                          ? Color.fromRGBO(108, 120, 68, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 2
-                          ? Color.fromRGBO(57, 102, 119, 1.0)
-                          : ColorUtil.whiteF8Color,
-                      _currentIndex == 2
-                          ? Color.fromRGBO(160, 83, 0, 1.0)
-                          : ColorUtil.whiteF8Color,
-                    ],
-                  )),
-              height: 32.w,
-              width: 32.w,
-              padding: EdgeInsets.all(6.w),
-              child: ImageIcon(
-                AssetImage('assets/images/lake_butt_icons/my_page.png'),
-                color: _currentIndex == 2
-                    ? ColorUtil.whiteF8Color
-                    : ColorUtil.lightTextColor,
-              ),
-            ),
-            SizedBox(height: 2),
-            Text('个人中心', style: _currentIndex == 2 ? currentStyle : otherStyle),
-          ],
-        ),
+        color: Colors.white,
         onPressed: () => _tabController.animateTo(2),
       ),
     );
 
-    var bottomNavigationBar = ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(18.0),
-          topRight: Radius.circular(18.0),
+    var bottomNavigationBar = Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 255, 0.95),
+          boxShadow: [BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)],
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         ),
-        child: BottomAppBar(
-          child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
-        ));
+        child: Row(children: <Widget>[homePage, feedbackPage, selfPage]));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2

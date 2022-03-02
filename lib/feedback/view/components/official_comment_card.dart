@@ -63,10 +63,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     var OfficialLogo = Row(
       children: [
         Image.asset(
-          'assets/images/school.png',
-          height: 24,
+          widget.tag == '天外天' ? 'assets/images/twt.png' : 'assets/images/school.png',
+          height: widget.tag == '天外天' ? 18 : 24,
           width: 30,
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.contain,
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -78,7 +78,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               CommentIdentificationContainer('官方', true),
             ]),
             Text(
-              DateTime.now().difference(widget.comment.createAt).inDays >= 1
+              DateTime.now().difference(widget.comment.createAt).inHours >= 11
                   ? widget.comment.createAt
                       .toLocal()
                       .toIso8601String()
@@ -256,15 +256,12 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         break;
     }
 
-    Widget list = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: column,
-    );
-
-    list = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: list,
+    Widget list = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: column),
     );
 
     return InkWell(

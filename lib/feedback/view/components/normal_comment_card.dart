@@ -178,7 +178,7 @@ class _NCommentCardState extends State<NCommentCard>
                 ],
               ),
               Text(
-                DateTime.now().difference(widget.comment.createAt).inDays >= 1
+                DateTime.now().difference(widget.comment.createAt).inHours >= 11
                     ? widget.comment.createAt
                         .toLocal()
                         .toIso8601String()
