@@ -2,6 +2,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -260,9 +261,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         SizedBox(width: 10.w),
                         Text('我已阅读并承诺遵守',
                             style: TextUtil.base.normal.black2A.NotoSansSC
-                                .sp(14)
+                                .sp(12)
                                 .w400),
-                        SizedBox(width: 5.w),
+                        SizedBox(width: 2.w),
                         TextButton(
                             style: ButtonStyle(
                               minimumSize:
@@ -279,9 +280,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             },
                             child: Text('《青年湖底社区规范》',
                                 style: TextUtil.base.normal.NotoSansSC
-                                    .sp(14)
+                                    .sp(12)
                                     .w400
-                                    .textButtonBlue))
+                                    .textButtonBlue,overflow:TextOverflow.ellipsis ,))
                       ],
                     )
                   ],
@@ -892,22 +893,22 @@ class RacTangle extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var paint = Paint()
-      ..color = Colors.transparent
-      ..strokeWidth = 12.0
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round;
-    var w = rect.width;
-    var tang = Paint()
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.square
-      ..color = Colors.white
-      ..strokeWidth = 5;
-    //var h = rect.height;
-    canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
-    canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
-    canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
-    canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
+    // var paint = Paint()
+    //   ..color = Colors.transparent
+    //   ..strokeWidth = 12.0
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeJoin = StrokeJoin.round;
+    // var w = rect.width;
+    // var tang = Paint()
+    //   ..isAntiAlias = true
+    //   ..strokeCap = StrokeCap.square
+    //   ..color = Colors.white
+    //   ..strokeWidth = 5;
+    // //var h = rect.height;
+    // canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
+    // canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
+    // canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
+    // canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
   }
 
   @override

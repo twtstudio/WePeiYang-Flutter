@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:simple_html_css/simple_html_css.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -14,12 +15,13 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 
+
 enum Official { detail, reply }
 
 typedef LikeCallback = void Function(bool, int);
 typedef ContentPressedCallback = void Function(void Function(Floor));
 
-List<String> rate = ["较差", "一般", "非常漂亮"];
+
 
 class OfficialReplyCard extends StatefulWidget {
   final String tag;
@@ -57,6 +59,15 @@ class OfficialReplyCard extends StatefulWidget {
 }
 
 class _OfficialReplyCardState extends State<OfficialReplyCard> {
+  double _rating;
+  double _initialRating = 0;
+
+  @override
+  void initState() {
+    _rating = _initialRating;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> column = [];
@@ -100,83 +111,32 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         Spacer(),
       ],
     );
-
     Widget starWidget;
-    if (widget.comment.rating == -1) {
-      starWidget = Text(
-        S.current.feedback_no_rating,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 12,
-          color: ColorUtil.lightTextColor,
+    if (CommonPreferences().feedbackUid.value != widget.ancestorId) {
+      starWidget = Row(children: [
+        Text(
+          S.current.feedback_rating,
+          style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
         ),
-      );
+        RatingBar.builder(
+          itemBuilder: (context, index) => Icon(
+            Icons.star,
+            color: Colors.yellow,
+          ),
+          allowHalfRating: true,
+          glow: false,
+          initialRating: _initialRating,
+          itemCount: 5,
+          itemSize: 16.w,
+          ignoreGestures: true,
+          unratedColor: ColorUtil.lightTextColor,
+          onRatingUpdate: (_) {},
+        ),
+      ]);
     } else {
       starWidget = GestureDetector(
-        onTap: () {
-          if (widget.comment.isOwner) {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return DialogWidget(
-                      title: "",
-                      content: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(rate[widget.ratings],
-                              style: TextUtil.base.normal.black2A.NotoSansSC
-                                  .sp(14)
-                                  .w400),
-                          RatingBar.builder(
-                            itemBuilder: (context, index) => Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                            ),
-                            allowHalfRating: true,
-                            glow: false,
-                            initialRating: widget.ratings.toDouble(),
-                            itemCount: 5,
-                            itemSize: 40.w,
-                            ignoreGestures: true,
-                            unratedColor: ColorUtil.lightTextColor,
-                            onRatingUpdate: (rating) {
-                              setState(() {
-                                if(rating==-1);
-                                if(0<=rating&&rating<=4)
-                                widget.ratings = 0;
-                                if(4<=rating&&rating<6)
-                                  widget.ratings = 1;
-                                if(6<=rating&&rating<10||rating ==10)
-                                  widget.ratings = 2;
-                                FeedbackService.rate(
-                                  id: widget.comment.id,
-                                  rating: rating,
-                                  onSuccess: () {
-                                    ToastProvider.success(S.current.feedback_post_success);
-                                    Navigator.pop(context);
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(e.error.toString());
-                                  },
-                                );
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      cancelText: "取消",
-                      confirmTextStyle:
-                          TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
-                      cancelTextStyle:
-                          TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
-                      confirmText: "提交",
-                      cancelFun: () {
-                        Navigator.pop(context);
-                      },
-                      confirmFun: () {
-                        Navigator.pop(context);
-                      });
-                });
-          }
+        onTap: ()async{
+          ratingCard();
         },
         child: Row(children: [
           Text(
@@ -231,6 +191,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           box,
           bottomWidget
         ]);
+
         break;
       case Official.reply:
         var comment = RichText(
@@ -253,6 +214,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           bottomWidget,
           box
         ]);
+
         break;
     }
 
@@ -295,5 +257,73 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ),
     );
+  }
+
+  ratingCard()  {
+    final checkedNotifier = ValueNotifier(_rating);
+    final List<String> comments= ['请对官方回复态度进行评分','很差','较差','一般','较好','非常满意'];
+    Widget ratingBars =  RatingBar.builder(
+      initialRating: _initialRating,
+      minRating: 0,
+      allowHalfRating: true,
+      unratedColor: Colors.grey,
+      itemCount: 5,
+      itemSize: 47.w,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating = rating;
+          checkedNotifier.value =rating;
+        });
+      },
+      updateOnDrag: true,
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogWidget(
+              title: "",
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ValueListenableBuilder<double>(
+                      valueListenable: checkedNotifier,
+                      builder: (context, type, _) {
+                      return Text('「'+(checkedNotifier.value<1?comments[0]:comments[checkedNotifier.value.toInt()])+'」',
+                          style:
+                              TextUtil.base.normal.black00.NotoSansSC.sp(16).w400);
+                    }
+                  ),
+                  ratingBars,
+                ],
+              ),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+              confirmText: "提交",
+              cancelFun: () {
+                Navigator.pop(context);
+              },
+              confirmFun: () {
+               FeedbackService.rate(
+                   id:widget.comment.id,
+                   rating: _rating,
+                   onSuccess: (){
+                     ToastProvider.success("评分成功！");
+                     setState(() {
+                       Navigator.pop(context);
+                     });
+                   },
+                   onFailure:(e) {
+                     ToastProvider.error(e.error.toString());
+                   });
+              });
+        });
   }
 }

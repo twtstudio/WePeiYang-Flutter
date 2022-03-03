@@ -25,9 +25,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 
-// import 'components/widget/icon_widget.dart';
-// import 'components/widget/long_text_shower.dart';
-// import 'components/widget/round_taggings.dart';
 
 enum DetailPageStatus {
   loading,
@@ -92,6 +89,19 @@ class _DetailPageState extends State<DetailPage>
       _refreshController.loadFailed();
       currentPage--;
     });
+  }
+
+  _onLoadingSelectedPage(int current) {
+    _getComments(
+        onSuccess: (comments) {
+          _commentList.removeRange(
+              _commentList.length - comments.length, _commentList.length);
+          _commentList.addAll(comments);
+        },
+        onFail: () {
+          _refreshController.loadFailed();
+        },
+        current: current);
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
@@ -187,7 +197,6 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
-
   _getOfficialComment({Function onSuccess, Function onFail}) {
     FeedbackService.getOfficialComment(
       id: post.id,
@@ -202,7 +211,6 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
-
   @override
   void dispose() {
     _refreshController.dispose();
@@ -462,7 +470,7 @@ class _DetailPageState extends State<DetailPage>
               tag: post.department.name ?? '',
               comment: data,
               placeAppeared: index,
-              ancestorId: post.id,
+                ancestorId:post.uid,
             );
           }
 

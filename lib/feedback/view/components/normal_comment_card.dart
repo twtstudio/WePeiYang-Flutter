@@ -584,16 +584,16 @@ class RacTangle extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var w = rect.width;
-    var tang = Paint()
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.square
-      ..color = Colors.white
-      ..strokeWidth = 5;
+    // var w = rect.width;
+    // var tang = Paint()
+    //   ..isAntiAlias = true
+    //   ..strokeCap = StrokeCap.square
+    //   ..color = Colors.white
+    //   ..strokeWidth = 5;
     //var h = rect.height;
-
-    canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
-    canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
+    //
+    // canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
+    // canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
   }
 
   @override
