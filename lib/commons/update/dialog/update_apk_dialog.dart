@@ -26,7 +26,6 @@ class UpdateApkDialog extends StatelessWidget {
       final buttons = WbyDialogStandardTwoButton(
         cancel: () {
           context.read<UpdateManager>().cancelDialog(DialogTag.apk);
-          context.read<UpdateManager>().state = UpdateState.nothing;
         },
         ok: () {
           context.read<UpdateManager>().download(version);

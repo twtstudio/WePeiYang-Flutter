@@ -231,6 +231,9 @@ class UpdateManager extends ChangeNotifier {
         backDismiss: false,
         tag: DialogTag.apk.text,
         widget: UpdateApkDialog(version),
+        onDismiss: () {
+          state = UpdateState.nothing;
+        },
       );
     } else {
       state = UpdateState.nothing;
