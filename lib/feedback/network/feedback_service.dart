@@ -589,9 +589,8 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(
           'post/solve',
           formData: FormData.fromMap({
-            'token': CommonPreferences().feedbackToken.value,
             'post_id': id,
-            'rating': rating.toInt(),
+            'rating': rating,
           }),
         );
         onSuccess?.call();

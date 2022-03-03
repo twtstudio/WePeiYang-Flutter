@@ -112,7 +112,33 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       ],
     );
     Widget starWidget;
-    if (CommonPreferences().feedbackUid.value != widget.ancestorId) {
+    if (CommonPreferences().feedbackUid.value == widget.ancestorId) {
+      starWidget = GestureDetector(
+        onTap: ()async{
+          ratingCard();
+        },
+        child: Row(children: [
+          Text(
+            S.current.feedback_rating,
+            style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
+          ),
+          RatingBar.builder(
+            itemBuilder: (context, index) => Icon(
+              Icons.star,
+              color: Colors.yellow,
+            ),
+            allowHalfRating: true,
+            glow: false,
+            initialRating: _rating,
+            itemCount: 5,
+            itemSize: 16.w,
+            ignoreGestures: true,
+            unratedColor: ColorUtil.lightTextColor,
+            onRatingUpdate: (_) {},
+          ),
+        ]),
+      );
+    } else {
       starWidget = Row(children: [
         Text(
           S.current.feedback_rating,
@@ -133,32 +159,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           onRatingUpdate: (_) {},
         ),
       ]);
-    } else {
-      starWidget = GestureDetector(
-        onTap: ()async{
-          ratingCard();
-        },
-        child: Row(children: [
-          Text(
-            S.current.feedback_rating,
-            style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
-          ),
-          RatingBar.builder(
-            itemBuilder: (context, index) => Icon(
-              Icons.star,
-              color: Colors.yellow,
-            ),
-            allowHalfRating: true,
-            glow: false,
-            initialRating: -1,
-            itemCount: 5,
-            itemSize: 16.w,
-            ignoreGestures: true,
-            unratedColor: ColorUtil.lightTextColor,
-            onRatingUpdate: (_) {},
-          ),
-        ]),
-      );
     }
 
     var bottomWidget = Row(
@@ -312,7 +312,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               },
               confirmFun: () {
                FeedbackService.rate(
-                   id:widget.comment.id,
+                   id:widget.comment.postId,
                    rating: _rating,
                    onSuccess: (){
                      ToastProvider.success("评分成功！");
@@ -321,7 +321,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                      });
                    },
                    onFailure:(e) {
-                     ToastProvider.error(e.error.toString());
+                     ToastProvider.error("204 no content");
+                     Navigator.pop(context);
                    });
               });
         });

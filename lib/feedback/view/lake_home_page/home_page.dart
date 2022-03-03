@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -276,9 +276,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) =>
-                                      PrivacyDialog());
+                                      LakePrivacyDialog());
                             },
-                            child: Text('《青年湖底社区规范》',
+                            child: Text('《求实论坛社区规范》',
                                 style: TextUtil.base.normal.NotoSansSC
                                     .sp(12)
                                     .w400
