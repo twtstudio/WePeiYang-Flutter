@@ -197,7 +197,7 @@
 
         <receiver
             android:name=".widget.ScheduleCardWidgetProvider"
-            android:label="微北洋课程表-简约"
+            android:label="@string/widget_label"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
