@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.twt.service.BuildConfig
 import com.twt.service.WBYApplication
+import com.twt.service.widget.WbyWidgetPlugin
 import java.io.File
 
 object WbySharePreference {
@@ -17,6 +18,8 @@ object WbySharePreference {
     }
 
     const val TAG = "WBY_SHARE_PREFERENCE"
+    fun log(message: String) = LogUtil.d(TAG, message)
+
     private const val authTokenKey = "flutter.token"
     private const val canPushKey = "flutter.can_push"
     private const val fixSoKey = "fix_so"
@@ -24,7 +27,7 @@ object WbySharePreference {
 
     val authToken: String?
         get() = flutterSharedPreferences?.getString(authTokenKey, null).also {
-            Log.d(TAG, "authToken : $it")
+            log( "authToken : $it")
         }
 
     // hotfix的更新方式为改变微北洋启动路径，在应用私有文件夹下创建hotfix文件夹，将热修复的.so文件存储在那里，然后向
@@ -38,13 +41,13 @@ object WbySharePreference {
     var fixSo: String?
         get() {
             fixSoSharedPreferences?.let { pref ->
-                Log.d("WBY_SP", pref.all.toString())
+                log(pref.all.toString())
                 pref.getString(fixSoKey, null)
                         ?.split(listSplit)?.forEach { path ->
                             // 保证.so文件上次运行时没发生问题，如果发生了问题就换下一个
                             val file = File(path)
                             val canUse = pref.getBoolean(path, false)
-                            Log.d("WBY_SP", "$path  $canUse")
+                            log("$path  $canUse")
                             if (canUse && file.exists() && file.extension == "so") {
                                 pref.edit().let {
                                     it.putBoolean(path, false)
@@ -153,7 +156,7 @@ object WbySharePreference {
                 else -> CanPushType.Unknown
             }
         }.also {
-            Log.d(TAG, "canPush : $it")
+            log( "canPush : $it")
         }
         set(type) {
             flutterSharedPreferences?.edit()?.let {

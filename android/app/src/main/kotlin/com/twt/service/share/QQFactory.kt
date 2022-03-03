@@ -76,7 +76,7 @@ class QQFactory(
             putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, data.type)
             putInt(QQShare.SHARE_TO_QQ_EXT_INT, data.mExtraFlag)
         }
-        Log.d("WBY", params.toString())
+        WbySharePlugin.log(params.toString())
 
         // 在这里配置好像是只有错误回调会触发，如果想要完成回调触发那么就选择 activityResult
         mTencent.shareToQQ(activity, params, listener)

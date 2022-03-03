@@ -1,6 +1,7 @@
 package com.twt.service
 
 import android.util.Log
+import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
 import com.twt.service.hot_fix.WbyFixPlugin
@@ -52,9 +53,9 @@ class MainActivity : FlutterActivity() {
     override fun getFlutterShellArgs(): FlutterShellArgs {
         val shellArgs = super.getFlutterShellArgs()
         takeIf { !BuildConfig.DEBUG }?.let {
-            Log.d("WBY_RESTART", "getFlutterShellArgs")
+            WbyFixPlugin.log("getFlutterShellArgs")
             WbySharePreference.fixSo?.let {
-                Log.d(WbyFixPlugin.TAG, "load .so file : $it")
+                WbyFixPlugin.log("load .so file : $it")
                 shellArgs.add("--aot-shared-library-name=$it")
             }
         }
@@ -68,7 +69,7 @@ class MainActivity : FlutterActivity() {
             (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as? WbyPushPlugin)
                 ?.onWindowFocusChanged()
         }
-        Log.d(TAG, "onWindowFocusChanged : $hasFocus")
+        log("onWindowFocusChanged : $hasFocus")
     }
 
     override fun onFlutterUiDisplayed() {
@@ -78,5 +79,6 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         const val TAG = "WBY_MainActivity"
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

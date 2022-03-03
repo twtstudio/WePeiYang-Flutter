@@ -10,6 +10,7 @@ import com.tencent.connect.common.Constants
 import com.tencent.tauth.DefaultUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
+import com.twt.service.common.LogUtil
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -18,7 +19,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 
 class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-    PluginRegistry.RequestPermissionsResultListener,PluginRegistry.ActivityResultListener {
+        PluginRegistry.RequestPermissionsResultListener, PluginRegistry.ActivityResultListener {
     private lateinit var shareChannel: MethodChannel
     private lateinit var context: Context
     private lateinit var activityBinding: ActivityPluginBinding
@@ -27,9 +28,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
 
     private val mTencent: Tencent? by lazy {
         Tencent.createInstance(
-            APP_ID,
-            context,
-            APP_AUTHORITIES
+                APP_ID,
+                context,
+                APP_AUTHORITIES
         )
     }
 
@@ -62,7 +63,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
                     Tencent.setIsPermissionGranted(true)
                     activityBinding.addActivityResultListener(this)
                     QQFactory(mTencent!!, activityBinding.activity, qqShareListener).shareImg(
-                        call
+                            call
                     )
                 }
                 this.result = result
@@ -93,9 +94,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>?,
-        grantResults: IntArray?
+            requestCode: Int,
+            permissions: Array<out String>?,
+            grantResults: IntArray?
     ): Boolean {
         if (REQUEST_CODE != requestCode) {
             return false
@@ -125,9 +126,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         mPermissions.clear()
         for (permission in PERMISSIONS) {
             if (ActivityCompat.checkSelfPermission(
-                    activityBinding.activity,
-                    permission
-                ) != PackageManager.PERMISSION_GRANTED
+                            activityBinding.activity,
+                            permission
+                    ) != PackageManager.PERMISSION_GRANTED
             ) {
                 mPermissions.add(permission)
             }
@@ -136,9 +137,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         activityBinding.addRequestPermissionsResultListener(this)
         if (mPermissions.size > 0) {
             ActivityCompat.requestPermissions(
-                activityBinding.activity,
-                mPermissions.toTypedArray(),
-                REQUEST_CODE
+                    activityBinding.activity,
+                    mPermissions.toTypedArray(),
+                    REQUEST_CODE
             )
         }
         return mPermissions.isNotEmpty()
@@ -154,7 +155,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
 
         override fun onError(error: UiError?) {
             log("error : $error")
-            result.error("","qq share error","$error")
+            result.error("", "qq share error", "$error")
         }
 
         override fun onCancel() {
@@ -183,8 +184,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         const val TAG = "WBY_SHARE"
         const val REQUEST_CODE = 10086
         val PERMISSIONS =
-            listOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
-        fun log(msg: String) = Log.d(TAG, msg)
+                listOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

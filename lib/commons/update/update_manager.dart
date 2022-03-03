@@ -56,7 +56,9 @@ class UpdateManager extends ChangeNotifier {
   }
 
   Future<void> checkUpdate({bool showToast = false}) async {
+    debugPrint('check update');
     if (state == UpdateState.nothing) {
+      debugPrint('check update123');
       state = UpdateState.checkUpdate;
       // 先删除原来的apk和so
       await _deleteOriginalFile();

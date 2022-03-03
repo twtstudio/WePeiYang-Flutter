@@ -2,6 +2,9 @@ package com.twt.service.image
 
 import android.content.Context
 import android.os.Environment
+import android.util.Log
+import com.twt.service.common.LogUtil
+import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -105,5 +108,6 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     companion object {
         const val TAG = "WBY_SAVE_IMAGE"
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

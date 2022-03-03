@@ -16,6 +16,7 @@ import com.twt.service.MainActivity
 import com.twt.service.WBYApplication
 import com.twt.service.common.CanPushType
 import com.twt.service.common.IntentEvent
+import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -559,6 +560,6 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
         const val OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR = "OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR"
         const val FATAL_ERROR = "FATAL_ERROR"
-        fun log(message: String) = Log.d(TAG, message)
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

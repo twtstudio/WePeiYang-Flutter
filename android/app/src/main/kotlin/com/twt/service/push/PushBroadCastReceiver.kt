@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.google.gson.Gson
-import com.igexin.sdk.message.GTTransmitMessage
 import com.twt.service.MainActivity
 import com.twt.service.R
 import com.twt.service.common.BASEURL
@@ -30,26 +29,21 @@ class PushBroadCastReceiver(
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         kotlin.runCatching {
-            Log.d(
-                    WbyPushPlugin.TAG,
-                    "PushBroadCastReceiver receive intent :" + intent?.extras.toString() ?: "no data"
-            )
+            WbyPushPlugin.log("PushBroadCastReceiver receive intent :" + intent?.extras.toString()
+                    ?: "no data")
             when (intent?.action) {
                 WbyPushPlugin.DATA -> {
                     intent.getStringExtra("data")?.let {
                         val eventData = Gson().toJson(Gson().fromJson(it, Event::class.java).data)
-                        Log.d(WbyPushPlugin.TAG, eventData)
+                        WbyPushPlugin.log(eventData)
                         val formData = Gson().fromJson(eventData, MailBoxMessage::class.java)
-                        Log.d(WbyPushPlugin.TAG, formData.toString())
+                        WbyPushPlugin.log(formData.toString())
                         showNotification(formData)
                     }
                 }
                 WbyPushPlugin.CID -> {
                     val cId = intent.getStringExtra("cid")
-                    Log.d(
-                            WbyPushPlugin.TAG,
-                            "PushBroadCastReceiver receive cid :" + (cId ?: "no data")
-                    )
+                    WbyPushPlugin.log("PushBroadCastReceiver receive cid :" + (cId ?: "no data"))
                     val workManager = WorkManager.getInstance(binding.activity.applicationContext)
                     val constraints = Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -80,7 +74,7 @@ class PushBroadCastReceiver(
                     .setAutoCancel(true)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Log.d("WBY", "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
+                WbyPushPlugin.log("Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
                 val intent2 = Intent(binding.activity, MainActivity::class.java)
                 val pIntent = PendingIntent.getActivity(
                         binding.activity.applicationContext,

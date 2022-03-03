@@ -101,17 +101,19 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.config
-//            minifyEnabled false   // 删除无用代码
-//            shrinkResources false // 删除无用资源
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             shrinkResources true // 删除无用资源
+
+            buildConfigField("Boolean","LOG_OUTPUT","false")
         }
 
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.config
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
+
+            buildConfigField("Boolean","LOG_OUTPUT","true")
         }
     }
 }

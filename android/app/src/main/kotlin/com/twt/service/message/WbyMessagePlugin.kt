@@ -3,6 +3,7 @@ package com.twt.service.message
 import android.content.Context
 import android.util.Log
 import com.twt.service.WBYApplication
+import com.twt.service.common.LogUtil
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -30,9 +31,9 @@ class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     if (size > 1) {
                         removeLast()
                     }
-                    Log.d(TAG, "WBYApplication.eventList: $this")
+                    log("WBYApplication.eventList: $this")
                     if (event.type != -1) {
-                        Log.d(TAG, event.toString())
+                        log(event.toString())
                         result.success(
                                 mapOf(
                                         "event" to event.type,
@@ -48,5 +49,6 @@ class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     companion object {
         const val TAG = "WBY_MESSAGE"
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

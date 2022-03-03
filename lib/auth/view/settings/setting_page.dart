@@ -352,13 +352,9 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: GestureDetector(
                   onLongPress: () {
-                    if (kDebugMode ||
-                        CommonPreferences().account.value == '3019233035') {
+                    if (kDebugMode) {
                       Navigator.pushNamed(context, TestRouter.pushTest);
                     }
-                  },
-                  onTap: () {
-                    context.read<PushManager>().showRequestNotificationDialog();
                   },
                   child: Card(
                     elevation: 0,

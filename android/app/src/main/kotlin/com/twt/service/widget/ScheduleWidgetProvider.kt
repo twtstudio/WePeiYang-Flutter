@@ -8,7 +8,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.RemoteViews
 import com.twt.service.MainActivity
 import com.twt.service.R
@@ -19,12 +18,12 @@ import java.util.*
 class ScheduleWidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
-        Log.d("WBY", "课程表小部件被启用")
+        WbyWidgetPlugin.log("课程表小部件被启用")
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_APPWIDGET_UPDATE || intent.action == "com.twt.appwidget.refresh") {
-            Log.d("WBY", "on refreshing!!!")
+            WbyWidgetPlugin.log("on refreshing!!!")
             val name = ComponentName(context, ScheduleWidgetProvider::class.java)
             this@ScheduleWidgetProvider.onUpdate(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(name))
         }
@@ -32,7 +31,7 @@ class ScheduleWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        Log.d("WBY", "on updating!!!")
+        WbyWidgetPlugin.log("on updating!!!")
         for (appWidgetId in appWidgetIds) {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val intent = Intent(context, MainActivity::class.java)

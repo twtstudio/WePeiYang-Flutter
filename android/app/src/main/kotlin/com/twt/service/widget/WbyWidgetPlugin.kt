@@ -5,6 +5,8 @@ import android.content.Intent
 import android.util.Log
 import com.twt.service.WBYApplication
 import com.twt.service.common.IntentEvent
+import com.twt.service.common.LogUtil
+import com.twt.service.push.WbyPushPlugin
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -54,7 +56,7 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
     }
 
     private fun handleIntent(intent: Intent) {
-        Log.d(TAG, "WbyWidgetPlugin handle intent :" + intent.dataString)
+        log("WbyWidgetPlugin handle intent :" + intent.dataString)
         if (intent.data?.host?.equals("weipeiyang.app") == true) {
             intent.data?.let {
                 when (it.path) {
@@ -89,5 +91,6 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
 
     companion object {
         const val TAG = "WBY_WIDGET"
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }
