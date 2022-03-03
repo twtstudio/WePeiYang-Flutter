@@ -41,7 +41,7 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
     }
 
     private fun updateWidget() {
-        val intent = Intent(binding.activity, ScheduleWidgetProvider::class.java).apply {
+        val intent = Intent(binding.activity, ScheduleCardWidgetProvider::class.java).apply {
             action = "com.twt.appwidget.refresh"
         }
         context.sendBroadcast(intent)

@@ -1,6 +1,6 @@
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:flutter/services.dart' show MethodChannel;
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -58,7 +58,7 @@ class ScheduleNotifier with ChangeNotifier {
       (DateTime.now().millisecondsSinceEpoch / 1000 + dayOfSeconds) < termStart;
 
   // TODO 一学期一共有多少周，暂时写死，之后手动获取
-  int weekCount = 27;
+  int weekCount = 24;
 
   /// 夜猫子模式，这个变量的主要作用是通知widget更新
   set nightMode(bool value) {
@@ -67,6 +67,8 @@ class ScheduleNotifier with ChangeNotifier {
   }
 
   bool get nightMode => CommonPreferences().nightMode.value;
+
+  final widgetChannel = MethodChannel('com.twt.service/widget');
 
   /// 通过爬虫刷新数据
   RefreshCallback refreshSchedule({bool hint = false, OnFailure onFailure}) {
@@ -78,7 +80,7 @@ class ScheduleNotifier with ChangeNotifier {
         notifyListeners(); // 通知各widget进行更新
         CommonPreferences().scheduleData.value =
             json.encode(ScheduleBean(termStart, termName, courses)); // 刷新本地缓存
-        messageChannel?.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
+        widgetChannel.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
       }, onFailure: (e) {
         if (onFailure != null) onFailure(e);
       });

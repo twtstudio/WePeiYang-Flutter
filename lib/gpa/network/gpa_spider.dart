@@ -14,8 +14,11 @@ void getGPABean(
     var info = await fetch("http://classes.tju.edu.cn/eams/stdDetail.action",
         cookieList: pref.getCookies());
 
+    var infoDetail =
+        getRegExpStr(r'(?<=项目：</td>)[\s\S]*?</td>', info.data.toString());
+
     /// 判断是否为硕士研究生
-    bool isMaster = info.data.toString().contains("研究");
+    bool isMaster = infoDetail.contains("研究");
 
     if (isMaster) {
       /// 如果是研究生，切换至研究生成绩
