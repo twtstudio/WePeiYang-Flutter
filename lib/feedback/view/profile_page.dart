@@ -69,6 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
           break;
       }
     });
+    context.read<MessageProvider>().refreshFeedbackCount();
   }
 
   @override

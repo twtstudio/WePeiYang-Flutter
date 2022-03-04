@@ -25,7 +25,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 
-
 enum DetailPageStatus {
   loading,
   idle,
@@ -126,7 +125,7 @@ class _DetailPageState extends State<DetailPage>
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
-      if (post == null) {
+      if (post == null || post.isLike == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -171,6 +170,7 @@ class _DetailPageState extends State<DetailPage>
       onResult: (Post result) {
         success = true;
         post = result;
+        setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
@@ -197,6 +197,7 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
+
   _getOfficialComment({Function onSuccess, Function onFail}) {
     FeedbackService.getOfficialComment(
       id: post.id,
@@ -211,6 +212,7 @@ class _DetailPageState extends State<DetailPage>
       },
     );
   }
+
   @override
   void dispose() {
     _refreshController.dispose();
@@ -396,17 +398,7 @@ class _DetailPageState extends State<DetailPage>
       } else {
         body = ListView(
           children: [
-            PostCard.detail(
-              post,
-              onLikePressed: (isLike, likeCount) {
-                post.isLike = isLike;
-                post.likeCount = likeCount;
-              },
-              onFavoritePressed: (isFav, favCount) {
-                post.isFav = isFav;
-                post.favCount = favCount;
-              },
-            ),
+            PostCard.detail(post),
             SizedBox(
               height: 100,
               child: Center(child: Loading()),
@@ -421,17 +413,7 @@ class _DetailPageState extends State<DetailPage>
           if (index == 0) {
             return Column(
               children: [
-                PostCard.detail(
-                  post,
-                  onLikePressed: (isLike, likeCount) {
-                    post.isLike = isLike;
-                    post.likeCount = likeCount;
-                  },
-                  onFavoritePressed: (isFav, favCount) {
-                    post.isFav = isFav;
-                    post.favCount = favCount;
-                  },
-                ),
+                PostCard.detail(post),
                 SizedBox(
                   height: 10,
                 ),
@@ -463,19 +445,15 @@ class _DetailPageState extends State<DetailPage>
           }
           index--;
 
-          ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             return OfficialReplyCard.reply(
               tag: post.department.name ?? '',
               comment: data,
               placeAppeared: index,
-                ancestorId:post.uid,
+              ancestorId: post.uid,
             );
-          }
-
-          ///_officialCommentList,点赞注释了
-          else {
+          } else {
             var data = _commentList[index - _officialCommentList.length];
             return NCommentCard(
               comment: data,
@@ -550,7 +528,8 @@ class _DetailPageState extends State<DetailPage>
                                       SizedBox(width: 4),
                                       if (context
                                               .read<NewFloorProvider>()
-                                              .images.length ==
+                                              .images
+                                              .length ==
                                           0)
                                         IconButton(
                                             icon: Image.asset(
@@ -603,17 +582,7 @@ class _DetailPageState extends State<DetailPage>
                       ),
                     ),
                     if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                      PostCard.outSide(
-                        post,
-                        onLikePressed: (isLike, likeCount) {
-                          post.isLike = isLike;
-                          post.likeCount = likeCount;
-                        },
-                        onFavoritePressed: (isFav, favCount) {
-                          post.isFav = isFav;
-                          post.favCount = favCount;
-                        },
-                      ),
+                      PostCard.outSide(post),
                   ],
                 ),
               ],

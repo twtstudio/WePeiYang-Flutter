@@ -31,9 +31,6 @@ typedef HitFavoriteCallback = void Function(bool, int);
 class PostCard extends StatefulWidget {
   final Post post;
   final VoidCallback onContentPressed;
-  final HitLikeCallback onLikePressed;
-  final HitDislikeCallback onDislikePressed;
-  final HitFavoriteCallback onFavoritePressed;
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
@@ -41,9 +38,6 @@ class PostCard extends StatefulWidget {
   PostCard.simple(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
     Key key,
@@ -54,9 +48,6 @@ class PostCard extends StatefulWidget {
   PostCard.detail(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
   }) : type = PostCardType.detail;
@@ -64,9 +55,6 @@ class PostCard extends StatefulWidget {
   PostCard.outSide(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
   }) : type = PostCardType.outSide;
@@ -400,12 +388,13 @@ class _PostCardState extends State<PostCard> {
         ? IconWidget(
             IconType.bottomFav,
             count: post.favCount,
-            onLikePressed: (boolNotifier, favCount, success, failure) async {
+            onLikePressed: (isFav, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  post.isFav = !isFav;
+                  post.favCount = favCount;
                   success.call();
                 },
                 onFailure: (e) {
@@ -419,12 +408,13 @@ class _PostCardState extends State<PostCard> {
         : IconWidget(
             IconType.fav,
             count: post.favCount,
-            onLikePressed: (boolNotifier, favCount, success, failure) async {
+            onLikePressed: (isFav, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  post.isFav = !isFav;
+                  post.favCount = favCount;
                   success.call();
                 },
                 onFailure: (e) {
@@ -466,8 +456,7 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isLike: post.isLike,
                 onSuccess: () {
-                  widget.onLikePressed?.call(!isLike, likeCount);
-                  post.isLike = !isLike;
+                  post.isLike = !post.isLike;
                   post.likeCount = likeCount;
                   if (post.isLike && post.isDis) {
                     post.isDis = !post.isDis;
@@ -491,7 +480,6 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isLike: post.isLike,
                 onSuccess: () {
-                  widget.onLikePressed?.call(!isLike, likeCount);
                   post.isLike = !post.isLike;
                   post.likeCount = likeCount;
                   if (post.isLike && post.isDis) {
@@ -518,7 +506,6 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isDisliked: post.isDis,
                 onSuccess: () {
-                  widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
                   if (post.isLike && post.isDis) {
                     post.isLike = !post.isLike;
@@ -540,7 +527,6 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isDisliked: post.isDis,
                 onSuccess: () {
-                  widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
                   if (post.isLike && post.isDis) {
                     post.isLike = !post.isLike;
@@ -641,12 +627,12 @@ class _PostCardState extends State<PostCard> {
           showBanner: widget.showBanner,
           questionId: post.id,
           builder: (tap) => Container(
-            padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
+            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 mainWidget(tap),
-                SizedBox(height: 8),
+                SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
               ],

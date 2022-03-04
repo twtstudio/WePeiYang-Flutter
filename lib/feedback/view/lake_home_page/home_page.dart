@@ -1,4 +1,5 @@
 import 'package:extended_tabs/extended_tabs.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart'
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../new_post_page.dart';
@@ -681,27 +683,30 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               toolbarHeight: 48,
               backgroundColor: ColorUtil.whiteFDFE,
               titleSpacing: 0,
-              leading:
-                  ///TODO：这里因为按钮太大所以很奇怪 先去掉了
-                  /*FeedbackBadgeWidget(
-                child: */
-                  IconButton(
-                      icon: ImageIcon(
-                          AssetImage("assets/images/lake_butt_icons/box.png"),
-                          size: 24.w,
-                          color: ColorUtil.boldTag54),
-                      onPressed: () =>
-                          Navigator.pushNamed(context, FeedbackRouter.profile)),
-              // ),
+              leading: InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () =>
+                        Navigator.pushNamed(context, FeedbackRouter.profile),
+                child: Center(
+                  child: FeedbackBadgeWidget(
+                    child: ImageIcon(
+                            AssetImage("assets/images/lake_butt_icons/box.png"),
+                            size: 23,
+                            color: ColorUtil.boldTag54),
+                  ),
+                ),
+              ),
               title: searchBar,
               actions: [
                 Hero(
                   tag: "addNewPost",
                   child: InkWell(
+                      splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       child: Container(
-                          height: 24.w,
-                          width: 24.w,
+                          height: 24,
+                          width: 24,
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(

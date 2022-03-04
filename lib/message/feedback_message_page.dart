@@ -746,22 +746,11 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  Post post;
   final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await FeedbackService.getPostById(
-          id: widget.data.post.id,
-          onResult: (result) {
-            post = result;
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-    });
   }
 
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -936,7 +925,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
-            arguments: post,
+            arguments: widget.data.post,
           ).then((_) => context
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
@@ -1148,26 +1137,7 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  Post post;
   final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await FeedbackService.getPostById(
-          id: widget.data.post.id,
-          onResult: (result) {
-            post = result;
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-    });
-  }
-
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
 
   @override
   Widget build(BuildContext context) {
@@ -1175,12 +1145,11 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.network(
-          'http://www.zrzz.site:7014/beam/20/${widget.data.post.id}+${widget.data.reply.sender}',
+        Image.asset(
+          'assets/images/school.png',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
-          placeholderBuilder: defaultPlaceholderBuilder,
         ),
         SizedBox(width: 6.w),
         Column(
@@ -1309,7 +1278,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
-            arguments: post,
+            arguments: widget.data.post,
           ).then((_) => context
               .findAncestorStateOfType<_FeedbackMessagePageState>()
               .onRefresh());
@@ -1617,6 +1586,13 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
+          await Navigator.pushNamed(
+            context,
+            FeedbackRouter.notice,
+            arguments: widget.data,
+          ).then((_) => context
+              .findAncestorStateOfType<_FeedbackMessagePageState>()
+              .onRefresh());
         },
         child: Container(
           decoration: BoxDecoration(
