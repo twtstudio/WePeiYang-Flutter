@@ -88,7 +88,7 @@ class _NCommentCardState extends State<NCommentCard>
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'https://qnhd.twt.edu.cn/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
             width: 30,
             height: 24,
             fit: BoxFit.fitHeight,

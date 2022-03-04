@@ -93,26 +93,35 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 Navigator.pop(context);
               },
             ),
-            bottom: TabBar(
-              indicatorPadding: EdgeInsets.only(bottom: 2),
-              labelPadding: EdgeInsets.zero,
-              isScrollable: true,
-              physics: BouncingScrollPhysics(),
-              controller: _tabController,
-              labelColor: Color(0xff303c66),
-              labelStyle: TextUtil.base.black2A.w700.NotoSansSC.sp(18),
-              unselectedLabelColor: ColorUtil.lightTextColor,
-              unselectedLabelStyle:
-                  TextUtil.base.grey6C.w600.NotoSansSC.sp(17),
-              indicator: CustomIndicator(
-                  borderSide:
-                      BorderSide(color: ColorUtil.mainColor, width: 2)),
-              tabs: types.map((t) {
-                return MessageTab(type: t);
-              }).toList(),
-              onTap: (index) {
-                currentIndex.value = _tabController.index;
-              },
+            bottom: PreferredSize(
+              preferredSize: Size.infinite,
+              child: Theme(
+                data: ThemeData(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: TabBar(
+                  indicatorPadding: EdgeInsets.only(bottom: 10),
+                  labelPadding: EdgeInsets.zero,
+                  isScrollable: false,
+                  physics: BouncingScrollPhysics(),
+                  controller: _tabController,
+                  labelColor: ColorUtil.black2AColor,
+                  labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
+                  unselectedLabelColor: ColorUtil.greyB2B6Color,
+                  unselectedLabelStyle:
+                      TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
+                  indicator: CustomIndicator(
+                      borderSide:
+                          BorderSide(color: ColorUtil.mainColor, width: 2)),
+                  tabs: types.map((t) {
+                    return MessageTab(type: t);
+                  }).toList(),
+                  onTap: (index) {
+                    currentIndex.value = _tabController.index;
+                  },
+                ),
+              ),
             ),
           ),
         ),
@@ -173,6 +182,7 @@ class _MessageTabState extends State<MessageTab> {
         messageProvider.getMessageCount(widget.type));
     return Tab(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(width: _tabPaddingWidth),
         count == 0
@@ -360,7 +370,7 @@ class LikeMessageItem extends StatefulWidget {
 
 class _LikeMessageItemState extends State<LikeMessageItem> {
   Post post;
-  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   @override
   void initState() {
@@ -391,7 +401,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'http://www.zrzz.site:7014/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -530,7 +540,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     );
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
@@ -746,8 +756,7 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
-
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
   @override
   void initState() {
     super.initState();
@@ -763,7 +772,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'http://www.zrzz.site:7014/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -915,7 +924,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
@@ -1137,7 +1146,7 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  final baseUrl = 'https://www.zrzz.site:7015/download/thumb/';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   @override
   Widget build(BuildContext context) {
@@ -1270,7 +1279,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
@@ -1495,7 +1504,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'http://www.zrzz.site:7014/beam/20/${widget.data.id}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.id}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -1582,7 +1591,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();

@@ -171,11 +171,9 @@ class MessageService {
 final messageDio = MessageDio();
 
 class MessageDio extends DioAbstract {
-  // @override
-  // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
 
   @override
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/message/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/message/';
 
   @override
   Map<String, String> headers = {

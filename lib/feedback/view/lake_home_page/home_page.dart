@@ -736,12 +736,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               isScrollable: true,
                               physics: BouncingScrollPhysics(),
                               controller: _tabController,
-                              labelColor: Color(0xff303c66),
+                              labelColor: ColorUtil.black2AColor,
                               labelStyle:
-                                  TextUtil.base.black2A.w700.NotoSansSC.sp(18),
+                                  TextUtil.base.black2A.w500.NotoSansSC.sp(16),
                               unselectedLabelColor: ColorUtil.lightTextColor,
                               unselectedLabelStyle:
-                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(18),
+                                  TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
                               indicator: CustomIndicator(
                                   borderSide: BorderSide(
                                       color: ColorUtil.mainColor, width: 2)),
