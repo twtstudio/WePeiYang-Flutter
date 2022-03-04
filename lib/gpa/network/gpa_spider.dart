@@ -18,7 +18,9 @@ void getGPABean(
         getRegExpStr(r'(?<=项目：</td>)[\s\S]*?</td>', info.data.toString());
 
     /// 判断是否为硕士研究生
-    bool isMaster = infoDetail.contains("研究");
+    bool isMaster = false;
+
+    if (infoDetail != null && infoDetail.contains('研究')) isMaster = true;
 
     if (isMaster) {
       /// 如果是研究生，切换至研究生成绩
