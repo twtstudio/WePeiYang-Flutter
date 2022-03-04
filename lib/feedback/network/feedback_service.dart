@@ -9,11 +9,9 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
-  // @override
-  // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   var headers = {};
 
   @override
@@ -46,7 +44,7 @@ class FeedbackDio extends DioAbstract {
 class FeedbackPicPostDio extends DioAbstract {
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7015/';
+  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
   var headers = {};
 
   @override

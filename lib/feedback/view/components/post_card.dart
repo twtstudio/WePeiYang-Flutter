@@ -78,8 +78,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
-  final String baseUrl = 'https://www.zrzz.site:7012/';
-  final String picBaseUrl = 'https://www.zrzz.site:7015/download/';
+  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
 
   _PostCardState(this.post);
 

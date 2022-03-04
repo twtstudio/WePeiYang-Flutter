@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     var selfPage = SizedBox(
-      height: 68.w,
+      height: 70.w,
       width: width,
       child: IconButton(
         splashRadius: 1,

@@ -19,8 +19,9 @@ import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import 'model/message_model.dart';
+
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
-enum MessageType { like, floor, reply, notice}
+enum MessageType { like, floor, reply, notice }
 
 extension MessageTypeExtension on MessageType {
   String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
@@ -92,24 +93,26 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 Navigator.pop(context);
               },
             ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: TabBar(
-                tabs: types.map((t) {
-                  return MessageTab(type: t);
-                }).toList(),
-                controller: _tabController,
-                onTap: (index) {
-                  currentIndex.value = _tabController.index;
-                },
-                indicator: CustomIndicator(
-                  borderSide: BorderSide(
-                    width: 3.w,
-                    color: ColorUtil.blue363CColor,
-                  ),
-                ),
-                isScrollable: false,
-              ),
+            bottom: TabBar(
+              indicatorPadding: EdgeInsets.only(bottom: 2),
+              labelPadding: EdgeInsets.zero,
+              isScrollable: true,
+              physics: BouncingScrollPhysics(),
+              controller: _tabController,
+              labelColor: Color(0xff303c66),
+              labelStyle: TextUtil.base.black2A.w700.NotoSansSC.sp(18),
+              unselectedLabelColor: ColorUtil.lightTextColor,
+              unselectedLabelStyle:
+                  TextUtil.base.grey6C.w600.NotoSansSC.sp(17),
+              indicator: CustomIndicator(
+                  borderSide:
+                      BorderSide(color: ColorUtil.mainColor, width: 2)),
+              tabs: types.map((t) {
+                return MessageTab(type: t);
+              }).toList(),
+              onTap: (index) {
+                currentIndex.value = _tabController.index;
+              },
             ),
           ),
         ),
@@ -146,6 +149,7 @@ class MessageTab extends StatefulWidget {
 
 class _MessageTabState extends State<MessageTab> {
   _FeedbackMessagePageState pageState;
+  double _tabPaddingWidth = 0;
 
   @override
   void didChangeDependencies() {
@@ -155,38 +159,33 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
+    _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
     Widget tab = ValueListenableBuilder(
       valueListenable: pageState.currentIndex,
       builder: (_, int current, __) {
         return Text(
           widget.type.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: current == widget.type.index
-                ? ColorUtil.black2AColor
-                : ColorUtil.greyB2B6Color,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
         );
       },
     );
 
-    int count = context.select((MessageProvider messageProvider) => messageProvider.getMessageCount(widget.type));
-    return Padding(
-        padding: EdgeInsets.only(bottom: 2.w),
-        child: count == 0
+    int count = context.select((MessageProvider messageProvider) =>
+        messageProvider.getMessageCount(widget.type));
+    return Tab(
+        child: Row(
+      children: [
+        SizedBox(width: _tabPaddingWidth),
+        count == 0
             ? tab
-            : Center(
-                child: Badge(
-                  child: tab,
-                  badgeContent: Text(
-                    count.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 7),
-                  ),
-                ),
-              ));
+            : Badge(
+                child: tab,
+                badgeContent: Text(
+                  count.toString(),
+                  style: TextStyle(color: Colors.white, fontSize: 8),
+                )),
+        SizedBox(width: _tabPaddingWidth),
+      ],
+    ));
   }
 }
 
@@ -488,8 +487,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.type == 0 &&
-                widget.data.post.imageUrls.isNotEmpty)
+            if (widget.data.type == 0 && widget.data.post.imageUrls.isNotEmpty)
               Image.network(
                 baseUrl + widget.data.post.imageUrls[0],
                 fit: BoxFit.cover,
@@ -539,13 +537,13 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
 
           ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
           if (post.id != -1) {
-          await Navigator.pushNamed(
-            context,
-            FeedbackRouter.detail,
-            arguments: post,
-          ).then((_) => context
-              .findAncestorStateOfType<_FeedbackMessagePageState>()
-              .onRefresh());
+            await Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            ).then((_) => context
+                .findAncestorStateOfType<_FeedbackMessagePageState>()
+                .onRefresh());
           }
           // else {
           //   await Navigator.pushNamed(
@@ -1063,8 +1061,8 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
             .findAncestorStateOfType<_FeedbackMessagePageState>()
             .refresh
             .addListener(() => onRefresh(
-          refreshCount: false,
-        ));
+                  refreshCount: false,
+                ));
       }
     });
   }
@@ -1093,8 +1091,8 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setReplyMessageRead(items[i].reply.id,
                     onSuccess: () {}, onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    });
+                  ToastProvider.error(e.error.toString());
+                });
               }
             },
           );
@@ -1205,13 +1203,13 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
             Text(
               DateTime.now().difference(widget.data.reply.createdAt).inDays >= 1
                   ? widget.data.reply.createdAt
-                  .toLocal()
-                  .toIso8601String()
-                  .replaceRange(10, 11, ' ')
-                  .substring(0, 19)
+                      .toLocal()
+                      .toIso8601String()
+                      .replaceRange(10, 11, ' ')
+                      .substring(0, 19)
                   : DateTime.now()
-                  .difference(widget.data.reply.createdAt)
-                  .dayHourMinuteSecondFormatted(),
+                      .difference(widget.data.reply.createdAt)
+                      .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
             ),
           ],
