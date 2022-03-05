@@ -40,12 +40,13 @@ class OfficialReplyCard extends StatefulWidget {
   final ContentPressedCallback onContentPressed;
   final LikeCallback onLikePressed;
   final int placeAppeared;
-  int ratings;
+  final int ratings;
 
   OfficialReplyCard.detail({
     this.tag,
     this.comment,
     this.title,
+    this.ratings,
     this.ancestorId,
     this.onLikePressed,
     this.placeAppeared,
@@ -55,6 +56,7 @@ class OfficialReplyCard extends StatefulWidget {
   OfficialReplyCard.reply({
     this.tag,
     this.comment,
+    this.ratings,
     this.title,
     this.ancestorId,
     this.onContentPressed,
@@ -69,10 +71,13 @@ class OfficialReplyCard extends StatefulWidget {
 class _OfficialReplyCardState extends State<OfficialReplyCard> {
   double _rating;
   double _initialRating = 0;
+  String postRating;
+  String postId;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
   @override
   void initState() {
+    _initialRating = widget.ratings.toDouble();
     _rating = _initialRating;
     super.initState();
   }
@@ -431,9 +436,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                 Navigator.pop(context);
               },
               confirmFun: () {
+                postRating = _rating.toInt().toString();
+                postId = widget.comment.postId.toString();
                FeedbackService.rate(
-                   id:widget.comment.postId.toString(),
-                   rating: _rating.toString(),
+                   id:postId,
+                   rating: postRating,
                    onSuccess: (){
                      ToastProvider.success("评分成功！");
                      setState(() {

@@ -50,6 +50,7 @@ class _DetailPageState extends State<DetailPage>
   List<Floor> _officialCommentList;
   bool _bottomIsOpen;
   int currentPage = 1;
+  int rating = 0;
   Widget topCard;
 
   double _previousOffset = 0;
@@ -170,6 +171,7 @@ class _DetailPageState extends State<DetailPage>
       onResult: (Post result) {
         success = true;
         post = result;
+        rating = post.rating;
         setState(() {});
       },
       onFailure: (e) {
@@ -341,6 +343,7 @@ class _DetailPageState extends State<DetailPage>
               tag: post.department.name ?? '',
               comment: data,
               placeAppeared: index,
+                ratings: widget.post.rating,
                 ancestorId:post.uid,
               onContentPressed: (refresh) async {
                refresh.call(list);

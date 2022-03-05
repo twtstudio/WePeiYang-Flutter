@@ -606,13 +606,12 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
-        var formData = FormData.fromMap({
-          'post_id': id,
-          'rating': rating,
-        });
         await feedbackDio.post(
           'post/solve',
-          formData: formData,
+          formData: FormData.fromMap({
+            'post_id': '$id',
+            'rating': '$rating',
+          }),
         );
         onSuccess?.call();
       } on DioError catch (e) {
