@@ -12,20 +12,21 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-class ReplyDetailPage extends StatefulWidget {
-  final Floor floor;
+class OffcialReplyDetailPage extends StatefulWidget {
+  final List<Floor> floor;
 
-  ReplyDetailPage(this.floor);
+  OffcialReplyDetailPage(this.floor);
 
   @override
-  _ReplyDetailPageState createState() => _ReplyDetailPageState();
+  _OffcialReplyDetailPageState createState() => _OffcialReplyDetailPageState();
 }
 
-class _ReplyDetailPageState extends State<ReplyDetailPage>
+class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
     with SingleTickerProviderStateMixin {
   int index;
   int currentPage = 1;
@@ -37,13 +38,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
   var _refreshController = RefreshController(initialRefresh: false);
 
-  _ReplyDetailPageState();
+  _OffcialReplyDetailPageState();
 
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
     _getComment(
-        onResult: (comments) {
+        onSuccess: (comments) {
           setState(() {
             floors = comments;
           });
@@ -58,7 +59,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   _onLoading() {
     currentPage++;
     _getComment(
-        onResult: (comments) {
+        onSuccess: (comments) {
           if (comments.length == 0) {
             _refreshController.loadNoData();
             currentPage--;
@@ -87,7 +88,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
     _getComment(
-        onResult: (comments) {
+        onSuccess: (comments) {
           setState(() {
             floors = comments;
           });
@@ -99,13 +100,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   }
 
   Future<bool> _getComment(
-      {Function(List<Floor>) onResult, Function onFail, int page}) async {
+      {Function(List<Floor>) onSuccess, Function onFail, int page}) async {
     bool success = false;
-    FeedbackService.getFloorReplyById(
-      floorId: widget.floor.id,
-      page: page,
-      onResult: (comments) {
-        onResult?.call(comments);
+    FeedbackService.getOfficialComment(
+      id: widget.floor[0].postId,
+      onSuccess: (floor) {
+       floors = floor;
+       onSuccess?.call(floors);
         setState(() {});
       },
       onFailure: (e) {
@@ -127,7 +128,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send(false);
+        launchKey.currentState.send(true);
         setState(() {
           _onRefresh();
         });
@@ -142,27 +143,21 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemCount: floors != null ? floors.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return NCommentCard(
-            comment: widget.floor,
-            ancestorId: widget.floor.postId,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: true,
+          return OfficialReplyCard.reply(
+            comment: widget.floor[0],
+            ancestorId: widget.floor[0].postId,
+
           );
         }
-        index--;
+       if(index>1) index--;
 
         var data = floors[index];
         return Column(
           children: [
-            NCommentCard(
-              comment: data,
-              ancestorName: widget.floor.nickname,
-              ancestorId: widget.floor.id,
-              commentFloor: index + 1,
-              isSubFloor: true,
-              isFullView: true,
-            ),
+        OfficialReplyCard.reply(
+        comment: data,
+          ancestorId: widget.floor[0].postId,
+        ),
             Container(
                 width: WePeiYangApp.screenWidth - 60,
                 height: 1,
@@ -191,100 +186,100 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     );
 
     var inputField =
-        CommentInputField(postId: widget.floor.postId, key: launchKey);
+    CommentInputField(postId: widget.floor[0].postId, key: launchKey);
 
     body = Column(
       children: [
         mainList,
         Consumer<NewFloorProvider>(
             builder: (BuildContext context, value, Widget child) {
-          return AnimatedSize(
-            clipBehavior: Clip.antiAlias,
-            vsync: this,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOutSine,
-            child: Container(
-              margin: EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, -1),
-                        blurRadius: 2,
-                        spreadRadius: 3),
-                  ],
-                  color: ColorUtil.whiteF8Color),
-              child: Column(
-                children: [
-                  Offstage(
-                      offstage: !value.inputFieldEnabled,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          inputField,
-                          ImageSelectAndView(key: imageSelectionKey),
-                          SizedBox(height: 4),
-                          Row(
+              return AnimatedSize(
+                clipBehavior: Clip.antiAlias,
+                vsync: this,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeOutSine,
+                child: Container(
+                  margin: EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            offset: Offset(0, -1),
+                            blurRadius: 2,
+                            spreadRadius: 3),
+                      ],
+                      color: ColorUtil.whiteF8Color),
+                  child: Column(
+                    children: [
+                      Offstage(
+                          offstage: !value.inputFieldEnabled,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(width: 4),
-                              IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/lake_butt_icons/image.png',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  onPressed: () => imageSelectionKey
-                                      .currentState
-                                      .loadAssets()),
-                              Spacer(),
-                              checkButton,
-                              SizedBox(width: 16),
+                              inputField,
+                              ImageSelectAndView(key: imageSelectionKey),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  SizedBox(width: 4),
+                                  IconButton(
+                                      icon: Image.asset(
+                                        'assets/images/lake_butt_icons/image.png',
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                      onPressed: () => imageSelectionKey
+                                          .currentState
+                                          .loadAssets()),
+                                  Spacer(),
+                                  checkButton,
+                                  SizedBox(width: 16),
+                                ],
+                              ),
+                              SizedBox(height: 10)
                             ],
-                          ),
-                          SizedBox(height: 10)
-                        ],
-                      )),
-                  Offstage(
-                    offstage: value.inputFieldEnabled,
-                    child: InkWell(
-                      onTap: () {
-                        Provider.of<NewFloorProvider>(context, listen: false)
-                            .inputFieldOpenAndReplyTo(widget.floor.id);
-                        FocusScope.of(context).requestFocus(
-                            Provider.of<NewFloorProvider>(context,
-                                    listen: false)
-                                .focusNode);
-                      },
-                      child: Container(
-                          height: 22,
-                          margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500.grey97
-                                    .sp(12)),
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(11),
-                            color: Colors.white,
                           )),
-                    ),
+                      Offstage(
+                        offstage: value.inputFieldEnabled,
+                        child: InkWell(
+                          onTap: () {
+                            Provider.of<NewFloorProvider>(context, listen: false)
+                                .inputFieldOpenAndReplyTo(widget.floor[0].postId);
+                            FocusScope.of(context).requestFocus(
+                                Provider.of<NewFloorProvider>(context,
+                                    listen: false)
+                                    .focusNode);
+                          },
+                          child: Container(
+                              height: 22,
+                              margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text('友善回复，真诚沟通',
+                                    style: TextUtil.base.NotoSansSC.w500.grey97
+                                        .sp(12)),
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(11),
+                                color: Colors.white,
+                              )),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          );
-        })
+                ),
+              );
+            })
       ],
     );
 
     var menuButton = IconButton(
       icon:
-          SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
+      SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
       splashRadius: 20,
       onPressed: () {
         showMenu(
@@ -293,14 +288,17 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
+          shape: RacTangle(),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
               value: '举报',
-              child: new Text(
-                '举报',
-                style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 13,
-                  color: ColorUtil.boldTextColor,
+              child: Center(
+                child: new Text(
+                  '举报',
+                  style: FontManager.YaHeiRegular.copyWith(
+                    fontSize: 13,
+                    color: ColorUtil.boldTextColor,
+                  ),
                 ),
               ),
             ),
@@ -308,7 +306,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         ).then((value) {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.floor.id, true));
+                arguments: ReportPageArgs(widget.floor[0].id, true));
           }
         });
       },
@@ -322,7 +320,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ),
       actions: [menuButton],
       title: Text(
-        '回复',
+        '官方回复',
         style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
       ),
       centerTitle: true,

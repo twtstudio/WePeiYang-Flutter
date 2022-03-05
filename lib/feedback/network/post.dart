@@ -159,6 +159,7 @@ class Floor {
     this.content,
     this.nickname,
     this.imageUrl,
+    this.sender,
     this.replyTo,
     this.replyToName,
     this.subTo,
@@ -175,6 +176,7 @@ class Floor {
   DateTime createAt;
   int uid;
   int postId;
+  int sender;
   String content;
   String nickname;
   String imageUrl;
@@ -196,6 +198,7 @@ class Floor {
         postId: json["post_id"],
         content: json["content"],
         nickname: json["nickname"],
+        sender: json["sender"],
         imageUrl: json["image_url"],
         replyTo: json["reply_to"],
         replyToName: json["reply_to_name"],
@@ -218,6 +221,7 @@ class Floor {
         "uid": uid,
         "post_id": postId,
         "content": content,
+    "sender":sender,
         "nickname": nickname,
         "image_url": imageUrl,
         "reply_to": replyTo,

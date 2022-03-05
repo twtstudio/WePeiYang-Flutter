@@ -543,7 +543,29 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
-
+  static replyOffcialFloor(
+      {@required id,
+        @required content,
+        @required List<String> images,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
+      try {
+        var formData = FormData.fromMap({
+          'post_id': id,
+          'content': content,
+        });
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.fields.addAll([MapEntry('images', images[i])]);
+        }
+        await feedbackDio.post('post/reply', formData: formData);
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
   static sendPost(
       {@required type,
       @required title,
@@ -584,12 +606,13 @@ class FeedbackService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
+        var formData = FormData.fromMap({
+          'post_id': id,
+          'rating': rating,
+        });
         await feedbackDio.post(
           'post/solve',
-          formData: FormData.fromMap({
-            'post_id': id,
-            'rating': rating,
-          }),
+          formData: formData,
         );
         onSuccess?.call();
       } on DioError catch (e) {

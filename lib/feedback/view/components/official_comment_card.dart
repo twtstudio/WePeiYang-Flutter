@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -10,16 +12,22 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+
+import '../../feedback_router.dart';
+
+import '../report_question_page.dart';
 
 
 enum Official { detail, reply }
 
 typedef LikeCallback = void Function(bool, int);
-typedef ContentPressedCallback = void Function(void Function(Floor));
+typedef ContentPressedCallback = void Function(void Function(List<Floor>));
 
 
 
@@ -61,7 +69,8 @@ class OfficialReplyCard extends StatefulWidget {
 class _OfficialReplyCardState extends State<OfficialReplyCard> {
   double _rating;
   double _initialRating = 0;
-
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
   @override
   void initState() {
     _rating = _initialRating;
@@ -71,7 +80,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
   @override
   Widget build(BuildContext context) {
     List<Widget> column = [];
-    var OfficialLogo = Row(
+    var OfficialLogo = widget.comment.sender==1?Row(
       children: [
         Image.asset(
           widget.tag == '天外天' ? 'assets/images/twt.png' : 'assets/images/school.png',
@@ -103,16 +112,125 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           ],
         )
       ],
+    ): Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          child: SvgPicture.network(
+            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            width: 30,
+            height: 24,
+            fit: BoxFit.fitHeight,
+            placeholderBuilder: defaultPlaceholderBuilder,
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+              Text(widget.tag ?? '用户'+CommonPreferences().feedbackUid.value.toString(),
+                  style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
+            ]),
+            Text(
+              DateTime.now().difference(widget.comment.createAt).inHours >= 11
+                  ? widget.comment.createAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.comment.createAt)
+                  .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+            ),
+          ],
+        )
+      ],
     );
     var box = SizedBox(height: 6);
     var createTime = Row(
       children: [
         OfficialLogo,
         Spacer(),
+        if(widget.comment.sender==0)
+          PopupMenuButton(
+            padding: EdgeInsets.zero,
+            shape: RacTangle(),
+            offset: Offset(0, 0),
+            child: SvgPicture.asset(
+              'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+              width: 16,
+            ),
+            onSelected: (value) async {
+              if (value == '分享') {
+                String weCo =
+                    '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
+                ClipboardData data = ClipboardData(text: weCo);
+                Clipboard.setData(data);
+                CommonPreferences().feedbackLastWeCo.value =
+                    widget.ancestorId.toString();
+                ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+              }
+              if (value == '举报') {
+                Navigator.pushNamed(context, FeedbackRouter.report,
+                    arguments: ReportPageArgs(widget.ancestorId, false,
+                        floorId: widget.comment.id));
+              } else if (value == '删除') {
+                bool confirm = await _showDeleteConfirmDialog();
+                if (confirm) {
+                  FeedbackService.deleteFloor(
+                    id: widget.comment.id,
+                    onSuccess: () {
+                      ToastProvider.success(S.current.feedback_delete_success);
+                      setState(() {});
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
+                  );
+                }
+              }
+            },
+            itemBuilder: (context) {
+              return <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: '分享',
+                  child: Center(
+                    child: Text(
+                      '分享',
+                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
+                CommonPreferences().feedbackUid.value.toString() == widget.comment.postId
+                    ? PopupMenuItem<String>(
+                  value: '删除',
+                  child: Center(
+                    child: Text(
+                      '删除',
+                      style:
+                      TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                )
+                    : PopupMenuItem<String>(
+                  value: '举报',
+                  child: Center(
+                    child: Text(
+                      '举报',
+                      style:
+                      TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
+              ];
+            },
+          ),
       ],
     );
     Widget starWidget;
-    if (CommonPreferences().feedbackUid.value == widget.ancestorId) {
+    if (CommonPreferences().feedbackUid.value.toString() == widget.ancestorId.toString()) {
       starWidget = GestureDetector(
         onTap: ()async{
           ratingCard();
@@ -162,7 +280,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     }
 
     var bottomWidget = Row(
-      children: [starWidget, Spacer()],
+      children: [if(widget.comment.sender==1)starWidget, Spacer()],
     );
 
     switch (widget.type) {
@@ -230,9 +348,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       onTap: () {
         widget.onContentPressed?.call((comment) {
           setState(() {
-            widget.comment.isLike = comment.isLike;
-            widget.comment.likeCount = comment.likeCount;
-            widget.comment.rating = comment.rating;
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.offcialCommentDetail,
+              arguments: comment,
+            );
           });
         });
       },
@@ -312,8 +432,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               },
               confirmFun: () {
                FeedbackService.rate(
-                   id:widget.comment.postId,
-                   rating: _rating,
+                   id:widget.comment.postId.toString(),
+                   rating: _rating.toString(),
                    onSuccess: (){
                      ToastProvider.success("评分成功！");
                      setState(() {
@@ -327,4 +447,29 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               });
         });
   }
+  Future<bool> _showDeleteConfirmDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('提示'),
+            content: Text('您确定要删除这条评论吗?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('确定'),
+                onPressed: () {
+                  //关闭对话框并返回true
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              TextButton(
+                child: Text('取消'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
+  }
+
 }
+
