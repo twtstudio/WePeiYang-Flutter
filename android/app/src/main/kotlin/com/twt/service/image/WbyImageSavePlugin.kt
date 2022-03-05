@@ -26,9 +26,7 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
-        imgSaveChannel = MethodChannel(
-            binding.binaryMessenger, "com.twt.service/saveImg"
-        )
+        imgSaveChannel = MethodChannel(binding.binaryMessenger, "com.twt.service/saveImg")
         imgSaveChannel.setMethodCallHandler(this)
     }
 

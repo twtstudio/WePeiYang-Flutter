@@ -1,6 +1,5 @@
 package com.twt.service
 
-import android.util.Log
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
@@ -21,28 +20,30 @@ class MainActivity : FlutterActivity() {
     // 加入微北洋使用的所有自己写的 plugin
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        flutterEngine.plugins.add(
-            setOf(
-                // 课程表小组件
-                WbyWidgetPlugin(),
-                // 点击通知，等应用进入主页面后，从 eventList 中获取事件
-                WbyMessagePlugin(),
-                // qq分享（图片，文字），微信分享（还没做）
-                WbySharePlugin(),
-                // 微北洋通用下载工具
-                WbyDownloadPlugin(),
-                // 应用内更新 apk 安装
-                WbyInstallPlugin(),
-                // 高德地图 api 获取定位（疫情填报）
-                WbyLocationPlugin(),
-                // 保存图片
-                WbyImageSavePlugin(),
-                // 个推推送
-                WbyPushPlugin(),
-                // 添加热修复文件
-                WbyFixPlugin()
+        flutterEngine.plugins.runCatching {
+            add(
+                    setOf(
+                            // 课程表小组件
+                            WbyWidgetPlugin(),
+                            // 点击通知，等应用进入主页面后，从 eventList 中获取事件
+                            WbyMessagePlugin(),
+                            // qq分享（图片，文字），微信分享（还没做）
+                            WbySharePlugin(),
+                            // 微北洋通用下载工具
+                            WbyDownloadPlugin(),
+                            // 应用内更新 apk 安装
+                            WbyInstallPlugin(),
+                            // 高德地图 api 获取定位（疫情填报）
+                            WbyLocationPlugin(),
+                            // 保存图片
+                            WbyImageSavePlugin(),
+                            // 个推推送
+                            WbyPushPlugin(),
+                            // 添加热修复文件
+                            WbyFixPlugin()
+                    )
             )
-        )
+        }
     }
 
     // https://blog.csdn.net/llew2011/article/details/105453204/
@@ -67,7 +68,7 @@ class MainActivity : FlutterActivity() {
         super.onWindowFocusChanged(hasFocus)
         takeIf { hasFocus && (flutterEngine != null) }?.runCatching {
             (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as? WbyPushPlugin)
-                ?.onWindowFocusChanged()
+                    ?.onWindowFocusChanged()
         }
         log("onWindowFocusChanged : $hasFocus")
     }

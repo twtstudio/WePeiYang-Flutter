@@ -44,7 +44,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         PluginRegistry.NewIntentListener, ActivityAware {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
-    private lateinit var receiver: PushBroadCastReceiver
+    private var receiver: PushBroadCastReceiver? = null
     private lateinit var binding: ActivityPluginBinding
     private val pushManager by lazy { PushManager.getInstance() }
     private var initSdk = false
@@ -65,18 +65,22 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     // 创建通知 channel
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "通知"
-            val description = "横幅，锁屏"
-            //不同的重要程度会影响通知显示的方式
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("1", name, importance)
-            channel.description = description
-            channel.setSound(null, null)
-            channel.vibrationPattern = longArrayOf(0, 1000, 500, 1000)
-            channel.enableVibration(true)
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+        runCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val name = "通知"
+                val description = "横幅，锁屏"
+                //不同的重要程度会影响通知显示的方式
+                val importance = NotificationManager.IMPORTANCE_HIGH
+                val channel = NotificationChannel("1", name, importance)
+                channel.description = description
+                channel.setSound(null, null)
+                channel.vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+                channel.enableVibration(true)
+                val notificationManager = context.getSystemService(NotificationManager::class.java)
+                notificationManager.createNotificationChannel(channel)
+            }
+        }.onFailure {
+            log("创建 Notification Channel 失败")
         }
     }
 
@@ -97,36 +101,6 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-    }
-
-    private fun showRequestNotificationDialog() {
-        channel.invokeMethod("showRequestNotificationDialog", null, object : MethodChannel.Result {
-            override fun success(result: Any?) {
-                when (result) {
-                    "ok" -> {
-                        WbySharePreference.canPush = CanPushType.Want
-                        requestPushPermissionBy(permissionResult, ::openNotificationConfigPage)
-                    }
-                    "refuse" -> {
-                        log("user refuse that request to open push")
-                        WbySharePreference.canPush = CanPushType.Not
-                        permissionResult.success("refuse open push")
-                    }
-                }
-            }
-
-            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                permissionResult.error(
-                        OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR,
-                        errorMessage,
-                        errorDetails
-                )
-            }
-
-            override fun notImplemented() {
-                permissionResult.error(FATAL_ERROR, "", "")
-            }
-        })
     }
 
     fun onWindowFocusChanged() {
@@ -405,7 +379,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     //       Ⅱ：天外天官方推送
     //       Ⅲ：热修复通知推送
     //    2.点击桌面小组件：暂时只有课程表小组件
-    private fun handleIntent(intent: Intent) {
+    private fun handleIntent(intent: Intent): Boolean {
         // 华为和小米厂商通道可以传递 data ，魅族厂商通道只能产地 extra ，所以只通过 extra 传递数据
         log("WbyPushPlugin handle intent : $intent")
         when (intent.getStringExtra("type")) {
@@ -415,6 +389,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 WBYApplication.eventList.add(
                         Event(IntentEvent.FeedbackPostPage.type, id)
                 )
+                return true
             }
             "mailbox" -> {
                 val createdAt = intent.getStringExtra("createdAt")
@@ -425,6 +400,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 WBYApplication.eventList.add(
                         Event(IntentEvent.MailBox.type, data)
                 )
+                return true
             }
             "update" -> {
                 // 默认是重要更新
@@ -439,23 +415,24 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 WBYApplication.eventList.add(
                         Event(IntentEvent.Update.type, data)
                 )
+                return true
             }
         }
+        return false
     }
 
     // 设置 MainActivity:  android:launchMode="singleInstance"
     // 若 activity 进程还在，则调用 onNewIntent，
     // 若 activity 进程没有，则调用 onCreate
     override fun onNewIntent(intent: Intent?): Boolean {
-        intent?.let {
-            handleIntent(it)
-            return true
+        intent?.runCatching {
+            return handleIntent(this)
         }
         return false
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        handleIntent(binding.activity.intent)
+        kotlin.runCatching { handleIntent(binding.activity.intent) }
         binding.addOnNewIntentListener(this)
         this.binding = binding
         runCatching(::initLocalBroadcast)
@@ -469,7 +446,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             addAction(CID)
             addDataScheme("twtstudio")
         }
-        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver!!, intentFilter)
         log("init local broadcast success")
     }
 
@@ -479,7 +456,9 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     // 注销 LocalBroadcast
     override fun onDetachedFromActivity() {
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
+        receiver?.let {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(it)
+        }
     }
 
     // 获取发送通知打开具体页面所用的 intent

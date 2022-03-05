@@ -48,14 +48,13 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
     }
 
     override fun onNewIntent(intent: Intent?): Boolean {
-        intent?.let {
-            handleIntent(it)
-            return true
+        intent?.runCatching {
+            return handleIntent(this)
         }
         return false
     }
 
-    private fun handleIntent(intent: Intent) {
+    private fun handleIntent(intent: Intent) : Boolean {
         log("WbyWidgetPlugin handle intent :" + intent.dataString)
         if (intent.data?.host?.equals("weipeiyang.app") == true) {
             intent.data?.let {
@@ -67,13 +66,14 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
                                 "go to schedule page without data"
                             )
                         )
+                        return true
                     }
-                    else -> {
-
-                    }
+                    else -> {}
                 }
             }
         }
+
+        return false
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {

@@ -138,9 +138,9 @@ object WbySharePreference {
     }
 
     fun setCurrentUseSoFileCanUse() {
-        fixSoSharedPreferences?.let { pref ->
-            pref.getString(currentUseKey, null)?.let { path ->
-                pref.edit().let {
+        fixSoSharedPreferences?.runCatching {
+            getString(currentUseKey, null)?.let { path ->
+                edit().let {
                     it.putBoolean(path, true)
                     it.commit()
                 }
