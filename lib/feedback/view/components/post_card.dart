@@ -174,13 +174,18 @@ class _PostCardState extends State<PostCard> {
         future: completer.future,
         builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
           return Container(
-              width: 97,
-              height: 76,
-              child: snapshot.hasData
-                  ? snapshot.data.height / snapshot.data.width > 2.0
-                      ? longImageOuterLook
-                      : image
-                  : Image.asset('assets/images/lake_butt_icons/monkie.png'));
+            width: 97,
+            height: 76,
+            child: snapshot.hasData
+                ? snapshot.data.height / snapshot.data.width > 2.0
+                    ? longImageOuterLook
+                    : image
+                : Icon(
+                    Icons.refresh,
+                    color: Colors.black54,
+                  ),
+            color: snapshot.hasData ? Colors.transparent : Colors.black12,
+          );
         },
       );
 

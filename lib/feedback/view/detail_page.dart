@@ -91,19 +91,6 @@ class _DetailPageState extends State<DetailPage>
     });
   }
 
-  _onLoadingSelectedPage(int current) {
-    _getComments(
-        onSuccess: (comments) {
-          _commentList.removeRange(
-              _commentList.length - comments.length, _commentList.length);
-          _commentList.addAll(comments);
-        },
-        onFail: () {
-          _refreshController.loadFailed();
-        },
-        current: current);
-  }
-
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (_bottomIsOpen ?? false) if (context
                 .read<NewFloorProvider>()
@@ -317,13 +304,6 @@ class _DetailPageState extends State<DetailPage>
                           '回复 ' + post.commentCount.toString(),
                           style:
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Image.asset(
-                          'assets/images/lake_butt_icons/menu.png',
-                          width: 20,
                         ),
                       ),
                     ]),

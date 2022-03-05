@@ -147,7 +147,9 @@ class _MailItemState extends State<MailItem> {
                   ),
                   Spacer(),
                   Text(
-                    widget.data.time,
+                    widget.data.time
+                        .replaceRange(10, 11, ' ')
+                        .substring(0, 19),
                     style: TextStyle(color: Color(0xffb1b2be), fontSize: 11),
                   )
                 ],

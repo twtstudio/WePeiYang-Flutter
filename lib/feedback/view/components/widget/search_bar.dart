@@ -148,7 +148,7 @@ class _SearchBarState extends State<SearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080),
                       ),
-                      fillColor: ColorUtil.searchBarBackgroundColor,
+                      fillColor: ColorUtil.backgroundColor,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,

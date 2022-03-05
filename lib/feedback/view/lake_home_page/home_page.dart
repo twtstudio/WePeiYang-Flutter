@@ -212,6 +212,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           barrierDismissible: false,
           builder: (BuildContext context) {
             return DialogWidget(
+                confirmButtonColor: ColorUtil.selectionButtonColor,
                 title: '同学你好：',
                 content: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -238,8 +239,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             builder: (context, type, _) {
                               return GestureDetector(
                                 onTap: () {
-                                  checkedNotifier.value =
-                                      !checkedNotifier.value;
+                                    checkedNotifier.value =
+                                        !checkedNotifier.value;
                                 },
                                 child: Stack(
                                   children: [
@@ -280,23 +281,27 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   builder: (BuildContext context) =>
                                       LakePrivacyDialog());
                             },
-                            child: Text('《求实论坛社区规范》',
-                                style: TextUtil.base.normal.NotoSansSC
-                                    .sp(12)
-                                    .w400
-                                    .textButtonBlue,overflow:TextOverflow.ellipsis ,))
+                            child: Text(
+                              '《求实论坛社区规范》',
+                              style: TextUtil.base.normal.NotoSansSC
+                                  .sp(12)
+                                  .w400
+                                  .textButtonBlue,
+                              overflow: TextOverflow.ellipsis,
+                            ))
                       ],
                     )
                   ],
                 ),
                 cancelText: "返回主页",
                 confirmTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
                 cancelTextStyle:
                     TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                 confirmText: "前往湖底",
                 cancelFun: () {
-                  Navigator.pushNamed(context, HomeRouter.home);
+                  Navigator.pop(context);
+                  Navigator.popAndPushNamed(context, HomeRouter.home);
                 },
                 confirmFun: () {
                   if (checkedNotifier.value == false) {
@@ -687,13 +692,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 onTap: () =>
-                        Navigator.pushNamed(context, FeedbackRouter.profile),
+                    Navigator.pushNamed(context, FeedbackRouter.profile),
                 child: Center(
                   child: FeedbackBadgeWidget(
                     child: ImageIcon(
-                            AssetImage("assets/images/lake_butt_icons/box.png"),
-                            size: 23,
-                            color: ColorUtil.boldTag54),
+                        AssetImage("assets/images/lake_butt_icons/box.png"),
+                        size: 23,
+                        color: ColorUtil.boldTag54),
                   ),
                 ),
               ),

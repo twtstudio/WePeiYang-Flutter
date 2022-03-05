@@ -24,9 +24,9 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
               context: context,
               builder: (BuildContext context) {
                 return DialogWidget(
-                  title: '清除所有消息：',
+                  title: '一键已读：',
                   titleTextStyle:
-                      TextUtil.base.normal.black2A.NotoSansSC.sp(26).w600,
+                      TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
                   content: Text('这将删除所有的消息记录'),
                   cancelText: "取消",
                   confirmTextStyle:

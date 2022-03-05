@@ -193,9 +193,12 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context) {
           return DialogWidget(
               title: '清除记录',
+              confirmButtonColor: ColorUtil.selectionButtonColor,
+              titleTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
