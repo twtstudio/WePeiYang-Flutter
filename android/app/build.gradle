@@ -58,22 +58,22 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                HUAWEI_APP_ID   : "103402255",
+                HUAWEI_APP_ID  : "103402255",
 
-                XIAOMI_APP_ID   : "2882303761517785783",
-                XIAOMI_APP_KEY  : "5851778525783",
+                XIAOMI_APP_ID  : "2882303761517785783",
+                XIAOMI_APP_KEY : "5851778525783",
 
-                MEIZU_APP_ID    : "146410",
-                MEIZU_APP_KEY   : "77b312b3e3b9497bb25298911f7b14d7",
+                MEIZU_APP_ID   : "146410",
+                MEIZU_APP_KEY  : "77b312b3e3b9497bb25298911f7b14d7",
 
-                VIVO_APP_ID     : "105266463",
-                VIVO_APP_KEY    : "40e5b229553e31f1842b80915781e2e8",
+                VIVO_APP_ID    : "105266463",
+                VIVO_APP_KEY   : "40e5b229553e31f1842b80915781e2e8",
 
                 OPPO_APP_KEY   : "7cuaXvykA58gkOW4c4oGkG8o0",
                 OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
 
                 // project
-                GETUI_APPID     : "43HGFmIKsnAmjrjDLr60X4",
+                GETUI_APPID    : "43HGFmIKsnAmjrjDLr60X4",
 
                 // develop
 //                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
@@ -81,7 +81,7 @@ android {
 
         ndk {
             // 注意：这里需要添加项目所需 CPU 类型的最小集
-            abiFilters "arm64-v8a"
+            abiFilters "arm64-v8a", "armeabi-v7a"
         }
     }
 
@@ -105,7 +105,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             shrinkResources true // 删除无用资源
 
-            buildConfigField("Boolean","LOG_OUTPUT","false")
+            buildConfigField("Boolean", "LOG_OUTPUT", "false")
         }
 
         debug {
@@ -113,7 +113,7 @@ android {
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
 
-            buildConfigField("Boolean","LOG_OUTPUT","true")
+            buildConfigField("Boolean", "LOG_OUTPUT", "true")
         }
     }
 }
