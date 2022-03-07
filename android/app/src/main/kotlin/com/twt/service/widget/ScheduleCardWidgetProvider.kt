@@ -12,17 +12,18 @@ import android.widget.RemoteViews
 import com.twt.service.MainActivity
 import com.twt.service.R
 import com.twt.service.common.BASEURL
+import com.twt.service.common.LogUtil
 import java.util.*
 
 class ScheduleCardWidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
-        Log.d("WBY", "课程表小部件_card被启用")
+        log("课程表小部件_card被启用")
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE || intent.action == "com.twt.appwidget.refresh") {
-            Log.d("WBY-card", "on refreshing!!!")
+            log("on refreshing!!!")
             val name = ComponentName(context, ScheduleCardWidgetProvider::class.java)
             this@ScheduleCardWidgetProvider.onUpdate(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(name))
         }
@@ -30,7 +31,7 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        Log.d("WBY-card", "on updating!!!")
+        log("on updating!!!")
         for (appWidgetId in appWidgetIds) {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val startActivityIntent = Intent(context, MainActivity::class.java)
@@ -40,7 +41,7 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
             remoteViews.setOnClickPendingIntent(R.id.fragment_card_view, pendingIntent)
 
             // 小组件周图片
-            remoteViews.setImageViewResource(R.id.widget_week,getWeek())
+            remoteViews.setImageViewResource(R.id.widget_week, getWeek())
 
             // 小组件List部分，WidgetFactory的List为空则显示emptyView(也就是今日没课)
             // TODO:fix 实际上你这个地方没写对，点击今日没课是跳的上面的intent
@@ -61,13 +62,17 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
 
     private fun getEmptyView(): Int {
         val now = Calendar.HOUR
-        return if (now in 6..18)  R.id.widget_empty_view_day else R.id.widget_empty_view_night
+        return if (now in 6..18) R.id.widget_empty_view_day else R.id.widget_empty_view_night
     }
 
     private fun getWeek(): Int {
         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-        val cDay = arrayOf(R.drawable.sunday,R.drawable.monday, R.drawable.tuesday, R.drawable.wednesday, R.drawable.thursday, R.drawable.friday, R.drawable.saturday,R.drawable.sunday)
+        val cDay = arrayOf(R.drawable.sunday, R.drawable.monday, R.drawable.tuesday, R.drawable.wednesday, R.drawable.thursday, R.drawable.friday, R.drawable.saturday, R.drawable.sunday)
         return if (today == Calendar.SUNDAY) cDay[7] else cDay[today - 1]
     }
 
+    companion object {
+        const val TAG = "WBY-card"
+        fun log(message: String) = LogUtil.d(TAG, message)
+    }
 }

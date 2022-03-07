@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
 # 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.1.12+87
+version: 4.2.0+90
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -39,11 +39,12 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
   flutter_screenutil: ^5.3.1
+  simple_url_preview: ^3.0.0
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   hive_generator: ^1.1.1
   http_parser: ^4.0.0
-  image_cropper:
+  image_cropper: 1.5.0
   image_picker: ^0.8.4+1
   like_button: ^2.0.3
   linkfy_text: ^1.1.5
@@ -57,7 +58,7 @@ dependencies:
   screenshot: ^1.2.3  # 还没用到
   shared_preferences: ^2.0.7
   simple_html_css: ^3.0.1
-  table_calendar: ^3.0.2
+  table_calendar: 3.0.2
   transparent_image: ^1.0.0
   umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10

@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -24,6 +24,7 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart'
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../new_post_page.dart';
@@ -50,7 +51,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool _initialRefresh;
 
   ///判断是否为初次登陆
-  bool _lakeFirst = true;
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
@@ -204,15 +204,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   ///初次进入湖底的告示
   firstInLake() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("firstLogin", _lakeFirst);
-    bool firstLogin = pref.getBool("firstLogin");
-    final checkedNotifier = ValueNotifier(firstLogin);
-    if (firstLogin == true) {
+    final checkedNotifier = ValueNotifier(true);
+    if (CommonPreferences.isFirstLogin.value) {
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return DialogWidget(
+                confirmButtonColor: ColorUtil.selectionButtonColor,
                 title: '同学你好：',
                 content: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -234,19 +233,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // Checkbox(
-                        //   value: false,
-                        //   onChanged: (_) {
-                        //     _lakeFirst =!_lakeFirst;
-                        //   },
-                        // ),
                         ValueListenableBuilder<bool>(
                             valueListenable: checkedNotifier,
                             builder: (context, type, _) {
                               return GestureDetector(
                                 onTap: () {
-                                  checkedNotifier.value =
-                                      !checkedNotifier.value;
+                                    checkedNotifier.value =
+                                        !checkedNotifier.value;
                                 },
                                 child: Stack(
                                   children: [
@@ -270,9 +263,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         SizedBox(width: 10.w),
                         Text('我已阅读并承诺遵守',
                             style: TextUtil.base.normal.black2A.NotoSansSC
-                                .sp(14)
+                                .sp(12)
                                 .w400),
-                        SizedBox(width: 5.w),
+                        SizedBox(width: 2.w),
                         TextButton(
                             style: ButtonStyle(
                               minimumSize:
@@ -285,30 +278,34 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) =>
-                                      PrivacyDialog());
+                                      LakePrivacyDialog());
                             },
-                            child: Text('《青年湖底社区规范》',
-                                style: TextUtil.base.normal.NotoSansSC
-                                    .sp(14)
-                                    .w400
-                                    .textButtonBlue))
+                            child: Text(
+                              '《求实论坛社区规范》',
+                              style: TextUtil.base.normal.NotoSansSC
+                                  .sp(12)
+                                  .w400
+                                  .textButtonBlue,
+                              overflow: TextOverflow.ellipsis,
+                            ))
                       ],
                     )
                   ],
                 ),
                 cancelText: "返回主页",
                 confirmTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
                 cancelTextStyle:
                     TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                 confirmText: "前往湖底",
                 cancelFun: () {
-                  Navigator.pushNamed(context, HomeRouter.home);
+                  Navigator.pop(context);
+                  Navigator.popAndPushNamed(context, HomeRouter.home);
                 },
                 confirmFun: () {
                   if (checkedNotifier.value == false) {
                     Navigator.pop(context);
-                    pref.setBool("firstLogin", checkedNotifier.value);
+                    CommonPreferences.isFirstLogin.value = false;
                   } else {
                     ToastProvider.error('请同意《青年湖底社区规范》');
                   }
@@ -367,6 +364,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     shouldBeInitialized = [false, true, true, false];
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      firstInLake();
       _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider =
@@ -464,7 +462,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: 30,
+        height: 30.w,
         margin: EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
@@ -606,7 +604,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _departmentSelectionContainer = Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: ColorUtil.white253,
+          color: ColorUtil.whiteFDFE,
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
@@ -681,24 +679,32 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           return <Widget>[
             SliverAppBar(
               toolbarHeight: 48,
-              backgroundColor: ColorUtil.white253,
+              backgroundColor: ColorUtil.whiteFDFE,
               titleSpacing: 0,
-              leading: IconButton(
-                  icon: ImageIcon(
-                      AssetImage("assets/images/lake_butt_icons/box.png"),
-                      size: 28,
-                      color: ColorUtil.boldTag54),
-                  onPressed: () =>
-                      Navigator.pushNamed(context, FeedbackRouter.profile)),
+              leading: InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () =>
+                    Navigator.pushNamed(context, FeedbackRouter.profile),
+                child: Center(
+                  child: FeedbackBadgeWidget(
+                    child: ImageIcon(
+                        AssetImage("assets/images/lake_butt_icons/box.png"),
+                        size: 23,
+                        color: ColorUtil.boldTag54),
+                  ),
+                ),
+              ),
               title: searchBar,
               actions: [
                 Hero(
                   tag: "addNewPost",
                   child: InkWell(
+                      splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       child: Container(
-                          height: 27,
-                          width: 27,
+                          height: 24,
+                          width: 24,
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
@@ -716,7 +722,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 pinned: true,
                 delegate: HomeHeaderDelegate(
                     child: Container(
-                  color: ColorUtil.white253,
+                  color: ColorUtil.whiteFDFE,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -728,12 +734,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               isScrollable: true,
                               physics: BouncingScrollPhysics(),
                               controller: _tabController,
-                              labelColor: Color(0xff303c66),
+                              labelColor: ColorUtil.black2AColor,
                               labelStyle:
-                                  TextUtil.base.black2A.w700.NotoSansSC.sp(18),
+                                  TextUtil.base.black2A.w500.NotoSansSC.sp(16),
                               unselectedLabelColor: ColorUtil.lightTextColor,
                               unselectedLabelStyle:
-                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(18),
+                                  TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
                               indicator: CustomIndicator(
                                   borderSide: BorderSide(
                                       color: ColorUtil.mainColor, width: 2)),
@@ -750,7 +756,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                     child: Row(
                                   children: [
                                     SizedBox(width: _tabPaddingWidth),
-                                    Text("湖底"),
+                                    Text("青年湖底"),
                                     SizedBox(width: _tabPaddingWidth),
                                   ],
                                 )),
@@ -760,7 +766,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           child: Row(
                                             children: [
                                               SizedBox(width: _tabPaddingWidth),
-                                              Text("校务"),
+                                              Text("校务专区"),
                                               Icon(
                                                 Icons.arrow_drop_down,
                                                 size: 10,
@@ -776,7 +782,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       : Row(
                                           children: [
                                             SizedBox(width: _tabPaddingWidth),
-                                            Text("校务"),
+                                            Text("校务专区"),
                                             SizedBox(width: _tabPaddingWidth),
                                           ],
                                         ),
@@ -890,22 +896,22 @@ class RacTangle extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var paint = Paint()
-      ..color = Colors.transparent
-      ..strokeWidth = 12.0
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round;
-    var w = rect.width;
-    var tang = Paint()
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.square
-      ..color = Colors.white
-      ..strokeWidth = 5;
-    //var h = rect.height;
-    canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
-    canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
-    canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
-    canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
+    // var paint = Paint()
+    //   ..color = Colors.transparent
+    //   ..strokeWidth = 12.0
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeJoin = StrokeJoin.round;
+    // var w = rect.width;
+    // var tang = Paint()
+    //   ..isAntiAlias = true
+    //   ..strokeCap = StrokeCap.square
+    //   ..color = Colors.white
+    //   ..strokeWidth = 5;
+    // //var h = rect.height;
+    // canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
+    // canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
+    // canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
+    // canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
   }
 
   @override
@@ -955,6 +961,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   AnimationController controller;
   Animation animation;
 
+  FbHomeListModel _listProvider;
+  FbDepartmentsProvider _tagsProvider;
+
   @override
   void initState() {
     super.initState();
@@ -982,6 +991,15 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       backgroundColor: Colors.white,
       foregroundColor: ColorUtil.mainColor,
       onPressed: () {
+        FeedbackService.getToken(
+            forceRefresh: true,
+            onResult: (_) {
+              _tagsProvider.initDepartments();
+              _listProvider.initPostList(2, success: () {}, failure: (_) {});
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
         if (!controller.isAnimating) {
           controller.repeat();
           widget.onPressed?.call(controller);
@@ -990,9 +1008,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       mini: true,
     );
 
-    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 5);
+    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 8);
 
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

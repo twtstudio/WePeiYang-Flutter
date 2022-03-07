@@ -28,7 +28,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
   String textInput = '';
 
   final buttonStyle = ButtonStyle(
-    elevation: MaterialStateProperty.all(5),
+    elevation: MaterialStateProperty.all(1),
     overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
       if (states.contains(MaterialState.pressed))
         return Color.fromRGBO(103, 110, 150, 1);
@@ -36,8 +36,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
     }),
     backgroundColor: MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
     shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-    minimumSize: MaterialStateProperty.all(Size(100, 50)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+    minimumSize: MaterialStateProperty.all(Size(80, 40)),
   );
 
   @override
@@ -57,9 +57,9 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       brightness: Brightness.light,
     );
 
-
-
-    var reportButton = ElevatedButton(
+    var reportButton = Container(
+      padding: EdgeInsets.only(right: 26),
+        child: ElevatedButton(
       onPressed: () {
         if (textInput == '') {
           ToastProvider.error("请输入详细说明");
@@ -79,9 +79,9 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
             });
       },
       child: Text(S.current.feedback_report,
-          style: TextUtil.base.NotoSansSC.white.medium.sp(14)),
+          style: TextUtil.base.NotoSansSC.white.w600.sp(18)),
       style: buttonStyle,
-    );
+    ));
 
     return Scaffold(
       appBar: appBar,
@@ -99,15 +99,17 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: widget.args.isQuestion ? Text(
-                    "你正在举报" +
-                        "“#MP${widget.args.id.toString().padLeft(6, '0')}”",
-                    style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
-                  ) : Text(
-                    "你正在举报" +
-                        "“#FL${widget.args.id.toString().padLeft(6, '0')}”",
-                    style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
-                  ),
+                  child: widget.args.isQuestion
+                      ? Text(
+                          "你正在举报" +
+                              "“#MP${widget.args.id.toString().padLeft(6, '0')}”",
+                          style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
+                        )
+                      : Text(
+                          "你正在举报" +
+                              "“#FL${widget.args.id.toString().padLeft(6, '0')}”",
+                          style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
+                        ),
                 ),
               ),
             ),

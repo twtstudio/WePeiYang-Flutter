@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -28,17 +29,11 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static final titleTextStyle = FontManager.YaHeiBold.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(177, 180, 186, 1),
-      fontWeight: FontWeight.bold);
+      fontSize: 14, color: Color.fromRGBO(177, 180, 186, 1), fontWeight: FontWeight.bold);
   static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(98, 103, 122, 1),
-      fontWeight: FontWeight.bold);
-  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
-  static final arrow =
-      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      fontSize: 14, color: Color.fromRGBO(98, 103, 122, 1), fontWeight: FontWeight.bold);
+  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
+  static final arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   double descriptionMaxWidth;
 
@@ -352,10 +347,9 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: GestureDetector(
                   onLongPress: () {
-                    Navigator.pushNamed(context, TestRouter.pushTest);
-                  },
-                  onTap: () {
-                    context.read<PushManager>().showRequestNotificationDialog();
+                    if (kDebugMode) {
+                      Navigator.pushNamed(context, TestRouter.pushTest);
+                    }
                   },
                   child: Card(
                     elevation: 0,

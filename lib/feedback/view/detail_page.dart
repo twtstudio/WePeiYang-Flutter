@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +22,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 
 enum DetailPageStatus {
@@ -48,8 +47,11 @@ class _DetailPageState extends State<DetailPage>
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
+  List<Floor> _officialCommentList;
   bool _bottomIsOpen;
   int currentPage = 1;
+  int rating = 0;
+  Widget topCard;
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -89,19 +91,6 @@ class _DetailPageState extends State<DetailPage>
     });
   }
 
-  _onLoadingSelectedPage(int current) {
-    _getComments(
-        onSuccess: (comments) {
-          _commentList.removeRange(
-              _commentList.length - comments.length, _commentList.length);
-          _commentList.addAll(comments);
-        },
-        onFail: () {
-          _refreshController.loadFailed();
-        },
-        current: current);
-  }
-
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (_bottomIsOpen ?? false) if (context
                 .read<NewFloorProvider>()
@@ -120,10 +109,11 @@ class _DetailPageState extends State<DetailPage>
     status = DetailPageStatus.loading;
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
+    _officialCommentList = [];
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
-      if (post == null) {
+      if (post == null || post.isLike == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -135,6 +125,7 @@ class _DetailPageState extends State<DetailPage>
           });
         });
       } else {
+        _getOfficialComment();
         _getComments(
             onSuccess: (comments) {
               _commentList.addAll(comments);
@@ -150,6 +141,7 @@ class _DetailPageState extends State<DetailPage>
   _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
+        _getOfficialComment(onFail: onFail);
         _getComments(
           onSuccess: onSuccess,
           onFail: onFail,
@@ -163,8 +155,11 @@ class _DetailPageState extends State<DetailPage>
     bool success = false;
     await FeedbackService.getPostById(
       id: post.id,
-      onResult: (_) {
+      onResult: (Post result) {
         success = true;
+        post = result;
+        rating = post.rating;
+        setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
@@ -192,6 +187,21 @@ class _DetailPageState extends State<DetailPage>
     );
   }
 
+  _getOfficialComment({Function onSuccess, Function onFail}) {
+    FeedbackService.getOfficialComment(
+      id: post.id,
+      onSuccess: (floor) {
+        _officialCommentList = floor;
+        onSuccess?.call();
+        setState(() {});
+      },
+      onFailure: (e) {
+        onFail?.call();
+        ToastProvider.error(e.error.toString());
+      },
+    );
+  }
+
   @override
   void dispose() {
     _refreshController.dispose();
@@ -202,12 +212,58 @@ class _DetailPageState extends State<DetailPage>
   Widget build(BuildContext context) {
     Widget body;
     Widget bottomInput;
+
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send();
+        launchKey.currentState.send(false);
         setState(() {
-          _onLoadingSelectedPage(
-              (context.read<NewFloorProvider>().locate / 10).floor() + 1 ?? 0);
+          // topCard = Container(
+          //     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(16),
+          //       color: Colors.white,
+          //       boxShadow: [
+          //         BoxShadow(
+          //             blurRadius: 5,
+          //             color: Color.fromARGB(64, 236, 237, 239),
+          //             offset: Offset(0, 0),
+          //             spreadRadius: 3),
+          //       ],
+          //     ),
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         SizedBox(height: 6),
+          //         topWidget,
+          //         SizedBox(height: 10),
+          //         ExpandableText(
+          //           text: context.read<NewFloorProvider>().floorSentContent,
+          //           maxLines: 3,
+          //           style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
+          //           expand: false,
+          //           buttonIsShown: true,
+          //         ),
+          //         InkWell(
+          //           onTap: () {
+          //             Navigator.pushNamed(
+          //                 context, FeedbackRouter.localImageView,
+          //                 arguments: {
+          //                   "uriList": [
+          //                     context.read<NewFloorProvider>().images
+          //                   ],
+          //                   "uriListLength": 1,
+          //                   "indexNow": 0
+          //                 });
+          //           },
+          //           child: Image.file(
+          //             context.read<NewFloorProvider>().images[0],
+          //           ),
+          //         ),
+          //         bottomWidget,
+          //         SizedBox(height: 4)
+          //       ],
+          //     ));
         });
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
@@ -220,17 +276,7 @@ class _DetailPageState extends State<DetailPage>
       } else {
         body = ListView(
           children: [
-            PostCard.detail(
-              post,
-              onLikePressed: (isLike, likeCount) {
-                post.isLike = isLike;
-                post.likeCount = likeCount;
-              },
-              onFavoritePressed: (isFav, favCount) {
-                post.isFav = isFav;
-                post.favCount = favCount;
-              },
-            ),
+            PostCard.detail(post),
             SizedBox(
               height: 100,
               child: Center(child: Loading()),
@@ -239,23 +285,13 @@ class _DetailPageState extends State<DetailPage>
         );
       }
     } else if (status == DetailPageStatus.idle) {
-      Widget mainList1 = ListView.builder(
-        itemCount: _commentList.length + 1,
+      Widget contentList = ListView.builder(
+        itemCount: _officialCommentList.length + _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Column(
               children: [
-                PostCard.detail(
-                  post,
-                  onLikePressed: (isLike, likeCount) {
-                    post.isLike = isLike;
-                    post.likeCount = likeCount;
-                  },
-                  onFavoritePressed: (isFav, favCount) {
-                    post.isFav = isFav;
-                    post.favCount = favCount;
-                  },
-                ),
+                PostCard.detail(post),
                 SizedBox(
                   height: 10,
                 ),
@@ -270,33 +306,42 @@ class _DetailPageState extends State<DetailPage>
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Image.asset(
-                          'assets/images/lake_butt_icons/menu.png',
-                          width: 20,
-                        ),
-                      ),
                     ]),
                 SizedBox(
                   height: 10,
                 ),
+                //topCard,
               ],
             );
           }
           index--;
 
-          ///TODO:由于新接口的官方回复和普通回复合在一起了，暂时不知道怎么处理，于是先把以前的删掉了，官方需要用—
+          if (index < _officialCommentList.length) {
+            var data = _officialCommentList[index];
+            var list = _officialCommentList;
+            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
+              tag: post.department.name ?? '',
+              comment: data,
+              placeAppeared: index,
+                ratings: widget.post.rating,
+                ancestorId:post.uid,
+              onContentPressed: (refresh) async {
+               refresh.call(list);
+              },
+            ):SizedBox(width: 0,height: 0);
+          }
+
           ///_officialCommentList,点赞注释了
-          var data = _commentList[index];
-          return NCommentCard(
-            placeAppeared: index,
-            comment: data,
-            ancestorId: post.id,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: false,
-          );
+          else {
+            var data = _commentList[index - _officialCommentList.length];
+            return NCommentCard(
+              comment: data,
+              ancestorId: post.id,
+              commentFloor: index + 1,
+              isSubFloor: false,
+              isFullView: false,
+            );
+          }
         },
       );
 
@@ -311,7 +356,7 @@ class _DetailPageState extends State<DetailPage>
             onRefresh: _onRefresh,
             enablePullUp: true,
             onLoading: _onLoading,
-            child: mainList1,
+            child: contentList,
           ),
           onNotification: (ScrollNotification scrollInfo) =>
               _onScrollNotification(scrollInfo),
@@ -360,15 +405,20 @@ class _DetailPageState extends State<DetailPage>
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
-                                      IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/lake_butt_icons/image.png',
-                                            width: 24,
-                                            height: 24,
-                                          ),
-                                          onPressed: () => imageSelectionKey
-                                              .currentState
-                                              .loadAssets()),
+                                      if (context
+                                              .read<NewFloorProvider>()
+                                              .images
+                                              .length ==
+                                          0)
+                                        IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/image.png',
+                                              width: 24,
+                                              height: 24,
+                                            ),
+                                            onPressed: () => imageSelectionKey
+                                                .currentState
+                                                .loadAssets()),
                                       Spacer(),
                                       checkButton,
                                       SizedBox(width: 16),
@@ -411,17 +461,7 @@ class _DetailPageState extends State<DetailPage>
                       ),
                     ),
                     if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                      PostCard.outSide(
-                        post,
-                        onLikePressed: (isLike, likeCount) {
-                          post.isLike = isLike;
-                          post.likeCount = likeCount;
-                        },
-                        onFavoritePressed: (isFav, favCount) {
-                          post.isFav = isFav;
-                          post.favCount = favCount;
-                        },
-                      ),
+                      PostCard.outSide(post),
                   ],
                 ),
               ],
@@ -436,36 +476,6 @@ class _DetailPageState extends State<DetailPage>
       body = Center(child: Text("error!"));
     }
 
-    // var menuButton = PopupMenuButton(
-    //     child: SvgPicture.asset(
-    //         'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-    //     splashRadius: 20,
-    //     onPressed: () {
-    //       showMenu(
-    //         context: context,
-    //         shape: RacTangle(),
-    //         /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
-    //         /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
-    //         position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
-    //         items: <PopupMenuItem<String>>[
-    //           new PopupMenuItem<String>(
-    //             value: '举报',
-    //             child: new Text(
-    //               '举报',
-    //               style: FontManager.YaHeiRegular.copyWith(
-    //                 fontSize: 13,
-    //                 color: ColorUtil.boldTextColor,
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ).then((value) {
-    //         if (value == "举报") {
-    //           Navigator.pushNamed(context, FeedbackRouter.report,
-    //               arguments: ReportPageArgs(widget.post.id, true));
-    //         }
-    //       });
-    //     });
     var menuButton = PopupMenuButton(
 
         ///改成了用PopupMenuButton的方式，方便偏移的处理
@@ -558,17 +568,19 @@ class CommentInputFieldState extends State<CommentInputField> {
     super.dispose();
   }
 
-  void send() {
+  void send(bool isOffcial) {
     if (_textEditingController.text.isNotEmpty) {
       if (context.read<NewFloorProvider>().images.isNotEmpty) {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
             onResult: (images) {
+              context.read<NewFloorProvider>().floorSentContent =
+                  _textEditingController.text;
               context.read<NewFloorProvider>().images.clear();
               if (context.read<NewFloorProvider>().replyTo == 0) {
                 _sendFloor(images);
               } else {
-                _replyFloor(images);
+                  _replyFloor(images,isOffcial);
               }
             },
             onFailure: (e) {
@@ -578,7 +590,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         context.read<NewFloorProvider>().images.clear();
         _sendFloor([]);
       } else {
-        _replyFloor([]);
+        _replyFloor([],isOffcial);
       }
     } else
       ToastProvider.error('文字不能为空哦');
@@ -645,23 +657,42 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor(List<String> list) {
+  _replyFloor(List<String> list,bool isOffcial) {
     ToastProvider.running('回复中 q(≧▽≦)/');
-    FeedbackService.replyFloor(
-      id: context.read<NewFloorProvider>().replyTo.toString(),
-      content: _textEditingController.text,
-      images: list == [] ? '' : list,
-      onSuccess: () {
-        setState(() => _commentLengthIndicator = '0/200');
-        FocusManager.instance.primaryFocus.unfocus();
-        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-        _textEditingController.text = '';
-        ToastProvider.success("回复成功 (❁´3`❁)");
-      },
-      onFailure: (e) => ToastProvider.error(
-        '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-      ),
-    );
+   if(isOffcial==false) {
+      FeedbackService.replyFloor(
+        id: context.read<NewFloorProvider>().replyTo.toString(),
+        content: _textEditingController.text,
+        images: list == [] ? '' : list,
+        onSuccess: () {
+          setState(() => _commentLengthIndicator = '0/200');
+          FocusManager.instance.primaryFocus.unfocus();
+          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          _textEditingController.text = '';
+          ToastProvider.success("回复成功 (❁´3`❁)");
+        },
+        onFailure: (e) => ToastProvider.error(
+          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
+        ),
+      );
+    }
+   else{
+     FeedbackService.replyOffcialFloor(
+       id: context.read<NewFloorProvider>().replyTo.toString(),
+       content: _textEditingController.text,
+       images: list == [] ? '' : list,
+       onSuccess: () {
+         setState(() => _commentLengthIndicator = '0/200');
+         FocusManager.instance.primaryFocus.unfocus();
+         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+         _textEditingController.text = '';
+         ToastProvider.success("回复成功 (❁´3`❁)");
+       },
+       onFailure: (e) => ToastProvider.error(
+         '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
+       ),
+     );
+   }
   }
 }
 

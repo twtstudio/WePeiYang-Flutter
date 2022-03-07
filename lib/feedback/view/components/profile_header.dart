@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -24,13 +25,16 @@ class ProfileHeader extends StatelessWidget {
             SliverAppBar(
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_rounded,
-                    color: ColorUtil.bold42TextColor),
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: ColorUtil.bold42TextColor,
+                  size: 20.w,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text(
                 "我的湖底",
-                style: TextStyle(color: ColorUtil.bold42TextColor),
+                style: TextUtil.base.NotoSansSC.black2A.sp(18).w500,
               ),
               centerTitle: true,
               actions: [FeedbackReadAllButton(), FeedbackMailbox()],
@@ -111,9 +115,10 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           radius: 25,
           child: Center(
             child: FeedbackBadgeWidget(
-              type: FeedbackMessageType.total,
-              child: Icon(Icons.notifications_none_outlined,
-                  color: ColorUtil.bold42TextColor),
+              child: SvgPicture.asset(
+                'assets/svg_pics/lake_butt_icons/bell.svg',
+                width: 16.w,
+              ),
             ),
           ),
         ),

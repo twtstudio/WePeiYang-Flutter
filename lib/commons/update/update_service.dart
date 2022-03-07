@@ -26,7 +26,7 @@ class UpdateService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('checkUpdate', () async {
       try {
-        var response = await updateDio.get(githubTestUrl);
+        var response = await updateDio.get(wbyUpdateUrl);
         var version = await parseJson(response.data.toString());
         if (version == null)
           onSuccess();

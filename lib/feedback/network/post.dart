@@ -159,12 +159,14 @@ class Floor {
     this.content,
     this.nickname,
     this.imageUrl,
+    this.sender,
     this.replyTo,
     this.replyToName,
     this.subTo,
     this.likeCount,
     this.subFloors,
     this.subFloorCnt,
+    this.rating,
     this.isLike,
     this.isDis,
     this.isOwner,
@@ -174,6 +176,7 @@ class Floor {
   DateTime createAt;
   int uid;
   int postId;
+  int sender;
   String content;
   String nickname;
   String imageUrl;
@@ -183,20 +186,23 @@ class Floor {
   int likeCount;
   List<Floor> subFloors;
   int subFloorCnt;
+  int rating;
   bool isLike;
   bool isDis;
   bool isOwner;
 
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
-        id: json["id"],
+        id: json["id"] ,
         createAt: json["created_at"] == "" ? null : DateTime.parse(json["created_at"]),
         uid: json["uid"],
         postId: json["post_id"],
         content: json["content"],
         nickname: json["nickname"],
+        sender: json["sender"],
         imageUrl: json["image_url"],
         replyTo: json["reply_to"],
         replyToName: json["reply_to_name"],
+        rating:json["rating"],
         subTo: json["sub_to"],
         likeCount: json["like_count"],
         subFloors: json["sub_floors"] == null
@@ -215,6 +221,7 @@ class Floor {
         "uid": uid,
         "post_id": postId,
         "content": content,
+    "sender":sender,
         "nickname": nickname,
         "image_url": imageUrl,
         "reply_to": replyTo,

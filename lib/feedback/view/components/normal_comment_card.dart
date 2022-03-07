@@ -27,7 +27,6 @@ typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
 
 class NCommentCard extends StatefulWidget {
-  final int placeAppeared;
   final String ancestorName;
   final int ancestorId;
   final Floor comment;
@@ -41,8 +40,7 @@ class NCommentCard extends StatefulWidget {
   _NCommentCardState createState() => _NCommentCardState();
 
   NCommentCard(
-      {this.placeAppeared,
-      this.ancestorName,
+      {this.ancestorName,
       this.ancestorId,
       this.comment,
       this.commentFloor,
@@ -54,7 +52,7 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  final String picBaseUrl = 'https://www.zrzz.site:7015/download/';
+  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -90,10 +88,10 @@ class _NCommentCardState extends State<NCommentCard>
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'http://www.zrzz.site:7014/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
             width: 30,
-            height: 30,
-            fit: BoxFit.cover,
+            height: 24,
+            fit: BoxFit.fitHeight,
             placeholderBuilder: defaultPlaceholderBuilder,
           ),
         ),
@@ -180,7 +178,7 @@ class _NCommentCardState extends State<NCommentCard>
                 ],
               ),
               Text(
-                DateTime.now().difference(widget.comment.createAt).inDays >= 1
+                DateTime.now().difference(widget.comment.createAt).inHours >= 11
                     ? widget.comment.createAt
                         .toLocal()
                         .toIso8601String()
@@ -371,7 +369,6 @@ class _NCommentCardState extends State<NCommentCard>
       iconSize: 16,
       constraints: BoxConstraints(),
       onPressed: () {
-        context.read<NewFloorProvider>().locate = widget.placeAppeared ?? 0;
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
         FocusScope.of(context).requestFocus(
@@ -394,7 +391,6 @@ class _NCommentCardState extends State<NCommentCard>
                     widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
-            placeAppeared: widget.placeAppeared,
             ancestorName: widget.comment.nickname,
             ancestorId: widget.comment.id,
             comment: widget.comment.subFloors[index],
@@ -412,7 +408,12 @@ class _NCommentCardState extends State<NCommentCard>
         id: widget.comment.id,
         isLike: widget.comment.isLike,
         onSuccess: () {
-          widget.likeSuccessCallback?.call(!isLiked, count);
+          widget.comment.isLike = !widget.comment.isLike;
+          widget.comment.likeCount = count;
+          if (widget.comment.isLike && widget.comment.isDis) {
+            widget.comment.isDis = !widget.comment.isDis;
+            setState(() {});
+          }
           success.call();
         },
         onFailure: (e) {
@@ -430,11 +431,11 @@ class _NCommentCardState extends State<NCommentCard>
           id: widget.comment.id,
           isDis: widget.comment.isDis,
           onSuccess: () {
-            widget.dislikeSuccessCallback?.call(dislikeNotifier);
             widget.comment.isDis = !widget.comment.isDis;
             if (widget.comment.isDis && widget.comment.isLike) {
               widget.comment.isLike = !widget.comment.isLike;
               widget.comment.likeCount--;
+              setState(() {});
             }
           },
           onFailure: (e) {
@@ -581,16 +582,16 @@ class RacTangle extends ShapeBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var w = rect.width;
-    var tang = Paint()
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.square
-      ..color = Colors.white
-      ..strokeWidth = 5;
+    // var w = rect.width;
+    // var tang = Paint()
+    //   ..isAntiAlias = true
+    //   ..strokeCap = StrokeCap.square
+    //   ..color = Colors.white
+    //   ..strokeWidth = 5;
     //var h = rect.height;
-
-    canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
-    canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
+    //
+    // canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
+    // canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
   }
 
   @override

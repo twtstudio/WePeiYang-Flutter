@@ -104,9 +104,9 @@ class _IconWidgetState extends State<IconWidget> {
                 widget.isLikedNotifier.value = !value;
               }, () {
                 if (value) {
-                  widget.countNotifier.value = widget.countNotifier.value + 1;
+                  widget.countNotifier.value ++;
                 } else {
-                  widget.countNotifier.value = widget.countNotifier.value - 1;
+                  widget.countNotifier.value --;
                 }
                 setState(() {});
               });
@@ -148,25 +148,17 @@ class _IconWidgetState extends State<IconWidget> {
 typedef DislikeNotifierCallback = void Function(bool);
 
 class DislikeWidget extends StatelessWidget {
-  final bool isLike;
   final bool isDislike;
-  final int count;
   final DislikeNotifierCallback onDislikePressed;
 
-  final ValueNotifier<bool> isLikedNotifier;
-  final ValueNotifier<int> countNotifier;
   final ValueNotifier<bool> isDislikedNotifier;
   final double size;
 
   DislikeWidget({
     this.onDislikePressed,
     this.isDislike,
-    this.isLike,
-    this.count,
     this.size
-  }) : isDislikedNotifier = ValueNotifier(isDislike),
-        countNotifier = ValueNotifier(count),
-        isLikedNotifier = ValueNotifier(isLike);
+  }) : isDislikedNotifier = ValueNotifier(isDislike);
 
   @override
   Widget build(BuildContext context) {

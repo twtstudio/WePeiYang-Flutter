@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -128,7 +127,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send();
+        launchKey.currentState.send(false);
         setState(() {
           _onRefresh();
         });
@@ -144,7 +143,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemBuilder: (context, index) {
         if (index == 0) {
           return NCommentCard(
-            placeAppeared: index,
             comment: widget.floor,
             ancestorId: widget.floor.postId,
             commentFloor: index + 1,
@@ -158,7 +156,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         return Column(
           children: [
             NCommentCard(
-              placeAppeared: index,
               comment: data,
               ancestorName: widget.floor.nickname,
               ancestorId: widget.floor.id,

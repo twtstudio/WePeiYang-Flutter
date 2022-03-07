@@ -5,14 +5,13 @@ import 'package:http_parser/http_parser.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
-  // @override
-  // String baseUrl = 'http://47.94.198.197:10805/api/user/';
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   var headers = {};
 
   @override
@@ -45,7 +44,7 @@ class FeedbackDio extends DioAbstract {
 class FeedbackPicPostDio extends DioAbstract {
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://www.zrzz.site:7015/';
+  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
   var headers = {};
 
   @override
@@ -69,11 +68,14 @@ final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 
 class FeedbackService with AsyncTimer {
-  static getToken({OnResult<String> onResult, OnFailure onFailure}) async {
+  static getToken(
+      {OnResult<String> onResult,
+      OnFailure onFailure,
+      bool forceRefresh = false}) async {
     try {
       var response;
       if (CommonPreferences.feedbackToken.value != null &&
-          CommonPreferences.feedbackToken.value != "") {
+          CommonPreferences.feedbackToken.value != "" && !forceRefresh) {
         response = await feedbackDio
             .get('auth/${CommonPreferences.feedbackToken.value}');
       } else {
@@ -88,10 +90,12 @@ class FeedbackService with AsyncTimer {
             response.data['data']['uid'].toString();
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
-        throw WpyDioError(error: '校务专区登录失败, 请刷新');
+        ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
-      if (onFailure != null) onFailure(e);
+      if (!forceRefresh) {
+        getToken(forceRefresh: true);
+      } else if (onFailure != null) onFailure(e);
     }
   }
 
@@ -242,7 +246,6 @@ class FeedbackService with AsyncTimer {
         },
       );
       List<Post> list = [];
-      print(response.data.toString());
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));
       }
@@ -327,7 +330,27 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
-
+  static getOfficialComment({
+    @required id,
+    @required void Function(List<Floor> officialCommentList) onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var commentResponse = await feedbackDio.get(
+        'post/replys',
+        queryParameters: {
+          'post_id': '$id',
+        },
+      );
+      List<Floor> officialCommentList = [];
+      for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
+        officialCommentList.add(Floor.fromJson(json));
+      }
+      onSuccess(officialCommentList);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
@@ -519,7 +542,29 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
-
+  static replyOffcialFloor(
+      {@required id,
+        @required content,
+        @required List<String> images,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
+      try {
+        var formData = FormData.fromMap({
+          'post_id': id,
+          'content': content,
+        });
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.fields.addAll([MapEntry('images', images[i])]);
+        }
+        await feedbackDio.post('post/reply', formData: formData);
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
   static sendPost(
       {@required type,
       @required title,
@@ -561,12 +606,10 @@ class FeedbackService with AsyncTimer {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
         await feedbackDio.post(
-          'answer/commit',
+          'post/solve',
           formData: FormData.fromMap({
-            'token': CommonPreferences.feedbackToken.value,
-            'answer_id': id,
-            'score': rating.toInt(),
-            'commit': '评分',
+            'post_id': '$id',
+            'rating': '$rating',
           }),
         );
         onSuccess?.call();

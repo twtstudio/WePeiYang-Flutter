@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -34,6 +33,7 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar>
     with SingleTickerProviderStateMixin {
   TextEditingController _controller = TextEditingController();
+  FocusNode _fNode = FocusNode();
   bool _showSearch;
   List<Widget> tagList = [SizedBox(height: 4)];
 
@@ -63,20 +63,16 @@ class _SearchBarState extends State<SearchBar>
     for (int total = 0; total < min(tagUtil.length, 5); total++) {
       tagList.add(GestureDetector(
         onTap: () {
-            _controller.text = tagUtil[total].name;
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.searchResult,
-              arguments: SearchResultPageArgs(
-                '',
-                '${tagUtil[total].id}',
-                '',
-                S.current.feedback_search_result,
-                0
-              ),
-            ).then((_) {
-              Navigator.pop(context);
-            });},
+          _controller.text = tagUtil[total].name;
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments: SearchResultPageArgs('', '${tagUtil[total].id}', '',
+                '搜索结果 #${tagUtil[total].name}', 0),
+          ).then((_) {
+            Navigator.pop(context);
+          });
+        },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
           child: Row(
@@ -93,10 +89,6 @@ class _SearchBarState extends State<SearchBar>
                 overflow: TextOverflow.ellipsis,
               )),
               SizedBox(width: 4),
-              Text(
-                (tagUtil[total].point ?? 0).toString(),
-                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
-              )
             ],
           ),
         ),
@@ -138,53 +130,87 @@ class _SearchBarState extends State<SearchBar>
       ),
       child: Padding(
           padding: const EdgeInsets.only(left: 38, right: 12),
-          child: Consumer<FbHotTagsProvider>(
-            builder: (_, data, __) => TextField(
-              controller: _controller,
-              style: TextStyle().black2A.NotoSansSC.w400.sp(15),
-              decoration: InputDecoration(
-                hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
-                hintText: data.recTag == null
-                    ? '搜索发现'
-                    : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
-                contentPadding: const EdgeInsets.only(right: 6),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(1080),
-                ),
-                fillColor: ColorUtil.searchBarBackgroundColor,
-                filled: true,
-                prefixIcon: Icon(
-                  Icons.search,
-                  size: 19,
-                  color: ColorUtil.grey108,
+          child: Row(
+            children: [
+              Expanded(
+                child: Consumer<FbHotTagsProvider>(
+                  builder: (_, data, __) => TextField(
+                    controller: _controller,
+                    focusNode: _fNode,
+                    style: TextStyle().black2A.NotoSansSC.w400.sp(15),
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      hintText: data.recTag == null
+                          ? '搜索发现'
+                          : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
+                      contentPadding: const EdgeInsets.only(right: 6),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(1080),
+                      ),
+                      fillColor: ColorUtil.backgroundColor,
+                      filled: true,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: 19,
+                        color: ColorUtil.grey108,
+                      ),
+                    ),
+                    enabled: true,
+                    onSubmitted: (content) {
+                      if (content.isNotEmpty) {
+                        widget.onSubmitted?.call(content);
+                      } else {
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.searchResult,
+                          arguments: SearchResultPageArgs(
+                              '',
+                              '${data.recTag.id}',
+                              '',
+                              '推荐：#${data.recTag.name}',
+                              0),
+                        );
+                      }
+                    },
+                    onChanged: (content) {
+                      if (content.isNotEmpty) {
+                        widget.onChanged?.call(content);
+                      }
+                    },
+                    textInputAction: TextInputAction.search,
+                  ),
                 ),
               ),
-              enabled: true,
-              onSubmitted: (content) {
-                if (content.isNotEmpty) {
-                  widget.onSubmitted?.call(content);
-                } else {
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.searchResult,
-                    arguments: SearchResultPageArgs(
-                      '',
-                      '${data.recTag.id}',
-                      '',
-                      S.current.feedback_search_result,
-                      0
-                    ),
-                  );
-                }
-              },
-              onChanged: (content) {
-                if (content.isNotEmpty) {
-                  widget.onChanged?.call(content);
-                }
-              },
-              textInputAction: TextInputAction.search,
-            ),
+              SizedBox(width: 6),
+              SizedBox(
+                width: 24,
+                  child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (!_fNode.hasFocus)
+                    FocusScope.of(context).requestFocus(_fNode);
+                    if (_controller.text == '') {
+                      _controller.text = '#';
+                    }
+                            else _controller.clear();
+                      });
+                },
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+                  elevation: MaterialStateProperty.all(2),
+                ),
+                child: _controller.text == ''
+                    ? SvgPicture.asset(
+                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                  width: 12,
+                ) : Icon(Icons.clear, size: 14, color: ColorUtil.mainColor),
+              ))
+            ],
           )),
     );
     if (widget.tapField != null) {
@@ -210,7 +236,8 @@ class _SearchBarState extends State<SearchBar>
             vsync: this,
             child: _showSearch
                 ? Container(
-              padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -220,16 +247,18 @@ class _SearchBarState extends State<SearchBar>
                         boxShadow: [
                           BoxShadow(
                               color: Colors.black12,
-                              offset: Offset(0.0, 10.0), //阴影xy轴偏移量
-                              blurRadius: 15.0, //阴影模糊程度
+                              offset: Offset(0.0, 4.0), //阴影xy轴偏移量
+                              blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度
-                          )
-                        ]
-                    ),
-                    child: Column(children: tagList ?? [SizedBox()]))
+                              )
+                        ]),
+                    child: Column(
+                        children:
+                            tagList ?? [SizedBox(width: double.infinity)]))
                 : SizedBox(),
           ),
-        )
+        ),
+        if (!_showSearch) SizedBox(height: 8),
       ],
     );
   }

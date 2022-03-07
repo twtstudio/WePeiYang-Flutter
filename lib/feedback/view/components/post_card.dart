@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
@@ -31,9 +31,6 @@ typedef HitFavoriteCallback = void Function(bool, int);
 class PostCard extends StatefulWidget {
   final Post post;
   final VoidCallback onContentPressed;
-  final HitLikeCallback onLikePressed;
-  final HitDislikeCallback onDislikePressed;
-  final HitFavoriteCallback onFavoritePressed;
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
@@ -41,9 +38,6 @@ class PostCard extends StatefulWidget {
   PostCard.simple(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
     Key key,
@@ -54,9 +48,6 @@ class PostCard extends StatefulWidget {
   PostCard.detail(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
   }) : type = PostCardType.detail;
@@ -64,9 +55,6 @@ class PostCard extends StatefulWidget {
   PostCard.outSide(
     this.post, {
     this.onContentPressed,
-    this.onLikePressed,
-    this.onDislikePressed,
-    this.onFavoritePressed,
     this.onContentLongPressed,
     this.showBanner = false,
   }) : type = PostCardType.outSide;
@@ -78,8 +66,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
-  final String baseUrl = 'https://www.zrzz.site:7012/';
-  final String picBaseUrl = 'https://www.zrzz.site:7015/download/';
+  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
 
   _PostCardState(this.post);
 
@@ -187,13 +174,18 @@ class _PostCardState extends State<PostCard> {
         future: completer.future,
         builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
           return Container(
-              width: 97,
-              height: 76,
-              child: snapshot.hasData
-                  ? snapshot.data.height / snapshot.data.width > 2.0
-                      ? longImageOuterLook
-                      : image
-                  : Image.asset('assets/images/lake_butt_icons/monkie.png'));
+            width: 97,
+            height: 76,
+            child: snapshot.hasData
+                ? snapshot.data.height / snapshot.data.width > 2.0
+                    ? longImageOuterLook
+                    : image
+                : Icon(
+                    Icons.refresh,
+                    color: Colors.black54,
+                  ),
+            color: snapshot.hasData ? Colors.transparent : Colors.black12,
+          );
         },
       );
 
@@ -232,13 +224,11 @@ class _PostCardState extends State<PostCard> {
       );
     }
 
-    var title = Expanded(
-      child: Text(
-        post.title,
-        maxLines: widget.type == PostCardType.detail ? 3 : 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
-      ),
+    var title = Text(
+      post.title,
+      maxLines: widget.type == PostCardType.detail ? 3 : 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
     );
 
     var tag = post.type == 0
@@ -248,6 +238,14 @@ class _PostCardState extends State<PostCard> {
         : post.department != null
             ? '${post.department.name}'
             : '无部门';
+
+    var id = post.type == 0
+        ? post.tag != null && post.tag.id != null
+            ? post.tag.id
+            : -1
+        : post.department != null
+            ? post.department.id
+            : -1;
 
     var campus = post.campus > 0
         ? Container(
@@ -262,16 +260,25 @@ class _PostCardState extends State<PostCard> {
           )
         : SizedBox();
 
-    var content = ExpandableText(
-      text: post.content,
-      maxLines: widget.type == PostCardType.detail ? 8 : 2,
-      style: TextUtil.base.NotoSansSC.w400
-          .sp(16)
-          .black2A
-          .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
-      expand: false,
-      buttonIsShown: widget.type == PostCardType.detail,
-    );
+    var content = InkWell(
+        onLongPress: () {
+          Clipboard.setData(
+              ClipboardData(text: '【' + post.title + '】 ' + post.content));
+          ToastProvider.success('复制冒泡内容成功');
+        },
+        child: SizedBox(
+          width: double.infinity,
+          child: ExpandableText(
+            text: post.content,
+            maxLines: widget.type == PostCardType.detail ? 8 : 2,
+            style: TextUtil.base.NotoSansSC.w400
+                .sp(16)
+                .black2A
+                .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
+            expand: false,
+            buttonIsShown: widget.type == PostCardType.detail,
+          ),
+        ));
 
     List<Widget> rowList = [];
 
@@ -284,14 +291,21 @@ class _PostCardState extends State<PostCard> {
                 tag,
                 WePeiYangApp.screenWidth -
                     (post.campus > 0 ? 40 : 0) -
-                    (widget.type == PostCardType.simple ? 180 : 0)),
+                    (widget.type == PostCardType.simple ? 180 : 0),
+                post.type == 0,
+                id),
             SizedBox(width: 8),
             campus
           ]),
           SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
-            Row(
-              children: [title],
+            InkWell(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(
+                    text: '【' + post.title + '】 ' + post.content));
+                ToastProvider.success('复制提问成功');
+              },
+              child: title,
             ),
           if (widget.type == PostCardType.detail) SizedBox(height: 8),
           content,
@@ -338,68 +352,54 @@ class _PostCardState extends State<PostCard> {
     var middleWidget =
         Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
 
-    var mainWidget = (tap) => GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  if (widget.type == PostCardType.detail)
-                    Expanded(
-                        child: Text(
+    var mainWidget = (tap) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                if (widget.type == PostCardType.detail)
+                  GestureDetector(
+                    onLongPress: () => Clipboard.setData(ClipboardData(
+                        text: '#MP' + post.id.toString().padLeft(6, '0'))),
+                    child: Text(
                       '#MP' + post.id.toString().padLeft(6, '0'),
                       style:
                           TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
-                    )),
-                  if (widget.type == PostCardType.simple) title,
-                  SizedBox(width: 10),
-                  if (post.type == 0 && widget.type == PostCardType.simple)
-                    MPWidget(post.id.toString().padLeft(6, '0')),
-                  if (post.solved == true &&
-                      post.type == 1 &&
-                      widget.type == PostCardType.simple)
-                    SolvedWidget(),
-                  if (post.solved == false &&
-                      post.type == 1 &&
-                      widget.type == PostCardType.simple)
-                    UnSolvedWidget(),
-                  if (widget.type == PostCardType.detail) createTimeDetail,
-                ],
-              ),
-              SizedBox(height: 8),
-              middleWidget,
-            ],
-          ),
-          onTap: () async {
-            if (widget.type == PostCardType.simple) {
-              widget.onContentPressed?.call();
-              await tap?.call();
-              Navigator.pushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              ).then((p) {
-                setState(() {
-                  post = p;
-                });
-              });
-            }
-          },
-          onLongPress: widget.onContentLongPressed,
+                    ),
+                  ),
+                if (widget.type == PostCardType.simple) title,
+                Spacer(),
+                SizedBox(width: 10),
+                if (post.type == 0 && widget.type == PostCardType.simple)
+                  MPWidget(post.id.toString().padLeft(6, '0')),
+                if (post.solved == true &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  SolvedWidget(),
+                if (post.solved == false &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  UnSolvedWidget(),
+                if (widget.type == PostCardType.detail) createTimeDetail,
+              ],
+            ),
+            SizedBox(height: 8),
+            middleWidget,
+          ],
         );
 
     var favoriteWidget = (widget.type == PostCardType.outSide)
         ? IconWidget(
             IconType.bottomFav,
             count: post.favCount,
-            onLikePressed: (boolNotifier, favCount, success, failure) async {
+            onLikePressed: (isFav, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  post.isFav = !isFav;
+                  post.favCount = favCount;
                   success.call();
                 },
                 onFailure: (e) {
@@ -413,12 +413,13 @@ class _PostCardState extends State<PostCard> {
         : IconWidget(
             IconType.fav,
             count: post.favCount,
-            onLikePressed: (boolNotifier, favCount, success, failure) async {
+            onLikePressed: (isFav, favCount, success, failure) async {
               await FeedbackService.postHitFavorite(
                 id: post.id,
                 isFavorite: post.isFav,
                 onSuccess: () {
-                  widget.onFavoritePressed?.call(!boolNotifier, favCount);
+                  post.isFav = !isFav;
+                  post.favCount = favCount;
                   success.call();
                 },
                 onFailure: (e) {
@@ -460,9 +461,12 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isLike: post.isLike,
                 onSuccess: () {
-                  widget.onLikePressed?.call(!isLike, likeCount);
-                  post.isLike = !isLike;
+                  post.isLike = !post.isLike;
                   post.likeCount = likeCount;
+                  if (post.isLike && post.isDis) {
+                    post.isDis = !post.isDis;
+                    setState(() {});
+                  }
                   success.call();
                 },
                 onFailure: (e) {
@@ -481,9 +485,12 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isLike: post.isLike,
                 onSuccess: () {
-                  widget.onLikePressed?.call(!isLike, likeCount);
-                  post.isLike = !isLike;
+                  post.isLike = !post.isLike;
                   post.likeCount = likeCount;
+                  if (post.isLike && post.isDis) {
+                    post.isDis = !post.isDis;
+                    setState(() {});
+                  }
                   success.call();
                 },
                 onFailure: (e) {
@@ -504,8 +511,12 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isDisliked: post.isDis,
                 onSuccess: () {
-                  widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
+                  if (post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount--;
+                    setState(() {});
+                  }
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
@@ -521,8 +532,12 @@ class _PostCardState extends State<PostCard> {
                 id: post.id,
                 isDisliked: post.isDis,
                 onSuccess: () {
-                  widget.onDislikePressed?.call(dislikeNotifier);
                   post.isDis = !post.isDis;
+                  if (post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount--;
+                    setState(() {});
+                  }
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
@@ -599,34 +614,41 @@ class _PostCardState extends State<PostCard> {
       ],
     );
 
-    var body = FeedbackBannerWidget(
-      showBanner: widget.showBanner,
-      questionId: post.id,
-      builder: (tap) => Container(
-        padding: EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            mainWidget(tap),
-            SizedBox(height: 8),
-            ...imagesWidget,
-            if (widget.type != PostCardType.detail) bottomWidget,
-          ],
-        ),
-        decoration: decoration,
-      ),
-    );
-    return widget.type != PostCardType.outSide
-        ? DefaultTextStyle(
-            style: FontManager.YaHeiRegular,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: ClipCopy(
-                toast: '复制提问成功',
-                copy: post.content,
-                child: body,
-              ),
+    var body = GestureDetector(
+        onTap: () async {
+          if (widget.type == PostCardType.simple) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            ).then((p) {
+              setState(() {
+                post = p;
+              });
+            });
+          }
+        },
+        child: FeedbackBannerWidget(
+          showBanner: widget.showBanner,
+          questionId: post.id,
+          builder: (tap) => Container(
+            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                mainWidget(tap),
+                SizedBox(height: 8.w),
+                ...imagesWidget,
+                if (widget.type != PostCardType.detail) bottomWidget,
+              ],
             ),
+            decoration: decoration,
+          ),
+        ));
+    return widget.type != PostCardType.outSide
+        ? Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
+            child: body,
           )
         : Row(
             children: [
@@ -639,54 +661,52 @@ class _PostCardState extends State<PostCard> {
   }
 
   _image(index, context) {
-    return Expanded(
-        flex: 1,
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
-              "urlList": post.imageUrls,
-              "urlListLength": post.imageUrls.length,
-              "indexNow": index
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              child: Image.network(
-                  widget.type == PostCardType.detail
-                      ? picBaseUrl + 'origin/' + post.imageUrls[index]
-                      : picBaseUrl + 'thumb/' + post.imageUrls[index],
-                  fit: BoxFit.cover,
-                  height: (ScreenUtil.defaultSize.width - 80) /
-                      post.imageUrls.length,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: EdgeInsets.all(4),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: Colors.black12,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  ),
-                );
-              }, errorBuilder: (BuildContext context, Object exception,
-                      StackTrace stackTrace) {
-                return Text(
-                  '💔[图片加载失败]',
-                  style: TextUtil.base.grey6C.w400.sp(12),
-                );
-              }),
-            ),
-          ),
-        ));
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, FeedbackRouter.imageView, arguments: {
+          "urlList": post.imageUrls,
+          "urlListLength": post.imageUrls.length,
+          "indexNow": index
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+          child: Image.network(
+              widget.type == PostCardType.detail
+                  ? picBaseUrl + 'origin/' + post.imageUrls[index]
+                  : picBaseUrl + 'thumb/' + post.imageUrls[index],
+              fit: BoxFit.cover,
+              height:
+                  (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: Container(
+                height: 40,
+                width: 40,
+                padding: EdgeInsets.all(4),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: Colors.black12,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null,
+                ),
+              ),
+            );
+          }, errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+            return Text(
+              '💔[图片加载失败]',
+              style: TextUtil.base.grey6C.w400.sp(12),
+            );
+          }),
+        ),
+      ),
+    );
   }
 }

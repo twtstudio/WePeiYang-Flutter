@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class FeedbackReadAllButton extends StatefulWidget {
   const FeedbackReadAllButton({Key key}) : super(key: key);
@@ -18,76 +17,33 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(Icons.check_box_outlined, size: ScreenUtil().setSp(15)*1.5, color: ColorUtil.bold42TextColor),
+        icon: Image.asset('assets/images/lake_butt_icons/check-square.png',
+            width: 15.w),
         onPressed: () {
-          showDialog<bool>(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => ReadAllDialog())
-              .then((ok) async {
-            if (ok) {
-              var result = await MessageService.setAllMessageRead();
-              if (result) {
-                Provider.of<MessageProvider>(context, listen: false)
-                    .refreshFeedbackCount();
-              }
-            }
-          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return DialogWidget(
+                  title: '一键已读：',
+                  titleTextStyle:
+                      TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                  content: Text('这将删除所有的消息记录'),
+                  cancelText: "取消",
+                  confirmTextStyle:
+                      TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                  cancelTextStyle:
+                      TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  confirmText: "删除",
+                  cancelFun: () {
+                    Navigator.pop(context);
+                  },
+                  confirmFun: () async {
+                    await context.read<MessageProvider>().setAllMessageRead();
+                    Navigator.pop(context);
+                  },
+                  confirmButtonColor: ColorUtil.selectionButtonColor,
+                );
+              });
         });
-  }
-}
-
-final _hintStyle = FontManager.YaQiHei.copyWith(
-    fontSize: 15,
-    color: ColorUtil.boldTextColor,
-    fontWeight: FontWeight.bold,
-    decoration: TextDecoration.none);
-
-class ReadAllDialog extends Dialog {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        height: 120,
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            Text(S.current.feedback_set_all_read,
-                textAlign: TextAlign.center,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(79, 88, 107, 1),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.none)),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context, false),
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
-                  ),
-                ),
-                SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context, true),
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

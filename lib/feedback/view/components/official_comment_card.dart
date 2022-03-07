@@ -1,42 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:simple_html_css/simple_html_css.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/comment.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/official_logo.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+
+import '../../feedback_router.dart';
+
+import '../report_question_page.dart';
+
 
 enum Official { detail, reply }
 
 typedef LikeCallback = void Function(bool, int);
-typedef ContentPressedCallback = void Function(void Function(Comment));
+typedef ContentPressedCallback = void Function(void Function(List<Floor>));
+
+
 
 class OfficialReplyCard extends StatefulWidget {
-  final Comment comment;
+  final String tag;
+  final Floor comment;
   final String title;
   final Official type;
+  final int ancestorId;
   final ContentPressedCallback onContentPressed;
   final LikeCallback onLikePressed;
+  final int placeAppeared;
+  final int ratings;
 
   OfficialReplyCard.detail({
+    this.tag,
     this.comment,
     this.title,
+    this.ratings,
+    this.ancestorId,
     this.onLikePressed,
+    this.placeAppeared,
   })  : type = Official.detail,
         onContentPressed = null;
 
   OfficialReplyCard.reply({
+    this.tag,
     this.comment,
+    this.ratings,
     this.title,
+    this.ancestorId,
     this.onContentPressed,
     this.onLikePressed,
+    this.placeAppeared,
   }) : type = Official.reply;
 
   @override
@@ -44,73 +69,214 @@ class OfficialReplyCard extends StatefulWidget {
 }
 
 class _OfficialReplyCardState extends State<OfficialReplyCard> {
+  double _rating;
+  double _initialRating = 0;
+  String postRating;
+  String postId;
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => Loading();
+  @override
+  void initState() {
+    _initialRating = widget.ratings.toDouble();
+    _rating = _initialRating;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> column = [];
-
-    var box = SizedBox(height: 8);
-    var createTime = Row(
+    var OfficialLogo = widget.comment.sender==1?Row(
       children: [
-        OfficialLogo(),
-        Spacer(),
-        Text(
-          widget.comment.createTime.time,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: ColorUtil.lightTextColor,
+        Image.asset(
+          widget.tag == '天外天' ? 'assets/images/twt.png' : 'assets/images/school.png',
+          height: widget.tag == '天外天' ? 18 : 24,
+          width: 30,
+          fit: BoxFit.contain,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+              Text(widget.tag ?? '官方',
+                  style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
+              CommentIdentificationContainer('官方', true),
+            ]),
+            Text(
+              DateTime.now().difference(widget.comment.createAt).inHours >= 11
+                  ? widget.comment.createAt
+                      .toLocal()
+                      .toIso8601String()
+                      .replaceRange(10, 11, ' ')
+                      .substring(0, 19)
+                  : DateTime.now()
+                      .difference(widget.comment.createAt)
+                      .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+            ),
+          ],
+        )
+      ],
+    ): Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          child: SvgPicture.network(
+            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            width: 30,
+            height: 24,
+            fit: BoxFit.fitHeight,
+            placeholderBuilder: defaultPlaceholderBuilder,
           ),
         ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+              Text(widget.tag ?? '用户'+CommonPreferences.feedbackUid.value.toString(),
+                  style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
+            ]),
+            Text(
+              DateTime.now().difference(widget.comment.createAt).inHours >= 11
+                  ? widget.comment.createAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.comment.createAt)
+                  .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+            ),
+          ],
+        )
       ],
     );
-    var likeWidget = IconWidget(
-      IconType.like,
-      count: widget.comment.likeCount,
-      onLikePressed: (isLiked, count, success, failure) async {
-        await FeedbackService.officialCommentHitLike(
-          id: widget.comment.id,
-          isLiked: widget.comment.isLiked,
-          onSuccess: () {
-            widget.onLikePressed?.call(!isLiked, count);
-            success.call();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            failure.call();
-          },
-        );
-        return true;
-      },
-      isLike: widget.comment.isLiked,
+    var box = SizedBox(height: 6);
+    var createTime = Row(
+      children: [
+        OfficialLogo,
+        Spacer(),
+        if(widget.comment.sender==0)
+          PopupMenuButton(
+            padding: EdgeInsets.zero,
+            shape: RacTangle(),
+            offset: Offset(0, 0),
+            child: SvgPicture.asset(
+              'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+              width: 16,
+            ),
+            onSelected: (value) async {
+              if (value == '分享') {
+                String weCo =
+                    '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
+                ClipboardData data = ClipboardData(text: weCo);
+                Clipboard.setData(data);
+                CommonPreferences.feedbackLastWeCo.value =
+                    widget.ancestorId.toString();
+                ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+              }
+              if (value == '举报') {
+                Navigator.pushNamed(context, FeedbackRouter.report,
+                    arguments: ReportPageArgs(widget.ancestorId, false,
+                        floorId: widget.comment.id));
+              } else if (value == '删除') {
+                bool confirm = await _showDeleteConfirmDialog();
+                if (confirm) {
+                  FeedbackService.deleteFloor(
+                    id: widget.comment.id,
+                    onSuccess: () {
+                      ToastProvider.success(S.current.feedback_delete_success);
+                      setState(() {});
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
+                  );
+                }
+              }
+            },
+            itemBuilder: (context) {
+              return <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: '分享',
+                  child: Center(
+                    child: Text(
+                      '分享',
+                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
+                CommonPreferences.feedbackUid.value.toString() == widget.comment.postId
+                    ? PopupMenuItem<String>(
+                  value: '删除',
+                  child: Center(
+                    child: Text(
+                      '删除',
+                      style:
+                      TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                )
+                    : PopupMenuItem<String>(
+                  value: '举报',
+                  child: Center(
+                    child: Text(
+                      '举报',
+                      style:
+                      TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
+              ];
+            },
+          ),
+      ],
     );
-
     Widget starWidget;
-    if (widget.comment.rating == -1) {
-      starWidget = Text(
-        S.current.feedback_no_rating,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 12,
-          color: ColorUtil.lightTextColor,
-        ),
+    if (CommonPreferences.feedbackUid.value.toString() == widget.ancestorId.toString()) {
+      starWidget = GestureDetector(
+        onTap: ()async{
+          ratingCard();
+        },
+        child: Row(children: [
+          Text(
+            S.current.feedback_rating,
+            style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
+          ),
+          RatingBar.builder(
+            itemBuilder: (context, index) => Icon(
+              Icons.star,
+              color: Colors.yellow,
+            ),
+            allowHalfRating: true,
+            glow: false,
+            initialRating: _rating,
+            itemCount: 5,
+            itemSize: 16.w,
+            ignoreGestures: true,
+            unratedColor: ColorUtil.lightTextColor,
+            onRatingUpdate: (_) {},
+          ),
+        ]),
       );
     } else {
       starWidget = Row(children: [
         Text(
           S.current.feedback_rating,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 12,
-            color: ColorUtil.lightTextColor,
-          ),
+          style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
         ),
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: ColorUtil.mainColor,
+            color: Colors.yellow,
           ),
           allowHalfRating: true,
           glow: false,
-          initialRating: (widget.comment.rating.toDouble() / 2),
+          initialRating: _initialRating,
           itemCount: 5,
-          itemSize: 16,
+          itemSize: 16.w,
           ignoreGestures: true,
           unratedColor: ColorUtil.lightTextColor,
           onRatingUpdate: (_) {},
@@ -119,7 +285,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     }
 
     var bottomWidget = Row(
-      children: [starWidget, Spacer(), likeWidget],
+      children: [if(widget.comment.sender==1)starWidget, Spacer()],
     );
 
     switch (widget.type) {
@@ -137,10 +303,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           color: Color(0xffacaeba),
         );
 
-        var comment = Html(
-          data: widget.comment.content,
-        );
-
         column.addAll([
           box,
           title,
@@ -150,7 +312,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           createTime,
           box,
           box,
-          comment,
           bottomWidget
         ]);
 
@@ -162,9 +323,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           text: HTML.toTextSpan(
             context,
             widget.comment.content,
-            defaultTextStyle: FontManager.YaHeiRegular.copyWith(
-              color: ColorUtil.boldTextColor,
-            ),
+            defaultTextStyle:
+                TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
           ),
         );
 
@@ -172,60 +332,151 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           box,
           createTime,
           box,
-          box,
           comment,
+          box,
           bottomWidget,
+          box
         ]);
 
         break;
     }
 
-    Widget list = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: column,
+    Widget list = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: column),
     );
 
-    list = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: list,
-    );
-
-    var decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-            blurRadius: 5,
-            color: Color.fromARGB(64, 236, 237, 239),
-            offset: Offset(0, 0),
-            spreadRadius: 3),
-      ],
-    );
-
-    return DefaultTextStyle(
-      style: FontManager.YaHeiRegular,
-      child: InkWell(
-        onTap: () {
-          widget.onContentPressed?.call((comment) {
-            setState(() {
-              widget.comment.isLiked = comment.isLiked;
-              widget.comment.likeCount = comment.likeCount;
-              widget.comment.rating = comment.rating;
-            });
+    return InkWell(
+      onTap: () {
+        widget.onContentPressed?.call((comment) {
+          setState(() {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.offcialCommentDetail,
+              arguments: comment,
+            );
           });
-        },
-        child: ClipCopy(
-          copy: widget.comment.content,
-          toast: '复制评论成功',
-          child: Container(
-            padding: EdgeInsets.fromLTRB(2, 8, 2, 8),
-            margin: EdgeInsets.symmetric(vertical: 9, horizontal: 20),
-            child: list,
-            decoration: decoration,
+        });
+      },
+      child: ClipCopy(
+        copy: widget.comment.content,
+        toast: '复制评论成功',
+        child: Container(
+          padding: EdgeInsets.fromLTRB(2, 8, 2, 8),
+          margin: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+          child: list,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 5,
+                  color: Color.fromARGB(64, 236, 237, 239),
+                  offset: Offset(0, 0),
+                  spreadRadius: 3),
+            ],
           ),
         ),
       ),
     );
   }
+
+  ratingCard()  {
+    final checkedNotifier = ValueNotifier(_rating);
+    final List<String> comments= ['请对官方回复态度进行评分','很差','较差','一般','较好','非常满意'];
+    Widget ratingBars =  RatingBar.builder(
+      initialRating: _initialRating,
+      minRating: 0,
+      allowHalfRating: true,
+      unratedColor: Colors.grey,
+      itemCount: 5,
+      itemSize: 47.w,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating = rating;
+          checkedNotifier.value =rating;
+        });
+      },
+      updateOnDrag: true,
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogWidget(
+              title: "",
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ValueListenableBuilder<double>(
+                      valueListenable: checkedNotifier,
+                      builder: (context, type, _) {
+                      return Text('「'+(checkedNotifier.value<1?comments[0]:comments[checkedNotifier.value.toInt()])+'」',
+                          style:
+                              TextUtil.base.normal.black00.NotoSansSC.sp(16).w400);
+                    }
+                  ),
+                  ratingBars,
+                ],
+              ),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+              confirmText: "提交",
+              cancelFun: () {
+                Navigator.pop(context);
+              },
+              confirmFun: () {
+                postRating = _rating.toInt().toString();
+                postId = widget.comment.postId.toString();
+               FeedbackService.rate(
+                   id:postId,
+                   rating: postRating,
+                   onSuccess: (){
+                     ToastProvider.success("评分成功！");
+                     setState(() {
+                       Navigator.pop(context);
+                     });
+                   },
+                   onFailure:(e) {
+                     ToastProvider.error("204 no content");
+                     Navigator.pop(context);
+                   });
+              });
+        });
+  }
+  Future<bool> _showDeleteConfirmDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('提示'),
+            content: Text('您确定要删除这条评论吗?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('确定'),
+                onPressed: () {
+                  //关闭对话框并返回true
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              TextButton(
+                child: Text('取消'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
+  }
+
 }
+

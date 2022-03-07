@@ -1,6 +1,6 @@
 package com.twt.service
 
-import android.util.Log
+import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
 import com.twt.service.hot_fix.WbyFixPlugin
@@ -20,28 +20,30 @@ class MainActivity : FlutterActivity() {
     // 加入微北洋使用的所有自己写的 plugin
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        flutterEngine.plugins.add(
-            setOf(
-                // 课程表小组件
-                WbyWidgetPlugin(),
-                // 点击通知，等应用进入主页面后，从 eventList 中获取事件
-                WbyMessagePlugin(),
-                // qq分享（图片，文字），微信分享（还没做）
-                WbySharePlugin(),
-                // 微北洋通用下载工具
-                WbyDownloadPlugin(),
-                // 应用内更新 apk 安装
-                WbyInstallPlugin(),
-                // 高德地图 api 获取定位（疫情填报）
-                WbyLocationPlugin(),
-                // 保存图片
-                WbyImageSavePlugin(),
-                // 个推推送
-                WbyPushPlugin(),
-                // 添加热修复文件
-                WbyFixPlugin()
+        flutterEngine.plugins.runCatching {
+            add(
+                    setOf(
+                            // 课程表小组件
+                            WbyWidgetPlugin(),
+                            // 点击通知，等应用进入主页面后，从 eventList 中获取事件
+                            WbyMessagePlugin(),
+                            // qq分享（图片，文字），微信分享（还没做）
+                            WbySharePlugin(),
+                            // 微北洋通用下载工具
+                            WbyDownloadPlugin(),
+                            // 应用内更新 apk 安装
+                            WbyInstallPlugin(),
+                            // 高德地图 api 获取定位（疫情填报）
+                            WbyLocationPlugin(),
+                            // 保存图片
+                            WbyImageSavePlugin(),
+                            // 个推推送
+                            WbyPushPlugin(),
+                            // 添加热修复文件
+                            WbyFixPlugin()
+                    )
             )
-        )
+        }
     }
 
     // https://blog.csdn.net/llew2011/article/details/105453204/
@@ -51,10 +53,12 @@ class MainActivity : FlutterActivity() {
     // 热更新优雅的实现方式，very nice！
     override fun getFlutterShellArgs(): FlutterShellArgs {
         val shellArgs = super.getFlutterShellArgs()
-        Log.d("WBY_RESTART", "getFlutterShellArgs")
-        WbySharePreference.fixSo?.let {
-            Log.d(WbyFixPlugin.TAG, "load .so file : $it")
-            shellArgs.add("--aot-shared-library-name=$it")
+        takeIf { !BuildConfig.DEBUG }?.let {
+            WbyFixPlugin.log("getFlutterShellArgs")
+            WbySharePreference.fixSo?.let {
+                WbyFixPlugin.log("load .so file : $it")
+                shellArgs.add("--aot-shared-library-name=$it")
+            }
         }
         return shellArgs
     }
@@ -64,9 +68,9 @@ class MainActivity : FlutterActivity() {
         super.onWindowFocusChanged(hasFocus)
         takeIf { hasFocus && (flutterEngine != null) }?.runCatching {
             (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as? WbyPushPlugin)
-                ?.onWindowFocusChanged()
+                    ?.onWindowFocusChanged()
         }
-        Log.d(TAG, "onWindowFocusChanged : $hasFocus")
+        log("onWindowFocusChanged : $hasFocus")
     }
 
     override fun onFlutterUiDisplayed() {
@@ -76,5 +80,6 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         const val TAG = "WBY_MainActivity"
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

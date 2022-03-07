@@ -18,6 +18,7 @@
 -keep class org.json.** { *; }
 
 # 友盟
+# https://blog.csdn.net/qq_22007319/article/details/121997354
 # 在 umeng_common_sdk 中 新建 proguard-rules.pro 文件，写入下面内容
 #    -keep class com.umeng.** {*;}
 #

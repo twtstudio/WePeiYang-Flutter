@@ -81,10 +81,10 @@ class ErCiYuanWidgetState extends State<ErCiYuanWidget>
                       onTap: () {
                         talkingNum = shfWords(talkingNum);
                       },
-                      child: Image.asset(
-                        'assets/images/er_ci_yuan.png',
-                        width: 300,
-                      ),
+                      // child: Image.asset(
+                      //   'assets/images/er_ci_yuan.png',
+                      //   width: 300,
+                      // ),
                     ),
                   )),
               Positioned(

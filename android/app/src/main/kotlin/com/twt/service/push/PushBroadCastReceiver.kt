@@ -11,10 +11,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.google.gson.Gson
-import com.igexin.sdk.message.GTTransmitMessage
 import com.twt.service.MainActivity
 import com.twt.service.R
 import com.twt.service.common.BASEURL
+import com.twt.service.push.model.Event
 import com.twt.service.push.model.FeedbackMessage
 import com.twt.service.push.model.MailBoxMessage
 import com.twt.service.push.model.MessageData
@@ -24,88 +24,41 @@ import io.flutter.plugin.common.MethodChannel
 
 // TODO: 当应用与个推服务器连接，且处于后台时，若发送透传，需要转换成notification
 class PushBroadCastReceiver(
-    private val binding: ActivityPluginBinding,
-    private val channel: MethodChannel
+        private val binding: ActivityPluginBinding,
+        private val channel: MethodChannel
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(
-            WbyPushPlugin.TAG,
-            "PushBroadCastReceiver receive intent :" + intent?.dataString ?: "no data"
-        )
-        when (intent?.action) {
-            WbyPushPlugin.DATA -> {
-                intent.getStringExtra("data")?.let {
-                    val data = Gson().fromJson(it, GTTransmitMessage::class.java).payload.toString()
-                    Log.d(WbyPushPlugin.TAG, data)
-//                    val formData = Gson().fromJson(data, BaseMessage::class.java)
-//                    Log.d(WBYPushPlugin.TAG, formData.toString())
-//                    when (formData.type) {
-//                        MessageType.ReceiveFeedbackReply.type -> receiveFeedbackReply(formData.data)
-//                        MessageType.ReceiveWBYPushMessage.type -> receivePushMessage(formData.data)
-//                        else -> {
-//
-//                        }
-//                    }
+        kotlin.runCatching {
+            WbyPushPlugin.log("PushBroadCastReceiver receive intent :" + intent?.extras.toString()
+                    ?: "no data")
+            when (intent?.action) {
+                WbyPushPlugin.DATA -> {
+                    intent.getStringExtra("data")?.let {
+                        val eventData = Gson().toJson(Gson().fromJson(it, Event::class.java).data)
+                        WbyPushPlugin.log(eventData)
+                        val formData = Gson().fromJson(eventData, MailBoxMessage::class.java)
+                        WbyPushPlugin.log(formData.toString())
+                        showNotification(formData)
+                    }
                 }
-            }
-            WbyPushPlugin.CID -> {
-                val cId = intent.getStringExtra("cid")
-                val workManager = WorkManager.getInstance(binding.activity.applicationContext)
-                val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .setRequiresStorageNotLow(true)
-                    .build()
-                val task = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
-                    .addTag("1")
-                    .setInputData(workDataOf("cid" to cId))
-                    .setConstraints(constraints)
-                    .build()
-                workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
+                WbyPushPlugin.CID -> {
+                    val cId = intent.getStringExtra("cid")
+                    WbyPushPlugin.log("PushBroadCastReceiver receive cid :" + (cId ?: "no data"))
+                    val workManager = WorkManager.getInstance(binding.activity.applicationContext)
+                    val constraints = Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .setRequiresStorageNotLow(true)
+                            .build()
+                    val task = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
+                            .addTag("1")
+                            .setInputData(workDataOf("cid" to cId))
+                            .setConstraints(constraints)
+                            .build()
+                    workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
+                }
+                else -> {}
             }
         }
-    }
-
-    private fun receiveFeedbackReply(data: Any) {
-        Log.d("WBY", Gson().toJson(data))
-        val feedbackMessage = data as FeedbackMessage
-        Log.d("WBY", feedbackMessage.toString())
-        feedbackMessage.takeIf { it.question_id != -1 }?.let { message ->
-            showNotification(message)
-            channel.invokeMethod(
-                "refreshFeedbackMessageCount",
-                null,
-                object : MethodChannel.Result {
-                    override fun success(result: Any?) {
-                        Log.d("WBY", "refreshFeedbackMessageCount")
-                    }
-
-                    override fun error(
-                        errorCode: String?,
-                        errorMessage: String?,
-                        errorDetails: Any?
-                    ) {
-                        Log.d(
-                            "WBY",
-                            "refreshFeedbackMessageCount error"
-                        )
-                    }
-
-                    override fun notImplemented() {
-                        Log.d(
-                            "WBY",
-                            "refreshFeedbackMessageCount notImplemented"
-                        )
-                    }
-                })
-
-        }
-    }
-
-    private fun receivePushMessage(data: Any) {
-        Log.d("WBY", Gson().toJson(data))
-        val pushMessage = data as MailBoxMessage
-        Log.d("WBY", pushMessage.toString())
-        showNotification(pushMessage)
     }
 
     private fun showNotification(data: MessageData) {
@@ -113,21 +66,21 @@ class PushBroadCastReceiver(
         fun send(id: Int, title: String, content: String, intent: Intent) {
             val pendingIntent = PendingIntent.getActivity(binding.activity, 0, intent, 0)
             val builder = NotificationCompat.Builder(binding.activity, "1")
-                .setSmallIcon(R.drawable.push_small)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setContentIntent(pendingIntent)
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.push_small)
+                    .setContentTitle(title)
+                    .setContentText(content)
+                    .setContentIntent(pendingIntent)
+                    .setWhen(System.currentTimeMillis())
+                    .setAutoCancel(true)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Log.d("WBY", "Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
+                WbyPushPlugin.log("Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
                 val intent2 = Intent(binding.activity, MainActivity::class.java)
                 val pIntent = PendingIntent.getActivity(
-                    binding.activity.applicationContext,
-                    1,
-                    intent2,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                        binding.activity.applicationContext,
+                        1,
+                        intent2,
+                        PendingIntent.FLAG_UPDATE_CURRENT
                 )
                 builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 builder.setFullScreenIntent(pIntent, false)

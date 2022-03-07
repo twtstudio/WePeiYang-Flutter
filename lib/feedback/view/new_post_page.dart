@@ -365,7 +365,7 @@ class _CampusSelectorState extends State<CampusSelector> {
         return PopupMenuButton(
           padding: EdgeInsets.zero,
           shape: RacTangle(),
-          offset: Offset(-120, -89),
+          offset: Offset(-120.w, -60.w),
           tooltip: "校区",
           child: Row(
             children: [
@@ -447,10 +447,10 @@ class RacTangle extends ShapeBorder {
       ..color = Colors.white
       ..strokeWidth = 5;
     //var h = rect.height;
-    canvas.drawLine(Offset(w, 0), Offset(w, 40), paint);
-    canvas.drawLine(Offset(w, 40), Offset(w + 4, 45), tang);
-    canvas.drawLine(Offset(w + 4, 45), Offset(w, 50), tang);
-    canvas.drawLine(Offset(w, 50), Offset(w, d), paint);
+    canvas.drawLine(Offset(w, 0), Offset(w, 40.w), paint);
+    canvas.drawLine(Offset(w, 40.w), Offset(w + 4, 45.w), tang);
+    canvas.drawLine(Offset(w + 4, 45.w), Offset(w, 50), tang);
+    canvas.drawLine(Offset(w, 50.w), Offset(w, d), paint);
     Rect rect1 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 140);
     Rect rect2 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 160);
     RRect rRect1 = RRect.fromRectAndRadius(rect1, Radius.circular(20));

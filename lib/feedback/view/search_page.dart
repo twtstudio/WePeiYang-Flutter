@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -52,12 +53,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           FeedbackRouter.searchResult,
           arguments: SearchResultPageArgs(
-            text,
-            '',
-            '',
-            S.current.feedback_search_result,
-            2
-          ),
+              text, '', '', S.current.feedback_search_result, 2),
         ).then((_) {
           Navigator.pop(context);
         });
@@ -77,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
                 size: 18),
           ),
           onTap: () => Navigator.pop(context),
-        )
+        ),
       ],
     ));
 
@@ -87,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
         fontWeight: FontWeight.bold);
 
     var searchHistoryIcon = Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,12 +93,7 @@ class _SearchPageState extends State<SearchPage> {
             style: titleTextStyle,
           ),
           InkWell(
-            child: Image.asset(
-              'lib/feedback/assets/img/trash_can.png',
-              fit: BoxFit.cover,
-              height: 18,
-              width: 18,
-            ),
+            child: Icon(Icons.delete, size: 16),
             onTap: showClearDialog,
           ),
         ],
@@ -130,14 +121,13 @@ class _SearchPageState extends State<SearchPage> {
         List<Widget> searchHistory = [SizedBox(width: double.infinity)];
         searchHistory.addAll(List.generate(
           list.length,
-              (index) {
+          (index) {
             var searchArgument = SearchResultPageArgs(
-              list[list.length - index - 1],
-              '',
-              '',
-              S.current.feedback_search_result,
-              2
-            );
+                list[list.length - index - 1],
+                '',
+                '',
+                S.current.feedback_search_result,
+                2);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,
@@ -172,10 +162,7 @@ class _SearchPageState extends State<SearchPage> {
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Wrap(
-            spacing: 6,
-            children: searchHistory
-          ),
+          child: Wrap(spacing: 6, children: searchHistory),
         );
       },
     );
@@ -194,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             topView,
             Expanded(
-                child: Container(
+                child: ColoredBox(
                     color: ColorUtil.backgroundColor, child: searchHistory)),
           ],
         ));
@@ -202,29 +189,29 @@ class _SearchPageState extends State<SearchPage> {
 
   showClearDialog() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(S.current.feedback_clear_history),
-          actions: <Widget>[
-            TextButton(
-              child: Text(S.current.feedback_cancel),
-              onPressed: () {
+        context: context,
+        builder: (BuildContext context) {
+          return DialogWidget(
+              title: '清除记录',
+              confirmButtonColor: ColorUtil.selectionButtonColor,
+              titleTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+              cancelText: S.current.feedback_cancel,
+              confirmTextStyle:
+                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              confirmText: S.current.feedback_ok,
+              cancelFun: () {
                 Navigator.pop(context);
               },
-            ),
-            TextButton(
-              child: Text(S.current.feedback_ok),
-              onPressed: () {
+              confirmFun: () {
                 _searchHistoryList.value.clear();
                 _addHistory();
                 setState(() {});
                 Navigator.pop(context);
               },
-            ),
-          ],
-        );
-      },
-    );
+              content: Text(S.current.feedback_clear_history));
+        });
   }
 }

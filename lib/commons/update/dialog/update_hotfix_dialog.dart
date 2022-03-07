@@ -65,10 +65,11 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
             children: [
               SizedBox(height: size.verticalPadding),
               UpdateTitle(version),
-              SizedBox(height: size.verticalPadding),
+              SizedBox(height: size.dialogWidth * 0.04),
               messageRow,
-              SizedBox(height: size.verticalPadding),
+              SizedBox(height: size.dialogWidth * 0.04),
               UpdateDetail(version),
+              SizedBox(height: size.dialogWidth * 0.04),
               buttons,
             ],
           ),

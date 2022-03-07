@@ -37,6 +37,7 @@ class CommonPreferences {
   static final feedbackSearchType =
       PrefsBean<String>('feedbackSearchType', '1');
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
+  static final isFirstLogin = PrefsBean<bool>('firstLogin', true);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据

@@ -1,12 +1,11 @@
 import 'dart:convert' show jsonDecode;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
-import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
 
 class MessageService {
   static getUnreadMessagesCount(
@@ -14,7 +13,7 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("count");
-      onResult(MessageCount.fromJson(response.data['data']['count']));
+      onResult(MessageCount.fromJson(response.data['count']));
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -49,10 +48,51 @@ class MessageService {
         "page": page,
       });
       List<FloorMessage> list = [];
-      for (Map<String, dynamic> json in response.data['data']['list']) {
+      for (Map<String, dynamic> json in response.data['list']) {
         list.add(FloorMessage.fromJson(json));
       }
-      onSuccess(list, response.data['data']['total']);
+      onSuccess(list, response.data['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getReplyMessages(
+      {@required page,
+      @required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
+      @required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("replys", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<ReplyMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        list.add(ReplyMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['total']);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getNoticeMessages(
+      {@required
+          page,
+      @required
+          void Function(List<NoticeMessage> list, int totalPage) onSuccess,
+      @required
+          OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("notices", queryParameters: {
+        "page_size": 10,
+        "page": page,
+      });
+      List<NoticeMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        list.add(NoticeMessage.fromJson(json));
+      }
+      onSuccess(list, response.data['total']);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -126,33 +166,14 @@ class MessageService {
       onFailure(e);
     }
   }
-
-  static Future<UserMessages> getUserMails(int page) async {
-    var response = await userDio
-        .get('https://api.twt.edu.cn/api/notification/history/user');
-    var messages = UserMessages.fromJson(response.data);
-    return messages;
-  }
 }
 
 final messageDio = MessageDio();
-final userDio = UserNotificationDio();
-
-class UserNotificationDio extends DioAbstract {
-  @override
-  Map<String, String> headers = {
-    "DOMAIN": AuthDio.DOMAIN,
-    "ticket": AuthDio.ticket,
-    "token": CommonPreferences.token.value
-  };
-}
 
 class MessageDio extends DioAbstract {
-  // @override
-  // String baseUrl = 'http://47.94.198.197:10805/api/user/message/';
 
   @override
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/message/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/message/';
 
   @override
   Map<String, String> headers = {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.twt.service.BuildConfig
+import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -110,6 +111,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         val fix = File(fixDir, download.name)
 
         fix.runCatching {
+            // 如果不存在，就移动文件到这里
             if (!exists()){
                 FileInputStream(download).use { input ->
                     FileOutputStream(absolutePath).use { output ->
@@ -121,6 +123,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }
             absolutePath
         }.onSuccess {
+            download.deleteOnExit()
             log("move so file success : $it")
             result.success(it)
         }.onFailure {
@@ -135,6 +138,6 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         const val COPY_FILE_ERROR = "COPY_FILE_ERROR"
         const val NO_PATH_ERROR = "NO_PATH_ERROR"
         const val DOWNLOAD_FILE_NOT_ALLOW = "DOWNLOAD_FILE_NOT_ALLOW"
-        fun log(message: String) = Log.d(TAG, message)
+        fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

@@ -17,7 +17,6 @@ class WBYApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("WBY_RESTART", "重新打开微北洋")
         context = WeakReference(applicationContext)
         FlutterInjector.instance().flutterLoader().startInitialization(this)
 //        initFlutterEngine()

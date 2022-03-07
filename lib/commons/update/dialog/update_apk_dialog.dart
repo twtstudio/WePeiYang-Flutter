@@ -107,7 +107,6 @@ class UpdateApkDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [progressBar],
           ),
-          SizedBox(height: size.verticalPadding),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [dismiss],

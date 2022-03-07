@@ -33,13 +33,15 @@ class FeedbackIntent extends PushIntent {
 }
 
 class MailboxIntent extends PushIntent {
-  MailboxIntent(this.url, this.title);
+  MailboxIntent(this.url, this.title, this.content, this.createdAt);
 
   @override
   IntentType get type => IntentType.mailbox;
 
   final String url;
   final String title;
+  final String content;
+  final String createdAt;
 
   @override
   Map<String, dynamic> toMap() {
@@ -47,6 +49,8 @@ class MailboxIntent extends PushIntent {
       'type': type.text,
       'url': url,
       'title': title,
+      'content':content,
+      'createdAt':createdAt,
     };
   }
 }

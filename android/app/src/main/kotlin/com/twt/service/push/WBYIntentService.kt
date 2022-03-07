@@ -39,8 +39,7 @@ class WBYIntentService : GTIntentService() {
         // 第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
         // val result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001)
         // Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
-        Log.d(
-            TAG, """
+        WbyPushPlugin.log("""
             onReceiveMessageData -> appid = $appid
             taskid = $taskid
             messageid = $messageid
@@ -53,14 +52,11 @@ class WBYIntentService : GTIntentService() {
             Log.e(WbyPushPlugin.TAG, "receiver payload = null")
         } else {
             val data = String(payload)
-            Log.d(WbyPushPlugin.TAG, "receiver payload = $data")
-//            val intent = IntentUtil.messageData(msg)
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            WbyPushPlugin.log("receiver payload = $data")
+            val intent = IntentUtil.messageData(data)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
-        Log.d(
-            WbyPushPlugin.TAG,
-            "----------------------------------------------------------------------------------------------"
-        )
+        WbyPushPlugin.log("----------------------------------------------------------------------------------------------")
     }
 
     override fun onReceiveOnlineState(context: Context?, online: Boolean) {
@@ -69,7 +65,7 @@ class WBYIntentService : GTIntentService() {
 
     override fun onReceiveCommandResult(context: Context?, cmdMessage: GTCmdMessage?) {
         // TODO: 命令回执
-        Log.d(WbyPushPlugin.TAG, "onReceiveCommandResult -> $cmdMessage")
+        WbyPushPlugin.log("onReceiveCommandResult -> $cmdMessage")
         /* action 结果值说明
        10009：设置标签的结果回执
        10010：绑定别名的结果回执
@@ -77,45 +73,43 @@ class WBYIntentService : GTIntentService() {
        10006：自定义回执的结果回执 */
         when (cmdMessage?.action) {
             PushConsts.SET_TAG_RESULT -> {
-    //            setTagResult(cmdMessage as SetTagCmdMessage?)
+                //            setTagResult(cmdMessage as SetTagCmdMessage?)
             }
             PushConsts.BIND_ALIAS_RESULT -> {
-    //            bindAliasResult(cmdMessage as BindAliasCmdMessage?)
+                //            bindAliasResult(cmdMessage as BindAliasCmdMessage?)
             }
             PushConsts.UNBIND_ALIAS_RESULT -> {
-    //            unbindAliasResult(cmdMessage as UnBindAliasCmdMessage?)
+                //            unbindAliasResult(cmdMessage as UnBindAliasCmdMessage?)
             }
             PushConsts.THIRDPART_FEEDBACK -> {
-    //            feedbackResult(cmdMessage as FeedbackCmdMessage?)
+                //            feedbackResult(cmdMessage as FeedbackCmdMessage?)
             }
         }
     }
 
     // 通知到达时回调该接口（仅支持个推 SDK 通道下发的通知）
     override fun onNotificationMessageArrived(p0: Context?, message: GTNotificationMessage?) {
-        Log.d(
-            WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
+        WbyPushPlugin.log("onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = " + message?.title
         )
     }
 
     // 通知点击回调接口（仅支持个推 SDK 通道下发的通知）
     override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
-        Log.d(
-            WbyPushPlugin.TAG, "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
+        WbyPushPlugin.log("onNotificationMessageArrived -> "
+                + "appid = " + message?.appid
+                + "\ntaskid = " + message?.taskId
+                + "\nmessageid = " + message?.messageId
+                + "\npkg = " + message?.pkgName
+                + "\ncid = " + message?.clientId
+                + "\ncontent = " + message?.content
+                + "\ntitle = " + message?.title
         )
     }
 

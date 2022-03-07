@@ -20,7 +20,8 @@ import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
-import 'package:we_pei_yang_flutter/message/user_mails_page.dart';
+
+import 'view/message/user_mails_page.dart';
 
 class AuthRouter {
   /// 登录部分

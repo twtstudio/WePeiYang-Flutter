@@ -78,6 +78,7 @@ class NewFloorProvider extends ChangeNotifier {
   int locate;
   int replyTo = 0;
   List<File> images = [];
+  String floorSentContent = '';
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
 

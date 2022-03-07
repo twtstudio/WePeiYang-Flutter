@@ -177,7 +177,7 @@ class _SearchTagCardState extends State<SearchTagCard>
               : ColorUtil.mainColor,
         ),
         labelStyle: TextStyle().black2A.NotoSansSC.w400.sp(16),
-        fillColor: ColorUtil.white253,
+        fillColor: ColorUtil.whiteFDFE,
         hintStyle: TextStyle().grey97.NotoSansSC.w400.sp(16),
         hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),

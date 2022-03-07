@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -8,9 +6,9 @@ import 'package:we_pei_yang_flutter/main.dart';
 
 // ignore: must_be_immutable
 class GamePage extends StatelessWidget {
-  List<String> _title = ['大学重开模拟器', '北洋维基', '反馈问题可以到青年湖底内测群，QQ：563107013', '如果有404叠在我头上是正常现象，无需反馈'];
-  List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, '', ''];
-  List<bool> _used = [true, true, false, false];
+  List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
+  List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
+  List<bool> _used = [true, true, false];
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +25,12 @@ class GameCard extends StatelessWidget {
   final String title;
   final String uri;
   final bool used;
-  final random = Random();
-
-  final List<Color> colorOfMonkey = [Color.fromRGBO(
-      223, 214, 255, 0.5019607843137255),Color.fromRGBO(
-      241, 184, 255, 0.5),Color.fromRGBO(
-      184, 197, 255, 0.5),Color.fromRGBO(
-      184, 255, 251, 0.5),Color.fromRGBO(
-      184, 255, 220, 0.5),Color.fromRGBO(
-      186, 255, 184, 0.5),Color.fromRGBO(
-      247, 255, 184, 0.5),Color.fromRGBO(
-      255, 199, 184, 0.5),];
 
   GameCard(this.title, this.uri, this.used);
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = colorOfMonkey[random.nextInt(colorOfMonkey.length)];
+    final Color _color = Colors.black12;
     return SizedBox(
       height: 130,
       child: InkWell(
@@ -52,7 +39,7 @@ class GameCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             padding: EdgeInsets.fromLTRB(16.0, 20.0, 10.0, 8.0),
             decoration: BoxDecoration(
-              color: ColorUtil.white253,
+              color: ColorUtil.whiteFDFE,
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
             child: Row(
@@ -65,7 +52,6 @@ class GameCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: _color,
                     borderRadius: BorderRadius.all(Radius.circular(13)),
-                      image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/monkie.png'),fit: BoxFit.scaleDown)
                   ),
                 ),
               ],
