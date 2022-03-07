@@ -52,7 +52,7 @@ android {
     defaultConfig {
         applicationId "com.twt.service"
         multiDexEnabled true
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -79,10 +79,28 @@ android {
 //                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
         ]
 
+
+//        // https://blog.csdn.net/adojayfan/article/details/122107605
+//        splits {
+//            // 基于不同的abi架构配置不同的apk
+//            abi {
+//                // 必须为true，打包才会为不同的abi生成不同的apk
+//                enable true
+//                // 默认情况下，包含了所有的ABI。
+//                // 所以使用reset()清空所有的ABI，再使用include指定我们想要生成的架构armeabi-v7a、arm-v8a
+//                reset()
+//                // 逗号分隔列表的形式指定 Gradle 应针对哪些 ABI 生成 APK。只与 reset() 结合使用，以指定确切的 ABI 列表。
+//                include "armeabi-v7a", "arm64-v8a"
+//                // 是否生成通用的apk，也就是包含所有ABI的apk。如果设为 true，那么除了按 ABI 生成的 APK 之外，Gradle 还会生成一个通用 APK。
+//                universalApk false
+//            }
+//        }
+
         ndk {
             // 注意：这里需要添加项目所需 CPU 类型的最小集
             abiFilters "arm64-v8a", "armeabi-v7a"
         }
+
     }
 
     signingConfigs {
@@ -170,6 +188,11 @@ dependencies {
     implementation 'com.getui.opt:mzp:3.2.0'
     implementation 'com.huawei.hms:push:6.1.0.300'
 
-    //
+    // QQ sdk
     implementation fileTree(dir: 'libs', include: '*.jar')
+
+    // 友盟 sdk
+    implementation 'com.umeng.umsdk:common:9.4.4'// 必选
+    implementation 'com.umeng.umsdk:asms:1.4.1'// 必选
+    implementation 'com.umeng.umsdk:apm:1.5.2' // 错误分析
 }

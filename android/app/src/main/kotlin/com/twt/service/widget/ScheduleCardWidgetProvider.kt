@@ -36,15 +36,15 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
             // 小组件整体的点击监听，点击后跳转至MainActivity
             val startActivityIntent = Intent(context, MainActivity::class.java)
             startActivityIntent.data = Uri.parse("${BASEURL}schedule")
-            val pendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, 0)
+            val pendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_IMMUTABLE)
             val remoteViews = RemoteViews(context.packageName, R.layout.widget_schedule_card)
             remoteViews.setOnClickPendingIntent(R.id.fragment_card_view, pendingIntent)
 
             // 小组件周图片
             remoteViews.setImageViewResource(R.id.widget_week, getWeek())
 
+            // 这是啥？
             // 小组件List部分，WidgetFactory的List为空则显示emptyView(也就是今日没课)
-            // TODO:fix 实际上你这个地方没写对，点击今日没课是跳的上面的intent
             val serviceIntent = Intent(context, WidgetCardService::class.java)
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             serviceIntent.data = Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME))
@@ -52,7 +52,7 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
             remoteViews.setEmptyView(R.id.widget_listview_card, getEmptyView())
 
             // List部分的点击监听，点击后跳转至Flutter课程表页
-            val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_IMMUTABLE)
             remoteViews.setPendingIntentTemplate(R.id.widget_listview_card, startActivityPendingIntent)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview_card)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)

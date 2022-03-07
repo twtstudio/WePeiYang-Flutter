@@ -77,7 +77,9 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        handleIntent(binding.activity.intent)
+        runCatching {
+            handleIntent(binding.activity.intent)
+        }
         binding.addOnNewIntentListener(this)
         this.binding = binding
         updateWidget()

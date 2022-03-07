@@ -1,17 +1,20 @@
 // @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/channels/download.dart';
-import 'download_listener.dart';
+
 import 'download_item.dart';
+import 'download_listener.dart';
+
 export 'download_item.dart';
+
+const _downloadChannel = MethodChannel('com.twt.service/download');
 
 // TODO: 选择下载失败时是终止还是忽略
 // TODO: 改成单例模式，实现可以在两个不同地方下载任务，并且回调 (实现了一半)
 // TODO: 可以对一个观察者添加或修改回调
 class DownloadManager {
   DownloadManager._() {
-    downloadChannel.setMethodCallHandler((call) {
+    _downloadChannel.setMethodCallHandler((call) {
       switch (call.method) {
         case 'updateProgress':
           final id = call.arguments['listenerId'].toString();
@@ -20,7 +23,7 @@ class DownloadManager {
           if (listeners.containsKey(id)) {
             _updateProgress(listeners[id]!, call);
           } else if (id == "all") {
-            for(var listener in listeners.values){
+            for (var listener in listeners.values) {
               _updateProgress(listener, call);
             }
           } else if (id == "unknown") {
@@ -105,8 +108,14 @@ class DownloadManager {
     listeners[listener.listenerId] = listener;
 
     try {
-      await startDownload(DownloadList(tasks));
-    }  catch (e) {
+      await _downloadChannel.invokeMethod(
+        "addDownloadTask",
+        {
+          "downloadList": DownloadList(tasks).toJson(),
+        },
+      );
+      ;
+    } catch (e) {
       error.call(e);
     }
   }

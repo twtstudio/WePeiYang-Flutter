@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import com.twt.service.hot_fix.WbyFixFlutterLoader
 import com.twt.service.push.model.Event
+import com.umeng.commonsdk.UMConfigure
 import io.flutter.FlutterInjector
 import java.lang.ref.WeakReference
 
@@ -19,6 +20,11 @@ class WBYApplication : Application() {
         super.onCreate()
         context = WeakReference(applicationContext)
         FlutterInjector.instance().flutterLoader().startInitialization(this)
+        // TODO: android 分渠道打包
+        if (BuildConfig.LOG_OUTPUT){
+            UMConfigure.setLogEnabled(true)
+        }
+        UMConfigure.preInit(this,"60464782b8c8d45c1390e7e3","android");
 //        initFlutterEngine()
     }
 

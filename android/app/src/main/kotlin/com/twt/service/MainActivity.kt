@@ -10,6 +10,7 @@ import com.twt.service.location.WbyLocationPlugin
 import com.twt.service.message.WbyMessagePlugin
 import com.twt.service.push.WbyPushPlugin
 import com.twt.service.share.WbySharePlugin
+import com.twt.service.statistics.WbyStatisticsPlugin
 import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -40,7 +41,9 @@ class MainActivity : FlutterActivity() {
                             // 个推推送
                             WbyPushPlugin(),
                             // 添加热修复文件
-                            WbyFixPlugin()
+                            WbyFixPlugin(),
+                            // 友盟统计
+                            WbyStatisticsPlugin(),
                     )
             )
         }

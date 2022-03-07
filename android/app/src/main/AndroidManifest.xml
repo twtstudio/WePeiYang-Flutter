@@ -41,7 +41,18 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+<!--
+    https://developer.umeng.com/docs/119267/detail/118584#title-tul-yb2-sqm
+    友盟统计sdk：
+       ACCESS_NETWORK_STATE
+       READ_PHONE_STATE
+       ACCESS_WIFI_STATE
+       INTERNET
+
+-->
+
+<!--    看看这个权限在哪里使用-->
+<!--    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>-->
 
 <!--    华为更改角标权限 ，据官网说是-->
 <!--    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>-->
@@ -120,6 +131,8 @@
                     android:pathPrefix="/mailbox"
                     android:scheme="twtstudio" />
             </intent-filter>
+
+<!--        友盟卖点验证  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

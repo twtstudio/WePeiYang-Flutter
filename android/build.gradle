@@ -2,6 +2,7 @@ buildscript {
     ext.kotlin_version = '1.6.10'
     repositories {
         google()
+        // 友盟 Maven仓库
         maven { url 'https://repo1.maven.org/maven2/' }
         // 配置HMS Core SDK的Maven仓地址。
         maven { url 'https://developer.huawei.com/repo/' }
@@ -18,11 +19,13 @@ buildscript {
 allprojects {
     repositories {
         google()
+        // 个推 Maven仓库
         maven {
-            url "http://mvn.gt.getui.com/nexus/content/repositories/releases/"
+            url "https://mvn.getui.com/nexus/content/repositories/releases/"
         }
+        // 友盟 Maven仓库
         maven { url 'https://repo1.maven.org/maven2/' }
-
+        // OPPO厂商通道配置
         maven {
             url 'https://maven.columbus.heytapmobi.com/repository/releases/'
             credentials {
