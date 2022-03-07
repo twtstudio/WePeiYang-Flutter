@@ -81,6 +81,7 @@
         android:label="@string/label"
         tools:replace="android:label"
         android:usesCleartextTraffic="true"
+        android:extractNativeLibs="true"
         tools:targetApi="m">
 
         <activity

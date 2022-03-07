@@ -4,7 +4,6 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.os.Process
-import com.twt.service.hot_fix.WbyFixFlutterLoader
 import com.twt.service.push.model.Event
 import com.twt.service.statistics.WbyStatisticsPlugin
 import com.umeng.commonsdk.UMConfigure
@@ -64,7 +63,6 @@ fun getCurProcessName(): String {
         val pid = Process.myPid()
         // 获取活动管理器
         val activityManager = getSystemService(Application.ACTIVITY_SERVICE) as ActivityManager
-
         // 从应用程序进程列表找到当前进程，是：返回当前进程名
         for (appProcess in activityManager.runningAppProcesses) {
             if (appProcess.pid == pid) {
