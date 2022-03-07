@@ -38,6 +38,7 @@ class CommonPreferences {
   var feedbackUid = PrefsBean<String>('feedbackUid');
   var feedbackSearchHistory =
       PrefsBean<List<String>>("feedbackSearchHistory", []);
+
   // 1 -> 按时间排序; 2 -> 按热度排序
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
   var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
@@ -95,16 +96,18 @@ class CommonPreferences {
   /// ----------下方是一些应用相关的杂项----------
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   var updateTime = PrefsBean<String>('updateTime');
+
   /// 是否为初次使用此app
   var firstUse = PrefsBean<bool>('firstUse', true);
+
   /// 是否使用账密登陆（false则为短信登陆）
   var usePwLogin = PrefsBean<bool>('pwLogin', true);
 
   // 应用更新相关配置
   /// 使用beta版还是release版微北洋
-  var apkType = PrefsBean('apkType',"release");
-  var todayShowUpdateAgain = PrefsBean('todayShowUpdateAgain','');
-  var canPush = PrefsBean('can_push',false);
+  var apkType = PrefsBean('apkType', "release");
+  var todayShowUpdateAgain = PrefsBean('todayShowUpdateAgain', '');
+  var canPush = PrefsBean('can_push', false);
 
   /// 清除天外天账号系统缓存
   void clearUserPrefs() {

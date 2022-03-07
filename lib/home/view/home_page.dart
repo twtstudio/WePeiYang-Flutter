@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -14,8 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart'
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import 'package:provider/provider.dart';
-
-bool ifCanBeRefreshed = false;
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,20 +56,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       } else {
         CommonPreferences().reportTime.value = "";
       }
-
-      UmengCommonSdk.initCommon(
-        "60464782b8c8d45c1390e7e3",
-        "605440876ee47d382b8b74c3",
-        "Umeng",
-      ).then(
-        (_) {
-          debugPrint('init umeng success');
-          UmengCommonSdk.setPageCollectionModeManual();
-        },
-      );
-
       // 检查当前是否有未处理的事件
       context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
+      // 友盟统计账号信息
+      UmengCommonSdk.onProfileSignIn(CommonPreferences().account.value);
     });
   }
 

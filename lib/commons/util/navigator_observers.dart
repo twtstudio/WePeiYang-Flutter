@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
-import 'package:umeng_common_sdk/umeng_common_sdk.dart';
+import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
 
 /// 友盟SDK统计用户路径
 class AppRouteAnalysis extends NavigatorObserver {

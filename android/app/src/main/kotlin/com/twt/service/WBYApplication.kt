@@ -1,10 +1,12 @@
 package com.twt.service
 
+import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.util.Log
+import android.os.Process
 import com.twt.service.hot_fix.WbyFixFlutterLoader
 import com.twt.service.push.model.Event
+import com.twt.service.statistics.WbyStatisticsPlugin
 import com.umeng.commonsdk.UMConfigure
 import io.flutter.FlutterInjector
 import java.lang.ref.WeakReference
@@ -18,22 +20,57 @@ class WBYApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        context = WeakReference(applicationContext)
-        FlutterInjector.instance().flutterLoader().startInitialization(this)
-        // TODO: android 分渠道打包
-        if (BuildConfig.LOG_OUTPUT){
-            UMConfigure.setLogEnabled(true)
+        runOnMainProcess {
+            context = WeakReference(applicationContext)
+            // 初始化友盟
+            if (BuildConfig.LOG_OUTPUT) {
+                WbyStatisticsPlugin.log("log output")
+                UMConfigure.setLogEnabled(true)
+            }
+            WbyStatisticsPlugin.log("preInit umeng sdk")
+            UMConfigure.preInit(applicationContext, "60464782b8c8d45c1390e7e3", "android")
+            // 加载flutter
+            FlutterInjector.instance().flutterLoader().startInitialization(this)
         }
-        UMConfigure.preInit(this,"60464782b8c8d45c1390e7e3","android");
-//        initFlutterEngine()
     }
 
     // 用反射的方式重置 flutter 启动目录
-    @Suppress("unused")
-    private fun initFlutterEngine() {
-        val flutterInjector =
-            FlutterInjector.Builder().setFlutterLoader(WbyFixFlutterLoader()).build()
-        FlutterInjector.setInstance(flutterInjector)
-        FlutterInjector.instance().flutterLoader().startInitialization(this)
+//    @Suppress("unused")
+//    private fun initFlutterEngine() {
+//        val flutterInjector =
+//            FlutterInjector.Builder().setFlutterLoader(WbyFixFlutterLoader()).build()
+//        FlutterInjector.setInstance(flutterInjector)
+//        FlutterInjector.instance().flutterLoader().startInitialization(this)
+//    }
+
+    // 个推会创建一条子进程用来接收推送，所以初始化友盟和flutter只能在主进程执行
+    fun runOnMainProcess(func: () -> Unit) {
+        func.takeIf {
+            val pid = Process.myPid()
+            val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+            for (appProcess in activityManager.runningAppProcesses) {
+                if (appProcess.pid == pid && appProcess.processName == "com.twt.service") {
+                    return@takeIf true
+                }
+            }
+            false
+        }?.invoke()
     }
+}
+
+fun getCurProcessName(): String {
+    // 获取此进程的标识符
+    WBYApplication.context?.get()?.apply {
+        val pid = Process.myPid()
+        // 获取活动管理器
+        val activityManager = getSystemService(Application.ACTIVITY_SERVICE) as ActivityManager
+
+        // 从应用程序进程列表找到当前进程，是：返回当前进程名
+        for (appProcess in activityManager.runningAppProcesses) {
+            if (appProcess.pid == pid) {
+                return appProcess.processName
+            }
+        }
+    }
+    return "unknown"
 }

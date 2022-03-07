@@ -63,7 +63,6 @@ dependencies:
   simple_html_css: ^3.0.1
   table_calendar: 3.0.2
   transparent_image: ^1.0.0
-  umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0

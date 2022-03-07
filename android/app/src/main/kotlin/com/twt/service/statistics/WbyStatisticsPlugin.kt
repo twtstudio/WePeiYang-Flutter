@@ -15,7 +15,8 @@ class WbyStatisticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
-        statisticsChannel = MethodChannel(binding.binaryMessenger, "com.twt.service/umeng_statistics")
+        statisticsChannel =
+            MethodChannel(binding.binaryMessenger, "com.twt.service/umeng_statistics")
         statisticsChannel.setMethodCallHandler(this)
     }
 
@@ -28,6 +29,7 @@ class WbyStatisticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             when (call.method) {
                 "initCommon" -> initCommon()
                 "onProfileSignIn" -> onProfileSignIn(call)
+                "onProfileSignOff" -> onProfileSignOff()
                 "onEvent" -> onEvent(call)
                 "onPageStart" -> onPageStart(call)
                 "onPageEnd" -> onPageEnd(call)
@@ -42,7 +44,13 @@ class WbyStatisticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     private fun initCommon() {
-        UMConfigure.init(context, "60464782b8c8d45c1390e7e3", "android", UMConfigure.DEVICE_TYPE_PHONE, null)
+        UMConfigure.init(
+            context,
+            "60464782b8c8d45c1390e7e3",
+            "android",
+            UMConfigure.DEVICE_TYPE_PHONE,
+            null
+        )
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL)
         log("友盟sdk初始化")
     }
@@ -77,6 +85,11 @@ class WbyStatisticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         val userID = call.argument<String>("userID")
         MobclickAgent.onProfileSignIn(userID)
         log("sign in: $userID")
+    }
+
+    private fun onProfileSignOff() {
+        MobclickAgent.onProfileSignOff()
+        log("sign off")
     }
 
     companion object {
