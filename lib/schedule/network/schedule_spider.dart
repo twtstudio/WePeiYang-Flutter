@@ -47,6 +47,8 @@ void getScheduleCourses(
     var courseRsp1 = await getDetailSchedule(idsValue);
     scheduleList.addAll(_data2ScheduleCourses(courseRsp1.data.toString()));
 
+    await Future.delayed(Duration(seconds: 1)); // 防止过快点击
+
     /// 切换至辅修
     await fetch("http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
         cookieList: pref.getCookies(), params: {'projectId': '2'});
