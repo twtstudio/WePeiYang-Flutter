@@ -140,18 +140,6 @@ class LakePrivacyDialog extends Dialog {
                         children: [
                           TextSpan(
                             text: "搜索引擎",
-                            style: TextUtil.base.normal.NotoSansSC
-                                .sp(14)
-                                .w400
-                                .textButtonBlue, recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              String url = 'https://www.zhihu.com/search?q=%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={%22sourceType%22:%22answer%22,%22sourceId%22:36685915}';
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                ToastProvider.error('请检查网络状态');
-                              }
-                            },
                           ),
                           TextSpan(text: "中的不正当曝光。\n"),
                         ])),
@@ -178,18 +166,6 @@ class LakePrivacyDialog extends Dialog {
                         children: [
                           TextSpan(
                             text: "恶意编辑",
-                            style: TextUtil.base.normal.NotoSansSC
-                                .sp(14)
-                                .w400
-                                .textButtonBlue, recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              String url = 'https://www.zhihu.com/search?q=%E6%81%B6%E6%84%8F%E7%BC%96%E8%BE%91&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={%22sourceType%22:%22answer%22,%22sourceId%22:36685915}';
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                ToastProvider.error('请检查网络状态');
-                              }
-                            },
                           ),
                           TextSpan(text: "，指清空或删除有效内容，添加无关信息，破坏内容结构等降低公共编辑内容质量的编辑。\n"),
                         ])),
