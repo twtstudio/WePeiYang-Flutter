@@ -17,25 +17,22 @@ class FeedbackNoticePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appBar = PreferredSize(
-      preferredSize: Size.fromHeight(kTextTabBarHeight),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: AppBar(
-          titleSpacing: 0,
-          leadingWidth: 25,
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          title:
-              Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
-          leading: IconButton(
-            icon: Image.asset('assets/images/lake_butt_icons/back.png',
-                width: 14),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+      preferredSize: Size.fromHeight(100),
+      child: AppBar(
+        titleSpacing: 0,
+        leadingWidth: 25,
+        brightness: Brightness.light,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title:
+            Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
+        leading: IconButton(
+          icon: Image.asset('assets/images/lake_butt_icons/back.png',
+              width: 14),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
     );

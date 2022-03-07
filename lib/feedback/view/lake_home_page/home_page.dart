@@ -239,8 +239,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             builder: (context, type, _) {
                               return GestureDetector(
                                 onTap: () {
-                                    checkedNotifier.value =
-                                        !checkedNotifier.value;
+                                  checkedNotifier.value =
+                                      !checkedNotifier.value;
                                 },
                                 child: Stack(
                                   children: [
@@ -851,26 +851,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         },
         body: Consumer<FbHomeStatusNotifier>(
           builder: (_, status, __) {
-            return Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                Container(color: ColorUtil.backgroundColor),
-                Padding(
-                    padding: EdgeInsets.zero,
-                    child: ExtendedTabBarView(
-                      controller: _tabController,
-                      cacheExtent: 2,
-                      children: <Widget>[
-                        _mixedListView,
-                        _lakeListView,
-                        _feedbackListView,
-                        GamePage()
-                      ],
-                    )),
-                if (status.isLoading) Loading(),
-                if (status.isError) HomeErrorContainer(onRefresh, true),
-              ],
-            );
+            if (status.isIdle)
+              return ExtendedTabBarView(
+                controller: _tabController,
+                cacheExtent: 2,
+                children: <Widget>[
+                  _mixedListView,
+                  _lakeListView,
+                  _feedbackListView,
+                  GamePage()
+                ],
+              );
+            else if (status.isLoading)
+              return Loading();
+            else
+              return HomeErrorContainer(onRefresh, true);
           },
         ),
       ),
@@ -1002,10 +997,16 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             forceRefresh: true,
             onResult: (_) {
               _tagsProvider.initDepartments();
-              _listProvider.initPostList(2, success: () {}, failure: (_) {});
+              _listProvider.initPostList(2, success: () {
+                widget.onPressed;
+              }, failure: (_) {
+                controller.reset();
+                ToastProvider.error('刷新失败');
+              });
             },
             onFailure: (e) {
-              ToastProvider.error(e.error.toString());
+              controller.reset();
+              ToastProvider.error('刷新失败');
             });
         if (!controller.isAnimating) {
           controller.repeat();
@@ -1018,6 +1019,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
     var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 8);
 
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

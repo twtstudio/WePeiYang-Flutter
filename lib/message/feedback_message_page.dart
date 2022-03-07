@@ -74,53 +74,50 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     return Scaffold(
       backgroundColor: Color(0xfff7f7f8),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: AppBar(
-            titleSpacing: 0,
-            leadingWidth: 25,
-            brightness: Brightness.light,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text('消息中心',
-                style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
-            leading: IconButton(
-              icon: Image.asset('assets/images/lake_butt_icons/back.png',
-                  width: 14),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.infinite,
-              child: Theme(
-                data: ThemeData(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                ),
-                child: TabBar(
-                  indicatorPadding: EdgeInsets.only(bottom: 10),
-                  labelPadding: EdgeInsets.zero,
-                  isScrollable: false,
-                  physics: BouncingScrollPhysics(),
-                  controller: _tabController,
-                  labelColor: ColorUtil.black2AColor,
-                  labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
-                  unselectedLabelColor: ColorUtil.greyB2B6Color,
-                  unselectedLabelStyle:
-                      TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
-                  indicator: CustomIndicator(
-                      borderSide:
-                          BorderSide(color: ColorUtil.mainColor, width: 2)),
-                  tabs: types.map((t) {
-                    return MessageTab(type: t);
-                  }).toList(),
-                  onTap: (index) {
-                    currentIndex.value = _tabController.index;
-                  },
-                ),
+        preferredSize: Size.fromHeight(100),
+        child: AppBar(
+          titleSpacing: 0,
+          leadingWidth: 25,
+          brightness: Brightness.light,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text('消息中心',
+              style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
+          leading: IconButton(
+            icon: Image.asset('assets/images/lake_butt_icons/back.png',
+                width: 14),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.infinite,
+            child: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: TabBar(
+                indicatorPadding: EdgeInsets.only(bottom: 10),
+                labelPadding: EdgeInsets.zero,
+                isScrollable: false,
+                physics: BouncingScrollPhysics(),
+                controller: _tabController,
+                labelColor: ColorUtil.black2AColor,
+                labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
+                unselectedLabelColor: ColorUtil.greyB2B6Color,
+                unselectedLabelStyle:
+                    TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
+                indicator: CustomIndicator(
+                    borderSide:
+                        BorderSide(color: ColorUtil.mainColor, width: 2)),
+                tabs: types.map((t) {
+                  return MessageTab(type: t);
+                }).toList(),
+                onTap: (index) {
+                  currentIndex.value = _tabController.index;
+                },
               ),
             ),
           ),

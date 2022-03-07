@@ -123,6 +123,11 @@ class FbHomeStatusNotifier extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void toLoading() {
+    _status = FbHomePageStatus.loading;
+    notifyListeners();
+  }
 }
 
 class FbHomeListModel extends ChangeNotifier {
