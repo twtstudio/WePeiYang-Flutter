@@ -55,7 +55,12 @@ class _NCommentCardState extends State<NCommentCard>
   final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
+      (BuildContext ctx) => SizedBox(
+        width: 24,
+        height: 24,
+        child: FittedBox(fit: BoxFit.fitWidth,
+        child: Loading()),
+      );
 
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
