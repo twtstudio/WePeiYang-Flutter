@@ -256,7 +256,7 @@ class Tag {
   String name;
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-        id: json["tag_id"],
+        id: json["id"],
         point: json["point"],
         name: json["name"],
       );
