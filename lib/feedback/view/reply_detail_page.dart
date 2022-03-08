@@ -17,16 +17,27 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class ReplyDetailPage extends StatefulWidget {
-  final Floor floor;
+  final ReplyDetailPageArgs args;
 
-  ReplyDetailPage(this.floor);
+  ReplyDetailPage(this.args);
 
   @override
-  _ReplyDetailPageState createState() => _ReplyDetailPageState();
+  _ReplyDetailPageState createState() =>
+      _ReplyDetailPageState(args.floor, args.uid);
+}
+
+class ReplyDetailPageArgs {
+  final Floor floor;
+  final int uid;
+
+  ReplyDetailPageArgs(this.floor, this.uid);
 }
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
+  final Floor floor;
+  final int uid;
+  
   int index;
   int currentPage = 1;
   List<Floor> floors;
@@ -37,7 +48,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
   var _refreshController = RefreshController(initialRefresh: false);
 
-  _ReplyDetailPageState();
+  _ReplyDetailPageState(this.floor, this.uid);
 
   _onRefresh() {
     currentPage = 1;
@@ -102,7 +113,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       {Function(List<Floor>) onResult, Function onFail, int page}) async {
     bool success = false;
     FeedbackService.getFloorReplyById(
-      floorId: widget.floor.id,
+      floorId: floor.id,
       page: page,
       onResult: (comments) {
         onResult?.call(comments);
@@ -143,8 +154,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemBuilder: (context, index) {
         if (index == 0) {
           return NCommentCard(
-            comment: widget.floor,
-            ancestorId: widget.floor.postId,
+            comment: floor,
+            uid: uid,
+            ancestorId: floor.postId,
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: true,
@@ -157,8 +169,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           children: [
             NCommentCard(
               comment: data,
-              ancestorName: widget.floor.nickname,
-              ancestorId: widget.floor.id,
+              uid: uid,
+              ancestorName: floor.nickname,
+              ancestorId: floor.id,
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: true,
@@ -191,7 +204,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     );
 
     var inputField =
-        CommentInputField(postId: widget.floor.postId, key: launchKey);
+        CommentInputField(postId: widget.args.floor.postId, key: launchKey);
 
     body = Column(
       children: [
@@ -252,7 +265,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                     child: InkWell(
                       onTap: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
-                            .inputFieldOpenAndReplyTo(widget.floor.id);
+                            .inputFieldOpenAndReplyTo(floor.id);
                         FocusScope.of(context).requestFocus(
                             Provider.of<NewFloorProvider>(context,
                                     listen: false)
@@ -308,7 +321,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         ).then((value) {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.floor.id, true));
+                arguments: ReportPageArgs(floor.id, true));
           }
         });
       },

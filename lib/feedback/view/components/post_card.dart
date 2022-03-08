@@ -287,14 +287,14 @@ class _PostCardState extends State<PostCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(children: [
-            tag != '' ?
+            if (tag != '')
               TagShowWidget(
                   tag,
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
                       (widget.type == PostCardType.simple ? 180 : 0),
                   post.type == 0,
-                  id) : SizedBox(height: 6),
+                  id),
             SizedBox(width: 8),
             campus
           ]),
@@ -690,7 +690,7 @@ class _PostCardState extends State<PostCard> {
             if (loadingProgress == null) return child;
             return SizedBox(
               width:
-              (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
+                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
               height: (ScreenUtil.defaultSize.width - 74) /
                   post.imageUrls.length *
                   0.9,

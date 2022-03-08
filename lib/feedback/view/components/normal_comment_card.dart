@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.da
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -552,7 +553,7 @@ class _NCommentCardState extends State<NCommentCard>
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.commentDetail,
-                          arguments: widget.comment,
+                          arguments: ReplyDetailPageArgs(widget.comment, widget.uid),
                         );
                       },
                       child: Padding(
