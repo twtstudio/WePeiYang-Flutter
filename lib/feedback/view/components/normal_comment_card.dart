@@ -282,7 +282,7 @@ class _NCommentCardState extends State<NCommentCard>
       ],
     );
 
-    var commentContent = ExpandableText(
+    var commentContent = widget.comment.content == '' ? SizedBox() : ExpandableText(
       text: widget.comment.content,
       maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
       style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),

@@ -319,16 +319,18 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
-              tag: post.department.name ?? '',
-              comment: data,
-              placeAppeared: index,
-                ratings: widget.post.rating,
-                ancestorId:post.uid,
-              onContentPressed: (refresh) async {
-               refresh.call(list);
-              },
-            ):SizedBox(width: 0,height: 0);
+            return _officialCommentList[index].sender == 1
+                ? OfficialReplyCard.reply(
+                    tag: post.department.name ?? '',
+                    comment: data,
+                    placeAppeared: index,
+                    ratings: widget.post.rating,
+                    ancestorId: post.uid,
+                    onContentPressed: (refresh) async {
+                      refresh.call(list);
+                    },
+                  )
+                : SizedBox(width: 0, height: 0);
           }
 
           ///_officialCommentList,点赞注释了
@@ -569,8 +571,10 @@ class CommentInputFieldState extends State<CommentInputField> {
     super.dispose();
   }
 
-  void send(bool isOffcial) {
-    if (_textEditingController.text.isNotEmpty) {
+  void send(bool isOfficial) {
+    if (_textEditingController.text.isNotEmpty ||
+        (_textEditingController.text.isEmpty &&
+            context.read<NewFloorProvider>().images.isNotEmpty)) {
       if (context.read<NewFloorProvider>().images.isNotEmpty) {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
@@ -581,7 +585,7 @@ class CommentInputFieldState extends State<CommentInputField> {
               if (context.read<NewFloorProvider>().replyTo == 0) {
                 _sendFloor(images);
               } else {
-                  _replyFloor(images,isOffcial);
+                _replyFloor(images, isOfficial);
               }
             },
             onFailure: (e) {
@@ -591,10 +595,10 @@ class CommentInputFieldState extends State<CommentInputField> {
         context.read<NewFloorProvider>().images.clear();
         _sendFloor([]);
       } else {
-        _replyFloor([],isOffcial);
+        _replyFloor([], isOfficial);
       }
     } else
-      ToastProvider.error('文字不能为空哦');
+      ToastProvider.error('评论/回复不能为空哦');
     Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
   }
 
@@ -658,9 +662,9 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor(List<String> list,bool isOffcial) {
+  _replyFloor(List<String> list, bool isOffcial) {
     ToastProvider.running('回复中 q(≧▽≦)/');
-   if(isOffcial==false) {
+    if (isOffcial == false) {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: _textEditingController.text,
@@ -676,24 +680,23 @@ class CommentInputFieldState extends State<CommentInputField> {
           '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
         ),
       );
+    } else {
+      FeedbackService.replyOffcialFloor(
+        id: context.read<NewFloorProvider>().replyTo.toString(),
+        content: _textEditingController.text,
+        images: list == [] ? '' : list,
+        onSuccess: () {
+          setState(() => _commentLengthIndicator = '0/200');
+          FocusManager.instance.primaryFocus.unfocus();
+          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          _textEditingController.text = '';
+          ToastProvider.success("回复成功 (❁´3`❁)");
+        },
+        onFailure: (e) => ToastProvider.error(
+          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
+        ),
+      );
     }
-   else{
-     FeedbackService.replyOffcialFloor(
-       id: context.read<NewFloorProvider>().replyTo.toString(),
-       content: _textEditingController.text,
-       images: list == [] ? '' : list,
-       onSuccess: () {
-         setState(() => _commentLengthIndicator = '0/200');
-         FocusManager.instance.primaryFocus.unfocus();
-         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-         _textEditingController.text = '';
-         ToastProvider.success("回复成功 (❁´3`❁)");
-       },
-       onFailure: (e) => ToastProvider.error(
-         '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-       ),
-     );
-   }
   }
 }
 
