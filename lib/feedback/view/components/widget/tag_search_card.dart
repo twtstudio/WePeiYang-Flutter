@@ -70,7 +70,7 @@ class _SearchTagCardState extends State<SearchTagCard>
                 )),
                 SizedBox(width: 4),
                 Text(
-                  (tagUtil[total].point ?? 0).toString(),
+                  "",
                   style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
                 )
               ],
