@@ -335,6 +335,7 @@ class _DetailPageState extends State<DetailPage>
           else {
             var data = _commentList[index - _officialCommentList.length];
             return NCommentCard(
+              uid: post.uid,
               comment: data,
               ancestorId: post.id,
               commentFloor: index + 1,

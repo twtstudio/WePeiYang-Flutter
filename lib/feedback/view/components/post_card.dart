@@ -234,10 +234,10 @@ class _PostCardState extends State<PostCard> {
     var tag = post.type == 0
         ? post.tag != null
             ? '${post.tag.name}'
-            : '无标签'
+            : ''
         : post.department != null
             ? '${post.department.name}'
-            : '无部门';
+            : '';
 
     var id = post.type == 0
         ? post.tag != null && post.tag.id != null
@@ -287,13 +287,14 @@ class _PostCardState extends State<PostCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(children: [
-            TagShowWidget(
-                tag,
-                WePeiYangApp.screenWidth -
-                    (post.campus > 0 ? 40 : 0) -
-                    (widget.type == PostCardType.simple ? 180 : 0),
-                post.type == 0,
-                id),
+            tag != '' ?
+              TagShowWidget(
+                  tag,
+                  WePeiYangApp.screenWidth -
+                      (post.campus > 0 ? 40 : 0) -
+                      (widget.type == PostCardType.simple ? 180 : 0),
+                  post.type == 0,
+                  id) : SizedBox(height: 6),
             SizedBox(width: 8),
             campus
           ]),
@@ -368,7 +369,8 @@ class _PostCardState extends State<PostCard> {
                           TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
                     ),
                   ),
-                if (widget.type == PostCardType.simple) title,
+                if (widget.type == PostCardType.simple)
+                  SizedBox(width: WePeiYangApp.screenWidth - 164, child: title),
                 Spacer(),
                 SizedBox(width: 10),
                 if (post.type == 0 && widget.type == PostCardType.simple)
@@ -678,8 +680,11 @@ class _PostCardState extends State<PostCard> {
                   ? picBaseUrl + 'origin/' + post.imageUrls[index]
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
-              height:
+              width:
                   (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
+              height: (ScreenUtil.defaultSize.width - 80) /
+                  post.imageUrls.length *
+                  0.8,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;

@@ -386,6 +386,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tagsContainerBackgroundOpacity = 0;
     _refreshController = _refreshController1;
     shouldBeInitialized = [false, true, true, false];
+    _controller = _controller1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
@@ -899,7 +900,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool get wantKeepAlive => true;
 
   void listToTop() {
-    if (_controller.offset > 1500) _controller.jumpTo(1500);
+    if (_controller.offset > 1500) {
+      _controller.jumpTo(1500);
+    }
     _controller.animateTo(-85,
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
