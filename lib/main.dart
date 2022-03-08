@@ -34,6 +34,7 @@ import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
+import 'commons/statistics/umeng_statistics.dart';
 import 'commons/util/text_util.dart';
 
 /// 列一下各种东西的初始化：
@@ -306,6 +307,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
+    // 初始化友盟
+    UmengCommonSdk.initCommon();
+
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
     if (CommonPreferences.updateTime.value != "20210906") {
       CommonPreferences.updateTime.value = "20210906";

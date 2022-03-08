@@ -16,9 +16,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
+# 打包代码 (暂时不用）
+# flutter build apk --obfuscate --split-debug-info=debugInfo --split-per-abi
+
 # 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
 # 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.2.0+90
+version: 4.2.0+91
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -60,7 +63,6 @@ dependencies:
   simple_html_css: ^3.0.1
   table_calendar: 3.0.2
   transparent_image: ^1.0.0
-  umeng_common_sdk: ^1.2.3
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0

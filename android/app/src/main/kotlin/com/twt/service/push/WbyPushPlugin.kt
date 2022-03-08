@@ -326,16 +326,11 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                     action = "android.settings.APP_NOTIFICATION_SETTINGS"
                     putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
                 }
-                Build.VERSION.SDK_INT >= 21 -> {
-                    // android 5.0-7.0
+                else -> {
+                    // android 6.0 - 7.0
                     action = "android.settings.APP_NOTIFICATION_SETTINGS"
                     putExtra("app_package", context.packageName)
                     putExtra("app_uid", context.applicationInfo.uid)
-                }
-                else -> {
-                    // 其他
-                    action = "android.settings.APPLICATION_DETAILS_SETTINGS"
-                    data = Uri.fromParts("package", context.packageName, null)
                 }
             }
             flags = Intent.FLAG_ACTIVITY_NEW_TASK

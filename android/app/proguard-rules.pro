@@ -2,6 +2,10 @@
 -dontskipnonpubliclibraryclassmembers
 -keepattributes Exceptions,InnerClasses,Signature,SourceFile,LineNumberTable
 
+-keep public class com.twt.service.R$*{
+    public static final int *;
+}
+
 # 不混淆open sdk, 避免有些调用（如js）找不到类或方法
 -keep class com.tencent.connect.** {*;}
 -keep class com.tencent.open.** {*;}
@@ -32,6 +36,18 @@
 #    }
 # 最后在 build.gradle 中加入：
 #    consumerProguardFiles 'proguard-rules.pro'
+
+# 友盟
+-keep class com.umeng.** {*;}
+-keep class com.uc.** { *; }
+-keep class com.efs.** { *; }
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 # flutter
 -keep class io.flutter.app.** { *; }

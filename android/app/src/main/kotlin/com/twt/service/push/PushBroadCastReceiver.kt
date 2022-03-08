@@ -73,18 +73,16 @@ class PushBroadCastReceiver(
                     .setWhen(System.currentTimeMillis())
                     .setAutoCancel(true)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                WbyPushPlugin.log("Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
-                val intent2 = Intent(binding.activity, MainActivity::class.java)
-                val pIntent = PendingIntent.getActivity(
-                        binding.activity.applicationContext,
-                        1,
-                        intent2,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                builder.setFullScreenIntent(pIntent, false)
-            }
+            WbyPushPlugin.log("Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
+            val intent2 = Intent(binding.activity, MainActivity::class.java)
+            val pIntent = PendingIntent.getActivity(
+                    binding.activity.applicationContext,
+                    1,
+                    intent2,
+                    PendingIntent.FLAG_IMMUTABLE
+            )
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setFullScreenIntent(pIntent, false)
             notificationManager.notify(id, builder.build())
         }
 

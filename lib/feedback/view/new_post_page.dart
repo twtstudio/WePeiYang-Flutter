@@ -258,7 +258,7 @@ class SubmitButton extends StatelessWidget {
                 type: PostType.lake.value,
                 title: dataModel.title,
                 content: dataModel.content,
-                tagId: dataModel.tag.id,
+                tagId: dataModel.tag != Tag() ? dataModel.tag.id : '',
                 images: [],
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -271,7 +271,7 @@ class SubmitButton extends StatelessWidget {
               );
         dataModel.clear();
       } else {
-        ToastProvider.error(S.current.feedback_empty_content_error);
+        ToastProvider.error('内容不能为空！');
       }
     }
   }

@@ -11,9 +11,10 @@
         android:layout_height="37.329987dip"
         android:layout_marginStart="6.299988dip"
         android:layout_marginTop="5.569977dip"
-        android:src="@drawable/launch_background"
+        android:src="@drawable/widget_background"
         android:tint="#ff4f586b"
-        tools:ignore="UseAppTint" />
+        tools:ignore="UseAppTint"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"

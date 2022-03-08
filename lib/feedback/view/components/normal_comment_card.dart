@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.da
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -30,6 +31,7 @@ class NCommentCard extends StatefulWidget {
   final String ancestorName;
   final int ancestorId;
   final Floor comment;
+  final int uid;
   final int commentFloor;
   final LikeCallback likeSuccessCallback;
   final DislikeCallback dislikeSuccessCallback;
@@ -39,15 +41,15 @@ class NCommentCard extends StatefulWidget {
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard(
-      {this.ancestorName,
-      this.ancestorId,
-      this.comment,
-      this.commentFloor,
-      this.likeSuccessCallback,
-      this.dislikeSuccessCallback,
-      this.isSubFloor,
-      this.isFullView});
+  NCommentCard({this.ancestorName,
+    this.ancestorId,
+    this.comment,
+    this.uid,
+    this.commentFloor,
+    this.likeSuccessCallback,
+    this.dislikeSuccessCallback,
+    this.isSubFloor,
+    this.isFullView});
 }
 
 class _NCommentCardState extends State<NCommentCard>
@@ -55,7 +57,13 @@ class _NCommentCardState extends State<NCommentCard>
   final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
+      (BuildContext ctx) =>
+      SizedBox(
+        width: 24,
+        height: 24,
+        child: FittedBox(fit: BoxFit.fitWidth,
+            child: Loading()),
+      );
 
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
@@ -88,7 +96,8 @@ class _NCommentCardState extends State<NCommentCard>
         ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           child: SvgPicture.network(
-            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment
+                .postId}+${widget.comment.nickname}',
             width: 30,
             height: 24,
             fit: BoxFit.fitHeight,
@@ -113,17 +122,17 @@ class _NCommentCardState extends State<NCommentCard>
                   CommentIdentificationContainer(
                       widget.comment.isOwner
                           ? '我的评论'
-                          : widget.comment.nickname == 'Owner'
-                              ? widget.isSubFloor &&
-                                      widget.comment.nickname ==
-                                          widget.ancestorName
-                                  ? '楼主 层主'
-                                  : '楼主'
-                              : widget.isSubFloor &&
-                                      widget.comment.nickname ==
-                                          widget.ancestorName
-                                  ? '层主'
-                                  : '',
+                          : widget.comment.uid == widget.uid
+                      ? widget.isSubFloor &&
+                      widget.comment.nickname ==
+                  widget.ancestorName
+                  ? '楼主 层主'
+                      : '楼主'
+                      : widget.isSubFloor &&
+                  widget.comment.nickname ==
+                  widget.ancestorName
+                  ? '层主'
+                      : '',
                       true),
                   //后面有东西时出现
                   if (widget.comment.replyToName != '' &&
@@ -138,8 +147,8 @@ class _NCommentCardState extends State<NCommentCard>
                     Text(
                       widget.comment.replyToName +
                           (widget.comment.isOwner &&
-                                  widget.comment.replyToName ==
-                                      widget.comment.nickname
+                              widget.comment.replyToName ==
+                                  widget.comment.nickname
                               ? '(我)'
                               : ''),
                       maxLines: 1,
@@ -153,22 +162,22 @@ class _NCommentCardState extends State<NCommentCard>
                     CommentIdentificationContainer(
                         widget.isSubFloor
                             ? widget.comment.replyToName == 'Owner' &&
-                                    (widget.ancestorName != 'Owner' ||
-                                        (widget.ancestorName == 'Owner' &&
-                                            widget.comment.replyTo !=
-                                                widget.ancestorId))
-                                ? widget.comment.replyToName ==
-                                            widget.ancestorName &&
-                                        widget.comment.replyTo !=
-                                            widget.ancestorId
-                                    ? '楼主 层主'
-                                    : '楼主'
-                                : widget.comment.replyToName ==
-                                            widget.ancestorName &&
-                                        widget.comment.replyTo !=
-                                            widget.ancestorId
-                                    ? '层主'
-                                    : ''
+                            (widget.ancestorName != 'Owner' ||
+                                (widget.ancestorName == 'Owner' &&
+                                    widget.comment.replyTo !=
+                                        widget.ancestorId))
+                            ? widget.comment.replyToName ==
+                            widget.ancestorName &&
+                            widget.comment.replyTo !=
+                                widget.ancestorId
+                            ? '楼主 层主'
+                            : '楼主'
+                            : widget.comment.replyToName ==
+                            widget.ancestorName &&
+                            widget.comment.replyTo !=
+                                widget.ancestorId
+                            ? '层主'
+                            : ''
                             : '',
                         false),
                   if (widget.isSubFloor &&
@@ -178,15 +187,18 @@ class _NCommentCardState extends State<NCommentCard>
                 ],
               ),
               Text(
-                DateTime.now().difference(widget.comment.createAt).inHours >= 11
+                DateTime
+                    .now()
+                    .difference(widget.comment.createAt)
+                    .inHours >= 11
                     ? widget.comment.createAt
-                        .toLocal()
-                        .toIso8601String()
-                        .replaceRange(10, 11, ' ')
-                        .substring(0, 19)
+                    .toLocal()
+                    .toIso8601String()
+                    .replaceRange(10, 11, ' ')
+                    .substring(0, 19)
                     : DateTime.now()
-                        .difference(widget.comment.createAt)
-                        .dayHourMinuteSecondFormatted(),
+                    .difference(widget.comment.createAt)
+                    .dayHourMinuteSecondFormatted(),
                 style: TextUtil.base.ProductSans.grey97.regular.sp(10),
               ),
             ],
@@ -204,7 +216,8 @@ class _NCommentCardState extends State<NCommentCard>
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
-                  '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget.ancestorId}\n【${widget.comment.nickname}】';
+                  '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget
+                  .ancestorId}\n【${widget.comment.nickname}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
               CommonPreferences.feedbackLastWeCo.value =
@@ -244,32 +257,32 @@ class _NCommentCardState extends State<NCommentCard>
               ),
               widget.comment.isOwner
                   ? PopupMenuItem<String>(
-                      value: '删除',
-                      child: Center(
-                        child: Text(
-                          '删除',
-                          style:
-                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                        ),
-                      ),
-                    )
+                value: '删除',
+                child: Center(
+                  child: Text(
+                    '删除',
+                    style:
+                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                  ),
+                ),
+              )
                   : PopupMenuItem<String>(
-                      value: '举报',
-                      child: Center(
-                        child: Text(
-                          '举报',
-                          style:
-                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                        ),
-                      ),
-                    ),
+                value: '举报',
+                child: Center(
+                  child: Text(
+                    '举报',
+                    style:
+                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                  ),
+                ),
+              ),
             ];
           },
         ),
       ],
     );
 
-    var commentContent = ExpandableText(
+    var commentContent = widget.comment.content == '' ? SizedBox() : ExpandableText(
       text: widget.comment.content,
       maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
       style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
@@ -291,77 +304,79 @@ class _NCommentCardState extends State<NCommentCard>
               },
               child: _picFullView
                   ? InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, FeedbackRouter.imageView,
-                            arguments: {
-                              "urlList": [widget.comment.imageUrl],
-                              "urlListLength": 1,
-                              "indexNow": 0
-                            });
-                      },
-                      child: Image.network(
-                        picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace stackTrace) {
-                          return Text(
-                            '💔[图片加载失败]' +
-                                widget.comment.imageUrl.replaceRange(10,
-                                    widget.comment.imageUrl.length - 6, '...'),
-                            style: TextUtil.base.grey6C.w400.sp(12),
-                          );
-                        },
+                onTap: () {
+                  Navigator.pushNamed(context, FeedbackRouter.imageView,
+                      arguments: {
+                        "urlList": [widget.comment.imageUrl],
+                        "urlListLength": 1,
+                        "indexNow": 0
+                      });
+                },
+                child: Image.network(
+                  picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes
+                            : null,
                       ),
-                    )
+                    );
+                  },
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace stackTrace) {
+                    return Text(
+                      '💔[图片加载失败]' +
+                          widget.comment.imageUrl.replaceRange(10,
+                              widget.comment.imageUrl.length - 6, '...'),
+                      style: TextUtil.base.grey6C.w400.sp(12),
+                    );
+                  },
+                ),
+              )
                   : Row(
-                      children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                            child: Image.network(
-                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                                width: 70,
-                                height: 64,
-                                fit: BoxFit.cover, loadingBuilder:
-                                    (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                height: 40,
-                                width: 40,
-                                padding: EdgeInsets.all(4),
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes
-                                      : null,
-                                ),
-                              );
-                            }, errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                              return Text(
-                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                                    widget.comment.imageUrl.replaceRange(
-                                        10,
-                                        widget.comment.imageUrl.length - 6,
-                                        '...'),
-                                style: TextUtil.base.grey6C.w400.sp(12),
-                              );
-                            })),
-                        Spacer()
-                      ],
-                    )),
+                children: [
+                  ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      child: Image.network(
+                          picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                          width: 70,
+                          height: 64,
+                          fit: BoxFit.cover,
+                          loadingBuilder:
+                              (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 40,
+                              width: 40,
+                              padding: EdgeInsets.all(4),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                    null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (BuildContext context,
+                              Object exception, StackTrace stackTrace) {
+                            return Text(
+                              '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                  widget.comment.imageUrl.replaceRange(
+                                      10,
+                                      widget.comment.imageUrl.length - 6,
+                                      '...'),
+                              style: TextUtil.base.grey6C.w400.sp(12),
+                            );
+                          })),
+                  Spacer()
+                ],
+              )),
         ));
 
     var replyButton = IconButton(
@@ -372,7 +387,9 @@ class _NCommentCardState extends State<NCommentCard>
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
         FocusScope.of(context).requestFocus(
-            Provider.of<NewFloorProvider>(context, listen: false).focusNode);
+            Provider
+                .of<NewFloorProvider>(context, listen: false)
+                .focusNode);
       },
       padding: EdgeInsets.zero,
       color: ColorUtil.boldLakeTextColor,
@@ -386,9 +403,9 @@ class _NCommentCardState extends State<NCommentCard>
         itemCount: widget.isFullView
             ? widget.comment.subFloorCnt
             : widget.comment.subFloorCnt > 2
-                ? 2
-                : min(widget.comment.subFloorCnt,
-                    widget.comment.subFloors.length),
+            ? 2
+            : min(widget.comment.subFloorCnt,
+            widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
             ancestorName: widget.comment.nickname,
@@ -404,24 +421,24 @@ class _NCommentCardState extends State<NCommentCard>
 
     var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount,
         onLikePressed: (isLiked, count, success, failure) async {
-      await FeedbackService.commentHitLike(
-        id: widget.comment.id,
-        isLike: widget.comment.isLike,
-        onSuccess: () {
-          widget.comment.isLike = !widget.comment.isLike;
-          widget.comment.likeCount = count;
-          if (widget.comment.isLike && widget.comment.isDis) {
-            widget.comment.isDis = !widget.comment.isDis;
-            setState(() {});
-          }
-          success.call();
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-          failure.call();
-        },
-      );
-    }, isLike: widget.comment.isLike);
+          await FeedbackService.commentHitLike(
+            id: widget.comment.id,
+            isLike: widget.comment.isLike,
+            onSuccess: () {
+              widget.comment.isLike = !widget.comment.isLike;
+              widget.comment.likeCount = count;
+              if (widget.comment.isLike && widget.comment.isDis) {
+                widget.comment.isDis = !widget.comment.isDis;
+                setState(() {});
+              }
+              success.call();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+              failure.call();
+            },
+          );
+        }, isLike: widget.comment.isLike);
 
     var dislikeWidget = DislikeWidget(
       size: 15.w,
@@ -472,21 +489,21 @@ class _NCommentCardState extends State<NCommentCard>
         if (widget.comment.imageUrl != '') commentImage,
         _picFullView == true
             ? TextButton(
-                style: ButtonStyle(
-                    alignment: Alignment.topRight,
-                    padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                onPressed: () {
-                  setState(() {
-                    _picFullView = false;
-                  });
-                },
-                child: Row(
-                  children: [
-                    Spacer(),
-                    Text('收起',
-                        style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
-                  ],
-                ))
+            style: ButtonStyle(
+                alignment: Alignment.topRight,
+                padding: MaterialStateProperty.all(EdgeInsets.zero)),
+            onPressed: () {
+              setState(() {
+                _picFullView = false;
+              });
+            },
+            child: Row(
+              children: [
+                Spacer(),
+                Text('收起',
+                    style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
+              ],
+            ))
             : SizedBox(height: 8),
         bottomWidget,
         SizedBox(height: 4)
@@ -513,10 +530,10 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.isFullView && widget.isSubFloor
                       ? BoxShadow(color: Colors.transparent)
                       : BoxShadow(
-                          blurRadius: 5,
-                          color: Color.fromARGB(64, 236, 237, 239),
-                          offset: Offset(0, 0),
-                          spreadRadius: 3),
+                      blurRadius: 5,
+                      color: Color.fromARGB(64, 236, 237, 239),
+                      offset: Offset(0, 0),
+                      spreadRadius: 3),
                 ],
               ),
               child: mainBody,
@@ -536,7 +553,7 @@ class _NCommentCardState extends State<NCommentCard>
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.commentDetail,
-                          arguments: widget.comment,
+                          arguments: ReplyDetailPageArgs(widget.comment, widget.uid),
                         );
                       },
                       child: Padding(
@@ -544,16 +561,18 @@ class _NCommentCardState extends State<NCommentCard>
                         child: Chip(
                           padding: const EdgeInsets.all(0),
                           labelPadding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                           backgroundColor: Color(0xffebebeb),
                           label: Text(
                               widget.comment.subFloorCnt > 2
                                   ? '查看全部 ' +
-                                      widget.comment.subFloorCnt.toString() +
-                                      ' 条回复 >'
+                                  widget.comment.subFloorCnt.toString() +
+                                  ' 条回复 >'
                                   : '查看回复详情 >',
                               style:
-                                  TextUtil.base.ProductSans.w400.sp(14).grey6C),
+                              TextUtil.base.ProductSans.w400
+                                  .sp(14)
+                                  .grey6C),
                         ),
                       ),
                     )

@@ -1,9 +1,11 @@
 // @dart = 2.12
 
 import 'package:flutter/foundation.dart';
-import 'package:we_pei_yang_flutter/commons/channels/hotfix.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+
+const _hotfixChannel = MethodChannel("com.twt.service/hot_fix");
 
 void hotFix(
   String url,
@@ -37,7 +39,7 @@ void hotFix(
       final path = list.first;
       fixDownloadSuccess?.call(path);
       try {
-        hotFixMoveFile(path);
+        await _hotfixChannel.invokeMethod("hotFix", {"path": path});;
         fixLoadSoFileSuccess.call();
       } catch (e) {
         fixError.call(e);
@@ -48,7 +50,7 @@ void hotFix(
 
 Future<void> restartApp() async {
   try {
-    restart();
+    await _hotfixChannel.invokeMethod("restartApp");
   } catch (e) {
     ToastProvider.error("请手动重启应用");
   }

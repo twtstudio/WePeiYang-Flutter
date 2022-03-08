@@ -1,67 +1,54 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.twt.service">
-    <!-- io.flutter.app.FlutterApplication is an android.app.Application that
-         calls FlutterMain.startInitialization(this); in its onCreate method.
-         In most cases you can leave this as-is, but you if you want to provide
-         additional functionality it is fine to subclass or reimplement
-         FlutterApplication and put your custom class here. -->
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!--友盟需要的一些额外权限-->
+    <!--友盟  https://developer.umeng.com/docs/119267/detail/118584#title-tul-yb2-sqm -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
-    <!--    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!--前台服务开启权限-->
     <!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
     <!--弹出横幅通知的权限-->
-    <!--    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
+<!--        <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
 
-    <!--用于进行网络定位-->
+    <!--高德定位sdk https://lbs.amap.com/api/android-location-sdk/guide/android-location/getlocation -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--用于访问GPS定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--获取运营商信息，用于支持提供运营商信息相关的接口-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--用于访问wifi网络信息，wifi信息会用于进行网络定位-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!--这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!--用于访问网络，网络定位需要上网-->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--用于读取手机当前的状态-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!--用于申请调用A-GPS模块-->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <!--应用内更新-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!--DownloadManager download without notification-->
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+<!--    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>-->
 
-<!--    华为更改角标权限 ，据官网说是-->
-<!--    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE "/>-->
-
-    <!--url_launcher-->
-    <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
+<!--    url_launcher    -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
+<!--    个推-->
         <intent>
-            <action android:name="android.intent.action.DIAL" />
-            <data android:scheme="tel" />
+            <action android:name="com.getui.sdk.action" />
         </intent>
-        <intent>
-            <action android:name="android.intent.action.SENDTO" />
-            <data android:scheme="smsto" />
-        </intent>
+<!--    腾讯sdk（分享）-->
+        <package android:name="com.tencent.mobileqq" />
     </queries>
 
     <application
@@ -70,8 +57,10 @@
         android:label="@string/label"
         tools:replace="android:label"
         android:usesCleartextTraffic="true"
+        android:extractNativeLibs="true"
         tools:targetApi="m">
 
+<!--    应用主Activity    -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -97,11 +86,12 @@
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
-
+<!--        应用主入口    -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+<!--        求实论坛通知拉起应用    -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -111,6 +101,7 @@
                     android:pathPrefix="/feedback"
                     android:scheme="twtstudio" />
             </intent-filter>
+<!--        微北洋信箱通知拉起应用    -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -120,6 +111,7 @@
                     android:pathPrefix="/mailbox"
                     android:scheme="twtstudio" />
             </intent-filter>
+<!--        友盟卖点验证  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -128,7 +120,7 @@
             </intent-filter>
         </activity>
 
-<!--    这两个 activity 一定不能删除，这是QQ API 的必要条件 -->
+<!--    QQ sdk必备Activity -->
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -148,14 +140,7 @@
             </intent-filter>
         </activity>
 
-<!--        <meta-data-->
-<!--            android:name="UMENG_APPKEY"-->
-<!--            android:value="60464782b8c8d45c1390e7e3" />-->
-
-<!--        <meta-data-->
-<!--            android:name="UMENG_CHANNEL"-->
-<!--            android:value="Umeng" />-->
-
+<!--    个推ID配置 -->
 <!--        product-->
         <meta-data
             android:name="PUSH_APPID"
@@ -166,10 +151,10 @@
 <!--            android:name="PUSH_APPID"-->
 <!--            android:value="bj16oBtQ3VAvqPbGtEHB69" />-->
 
+<!--    高德-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />
-
         <service android:name="com.amap.api.location.APSService" />
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
@@ -183,18 +168,13 @@
             android:label="PushService"
             android:process=":pushservice" />
 
-<!--        <service android:name=".message.WBYHmsMessageService" android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.huawei.push.action.MESSAGING_EVENT"/>-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
 
+<!--    桌面小组件-->
         <receiver
             android:name=".widget.ScheduleCardWidgetProvider"
             android:label="@string/widget_label"
@@ -210,6 +190,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/schedule_widget_card_provider" />
         </receiver>
+        <service
+            android:name=".widget.WidgetCardService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+<!--    QQ分享 -->
         <provider
             android:name=".share.QQProvider"
             android:authorities="com.twt.service.qqprovider"
@@ -220,6 +205,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+<!--    应用内更新apk存储地址  -->
         <provider
             android:name=".install.InstallProvider"
             android:authorities="com.twt.service.apkprovider"
@@ -229,19 +215,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/apk_download_path" />
         </provider>
-
-        <service
-            android:name=".widget.WidgetCardService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
-
-    <queries>
-        <intent>
-            <action android:name="com.getui.sdk.action" />
-        </intent>
-    </queries>
-
-    <queries>
-        <package android:name="com.tencent.mobileqq" />
-    </queries>
 </manifest>

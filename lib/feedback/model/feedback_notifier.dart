@@ -64,7 +64,7 @@ class NewPostProvider {
   bool get check =>
       title.isNotEmpty &&
       content.isNotEmpty &&
-      ((type == 1 && department.id != null) || (type == 0 && tag.id != null));
+      ((type == 1 && department.id != null) || type == 0);
 
   void clear() {
     title = "";
@@ -122,6 +122,11 @@ class FbHomeStatusNotifier extends ChangeNotifier {
       _status = listProvider._status;
       notifyListeners();
     }
+  }
+
+  void toLoading() {
+    _status = FbHomePageStatus.loading;
+    notifyListeners();
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -217,18 +218,40 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(height: 15.w),
-                    Text(
-                      "经过一段时间的沉寂，我们很高兴能够带着崭新的青年湖底与您相见。\n" +
-                          "\n" +
-                          "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为青年湖底论坛中的两个分区，同时我们也在努力让青年湖底在功能上接近于一个成熟的论坛。\n" +
-                          "\n" +
-                          "现在它拥有：\n" +
-                          "\n" +
-                          "点踩、举报；回复评论、带图评论；分享、自定义tag...还有一些细节等待您去自行挖掘。\n" +
-                          "\n" +
-                          "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
-                      style:
-                          TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+                    RichText(
+                      text: TextSpan(
+                       text: "尊敬的微北洋用户：\n"
+                           "\n" +
+                       "经过一段时间的沉寂，我们很高兴能够带着崭新的求实论坛与您相见。\n" +
+                            "\n" +
+                            "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为求实论坛中的两个分区，“小树洞”更名为“青年湖底”，同时我们也在努力让求实在功能上接近于一个成熟的论坛。\n" +
+                            "\n" +
+                            "现在它拥有：\n" +
+                            "\n" +
+                            "点踩、举报；回复评论、带图评论；分享、自定义tag、内链外链跳转...还有一些细节等待您去自行挖掘。\n" +
+                            "\n" +
+                            "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
+                        style: TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+                        children: [
+                          TextSpan(
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context) =>
+                                        LakePrivacyDialog());
+                              },
+                              text :
+                                '《求实论坛社区规范》',
+                                style: TextUtil.base.normal.NotoSansSC
+                                    .sp(14)
+                                    .w400
+                                    .textButtonBlue,
+                              )
+                        ]
+                    ),
+
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -238,8 +261,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             builder: (context, type, _) {
                               return GestureDetector(
                                 onTap: () {
-                                    checkedNotifier.value =
-                                        !checkedNotifier.value;
+                                  checkedNotifier.value =
+                                      !checkedNotifier.value;
                                 },
                                 child: Stack(
                                   children: [
@@ -297,7 +320,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
                 cancelTextStyle:
                     TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                confirmText: "前往湖底",
+                confirmText: "前往求实论坛",
                 cancelFun: () {
                   Navigator.pop(context);
                   Navigator.popAndPushNamed(context, HomeRouter.home);
@@ -362,6 +385,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tagsContainerBackgroundOpacity = 0;
     _refreshController = _refreshController1;
     shouldBeInitialized = [false, true, true, false];
+    _controller = _controller1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
@@ -844,26 +868,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         },
         body: Consumer<FbHomeStatusNotifier>(
           builder: (_, status, __) {
-            return Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                Container(color: ColorUtil.backgroundColor),
-                Padding(
-                    padding: EdgeInsets.zero,
-                    child: ExtendedTabBarView(
-                      controller: _tabController,
-                      cacheExtent: 2,
-                      children: <Widget>[
-                        _mixedListView,
-                        _lakeListView,
-                        _feedbackListView,
-                        GamePage()
-                      ],
-                    )),
-                if (status.isLoading) Loading(),
-                if (status.isError) HomeErrorContainer(onRefresh, true),
-              ],
-            );
+            if (status.isIdle)
+              return ExtendedTabBarView(
+                controller: _tabController,
+                cacheExtent: 2,
+                children: <Widget>[
+                  _mixedListView,
+                  _lakeListView,
+                  _feedbackListView,
+                  GamePage()
+                ],
+              );
+            else if (status.isLoading)
+              return Loading();
+            else
+              return HomeErrorContainer(onRefresh, true);
           },
         ),
       ),
@@ -874,7 +893,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool get wantKeepAlive => true;
 
   void listToTop() {
-    if (_controller.offset > 1500) _controller.jumpTo(1500);
+    if (_controller.offset > 1500) {
+      _controller.jumpTo(1500);
+    }
     _controller.animateTo(-85,
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
@@ -995,10 +1016,16 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             forceRefresh: true,
             onResult: (_) {
               _tagsProvider.initDepartments();
-              _listProvider.initPostList(2, success: () {}, failure: (_) {});
+              _listProvider.initPostList(2, success: () {
+                widget.onPressed;
+              }, failure: (_) {
+                controller.reset();
+                ToastProvider.error('刷新失败');
+              });
             },
             onFailure: (e) {
-              ToastProvider.error(e.error.toString());
+              controller.reset();
+              ToastProvider.error('刷新失败');
             });
         if (!controller.isAnimating) {
           controller.repeat();
@@ -1011,6 +1038,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
     var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 8);
 
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
