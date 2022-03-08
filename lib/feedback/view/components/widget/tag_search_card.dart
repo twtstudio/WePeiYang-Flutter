@@ -45,6 +45,7 @@ class _SearchTagCardState extends State<SearchTagCard>
     _showAdd = true;
     if (!_useThisTag) {
       for (int total = 0; total < tagUtil.length; total++) {
+        if (tagUtil[total].name == _controller.text.toString()) _showAdd = false;
         tagList.add(GestureDetector(
           onTap: () {
             _controller.text = tagUtil[total].name;

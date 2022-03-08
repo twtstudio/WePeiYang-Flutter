@@ -681,25 +681,32 @@ class _PostCardState extends State<PostCard> {
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
               width:
-                  (ScreenUtil.defaultSize.width - 80) / post.imageUrls.length,
-              height: (ScreenUtil.defaultSize.width - 80) /
+                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
+              height: (ScreenUtil.defaultSize.width - 74) /
                   post.imageUrls.length *
-                  0.8,
+                  0.9,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
-            return Center(
-              child: Container(
-                height: 40,
-                width: 40,
-                padding: EdgeInsets.all(4),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  backgroundColor: Colors.black12,
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes
-                      : null,
+            return SizedBox(
+              width:
+              (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
+              height: (ScreenUtil.defaultSize.width - 74) /
+                  post.imageUrls.length *
+                  0.9,
+              child: Center(
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  padding: EdgeInsets.all(4),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    backgroundColor: Colors.black12,
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes
+                        : null,
+                  ),
                 ),
               ),
             );
