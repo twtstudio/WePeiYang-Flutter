@@ -1,5 +1,9 @@
 package com.twt.service
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
@@ -23,28 +27,28 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         flutterEngine.plugins.runCatching {
             add(
-                    setOf(
-                            // 课程表小组件
-                            WbyWidgetPlugin(),
-                            // 点击通知，等应用进入主页面后，从 eventList 中获取事件
-                            WbyMessagePlugin(),
-                            // qq分享（图片，文字），微信分享（还没做）
-                            WbySharePlugin(),
-                            // 微北洋通用下载工具
-                            WbyDownloadPlugin(),
-                            // 应用内更新 apk 安装
-                            WbyInstallPlugin(),
-                            // 高德地图 api 获取定位（疫情填报）
-                            WbyLocationPlugin(),
-                            // 保存图片
-                            WbyImageSavePlugin(),
-                            // 个推推送
-                            WbyPushPlugin(),
-                            // 添加热修复文件
-                            WbyFixPlugin(),
-                            // 友盟统计
-                            WbyStatisticsPlugin(),
-                    )
+                setOf(
+                    // 课程表小组件
+                    WbyWidgetPlugin(),
+                    // 点击通知，等应用进入主页面后，从 eventList 中获取事件
+                    WbyMessagePlugin(),
+                    // qq分享（图片，文字），微信分享（还没做）
+                    WbySharePlugin(),
+                    // 微北洋通用下载工具
+                    WbyDownloadPlugin(),
+                    // 应用内更新 apk 安装
+                    WbyInstallPlugin(),
+                    // 高德地图 api 获取定位（疫情填报）
+                    WbyLocationPlugin(),
+                    // 保存图片
+                    WbyImageSavePlugin(),
+                    // 个推推送
+                    WbyPushPlugin(),
+                    // 添加热修复文件
+                    WbyFixPlugin(),
+                    // 友盟统计
+                    WbyStatisticsPlugin(),
+                )
             )
         }
     }
@@ -71,7 +75,7 @@ class MainActivity : FlutterActivity() {
         super.onWindowFocusChanged(hasFocus)
         takeIf { hasFocus && (flutterEngine != null) }?.runCatching {
             (flutterEngine!!.plugins.get(WbyPushPlugin::class.java) as? WbyPushPlugin)
-                    ?.onWindowFocusChanged()
+                ?.onWindowFocusChanged()
         }
         log("onWindowFocusChanged : $hasFocus")
     }
@@ -79,6 +83,17 @@ class MainActivity : FlutterActivity() {
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()
         WbySharePreference.setCurrentUseSoFileCanUse()
+    }
+
+    // 禁用显示大小改变和文字大小改变
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ChangeDisplay.attachBaseContext(newBase))
+    }
+
+    // 更改字体或显示大小后，自动重启activity（参考了高德地图）
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        recreate()
     }
 
     companion object {
