@@ -18,6 +18,9 @@ class UpdateUtil {
           int.tryParse(packageInfo.buildNumber) ?? _flutterCodeVersion;
       _versionCode = max(_androidCodeVersion, _flutterCodeVersion);
     }
+    if (_versionCode! > 1000) {
+      _versionCode = _versionCode! % 1000;
+    }
     return _versionCode!;
   }
 
