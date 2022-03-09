@@ -266,6 +266,19 @@ class _PostCardState extends State<PostCard> {
               ClipboardData(text: '【' + post.title + '】 ' + post.content));
           ToastProvider.success('复制冒泡内容成功');
         },
+        onTap: () async {
+          if (widget.type == PostCardType.simple) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            ).then((p) {
+              setState(() {
+                post = p;
+              });
+            });
+          }
+        },
         child: SizedBox(
           width: double.infinity,
           child: ExpandableText(
@@ -305,6 +318,19 @@ class _PostCardState extends State<PostCard> {
                 Clipboard.setData(ClipboardData(
                     text: '【' + post.title + '】 ' + post.content));
                 ToastProvider.success('复制提问成功');
+              },
+              onTap: () async {
+                if (widget.type == PostCardType.simple) {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.detail,
+                    arguments: post,
+                  ).then((p) {
+                    setState(() {
+                      post = p;
+                    });
+                  });
+                }
               },
               child: title,
             ),

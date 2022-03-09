@@ -408,6 +408,7 @@ class _NCommentCardState extends State<NCommentCard>
             widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
+            uid: widget.uid,
             ancestorName: widget.comment.nickname,
             ancestorId: widget.comment.id,
             comment: widget.comment.subFloors[index],
