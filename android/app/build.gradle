@@ -119,6 +119,12 @@ android {
                 }
             }
 
+            android.applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.versionCodeOverride = android.defaultConfig.versionCode
+                }
+            }
+
 //            packagingOptions {
 //                exclude 'lib/armeabi-v7a/libapp.so'
 //                exclude 'lib/armeabi-v7a/libflutter.so'

@@ -698,7 +698,7 @@ class _PostCardState extends State<PostCard> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: EdgeInsets.all(4.w),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6)),
           child: Image.network(
@@ -707,19 +707,17 @@ class _PostCardState extends State<PostCard> {
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
               width:
-                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
-              height: (ScreenUtil.defaultSize.width - 74) /
-                  post.imageUrls.length *
-                  0.9,
+                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              height: (WePeiYangApp.screenWidth - 64.w) /
+                  post.imageUrls.length * 0.8,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
             return SizedBox(
               width:
-                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
-              height: (ScreenUtil.defaultSize.width - 74) /
-                  post.imageUrls.length *
-                  0.9,
+                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              height: (WePeiYangApp.screenWidth - 64.w) /
+                  post.imageUrls.length * 0.8,
               child: Center(
                 child: Container(
                   height: 40,

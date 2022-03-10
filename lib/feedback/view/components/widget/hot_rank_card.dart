@@ -69,7 +69,7 @@ class _HotCardState extends State<HotCard> {
                         FeedbackRouter.searchResult,
                         arguments: SearchResultPageArgs(
                           '',
-                          '${data.hotTagsList[index].id}',
+                          '${data.hotTagsList[index].tagId}',
                           '',
                           S.current.feedback_search_result,
                           0
