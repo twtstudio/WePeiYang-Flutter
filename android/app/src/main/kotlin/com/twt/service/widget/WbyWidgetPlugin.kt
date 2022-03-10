@@ -2,11 +2,9 @@ package com.twt.service.widget
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.twt.service.WBYApplication
-import com.twt.service.common.IntentEvent
+import com.twt.service.push.IntentEvent
 import com.twt.service.common.LogUtil
-import com.twt.service.push.WbyPushPlugin
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware

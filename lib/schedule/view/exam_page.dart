@@ -7,9 +7,9 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
+import 'package:provider/provider.dart';
 
 class ExamPage extends StatefulWidget {
   @override

@@ -11,7 +11,6 @@ import 'package:we_pei_yang_flutter/commons/channels/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 

@@ -7,9 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

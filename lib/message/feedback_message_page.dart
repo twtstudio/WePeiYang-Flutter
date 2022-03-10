@@ -13,10 +13,10 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 import 'model/message_model.dart';
 

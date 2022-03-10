@@ -1,7 +1,9 @@
 package com.twt.service.common
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.view.Display
 import java.lang.reflect.Method
 
@@ -26,6 +28,16 @@ object ChangeDisplay {
         } catch (e: Throwable) {
             LogUtil.e(TAG, e)
             context
+        }
+    }
+
+    /**
+     * 当更改手机字体大小，或显示大小后，重启activity
+     */
+    fun recreateWhenConfigChange(newConfig: Configuration, activity: Activity) {
+        if (newConfig.densityDpi != defaultDisplayDensity || newConfig.fontScale != 1F) {
+            LogUtil.d(TAG,"recreate activity")
+            activity.recreate()
         }
     }
 

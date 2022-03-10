@@ -102,6 +102,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
             return false
         }
 
+        // TODO: 源码里 onRequestPermissionsResult 和 onActivityResult 略有差别
+//        activityBinding.removeRequestPermissionsResultListener(this)
+
         if (permissions == null || grantResults == null || continueDo == null) {
             result.error("", "permissions and grantResults both null", null)
             return true

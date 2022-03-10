@@ -93,7 +93,7 @@ class MainActivity : FlutterActivity() {
     // 更改字体或显示大小后，自动重启activity（参考了高德地图）
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        recreate()
+        ChangeDisplay.recreateWhenConfigChange(newConfig,this)
     }
 
     companion object {

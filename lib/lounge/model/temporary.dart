@@ -1,41 +1,14 @@
+// @dart = 2.12
 import 'package:hive/hive.dart';
 
 import 'building.dart';
 
+part 'temporary.g.dart';
+
+@HiveType(typeId: 7)
 class Buildings {
+  @HiveField(0)
   List<Building> buildings;
 
-  Buildings({this.buildings});
-}
-
-class BuildingsAdapter extends TypeAdapter<Buildings> {
-  @override
-  final int typeId = 7;
-
-  @override
-  Buildings read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Buildings(buildings: (fields[0] as List)?.cast<Building>());
-  }
-
-  @override
-  void write(BinaryWriter writer, Buildings obj) {
-    writer
-      ..writeByte(1)
-      ..writeByte(0)
-      ..write(obj.buildings);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is BuildingAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+  Buildings({required this.buildings});
 }

@@ -2,16 +2,13 @@ package com.twt.service.image
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import com.twt.service.common.LogUtil
-import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
@@ -36,8 +33,8 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "savePictureToAlbum" -> savePictureToAlbum(call,result)
-            "savePictureFromUrl" -> savePictureFromUrl(call,result)
+            "savePictureToAlbum" -> savePictureToAlbum(call, result)
+            "savePictureFromUrl" -> savePictureFromUrl(call, result)
         }
     }
 

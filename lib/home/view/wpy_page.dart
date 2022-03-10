@@ -1,21 +1,20 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
-import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
-import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
+import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
+import 'package:we_pei_yang_flutter/lounge/view/widget/favor_list.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
@@ -120,7 +119,7 @@ class WPYPageState extends State<WPYPage> {
                         toolCards[0],
                         toolCards[1],
                         toolCards[2],
-                        toolCards[3]
+                        // toolCards[3]
                       ], //以后可以写排序
                     ),
                   )),
@@ -147,7 +146,7 @@ class WPYPageState extends State<WPYPage> {
     TodayCoursesWidget(),
     WpyExamWidget(),
     GPAPreview(),
-    LoungeFavourWidget(title: S.current.lounge, init: true),
+    // LoungeFavorList('我的收藏'),
   ];
 }
 
@@ -321,34 +320,32 @@ class SliverCardsWidget extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: ShaderMask(
                 shaderCallback: (rect) {
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.center,
-                        colors: [Colors.transparent, ColorUtil.backgroundColor],
-                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                    },
+                  return LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.center,
+                    colors: [Colors.transparent, ColorUtil.backgroundColor],
+                  ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                },
                 blendMode: BlendMode.dstIn,
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   onTap: () {
-                      controller.offset <= 130 * (itemCount - 1)
-                          ? controller.animateTo(controller.offset + 130,
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.fastOutSlowIn)
-                          : controller.animateTo(
-                              140 * (itemCount - 1).toDouble(),
-                              duration: Duration(milliseconds: 800),
-                              curve: Curves.slowMiddle);
-                    },
+                    controller.offset <= 130 * (itemCount - 1)
+                        ? controller.animateTo(controller.offset + 130,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.fastOutSlowIn)
+                        : controller.animateTo(140 * (itemCount - 1).toDouble(),
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.slowMiddle);
+                  },
                   child: Container(
-                        height: 90,
-                        width: 70,
-                        child: Icon(Icons.arrow_forward_ios_sharp,
-                            color: Color.fromRGBO(98, 103, 124, 1.0),
-                            size: 25),
-                        color: ColorUtil.backgroundColor,
-                      ),
+                    height: 90,
+                    width: 70,
+                    child: Icon(Icons.arrow_forward_ios_sharp,
+                        color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
+                    color: ColorUtil.backgroundColor,
+                  ),
                 ),
               ),
             ),

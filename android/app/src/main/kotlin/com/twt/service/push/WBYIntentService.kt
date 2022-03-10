@@ -8,7 +8,6 @@ import com.igexin.sdk.PushConsts
 import com.igexin.sdk.message.GTCmdMessage
 import com.igexin.sdk.message.GTNotificationMessage
 import com.igexin.sdk.message.GTTransmitMessage
-import com.twt.service.common.IntentUtil
 
 
 class WBYIntentService : GTIntentService() {

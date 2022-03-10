@@ -5,15 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.google.gson.Gson
 import com.twt.service.MainActivity
 import com.twt.service.R
-import com.twt.service.common.BASEURL
 import com.twt.service.push.model.Event
 import com.twt.service.push.model.FeedbackMessage
 import com.twt.service.push.model.MailBoxMessage

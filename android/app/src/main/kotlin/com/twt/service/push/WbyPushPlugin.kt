@@ -15,7 +15,6 @@ import com.twt.service.BuildConfig
 import com.twt.service.MainActivity
 import com.twt.service.WBYApplication
 import com.twt.service.common.CanPushType
-import com.twt.service.common.IntentEvent
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
 import com.twt.service.push.model.Event

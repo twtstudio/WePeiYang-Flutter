@@ -86,8 +86,8 @@ class CommonPreferences {
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
 
-  /// lounge temporary data update time
-  var temporaryUpdateTime = PrefsBean<String>("temporaryUpdateTime", "");
+  /// 自习室
+  var loungeUpdateTime = PrefsBean<String>("loungeUpdateTime", "");
   var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
 
   /// 健康信息提交时间

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 class ReportLoadingDialog extends StatefulWidget {
   @override

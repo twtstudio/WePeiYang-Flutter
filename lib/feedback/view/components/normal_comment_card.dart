@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -23,7 +24,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);

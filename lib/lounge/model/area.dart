@@ -1,66 +1,133 @@
+// @dart = 2.12
+
 import 'package:hive/hive.dart';
+
 import 'classroom.dart';
 
+part 'area.g.dart';
+
+@HiveType(typeId: 2)
 class Area {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String building;
+
+  @HiveField(2)
   Map<String, Classroom> classrooms;
 
-  Area({this.id = '', this.building, this.classrooms});
+  String bId;
 
-  static Area fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-    Area area = Area();
-    area.id = map['area_id'] ?? '';
-    // var list = map['classrooms'];
-    List<Classroom> list = []
-      ..addAll((map['classrooms'] as List ?? [])
-          .map((e) => Classroom.fromMap(e, aId: area.id)));
-    area.classrooms = {};
+  Area({
+    required this.id,
+    required this.building,
+    required this.classrooms,
+    this.bId = '',
+  });
+
+  factory Area.fromMap(Map<String, dynamic> map, String bName, String bId) {
+    final String id = map['area_id'] ?? '';
+
+    final List<Classroom> list = [
+      ...(map['classrooms'] as List? ?? []).map(
+        (e) => Classroom.fromMap(e, aId: id, bId: bId, bName: bName),
+      )
+    ];
+
+    final Map<String, Classroom> classrooms = {};
+
     for (var room in list) {
-      area.classrooms[room.id ?? ''] = room;
+      classrooms[room.id] = room;
     }
-    return area;
+
+    return Area(
+      id: id,
+      building: bName,
+      classrooms: classrooms,
+      bId: bId,
+    );
   }
 
-  Map toJson() => {"area_id": id, "classrooms": classrooms};
-}
-
-class AreaAdapter extends TypeAdapter<Area> {
-  @override
-  final int typeId = 2;
-
-  @override
-  Area read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Area()
-      ..id = fields[0] as String
-      ..building = fields[1] as String
-      ..classrooms = (fields[2] as Map)?.cast<String, Classroom>();
+  factory Area.empty() {
+    return Area(
+      id: 'unknown',
+      building: 'unknown',
+      classrooms: {},
+    );
   }
 
-  @override
-  void write(BinaryWriter writer, Area obj) {
-    writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.building)
-      ..writeByte(2)
-      ..write(obj.classrooms);
+  Map<String, List<Classroom>>? _floors;
+
+  Map<String, List<Classroom>> get splitByFloor {
+    if (_floors == null) {
+      Map<String, List<Classroom>> f = {};
+
+      for (var c in classrooms.values) {
+        var floor = c.name[0];
+        var room = c..aId = id;
+        if (f.containsKey(floor)) {
+          var list = <Classroom>[...f[floor]!, room];
+          f[floor] = list;
+        } else {
+          f[floor] = [room];
+        }
+      }
+      _floors = f.sortByFloor;
+    }
+    return _floors!;
   }
 
+  Map toJson() => {"area_id": id, "classrooms": classrooms.toString()};
+
   @override
-  int get hashCode => typeId.hashCode;
+  String toString() => '''
+{
+      area_id: $id, 
+      classrooms: $_classroomsStr,
+    }
+  ''';
+
+  String get _classroomsStr {
+    var str = "[\n";
+    classrooms.forEach((_, value) {
+      str += '        $value, \n';
+    });
+    str += "      ]";
+    return str;
+  }
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AreaAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is Area &&
+      other.runtimeType == runtimeType &&
+      other.bId == bId &&
+      other.building == building &&
+      other.id == id &&
+      other.classrooms.keys.fold(
+        true,
+        (previous, key) =>
+            previous && (classrooms[key] == other.classrooms[key]),
+      );
+
+  @override
+  int get hashCode => classrooms.hashCode;
+
+  bool get isEmpty => id == 'unknown' || building == 'unknown';
+}
+
+extension MapExtension on Map {
+  Map<String, List<Classroom>> get sortByFloor {
+    List<String> list = keys.toList() as List<String>;
+    list.sort((a, b) => a.compareTo(b));
+    return Map.fromEntries(
+      list.map(
+        (e) {
+          List<Classroom> cList = this[e];
+          cList.sort((a, b) => a.name.compareTo(b.name));
+          return MapEntry(e, cList);
+        },
+      ),
+    );
+  }
 }

@@ -81,6 +81,4 @@ class QQFactory(
         // 在这里配置好像是只有错误回调会触发，如果想要完成回调触发那么就选择 activityResult
         mTencent.shareToQQ(activity, params, listener)
     }
-
-
 }
