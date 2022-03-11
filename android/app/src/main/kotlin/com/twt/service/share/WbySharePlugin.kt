@@ -102,8 +102,6 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
             return false
         }
 
-        activityBinding.removeRequestPermissionsResultListener(this)
-
         if (permissions == null || grantResults == null || continueDo == null) {
             result.error("", "permissions and grantResults both null", null)
             return true
@@ -134,8 +132,8 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
             }
         }
         log("need permissions: $mPermissions")
-        activityBinding.addRequestPermissionsResultListener(this)
         if (mPermissions.size > 0) {
+            activityBinding.addRequestPermissionsResultListener(this)
             ActivityCompat.requestPermissions(
                     activityBinding.activity,
                     mPermissions.toTypedArray(),
