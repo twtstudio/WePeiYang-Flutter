@@ -10,22 +10,26 @@ const _channel = MethodChannel('com.twt.service/saveImg');
 
 Future<void> saveImageToAlbum(Uint8List data, String fileName) async {
   try {
-    List<Directory>? tempDir = await getExternalStorageDirectories(type: StorageDirectory.pictures);
+    List<Directory>? tempDir =
+        await getExternalStorageDirectories(type: StorageDirectory.pictures);
     if (tempDir == null) {
       ToastProvider.error("找不到对应文件夹");
       return;
     }
-    var newImg = File("${tempDir.first.path}/$fileName")..writeAsBytesSync(data);
-    await _channel.invokeMethod("savePictureToAlbum", {"path": newImg.absolute.path});
+    var newImg = File("${tempDir.first.path}/$fileName")
+      ..writeAsBytesSync(data);
+    await _channel
+        .invokeMethod("savePictureToAlbum", {"path": newImg.absolute.path});
     ToastProvider.success("保存成功");
   } catch (e) {
     ToastProvider.error("保存失败");
   }
 }
 
-Future<String> saveImageFromUrl(String url, {String? fileName, bool? album}) async {
-  final resultPath =
-      await _channel.invokeMethod<String>("savePictureFromUrl", {"url": url, "fileName": fileName, "album": album});
+Future<String> saveImageFromUrl(String url,
+    {String? fileName, bool? album}) async {
+  final resultPath = await _channel.invokeMethod<String>(
+      "savePictureFromUrl", {"url": url, "fileName": fileName, "album": album});
   if (resultPath == null) {
     throw Exception("null result path");
   }

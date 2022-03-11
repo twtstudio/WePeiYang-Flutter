@@ -135,6 +135,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
             }
         }
         log("need permissions: $mPermissions")
+        activityBinding.addRequestPermissionsResultListener(this)
         if (mPermissions.size > 0) {
             activityBinding.addRequestPermissionsResultListener(this)
             ActivityCompat.requestPermissions(
