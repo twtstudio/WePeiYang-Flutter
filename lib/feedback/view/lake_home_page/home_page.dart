@@ -23,6 +23,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -880,9 +881,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 controller: _tabController,
                 cacheExtent: 2,
                 children: <Widget>[
-                  _mixedListView,
-                  _lakeListView,
-                  _feedbackListView,
+                  NSubPage(index: 0),
+                  NSubPage(index: 1),
+                  NSubPage(index: 2),
                   GamePage()
                 ],
               );
