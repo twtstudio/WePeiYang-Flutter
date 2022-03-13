@@ -49,9 +49,9 @@ abstract class DioAbstract {
 extension DioRequests on DioAbstract {
   /// 普通的[get]、[post]、[put]与[download]方法，返回[Response]
   Future<Response<dynamic>> get(String path,
-      {Map<String, dynamic>? queryParameters}) {
+      {Map<String, dynamic>? queryParameters, Options? options}) {
     return dio
-        .get(path, queryParameters: queryParameters)
+        .get(path, queryParameters: queryParameters, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;
@@ -59,9 +59,12 @@ extension DioRequests on DioAbstract {
   }
 
   Future<Response<dynamic>> post(String path,
-      {Map<String, dynamic>? queryParameters, FormData? formData}) {
+      {Map<String, dynamic>? queryParameters,
+      FormData? formData,
+      Options? options}) {
     return dio
-        .post(path, queryParameters: queryParameters, data: formData)
+        .post(path,
+            queryParameters: queryParameters, data: formData, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;

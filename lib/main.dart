@@ -30,8 +30,8 @@ import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
 import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import 'commons/statistics/umeng_statistics.dart';
@@ -156,8 +156,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
           );
           break;
         case IntentEvent.SchedulePage:
-          if (!PageStackObserver.pageStack.contains(ScheduleRouter.schedule)) {
-            Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
+          if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
+            Navigator.pushNamed(baseContext, ScheduleRouter.course);
           }
           break;
         case IntentEvent.UpdateDialog:
@@ -189,8 +189,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
-        ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-        ChangeNotifierProvider(create: (context) => ExamNotifier()),
+        ChangeNotifierProvider(create: (context) => CourseProvider()),
+        ChangeNotifierProvider(create: (context) => CourseDisplayProvider()),
+        ChangeNotifierProvider(create: (context) => ExamProvider()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
         ChangeNotifierProvider(create: (_) => PushManager()),
@@ -311,8 +312,8 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     UmengCommonSdk.initCommon();
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (CommonPreferences.updateTime.value != "20210906") {
-      CommonPreferences.updateTime.value = "20210906";
+    if (CommonPreferences.updateTime.value != "20220312") {
+      CommonPreferences.updateTime.value = "20220312";
       CommonPreferences.clearTjuPrefs();
       CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
@@ -320,9 +321,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     }
 
     /// 读取gpa和课程表的缓存
-    Provider.of<ScheduleNotifier>(context, listen: false).readPref();
-    Provider.of<ExamNotifier>(context, listen: false).readPref();
-    Provider.of<GPANotifier>(context, listen: false).readPref();
+    context.read<CourseProvider>().readPref();
+    context.read<ExamProvider>().readPref();
+    context.read<GPANotifier>().readPref();
 
     /// 如果存过账号密码，优先用账密刷新token
     if (CommonPreferences.account.value != '' &&

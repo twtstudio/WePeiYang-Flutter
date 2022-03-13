@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
@@ -10,7 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class ExamPage extends StatefulWidget {
   @override
@@ -19,97 +20,98 @@ class ExamPage extends StatefulWidget {
 
 class _ExamPageState extends State<ExamPage> {
   _ExamPageState() {
-    Provider.of<ExamNotifier>(WePeiYangApp.navigatorState.currentContext,
-            listen: false)
-        .refreshExam()
-        .call();
+    WePeiYangApp.navigatorState.currentContext!
+        .read<ExamProvider>()
+        .refreshExam();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExamNotifier>(builder: (context, notifier, _) {
-      List<Widget> unfinished = notifier.unfinished.isEmpty
-          ? [
-              Center(
-                  child: Text('没有未完成的考试哦',
-                      style: FontManager.YaHeiLight.copyWith(
-                          color: Colors.grey[400], fontSize: 12)))
-            ]
-          : notifier.unfinished
-              .map((e) => examCard(context, e, false))
-              .toList();
-      List<Widget> finished = notifier.finished.isEmpty
-          ? [
-              Center(
-                  child: Text('没有已完成的考试哦',
-                      style: FontManager.YaHeiLight.copyWith(
-                          color: Colors.grey[400], fontSize: 12)))
-            ]
-          : notifier.finished.map((e) => examCard(context, e, true)).toList();
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          elevation: 0,
-          leading: GestureDetector(
-              child: Icon(Icons.arrow_back,
-                  color: FavorColors.scheduleTitleColor(), size: 32),
-              onTap: () => Navigator.pop(context)),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.autorenew,
-                  color: FavorColors.scheduleTitleColor(), size: 28),
-              onPressed: () {
-                if (CommonPreferences.isBindTju.value) {
-                  Provider.of<ExamNotifier>(context, listen: false)
-                      .refreshExam(
-                          hint: true,
-                          onFailure: (e) {
-                            showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) =>
-                                    TjuRebindDialog(
-                                        reason: e is WpyDioError
-                                            ? e.error.toString()
-                                            : null));
-                          })
-                      .call();
-                } else {
-                  ToastProvider.error("请绑定办公网");
-                  Navigator.pushNamed(context, AuthRouter.tjuBind);
-                }
-              },
-            ),
-            SizedBox(width: 10),
-          ],
+    var appBar = AppBar(
+      backgroundColor: Colors.white,
+      brightness: Brightness.light,
+      elevation: 0,
+      leading: GestureDetector(
+          child: Icon(Icons.arrow_back,
+              color: FavorColors.scheduleTitleColor, size: 32),
+          onTap: () => Navigator.pop(context)),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.autorenew,
+              color: FavorColors.scheduleTitleColor, size: 28),
+          onPressed: () {
+            if (CommonPreferences.isBindTju.value) {
+              context.read<ExamProvider>().refreshExam(
+                  hint: true,
+                  onFailure: (e) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => TjuRebindDialog(
+                            reason:
+                                e is WpyDioError ? e.error.toString() : null));
+                  });
+            } else {
+              ToastProvider.error("请绑定办公网");
+              Navigator.pushNamed(context, AuthRouter.tjuBind);
+            }
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              SizedBox(height: 10),
-              Text('未完成',
-                  style: FontManager.YaQiHei.copyWith(
-                      fontSize: 16,
-                      color: FavorColors.scheduleTitleColor(),
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              ...unfinished,
-              SizedBox(height: 15),
-              Text('已完成',
-                  style: FontManager.YaQiHei.copyWith(
-                      fontSize: 16,
-                      color: FavorColors.scheduleTitleColor(),
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              ...finished,
-            ],
-          ),
+        SizedBox(width: 10),
+      ],
+    );
+
+    return Scaffold(
+      appBar: appBar,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Consumer<ExamProvider>(
+          builder: (context, provider, _) {
+            List<Widget> unfinished = provider.unfinished.isEmpty
+                ? [
+                    Center(
+                        child: Text('没有未完成的考试哦',
+                            style: FontManager.YaHeiLight.copyWith(
+                                color: Colors.grey[400], fontSize: 12)))
+                  ]
+                : provider.unfinished
+                    .map((e) => examCard(context, e, false))
+                    .toList();
+            List<Widget> finished = provider.finished.isEmpty
+                ? [
+                    Center(
+                        child: Text('没有已完成的考试哦',
+                            style: FontManager.YaHeiLight.copyWith(
+                                color: Colors.grey[400], fontSize: 12)))
+                  ]
+                : provider.finished
+                    .map((e) => examCard(context, e, true))
+                    .toList();
+            return ListView(
+              physics: BouncingScrollPhysics(),
+              children: [
+                SizedBox(height: 10),
+                Text('未完成',
+                    style: FontManager.YaQiHei.copyWith(
+                        fontSize: 16,
+                        color: FavorColors.scheduleTitleColor,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 5),
+                ...unfinished,
+                SizedBox(height: 15),
+                Text('已完成',
+                    style: FontManager.YaQiHei.copyWith(
+                        fontSize: 16,
+                        color: FavorColors.scheduleTitleColor,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 5),
+                ...finished,
+              ],
+            );
+          },
         ),
-      );
-    });
+      ),
+    );
   }
 }
 

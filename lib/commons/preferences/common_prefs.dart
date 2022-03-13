@@ -45,12 +45,12 @@ class CommonPreferences {
   ///
   /// 办公网
   static final gpaData = PrefsBean<String>('gpaData');
-  static final scheduleData = PrefsBean<String>('scheduleData');
+  static final courseData = PrefsBean<String>('courseData');
   static final examData = PrefsBean<String>('examData');
   static final isBindTju = PrefsBean<bool>('bindtju');
   static final tjuuname = PrefsBean<String>('tjuuname');
   static final tjupasswd = PrefsBean<String>('tjupasswd');
-  static final scheduleShrink = PrefsBean<bool>('scheduleShrink');
+  static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
 
   /// 学期信息
   /// 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
@@ -65,7 +65,7 @@ class CommonPreferences {
   static final semesterId = PrefsBean<String>('semester'); // semester.id
   static final ids = PrefsBean<String>('ids'); // ids
 
-  static List<String> getCookies() {
+  static List<String> get cookies {
     var jSessionId = 'J' +
         ((gSessionId.value.length > 0) ? gSessionId.value.substring(1) : '');
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
@@ -126,7 +126,7 @@ class CommonPreferences {
   /// 清除办公网缓存
   static void clearTjuPrefs() {
     gpaData.clear();
-    scheduleData.clear();
+    courseData.clear();
     isBindTju.clear();
     tjuuname.clear();
     tjupasswd.clear();

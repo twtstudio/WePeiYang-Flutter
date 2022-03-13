@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show required;
+// @dart = 2.12
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -7,10 +7,10 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
 void getGPABean(
-    {@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
+    {required OnResult<GPABean> onResult, required OnFailure onFailure}) async {
   try {
     var info = await fetch("http://classes.tju.edu.cn/eams/stdDetail.action",
-        cookieList: CommonPreferences.getCookies());
+        cookieList: CommonPreferences.cookies);
 
     var infoDetail = info.data.toString().match(r'(?<=项目：</td>)[\s\S]*?</td>');
 
@@ -23,21 +23,21 @@ void getGPABean(
       /// 如果是研究生，切换至研究生成绩
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-          cookieList: CommonPreferences.getCookies(),
+          cookieList: CommonPreferences.cookies,
           params: {'projectId': '22'});
     } else if (CommonPreferences.ids.value == "useless") {
       /// 如果有辅修，切换至主修成绩（其实是总成绩）
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-          cookieList: CommonPreferences.getCookies(),
+          cookieList: CommonPreferences.cookies,
           params: {'projectId': '1'});
     }
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-        cookieList: CommonPreferences.getCookies());
+        cookieList: CommonPreferences.cookies);
     onResult(_data2GPABean(response.data.toString(), isMaster));
   } on DioError catch (e) {
-    if (onFailure != null) onFailure(e);
+    onFailure(e);
   }
 }
 
@@ -143,7 +143,7 @@ GPABean _data2GPABean(String data, bool isMaster) {
 }
 
 /// 对课程数据进行整理后生成gpaCourse对象，注意研究生的list元素顺序和本科生的不一样
-GPACourse _data2GPACourse(Map<String, String> data) {
+GPACourse? _data2GPACourse(Map<String, String> data) {
   double score = 0.0;
   switch (data['score'] ?? '0.0') {
     case '缓考':

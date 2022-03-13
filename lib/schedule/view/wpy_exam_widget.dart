@@ -1,9 +1,10 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
 
 class WpyExamWidget extends StatelessWidget {
@@ -11,40 +12,43 @@ class WpyExamWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22.0),
-        child: Consumer<ExamNotifier>(builder: (context, notifier, _) {
-          if (notifier.hideExam) return Container();
-          return Column(
-            children: [
-              SizedBox(height: 7),
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      Text('考表',
-                          style: FontManager.YaQiHei.copyWith(
-                              fontSize: 16,
-                              color: Color.fromRGBO(100, 103, 122, 1),
-                              fontWeight: FontWeight.bold)),
-                      Spacer(),
-                      Icon(Icons.keyboard_arrow_right,
-                          color: ColorUtil.lightTextColor),
-                      SizedBox(width: 5)
-                    ],
-                  ),
-                ),
+        child: Consumer<ExamProvider>(
+          builder: (context, provider, child) {
+            if (provider.hideExam) return Container();
+            return Column(
+              children: [
+                SizedBox(height: 7),
+                child!,
+                SizedBox(height: 5),
+                _detail(provider, context),
+              ],
+            );
+          },
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  Text('考表',
+                      style: FontManager.YaQiHei.copyWith(
+                          fontSize: 16,
+                          color: Color.fromRGBO(100, 103, 122, 1),
+                          fontWeight: FontWeight.bold)),
+                  Spacer(),
+                  Icon(Icons.keyboard_arrow_right,
+                      color: ColorUtil.lightTextColor),
+                  SizedBox(width: 5)
+                ],
               ),
-              SizedBox(height: 5),
-              _detail(notifier, context),
-            ],
-          );
-        }));
+            ),
+          ),
+        ));
   }
 
-  Widget _detail(ExamNotifier notifier, BuildContext context) {
-    if (notifier.unscheduled.length == 0) {
-      var msg = notifier.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
+  Widget _detail(ExamProvider provider, BuildContext context) {
+    if (provider.unscheduled.length == 0) {
+      var msg = provider.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
@@ -60,24 +64,23 @@ class WpyExamWidget extends StatelessWidget {
                       letterSpacing: 0.5)),
             )),
       );
-    } else if (notifier.unscheduled.length > 1) {
+    } else if (provider.unscheduled.length > 1) {
       return Container(
-        constraints: BoxConstraints(
-          maxHeight: 105,
-        ),
+        constraints: BoxConstraints(maxHeight: 105),
         child: ListView(
           scrollDirection: Axis.horizontal,
           physics: BouncingScrollPhysics(),
-          children: notifier.unscheduled
+          children: provider.unscheduled
               .map((e) => examCard(context, e, true, wpy: true))
               .toList(),
         ),
       );
-    } else
+    } else {
       return Row(
-        children: notifier.unscheduled
+        children: provider.unscheduled
             .map((e) => examCard(context, e, true, wpy: true))
             .toList(),
       );
+    }
   }
 }

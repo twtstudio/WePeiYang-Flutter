@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
-/// 首先，gpa配色[gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
+/// 首先，gpa配色[_gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
 /// 每套配色均由四种颜色：[背景色]、[颜色一]、[颜色二]、[颜色三]组成（在List中顺序排列，具体名字我懒得取了）
 /// * 背景色：页面背景颜色、曲线上被选中的点的内圆
 ///
@@ -32,7 +33,7 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 /// * 注：雷达图的成绩区域填充色、放射线条、绩点区域颜色均固定，设计也没给55555
 
 class GPAPage extends StatefulWidget {
-  final List<Color> gpaColors = FavorColors.gpaColor;
+  final List<Color> _gpaColors = FavorColors.gpaColor;
 
   @override
   _GPAPageState createState() => _GPAPageState();
@@ -41,16 +42,15 @@ class GPAPage extends StatefulWidget {
 class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
   _GPAPageState() {
-    Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext,
-            listen: false)
-        .refreshGPA()
-        .call();
+    WePeiYangApp.navigatorState.currentContext!
+        .read<GPANotifier>()
+        .refreshGPA();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (CommonPreferences.firstUse.value) {
         CommonPreferences.firstUse.value = false;
         showDialog(
@@ -65,20 +65,20 @@ class _GPAPageState extends State<GPAPage> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark
-          .copyWith(systemNavigationBarColor: widget.gpaColors[0]),
+          .copyWith(systemNavigationBarColor: widget._gpaColors[0]),
       child: Consumer<GPANotifier>(
           builder: (context, notifier, _) => Scaffold(
-                appBar: GPAppBar(widget.gpaColors),
-                backgroundColor: widget.gpaColors[0],
+                appBar: GPAppBar(widget._gpaColors),
+                backgroundColor: widget._gpaColors[0],
                 body: Theme(
                   /// 修改scrollView滚动至头/尾时溢出的颜色
                   data: ThemeData(accentColor: Colors.white),
                   child: ListView(
                     children: [
-                      RadarChartWidget(notifier, widget.gpaColors),
-                      GPAStatsWidget(notifier, widget.gpaColors),
-                      GPACurve(notifier, widget.gpaColors, isPreview: false),
-                      CourseListWidget(notifier, widget.gpaColors)
+                      RadarChartWidget(notifier, widget._gpaColors),
+                      GPAStatsWidget(notifier, widget._gpaColors),
+                      GPACurve(notifier, widget._gpaColors, isPreview: false),
+                      CourseListWidget(notifier, widget._gpaColors)
                     ],
                   ),
                 ),
@@ -112,20 +112,17 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
               onTap: () {
-                Provider.of<GPANotifier>(context, listen: false)
-                    .refreshGPA(
-                        hint: true,
-                        onFailure: (e) {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) => TjuRebindDialog(
-                                reason: e is WpyDioError
-                                    ? e.error.toString()
-                                    : null),
-                          );
-                        })
-                    .call();
+                Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+                    hint: true,
+                    onFailure: (e) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => TjuRebindDialog(
+                            reason:
+                                e is WpyDioError ? e.error.toString() : null),
+                      );
+                    });
               }),
         ),
       ],
@@ -138,10 +135,9 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class RadarChartWidget extends StatefulWidget {
-  final GPANotifier notifier;
   final List<Color> gpaColors;
 
-  RadarChartWidget(this.notifier, this.gpaColors);
+  RadarChartWidget(this.gpaColors);
 
   @override
   _RadarChartState createState() => _RadarChartState();
@@ -157,7 +153,8 @@ class _RadarChartState extends State<RadarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _list = widget.notifier.coursesWithNotify;
+    _list = context.select<GPANotifier, List<GPACourse>>((p) => p.courses);
+    _list = widget.notifier.courses;
     return GestureDetector(
       onTapDown: (_) {
         setState(() {
@@ -399,10 +396,10 @@ class GPAStatsWidget extends StatelessWidget {
     var weighted = "不";
     var gpa = "知";
     var credits = "道";
-    if (notifier.currentDataWithNotify != null) {
-      weighted = notifier.currentDataWithNotify[0].toString();
-      gpa = notifier.currentDataWithNotify[1].toString();
-      credits = notifier.currentDataWithNotify[2].toString();
+    if (notifier.statsData.isNotEmpty) {
+      weighted = notifier.statsData[0].toString();
+      gpa = notifier.statsData[1].toString();
+      credits = notifier.statsData[2].toString();
     }
     return Padding(
       padding: const EdgeInsets.all(30),
@@ -411,7 +408,7 @@ class GPAStatsWidget extends StatelessWidget {
         children: <Widget>[
           /// "InkResponse provides splashes which can extend outside its bounds"
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 0,
+            onTap: () => notifier.type = 0,
             radius: 45,
 
             /// "defines a splash that spreads out more aggressively than the default"
@@ -425,7 +422,7 @@ class GPAStatsWidget extends StatelessWidget {
             ),
           ),
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 1,
+            onTap: () => notifier.type = 1,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
@@ -438,7 +435,7 @@ class GPAStatsWidget extends StatelessWidget {
             ),
           ),
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 2,
+            onTap: () => notifier.type = 2,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
@@ -470,7 +467,7 @@ class _CourseListState extends State<CourseListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var courses = widget.notifier.coursesWithNotify;
+    var courses = widget.notifier.courses;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(

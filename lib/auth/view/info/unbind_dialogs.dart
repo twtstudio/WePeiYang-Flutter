@@ -10,8 +10,8 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 final _hintStyle = FontManager.YaQiHei.copyWith(
     fontSize: 15,
@@ -24,8 +24,8 @@ class TjuUnbindDialog extends Dialog {
     ToastProvider.success("解除绑定成功");
     CommonPreferences.clearTjuPrefs();
     Provider.of<GPANotifier>(context, listen: false).clear();
-    Provider.of<ScheduleNotifier>(context, listen: false).clear();
-    Provider.of<ExamNotifier>(context, listen: false).clear();
+    Provider.of<CourseProvider>(context, listen: false).clear();
+    Provider.of<ExamProvider>(context, listen: false).clear();
     Navigator.pop(context);
   }
 

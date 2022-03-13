@@ -23,21 +23,21 @@ class MyColors {
 
 class FavorColors {
   /// gpa主色调，缓存类型是List<String>哦
-  static var _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
+  static final _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
 
   static List<Color> get gpaColor =>
       _gpaColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
   /// 单独用个变量存种类
-  static var gpaType = PrefsBean<String>("gpaColorType", 'green');
+  static final gpaType = PrefsBean<String>("gpaColorType", 'green');
 
   /// 课程表主色调，缓存类型是List<String>哦
-  static var _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
+  static final _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
 
   static List<Color> get scheduleColor =>
       _scheduleColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
-  static var scheduleType = PrefsBean<String>("scheduleColorType", 'blue');
+  static final scheduleType = PrefsBean<String>("scheduleColorType", 'blue');
 
   /// 这个是GPA默认颜色哦
   static setGreenRelatedGPA() {
@@ -104,7 +104,7 @@ class FavorColors {
     scheduleType.value = 'brown';
   }
 
-  static Color scheduleTitleColor() {
+  static Color get scheduleTitleColor {
     var type = scheduleType.value;
     if (type == 'green')
       return Color.fromRGBO(115, 124, 105, 1);

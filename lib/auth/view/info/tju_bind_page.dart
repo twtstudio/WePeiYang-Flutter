@@ -11,8 +11,8 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -74,18 +74,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
       Provider.of<GPANotifier>(context, listen: false)
           .refreshGPA(
             onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ExamNotifier>(context, listen: false)
-          .refreshExam(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
+          );
+      Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
+      Provider.of<ExamProvider>(context, listen: false).refreshExam(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
       setState(() {
         tjuuname = "";
         tjupasswd = "";

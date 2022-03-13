@@ -1,99 +1,104 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/view/schedule_page.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 /// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
-const double cubeSideLength = 6;
-const double spacingLength = 4;
+const double _cubeSideLength = 6;
+const double _spacingLength = 4;
 
+/// 点阵图的宽高
+const double _canvasWidth = _cubeSideLength * 6 + _spacingLength * 5;
+const double _canvasHeight = _cubeSideLength * 5 + _spacingLength * 4;
+
+/// 星期切换栏
 class WeekSelectWidget extends StatelessWidget {
-  final canvasWidth = cubeSideLength * 6 + spacingLength * 5;
-  final canvasHeight = cubeSideLength * 5 + spacingLength * 4;
 
   @override
   Widget build(BuildContext context) {
-    double offset = WePeiYangApp.screenWidth / 4 - canvasWidth - 25;
-    if (offset < 0) offset = 0;
-    return ValueListenableBuilder(
-      valueListenable:
-          context.findAncestorWidgetOfExactType<SchedulePage>().isShrink,
-      builder: (_, isShrink, __) {
-        return Consumer<ScheduleNotifier>(builder: (_, notifier, __) {
-          int current =
-              Provider.of<ScheduleNotifier>(context, listen: false).currentWeek;
-          if (current == 1) current++;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: isShrink ? 0 : 90,
-            child: isShrink
-                ? Container()
-                : ListView.builder(
-                    itemCount: notifier.weekCount,
-                    scrollDirection: Axis.horizontal,
-                    controller: ScrollController(
-                        initialScrollOffset:
-                            (current - 2) * (canvasWidth + 25 + offset)),
-                    itemBuilder: (_, i) {
-                      /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
-                      return Padding(
-                        padding: EdgeInsets.only(left: offset),
-                        child: Stack(
-                          children: [
-                            getContent(context, notifier, i),
+    var listView = Builder(
+      builder: (context) {
+        var provider = context.watch<CourseProvider>();
+        var current = provider.currentWeek;
+        if (current == 1) current++;
 
-                            /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
-                            SizedBox(
-                              height: canvasHeight + 25,
-                              width: canvasWidth + 25,
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  radius: 5000,
-                                  splashColor:
-                                      Color.fromRGBO(255, 255, 255, 0.85),
-                                  highlightColor: Colors.transparent,
-                                  onTap: () =>
-                                      notifier.selectedWeekWithNotify = i + 1,
-                                ),
-                              ),
-                            )
-                          ],
+        double offset = WePeiYangApp.screenWidth / 4 - _canvasWidth - 25;
+        if (offset < 0) offset = 0;
+        return ListView.builder(
+            itemCount: provider.weekCount,
+            scrollDirection: Axis.horizontal,
+            controller: ScrollController(
+                initialScrollOffset:
+                    (current - 2) * (_canvasWidth + 25 + offset)),
+            itemBuilder: (context, i) {
+              /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
+              return Padding(
+                padding: EdgeInsets.only(left: offset),
+                child: Stack(
+                  children: [
+                    _getContent(context, provider, i),
+
+                    /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
+                    SizedBox(
+                      height: _canvasHeight + 25,
+                      width: _canvasWidth + 25,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          radius: 5000,
+                          splashColor: Color.fromRGBO(255, 255, 255, 0.85),
+                          highlightColor: Colors.transparent,
+                          onTap: () => provider.selectedWeek = i + 1,
                         ),
-                      );
-                    }),
-          );
-        });
+                      ),
+                    )
+                  ],
+                ),
+              );
+            });
+      },
+    );
+
+    return Builder(
+      builder: (context) {
+        var shrink =
+            context.select<CourseDisplayProvider, bool>((p) => p.shrink);
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: shrink ? 0 : 90,
+          child: shrink ? Container() : listView,
+        );
       },
     );
   }
 
-  Widget getContent(BuildContext context, ScheduleNotifier notifier, int i) {
+  Widget _getContent(BuildContext context, CourseProvider provider, int i) {
     return Column(
       children: [
         Container(
-          height: canvasHeight + 20,
-          width: canvasWidth + 25,
+          height: _canvasHeight + 20,
+          width: _canvasWidth + 25,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: i + 1 == notifier.selectedWeekWithNotify
-                  ? Color.fromRGBO(245, 245, 245, 1)
-                  : null,
-              borderRadius: BorderRadius.circular(5)),
+            color: i + 1 == provider.selectedWeek
+                ? Color.fromRGBO(245, 245, 245, 1)
+                : null,
+            borderRadius: BorderRadius.circular(5),
+          ),
           child: CustomPaint(
             painter: _WeekSelectPainter(getBoolMatrix(
-                i + 1, notifier.weekCount, notifier.coursesWithNotify, false)),
-            size: Size(canvasWidth, canvasHeight),
+                i + 1, provider.weekCount, provider.courses, false)),
+            size: const Size(_canvasWidth, _canvasHeight),
           ),
         ),
         SizedBox(height: 3),
         Text('WEEK ${i + 1}',
             style: FontManager.Aspira.copyWith(
-                color: (notifier.selectedWeekWithNotify == i + 1)
+                color: (provider.selectedWeek == i + 1)
                     ? Colors.black
                     : Color.fromRGBO(200, 200, 200, 1),
                 fontSize: 11,
@@ -104,31 +109,35 @@ class WeekSelectWidget extends StatelessWidget {
 }
 
 class _WeekSelectPainter extends CustomPainter {
-  final List<List<bool>> list;
+  final List<List<bool>> _list;
 
-  _WeekSelectPainter(this.list);
+  _WeekSelectPainter(this._list);
+
+  /// 深色cube，代表该点有课
+  final Paint _cubePaint = Paint()
+    ..color = FavorColors.scheduleColor.first
+    ..style = PaintingStyle.fill;
+
+  /// 浅色cube，代表该点没课
+  final Paint _spacePaint = Paint()
+    ..color = Color.fromRGBO(230, 230, 230, 1)
+    ..style = PaintingStyle.fill;
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var j = 0; j < list.length; j++) {
-      for (var k = 0; k < list[j].length; k++) {
-        var centerX = k * (cubeSideLength + spacingLength) + cubeSideLength / 2;
-        var centerY = j * (cubeSideLength + spacingLength) + cubeSideLength / 2;
+    for (var j = 0; j < _list.length; j++) {
+      for (var k = 0; k < _list[j].length; k++) {
+        var centerX =
+            k * (_cubeSideLength + _spacingLength) + _cubeSideLength / 2;
+        var centerY =
+            j * (_cubeSideLength + _spacingLength) + _cubeSideLength / 2;
         Rect rect = Rect.fromCircle(
-            center: Offset(centerX, centerY), radius: cubeSideLength / 2);
+            center: Offset(centerX, centerY), radius: _cubeSideLength / 2);
         RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(2));
-        if (list[j][k]) {
-          /// 深色cube，代表该点有课
-          final Paint cubePaint = Paint()
-            ..color = FavorColors.scheduleColor.first
-            ..style = PaintingStyle.fill;
-          canvas.drawRRect(rRect, cubePaint);
+        if (_list[j][k]) {
+          canvas.drawRRect(rRect, _cubePaint);
         } else {
-          /// 浅色cube，代表该点没课
-          final Paint spacePaint = Paint()
-            ..color = Color.fromRGBO(230, 230, 230, 1)
-            ..style = PaintingStyle.fill;
-          canvas.drawRRect(rRect, spacePaint);
+          canvas.drawRRect(rRect, _spacePaint);
         }
       }
     }

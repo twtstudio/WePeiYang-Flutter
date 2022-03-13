@@ -259,7 +259,6 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 class SliverCardsWidget extends StatelessWidget {
   final List<CardBean> cards;
   final ScrollController controller = ScrollController();
-  int itemCount = 0;
 
   SliverCardsWidget(this.cards);
 
@@ -272,7 +271,6 @@ class SliverCardsWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (itemCount < i) itemCount = i;
         if (cards[i].label == S.current.lounge) {
           return ValueListenableBuilder(
             valueListenable: context
@@ -321,34 +319,33 @@ class SliverCardsWidget extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: ShaderMask(
                 shaderCallback: (rect) {
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.center,
-                        colors: [Colors.transparent, ColorUtil.backgroundColor],
-                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                    },
+                  return LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.center,
+                    colors: [Colors.transparent, ColorUtil.backgroundColor],
+                  ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                },
                 blendMode: BlendMode.dstIn,
                 child: InkWell(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   onTap: () {
-                      controller.offset <= 130 * (itemCount - 1)
-                          ? controller.animateTo(controller.offset + 130,
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.fastOutSlowIn)
-                          : controller.animateTo(
-                              140 * (itemCount - 1).toDouble(),
-                              duration: Duration(milliseconds: 800),
-                              curve: Curves.slowMiddle);
-                    },
+                    controller.offset <= 130 * (cards.length - 2)
+                        ? controller.animateTo(controller.offset + 130,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.fastOutSlowIn)
+                        : controller.animateTo(
+                            140 * (cards.length - 2).toDouble(),
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.slowMiddle);
+                  },
                   child: Container(
-                        height: 90,
-                        width: 70,
-                        child: Icon(Icons.arrow_forward_ios_sharp,
-                            color: Color.fromRGBO(98, 103, 124, 1.0),
-                            size: 25),
-                        color: ColorUtil.backgroundColor,
-                      ),
+                    height: 90,
+                    width: 70,
+                    child: Icon(Icons.arrow_forward_ios_sharp,
+                        color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
+                    color: ColorUtil.backgroundColor,
+                  ),
                 ),
               ),
             ),

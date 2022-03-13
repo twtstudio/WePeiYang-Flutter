@@ -1,43 +1,41 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/view/class_table_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
-class SchedulePage extends StatefulWidget {
-  /// 星期栏是否收缩
-  final ValueNotifier<bool> isShrink =
-      ValueNotifier<bool>(CommonPreferences.scheduleShrink.value);
-
+/// 课表总页面
+class CoursePage extends StatefulWidget {
   @override
-  _SchedulePageState createState() => _SchedulePageState();
+  _CoursePageState createState() => _CoursePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _CoursePageState extends State<CoursePage> {
   /// 进入课程表页面后重设选中周并自动刷新数据
-  _SchedulePageState() {
-    var notifier = Provider.of<ScheduleNotifier>(
-        WePeiYangApp.navigatorState.currentContext,
-        listen: false);
-    notifier.quietResetWeek();
-    notifier.refreshSchedule().call();
+  _CoursePageState() {
+    var provider =
+        WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
+    provider.quietResetWeek();
+    provider.refreshCourse();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      /// 初次使用课表时展示办公网dialog
       if (CommonPreferences.firstUse.value) {
         CommonPreferences.firstUse.value = false;
         showDialog(
@@ -50,30 +48,28 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleColor = FavorColors.scheduleTitleColor();
     return Scaffold(
-      appBar: ScheduleAppBar(titleColor),
+      appBar: _CourseAppBar(),
       backgroundColor: Colors.white,
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: [
-          TitleWidget(titleColor),
+          _TitleWidget(),
           WeekSelectWidget(),
-          ClassTableWidget(titleColor),
-          HoursCounterWidget(titleColor)
+          CourseDetailWidget(),
+          _HoursCounterWidget()
         ],
       ),
     );
   }
 }
 
-class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
-  final Color titleColor;
-
-  ScheduleAppBar(this.titleColor);
-
+/// 课表页AppBar
+class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
+    var quietDisplayPvd = context.read<CourseDisplayProvider>();
+    var titleColor = FavorColors.scheduleTitleColor;
     return AppBar(
       backgroundColor: Colors.white,
       brightness: Brightness.light,
@@ -82,21 +78,17 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           child: Icon(Icons.arrow_back, color: titleColor, size: 32),
           onTap: () => Navigator.pop(context)),
       actions: [
-        ValueListenableBuilder(
-          valueListenable:
-              context.findAncestorWidgetOfExactType<SchedulePage>().isShrink,
-          builder: (_, value, __) {
+        Builder(
+          builder: (context) {
+            var shrink =
+                context.select<CourseDisplayProvider, bool>((p) => p.shrink);
             return IconButton(
               icon: Icon(
-                  value ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  shrink ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: titleColor,
                   size: 35),
               onPressed: () {
-                var notifier = context
-                    .findAncestorWidgetOfExactType<SchedulePage>()
-                    .isShrink;
-                notifier.value = !value;
-                CommonPreferences.scheduleShrink.value = !value;
+                quietDisplayPvd.shrink = !shrink;
               },
             );
           },
@@ -105,19 +97,21 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
             if (CommonPreferences.isBindTju.value) {
-              Provider.of<ScheduleNotifier>(context, listen: false)
-                  .refreshSchedule(
-                      hint: true,
-                      onFailure: (e) {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) => TjuRebindDialog(
-                                reason: e is WpyDioError
-                                    ? e.error.toString()
-                                    : null));
-                      })
-                  .call();
+              context.read<CourseProvider>().refreshCourse(
+                    hint: true,
+                    onFailure: (e) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return TjuRebindDialog(
+                            reason:
+                                e is WpyDioError ? e.error.toString() : null,
+                          );
+                        },
+                      );
+                    },
+                  );
             } else {
               ToastProvider.error("请绑定办公网");
               Navigator.pushNamed(context, AuthRouter.tjuBind);
@@ -130,55 +124,51 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class TitleWidget extends StatelessWidget {
-  final Color titleColor;
-
-  TitleWidget(this.titleColor);
-
+/// 课表页标题栏
+class _TitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ScheduleNotifier>(
-        builder: (context, notifier, _) => Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-              child: Row(
-                children: [
-                  Text('课程表',
-                      style: FontManager.YaQiHei.copyWith(
-                          color: titleColor, fontSize: 30)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, top: 12),
-                    child: Text('WEEK ${notifier.currentWeek}',
-                        style: FontManager.Texta.copyWith(
-                            color: Color.fromRGBO(114, 113, 113, 1),
-                            fontSize: 16)),
-                  )
-                ],
-              ),
-            ));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
+      child: Row(
+        children: [
+          Text('课程表',
+              style: FontManager.YaQiHei.copyWith(
+                  color: FavorColors.scheduleTitleColor, fontSize: 30)),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, top: 12),
+            child: Builder(builder: (context) {
+              var currentWeek =
+                  context.select<CourseProvider, int>((p) => p.currentWeek);
+              return Text('WEEK $currentWeek',
+                  style: FontManager.Texta.copyWith(
+                      color: Color.fromRGBO(114, 113, 113, 1), fontSize: 16));
+            }),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-class HoursCounterWidget extends StatelessWidget {
-  final Color titleColor;
-
-  HoursCounterWidget(this.titleColor);
-
+/// 课表页底部学时统计栏
+class _HoursCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var notifier = Provider.of<ScheduleNotifier>(context, listen: false);
-    if (notifier.coursesWithNotify.length == 0) return Container();
-    int currentHours = getCurrentHours(notifier.currentWeek,
-        DateTime.now().weekday, notifier.coursesWithNotify);
-    int totalHours = getTotalHours(notifier.coursesWithNotify);
+    var provider = context.watch<CourseProvider>();
+    if (provider.courses.length == 0) return Container();
+    int currentHours = getCurrentHours(
+        provider.currentWeek, DateTime.now().weekday, provider.courses);
+    int totalHours = getTotalHours(provider.courses);
     double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;
 
     /// 如果学期还没开始，则不显示学时
-    if (notifier.isBeforeTermStart) leftWidth = 0;
+    if (isBeforeTermStart) leftWidth = 0;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -206,7 +196,7 @@ class HoursCounterWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.horizontal(left: Radius.circular(15)),
-                    color: titleColor),
+                    color: FavorColors.scheduleTitleColor),
               )
             ],
           ),

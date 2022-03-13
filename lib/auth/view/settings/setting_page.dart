@@ -9,8 +9,8 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class SettingPageArgs {
   final bool showBrief;
@@ -29,11 +29,17 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static final titleTextStyle = FontManager.YaHeiBold.copyWith(
-      fontSize: 14, color: Color.fromRGBO(177, 180, 186, 1), fontWeight: FontWeight.bold);
+      fontSize: 14,
+      color: Color.fromRGBO(177, 180, 186, 1),
+      fontWeight: FontWeight.bold);
   static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14, color: Color.fromRGBO(98, 103, 122, 1), fontWeight: FontWeight.bold);
-  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
-  static final arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      fontSize: 14,
+      color: Color.fromRGBO(98, 103, 122, 1),
+      fontWeight: FontWeight.bold);
+  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
+  static final arrow =
+      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
   double descriptionMaxWidth;
 
@@ -163,7 +169,7 @@ class _SettingPageState extends State<SettingPage> {
                       onChanged: (value) {
                         setState(
                             () => CommonPreferences.hideExam.value = value);
-                        Provider.of<ExamNotifier>(context, listen: false)
+                        Provider.of<ExamProvider>(context, listen: false)
                             .hideExam = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
@@ -238,7 +244,8 @@ class _SettingPageState extends State<SettingPage> {
                       onChanged: (value) {
                         setState(
                             () => CommonPreferences.nightMode.value = value);
-                        Provider.of<ScheduleNotifier>(context, listen: false)
+                        Provider.of<CourseDisplayProvider>(context,
+                                listen: false)
                             .nightMode = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
