@@ -22,7 +22,6 @@ class _NSubPageState extends State<NSubPage> {
   FbHotTagsProvider _hotTagsProvider;
   _NSubPageState(this.index);
 
-  List swapLister = [0, 1, 2, 3];
   RefreshController _refreshController =
   RefreshController(initialRefresh: false);
   final ScrollController _controller = ScrollController();
@@ -47,9 +46,10 @@ class _NSubPageState extends State<NSubPage> {
   onRefresh([AnimationController controller]) {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
+      context.read<TabNotifier>().initTabList();
       getRecTag();
-      if (index == 1) getHotList();
-      _listProvider.initPostList(swapLister[index], success: () {
+      if (index == 2) getHotList();
+      _listProvider.initPostList(index, success: () {
         controller?.dispose();
         _refreshController.refreshCompleted();
       }, failure: (_) {
@@ -68,7 +68,7 @@ class _NSubPageState extends State<NSubPage> {
       _refreshController.loadNoData();
     } else {
       _listProvider.getNextPage(
-        swapLister[index],
+        index,
         success: () {
           _refreshController.loadComplete();
         },
@@ -78,6 +78,20 @@ class _NSubPageState extends State<NSubPage> {
       );
     }
   }
+
+  @override
+  void initState() {
+    _tagsProvider =
+        Provider.of<FbDepartmentsProvider>(context, listen: false);
+    context.read<FbHomeListModel>().checkTokenAndGetPostList(_tagsProvider, index, success: () {
+      getRecTag();
+    }, failure: (e) {
+    ToastProvider.error(e.error.toString());
+    });
+    super.initState();
+  }
+
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +112,9 @@ class _NSubPageState extends State<NSubPage> {
             controller: _controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[index]].length,
-            itemBuilder: (context, index) {
-              final post = model.allList[swapLister[index]][index];
+            itemCount: model.list == null ? 0 : model.list[index].values.toList().length,
+            itemBuilder: (context, ind) {
+              final post = model.list[index].values.toList()[ind];
               return PostCard.simple(post, key: ValueKey(post.id));
             },
           ),

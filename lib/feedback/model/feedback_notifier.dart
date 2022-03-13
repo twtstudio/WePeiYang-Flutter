@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 
 class FbDepartmentsProvider {
   List<Department> departmentList = [];
@@ -132,23 +133,17 @@ class FbHomeStatusNotifier extends ChangeNotifier {
 
 class FbHomeListModel extends ChangeNotifier {
   // map default is LinkedHashMap
-  List<Map<int, Post>> _homeList = [{}, {}, {}];
+  List<Map<int, Post>> _homeList = List.filled(100, Map());
+  int current;
 
-  List<List<Post>> get allList => [
-        _homeList[0].values.toList(),
-        _homeList[1].values.toList(),
-        _homeList[2].values.toList()
-      ];
+  List<Map<int, Post>> get list => _homeList;
 
-  int _postType = 2;
   int _totalPage = 0;
   int _currentPage = 0;
 
   FbHomePageStatus _status = FbHomePageStatus.loading;
 
   bool get isLastPage => _totalPage == _currentPage;
-
-  int get postType => _postType;
 
   // TODO: 是否要在进行操作时更新列表？
   void quietUpdateItem(Post post, int type) {
@@ -229,6 +224,7 @@ class FbHomeListModel extends ChangeNotifier {
       type: '$type',
       page: '1',
       onSuccess: (postList, totalPage) {
+        if (_homeList != null)
         _homeList[type].clear();
         _addOrUpdateItems(postList, type);
         _currentPage = 1;
@@ -240,6 +236,32 @@ class FbHomeListModel extends ChangeNotifier {
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
         _status = FbHomePageStatus.error;
+        failure?.call(e);
+        notifyListeners();
+      },
+    );
+  }
+}
+
+class TabNotifier extends ChangeNotifier {
+  List<WPYTab> tabLister;
+  bool tagWrapShow = false;
+
+  changeTagWrap() {
+    tagWrapShow == null ? tagWrapShow = true : tagWrapShow = !tagWrapShow;
+    notifyListeners();
+  }
+
+  Future<void> initTabList(
+      {OnSuccess success, OnFailure failure, bool reset = false}) async {
+    await FeedbackService.getTabList(
+      onSuccess: (tabList) {
+        tabLister = tabList;
+        success?.call();
+        notifyListeners();
+      },
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
         failure?.call(e);
         notifyListeners();
       },

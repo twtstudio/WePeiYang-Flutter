@@ -18,11 +18,10 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/game_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
@@ -46,8 +45,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   FbDepartmentsProvider _tagsProvider;
   FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
-  double _tabPaddingWidth = 0;
-  double _previousOffset = 0;
   List<double> _offsets = [2, 2, 2];
   List<bool> shouldBeInitialized;
 
@@ -64,6 +61,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   //请求type
   List swapLister = [2, 0, 1, 3];
+  List<WPYTab> tabList;
 
   ///根据tab的index得到对应type
 
@@ -84,9 +82,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   final postTypeNotifier = ValueNotifier(PostType.lake);
 
-  Widget _mixedListView;
-  Widget _lakeListView;
-  Widget _feedbackListView;
   Widget _departmentSelectionContainer;
 
   getHotList() {
@@ -125,21 +120,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     });
   }
 
-  _onLoading() {
-    if (_listProvider.isLastPage) {
-      _refreshController.loadNoData();
-    } else {
-      _listProvider.getNextPage(
-        swapLister[_swap],
-        success: () {
-          _refreshController.loadComplete();
-        },
-        failure: (e) {
-          _refreshController.loadFailed();
-        },
-      );
-    }
-  }
+  // _onLoading() {
+  //   if (_listProvider.isLastPage) {
+  //     _refreshController.loadNoData();
+  //   } else {
+  //     _listProvider.getNextPage(
+  //       swapLister[_swap],
+  //       success: () {
+  //         _refreshController.loadComplete();
+  //       },
+  //       failure: (e) {
+  //         _refreshController.loadFailed();
+  //       },
+  //     );
+  //   }
+  // }
 
   _onFeedbackTapped() {
     _onFeedbackOpen();
@@ -169,18 +164,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool scroll = false;
 
-  _onClose() {
-    if (!scroll &&
-        _nestedController.offset !=
-            _nestedController.position.maxScrollExtent) {
-      scroll = true;
-      _nestedController
-          .animateTo(_nestedController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
-    if (_refreshController.isRefresh) _refreshController.refreshCompleted();
-  }
+  // _onClose() {
+  //   if (!scroll &&
+  //       _nestedController.offset !=
+  //           _nestedController.position.maxScrollExtent) {
+  //     scroll = true;
+  //     _nestedController
+  //         .animateTo(_nestedController.position.maxScrollExtent,
+  //             duration: Duration(milliseconds: 160), curve: Curves.decelerate)
+  //         .then((value) => scroll = false);
+  //   }
+  //   if (_refreshController.isRefresh) _refreshController.refreshCompleted();
+  // }
 
   _onFeedbackOpen() {
     if (!scroll && _nestedController.offset != 0) {
@@ -192,18 +187,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels == 0) _onFeedbackOpen();
-    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
-        scrollInfo.metrics.pixels >= 10 &&
-        scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
-      if (scrollInfo.metrics.pixels <= _previousOffset)
-        _onFeedbackOpen();
-      else
-        _onClose();
-      _previousOffset = scrollInfo.metrics.pixels;
-    }
-  }
+  // _onScrollNotification(ScrollNotification scrollInfo) {
+  //   if (scrollInfo.metrics.pixels == 0) _onFeedbackOpen();
+  //   if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
+  //       scrollInfo.metrics.pixels >= 10 &&
+  //       scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
+  //     if (scrollInfo.metrics.pixels <= _previousOffset)
+  //       _onFeedbackOpen();
+  //     else
+  //       _onClose();
+  //     _previousOffset = scrollInfo.metrics.pixels;
+  //   }
+  // }
 
   ///初次进入湖底的告示
   firstInLake() async {
@@ -222,38 +217,37 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     SizedBox(height: 15.w),
                     RichText(
                       text: TextSpan(
-                       text: "尊敬的微北洋用户：\n"
-                           "\n" +
-                       "经过一段时间的沉寂，我们很高兴能够带着崭新的求实论坛与您相见。\n" +
-                            "\n" +
-                            "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为求实论坛中的两个分区，“小树洞”更名为“青年湖底”，同时我们也在努力让求实在功能上接近于一个成熟的论坛。\n" +
-                            "\n" +
-                            "现在它拥有：\n" +
-                            "\n" +
-                            "点踩、举报；回复评论、带图评论；分享、自定义tag、内链外链跳转...还有一些细节等待您去自行挖掘。\n" +
-                            "\n" +
-                            "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
-                        style: TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
-                        children: [
-                          TextSpan(
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    builder: (BuildContext context) =>
-                                        LakePrivacyDialog());
-                              },
-                              text :
-                                '《求实论坛社区规范》',
-                                style: TextUtil.base.normal.NotoSansSC
-                                    .sp(14)
-                                    .w400
-                                    .textButtonBlue,
-                              )
-                        ]
-                    ),
-
+                          text: "尊敬的微北洋用户：\n"
+                                  "\n" +
+                              "经过一段时间的沉寂，我们很高兴能够带着崭新的求实论坛与您相见。\n" +
+                              "\n" +
+                              "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为求实论坛中的两个分区，“小树洞”更名为“青年湖底”，同时我们也在努力让求实在功能上接近于一个成熟的论坛。\n" +
+                              "\n" +
+                              "现在它拥有：\n" +
+                              "\n" +
+                              "点踩、举报；回复评论、带图评论；分享、自定义tag、内链外链跳转...还有一些细节等待您去自行挖掘。\n" +
+                              "\n" +
+                              "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
+                          style: TextUtil.base.normal.black2A.NotoSansSC
+                              .sp(14)
+                              .w400,
+                          children: [
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (BuildContext context) =>
+                                          LakePrivacyDialog());
+                                },
+                              text: '《求实论坛社区规范》',
+                              style: TextUtil.base.normal.NotoSansSC
+                                  .sp(14)
+                                  .w400
+                                  .textButtonBlue,
+                            )
+                          ]),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -395,13 +389,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
       _tagsProvider =
           Provider.of<FbDepartmentsProvider>(context, listen: false);
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, 2, success: () {
+      _listProvider.checkTokenAndGetPostList(_tagsProvider, 0, success: () {
         getRecTag();
       }, failure: (e) {
         ToastProvider.error(e.error.toString());
       });
     });
-    _tabController = TabController(length: 4, vsync: this);
+
+    context.read<TabNotifier>().initTabList();
+
+    _tabController = TabController(length: 1, vsync: this);
+
     _tabController.addListener(() {
       if (_tabController.index.toDouble() == _tabController.animation.value) {
         //判断TabBar是否切换
@@ -472,6 +470,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 
@@ -483,8 +484,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
-
-    _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
 
     if (_initialRefresh ?? false) {
       if (_controller.hasClients) listToTop();
@@ -532,72 +531,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         ]),
       ),
     );
-    _offsets[0] = _controller1.hasClients ? _controller1.offset : 2;
-    _offsets[1] = _controller2.hasClients ? _controller2.offset : 2;
-    _offsets[2] = _controller3.hasClients ? _controller3.offset : 2;
-    _mixedListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return NotificationListener<ScrollNotification>(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController1,
-          header: ClassicHeader(
-            completeDuration: Duration(milliseconds: 300),
-          ),
-          enablePullDown: true,
-          onRefresh: onRefresh,
-          footer: ClassicFooter(),
-          enablePullUp: !model.isLastPage,
-          onLoading: _onLoading,
-          child: ListView.builder(
-            controller: _controller1,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[0]].length,
-            itemBuilder: (context, index) {
-              final post = model.allList[swapLister[0]][index];
-              return PostCard.simple(post, key: ValueKey(post.id));
-            },
-          ),
-        ),
-        onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
-      );
-    });
-    _lakeListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return NotificationListener<ScrollNotification>(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController2,
-          header: ClassicHeader(
-            completeDuration: Duration(milliseconds: 300),
-          ),
-          enablePullDown: true,
-          onRefresh: onRefresh,
-          footer: ClassicFooter(
-            idleIcon: Icon(Icons.check, color: Colors.grey),
-            idleText: "你翻到了青年湖底！",
-          ),
-          enablePullUp: !model.isLastPage,
-          onLoading: _onLoading,
-          child: ListView.builder(
-            controller: _controller2,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: model.allList[swapLister[1]].length == 0
-                ? 0
-                : model.allList[swapLister[1]].length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) return HotCard();
-              index--;
-              final post = model.allList[swapLister[1]][index];
-              return PostCard.simple(post, key: ValueKey(post.id));
-            },
-          ),
-        ),
-        onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
-      );
-    });
 
     var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
@@ -647,59 +580,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
       ),
     );
-
-    _feedbackListView = Consumer<FbHomeListModel>(builder: (_, model, __) {
-      return NotificationListener<ScrollNotification>(
-        child: Stack(
-          children: [
-            SmartRefresher(
-              physics: BouncingScrollPhysics(),
-              controller: _refreshController3,
-              header: ClassicHeader(
-                completeDuration: Duration(milliseconds: 300),
-              ),
-              enablePullDown: true,
-              onRefresh: onRefresh,
-              footer: ClassicFooter(
-                idleIcon: Icon(Icons.check, color: Colors.grey),
-                idleText: "只有这么多了",
-              ),
-              enablePullUp: !model.isLastPage,
-              onLoading: _onLoading,
-              child: ListView.builder(
-                controller: _controller3,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: model.allList[swapLister[2]].length,
-                itemBuilder: (context, index) {
-                  final post = model.allList[swapLister[2]][index];
-                  return PostCard.simple(post, key: ValueKey(post.id));
-                },
-              ),
-            ),
-            Offstage(
-                offstage: !_tagsContainerBackgroundIsShow,
-                child: AnimatedOpacity(
-                  opacity: _tagsContainerBackgroundOpacity,
-                  duration: Duration(milliseconds: 500),
-                  onEnd: _offstageTheBackground,
-                  child: InkWell(
-                    onTap: _onFeedbackTapped,
-                    child: Container(
-                      color: Colors.black45,
-                    ),
-                  ),
-                )),
-            Offstage(
-              offstage: !_tagsContainerBackgroundIsShow,
-              child: _departmentSelectionContainer,
-            )
-          ],
-        ),
-        onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
-      );
-    });
 
     return SafeArea(
       child: NestedScrollView(
@@ -760,83 +640,54 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       children: [
                         SizedBox(width: 4),
                         Expanded(
-                          child: TabBar(
-                              indicatorPadding: EdgeInsets.only(bottom: 2),
-                              labelPadding: EdgeInsets.only(bottom: 3),
-                              isScrollable: true,
-                              physics: BouncingScrollPhysics(),
-                              controller: _tabController,
-                              labelColor: ColorUtil.black2AColor,
-                              labelStyle:
-                                  TextUtil.base.black2A.w500.NotoSansSC.sp(16),
-                              unselectedLabelColor: ColorUtil.lightTextColor,
-                              unselectedLabelStyle:
-                                  TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
-                              indicator: CustomIndicator(
-                                  borderSide: BorderSide(
-                                      color: ColorUtil.mainColor, width: 2)),
-                              tabs: [
-                                Tab(
-                                    child: Row(
-                                  children: [
-                                    SizedBox(width: _tabPaddingWidth),
-                                    Text("全部"),
-                                    SizedBox(width: _tabPaddingWidth),
-                                  ],
-                                )),
-                                Tab(
-                                    child: Row(
-                                  children: [
-                                    SizedBox(width: _tabPaddingWidth),
-                                    Text("青年湖底"),
-                                    SizedBox(width: _tabPaddingWidth),
-                                  ],
-                                )),
-                                Tab(
-                                  child: _swap == 2
-                                      ? InkWell(
-                                          child: Row(
-                                            children: [
-                                              SizedBox(width: _tabPaddingWidth),
-                                              Text("校务专区"),
-                                              Icon(
-                                                Icons.arrow_drop_down,
-                                                size: 10,
-                                              ),
-                                              if (_tabPaddingWidth > 10)
-                                                SizedBox(
-                                                    width:
-                                                        _tabPaddingWidth - 10)
-                                            ],
-                                          ),
-                                          onTap: _onFeedbackTapped,
-                                        )
-                                      : Row(
-                                          children: [
-                                            SizedBox(width: _tabPaddingWidth),
-                                            Text("校务专区"),
-                                            SizedBox(width: _tabPaddingWidth),
-                                          ],
-                                        ),
-                                ),
-                                Tab(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      SizedBox(width: _tabPaddingWidth),
-                                      Text("游戏"),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 1, bottom: 3),
-                                        child: SvgPicture.asset(
-                                          'assets/svg_pics/lake_butt_icons/recommended.svg',
-                                          width: 12,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ]),
+                          child:
+                              Consumer<TabNotifier>(builder: (_, status, __) {
+                            _tabController = TabController(
+                                length: context.read<TabNotifier>().tabLister ==
+                                        null
+                                    ? 1
+                                    : context
+                                        .read<TabNotifier>()
+                                        .tabLister
+                                        .length + 1,
+                                vsync: this);
+                            return TabBar(
+                                indicatorPadding: EdgeInsets.only(bottom: 2),
+                                labelPadding: EdgeInsets.only(bottom: 3),
+                                isScrollable: true,
+                                physics: BouncingScrollPhysics(),
+                                controller: _tabController,
+                                labelColor: ColorUtil.black2AColor,
+                                labelStyle: TextUtil
+                                    .base.black2A.w500.NotoSansSC
+                                    .sp(16),
+                                unselectedLabelColor: ColorUtil.lightTextColor,
+                                unselectedLabelStyle:
+                                    TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
+                                indicator: CustomIndicator(
+                                    borderSide: BorderSide(
+                                        color: ColorUtil.mainColor, width: 2)),
+                                tabs: List<DaTab>.generate(
+                                    context.read<TabNotifier>().tabLister ==
+                                            null
+                                        ? 1
+                                        : context
+                                            .read<TabNotifier>()
+                                            .tabLister
+                                            .length + 1,
+                                    (index) => DaTab(
+                                          text: index == 0 ? '全部' :context
+                                              .read<TabNotifier>()
+                                              .tabLister[index - 1]
+                                              .shortname,
+                                          withDropDownButton: false
+                                          // context
+                                          //         .read<TabNotifier>()
+                                          //         .tabLister[index]
+                                          //         .shortname ==
+                                          //     '校务',
+                                        )));
+                          }),
                         ),
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
@@ -874,31 +725,51 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 )))
           ];
         },
-        body: Consumer<FbHomeStatusNotifier>(
-          builder: (_, status, __) {
-            if (status.isIdle)
-              return ExtendedTabBarView(
-                controller: _tabController,
-                cacheExtent: 2,
-                children: <Widget>[
-                  NSubPage(index: 0),
-                  NSubPage(index: 1),
-                  NSubPage(index: 2),
-                  GamePage()
+        body:
+        // Consumer<FbHomeStatusNotifier>(
+        //   builder: (_, status, __) {
+        //     if (status.isIdle)
+        //       return
+                Stack(
+                children: [
+                  ExtendedTabBarView(
+                      controller: _tabController,
+                      cacheExtent: 2,
+                      children: List<NSubPage>.generate(
+                          context.read<TabNotifier>().tabLister == null
+                              ? 1
+                              : context.read<TabNotifier>().tabLister.length + 1,
+                          (index) => NSubPage(
+                                index: index,
+                              ))),
+                  Offstage(
+                      offstage: !_tagsContainerBackgroundIsShow,
+                      child: AnimatedOpacity(
+                        opacity: _tagsContainerBackgroundOpacity,
+                        duration: Duration(milliseconds: 500),
+                        onEnd: _offstageTheBackground,
+                        child: InkWell(
+                          onTap: _onFeedbackTapped,
+                          child: Container(
+                            color: Colors.black45,
+                          ),
+                        ),
+                      )),
+                  Offstage(
+                    offstage: !_tagsContainerBackgroundIsShow,
+                    child: _departmentSelectionContainer,
+                  )
                 ],
-              );
-            else if (status.isLoading)
-              return Loading();
-            else
-              return HomeErrorContainer(onRefresh, true);
-          },
-        ),
+              )
+      //       else if (status.isLoading)
+      //         return Loading();
+      //       else
+      //         return HomeErrorContainer(onRefresh, true);
+      //     },
+      //   ),
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   void listToTop() {
     if (_controller.offset > 1500) {

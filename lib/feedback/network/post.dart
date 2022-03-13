@@ -254,6 +254,30 @@ class Floor {
   }
 }
 
+class WPYTab {
+  WPYTab({
+    this.id,
+    this.shortname,
+    this.name,
+});
+
+  int id;
+  String shortname;
+  String name;
+
+  factory WPYTab.fromJson(Map<String, dynamic> json) => WPYTab(
+    id: json["id"],
+    shortname: json["shortname"],
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "shortname": shortname,
+    "name": name,
+  };
+}
+
 class Tag {
   Tag({
     this.id,
