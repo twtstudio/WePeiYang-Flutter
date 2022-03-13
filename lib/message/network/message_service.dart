@@ -176,12 +176,12 @@ class MessageDio extends DioAbstract {
   String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/message/';
 
   @override
-  Map<String, String> headers = {
-    'token': CommonPreferences().feedbackToken.value
-  };
-
-  @override
-  List<InterceptorsWrapper> interceptors = [ApiInterceptor()];
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      return handler.next(options);
+    })
+  ];
 
   /// 这里不能改，因为下面手动解析的字符串
   @override
