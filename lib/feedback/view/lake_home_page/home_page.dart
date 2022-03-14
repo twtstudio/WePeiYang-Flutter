@@ -1,6 +1,5 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -9,9 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -19,10 +16,10 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
-import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -131,127 +128,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
-            return DialogWidget(
-                confirmButtonColor: ColorUtil.selectionButtonColor,
-                title: '同学你好：',
-                content: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 15.w),
-                    RichText(
-                      text: TextSpan(
-                          text: "尊敬的微北洋用户：\n"
-                                  "\n" +
-                              "经过一段时间的沉寂，我们很高兴能够带着崭新的求实论坛与您相见。\n" +
-                              "\n" +
-                              "让我来为您简单的介绍一下，原“校务专区”已与其包含的标签“小树洞”分离，成为求实论坛中的两个分区，“小树洞”更名为“青年湖底”，同时我们也在努力让求实在功能上接近于一个成熟的论坛。\n" +
-                              "\n" +
-                              "现在它拥有：\n" +
-                              "\n" +
-                              "点踩、举报；回复评论、带图评论；分享、自定义tag、内链外链跳转...还有一些细节等待您去自行挖掘。\n" +
-                              "\n" +
-                              "还有最重要的一点，为了营造良好的社区氛围，这里有一份社区规范待您查看。",
-                          style: TextUtil.base.normal.black2A.NotoSansSC
-                              .sp(14)
-                              .w400,
-                          children: [
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (BuildContext context) =>
-                                          LakePrivacyDialog());
-                                },
-                              text: '《求实论坛社区规范》',
-                              style: TextUtil.base.normal.NotoSansSC
-                                  .sp(14)
-                                  .w400
-                                  .textButtonBlue,
-                            )
-                          ]),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ValueListenableBuilder<bool>(
-                            valueListenable: checkedNotifier,
-                            builder: (context, type, _) {
-                              return GestureDetector(
-                                onTap: () {
-                                  checkedNotifier.value =
-                                      !checkedNotifier.value;
-                                },
-                                child: Stack(
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/svg_pics/lake_butt_icons/checkedbox_false.svg",
-                                      width: 16.w,
-                                    ),
-                                    if (checkedNotifier.value == false)
-                                      Positioned(
-                                        top: 3.w,
-                                        left: 3.w,
-                                        child: SvgPicture.asset(
-                                          "assets/svg_pics/lake_butt_icons/check.svg",
-                                          width: 10.w,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              );
-                            }),
-                        SizedBox(width: 10.w),
-                        Text('我已阅读并承诺遵守',
-                            style: TextUtil.base.normal.black2A.NotoSansSC
-                                .sp(12)
-                                .w400),
-                        SizedBox(width: 2.w),
-                        TextButton(
-                            style: ButtonStyle(
-                              minimumSize:
-                                  MaterialStateProperty.all(Size(1, 1)),
-                              padding:
-                                  MaterialStateProperty.all(EdgeInsets.zero),
-                            ),
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (BuildContext context) =>
-                                      LakePrivacyDialog());
-                            },
-                            child: Text(
-                              '《求实论坛社区规范》',
-                              style: TextUtil.base.normal.NotoSansSC
-                                  .sp(12)
-                                  .w400
-                                  .textButtonBlue,
-                              overflow: TextOverflow.ellipsis,
-                            ))
-                      ],
-                    )
-                  ],
-                ),
-                cancelText: "返回主页",
-                confirmTextStyle:
-                    TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
-                cancelTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                confirmText: "前往求实论坛",
-                cancelFun: () {
-                  Navigator.pop(context);
-                  Navigator.popAndPushNamed(context, HomeRouter.home);
-                },
-                confirmFun: () {
-                  if (checkedNotifier.value == false) {
-                    Navigator.pop(context);
-                    CommonPreferences().isFirstLogin.value = false;
-                  } else {
-                    ToastProvider.error('请同意《青年湖底社区规范》');
-                  }
-                });
+            return FirstInLakeDialog(checkedNotifier: checkedNotifier);
           });
     }
   }

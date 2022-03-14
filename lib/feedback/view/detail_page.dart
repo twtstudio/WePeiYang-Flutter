@@ -24,6 +24,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
+import 'components/widget/PopMenuShape.dart';
 
 enum DetailPageStatus {
   loading,
@@ -319,6 +320,16 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
+            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
+              tag: post.department.name ?? '',
+              comment: data,
+              placeAppeared: index,
+                ImageUrl: data.imageUrls,
+                ancestorId:post.uid,
+              onContentPressed: (refresh) async {
+               refresh.call(list);
+              },
+            ):SizedBox(width: 0,height: 0);
             return _officialCommentList[index].sender == 1
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',

@@ -39,6 +39,7 @@ class _NSubPageState extends State<NSubPage>
   getHotList() {
     _hotTagsProvider.initHotTags(success: () {
       _refreshController[index].refreshCompleted();
+      ToastProvider.success("${index}");
     }, failure: (e) {
       ToastProvider.error(e.error.toString());
       _refreshController[index].refreshFailed();
@@ -53,24 +54,20 @@ class _NSubPageState extends State<NSubPage>
         });
   }
 
-  onRefresh([AnimationController controller]) {
+  onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
       _tagsProvider.initDepartments();
-      context.read<TabNotifier>().initTabList();
+      // context.read<TabNotifier>().initTabList();
       //getRecTag();
       if (index == 2) getHotList();
-      print('ehgfcuagvjsdhcgvaudsfcsesvffdfgrgvrgrfgvrgv');
-      print(index);
-      _listProvider.initPostList(index, success: () {
-        _refreshController[index].refreshCompleted();
-      }, failure: (_) {
+      context
+          .read<FbHomeListModel>()
+          .checkTokenAndGetPostList(_tagsProvider, index, success: () {
         controller?.stop();
-        _refreshController[index].refreshFailed();
+      }, failure: (e) {
+        ToastProvider.error(e.error.toString());
+        controller?.stop();
       });
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-      controller?.stop();
-      _refreshController[index].refreshFailed();
     });
   }
 
@@ -101,7 +98,11 @@ class _NSubPageState extends State<NSubPage>
   @override
   void initState() {
     _tagsProvider = Provider.of<FbDepartmentsProvider>(context, listen: false);
-    _refreshController = List.filled(widget.total, RefreshController());
+    _refreshController = List.filled(
+        widget.total,
+        RefreshController(
+            initialRefresh: false,
+            initialRefreshStatus: RefreshStatus.refreshing));
     _controller = List.filled(widget.total, ScrollController());
     context
         .read<FbHomeListModel>()
@@ -125,56 +126,55 @@ class _NSubPageState extends State<NSubPage>
     super.build(context);
     return Selector<FbHomeStatusNotifier, FbHomePageStatus>(
         selector: (BuildContext context, FbHomeStatusNotifier notifier) {
-            if (index >= notifier.status.length) {
-              for (int i = notifier.status.length; i < index; i++)
-                notifier.status.add(FbHomePageStatus.unload);
-              notifier.status.add(FbHomePageStatus.idle);
-            }
-          return notifier.status[index];
-        },
-        builder: (_, status, __) {
-          _homePageStatus = status;
-          if (status == FbHomePageStatus.idle)
-            return Consumer<FbHomeListModel>(builder: (_, model, __) {
-              return NotificationListener<ScrollNotification>(
-                child: SmartRefresher(
-                  physics: BouncingScrollPhysics(),
-                  controller: _refreshController[index],
-                  header: ClassicHeader(
-                    completeDuration: Duration(milliseconds: 300),
-                  ),
-                  enablePullDown: true,
-                  onRefresh: onRefresh,
-                  footer: ClassicFooter(),
-                  enablePullUp: !model.isLastPage,
-                  onLoading: _onLoading,
-                  child: ListView.builder(
-                    controller: _controller[index],
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: model.list == null
-                        ? 0
-                        : model.list[index].values.toList().length,
-                    itemBuilder: (context, ind) {
-                      final post = model.list[index].values.toList()[ind];
-                      return Container(
-                          color: Color.fromRGBO(index * 50, 100, 100, 1),
-                          padding: EdgeInsets.all(3),
-                          child: PostCard.simple(post, key: ValueKey(post.id)));
-                    },
-                  ),
-                ),
-                // onNotification: (ScrollNotification scrollInfo) =>
-                //     _onScrollNotification(scrollInfo),
-              );
-            });
-          else if (status == FbHomePageStatus.loading)
-            return Loading();
-          else if (status == FbHomePageStatus.unload)
-            return SizedBox();
-          else
-            return HomeErrorContainer(onRefresh, true);
+      if (index >= notifier.status.length) {
+        for (int i = notifier.status.length; i < index; i++)
+          notifier.status.add(FbHomePageStatus.unload);
+        notifier.status.add(FbHomePageStatus.idle);
+      }
+      return notifier.status[index];
+    }, builder: (_, status, __) {
+      _homePageStatus = status;
+      if (status == FbHomePageStatus.idle)
+        return Consumer<FbHomeListModel>(builder: (_, model, __) {
+          return NotificationListener<ScrollNotification>(
+            child: SmartRefresher(
+              physics: BouncingScrollPhysics(),
+              controller: _refreshController[index],
+              header: ClassicHeader(
+                completeDuration: Duration(milliseconds: 300),
+              ),
+              enablePullDown: true,
+              onRefresh: onRefresh,
+              footer: ClassicFooter(),
+              enablePullUp: !model.isLastPage,
+              onLoading: _onLoading,
+              child: ListView.builder(
+                controller: _controller[index],
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: model.list == null
+                    ? 0
+                    : model.list[index].values.toList().length,
+                itemBuilder: (context, ind) {
+                  final post = model.list[index].values.toList()[ind];
+                  return Container(
+                      color: Color.fromRGBO(index * 50, 100, 100, 1),
+                      padding: EdgeInsets.all(3),
+                      child: PostCard.simple(post, key: ValueKey(post.id)));
+                },
+              ),
+            ),
+            // onNotification: (ScrollNotification scrollInfo) =>
+            //     _onScrollNotification(scrollInfo),
+          );
         });
+      else if (status == FbHomePageStatus.loading)
+        return Loading();
+      else if (status == FbHomePageStatus.unload)
+        return SizedBox();
+      else
+        return HomeErrorContainer(onRefresh, true);
+    });
   }
 }
 

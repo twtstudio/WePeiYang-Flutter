@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/PopMenuShape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -584,41 +585,3 @@ class _NCommentCardState extends State<NCommentCard>
   }
 }
 
-class RacTangle extends ShapeBorder {
-  ///todo popMenu调不了宽度，现阶段采用的是我强行用裁剪剪出理想形状，回头我重写一个
-  @override
-  // ignore: missing_return
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    return null;
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    var path = Path();
-    Rect rects = Rect.fromLTWH(27.5.w, 0, 87.6.w, rect.height);
-    path.addRRect(RRect.fromRectAndRadius(rects, Radius.circular(20)));
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    // var w = rect.width;
-    // var tang = Paint()
-    //   ..isAntiAlias = true
-    //   ..strokeCap = StrokeCap.square
-    //   ..color = Colors.white
-    //   ..strokeWidth = 5;
-    //var h = rect.height;
-    //
-    // canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
-    // canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
-  }
-
-  @override
-  ShapeBorder scale(double t) {
-    return null;
-  }
-
-  @override
-  EdgeInsetsGeometry get dimensions => null;
-}

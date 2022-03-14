@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 
 import '../feedback_router.dart';
+import 'components/widget/PopMenuShape.dart';
 import 'components/widget/tag_search_card.dart';
 
 class NewPostPage extends StatefulWidget {
@@ -418,54 +419,7 @@ class _CampusSelectorState extends State<CampusSelector> {
   }
 }
 
-class RacTangle extends ShapeBorder {
-  @override
-  // ignore: missing_return
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    return null;
-  }
 
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    var path = Path();
-    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(20)));
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var paint = Paint()
-      ..color = Colors.transparent
-      ..strokeWidth = 12.0
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round;
-    var w = rect.width;
-    var d = rect.height;
-    var tang = Paint()
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.square
-      ..color = Colors.white
-      ..strokeWidth = 5;
-    //var h = rect.height;
-    canvas.drawLine(Offset(w, 0), Offset(w, 40.w), paint);
-    canvas.drawLine(Offset(w, 40.w), Offset(w + 4, 45.w), tang);
-    canvas.drawLine(Offset(w + 4, 45.w), Offset(w, 50), tang);
-    canvas.drawLine(Offset(w, 50.w), Offset(w, d), paint);
-    Rect rect1 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 140);
-    Rect rect2 = Rect.fromCircle(center: Offset(w / 2, d / 2), radius: 160);
-    RRect rRect1 = RRect.fromRectAndRadius(rect1, Radius.circular(20));
-    RRect rRect2 = RRect.fromRectAndRadius(rect2, Radius.circular(20));
-    canvas.drawDRRect(rRect2, rRect1, paint);
-  }
-
-  @override
-  ShapeBorder scale(double t) {
-    return null;
-  }
-
-  @override
-  EdgeInsetsGeometry get dimensions => null;
-}
 
 class TitleInputField extends StatefulWidget {
   @override
