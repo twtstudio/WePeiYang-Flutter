@@ -104,29 +104,23 @@ class NewFloorProvider extends ChangeNotifier {
 }
 
 enum FbHomePageStatus {
+  unload,
   loading,
   idle,
   error,
 }
 
 class FbHomeStatusNotifier extends ChangeNotifier {
-  FbHomePageStatus _status = FbHomePageStatus.loading;
-
-  bool get isLoading => _status == FbHomePageStatus.loading;
-
-  bool get isIdle => _status == FbHomePageStatus.idle;
-
-  bool get isError => _status == FbHomePageStatus.error;
+  List<FbHomePageStatus> status = [FbHomePageStatus.loading];
 
   void update(FbHomeListModel listProvider) {
-    if (listProvider._status != _status) {
-      _status = listProvider._status;
-      notifyListeners();
-    }
+    status.clear();
+    status.addAll(listProvider._status);
+    notifyListeners();
   }
 
-  void toLoading() {
-    _status = FbHomePageStatus.loading;
+  void toLoading(int type) {
+    status[type] = FbHomePageStatus.loading;
     notifyListeners();
   }
 }
@@ -141,10 +135,24 @@ class FbHomeListModel extends ChangeNotifier {
   int _totalPage = 0;
   int _currentPage = 0;
 
-  FbHomePageStatus _status = FbHomePageStatus.loading;
+  List<FbHomePageStatus> _status = [FbHomePageStatus.loading];
 
   bool get isLastPage => _totalPage == _currentPage;
 
+  // // TODO: 是否要在进行操作时更新列表？
+  // void quietUpdateItem(Post post, int type) {
+  //   _homeList[type].update(
+  //     post.id,
+  //     (value) {
+  //       value.isLike = post.isLike;
+  //       value.isFav = post.isFav;
+  //       value.likeCount = post.likeCount;
+  //       value.favCount = post.favCount;
+  //       return value;
+  //     },
+  //     ifAbsent: () => post,
+  //   );
+  // }
   // TODO: 是否要在进行操作时更新列表？
   void quietUpdateItem(Post post, int type) {
     _homeList[type].update(
@@ -197,45 +205,54 @@ class FbHomeListModel extends ChangeNotifier {
         initPostList(type);
       },
       onFailure: (e) {
-        _status = FbHomePageStatus.error;
+        _status[type] = FbHomePageStatus.error;
         failure?.call(e);
         notifyListeners();
       },
     );
   }
 
-  addSomeLoading() {
-    _status = FbHomePageStatus.loading;
+  addSomeLoading(int type) {
+    _status[type] = FbHomePageStatus.loading;
     notifyListeners();
   }
 
-  loadingFailed() {
-    _status = FbHomePageStatus.error;
+  loadingFailed(int type) {
+    _status[type] = FbHomePageStatus.error;
     notifyListeners();
   }
 
   Future<void> initPostList(int type,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
-      _status = FbHomePageStatus.loading;
+      _status[type] = FbHomePageStatus.loading;
       notifyListeners();
     }
     await FeedbackService.getPosts(
       type: '$type',
       page: '1',
       onSuccess: (postList, totalPage) {
-        if (_homeList != null)
-        _homeList[type].clear();
+        if (_homeList != null) _homeList[type].clear();
         _addOrUpdateItems(postList, type);
         _currentPage = 1;
         _totalPage = totalPage;
-        _status = FbHomePageStatus.idle;
+        if (type >= _status.length) {
+          for (int i = _status.length; i < type; i++)
+            _status.add(FbHomePageStatus.unload);
+          _status.add(FbHomePageStatus.idle);
+        } else
+          _status[type] = FbHomePageStatus.idle;
         success?.call();
         notifyListeners();
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
-        _status = FbHomePageStatus.error;
+        if (type >= _status.length) {
+          for (int i = _status.length; i < type; i++)
+            _status.add(FbHomePageStatus.unload);
+          _status.add(FbHomePageStatus.idle);
+        } else
+          _status[type] = FbHomePageStatus.error;
         failure?.call(e);
         notifyListeners();
       },

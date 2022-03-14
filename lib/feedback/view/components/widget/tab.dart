@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 
 class DaTab extends StatefulWidget {
   @required

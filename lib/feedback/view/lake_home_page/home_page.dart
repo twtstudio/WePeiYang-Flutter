@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -24,7 +23,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -41,23 +39,14 @@ class FeedbackHomePage extends StatefulWidget {
 
 class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  FbHomeListModel _listProvider;
-  FbDepartmentsProvider _tagsProvider;
-  FbHotTagsProvider _hotTagsProvider;
   TabController _tabController;
-  List<double> _offsets = [2, 2, 2];
   List<bool> shouldBeInitialized;
-
-  bool _initialRefresh;
 
   ///判断是否为初次登陆
   bool _tagsContainerCanAnimate,
       _tagsContainerBackgroundIsShow,
       _tagsWrapIsShow;
   double _tagsContainerBackgroundOpacity = 0;
-
-  ///第几个tab,0,1,2,3
-  int _swap;
 
   //请求type
   List swapLister = [2, 0, 1, 3];
@@ -67,74 +56,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   final ScrollController _nestedController = ScrollController();
 
-  final ScrollController _controller1 = ScrollController();
-  final ScrollController _controller2 = ScrollController();
-  final ScrollController _controller3 = ScrollController();
-  ScrollController _controller = ScrollController();
-
-  RefreshController _refreshController1 =
-      RefreshController(initialRefresh: false);
-  RefreshController _refreshController2 =
-      RefreshController(initialRefresh: false);
-  RefreshController _refreshController3 =
-      RefreshController(initialRefresh: false);
-  RefreshController _refreshController;
-
   final postTypeNotifier = ValueNotifier(PostType.lake);
 
   Widget _departmentSelectionContainer;
-
-  getHotList() {
-    _hotTagsProvider.initHotTags(success: () {
-      _refreshController.refreshCompleted();
-    }, failure: (e) {
-      ToastProvider.error(e.error.toString());
-      _refreshController.refreshFailed();
-    });
-  }
-
-  getRecTag() {
-    _hotTagsProvider.initRecTag(
-        success: () {},
-        failure: (e) {
-          ToastProvider.error(e.error.toString());
-        });
-  }
-
-  onRefresh([AnimationController controller]) {
-    FeedbackService.getToken(onResult: (_) {
-      _tagsProvider.initDepartments();
-      getRecTag();
-      if (_swap == 1) getHotList();
-      _listProvider.initPostList(swapLister[_swap], success: () {
-        controller?.dispose();
-        _refreshController.refreshCompleted();
-      }, failure: (_) {
-        controller?.stop();
-        _refreshController.refreshFailed();
-      });
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-      controller?.stop();
-      _refreshController.refreshFailed();
-    });
-  }
-
-  // _onLoading() {
-  //   if (_listProvider.isLastPage) {
-  //     _refreshController.loadNoData();
-  //   } else {
-  //     _listProvider.getNextPage(
-  //       swapLister[_swap],
-  //       success: () {
-  //         _refreshController.loadComplete();
-  //       },
-  //       failure: (e) {
-  //         _refreshController.loadFailed();
-  //       },
-  //     );
-  //   }
-  // }
 
   _onFeedbackTapped() {
     _onFeedbackOpen();
@@ -158,7 +82,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _tagsContainerCanAnimate = true;
     if (_tagsContainerBackgroundOpacity < 1) {
       _tagsContainerBackgroundIsShow = false;
-      _listProvider.justForGetConcentrate();
     }
   }
 
@@ -374,97 +297,19 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   void initState() {
-    _swap = 0;
     _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
     _tagsContainerBackgroundOpacity = 0;
-    _refreshController = _refreshController1;
-    shouldBeInitialized = [false, true, true, false];
-    _controller = _controller1;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
-      _listProvider = Provider.of<FbHomeListModel>(context, listen: false);
-      _hotTagsProvider = Provider.of<FbHotTagsProvider>(context, listen: false);
-      _tagsProvider =
-          Provider.of<FbDepartmentsProvider>(context, listen: false);
-      _listProvider.checkTokenAndGetPostList(_tagsProvider, 0, success: () {
-        getRecTag();
-      }, failure: (e) {
-        ToastProvider.error(e.error.toString());
-      });
     });
 
     context.read<TabNotifier>().initTabList();
 
     _tabController = TabController(length: 1, vsync: this);
 
-    _tabController.addListener(() {
-      if (_tabController.index.toDouble() == _tabController.animation.value) {
-        //判断TabBar是否切换
-        if (shouldBeInitialized[_tabController.index]) {
-          context.read<FbHomeListModel>().addSomeLoading();
-          FeedbackService.getToken(onResult: (_) {
-            _listProvider.initPostList(swapLister[_tabController.index],
-                success: () =>
-                    shouldBeInitialized[_tabController.index] = false);
-            getRecTag();
-            if (_tabController.index == 1) getHotList();
-          }, onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            context.read<FbHomeListModel>().loadingFailed();
-          });
-        }
-
-        switch (_tabController.index) {
-          case 0:
-            {
-              _controller1.jumpTo(_offsets[0]);
-              setState(() {
-                _refreshController = _refreshController1;
-                _controller = _controller1;
-                _swap = 0;
-                _tagsWrapIsShow = false;
-                _tagsContainerBackgroundIsShow = false;
-                _tagsContainerBackgroundOpacity = 0;
-              });
-            }
-            break;
-          case 1:
-            {
-              _controller2.jumpTo(_offsets[1]);
-              setState(() {
-                _refreshController = _refreshController2;
-                _controller = _controller2;
-                _swap = 1;
-                _tagsWrapIsShow = false;
-                _tagsContainerBackgroundIsShow = false;
-                _tagsContainerBackgroundOpacity = 0;
-              });
-            }
-            break;
-          case 2:
-            {
-              _controller3.jumpTo(_offsets[2]);
-              setState(() {
-                _refreshController = _refreshController3;
-                _controller = _controller3;
-                _swap = 2;
-              });
-            }
-            break;
-          default:
-            setState(() {
-              _swap = -1;
-              _tagsWrapIsShow = false;
-              _tagsContainerBackgroundIsShow = false;
-              _tagsContainerBackgroundOpacity = 0;
-            });
-            break;
-        }
-      }
-    });
     getClipboardWeKoContents();
     super.initState();
   }
@@ -484,11 +329,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
-
-    if (_initialRefresh ?? false) {
-      if (_controller.hasClients) listToTop();
-      _initialRefresh = false;
-    }
 
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
@@ -583,200 +423,194 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     return SafeArea(
       child: NestedScrollView(
-        controller: _nestedController,
-        physics: BouncingScrollPhysics(),
-        floatHeaderSlivers: false,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          scroll = false;
-          return <Widget>[
-            SliverAppBar(
-              toolbarHeight: 48,
-              backgroundColor: ColorUtil.whiteFDFE,
-              titleSpacing: 0,
-              leading: InkWell(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: () =>
-                    Navigator.pushNamed(context, FeedbackRouter.profile),
-                child: Center(
-                  child: FeedbackBadgeWidget(
-                    child: ImageIcon(
-                        AssetImage("assets/images/lake_butt_icons/box.png"),
-                        size: 23,
-                        color: ColorUtil.boldTag54),
+          controller: _nestedController,
+          physics: BouncingScrollPhysics(),
+          floatHeaderSlivers: false,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            scroll = false;
+            return <Widget>[
+              SliverAppBar(
+                toolbarHeight: 48,
+                backgroundColor: ColorUtil.whiteFDFE,
+                titleSpacing: 0,
+                leading: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () =>
+                      Navigator.pushNamed(context, FeedbackRouter.profile),
+                  child: Center(
+                    child: FeedbackBadgeWidget(
+                      child: ImageIcon(
+                          AssetImage("assets/images/lake_butt_icons/box.png"),
+                          size: 23,
+                          color: ColorUtil.boldTag54),
+                    ),
                   ),
                 ),
+                title: searchBar,
+                actions: [
+                  Hero(
+                    tag: "addNewPost",
+                    child: InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                            height: 24,
+                            width: 24,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "assets/images/lake_butt_icons/add_post.png")))),
+                        onTap: () {
+                          //_initialRefresh = true;
+                          Navigator.pushNamed(context, FeedbackRouter.newPost);
+                        }),
+                  ),
+                  SizedBox(width: 15)
+                ],
               ),
-              title: searchBar,
-              actions: [
-                Hero(
-                  tag: "addNewPost",
-                  child: InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
+              SliverPersistentHeader(
+                  floating: true,
+                  pinned: true,
+                  delegate: HomeHeaderDelegate(
                       child: Container(
-                          height: 24,
-                          width: 24,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/lake_butt_icons/add_post.png")))),
-                      onTap: () {
-                        _initialRefresh = true;
-                        Navigator.pushNamed(context, FeedbackRouter.newPost);
-                      }),
-                ),
-                SizedBox(width: 15)
-              ],
-            ),
-            SliverPersistentHeader(
-                floating: true,
-                pinned: true,
-                delegate: HomeHeaderDelegate(
-                    child: Container(
-                  color: ColorUtil.whiteFDFE,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(width: 4),
-                        Expanded(
-                          child:
-                              Consumer<TabNotifier>(builder: (_, status, __) {
-                            _tabController = TabController(
-                                length: context.read<TabNotifier>().tabLister ==
-                                        null
-                                    ? 1
-                                    : context
-                                        .read<TabNotifier>()
-                                        .tabLister
-                                        .length + 1,
-                                vsync: this);
-                            return TabBar(
-                                indicatorPadding: EdgeInsets.only(bottom: 2),
-                                labelPadding: EdgeInsets.only(bottom: 3),
-                                isScrollable: true,
-                                physics: BouncingScrollPhysics(),
-                                controller: _tabController,
-                                labelColor: ColorUtil.black2AColor,
-                                labelStyle: TextUtil
-                                    .base.black2A.w500.NotoSansSC
-                                    .sp(16),
-                                unselectedLabelColor: ColorUtil.lightTextColor,
-                                unselectedLabelStyle:
-                                    TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
-                                indicator: CustomIndicator(
-                                    borderSide: BorderSide(
-                                        color: ColorUtil.mainColor, width: 2)),
-                                tabs: List<DaTab>.generate(
-                                    context.read<TabNotifier>().tabLister ==
-                                            null
-                                        ? 1
-                                        : context
-                                            .read<TabNotifier>()
-                                            .tabLister
-                                            .length + 1,
-                                    (index) => DaTab(
-                                          text: index == 0 ? '全部' :context
-                                              .read<TabNotifier>()
-                                              .tabLister[index - 1]
-                                              .shortname,
+                    color: ColorUtil.whiteFDFE,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 4),
+                          Expanded(
+                            child:
+                                Consumer<TabNotifier>(builder: (_, status, __) {
+                              return TabBar(
+                                  indicatorPadding: EdgeInsets.only(bottom: 2),
+                                  labelPadding: EdgeInsets.only(bottom: 3),
+                                  isScrollable: true,
+                                  physics: BouncingScrollPhysics(),
+                                  controller: _tabController,
+                                  labelColor: ColorUtil.black2AColor,
+                                  labelStyle: TextUtil
+                                      .base.black2A.w500.NotoSansSC
+                                      .sp(16),
+                                  unselectedLabelColor:
+                                      ColorUtil.lightTextColor,
+                                  unselectedLabelStyle: TextUtil
+                                      .base.greyB2.w500.NotoSansSC
+                                      .sp(16),
+                                  indicator: CustomIndicator(
+                                      borderSide: BorderSide(
+                                          color: ColorUtil.mainColor,
+                                          width: 2)),
+                                  tabs: List<DaTab>.generate(
+                                      context.read<TabNotifier>().tabLister ==
+                                              null
+                                          ? 1
+                                          : context
+                                                  .read<TabNotifier>()
+                                                  .tabLister
+                                                  .length +
+                                              1,
+                                      (index) => DaTab(
+                                          text: index == 0
+                                              ? '全部'
+                                              : context
+                                                  .read<TabNotifier>()
+                                                  .tabLister[index - 1]
+                                                  .shortname,
                                           withDropDownButton: false
                                           // context
                                           //         .read<TabNotifier>()
                                           //         .tabLister[index]
                                           //         .shortname ==
                                           //     '校务',
-                                        )));
-                          }),
-                        ),
-                        PopupMenuButton(
-                          padding: EdgeInsets.zero,
-                          tooltip: "排序方式",
-                          shape: RacTangle(),
-                          child: Image(
-                            height: ScreenUtil().setHeight(25),
-                            width: ScreenUtil().setWidth(25),
-                            image: AssetImage(
-                                "assets/images/lake_butt_icons/menu.png"),
+                                          )));
+                            }),
                           ),
-                          //0-->时间排序，1-->动态排序
-                          onSelected: (value) {
-                            CommonPreferences().feedbackSearchType.value =
-                                value.toString();
-                            onRefresh();
-                          },
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<int>>[
-                              PopupMenuItem<int>(
-                                value: 0,
-                                child: Text(
-                                  '时间排序',
+                          PopupMenuButton(
+                            padding: EdgeInsets.zero,
+                            tooltip: "排序方式",
+                            shape: RacTangle(),
+                            child: Image(
+                              height: ScreenUtil().setHeight(25),
+                              width: ScreenUtil().setWidth(25),
+                              image: AssetImage(
+                                  "assets/images/lake_butt_icons/menu.png"),
+                            ),
+                            //0-->时间排序，1-->动态排序
+                            onSelected: (value) {
+                              CommonPreferences().feedbackSearchType.value =
+                                  value.toString();
+                            },
+                            itemBuilder: (context) {
+                              return <PopupMenuEntry<int>>[
+                                PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Text(
+                                    '时间排序',
+                                  ),
                                 ),
-                              ),
-                              PopupMenuItem<int>(
-                                value: 1,
-                                child: Text('动态排序'),
-                              ),
-                            ];
-                          },
-                        ),
-                        SizedBox(width: 17)
-                      ]),
-                )))
-          ];
-        },
-        body:
-        // Consumer<FbHomeStatusNotifier>(
-        //   builder: (_, status, __) {
-        //     if (status.isIdle)
-        //       return
-                Stack(
-                children: [
-                  ExtendedTabBarView(
-                      controller: _tabController,
-                      cacheExtent: 2,
-                      children: List<NSubPage>.generate(
-                          context.read<TabNotifier>().tabLister == null
-                              ? 1
-                              : context.read<TabNotifier>().tabLister.length + 1,
-                          (index) => NSubPage(
-                                index: index,
-                              ))),
-                  Offstage(
-                      offstage: !_tagsContainerBackgroundIsShow,
-                      child: AnimatedOpacity(
-                        opacity: _tagsContainerBackgroundOpacity,
-                        duration: Duration(milliseconds: 500),
-                        onEnd: _offstageTheBackground,
-                        child: InkWell(
-                          onTap: _onFeedbackTapped,
-                          child: Container(
-                            color: Colors.black45,
+                                PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text('动态排序'),
+                                ),
+                              ];
+                            },
                           ),
-                        ),
-                      )),
-                  Offstage(
-                    offstage: !_tagsContainerBackgroundIsShow,
-                    child: _departmentSelectionContainer,
-                  )
-                ],
+                          SizedBox(width: 17)
+                        ]),
+                  )))
+            ];
+          },
+          body:
+              Stack(
+            children: [
+              Consumer<TabNotifier>(builder: (_, status, __) {
+                _tabController = TabController(
+                    length: context.read<TabNotifier>().tabLister == null
+                        ? 1
+                        : context.read<TabNotifier>().tabLister.length + 1,
+                    vsync: this);
+                int cacheNum = 0;
+                return ExtendedTabBarView(
+                    cacheExtent: cacheNum,
+                    controller: _tabController,
+                    children: List<Widget>.generate(
+                        context.read<TabNotifier>().tabLister == null
+                            ? 1
+                            : context.read<TabNotifier>().tabLister.length + 1,
+                        (ind) => NSubPage(
+                              index: ind,
+                          total: context.read<TabNotifier>().tabLister == null
+                              ? 1 : context.read<TabNotifier>().tabLister.length + 1,
+                            )));
+              }),
+              Offstage(
+                  offstage: !_tagsContainerBackgroundIsShow,
+                  child: AnimatedOpacity(
+                    opacity: _tagsContainerBackgroundOpacity,
+                    duration: Duration(milliseconds: 500),
+                    onEnd: _offstageTheBackground,
+                    child: InkWell(
+                      onTap: _onFeedbackTapped,
+                      child: Container(
+                        color: Colors.black45,
+                      ),
+                    ),
+                  )),
+              Offstage(
+                offstage: !_tagsContainerBackgroundIsShow,
+                child: _departmentSelectionContainer,
               )
-      //       else if (status.isLoading)
-      //         return Loading();
-      //       else
-      //         return HomeErrorContainer(onRefresh, true);
-      //     },
-      //   ),
-      ),
+            ],
+          )
+          //       else if (status.isLoading)
+          //         return Loading();
+          //       else
+          //         return HomeErrorContainer(onRefresh, true);
+          //     },
+          //   ),
+          ),
     );
-  }
-
-  void listToTop() {
-    if (_controller.offset > 1500) {
-      _controller.jumpTo(1500);
-    }
-    _controller.animateTo(-85,
-        duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 }
 
