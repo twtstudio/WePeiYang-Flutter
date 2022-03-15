@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:provider/provider.dart';
 
 class DaTab extends StatefulWidget {
   @required
   final String text;
   @required
   final bool withDropDownButton;
-  final Function dropdown;
 
-  const DaTab({Key key, this.text, this.withDropDownButton, this.dropdown}) : super(key: key);
+  const DaTab({Key key, this.text, this.withDropDownButton})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,22 +25,19 @@ class _DaTabState extends State<DaTab> {
     var _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
     return widget.withDropDownButton
         ? Tab(
-      child: InkWell(
-              child: Row(
-                children: [
-                  SizedBox(width: _tabPaddingWidth),
-                  Text(widget.text),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    size: 10,
-                  ),
-                  if (_tabPaddingWidth > 10)
-                    SizedBox(width: _tabPaddingWidth - 10)
-                ],
-              ),
-              onTap: () => widget.dropdown
+            child: Row(
+              children: [
+                SizedBox(width: _tabPaddingWidth),
+                Text(widget.text),
+                Icon(
+                  Icons.arrow_drop_down,
+                  size: 10,
+                ),
+                if (_tabPaddingWidth > 10)
+                  SizedBox(width: _tabPaddingWidth - 10)
+              ],
             ),
-        )
+          )
         : Tab(
             child: Row(
             children: [

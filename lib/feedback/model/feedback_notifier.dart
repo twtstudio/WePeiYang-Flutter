@@ -131,6 +131,9 @@ class LakeArea {
 class LakeModel extends ChangeNotifier {
   Map<WPYTab, LakeArea> lakeAreas = {};
   List<WPYTab> lakeTabList = [];
+  int currentTab = 0;
+  bool openFeedbackList = false, _tagsContainerCanAnimate = true;
+  double opacity = 0;
 
   Future<void> initTabList() async {
     await FeedbackService.getTabList().then((tabList) {
@@ -241,3 +244,4 @@ class LakeModel extends ChangeNotifier {
     );
   }
 }
+

@@ -38,12 +38,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   TabController _tabController;
   List<bool> shouldBeInitialized;
+  final fbKey = new GlobalKey<FbTagsWrapState>();
 
   ///判断是否为初次登陆
-  bool _tagsContainerCanAnimate,
-      _tagsContainerBackgroundIsShow,
-      _tagsWrapIsShow;
-  double _tagsContainerBackgroundOpacity = 0;
 
   //请求type
   List swapLister = [2, 0, 1, 3];
@@ -56,31 +53,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   final postTypeNotifier = ValueNotifier(PostType.lake);
 
   Widget _departmentSelectionContainer;
-
-  _onFeedbackTapped() {
-    _onFeedbackOpen();
-    if (_tagsContainerCanAnimate) {
-      if (_tagsWrapIsShow == false)
-        setState(() {
-          _tagsWrapIsShow = true;
-          _tagsContainerBackgroundIsShow = true;
-          _tagsContainerBackgroundOpacity = 1.0;
-        });
-      else
-        setState(() {
-          _tagsContainerBackgroundOpacity = 0;
-          _tagsWrapIsShow = false;
-        });
-    }
-    _tagsContainerCanAnimate = false;
-  }
-
-  _offstageTheBackground() {
-    _tagsContainerCanAnimate = true;
-    if (_tagsContainerBackgroundOpacity < 1) {
-      _tagsContainerBackgroundIsShow = false;
-    }
-  }
 
   bool scroll = false;
 
@@ -174,18 +146,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   void initState() {
-    _tagsWrapIsShow = false;
-    _tagsContainerCanAnimate = true;
-    _tagsContainerBackgroundIsShow = false;
-    _tagsContainerBackgroundOpacity = 0;
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
     });
 
     context.read<LakeModel>().initTabList();
-
-    _tabController = TabController(length: 1, vsync: this);
 
     getClipboardWeKoContents();
     super.initState();
@@ -193,6 +158,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   bool get wantKeepAlive => true;
+
+  _onFeedbackTapped() {
+    if (_tabController.index.toDouble() == _tabController.animation.value) {
+      if (_tabController.index != 1)
+        _tabController.animateTo(1);
+      else {
+        _onFeedbackOpen();
+        fbKey.currentState.tap();
+  }
+  }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,55 +222,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   )),
           Spacer()
         ]),
-      ),
-    );
-
-    var tagsWrap = Consumer<FbDepartmentsProvider>(
-      builder: (_, provider, __) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
-          child: Wrap(
-            spacing: 6,
-            children: List.generate(provider.departmentList.length, (index) {
-              return InkResponse(
-                radius: 30,
-                highlightColor: Colors.transparent,
-                child: Chip(
-                  backgroundColor: Color.fromRGBO(234, 234, 234, 1),
-                  label: Text(provider.departmentList[index].name,
-                      style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.searchResult,
-                    arguments: SearchResultPageArgs(
-                        '',
-                        '',
-                        provider.departmentList[index].id.toString(),
-                        '#${provider.departmentList[index].name}',
-                        1),
-                  );
-                },
-              );
-            }),
-          ),
-        );
-      },
-    );
-
-    _departmentSelectionContainer = Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: ColorUtil.whiteFDFE,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(22),
-              bottomRight: Radius.circular(22))),
-      child: AnimatedSize(
-        curve: Curves.easeOutCirc,
-        duration: Duration(milliseconds: 400),
-        vsync: this,
-        child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
       ),
     );
 
@@ -369,24 +296,34 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   controller: _tabController,
                                   labelColor: ColorUtil.black2AColor,
                                   labelStyle: TextUtil
-                                      .base.black2A.w500.NotoSansSC
-                                      .sp(16),
+                                      .base.black2A.w600.NotoSansSC
+                                      .sp(18),
                                   unselectedLabelColor:
                                       ColorUtil.lightTextColor,
                                   unselectedLabelStyle: TextUtil
-                                      .base.greyB2.w500.NotoSansSC
-                                      .sp(16),
+                                      .base.greyB2.w600.NotoSansSC
+                                      .sp(18),
                                   indicator: CustomIndicator(
                                       borderSide: BorderSide(
                                           color: ColorUtil.mainColor,
                                           width: 2)),
-                                  tabs: List<DaTab>.generate(
+                                  tabs: List<Widget>.generate(
                                       lakeTabList == null
                                           ? 1
                                           : lakeTabList.length,
-                                      (index) => DaTab(
-                                          text: lakeTabList[index].shortname,
-                                          withDropDownButton: false)));
+                                      (index) => lakeTabList[index].name ==
+                                              '校务专区'
+                                          ? InkWell(
+                                              onTap: _onFeedbackTapped,
+                                              child: DaTab(
+                                                  text: lakeTabList[index]
+                                                      .shortname,
+                                                  withDropDownButton: true),
+                                            )
+                                          : DaTab(
+                                              text:
+                                                  lakeTabList[index].shortname,
+                                              withDropDownButton: false)));
                             }),
                           ),
                           PopupMenuButton(
@@ -443,23 +380,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               wpyTab: lakeTabList[ind],
                             )));
               }),
-              Offstage(
-                  offstage: !_tagsContainerBackgroundIsShow,
-                  child: AnimatedOpacity(
-                    opacity: _tagsContainerBackgroundOpacity,
-                    duration: Duration(milliseconds: 500),
-                    onEnd: _offstageTheBackground,
-                    child: InkWell(
-                      onTap: _onFeedbackTapped,
-                      child: Container(
-                        color: Colors.black45,
-                      ),
-                    ),
-                  )),
-              Offstage(
-                offstage: !_tagsContainerBackgroundIsShow,
-                child: _departmentSelectionContainer,
-              )
+              FbTagsWrap(key: fbKey)
             ],
           )),
     );
@@ -529,5 +450,122 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
+  }
+}
+
+class FbTagsWrap extends StatefulWidget {
+  FbTagsWrap({Key key}) : super(key: key);
+
+  @override
+  FbTagsWrapState createState() => FbTagsWrapState();
+}
+
+class FbTagsWrapState extends State<FbTagsWrap>
+    with SingleTickerProviderStateMixin {
+  FbTagsWrapState();
+
+  bool _tagsContainerCanAnimate,
+      _tagsContainerBackgroundIsShow,
+      _tagsWrapIsShow;
+  double _tagsContainerBackgroundOpacity = 0;
+
+  @override
+  void initState() {
+    _tagsWrapIsShow = false;
+    _tagsContainerCanAnimate = true;
+    _tagsContainerBackgroundIsShow = false;
+    _tagsContainerBackgroundOpacity = 0;
+    super.initState();
+  }
+
+  _offstageTheBackground() {
+    _tagsContainerCanAnimate = true;
+    if (_tagsContainerBackgroundOpacity < 1) {
+      _tagsContainerBackgroundIsShow = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var tagsWrap = Consumer<FbDepartmentsProvider>(
+      builder: (_, provider, __) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
+          child: Wrap(
+            spacing: 6,
+            children: List.generate(provider.departmentList.length, (index) {
+              return InkResponse(
+                radius: 30,
+                highlightColor: Colors.transparent,
+                child: Chip(
+                  backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                  label: Text(provider.departmentList[index].name,
+                      style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
+                ),
+                onTap: () {
+                  tap();
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.searchResult,
+                    arguments: SearchResultPageArgs(
+                        '',
+                        '',
+                        provider.departmentList[index].id.toString(),
+                        '#${provider.departmentList[index].name}',
+                        1),
+                  );
+                },
+              );
+            }),
+          ),
+        );
+      },
+    );
+    var _departmentSelectionContainer = Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: ColorUtil.whiteFDFE,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(22),
+              bottomRight: Radius.circular(22))),
+      child: AnimatedSize(
+        curve: Curves.easeOutCirc,
+        duration: Duration(milliseconds: 400),
+        vsync: this,
+        child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
+      ),
+    );
+    return Stack(
+      children: [
+        Offstage(
+            offstage: !_tagsContainerBackgroundIsShow,
+            child: AnimatedOpacity(
+              opacity: _tagsContainerBackgroundOpacity,
+              duration: Duration(milliseconds: 500),
+              onEnd: _offstageTheBackground,
+              child: Container(
+                color: Colors.black45,
+              ),
+            )),
+        Offstage(
+          offstage: !_tagsContainerBackgroundIsShow,
+          child: _departmentSelectionContainer,
+        ),
+      ],
+    );
+  }
+  void tap() {
+    if (_tagsContainerCanAnimate) _tagsContainerCanAnimate = false;
+    if (_tagsWrapIsShow == false)
+      setState(() {
+        _tagsWrapIsShow = true;
+        _tagsContainerBackgroundIsShow = true;
+        _tagsContainerBackgroundOpacity = 1.0;
+      });
+    else
+      setState(() {
+        _tagsContainerBackgroundOpacity = 0;
+        _tagsWrapIsShow = false;
+      });
   }
 }
