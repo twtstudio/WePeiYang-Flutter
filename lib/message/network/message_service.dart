@@ -180,7 +180,7 @@ class MessageDio extends DioAbstract {
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences().feedbackToken.value;
       return handler.next(options);
-    })
+    }), ApiInterceptor()
   ];
 
   /// 这里不能改，因为下面手动解析的字符串
