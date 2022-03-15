@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         color: Colors.white,
         onPressed: () {
           if (_currentIndex == 1) {
-            //feedbackKey.currentState.listToTop();
+            feedbackKey.currentState.listToTop();
           } else
             _tabController.animateTo(1);
         },

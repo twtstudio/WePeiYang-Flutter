@@ -399,7 +399,7 @@ class _PostCardState extends State<PostCard> {
                   SizedBox(width: WePeiYangApp.screenWidth - 164, child: title),
                 Spacer(),
                 SizedBox(width: 10),
-                if (post.type == 0 && widget.type == PostCardType.simple)
+                if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
                 if (post.solved == true &&
                     post.type == 1 &&

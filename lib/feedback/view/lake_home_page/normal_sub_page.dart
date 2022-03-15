@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
@@ -10,7 +11,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class NSubPage extends StatefulWidget {
@@ -19,22 +19,35 @@ class NSubPage extends StatefulWidget {
   const NSubPage({Key key, this.wpyTab}) : super(key: key);
 
   @override
-  _NSubPageState createState() => _NSubPageState(this.wpyTab);
+  NSubPageState createState() => NSubPageState(this.wpyTab);
 }
 
-class _NSubPageState extends State<NSubPage>
+class NSubPageState extends State<NSubPage>
     with AutomaticKeepAliveClientMixin {
   WPYTab wpyTab;
   FbDepartmentsProvider _departmentsProvider;
-  RefreshController rController = new RefreshController(initialRefresh: false);
-  ScrollController sController = new ScrollController();
+  double _previousOffset = 0;
 
-  _NSubPageState(this.wpyTab);
+  NSubPageState(this.wpyTab);
 
-  getRecTag() {
+  void getRecTag() {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
       ToastProvider.error(e.error.toString());
     });
+  }
+
+  _onScrollNotification(ScrollNotification scrollInfo) {
+    if (scrollInfo.metrics.pixels == 0)
+      context.read<LakeModel>().onFeedbackOpen();
+    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
+        scrollInfo.metrics.pixels >= 10 &&
+        scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
+      if (scrollInfo.metrics.pixels <= _previousOffset)
+        context.read<LakeModel>().onFeedbackOpen();
+      else
+        context.read<LakeModel>().onClose();
+      _previousOffset = scrollInfo.metrics.pixels;
+    }
   }
 
   onRefresh([AnimationController controller]) async {
@@ -107,11 +120,12 @@ class _NSubPageState extends State<NSubPage>
 
   @override
   void initState() {
-    if (wpyTab.name == '青年湖底')
-      context.read<FbHotTagsProvider>().initHotTags();
+    context.read<FbHotTagsProvider>().initRecTag();
+    if (wpyTab.name == '青年湖底') context.read<FbHotTagsProvider>().initHotTags();
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
-    context.read<LakeModel>().initLakeArea(wpyTab, rController, sController);
+    context.read<LakeModel>().initLakeArea(
+        wpyTab, RefreshController(initialRefresh: false), ScrollController());
     context
         .read<LakeModel>()
         .checkTokenAndGetPostList(_departmentsProvider, wpyTab, success: () {
@@ -136,7 +150,7 @@ class _NSubPageState extends State<NSubPage>
       return NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
-          controller: rController,
+          controller: context.read<LakeModel>().lakeAreas[wpyTab].refreshController,
           header: ClassicHeader(
             completeDuration: Duration(milliseconds: 300),
           ),
@@ -146,7 +160,7 @@ class _NSubPageState extends State<NSubPage>
           enablePullUp: true,
           onLoading: _onLoading,
           child: ListView.builder(
-            controller: sController,
+            controller: context.read<LakeModel>().lakeAreas[wpyTab].controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: context.select((LakeModel model) =>
@@ -168,8 +182,8 @@ class _NSubPageState extends State<NSubPage>
             },
           ),
         ),
-        // onNotification: (ScrollNotification scrollInfo) =>
-        //     _onScrollNotification(scrollInfo),
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
       );
     else if (status == LakePageStatus.unload)
       return SizedBox();

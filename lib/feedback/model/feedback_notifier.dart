@@ -67,7 +67,10 @@ class NewPostProvider {
   bool get check =>
       title.isNotEmpty &&
       content.isNotEmpty &&
-      ((type == 1 && department.id != null) || type == 0||type == 2||type == 3 );
+      ((type == 1 && department.id != null) ||
+          type == 0 ||
+          type == 2 ||
+          type == 3);
 
   void clear() {
     title = "";
@@ -132,8 +135,10 @@ class LakeModel extends ChangeNotifier {
   Map<WPYTab, LakeArea> lakeAreas = {};
   List<WPYTab> lakeTabList = [];
   int currentTab = 0;
-  bool openFeedbackList = false, _tagsContainerCanAnimate = true;
+  bool openFeedbackList = false, tabControllerLoaded = false, scroll = false, lockSaver = false;
   double opacity = 0;
+  TabController tabController;
+  ScrollController nController;
 
   Future<void> initTabList() async {
     await FeedbackService.getTabList().then((tabList) {
@@ -149,6 +154,29 @@ class LakeModel extends ChangeNotifier {
       ToastProvider.error(e.error.toString());
       notifyListeners();
     });
+  }
+
+  void onFeedbackOpen() {
+    if (!scroll && nController.offset != 0) {
+      scroll = true;
+      nController
+          .animateTo(0,
+              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
+          .then((value) => scroll = false);
+    }
+  }
+
+  void onClose() {
+    if (!scroll &&
+        nController.offset !=
+            nController.position.maxScrollExtent) {
+      scroll = true;
+      nController
+          .animateTo(nController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
+          .then((value) => scroll = false);
+    }
+    //if (_refreshController.isRefresh) _refreshController.refreshCompleted();
   }
 
   void initLakeArea(
@@ -198,10 +226,6 @@ class LakeModel extends ChangeNotifier {
     );
   }
 
-  justForGetConcentrate() {
-    notifyListeners();
-  }
-
   checkTokenAndGetPostList(FbDepartmentsProvider provider, WPYTab tab,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
@@ -228,6 +252,7 @@ class LakeModel extends ChangeNotifier {
       type: '${tab.id}',
       page: '1',
       onSuccess: (postList, totalPage) {
+        tabControllerLoaded = true;
         if (lakeAreas[tab].dataList != null) lakeAreas[tab].dataList.clear();
         _addOrUpdateItems(postList, tab);
         lakeAreas[tab].currentPage = 1;
@@ -244,4 +269,3 @@ class LakeModel extends ChangeNotifier {
     );
   }
 }
-
