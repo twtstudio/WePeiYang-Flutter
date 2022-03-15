@@ -1,13 +1,14 @@
 // @dart = 2.12
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
@@ -15,10 +16,7 @@ import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/room_state.dart';
 
 // 教室列表页面的数据和ui控制
-class _ClassroomsPageData extends LoungeConfigChangeNotifier {
-  DateTime? _updateTime;
-
-  DateTime? get updateTime => _updateTime;
+class _ClassroomsPageData extends LoungeDataChangeNotifier {
   final Area _area;
 
   Area get area => _area;
@@ -29,12 +27,18 @@ class _ClassroomsPageData extends LoungeConfigChangeNotifier {
     _area.classrooms = data.classrooms;
   }
 
-  _ClassroomsPageData._(this._area, this._updateTime);
+  final BuildContext _context;
+
+  final RefreshController _refreshController;
+
+  RefreshController get refreshController => _refreshController;
+
+  _ClassroomsPageData._(this._area, this._refreshController, this._context);
 
   factory _ClassroomsPageData(BuildContext context, String bId, String aId) {
     final dataProvider = context.read<BuildingData>();
     final data = dataProvider.buildings[bId]?.areas[aId] ?? Area.empty();
-    return _ClassroomsPageData._(data, dataProvider.updateTime);
+    return _ClassroomsPageData._(data, RefreshController(), context);
   }
 
   @override
@@ -42,12 +46,13 @@ class _ClassroomsPageData extends LoungeConfigChangeNotifier {
     final newData = dataProvider.buildings[area.bId]?.areas[area.id];
     if (newData != null) {
       area = newData;
-      _updateTime = dataProvider.updateTime;
-      stateSuccess();
+      if (_refreshController.isRefresh) {
+        _refreshController.refreshCompleted();
+      }
+      stateSuccess('刷新楼层数据成功');
     } else {
       // 新的数据中没有这个区域的数据
-      // TODO: 显示一个widget，表明新的数据没有这个区域和之前的数据的获取时间
-      ToastProvider.error('刷新出现错误');
+      ToastProvider.error('新数据出现错误');
       stateError();
     }
   }
@@ -55,7 +60,20 @@ class _ClassroomsPageData extends LoungeConfigChangeNotifier {
   @override
   void getDataError() {
     // 获取数据出错
+    ToastProvider.error('刷新出现错误');
     stateError();
+  }
+
+  @override
+  bool stateError([String? msg]) {
+    if (_refreshController.isRefresh) {
+      _refreshController.refreshFailed();
+    }
+    return super.stateError(msg);
+  }
+
+  void onRefresh() {
+    _context.read<BuildingData>().getDataOfWeek();
   }
 }
 
@@ -71,14 +89,13 @@ class ClassroomsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = ChangeNotifierProxyProvider2<LoungeConfig, BuildingData,
-        _ClassroomsPageData>(
+    final body = ChangeNotifierProxyProvider<BuildingData, _ClassroomsPageData>(
       create: (context) => _ClassroomsPageData(context, bId, aId),
-      update: (context, config, allData, data) {
+      update: (context, allData, data) {
         if (data == null) {
           return _ClassroomsPageData(context, bId, aId);
         }
-        return data..update(config, allData);
+        return data..update(allData);
       },
       child: const BuildingFloors(),
     );
@@ -90,27 +107,29 @@ class ClassroomsPage extends StatelessWidget {
   }
 }
 
-class BuildingFloors extends LoadStateListener<_ClassroomsPageData> {
+class BuildingFloors extends StatelessWidget {
   const BuildingFloors({
     Key? key,
   }) : super(key: key);
 
-  Widget getFloorList(Map<String, List<Classroom>> floors) {
-    return ListView.builder(
+  @override
+  Widget build(BuildContext context) {
+    final floors =
+        context.select((_ClassroomsPageData data) => data.area).splitByFloor;
+
+    Widget floorListView = ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: floors.length,
-      itemBuilder: (context, index) => FloorWidget(
-        floor: floors.keys.toList()[index],
-      ),
+      itemBuilder: (context, index) {
+        if (index < floors.length) {
+          return FloorWidget(
+            floor: floors.keys.toList()[index],
+          );
+        }
+        return SizedBox.shrink();
+      },
     );
-  }
-
-  @override
-  Widget success(BuildContext context) {
-    final floors = context.read<_ClassroomsPageData>().area.splitByFloor;
-
-    Widget floorListView = getFloorList(floors);
 
     floorListView = ListView(
       physics: const BouncingScrollPhysics(),
@@ -129,38 +148,14 @@ class BuildingFloors extends LoadStateListener<_ClassroomsPageData> {
       ],
     );
 
+    floorListView = SmartRefresher(
+      controller: context.read<_ClassroomsPageData>().refreshController,
+      onRefresh: context.read<_ClassroomsPageData>().onRefresh,
+      header: ClassicHeader(),
+      child: floorListView,
+    );
+
     return floorListView;
-  }
-
-  @override
-  Widget error(BuildContext context) {
-    final data = context.read<_ClassroomsPageData>();
-    if (data.area.isEmpty) {
-      // TODO
-      return Text('初始化数据失败');
-    } else {
-      final floorList = getFloorList(data.area.splitByFloor);
-
-      final listWithError = ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          SizedBox(height: 27.w),
-          Text("加载失败，上次刷新时间：${data.updateTime}"),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 21.w),
-            child: const _PathTitle(),
-          ),
-          SizedBox(height: 16.w),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 13.w),
-            child: floorList,
-          ),
-          SizedBox(height: 30.w),
-        ],
-      );
-
-      return listWithError;
-    }
   }
 }
 
@@ -169,7 +164,7 @@ class _PathTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final area = context.watch<_ClassroomsPageData>().area;
+    final area = context.select((_ClassroomsPageData data) => data.area);
 
     return Row(
       children: [
@@ -204,8 +199,9 @@ class FloorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final classrooms =
-        context.watch<_ClassroomsPageData>().area.splitByFloor[floor]!;
+    final classrooms = context
+        .select((_ClassroomsPageData data) => data.area)
+        .splitByFloor[floor]!;
 
     debugPrint(classrooms.length.toString());
 

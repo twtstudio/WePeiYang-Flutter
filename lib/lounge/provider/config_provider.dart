@@ -55,4 +55,8 @@ extension CampusExtension on Campus {
   String get name => ['卫津路', '北洋园'][index];
 
   CrossFadeState get state => CrossFadeState.values[index];
+
+  bool get isWjl => this == Campus.wjl;
+
+  bool get isByy => this == Campus.byy;
 }

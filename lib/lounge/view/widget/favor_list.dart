@@ -4,21 +4,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/room_favor_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/room_favor_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
-import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/room_state.dart';
-
-import '../../../commons/widgets/loading.dart';
 
 class LoungeFavorList extends StatefulWidget {
   final String title;
 
-  const LoungeFavorList(this.title, {Key? key}) : super(key: key);
+  const LoungeFavorList(
+    this.title, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _LoungeFavorListState createState() => _LoungeFavorListState();
@@ -27,24 +30,24 @@ class LoungeFavorList extends StatefulWidget {
 class _LoungeFavorListState extends State<LoungeFavorList> {
   @override
   Widget build(BuildContext context) {
-    Widget body = Column(
+    final title = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 7.w),
+      child: Text(
+        widget.title,
+        style: TextStyle(
+          fontSize: 17.sp,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).favorListTitle,
+        ),
+      ),
+    );
+
+    final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 24.w,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 7.w),
-          child: Text(
-            widget.title,
-            style: TextStyle(
-              fontSize: 17.sp,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).favorListTitle,
-            ),
-          ),
-        ),
-        const FavourListWidget(),
+        SizedBox(height: 24.w),
+        Row(children: [title]),
+        const _FavourWidget(),
       ],
     );
 
@@ -52,84 +55,101 @@ class _LoungeFavorListState extends State<LoungeFavorList> {
   }
 }
 
-class FavourListWidget extends StatelessWidget {
-  const FavourListWidget({Key? key}) : super(key: key);
+class _FavourWidget extends LoadStateListener<RoomFavour> {
+  const _FavourWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final model = context.watch<RoomFavorProvider>();
+  Widget init(BuildContext context, _) {
+    return SizedBox(
+      height: 149.w,
+      child: const Center(child: Loading()),
+    );
+  }
 
+  @override
+  Widget refresh(BuildContext context, _) {
+    return SizedBox(
+      height: 149.w,
+      child: const Center(child: Loading()),
+    );
+  }
+
+  @override
+  Widget success(BuildContext context, RoomFavour data) {
     late Widget body;
-
-    if (model.success) {
-      if (model.favourList.isEmpty) {
-        body = SizedBox(
-          height: 60.w,
-          child: const Center(
-            child: Text(
-                // init ? '没有数据，请至顶栏自习室模块添加收藏' : '暂无收藏',
-                '没有数据'
-                // S.current.notHaveLoungeFavour,
-                // style: FontManager.YaHeiLight.copyWith(
-                //     color: Color(0xffcdcdd3), fontSize: 14),
-                ),
-          ),
-        );
-      } else {
-        body = Padding(
-          padding: EdgeInsets.fromLTRB(0, 12.w, 0, 0),
-          child: const SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: _FavorList(),
-          ),
-        );
-      }
-    } else {
-      final height = MediaQuery.of(context).size.height / 3;
+    if (data.favourList.isEmpty) {
       body = SizedBox(
-        height: height,
-        child: const Center(
-          child: Loading(),
+        height: 80.w,
+        child: MediaQuery.removePadding(
+          context: context,
+          removeLeft: true,
+          child: Center(
+            child: Text('同步数据失败', style: TextUtil.base.greyAA.sp(14)),
+          ),
         ),
       );
+    } else {
+      body = _FavorList();
+    }
+
+    return body;
+  }
+
+  @override
+  Widget error(BuildContext context, RoomFavour data) {
+    late Widget body;
+    if (data.favourList.isEmpty) {
+      body = SizedBox(
+        height: 80.w,
+        child: MediaQuery.removePadding(
+          context: context,
+          removeLeft: true,
+          child: Center(
+            child: Text('同步数据失败', style: TextUtil.base.greyB2.sp(14)),
+          ),
+        ),
+      );
+    } else {
+      body = _FavorList();
     }
 
     return body;
   }
 }
 
+/// 收藏列表
 class _FavorList extends StatelessWidget {
   const _FavorList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<RoomFavorProvider>();
+    context.select((RoomFavour data) => data.favourList.length);
+    final favours = context.read<RoomFavour>().favourList.values;
 
-    return Row(
+    Widget body = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: model.favourList.values.map(
-        (classroom) {
-          var plan = model.classPlan[classroom.id];
-          if (plan != null) {
-            var currentPlan = plan[4]?.join() ?? '';
-            var isIdle = Time.availableNow(currentPlan, []);
-            return FavourListCard(classroom, isIdle);
-          }
-          return Container();
-        },
-      ).toList(),
+      children: favours.map((classroom) => _FavourListCard(classroom)).toList(),
     );
+
+    body = Padding(
+      padding: EdgeInsets.fromLTRB(0, 12.w, 0, 0),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: body,
+      ),
+    );
+
+    return body;
   }
 }
 
-class FavourListCard extends StatelessWidget {
+/// 收藏列表的每一个item
+class _FavourListCard extends StatelessWidget {
   final Classroom room;
-  final bool avaliable;
 
-  const FavourListCard(
-    this.room,
-    this.avaliable, {
+  const _FavourListCard(
+    this.room, {
     Key? key,
   }) : super(key: key);
 
@@ -161,8 +181,6 @@ class FavourListCard extends StatelessWidget {
       ],
     );
 
-    debugPrint(DataFactory.getRoomTitle(room));
-
     itemContent = Container(
       width: 82.w,
       height: 120.w,
@@ -170,7 +188,7 @@ class FavourListCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).favorRoomItemShadow,
-            blurRadius: 47.w,
+            blurRadius: 7.w,
           )
         ],
         shape: BoxShape.rectangle,

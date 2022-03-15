@@ -1,39 +1,43 @@
 // @dart = 2.12
+
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'local_entry.dart';
+part of 'favour_entry.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class LocalEntryAdapter extends TypeAdapter<LocalEntry> {
+class FavourEntryAdapter extends TypeAdapter<FavourEntry> {
   @override
-  final int typeId = 4;
+  final int typeId = 7;
 
   @override
-  LocalEntry read(BinaryReader reader) {
+  FavourEntry read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return LocalEntry(
-      key: fields[0] as String,
-      name: fields[1] as String,
-      dateTime: fields[2] as String,
+    return FavourEntry(
+      time: fields[0] as String,
+      room: fields[1] as Classroom,
+      action: fields[2] as String,
+      sync: fields[3] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, LocalEntry obj) {
+  void write(BinaryWriter writer, FavourEntry obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.key)
+      ..write(obj.time)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.room)
       ..writeByte(2)
-      ..write(obj.dateTime);
+      ..write(obj.action)
+      ..writeByte(3)
+      ..write(obj.sync);
   }
 
   @override
@@ -42,7 +46,7 @@ class LocalEntryAdapter extends TypeAdapter<LocalEntry> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is LocalEntryAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is FavourEntryAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

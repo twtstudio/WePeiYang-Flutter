@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 
 // 自习室模块数据控制：
 // 第一级：       LoungeConfigProvider： 自习室数据的基本配置（时间，校区）
@@ -34,50 +33,86 @@ extension LoadStateExt on LoadState {
 
 /// 页面状态控制
 abstract class LoadStateChangeNotifier with ChangeNotifier {
-  var _state = LoadState.init;
+  var _loadState = LoadState.init;
 
-  LoadState get state => _state;
+  LoadState get loadState => _loadState;
 
-  void stateInit() {
-    _state = LoadState.init;
-    notifyListeners();
+  set loadState(LoadState value) {
+    _loadState = value;
   }
 
-  void stateRefreshing() {
-    _state = LoadState.refresh;
-    debugPrint('stateRefreshing');
-    notifyListeners();
+  // 防止重复刷新
+  bool stateInit([String? msg]) {
+    if (!_loadState.isInit) {
+      _loadState = LoadState.init;
+      if (msg != null) {
+        debugPrint("================================");
+        debugPrint("state to init , msg : " + msg);
+        debugPrint("================================");
+      }
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 
-  void stateSuccess() {
-    _state = LoadState.success;
-    debugPrint('stateSuccess');
-    notifyListeners();
+  bool stateRefreshing({String? msg, bool notifier = true}) {
+    if (!_loadState.isRefresh) {
+      _loadState = LoadState.refresh;
+      if (msg != null) {
+        debugPrint("================================");
+        debugPrint("state to refresh , msg : " + msg);
+        debugPrint("================================");
+      }
+      if (notifier) notifyListeners();
+      return true;
+    }
+    return false;
   }
 
-  void stateError() {
-    _state = LoadState.error;
-    notifyListeners();
+  bool stateSuccess([String? msg]) {
+    if (!_loadState.isSuccess) {
+      _loadState = LoadState.success;
+      if (msg != null) {
+        debugPrint("================================");
+        debugPrint("state to success , msg : " + msg);
+        debugPrint("================================");
+      }
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  bool stateError([String? msg]) {
+    if (!_loadState.isError) {
+      _loadState = LoadState.error;
+      if (msg != null) {
+        debugPrint("================================");
+        debugPrint("state to error , msg : " + msg);
+        debugPrint("================================");
+      }
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 }
 
 /// 每个页面具体控制数据的ChangeNotifier的父类，方便刷新数据
-abstract class LoungeConfigChangeNotifier extends LoadStateChangeNotifier {
+abstract class LoungeDataChangeNotifier extends LoadStateChangeNotifier {
   @protected
   void getNewData(BuildingData data);
 
   @protected
   void getDataError();
 
-  void update(
-    LoungeConfig config,
-    BuildingData data,
-  ) {
-    if (data.state.isInit) {
+  void update(BuildingData data) {
+    if (data.loadState.isInit) {
       stateInit();
-    } else if (data.state.isRefresh) {
+    } else if (data.loadState.isRefresh) {
       stateRefreshing();
-    } else if (data.state.isSuccess) {
+    } else if (data.loadState.isSuccess) {
       getNewData(data);
     } else {
       getDataError();
@@ -92,35 +127,35 @@ abstract class LoadStateListener<T extends LoadStateChangeNotifier>
     Key? key,
   }) : super(key: key);
 
-  Widget init(BuildContext context) {
+  Widget init(BuildContext context, T data) {
     return const Center(child: Loading());
   }
 
-  Widget refresh(BuildContext context) {
+  Widget refresh(BuildContext context, T data) {
     return const Center(child: Loading());
   }
 
-  Widget success(BuildContext context) {
+  Widget success(BuildContext context, T data) {
     return const Center(child: Text('success'));
   }
 
-  Widget error(BuildContext context) {
+  Widget error(BuildContext context, T data) {
     return const Center(child: Text('error'));
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((T data) => data.state);
-
-    switch (state) {
+    final loadState = context.select((T data) => data.loadState);
+    final data = context.read<T>();
+    switch (loadState) {
       case LoadState.init:
-        return init(context);
+        return init(context, data);
       case LoadState.refresh:
-        return refresh(context);
+        return refresh(context, data);
       case LoadState.success:
-        return success(context);
+        return success(context, data);
       case LoadState.error:
-        return error(context);
+        return error(context, data);
     }
   }
 }

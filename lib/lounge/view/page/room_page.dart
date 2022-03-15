@@ -4,35 +4,47 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/room_favor_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
 
-class _RoomPlanData extends LoungeConfigChangeNotifier {
+class _RoomPlanData extends LoungeDataChangeNotifier {
   final Classroom _room;
 
   Classroom get room => _room;
 
+  final RefreshController _refreshController;
+
+  RefreshController get refreshController => _refreshController;
+
+  final BuildContext _context;
+
   set room(Classroom data) {
-    if (data != _room && data.baseDataEqual(_room)) {
+    if (data != _room) {
       _room.statuses = Map.from(data.statuses);
     }
   }
 
-  _RoomPlanData._(this._room);
+  _RoomPlanData._(this._room, this._refreshController, this._context);
 
   factory _RoomPlanData(BuildContext context, Classroom room) {
     final dataProvider = context.read<BuildingData>();
-    final data = dataProvider.getClassroom(room) ?? Classroom.empty();
-    return _RoomPlanData._(Classroom.deepCopy(data));
+    final data = dataProvider.getClassroom(room);
+    return _RoomPlanData._(
+      Classroom.deepCopy(data),
+      RefreshController(),
+      context,
+    );
   }
 
   // TODO: 存在可能时间不一样，教室不一样
@@ -42,16 +54,45 @@ class _RoomPlanData extends LoungeConfigChangeNotifier {
         .buildings[_room.bId]?.areas[_room.aId]?.classrooms[_room.id];
     if (newData != null) {
       room = newData;
-      stateSuccess();
+      stateSuccess('刷新教室数据成功');
     } else {
-      ToastProvider.error('刷新出现错误');
+      ToastProvider.error('新数据出现错误');
       stateError();
     }
   }
 
   @override
   void getDataError() {
+    ToastProvider.error('刷新出现错误');
     stateError();
+  }
+
+  @override
+  bool stateSuccess([String? msg]) {
+    if (_refreshController.isRefresh) {
+      _refreshController.refreshCompleted();
+    }
+    return super.stateSuccess(msg);
+  }
+
+  @override
+  bool stateError([String? msg]) {
+    if (_refreshController.isRefresh) {
+      _refreshController.refreshFailed();
+    }
+    return super.stateError(msg);
+  }
+
+  @override
+  bool stateRefreshing({msg, notifier = true}) {
+    return super.stateRefreshing(
+      msg: msg,
+      notifier: !_refreshController.isRefresh,
+    );
+  }
+
+  void onRefresh() {
+    _context.read<BuildingData>().getDataOfWeek();
   }
 }
 
@@ -62,37 +103,40 @@ class RoomPlanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget body =
-        ChangeNotifierProxyProvider2<LoungeConfig, BuildingData, _RoomPlanData>(
-      create: (context) => _RoomPlanData(context, room),
-      update: (context, timeProvider, dataProvider, data) {
-        if (data == null) {
-          return _RoomPlanData(context, room);
-        }
-        return data..update(timeProvider, dataProvider);
-      },
-      child: const ClassTableWidget(),
-    );
-
-    body = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      child: body,
-    );
-
     final pageTitle = Padding(
-      padding: EdgeInsets.only(bottom: 15.w, left: 21.w, right: 11.w),
+      padding: EdgeInsets.only(left: 21.w, right: 11.w),
       child: PageTitleWidget(room: room),
     );
 
-    return LoungeBasePage(
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          pageTitle,
-          body,
-        ],
+    final table = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 15.w),
+      child: const ClassTableWidget(),
+    );
+
+    Widget body = Builder(
+      builder: (context) => SmartRefresher(
+        controller: context.read<_RoomPlanData>().refreshController,
+        onRefresh: context.read<_RoomPlanData>().onRefresh,
+        header: ClassicHeader(),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [pageTitle, table],
+        ),
       ),
     );
+
+    body = ChangeNotifierProxyProvider<BuildingData, _RoomPlanData>(
+      create: (context) => _RoomPlanData(context, room),
+      update: (context, dataProvider, data) {
+        if (data == null) {
+          return _RoomPlanData(context, room);
+        }
+        return data..update(dataProvider);
+      },
+      child: body,
+    );
+
+    return LoungeBasePage(body: body);
   }
 }
 
@@ -155,7 +199,7 @@ class _FavorButton extends StatelessWidget {
         shadowColor: Colors.transparent,
       ),
       onPressed: () {
-        context.read<RoomFavorProvider>().changeFavor(room);
+        context.read<RoomFavour>().changeFavor(room);
       },
       child: Builder(builder: (context) {
         final unFavorStyle = TextStyle(
@@ -168,8 +212,10 @@ class _FavorButton extends StatelessWidget {
           color: Theme.of(context).favorButtonFavor,
         );
 
-        final isFavor =
-            context.watch<RoomFavorProvider>().favourList.containsKey(room.id);
+        final isFavor = context.select(
+          (RoomFavour data) => data.favourList.containsKey(room.id),
+        );
+
         if (isFavor) {
           return Text('已收藏', style: favorStyle);
         } else {
@@ -195,8 +241,7 @@ class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wholeWidth = MediaQuery.of(context).size.width - schedulePadding * 2;
-    // final dayCount = CommonPreferences().dayNumber.value;
-    const dayCount = 6;
+    final dayCount = CommonPreferences().dayNumber.value;
     final cardWidth =
         (wholeWidth - countTabWidth - dayCount * cardStep) / dayCount;
     final tabHeight = cardWidth * 136 / 96;
@@ -224,15 +269,11 @@ class ClassTableWidget extends StatelessWidget {
       child: CourseDisplayWidget(cardWidth, dayCount),
     );
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(bottom: 20),
-      child: SizedBox(
-        height: wholeHeight,
-        width: wholeWidth,
-        child: Stack(
-          children: [weekBar, planGrid, courseTab],
-        ),
+    return SizedBox(
+      height: wholeHeight,
+      width: wholeWidth,
+      child: Stack(
+        children: [weekBar, planGrid, courseTab],
       ),
     );
   }
@@ -369,7 +410,7 @@ class WeekDisplayWidget extends StatelessWidget {
   }
 }
 
-class CourseDisplayWidget extends StatelessWidget {
+class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
   final double cardWidth;
   final int dayCount;
 
@@ -380,42 +421,37 @@ class CourseDisplayWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget refresh(BuildContext context, _) {
+    return const Center(child: Loading());
+  }
+
+  @override
+  Widget success(BuildContext context, _RoomPlanData data) {
     var singleCourseHeight = cardWidth * 136 / 96;
 
-    final dataLoadstate = context.select((_RoomPlanData data) => data.state);
+    final statuses = data.room.statuses.map(
+      (key, value) =>
+          MapEntry(Time.week[key - 1], DataFactory.splitPlan(value)),
+    );
 
-    Widget body;
+    return Stack(
+      children: _generatePositioned(
+        context,
+        singleCourseHeight,
+        statuses,
+        dayCount,
+      ),
+    );
+  }
 
-    switch (dataLoadstate) {
-      case LoadState.init:
-        body = const Center(child: Text('init'));
-        break;
-      case LoadState.refresh:
-        body = const Center(child: Loading());
-        break;
-      case LoadState.success:
-        final statuses = context
-            .select((_RoomPlanData data) => data.room)
-            .statuses
-            .map(
-              (key, value) =>
-                  MapEntry(Time.week[key - 1], DataFactory.splitPlan(value)),
-            );
+  @override
+  Widget error(BuildContext context, _) {
+    return const Center(child: Text('error'));
+  }
 
-        body = Stack(
-          children: _generatePositioned(
-            context,
-            singleCourseHeight,
-            statuses,
-            dayCount,
-          ),
-        );
-        break;
-      case LoadState.error:
-        body = const Center(child: Text('error'));
-        break;
-    }
+  @override
+  Widget build(BuildContext context) {
+    var singleCourseHeight = cardWidth * 136 / 96;
 
     return SizedBox(
       height: singleCourseHeight * 12 + cardStep * 11,
@@ -423,7 +459,7 @@ class CourseDisplayWidget extends StatelessWidget {
           schedulePadding * 2 -
           countTabWidth -
           cardStep,
-      child: body,
+      child: super.build(context),
     );
   }
 

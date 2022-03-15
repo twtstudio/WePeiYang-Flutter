@@ -36,9 +36,9 @@ class CampusTextButton extends StatelessWidget {
     // TODO: ???
     final dateTime = Builder(
       builder: (context) {
-        final dateTime = DateFormat('2019-MM-dd').format(context.select(
-          (LoungeConfig provider) => provider.dateTime,
-        ));
+        final dateTime = DateFormat('yyyy-MM-dd').format(
+          context.select((LoungeConfig provider) => provider.dateTime),
+        );
         return Text(
           dateTime,
           style: TextStyle(

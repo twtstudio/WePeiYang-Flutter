@@ -114,6 +114,22 @@ class Area {
   int get hashCode => classrooms.hashCode;
 
   bool get isEmpty => id == 'unknown' || building == 'unknown';
+
+  factory Area.deepCopy(Area other) {
+    return Area(
+      id: other.id,
+      building: other.building,
+      classrooms: Map.fromIterables(
+        List.from(other.classrooms.keys),
+        List.generate(
+          other.classrooms.length,
+          (index) =>
+              Classroom.deepCopy(other.classrooms.values.toList()[index]),
+        ),
+      ),
+      bId: other.bId,
+    );
+  }
 }
 
 extension MapExtension on Map {

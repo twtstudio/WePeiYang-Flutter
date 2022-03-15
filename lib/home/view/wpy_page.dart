@@ -14,7 +14,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
-import 'package:we_pei_yang_flutter/lounge/view/widget/favor_list.dart';
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
@@ -29,7 +29,6 @@ class WPYPage extends StatefulWidget {
 }
 
 class WPYPageState extends State<WPYPage> {
-  ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
   GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
   GlobalKey majorColumnHeightKey = GlobalKey();
 
@@ -54,8 +53,6 @@ class WPYPageState extends State<WPYPage> {
               color: MyColors.darkGrey, size: 25),
           '考表',
           ScheduleRouter.exam))
-
-      /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
               color: Color(0xffcecfd4), size: 20),
@@ -119,7 +116,7 @@ class WPYPageState extends State<WPYPage> {
                         toolCards[0],
                         toolCards[1],
                         toolCards[2],
-                        // toolCards[3]
+                        toolCards[3],
                       ], //以后可以写排序
                     ),
                   )),
@@ -146,7 +143,7 @@ class WPYPageState extends State<WPYPage> {
     TodayCoursesWidget(),
     WpyExamWidget(),
     GPAPreview(),
-    // LoungeFavorList('我的收藏'),
+    MainPageLoungeWidget(),
   ];
 }
 
@@ -272,23 +269,7 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (itemCount < i) itemCount = i;
-        if (cards[i].label == S.current.lounge) {
-          return ValueListenableBuilder(
-            valueListenable: context
-                .findAncestorStateOfType<WPYPageState>()
-                .canNotGoIntoLounge,
-            builder: (_, bool absorbing, __) => GestureDetector(
-              onTap: () {
-                if (absorbing) {
-                  ToastProvider.running("正在加载数据，请稍后");
-                } else {
-                  Navigator.pushNamed(context, cards[i].route);
-                }
-              },
-              child: generateCard(context, cards[i]),
-            ),
-          );
-        } else if (cards[i].label == 'Wiki') {
+        if (cards[i].label == 'Wiki') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {

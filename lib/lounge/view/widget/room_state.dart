@@ -19,12 +19,12 @@ class RoomState extends StatelessWidget {
         final currentDay = provider.dateTime.weekday;
         final timeRange = provider.timeRange;
         final currentPlan = room.statuses[currentDay]!;
-        final avaliable = Time.availableNow(currentPlan, timeRange);
+        final available = Time.availableNow(currentPlan, timeRange);
         Widget stateDot;
 
         Widget stateText;
 
-        if (avaliable) {
+        if (available) {
           stateDot = Container(
             width: 6.w,
             height: 6.w,

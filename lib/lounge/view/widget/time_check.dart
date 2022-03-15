@@ -14,7 +14,7 @@ class TimeCheckWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeCheckerIcon = Builder(
+    Widget timeCheckerIcon = Builder(
       builder: (context) {
         return InkWell(
           onTap: () {
@@ -39,6 +39,11 @@ class TimeCheckWidget extends StatelessWidget {
           ),
         );
       },
+    );
+
+    timeCheckerIcon = SizedBox(
+      width: 50.w,
+      child: timeCheckerIcon,
     );
 
     return timeCheckerIcon;

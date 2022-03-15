@@ -17,6 +17,7 @@ class GPAPreview extends StatelessWidget {
       if (notifier.hideGPA) return Container();
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+        behavior: HitTestBehavior.opaque,
         child: Column(children: <Widget>[
           CurveText(notifier),
           // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义

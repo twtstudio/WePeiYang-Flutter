@@ -104,7 +104,7 @@ class Classroom {
     return other is Classroom &&
         other.id == id &&
         other.name == name &&
-        // other.capacity == capacity &&
+        other.capacity == capacity &&
         mapEquals(other.statuses, statuses) &&
         other.status == status &&
         other.bId == bId &&

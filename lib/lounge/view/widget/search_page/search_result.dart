@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
@@ -12,6 +13,7 @@ import '../room_state.dart';
 
 class RoomList extends StatelessWidget {
   final List<Classroom> rooms;
+
   const RoomList(
     this.rooms, {
     Key? key,
@@ -69,7 +71,7 @@ class _RoomItem extends StatelessWidget {
     );
 
     content = Container(
-      height: 33.w,
+      height: 43.w,
       width: 314.w,
       decoration: decoration,
       child: Center(
@@ -84,12 +86,10 @@ class _RoomItem extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5.w),
       child: InkWell(
         onTap: () {
-          // ResultEntry entry = list[index];
-          // var room = entry.room!..bId = entry.building!.id;
-          // Navigator.of(context).pushNamed(
-          //   LoungeRouter.plan,
-          //   arguments: room,
-          // );
+          Navigator.of(context).pushNamed(
+            LoungeRouter.plan,
+            arguments: room,
+          );
         },
         child: content,
       ),
@@ -101,6 +101,7 @@ class _RoomItem extends StatelessWidget {
 
 class AreasGrid extends StatelessWidget {
   final List<Area> areas;
+
   const AreasGrid(this.areas, {Key? key}) : super(key: key);
 
   @override
@@ -127,6 +128,7 @@ class AreasGrid extends StatelessWidget {
 
 class _AreaItem extends StatelessWidget {
   final Area area;
+
   const _AreaItem(
     this.area, {
     Key? key,
@@ -148,17 +150,10 @@ class _AreaItem extends StatelessWidget {
 
     final topText = InkWell(
       onTap: () {
-        // Navigator.of(context).pushNamed(
-        //   LoungeRouter.classrooms,
-        //   arguments: [
-        //     Area(
-        //       id: entry.area!.id,
-        //       building: entry.building!.name,
-        //       classrooms: entry.area!.classrooms,
-        //     ),
-        //     entry.building!.id
-        //   ],
-        // );
+        Navigator.of(context).pushNamed(
+          LoungeRouter.classrooms,
+          arguments: [area.bId, area.id],
+        );
       },
       child: DecoratedBox(
         decoration: decoration,

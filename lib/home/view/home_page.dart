@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
@@ -60,6 +61,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences().account.value);
+      // 刷新自习室数据
+      initLoungeFavourDataAtMainPage(context);
     });
   }
 

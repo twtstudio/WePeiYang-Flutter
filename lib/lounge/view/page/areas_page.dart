@@ -17,7 +17,6 @@ class AreasPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('build AreasPage');
     final building = context.read<BuildingData>().buildings[bId]!;
 
     final pageTitle = Row(

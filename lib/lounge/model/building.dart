@@ -1,7 +1,7 @@
-
 // @dart = 2.12
 
 import 'package:hive/hive.dart';
+
 import 'area.dart';
 
 part 'building.g.dart';
@@ -82,5 +82,36 @@ class Building {
     });
     str += "}";
     return str;
+  }
+
+  factory Building.deepCopy(Building other) {
+    return Building(
+      id: other.id,
+      name: other.name,
+      campus: other.campus,
+      areas: Map.fromIterables(
+        List.from(other.areas.keys),
+        List.generate(
+          other.areas.values.length,
+          (index) => Area.deepCopy(other.areas.values.toList()[index]),
+        ),
+      ),
+      roomCount: other.roomCount,
+    );
+  }
+
+  void iterate(
+    Function(String bId, String aId, String cId, String status) each,
+    Function onError,
+  ) {
+    try {
+      for (var area in areas.entries) {
+        for (var room in area.value.classrooms.entries) {
+          each(id, area.key, room.key, room.value.status);
+        }
+      }
+    } catch (e, stack) {
+      onError(e, stack);
+    }
   }
 }

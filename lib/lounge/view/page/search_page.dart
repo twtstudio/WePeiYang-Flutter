@@ -73,6 +73,7 @@ class SearchPageProvider with ChangeNotifier {
   }
 
   void search([String? query]) async {
+    focusNode.unfocus();
     query ??= controller.text;
     debugPrint('search $query');
     if (_historyList.contains(query)) {
@@ -123,6 +124,7 @@ class SearchPageProvider with ChangeNotifier {
   }
 
   void clearHistory() async {
+    focusNode.unfocus();
     final result = await showDialog<bool>(
       context: _context,
       builder: (_) => const ClearHistoryDialog(),

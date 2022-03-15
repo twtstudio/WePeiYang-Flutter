@@ -8,22 +8,22 @@ import 'package:we_pei_yang_flutter/lounge/provider/room_favor_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 
 List<SingleChildWidget> loungeProviders = [
-  // 前两个可以合到一起 LoungeConfigProvider
+  // 需要按照如下顺序排列！
   ChangeNotifierProvider(create: (_) => LoungeConfig()),
-  ChangeNotifierProvider(create: (_) => RoomFavorProvider()),
+  ChangeNotifierProvider(create: (_) => RoomFavour()),
   ChangeNotifierProxyProvider<LoungeConfig, BuildingData>(
-    create: (_) => BuildingData(),
-    update: (_, config, data) {
+    create: (context) => BuildingData(context),
+    update: (context, config, data) {
       // 每次更改完时间后，就会重新请求数据
       if (data == null) {
-        return BuildingData();
+        return BuildingData(context);
       }
       final updateTime = data.updateTime;
       final currentTime = config.dateTime;
       final isSameWeek = updateTime?.isTheSameWeek(currentTime);
 
       if (isSameWeek == null || !isSameWeek) {
-        data.getDataOfWeek(currentTime);
+        data.getDataOfWeek();
       }
       return data;
     },

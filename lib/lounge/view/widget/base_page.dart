@@ -1,8 +1,12 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/time_check.dart';
+import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 
 class LoungeBasePage extends StatefulWidget {
   final Widget body;
@@ -73,12 +77,7 @@ class _LoungeBasePageState extends State<LoungeBasePage>
         ),
       ),
       backgroundColor: Colors.transparent,
-      actions: [
-        SizedBox(
-          width: 50.w,
-          child: const TimeCheckWidget(),
-        ),
-      ],
+      actions: const [_ErrorAlert(), TimeCheckWidget()],
     );
 
     appbar = Padding(
@@ -103,5 +102,28 @@ class _LoungeBasePageState extends State<LoungeBasePage>
         ),
       );
     });
+  }
+}
+
+class _ErrorAlert extends StatelessWidget {
+  const _ErrorAlert({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final dataState = context.select((BuildingData data) => data.dataState);
+    final loadState = context.select((BuildingData data) => data.loadState);
+
+    return Visibility(
+      visible: !dataState.isUpdated && !loadState.isBusy,
+      child: SizedBox(
+        width: 50.w,
+        child: InkWell(
+          child: Icon(Icons.warning, color: Colors.red),
+          onTap: () {
+            ToastProvider.error(dataState.error.toString());
+          },
+        ),
+      ),
+    );
   }
 }

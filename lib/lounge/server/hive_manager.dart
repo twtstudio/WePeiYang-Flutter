@@ -1,29 +1,12 @@
 // @dart = 2.12
 
-import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
 import 'package:we_pei_yang_flutter/lounge/model/building.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
-import 'package:we_pei_yang_flutter/lounge/model/local_entry.dart';
-import 'package:we_pei_yang_flutter/lounge/model/temporary.dart';
+import 'package:we_pei_yang_flutter/lounge/model/favour_entry.dart';
+import 'package:we_pei_yang_flutter/lounge/server/error.dart';
 import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
-
-/// key of [HiveManager._boxesKeys]
-const boxes = 'boxesKeys';
-
-/// key of base room plan in every building
-const baseRoom = 'baseClassrooms';
-
-/// key of search history
-const history = 'history';
-
-/// key of [HiveManager._favourList]
-const favours = 'favourList';
-
-/// key of [HiveManager._temporaryData]
-const temporary = 'temporary';
 
 class LoungeDB {
   LoungeDB._();
@@ -43,163 +26,73 @@ class LoungeDB {
   static Future<void> closeDB() async {
     await Hive.close();
   }
-
-  Future<void> checkAndWriteBuildingBaseData(List<Building> data) async {
-    if (db.shouldUpdateLocalData) {
-      await db.writeBuildingData(data).catchError((e) {
-        debugPrint('quietly throw writeBuildingData error $e');
-      });
-    }
-  }
 }
 
-abstract class LoungeDataBase {
-  @protected
-  Future<void> init();
+/// key of [HiveManager._boxesKeys]
+const kBoxes = 'boxesKeys';
 
-  @protected
-  Future<void> writeBuildingData(List<Building> buildings);
+/// key of [HiveManager._searchHistory]
+const kHistory = 'history';
 
-  @protected
-  Future<void> writeRoomPlan(Map<String, Building> buildings, DateTime time);
+/// key of [HiveManager._favourList]
+const kFavours = 'favourList';
 
-  @protected
-  Future<Map<int, List<String>>> readRoomPlan({
-    required Classroom room,
-    required DateTime dateTime,
-  });
-
-  @protected
-  Stream<Building> get readBuildingData;
-
-  @protected
-  Future<Classroom?> findRoomById(String rId);
-
-  @protected
-  Future<void> removeFavourite(String cId);
-
-  @protected
-  Future<void> updateFavourites(List<Classroom> list);
-
-  @protected
-  Future<Classroom?> addFavourite({Classroom? room, String? id});
-
-  @protected
-  Future<void> replaceFavourite(List<Classroom> list);
-
-  @protected
-  Future<Map<String, Classroom>> get favourList;
-
-  @protected
-  Future<List<String>> get searchHistory;
-
-  @protected
-  Future<void> clearHistory();
-
-  @protected
-  Future<void> addSearchHistory(String query);
-
-  @protected
-  Stream search(Map<String, String> formatQueries);
-
-  @protected
-  bool get shouldUpdateLocalData;
-}
+/// key of room plan in every building
+const kBuilding = 'Classrooms';
 
 // 用 Hive的原因主要是跨平台
-class HiveManager extends LoungeDataBase {
-  late Box<LocalEntry> _boxesKeys;
+class HiveManager {
+  /// 收藏
+  late Box<FavourEntry> _favourList;
 
-  late Box<Classroom> _favourList;
-
+  /// 搜索记录
   late Box<String> _searchHistory;
 
-  final Map<String, LazyBox<Building>> _buildingBoxes = {};
+  /// 教室
+  late Box<Building> _buildings;
 
-  @override
   Future<void> init() async {
-    await Hive.initFlutter();
-    Hive.registerAdapter<LocalEntry>(LocalEntryAdapter());
+    await Hive.initFlutter('hive_database');
     Hive.registerAdapter<Building>(BuildingAdapter());
     Hive.registerAdapter<Area>(AreaAdapter());
     Hive.registerAdapter<Classroom>(ClassroomAdapter());
-    Hive.registerAdapter<Buildings>(BuildingsAdapter());
-    _boxesKeys = await Hive.openBox<LocalEntry>(boxes);
-    _favourList = await Hive.openBox<Classroom>(favours);
-    for (var key in _boxesKeys.keys) {
-      var e = await Hive.boxExists(key);
-      if (e) {
-        _buildingBoxes[key] = await Hive.openLazyBox<Building>(key);
-      }
-    }
+    Hive.registerAdapter<FavourEntry>(FavourEntryAdapter());
+    _favourList = await Hive.openBox<FavourEntry>(kFavours);
+    _buildings = await Hive.openBox<Building>(kBuilding);
+    _searchHistory = await Hive.openBox<String>(kHistory);
   }
 
-  @override
-  bool get shouldUpdateLocalData => _boxesKeys.isEmpty
-      ? true
-      : !_boxesKeys.values.map((e) {
-          bool isToday;
-          try {
-            isToday = e.dateTime == ''
-                ? false
-                : Time.checkDateTimeAvailable(DateTime.parse(e.dateTime))
-                    .isToday;
-          } catch (e) {
-            isToday = false;
-          }
-          return isToday;
-        }).reduce((v, e) => v && e);
-
-  DateTime? get localDateLastUpdateTime => _boxesKeys.isEmpty
-      ? null
-      : DateTime.tryParse(_boxesKeys.values.first.dateTime);
-
-  @override
-  Stream<Building> get readBuildingData async* {
-    for (var key in _boxesKeys.keys) {
-      if (_buildingBoxes.containsKey(key)) {
-        var building = await _buildingBoxes[key]!.get(baseRoom);
-        yield building!;
-      } else {
-        throw Exception('box not exist : $key');
-      }
-    }
+  /// 获取本地数据
+  Iterable<Building> get readBuildingData sync* {
+    yield* _buildings.values;
   }
 
-  @override
-  Future<Map<int, List<String>>> readRoomPlan({
+  /// 返回具体一个教室一周的时间安排
+  Map<int, List<String>> readRoomPlan({
     required Classroom room,
     required DateTime dateTime,
-  }) async {
-    Map<int, List<String>> _plans = {};
-
-    final buildingBox = _buildingBoxes[room.bId]!;
-    final building = await buildingBox.get(baseRoom);
+  }) {
+    final building = _buildings.get(room.bId);
     for (var area in building!.areas.values) {
       for (var _room in area.classrooms.values) {
         if (_room.id == room.id) {
           return _room.statuses.map(
-            (key, value) => MapEntry(
-              key,
-              DataFactory.splitPlan(value),
-            ),
+            (key, value) => MapEntry(key, DataFactory.splitPlan(value)),
           );
         }
       }
     }
-    return _plans;
+    return {};
   }
 
-  clearLocalData() async {
-    for (var box in _buildingBoxes.values) {
-      await box.clear();
-    }
-    await _boxesKeys.clear();
+  /// 清除本地数据（仅删除教室数据）
+  Future<void> clearLocalData() async {
+    await _buildings.clear();
   }
 
-  @override
-  Future<Classroom?> findRoomById(String rId) async {
-    await for (var building in readBuildingData) {
+  /// 从数据库中查找一个教室
+  Classroom? findRoomById(String rId) {
+    for (var building in readBuildingData) {
       for (var area in building.areas.values) {
         for (var room in area.classrooms.values) {
           if (room.id == rId) {
@@ -211,106 +104,83 @@ class HiveManager extends LoungeDataBase {
     return null;
   }
 
-  @override
-  Future<void> writeBuildingData(List<Building> buildings) async {
-    for (var building in buildings) {
-      var id = building.id;
-      if (_boxesKeys.values.map((e) => e.key).contains(id)) {
-        var box = _buildingBoxes[id]!;
-        await box.put(baseRoom, building);
-        // debugPrint(building.toString());
-        // debugPrint('update building $id');
-      } else {
-        var box = await Hive.openLazyBox<Building>(id);
-        await box.put(baseRoom, building);
-        _buildingBoxes[id] = box;
-        await _setBuildingDataRefreshTime(building.id, building.name, '');
-        // debugPrint('write building $id');
+  /// 将从服务器获取的教学楼数据写入到本地
+  Future<void> writeBuildingData(Iterable<Building> buildings) async {
+    try {
+      for (var building in buildings) {
+        await _buildings.put(building.id, building);
       }
-    }
-  }
-
-  @override
-  Future<void> writeRoomPlan(
-    Map<String, Building> buildings,
-    DateTime time,
-  ) async {
-    for (var building in buildings.entries) {
-      if (_buildingBoxes.containsKey(building.key)) {
-        var box = _buildingBoxes[building.key]!;
-        if (box.containsKey(building.key)) {
-          await box.delete(building.key);
-        }
-        await box.put(building.key, building.value);
-        await _setBuildingDataRefreshTime(
-          building.key,
-          building.value.name,
-          time.toString(),
-        );
-      } else {
-        debugPrint('box not exist :' + building.key);
-      }
-    }
-  }
-
-  /// 记录最重要的本周数据的获取时间，以判断是否需要刷新数据
-  _setBuildingDataRefreshTime(String id, String name, String time) async =>
-      await _boxesKeys.put(
-        id,
-        LocalEntry(
-          key: id,
-          name: name,
-          dateTime: time,
-        ),
+    } catch (e, s) {
+      // 如果写入数据库出错，就清空数据库
+      _buildings.clear();
+      throw LoungeError.database(
+        e,
+        stackTrace: s,
+        des: 'writeBuildingData get error and clear local data',
       );
-
-  @override
-  Future<void> removeFavourite(String cId) async {
-    await _favourList.delete(cId);
+    }
   }
+}
 
-  @override
-  Future<void> updateFavourites(List<Classroom> list) async {
+extension FavourExt on HiveManager {
+  /// 从服务器获取收藏信息后刷新本地数据
+  Future<void> updateFavourites(List<Classroom> list, DateTime time) async {
     await _favourList.clear();
     for (var room in list) {
-      await addFavourite(room: room);
+      await collect(time, room: room);
     }
   }
 
-  @override
-  Future<Classroom?> addFavourite({Classroom? room, String? id}) async {
-    final _room = room ?? await findRoomById(id ?? '');
+  /// 取消收藏
+  ///
+  /// 如果 time != null ,则说明没有同步成功
+  Future<void> delete(Classroom room, {DateTime? time}) async {
+    if (time == null) {
+      // 成功从服务器上删除了这个收藏
+      // 那么也从本地删除
+      await _favourList.delete(room.id);
+    } else {
+      // 没有从服务器上删除这个收藏
+      // 那么本地存储删除操作
+      await _favourList.put(room.id, FavourEntry.delete(room, time));
+    }
+  }
+
+  /// 添加收藏
+  Future<Classroom?> collect(
+    DateTime time, {
+    Classroom? room,
+    String? id,
+    bool sync = true,
+  }) async {
+    final _room = room ?? findRoomById(id ?? '');
     if (_room != null) {
-      await _favourList.put(_room.id, _room);
+      await _favourList.put(
+        _room.id,
+        FavourEntry.collect(_room, time, sync: sync),
+      );
     }
     return _room;
   }
 
-  @override
-  Future<void> replaceFavourite(List<Classroom> list) async {
-    _favourList.clear();
-    for (var room in list) {
-      await addFavourite(room: room);
-    }
+  /// 从本地获取收藏数据
+  Map<String, FavourEntry> get favourList {
+    return _favourList.toMap().cast<String, FavourEntry>();
   }
+}
 
-  @override
-  Future<Map<String, Classroom>> get favourList async {
-    return _favourList.toMap().cast<String, Classroom>();
-  }
-
-  @override
+extension SearchExt on HiveManager {
+  /// 从本地获取搜索历史
   Future<List<String>> get searchHistory async {
-    _searchHistory = await Hive.openBox<String>(history);
     return _searchHistory.values.toList();
   }
 
-  @override
+  /// 清楚本地历史搜索记录
   Future<void> clearHistory() async {
     await _searchHistory.clear();
   }
 
-  @override
+  /// 添加搜索记录（先删除一样的记录）
   Future<void> addSearchHistory(String query) async {
     if (_searchHistory.values.contains(query)) {
       var key = _searchHistory.values
@@ -326,7 +196,4 @@ class HiveManager extends LoungeDataBase {
     }
     await _searchHistory.put(DateTime.now().toString(), query);
   }
-
-  @override
-  Stream search(Map<String, String> formatQueries) async* {}
 }
