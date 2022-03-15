@@ -160,7 +160,7 @@ class _SearchTagCardState extends State<SearchTagCard>
           });
         },
         onFailure: (e) {
-          ToastProvider.error(e.error.toString());
+          ToastProvider.error("操作过快，请稍后");
         });
   }
 

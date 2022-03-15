@@ -29,9 +29,10 @@ class NewPostPage extends StatefulWidget {
 
 class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
+
   final campusNotifier = ValueNotifier(0);
 
-  // 0 -> 青年湖底; 1 -> 校务专区
+  // 0 -> 青年湖底; 1 -> 校务专区 2->学习
   final postTypeNotifier = ValueNotifier(PostType.feedback);
 
   @override
@@ -100,12 +101,13 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 }
 
-enum PostType { lake, feedback }
+enum PostType { lake, feedback, study }
 
 extension PostTypeExt on PostType {
-  int get value => [0, 1][index];
-
-  String get title => ["青年湖底", "校务专区"][index];
+  int get value => [0, 1, 2][index];
+  int get post  => [3, 1, 2][index];
+  //后端的数字和现有的对不上，先鸵鸟
+  String get title => ["青年湖底", "校务专区", "学习"][index];
 }
 
 class LakeSelector extends StatefulWidget {
@@ -124,13 +126,13 @@ class LakeSelectorState extends State<LakeSelector> {
         return SizedBox(
           height: 60,
           child: ListView.builder(
-            itemCount: 2,
+            itemCount: 3,
             scrollDirection: Axis.horizontal,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return SizedBox(
                 height: 58,
-                width: (WePeiYangApp.screenWidth - 40) / 2,
+                width: (WePeiYangApp.screenWidth - 40) / 3,
                 child: ElevatedButton(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -175,8 +177,10 @@ class LakeSelectorState extends State<LakeSelector> {
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
       return BorderRadius.horizontal(left: Radius.circular(16));
-    else
+    else if (index == 2)
       return BorderRadius.horizontal(right: Radius.circular(16));
+    else
+      return BorderRadius.horizontal();
   }
 }
 
@@ -195,39 +199,58 @@ class SubmitButton extends StatelessWidget {
             print(images);
             dataModel.images.clear();
             dataModel.type =
-                postTypeNotifier.value == PostType.feedback ? 1 : 0;
+                postTypeNotifier.value == PostType.feedback ? 1 :postTypeNotifier.value == PostType.lake ?2 : 3;
             if (dataModel.check) {
-              postTypeNotifier.value == PostType.feedback
-                  ? FeedbackService.sendPost(
-                      type: PostType.feedback.value,
-                      title: dataModel.title,
-                      content: dataModel.content,
-                      departmentId: dataModel.department.id,
-                      images: images,
-                      campus: campusNotifier.value,
-                      onSuccess: () {
-                        ToastProvider.success(S.current.feedback_post_success);
-                        Navigator.pop(context);
-                      },
-                      onFailure: (e) {
-                        ToastProvider.error(e.error.toString());
-                      },
-                    )
-                  : FeedbackService.sendPost(
-                      type: PostType.lake.value,
-                      title: dataModel.title,
-                      content: dataModel.content,
-                      tagId: dataModel.tag.id,
-                      images: images,
-                      campus: campusNotifier.value,
-                      onSuccess: () {
-                        ToastProvider.success(S.current.feedback_post_success);
-                        Navigator.pop(context);
-                      },
-                      onFailure: (e) {
-                        ToastProvider.error(e.error.toString());
-                      },
-                    );
+              if (postTypeNotifier.value == PostType.study) {
+                FeedbackService.sendPost(
+                  type: PostType.study.value,
+                  title: dataModel.title,
+                  content: dataModel.content,
+                  tagId: dataModel.tag.id,
+                  images: images,
+                  campus: campusNotifier.value,
+                  onSuccess: () {
+                    ToastProvider.success(S.current.feedback_post_success);
+                    Navigator.pop(context);
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  },
+                );
+              } else
+                postTypeNotifier.value == PostType.feedback
+                    ? FeedbackService.sendPost(
+                        type: PostType.feedback.value,
+                        title: dataModel.title,
+                        content: dataModel.content,
+                        departmentId: dataModel.department.id,
+                        images: images,
+                        campus: campusNotifier.value,
+                        onSuccess: () {
+                          ToastProvider.success(
+                              S.current.feedback_post_success);
+                          Navigator.pop(context);
+                        },
+                        onFailure: (e) {
+                          ToastProvider.error(e.error.toString());
+                        },
+                      )
+                    : FeedbackService.sendPost(
+                        type: PostType.lake.value,
+                        title: dataModel.title,
+                        content: dataModel.content,
+                        tagId: dataModel.tag.id,
+                        images: images,
+                        campus: campusNotifier.value,
+                        onSuccess: () {
+                          ToastProvider.success(
+                              S.current.feedback_post_success);
+                          Navigator.pop(context);
+                        },
+                        onFailure: (e) {
+                          ToastProvider.error(e.error.toString());
+                        },
+                      );
               dataModel.clear();
             } else {
               ToastProvider.error(S.current.feedback_empty_content_error);
@@ -237,7 +260,27 @@ class SubmitButton extends StatelessWidget {
             ToastProvider.error(e.error.toString());
           });
     } else {
-      dataModel.type = postTypeNotifier.value == PostType.feedback ? 1 : 0;
+      postTypeNotifier.value == PostType.feedback ? 1 :postTypeNotifier.value == PostType.lake ?2 : 3;
+      if (postTypeNotifier.value == PostType.study) {
+        dataModel.type = 2;
+      }
+      if (postTypeNotifier.value == PostType.study) {
+        FeedbackService.sendPost(
+          type: PostType.study.value,
+          title: dataModel.title,
+          content: dataModel.content,
+          tagId: dataModel.tag.id,
+          images: [],
+          campus: campusNotifier.value,
+          onSuccess: () {
+            ToastProvider.success(S.current.feedback_post_success);
+            Navigator.pop(context);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          },
+        );
+      } else
       if (dataModel.check) {
         postTypeNotifier.value == PostType.feedback
             ? FeedbackService.sendPost(
@@ -419,8 +462,6 @@ class _CampusSelectorState extends State<CampusSelector> {
   }
 }
 
-
-
 class TitleInputField extends StatefulWidget {
   @override
   _TitleInputFieldState createState() => _TitleInputFieldState();
@@ -583,8 +624,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
         maxAssets: maxImage - context.read<NewPostProvider>().images.length,
         requestType: RequestType.image,
-      themeColor: ColorUtil.selectionButtonColor
-    );
+        themeColor: ColorUtil.selectionButtonColor);
     for (int i = 0; i < assets.length; i++) {
       File file = await assets[i].file;
       for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
