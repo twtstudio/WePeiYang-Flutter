@@ -53,6 +53,8 @@ class Post {
   List<String> imageUrls;
   Department department;
 
+  bool operator ==(Object other) => other is Post && other.id == id;
+
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         id: json["id"],
         createAt: json["created_at"] == ""
@@ -212,7 +214,7 @@ class Floor {
         nickname: json["nickname"],
         sender: json["sender"],
         imageUrl: json["image_url"],
-        imageUrls:json["image_urls"],
+        imageUrls: json["image_urls"],
         replyTo: json["reply_to"],
         replyToName: json["reply_to_name"],
         rating: json["rating"],
@@ -237,7 +239,7 @@ class Floor {
         "sender": sender,
         "nickname": nickname,
         "image_url": imageUrl,
-    "image_urls":imageUrls,
+        "image_urls": imageUrls,
         "reply_to": replyTo,
         "reply_to_name": replyToName,
         "sub_to": subTo,
@@ -263,23 +265,23 @@ class WPYTab {
     this.id,
     this.shortname,
     this.name,
-});
+  });
 
   int id;
   String shortname;
   String name;
 
   factory WPYTab.fromJson(Map<String, dynamic> json) => WPYTab(
-    id: json["id"],
-    shortname: json["shortname"],
-    name: json["name"],
-  );
+        id: json["id"],
+        shortname: json["shortname"],
+        name: json["name"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "shortname": shortname,
-    "name": name,
-  };
+        "id": id,
+        "shortname": shortname,
+        "name": name,
+      };
 }
 
 class Tag {

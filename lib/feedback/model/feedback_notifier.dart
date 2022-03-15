@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -103,59 +105,58 @@ class NewFloorProvider extends ChangeNotifier {
   }
 }
 
-enum FbHomePageStatus {
+enum LakePageStatus {
   unload,
   loading,
   idle,
   error,
 }
 
-class FbHomeStatusNotifier extends ChangeNotifier {
-  List<FbHomePageStatus> status = [FbHomePageStatus.loading];
+class LakeArea {
+  final Map<int, Post> dataList;
+  final RefreshController refreshController;
+  final ScrollController controller;
+  LakePageStatus status;
+  int currentPage;
 
-  void update(FbHomeListModel listProvider) {
-    status.clear();
-    status.addAll(listProvider._status);
-    notifyListeners();
-  }
+  LakeArea._(this.dataList, this.refreshController, this.controller,
+      LakePageStatus unload);
 
-  void toLoading(int type) {
-    status[type] = FbHomePageStatus.loading;
-    notifyListeners();
+  factory LakeArea.empty() {
+    return LakeArea._(
+        {}, RefreshController(), ScrollController(), LakePageStatus.unload);
   }
 }
 
-class FbHomeListModel extends ChangeNotifier {
-  // map default is LinkedHashMap
-  List<Map<int, Post>> _homeList = List.filled(100, Map());
-  int current;
+class LakeModel extends ChangeNotifier {
+  Map<WPYTab, LakeArea> lakeAreas = {};
+  List<WPYTab> lakeTabList = [];
 
-  List<Map<int, Post>> get list => _homeList;
+  Future<void> initTabList() async {
+    await FeedbackService.getTabList().then((tabList) {
+      WPYTab oTab = WPYTab(id: 0, shortname: '全部', name: '全部');
+      lakeTabList = [oTab];
+      lakeTabList.addAll(tabList);
+      lakeAreas.addAll({oTab: LakeArea.empty()});
+      tabList.forEach((element) {
+        lakeAreas.addAll({element: LakeArea.empty()});
+      });
+      notifyListeners();
+    }, onError: (e) {
+      ToastProvider.error(e.error.toString());
+      notifyListeners();
+    });
+  }
 
-  int _totalPage = 0;
-  int _currentPage = 0;
+  void initLakeArea(
+      WPYTab tab, RefreshController rController, ScrollController sController) {
+    LakeArea lakeArea =
+        new LakeArea._({}, rController, sController, LakePageStatus.unload);
+    lakeAreas[tab] = lakeArea;
+  }
 
-  List<FbHomePageStatus> _status = [FbHomePageStatus.loading];
-
-  bool get isLastPage => _totalPage == _currentPage;
-
-  // // TODO: 是否要在进行操作时更新列表？
-  // void quietUpdateItem(Post post, int type) {
-  //   _homeList[type].update(
-  //     post.id,
-  //     (value) {
-  //       value.isLike = post.isLike;
-  //       value.isFav = post.isFav;
-  //       value.likeCount = post.likeCount;
-  //       value.favCount = post.favCount;
-  //       return value;
-  //     },
-  //     ifAbsent: () => post,
-  //   );
-  // }
-  // TODO: 是否要在进行操作时更新列表？
-  void quietUpdateItem(Post post, int type) {
-    _homeList[type].update(
+  void quietUpdateItem(Post post, WPYTab tab) {
+    lakeAreas[tab].dataList.update(
       post.id,
       (value) {
         value.isLike = post.isLike;
@@ -169,20 +170,22 @@ class FbHomeListModel extends ChangeNotifier {
   }
 
   // 列表去重
-  void _addOrUpdateItems(List<Post> data, int type) {
+  void _addOrUpdateItems(List<Post> data, WPYTab tab) {
     data.forEach((element) {
-      _homeList[type]
+      lakeAreas[tab]
+          .dataList
           .update(element.id, (value) => element, ifAbsent: () => element);
     });
   }
 
-  Future<void> getNextPage(type, {OnSuccess success, OnFailure failure}) async {
+  Future<void> getNextPage(WPYTab tab,
+      {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
-      type: '$type',
-      page: _currentPage + 1,
+      type: '${tab.id}',
+      page: lakeAreas[tab].currentPage + 1,
       onSuccess: (postList, page) {
-        _addOrUpdateItems(postList, type);
-        _currentPage += 1;
+        _addOrUpdateItems(postList, tab);
+        lakeAreas[tab].currentPage += 1;
         success?.call();
         notifyListeners();
       },
@@ -196,89 +199,42 @@ class FbHomeListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  checkTokenAndGetPostList(FbDepartmentsProvider provider, int type,
+  checkTokenAndGetPostList(FbDepartmentsProvider provider, WPYTab tab,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
         CommonPreferences().feedbackToken.value = token;
         provider.initDepartments();
-        initPostList(type);
+        initPostList(tab);
       },
       onFailure: (e) {
-        _status[type] = FbHomePageStatus.error;
+        lakeAreas[tab].status = LakePageStatus.error;
         failure?.call(e);
         notifyListeners();
       },
     );
   }
 
-  addSomeLoading(int type) {
-    _status[type] = FbHomePageStatus.loading;
-    notifyListeners();
-  }
-
-  loadingFailed(int type) {
-    _status[type] = FbHomePageStatus.error;
-    notifyListeners();
-  }
-
-  Future<void> initPostList(int type,
+  Future<void> initPostList(WPYTab tab,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
-      _status[type] = FbHomePageStatus.loading;
+      lakeAreas[tab].status = LakePageStatus.loading;
       notifyListeners();
     }
     await FeedbackService.getPosts(
-      type: '$type',
+      type: '${tab.id}',
       page: '1',
       onSuccess: (postList, totalPage) {
-        if (_homeList != null) _homeList[type].clear();
-        _addOrUpdateItems(postList, type);
-        _currentPage = 1;
-        _totalPage = totalPage;
-        if (type >= _status.length) {
-          for (int i = _status.length; i < type; i++)
-            _status.add(FbHomePageStatus.unload);
-          _status.add(FbHomePageStatus.idle);
-        } else
-          _status[type] = FbHomePageStatus.idle;
+        if (lakeAreas[tab].dataList != null) lakeAreas[tab].dataList.clear();
+        _addOrUpdateItems(postList, tab);
+        lakeAreas[tab].currentPage = 1;
+        lakeAreas[tab].status = LakePageStatus.idle;
         success?.call();
         notifyListeners();
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
-        if (type >= _status.length) {
-          for (int i = _status.length; i < type; i++)
-            _status.add(FbHomePageStatus.unload);
-          _status.add(FbHomePageStatus.idle);
-        } else
-          _status[type] = FbHomePageStatus.error;
-        failure?.call(e);
-        notifyListeners();
-      },
-    );
-  }
-}
-
-class TabNotifier extends ChangeNotifier {
-  List<WPYTab> tabLister;
-  bool tagWrapShow = false;
-
-  changeTagWrap() {
-    tagWrapShow == null ? tagWrapShow = true : tagWrapShow = !tagWrapShow;
-    notifyListeners();
-  }
-
-  Future<void> initTabList(
-      {OnSuccess success, OnFailure failure, bool reset = false}) async {
-    await FeedbackService.getTabList(
-      onSuccess: (tabList) {
-        tabLister = tabList;
-        success?.call();
-        notifyListeners();
-      },
-      onFailure: (e) {
-        ToastProvider.error(e.error.toString());
+        lakeAreas[tab].status = LakePageStatus.error;
         failure?.call(e);
         notifyListeners();
       },

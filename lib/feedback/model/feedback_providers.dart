@@ -8,10 +8,5 @@ List<SingleChildWidget> feedbackProviders = [
   Provider.value(value: NewPostProvider()),
   ChangeNotifierProvider.value(value: FbHotTagsProvider()),
   ChangeNotifierProvider.value(value: NewFloorProvider()),
-  ChangeNotifierProvider.value(value: FbHomeListModel()),
-  ChangeNotifierProvider.value(value: TabNotifier()),
-  ChangeNotifierProxyProvider<FbHomeListModel, FbHomeStatusNotifier>(
-    create: (_) => FbHomeStatusNotifier(),
-    update: (_, homeList, homeStatus) => homeStatus..update(homeList),
-  ),
+  ChangeNotifierProvider.value(value: LakeModel()),
 ];

@@ -151,20 +151,13 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static getTabList({
-    @required OnResult<List<WPYTab>> onSuccess,
-    @required OnFailure onFailure,
-  }) async {
-    try {
-      var response = await feedbackDio.get('posttypes');
-      List<WPYTab> list = [];
-      for (Map<String, dynamic> json in response.data['data']['list']) {
-        list.add(WPYTab.fromJson(json));
-      }
-      onSuccess(list);
-    } on DioError catch (e) {
-      onFailure(e);
+  static Future<List<WPYTab>> getTabList() async {
+    var response = await feedbackDio.get('posttypes');
+    List<WPYTab> list = [];
+    for (Map<String, dynamic> json in response.data['data']['list']) {
+      list.add(WPYTab.fromJson(json));
     }
+    return list;
   }
 
   static getHotTags({

@@ -183,7 +183,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       firstInLake();
     });
 
-    context.read<TabNotifier>().initTabList();
+    context.read<LakeModel>().initTabList();
 
     _tabController = TabController(length: 1, vsync: this);
 
@@ -357,8 +357,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         children: [
                           SizedBox(width: 4),
                           Expanded(
-                            child:
-                                Consumer<TabNotifier>(builder: (_, status, __) {
+                            child: Selector<LakeModel, List<WPYTab>>(selector:
+                                (BuildContext context, LakeModel lakeModel) {
+                              return lakeModel.lakeTabList;
+                            }, builder: (_, lakeTabList, __) {
                               return TabBar(
                                   indicatorPadding: EdgeInsets.only(bottom: 2),
                                   labelPadding: EdgeInsets.only(bottom: 3),
@@ -379,28 +381,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           color: ColorUtil.mainColor,
                                           width: 2)),
                                   tabs: List<DaTab>.generate(
-                                      context.read<TabNotifier>().tabLister ==
-                                              null
+                                      lakeTabList == null
                                           ? 1
-                                          : context
-                                                  .read<TabNotifier>()
-                                                  .tabLister
-                                                  .length +
-                                              1,
+                                          : lakeTabList.length,
                                       (index) => DaTab(
-                                          text: index == 0
-                                              ? '全部'
-                                              : context
-                                                  .read<TabNotifier>()
-                                                  .tabLister[index - 1]
-                                                  .shortname,
-                                          withDropDownButton: false
-                                          // context
-                                          //         .read<TabNotifier>()
-                                          //         .tabLister[index]
-                                          //         .shortname ==
-                                          //     '校务',
-                                          )));
+                                          text: lakeTabList[index].shortname,
+                                          withDropDownButton: false)));
                             }),
                           ),
                           PopupMenuButton(
@@ -438,27 +424,23 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   )))
             ];
           },
-          body:
-              Stack(
+          body: Stack(
             children: [
-              Consumer<TabNotifier>(builder: (_, status, __) {
+              Selector<LakeModel, List<WPYTab>>(
+                  selector: (BuildContext context, LakeModel lakeModel) {
+                return lakeModel.lakeTabList;
+              }, builder: (_, lakeTabList, __) {
                 _tabController = TabController(
-                    length: context.read<TabNotifier>().tabLister == null
-                        ? 1
-                        : context.read<TabNotifier>().tabLister.length + 1,
+                    length: lakeTabList == null ? 1 : lakeTabList.length,
                     vsync: this);
                 int cacheNum = 0;
                 return ExtendedTabBarView(
                     cacheExtent: cacheNum,
                     controller: _tabController,
                     children: List<Widget>.generate(
-                        context.read<TabNotifier>().tabLister == null
-                            ? 1
-                            : context.read<TabNotifier>().tabLister.length + 1,
+                        lakeTabList == null ? 1 : lakeTabList.length,
                         (ind) => NSubPage(
-                              index: ind,
-                          total: context.read<TabNotifier>().tabLister == null
-                              ? 1 : context.read<TabNotifier>().tabLister.length + 1,
+                              wpyTab: lakeTabList[ind],
                             )));
               }),
               Offstage(
@@ -479,14 +461,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 child: _departmentSelectionContainer,
               )
             ],
-          )
-          //       else if (status.isLoading)
-          //         return Loading();
-          //       else
-          //         return HomeErrorContainer(onRefresh, true);
-          //     },
-          //   ),
-          ),
+          )),
     );
   }
 }
@@ -554,91 +529,5 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
-  }
-}
-
-class HomeErrorContainer extends StatefulWidget {
-  final void Function(AnimationController) onPressed;
-  final bool networkFailPageUsage;
-
-  HomeErrorContainer(this.onPressed, this.networkFailPageUsage);
-
-  @override
-  _HomeErrorContainerState createState() => _HomeErrorContainerState();
-}
-
-class _HomeErrorContainerState extends State<HomeErrorContainer>
-    with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation animation;
-
-  FbHomeListModel _listProvider;
-  FbDepartmentsProvider _tagsProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    controller =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    animation = CurveTween(curve: Curves.easeInOutCubic).animate(controller);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var errorImg = SvgPicture.asset('assets/svg_pics/network_failed.svg');
-
-    var errorText = Text(
-        widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
-        style: TextUtil.base.black2A.NotoSansSC.w600.sp(16));
-
-    var retryButton = FloatingActionButton(
-      child: RotationTransition(
-        alignment: Alignment.center,
-        turns: animation,
-        child: Icon(Icons.refresh),
-      ),
-      elevation: 4,
-      heroTag: 'error_btn',
-      backgroundColor: Colors.white,
-      foregroundColor: ColorUtil.mainColor,
-      onPressed: () {
-        FeedbackService.getToken(
-            forceRefresh: true,
-            onResult: (_) {
-              _tagsProvider.initDepartments();
-              _listProvider.initPostList(2, success: () {
-                widget.onPressed;
-              }, failure: (_) {
-                controller.reset();
-                ToastProvider.error('刷新失败');
-              });
-            },
-            onFailure: (e) {
-              controller.reset();
-              ToastProvider.error('刷新失败');
-            });
-        if (!controller.isAnimating) {
-          controller.repeat();
-          widget.onPressed?.call(controller);
-        }
-      },
-      mini: true,
-    );
-
-    var paddingBox = SizedBox(height: ScreenUtil.defaultSize.height / 8);
-
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          errorImg,
-          errorText,
-          paddingBox,
-          widget.networkFailPageUsage ? retryButton : SizedBox(),
-        ],
-      ),
-    );
   }
 }
