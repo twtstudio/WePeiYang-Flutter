@@ -51,11 +51,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
-      //_tagsProvider.initDepartments();
       if (wpyTab.name == '青年湖底')
         context.read<FbHotTagsProvider>().initHotTags();
       context.read<LakeModel>().initPostList(
-          wpyTab, context.read<LakeModel>().sortSeq ?? 0, success: () {
+          wpyTab, success: () {
         context
             .read<LakeModel>()
             .lakeAreas[wpyTab]
@@ -83,7 +82,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   _onLoading() {
     context.read<LakeModel>().getNextPage(
       wpyTab,
-      context.read<LakeModel>().sortSeq ?? 0,
       success: () {
         context
             .read<LakeModel>()
@@ -120,11 +118,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         _departmentsProvider, wpyTab, context.read<LakeModel>().sortSeq ?? 0,
         success: () {
       getRecTag();
-      if (wpyTab.name == '青年湖底')
-        context.read<FbHotTagsProvider>().initHotTags();
     }, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
+    if (wpyTab.name == '青年湖底')
+      context.read<FbHotTagsProvider>().initHotTags();
     super.initState();
   }
 
@@ -248,7 +246,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             onResult: (_) {
               _tagsProvider.initDepartments();
               _listProvider.initPostList(
-                  widget.wpyTab, context.read<LakeModel>().sortSeq ?? 0,
+                  widget.wpyTab,
                   success: () {
                 widget.onPressed;
               }, failure: (_) {

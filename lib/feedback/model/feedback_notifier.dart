@@ -210,11 +210,10 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> getNextPage(WPYTab tab,
-      int mode,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${tab.id}',
-      mode: mode,
+      mode: sortSeq,
       page: lakeAreas[tab].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, tab);
@@ -246,7 +245,7 @@ class LakeModel extends ChangeNotifier {
     await FeedbackService.getToken(
       onResult: (token) {
         provider.initDepartments();
-        initPostList(tab, mode);
+        initPostList(tab);
       },
       onFailure: (e) {
         lakeAreas[tab].status = LakePageStatus.error;
@@ -257,7 +256,6 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> initPostList(WPYTab tab,
-      int mode,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
       lakeAreas[tab].status = LakePageStatus.loading;
@@ -265,7 +263,7 @@ class LakeModel extends ChangeNotifier {
     }
     await FeedbackService.getPosts(
       type: '${tab.id}',
-      mode: mode,
+      mode: sortSeq,
       page: '1',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
