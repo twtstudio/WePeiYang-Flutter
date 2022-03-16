@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -324,7 +325,7 @@ class _DetailPageState extends State<DetailPage>
               tag: post.department.name ?? '',
               comment: data,
               placeAppeared: index,
-                ImageUrl: data.imageUrls,
+                ratings: post.rating,
                 ancestorId:post.uid,
               onContentPressed: (refresh) async {
                refresh.call(list);
