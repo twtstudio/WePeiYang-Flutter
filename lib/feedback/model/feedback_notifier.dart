@@ -129,7 +129,7 @@ class LakeArea {
 class LakeModel extends ChangeNotifier {
   Map<WPYTab, LakeArea> lakeAreas = {};
   List<WPYTab> lakeTabList = [];
-  List<WPYTab> NewPostTabList = [];
+  List<WPYTab> newPostTabList = [];
   int currentTab = 0;
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false, lockSaver = false;
   double opacity = 0;
@@ -143,8 +143,8 @@ class LakeModel extends ChangeNotifier {
           lakeTabList = [oTab];
           lakeTabList.addAll(tabList);
           lakeAreas.addAll({oTab: LakeArea.empty()});
-          NewPostTabList.clear();
-          NewPostTabList.addAll(tabList);
+          newPostTabList.clear();
+          newPostTabList.addAll(tabList);
           tabList.forEach((element) {
             lakeAreas.addAll({element: LakeArea.empty()});
           });

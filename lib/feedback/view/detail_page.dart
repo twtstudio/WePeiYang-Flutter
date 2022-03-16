@@ -511,6 +511,12 @@ class _DetailPageState extends State<DetailPage>
               FeedbackService.deletePost(
                 id: widget.post.id,
                 onSuccess: () {
+                  context
+                      .read<LakeModel>()
+                      .lakeAreas[context.read<LakeModel>().lakeTabList[
+                          context.read<LakeModel>().tabController.index]]
+                      .refreshController
+                      .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);
                   Navigator.pop(context);
                 },

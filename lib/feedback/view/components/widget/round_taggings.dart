@@ -66,10 +66,10 @@ class UnSolvedWidget extends StatelessWidget {
 class TagShowWidget extends StatelessWidget {
   final String tag;
   final double width;
-  final bool isLake;
+  final bool notFeedback;
   final int id;
 
-  TagShowWidget(this.tag, this.width, this.isLake, this.id);
+  TagShowWidget(this.tag, this.width, this.notFeedback, this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +81,18 @@ class TagShowWidget extends StatelessWidget {
           arguments: SearchResultPageArgs(
               '$tag', '', '', '模糊搜索#$tag', 2),
         ):
-        isLake
+        notFeedback
           ? Navigator.pushNamed(
               context,
               FeedbackRouter.searchResult,
               arguments: SearchResultPageArgs(
-                  '', '$id', '', '湖底 #$tag', 0),
+                  '', '$id', '', '标签 #$tag', 0),
             )
           : Navigator.pushNamed(
               context,
               FeedbackRouter.searchResult,
               arguments: SearchResultPageArgs(
-                  '', '', '$id', '校务 #$tag', 1),
+                  '', '', '$id', '部门 #$tag', 1),
             );
       },
       child: Container(
@@ -107,10 +107,10 @@ class TagShowWidget extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: isLake ? Colors.white : ColorUtil.mainColor,
+                color: notFeedback ? Colors.white : ColorUtil.mainColor,
               ),
               child: SvgPicture.asset(
-                isLake
+                notFeedback
                     ? "assets/svg_pics/lake_butt_icons/hashtag.svg"
                     : "assets/svg_pics/lake_butt_icons/flag.svg",
               ),

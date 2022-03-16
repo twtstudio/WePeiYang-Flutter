@@ -57,7 +57,7 @@ class NCommentCard extends StatefulWidget {
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
   final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
-  bool _picFullView = false;
+  bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) =>
       SizedBox(
@@ -235,7 +235,9 @@ class _NCommentCardState extends State<NCommentCard>
                   id: widget.comment.id,
                   onSuccess: () {
                     ToastProvider.success(S.current.feedback_delete_success);
-                    setState(() {});
+                    setState(() {
+                      _isDeleted = true;
+                    });
                   },
                   onFailure: (e) {
                     ToastProvider.error(e.error.toString());
@@ -511,7 +513,7 @@ class _NCommentCardState extends State<NCommentCard>
       ],
     );
 
-    return Column(
+    return _isDeleted ? SizedBox(height: 1) :Column(
       children: [
         ClipCopy(
           copy: widget.comment.content,

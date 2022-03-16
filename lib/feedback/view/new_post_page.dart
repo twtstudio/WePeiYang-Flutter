@@ -111,10 +111,10 @@ class _LakeSelectorState extends State<LakeSelector> {
   @override
   void initState() {
     super.initState();
-    if(context.read<LakeModel>().NewPostTabList == []){
+    if(context.read<LakeModel>().newPostTabList == []){
       context.read<LakeModel>().initTabList();
     }
-    postType = context.read<LakeModel>().NewPostTabList;
+    postType = context.read<LakeModel>().newPostTabList;
   }
 
   @override
