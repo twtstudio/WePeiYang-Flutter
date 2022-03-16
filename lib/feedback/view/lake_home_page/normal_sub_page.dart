@@ -22,8 +22,7 @@ class NSubPage extends StatefulWidget {
   NSubPageState createState() => NSubPageState(this.wpyTab);
 }
 
-class NSubPageState extends State<NSubPage>
-    with AutomaticKeepAliveClientMixin {
+class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   WPYTab wpyTab;
   FbDepartmentsProvider _departmentsProvider;
   double _previousOffset = 0;
@@ -55,7 +54,8 @@ class NSubPageState extends State<NSubPage>
       //_tagsProvider.initDepartments();
       if (wpyTab.name == '青年湖底')
         context.read<FbHotTagsProvider>().initHotTags();
-      context.read<LakeModel>().initPostList(wpyTab, success: () {
+      context.read<LakeModel>().initPostList(
+          wpyTab, context.read<LakeModel>().sortSeq ?? 0, success: () {
         context
             .read<LakeModel>()
             .lakeAreas[wpyTab]
@@ -81,32 +81,24 @@ class NSubPageState extends State<NSubPage>
   }
 
   _onLoading() {
-    // if (context
-    //     .read<LakeModel>() == null ? true : context
-    //     .read<LakeModel>().lakeAreas[wpyTab].isLastPage) {
-    //   context
-    //       .read<LakeModel>()
-    //       .lakeAreas[wpyTab]
-    //       .refreshController.loadNoData();
-    // } else
-    // {
-      context.read<LakeModel>().getNextPage(
-        wpyTab,
-        success: () {
-          context
-              .read<LakeModel>()
-              .lakeAreas[wpyTab]
-              .refreshController
-              .loadComplete();
-        },
-        failure: (e) {
-          context
-              .read<LakeModel>()
-              .lakeAreas[wpyTab]
-              .refreshController
-              .loadFailed();
-        },
-      );
+    context.read<LakeModel>().getNextPage(
+      wpyTab,
+      context.read<LakeModel>().sortSeq ?? 0,
+      success: () {
+        context
+            .read<LakeModel>()
+            .lakeAreas[wpyTab]
+            .refreshController
+            .loadComplete();
+      },
+      failure: (e) {
+        context
+            .read<LakeModel>()
+            .lakeAreas[wpyTab]
+            .refreshController
+            .loadFailed();
+      },
+    );
     // }
   }
 
@@ -124,11 +116,12 @@ class NSubPageState extends State<NSubPage>
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().initLakeArea(
         wpyTab, RefreshController(initialRefresh: false), ScrollController());
-    context
-        .read<LakeModel>()
-        .checkTokenAndGetPostList(_departmentsProvider, wpyTab, success: () {
+    context.read<LakeModel>().checkTokenAndGetPostList(
+        _departmentsProvider, wpyTab, context.read<LakeModel>().sortSeq ?? 0,
+        success: () {
       getRecTag();
-      if (wpyTab.name == '青年湖底') context.read<FbHotTagsProvider>().initHotTags();
+      if (wpyTab.name == '青年湖底')
+        context.read<FbHotTagsProvider>().initHotTags();
     }, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
@@ -149,13 +142,24 @@ class NSubPageState extends State<NSubPage>
       return NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
-          controller: context.read<LakeModel>().lakeAreas[wpyTab].refreshController,
+          controller:
+              context.read<LakeModel>().lakeAreas[wpyTab].refreshController,
           header: ClassicHeader(
             completeDuration: Duration(milliseconds: 300),
+            idleText: '下拉以刷新 (乀*･ω･)乀',
+            releaseText: '下拉以刷新',
+            refreshingText: '正在刷新中，请稍等 (*￣3￣)/',
+            completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+            failedText: '刷新失败（；´д｀）ゞ',
           ),
           enablePullDown: true,
           onRefresh: onRefresh,
-          footer: ClassicFooter(),
+          footer: ClassicFooter(
+            idleText: '下拉以刷新',
+            noDataText: '无数据',
+            loadingText: '加载中，请稍等  ;P',
+            failedText: '加载失败（；´д｀）ゞ',
+          ),
           enablePullUp: true,
           onLoading: _onLoading,
           child: ListView.builder(
@@ -243,7 +247,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             forceRefresh: true,
             onResult: (_) {
               _tagsProvider.initDepartments();
-              _listProvider.initPostList(widget.wpyTab, success: () {
+              _listProvider.initPostList(
+                  widget.wpyTab, context.read<LakeModel>().sortSeq ?? 0,
+                  success: () {
                 widget.onPressed;
               }, failure: (_) {
                 controller.reset();

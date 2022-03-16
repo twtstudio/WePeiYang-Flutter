@@ -137,6 +137,7 @@ class LakeModel extends ChangeNotifier {
   double opacity = 0;
   TabController tabController;
   ScrollController nController;
+  int sortSeq;
 
   Future<void> initTabList() async {
     await FeedbackService.getTabList().then((tabList) {
@@ -208,9 +209,11 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> getNextPage(WPYTab tab,
+      int mode,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${tab.id}',
+      mode: mode,
       page: lakeAreas[tab].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, tab);
@@ -230,19 +233,19 @@ class LakeModel extends ChangeNotifier {
         initTabList();
       },
       onFailure: (e) {
-        lakeAreas[0].status = LakePageStatus.error;
+        ToastProvider.error('获取分区失败');
         failure?.call(e);
         notifyListeners();
       },
     );
   }
 
-  checkTokenAndGetPostList(FbDepartmentsProvider provider, WPYTab tab,
+  checkTokenAndGetPostList(FbDepartmentsProvider provider, WPYTab tab, int mode,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
         provider.initDepartments();
-        initPostList(tab);
+        initPostList(tab, mode);
       },
       onFailure: (e) {
         lakeAreas[tab].status = LakePageStatus.error;
@@ -253,6 +256,7 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> initPostList(WPYTab tab,
+      int mode,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
       lakeAreas[tab].status = LakePageStatus.loading;
@@ -260,6 +264,7 @@ class LakeModel extends ChangeNotifier {
     }
     await FeedbackService.getPosts(
       type: '${tab.id}',
+      mode: mode,
       page: '1',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;

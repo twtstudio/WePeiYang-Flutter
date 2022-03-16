@@ -184,7 +184,7 @@ class _NCommentCardState extends State<NCommentCard>
                   if (widget.isSubFloor &&
                       widget.comment.replyTo != widget.ancestorId)
                     CommentIdentificationContainer(
-                        '回复-> ID：' + widget.comment.replyTo.toString(), false),
+                        '回复ID：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
               Text(
@@ -532,10 +532,10 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.isFullView && widget.isSubFloor
                       ? BoxShadow(color: Colors.transparent)
                       : BoxShadow(
-                      blurRadius: 5,
-                      color: Color.fromARGB(64, 236, 237, 239),
+                      blurRadius: 1.6,
+                      color: Colors.black12,
                       offset: Offset(0, 0),
-                      spreadRadius: 3),
+                      spreadRadius: -1),
                 ],
               ),
               child: mainBody,

@@ -75,7 +75,8 @@ class FeedbackService with AsyncTimer {
     try {
       var response;
       if (CommonPreferences().feedbackToken.value != null &&
-          CommonPreferences().feedbackToken.value != "" && !forceRefresh) {
+          CommonPreferences().feedbackToken.value != "" &&
+          !forceRefresh) {
         response = await feedbackDio
             .get('auth/${CommonPreferences().feedbackToken.value}');
       } else {
@@ -236,6 +237,7 @@ class FeedbackService with AsyncTimer {
       {keyword,
       departmentId,
       tagId,
+      mode,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -245,7 +247,7 @@ class FeedbackService with AsyncTimer {
         'posts',
         queryParameters: {
           'type': '$type',
-          'search_mode': CommonPreferences().feedbackSearchType.value ?? 0,
+          'search_mode': mode ?? 0,
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
@@ -340,6 +342,7 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+
   static getOfficialComment({
     @required id,
     @required void Function(List<Floor> officialCommentList) onSuccess,
@@ -361,6 +364,7 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
@@ -552,12 +556,13 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
   static replyOffcialFloor(
       {@required id,
-        @required content,
-        @required List<String> images,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required content,
+      @required List<String> images,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
       try {
         var formData = FormData.fromMap({
@@ -575,6 +580,7 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
   static sendPost(
       {@required type,
       @required title,

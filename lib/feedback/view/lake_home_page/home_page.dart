@@ -38,19 +38,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   List<bool> shouldBeInitialized;
   final fbKey = new GlobalKey<FbTagsWrapState>();
 
-  double _previousOffset;
-
-  ///判断是否为初次登陆
-
-  //请求type
-  List swapLister = [2, 0, 1, 3];
   List<WPYTab> tabList;
 
   ///根据tab的index得到对应type
   ///
   final postTypeNotifier = ValueNotifier(PostType.lake);
-
-  Widget _departmentSelectionContainer;
 
   bool scroll = false;
 
@@ -64,7 +56,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           .read<LakeModel>()
           .nController
           .animateTo(0,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
+              duration: Duration(milliseconds: 200), curve: Curves.decelerate)
           .then((value) => scroll = false);
     }
   }
@@ -164,14 +156,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onFeedbackTapped() {
-    if(!context.read<LakeModel>().tabController.indexIsChanging){
-      if(canSee){
+    if (!context.read<LakeModel>().tabController.indexIsChanging) {
+      if (canSee) {
         _onFeedbackOpen();
         fbKey.currentState.tap();
         setState(() {
           canSee = false;
         });
-      }else {
+      } else {
         _onFeedbackOpen();
         fbKey.currentState.tap();
         setState(() {
@@ -245,7 +237,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             return <Widget>[
               SliverAppBar(
                 toolbarHeight: 48,
-                backgroundColor: ColorUtil.whiteFDFE,
+                backgroundColor: Colors.white,
                 titleSpacing: 0,
                 leading: InkWell(
                   highlightColor: Colors.transparent,
@@ -297,36 +289,58 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                 (BuildContext context, LakeModel lakeModel) {
                               return lakeModel.lakeTabList;
                             }, builder: (_, lakeTabList, __) {
-                              return TabBar(
-                                indicatorPadding: EdgeInsets.only(bottom: 2),
-                                labelPadding: EdgeInsets.only(bottom: 3),
-                                isScrollable: true,
-                                physics: BouncingScrollPhysics(),
-                                controller:
-                                    context.read<LakeModel>().tabController,
-                                labelColor: ColorUtil.black2AColor,
-                                labelStyle: TextUtil
-                                    .base.black2A.w600.NotoSansSC
-                                    .sp(18),
-                                unselectedLabelColor: ColorUtil.lightTextColor,
-                                unselectedLabelStyle:
-                                    TextUtil.base.greyB2.w600.NotoSansSC.sp(18),
-                                indicator: CustomIndicator(
-                                    borderSide: BorderSide(
-                                        color: ColorUtil.mainColor, width: 2)),
-                                tabs: List<Widget>.generate(
-                                    lakeTabList == null
-                                        ? 1
-                                        : lakeTabList.length,
-                                    (index) => DaTab(
-                                        text: lakeTabList[index].shortname,
-                                        withDropDownButton: false)),
-                                onTap: (index) {
-                                  if (index == 1) {
-                                    _onFeedbackTapped();
-                                  }
-                                },
-                              );
+                              return context
+                                          .read<LakeModel>()
+                                          .lakeTabList
+                                          .length ==
+                                      0
+                                  ? InkWell(
+                                      onTap: () => context
+                                          .read<LakeModel>()
+                                          .checkTokenAndGetTabList(),
+                                      child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Text('加载分区失败, 请点击刷新',
+                                              style: TextUtil
+                                                  .base.mainColor.w200
+                                                  .sp(16))),
+                                    )
+                                  : TabBar(
+                                      indicatorPadding:
+                                          EdgeInsets.only(bottom: 2),
+                                      labelPadding: EdgeInsets.only(bottom: 3),
+                                      isScrollable: true,
+                                      physics: BouncingScrollPhysics(),
+                                      controller: context
+                                          .read<LakeModel>()
+                                          .tabController,
+                                      labelColor: ColorUtil.black2AColor,
+                                      labelStyle: TextUtil
+                                          .base.black2A.w600.NotoSansSC
+                                          .sp(18),
+                                      unselectedLabelColor:
+                                          ColorUtil.lightTextColor,
+                                      unselectedLabelStyle: TextUtil
+                                          .base.greyB2.w600.NotoSansSC
+                                          .sp(18),
+                                      indicator: CustomIndicator(
+                                          borderSide: BorderSide(
+                                              color: ColorUtil.mainColor,
+                                              width: 2)),
+                                      tabs: List<Widget>.generate(
+                                          lakeTabList == null
+                                              ? 1
+                                              : lakeTabList.length,
+                                          (index) => DaTab(
+                                              text:
+                                                  lakeTabList[index].shortname,
+                                              withDropDownButton: index == 1)),
+                                      onTap: (index) {
+                                        if (index == 1) {
+                                          _onFeedbackTapped();
+                                        }
+                                      },
+                                    );
                             }),
                           ),
                           PopupMenuButton(
@@ -341,18 +355,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ),
                             //0-->时间排序，1-->动态排序
                             onSelected: (value) {
-                              CommonPreferences().feedbackSearchType.value =
-                                  value.toString();
-                              context
-                                  .read<LakeModel>()
-                                  .lakeAreas[
-                                      context.read<LakeModel>().lakeTabList[
-                                          context
-                                              .read<LakeModel>()
-                                              .tabController
-                                              .index]]
-                                  .refreshController
-                                  .requestRefresh();
+                              context.read<LakeModel>().sortSeq = value;
+                              listToTop();
                             },
                             itemBuilder: (context) {
                               return <PopupMenuEntry<int>>[
@@ -360,11 +364,23 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   value: 0,
                                   child: Text(
                                     '时间排序',
+                                    style:
+                                        context.read<LakeModel>().sortSeq == 1
+                                            ? TextUtil.base.mainColor.w200
+                                            : TextUtil.base.mainColor.w600,
                                   ),
                                 ),
                                 PopupMenuItem<int>(
                                   value: 1,
-                                  child: Text('动态排序'),
+                                  child: Text(
+                                    '动态排序',
+                                    style: context.read<LakeModel>().sortSeq !=
+                                            null
+                                        ? context.read<LakeModel>().sortSeq == 1
+                                            ? TextUtil.base.mainColor.w600
+                                            : TextUtil.base.mainColor.w200
+                                        : TextUtil.base.mainColor.w200,
+                                  ),
                                 ),
                               ];
                             },

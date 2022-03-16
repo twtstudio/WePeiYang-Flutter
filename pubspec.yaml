@@ -18,9 +18,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
 # 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.2.0+92
+version: 4.2.0+93
 
-# 打包代码 flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+# 打包代码 flutter build apk --split-per-abi
 
 environment:
   sdk: ">=2.10.0 <3.0.0"

@@ -635,10 +635,10 @@ class _PostCardState extends State<PostCard> {
       color: Colors.white,
       boxShadow: [
         BoxShadow(
-            blurRadius: 5,
-            color: ColorUtil.greyF7F8Color,
+            blurRadius: 1.6,
+            color: Colors.black12,
             offset: Offset(0, 0),
-            spreadRadius: 3),
+            spreadRadius: -1),
       ],
     );
 
