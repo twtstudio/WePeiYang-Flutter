@@ -54,6 +54,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool scroll = false;
 
+  bool canSee = false;
+
+  /// nestedScrollView 展示 appbar
   _onFeedbackOpen() {
     if (!scroll && context.read<LakeModel>().nController.offset != 0) {
       scroll = true;
@@ -161,13 +164,19 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onFeedbackTapped() {
-    if (context.read<LakeModel>().tabController.index.toDouble() ==
-        context.read<LakeModel>().tabController.animation.value) {
-      if (context.read<LakeModel>().tabController.index != 1)
-        context.read<LakeModel>().tabController.animateTo(1);
-      else {
+    if(!context.read<LakeModel>().tabController.indexIsChanging){
+      if(canSee){
         _onFeedbackOpen();
         fbKey.currentState.tap();
+        setState(() {
+          canSee = false;
+        });
+      }else {
+        _onFeedbackOpen();
+        fbKey.currentState.tap();
+        setState(() {
+          canSee = true;
+        });
       }
     }
   }
@@ -289,39 +298,35 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               return lakeModel.lakeTabList;
                             }, builder: (_, lakeTabList, __) {
                               return TabBar(
-                                  indicatorPadding: EdgeInsets.only(bottom: 2),
-                                  labelPadding: EdgeInsets.only(bottom: 3),
-                                  isScrollable: true,
-                                  physics: BouncingScrollPhysics(),
-                                  controller:
-                                      context.read<LakeModel>().tabController,
-                                  labelColor: ColorUtil.black2AColor,
-                                  labelStyle: TextUtil
-                                      .base.black2A.w600.NotoSansSC
-                                      .sp(18),
-                                  unselectedLabelColor:
-                                      ColorUtil.lightTextColor,
-                                  unselectedLabelStyle: TextUtil
-                                      .base.greyB2.w600.NotoSansSC
-                                      .sp(18),
-                                  indicator: CustomIndicator(
-                                      borderSide: BorderSide(
-                                          color: ColorUtil.mainColor,
-                                          width: 2)),
-                                  tabs: List<Widget>.generate(
-                                      lakeTabList == null
-                                          ? 1
-                                          : lakeTabList.length,
-                                      (index) => lakeTabList[index].name ==
-                                              '校务专区'
-                                          ? DaTab(
-                                              text:
-                                                  lakeTabList[index].shortname,
-                                              withDropDownButton: false)
-                                          : DaTab(
-                                              text:
-                                                  lakeTabList[index].shortname,
-                                              withDropDownButton: false)));
+                                indicatorPadding: EdgeInsets.only(bottom: 2),
+                                labelPadding: EdgeInsets.only(bottom: 3),
+                                isScrollable: true,
+                                physics: BouncingScrollPhysics(),
+                                controller:
+                                    context.read<LakeModel>().tabController,
+                                labelColor: ColorUtil.black2AColor,
+                                labelStyle: TextUtil
+                                    .base.black2A.w600.NotoSansSC
+                                    .sp(18),
+                                unselectedLabelColor: ColorUtil.lightTextColor,
+                                unselectedLabelStyle:
+                                    TextUtil.base.greyB2.w600.NotoSansSC.sp(18),
+                                indicator: CustomIndicator(
+                                    borderSide: BorderSide(
+                                        color: ColorUtil.mainColor, width: 2)),
+                                tabs: List<Widget>.generate(
+                                    lakeTabList == null
+                                        ? 1
+                                        : lakeTabList.length,
+                                    (index) => DaTab(
+                                        text: lakeTabList[index].shortname,
+                                        withDropDownButton: false)),
+                                onTap: (index) {
+                                  if (index == 1) {
+                                    _onFeedbackTapped();
+                                  }
+                                },
+                              );
                             }),
                           ),
                           PopupMenuButton(
@@ -389,7 +394,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               wpyTab: lakeTabList[ind],
                             )));
               }),
-              FbTagsWrap(key: fbKey)
+              Visibility(
+                child: FbTagsWrap(key: fbKey),
+                maintainState: true,
+                visible: canSee,
+              ),
             ],
           )),
     );
