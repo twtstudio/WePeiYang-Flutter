@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -30,23 +31,8 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
   final campusNotifier = ValueNotifier(0);
-
-  // 0 -> 青年湖底; 1 -> 校务专区 2->学习
   final postTypeNotifier = ValueNotifier(0);
-  @override
-  void initState() {
-    super.initState();
-    initTabList();
 
-  }
-  Future<void> initTabList() async {
-    await FeedbackService.getTabList().then((tabList) {
-      if(PostType.isEmpty)
-        PostType.addAll(tabList);
-    }, onError: (e) {
-      ToastProvider.error(e.error.toString());
-    });
-  }
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
@@ -85,7 +71,7 @@ class _NewPostPageState extends State<NewPostPage> {
             children: [
               LakeSelector(),
               SizedBox(height: 10),
-              TagView(postTypeNotifier),
+              departmentTagView(postTypeNotifier),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -113,90 +99,101 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 }
 
-List<WPYTab> PostType = [];
 class LakeSelector extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => LakeSelectorState();
+  State<StatefulWidget> createState() => _LakeSelectorState();
 }
 
-class LakeSelectorState extends State<LakeSelector> {
+class _LakeSelectorState extends State<LakeSelector> {
+
+  List<WPYTab> postType = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if(context.read<LakeModel>().NewPostTabList == []){
+      context.read<LakeModel>().initTabList();
+    }
+    postType = context.read<LakeModel>().NewPostTabList;
+  }
+
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    return ValueListenableBuilder<int>(
-      valueListenable: notifier,
-      builder: (context, type, _) {
-        return SizedBox(
-          height: 60,
-          child: ListView.builder(
-            itemCount: PostType.length,
-            scrollDirection: Axis.horizontal,
-            physics: ScrollPhysics(),
-            itemBuilder: (context, index) {
+    return postType == [] ?
+      Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16)
+        ),
+        child: Center(
+          child: Text('Loading...φ(゜▽゜*)♪'),
+        ),
+      )
+        : ValueListenableBuilder<int>(
+            valueListenable: notifier,
+            builder: (context, type, _) {
               return SizedBox(
-                height: 58,
-                width: (WePeiYangApp.screenWidth - 40) / PostType.length,
-                child: ElevatedButton(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if(index == 0)
-                        Text(
-                          PostType[1].shortname,
-                          style: type == index
-                              ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
-                              : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
+                height: 60,
+                child: ListView.builder(
+                  itemCount: postType.length,
+                  scrollDirection: Axis.horizontal,
+                  physics: ScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return SizedBox(
+                      height: 58,
+                      width: (WePeiYangApp.screenWidth - 40) / postType.length,
+                      child: ElevatedButton(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              postType[index].shortname,
+                              style: type == index
+                                  ? TextUtil.base.NotoSansSC.w500
+                                      .sp(18)
+                                      .black2A
+                                  : TextUtil.base.NotoSansSC.w400
+                                      .sp(18)
+                                      .grey6C,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: type == index
+                                      ? ColorUtil.mainColor
+                                      : Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16))),
+                              width: 30,
+                              height: 4,
+                            ),
+                          ],
                         ),
-                      if(index == 1)
-                        Text(
-                          PostType[0].shortname,
-                          style: type == index
-                              ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
-                              : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
-                        ),//湖底和校务是反的，回头再改
-                     if(index>1)
-                      Text(
-                        PostType[index].shortname,
-                        style: type == index
-                            ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
-                            : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: _judgeBorder(index)),
+                          primary: Colors.white,
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          notifier.value = index;
+                        },
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: type == index
-                                ? ColorUtil.mainColor
-                                : Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        width: 30,
-                        height: 4,
-                      ),
-                    ],
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: _judgeBorder(index)),
-                    primary: Colors.white,
-                    elevation: 0,
-                  ),
-                  onPressed: () {
-                    notifier.value = index;
+                    );
                   },
                 ),
               );
             },
-          ),
-        );
-      },
-    );
+          );
   }
 
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
       return BorderRadius.horizontal(left: Radius.circular(16));
-    else if (index == PostType.length-1)
+    else if (index == postType.length - 1)
       return BorderRadius.horizontal(right: Radius.circular(16));
     else
       return BorderRadius.horizontal();
@@ -210,81 +207,21 @@ class SubmitButton extends StatelessWidget {
       : super(key: key);
 
   void submit(BuildContext context) {
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    if (dataModel.images.isNotEmpty) {
+    var dataModel = context.read<NewPostProvider>();
+    dataModel.type = postTypeNotifier.value + 1;
+    if (dataModel.images.isNotEmpty && dataModel.check) {
       FeedbackService.postPic(
           images: dataModel.images,
           onResult: (images) {
-            print(images);
             dataModel.images.clear();
-            dataModel.type =
-                postTypeNotifier.value ;
             if (dataModel.check) {
-                postTypeNotifier.value == PostType[0].id
-                    ? FeedbackService.sendPost(
-                        type: PostType[0].id,
-                        title: dataModel.title,
-                        content: dataModel.content,
-                        departmentId: dataModel.department.id,
-                        images: images,
-                        campus: campusNotifier.value,
-                        onSuccess: () {
-                          ToastProvider.success(
-                              S.current.feedback_post_success);
-                          Navigator.pop(context);
-                        },
-                        onFailure: (e) {
-                          ToastProvider.error(e.error.toString());
-                        },
-                      )
-                    : FeedbackService.sendPost(
-                        type:  postTypeNotifier.value,
-                        title: dataModel.title,
-                        content: dataModel.content,
-                        tagId: dataModel.tag.id,
-                        images: images,
-                        campus: campusNotifier.value,
-                        onSuccess: () {
-                          ToastProvider.success(
-                              S.current.feedback_post_success);
-                          Navigator.pop(context);
-                        },
-                        onFailure: (e) {
-                          ToastProvider.error(e.error.toString());
-                        },
-                      );
-              dataModel.clear();
-            } else {
-              ToastProvider.error(S.current.feedback_empty_content_error);
-            }
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-    } else {
-      if (dataModel.check) {
-        postTypeNotifier.value == PostType[0].id
-            ? FeedbackService.sendPost(
-                type:  postTypeNotifier.value,
+              FeedbackService.sendPost(
+                type: dataModel.type,
                 title: dataModel.title,
                 content: dataModel.content,
-                departmentId: dataModel.department.id,
-                images: [],
-                campus: campusNotifier.value,
-                onSuccess: () {
-                  ToastProvider.success(S.current.feedback_post_success);
-                  Navigator.pop(context);
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              )
-            : FeedbackService.sendPost(
-                type:  postTypeNotifier.value,
-                title: dataModel.title,
-                content: dataModel.content,
-                tagId: dataModel.tag != Tag() ? dataModel.tag.id : '',
-                images: [],
+                tagId: dataModel.tag == null ? '' : dataModel.tag.id,
+                departmentId: dataModel.department == null ? '' : dataModel.department.id,
+                images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
                   ToastProvider.success(S.current.feedback_post_success);
@@ -294,9 +231,39 @@ class SubmitButton extends StatelessWidget {
                   ToastProvider.error(e.error.toString());
                 },
               );
+              dataModel.clear();
+            } else {
+              dataModel.type == 1
+                  ? ToastProvider.error('内容标题与部门不能为空！')
+                  : ToastProvider.error('内容与标题不能为空！');
+            }
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+    } else {
+      if (dataModel.check) {
+        FeedbackService.sendPost(
+          type: dataModel.type,
+          title: dataModel.title,
+          content: dataModel.content,
+          tagId: dataModel.tag == null ? '' : dataModel.tag.id,
+          departmentId: dataModel.department == null ? '' : dataModel.department.id,
+          images: [],
+          campus: campusNotifier.value,
+          onSuccess: () {
+            ToastProvider.success(S.current.feedback_post_success);
+            Navigator.pop(context);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          },
+        );
         dataModel.clear();
       } else {
-        ToastProvider.error('内容不能为空！');
+        dataModel.type == 1
+            ? ToastProvider.error('内容标题与部门不能为空！')
+            : ToastProvider.error('内容与标题不能为空！');
       }
     }
   }
@@ -323,35 +290,26 @@ class SubmitButton extends StatelessWidget {
   }
 }
 
-class TagView extends StatefulWidget {
+class departmentTagView extends StatefulWidget {
   final ValueNotifier postTypeNotifier;
 
-  const TagView(this.postTypeNotifier, {Key key}) : super(key: key);
+  const departmentTagView(this.postTypeNotifier, {Key key}) : super(key: key);
 
   @override
-  _TagViewState createState() => _TagViewState();
+  _departmentTagViewState createState() => _departmentTagViewState();
 }
 
-class _TagViewState extends State<TagView> {
+class _departmentTagViewState extends State<departmentTagView> {
   ValueNotifier<Department> department;
 
   @override
   void initState() {
     super.initState();
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    initTabList();
+    var dataModel = context.read<NewPostProvider>();
     department = ValueNotifier(dataModel.department)
       ..addListener(() {
         dataModel.department = department.value;
       });
-  }
-  Future<void> initTabList() async {
-    await FeedbackService.getTabList().then((tabList) {
-      if(PostType.isEmpty)
-      PostType.addAll(tabList);
-    }, onError: (e) {
-      ToastProvider.error(e.error.toString());
-    });
   }
 
   @override
@@ -369,7 +327,7 @@ class _TagViewState extends State<TagView> {
             ),
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
-            child: notifier.value == PostType[0].id
+            child: notifier.value == 0
                 ? TabGridView(
                     department: department.value,
                   )
@@ -464,22 +422,14 @@ class _TitleInputFieldState extends State<TitleInputField> {
   @override
   void initState() {
     super.initState();
-    initTabList();
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
+    var dataModel = context.read<NewPostProvider>();
     _titleController = TextEditingController(text: dataModel.title);
     titleCounter = ValueNotifier('${dataModel.title.characters.length}/30')
       ..addListener(() {
         dataModel.title = _titleController.text;
       });
   }
-  Future<void> initTabList() async {
-    await FeedbackService.getTabList().then((tabList) {
-      if(PostType.isEmpty)
-      PostType.addAll(tabList);
-    }, onError: (e) {
-      ToastProvider.error(e.error.toString());
-    });
-  }
+
   @override
   void dispose() {
     _titleController.dispose();

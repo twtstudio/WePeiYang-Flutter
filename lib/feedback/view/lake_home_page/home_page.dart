@@ -23,7 +23,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
-import '../new_post_page.dart';
 import '../search_result_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
@@ -299,8 +298,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           .read<LakeModel>()
                                           .checkTokenAndGetTabList(),
                                       child: Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Text('加载分区失败, 请点击刷新',
+                                          alignment: Alignment.center,
+                                          child: Text('Loading...φ(゜▽゜*)♪',
                                               style: TextUtil
                                                   .base.mainColor.w200
                                                   .sp(16))),

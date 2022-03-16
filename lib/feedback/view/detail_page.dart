@@ -8,10 +8,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -320,16 +322,18 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
-              tag: post.department.name ?? '',
-              comment: data,
-              placeAppeared: index,
-                ImageUrl: data.imageUrls,
-                ancestorId:post.uid,
-              onContentPressed: (refresh) async {
-               refresh.call(list);
-              },
-            ):SizedBox(width: 0,height: 0);
+            return _officialCommentList[index].sender == 1
+                ? OfficialReplyCard.reply(
+                    tag: post.department.name ?? '',
+                    comment: data,
+                    placeAppeared: index,
+                    ImageUrl: data.imageUrls,
+                    ancestorId: post.uid,
+                    onContentPressed: (refresh) async {
+                      refresh.call(list);
+                    },
+                  )
+                : SizedBox(width: 0, height: 0);
             return _officialCommentList[index].sender == 1
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',
@@ -497,10 +501,24 @@ class _DetailPageState extends State<DetailPage>
         offset: Offset(0, 20.w),
         child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-        onSelected: (value) {
+        onSelected: (value) async {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
                 arguments: ReportPageArgs(widget.post.id, true));
+          } else if (value == '删除') {
+            bool confirm = await _showDeleteConfirmDialog();
+            if (confirm) {
+              FeedbackService.deletePost(
+                id: widget.post.id,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_delete_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            }
           }
         },
         itemBuilder: (context) {
@@ -508,15 +526,17 @@ class _DetailPageState extends State<DetailPage>
             PopupMenuItem<String>(
               value: '举报',
               child: Center(
-                child: new Text(
-                  '举报',
-                  style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 13,
-                    color: ColorUtil.boldTextColor,
-                  ),
-                ),
+                child: new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
               ),
             ),
+            if (widget.post.isOwner)
+              PopupMenuItem<String>(
+                value: '删除',
+                child: Center(
+                  child:
+                      new Text('删除', style: TextUtil.base.black2A.w500.sp(14)),
+                ),
+              ),
           ];
         });
     var shareButton = IconButton(
@@ -524,7 +544,7 @@ class _DetailPageState extends State<DetailPage>
         onPressed: () {
           if (!_refreshController.isLoading && !_refreshController.isRefresh) {
             String weCo =
-                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${post.id}';
+                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
             ClipboardData data = ClipboardData(text: weCo);
             Clipboard.setData(data);
             CommonPreferences().feedbackLastWeCo.value = post.id.toString();
@@ -559,6 +579,28 @@ class _DetailPageState extends State<DetailPage>
         body: body,
       ),
     );
+  }
+
+  Future<bool> _showDeleteConfirmDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return DialogWidget(
+              title: '删除冒泡',
+              content: Text('您确定要删除这条冒泡吗？'),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              confirmText: "确认",
+              cancelFun: () {
+                Navigator.of(context).pop();
+              },
+              confirmFun: () {
+                Navigator.of(context).pop(true);
+              });
+        });
   }
 }
 
