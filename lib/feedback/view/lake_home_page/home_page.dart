@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -124,9 +123,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
     });
-    context.read<LakeModel>().tabController =
-        TabController(length: 1, vsync: this);
-    context.read<LakeModel>().initTabList();
+    context.read<LakeModel>().checkTokenAndGetTabList();
     context.read<LakeModel>().nController = new ScrollController();
 
     getClipboardWeKoContents();

@@ -392,7 +392,7 @@ class _PostCardState extends State<PostCard> {
                     child: Text(
                       '#MP' + post.id.toString().padLeft(6, '0'),
                       style:
-                          TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
+                          TextUtil.base.w400.grey6C.ProductSans.sp(14),
                     ),
                   ),
                 if (widget.type == PostCardType.simple)

@@ -1,14 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 
 class FbDepartmentsProvider {
   List<Department> departmentList = [];
@@ -142,18 +140,18 @@ class LakeModel extends ChangeNotifier {
 
   Future<void> initTabList() async {
     await FeedbackService.getTabList().then((tabList) {
-      WPYTab oTab = WPYTab(id: 0, shortname: '全部', name: '全部');
-      lakeTabList = [oTab];
-      lakeTabList.addAll(tabList);
-      lakeAreas.addAll({oTab: LakeArea.empty()});
-      tabList.forEach((element) {
-        lakeAreas.addAll({element: LakeArea.empty()});
-      });
-      notifyListeners();
-    }, onError: (e) {
-      ToastProvider.error(e.error.toString());
-      notifyListeners();
-    });
+          WPYTab oTab = WPYTab(id: 0, shortname: '全部', name: '全部');
+          lakeTabList = [oTab];
+          lakeTabList.addAll(tabList);
+          lakeAreas.addAll({oTab: LakeArea.empty()});
+          tabList.forEach((element) {
+            lakeAreas.addAll({element: LakeArea.empty()});
+          });
+          notifyListeners();
+        }, onError: (e) {
+          ToastProvider.error(e.error.toString());
+          notifyListeners();
+        });
   }
 
   void onFeedbackOpen() {
@@ -226,11 +224,23 @@ class LakeModel extends ChangeNotifier {
     );
   }
 
+  checkTokenAndGetTabList({OnSuccess success, OnFailure failure}) async {
+    await FeedbackService.getToken(
+      onResult: (token) {
+        initTabList();
+      },
+      onFailure: (e) {
+        lakeAreas[0].status = LakePageStatus.error;
+        failure?.call(e);
+        notifyListeners();
+      },
+    );
+  }
+
   checkTokenAndGetPostList(FbDepartmentsProvider provider, WPYTab tab,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
-        CommonPreferences().feedbackToken.value = token;
         provider.initDepartments();
         initPostList(tab);
       },

@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 class NSubPage extends StatefulWidget {
   final WPYTab wpyTab;
@@ -90,7 +89,7 @@ class NSubPageState extends State<NSubPage>
     //       .lakeAreas[wpyTab]
     //       .refreshController.loadNoData();
     // } else
-    {
+    // {
       context.read<LakeModel>().getNextPage(
         wpyTab,
         success: () {
@@ -108,7 +107,7 @@ class NSubPageState extends State<NSubPage>
               .loadFailed();
         },
       );
-    }
+    // }
   }
 
   void listToTop() {
@@ -121,8 +120,6 @@ class NSubPageState extends State<NSubPage>
 
   @override
   void initState() {
-    context.read<FbHotTagsProvider>().initRecTag();
-    if (wpyTab.name == '青年湖底') context.read<FbHotTagsProvider>().initHotTags();
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().initLakeArea(
@@ -131,6 +128,7 @@ class NSubPageState extends State<NSubPage>
         .read<LakeModel>()
         .checkTokenAndGetPostList(_departmentsProvider, wpyTab, success: () {
       getRecTag();
+      if (wpyTab.name == '青年湖底') context.read<FbHotTagsProvider>().initHotTags();
     }, failure: (e) {
       ToastProvider.error(e.error.toString());
     });

@@ -119,7 +119,7 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      FeedbackService.getToken(forceRefresh: true);
+      FeedbackService.getToken();
     });
   }
 
