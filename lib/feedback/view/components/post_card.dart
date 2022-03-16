@@ -231,7 +231,7 @@ class _PostCardState extends State<PostCard> {
       style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
     );
 
-    var tag = post.type == 0
+    var tag = post.type != 1
         ? post.tag != null
             ? '${post.tag.name}'
             : ''
@@ -239,7 +239,7 @@ class _PostCardState extends State<PostCard> {
             ? '${post.department.name}'
             : '';
 
-    var id = post.type == 0
+    var id = post.type != 1
         ? post.tag != null && post.tag.id != null
             ? post.tag.id
             : -1
@@ -306,7 +306,7 @@ class _PostCardState extends State<PostCard> {
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
                       (widget.type == PostCardType.simple ? 180 : 0),
-                  post.type == 0,
+                  post.type != 1,
                   id),
             SizedBox(width: 8),
             campus
