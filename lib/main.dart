@@ -212,6 +212,10 @@ class WePeiYangAppState extends State<WePeiYangApp> with WidgetsBindingObserver 
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
         return MaterialApp(
+          theme: ThemeData(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
           debugShowCheckedModeBanner: false,
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
