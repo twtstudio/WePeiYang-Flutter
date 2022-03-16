@@ -33,7 +33,7 @@ class BuildingData extends LoadStateChangeNotifier with LoungeDataStateMixin {
         .where(
           (b) => b.campus == Campus.wjl.id,
         )
-        .toList();
+        .toList()..sort((a,b) => a.name.compareTo(b.name));
   }
 
   /// 北洋园的教学楼
@@ -42,7 +42,7 @@ class BuildingData extends LoadStateChangeNotifier with LoungeDataStateMixin {
         .where(
           (b) => b.campus == Campus.byy.id,
         )
-        .toList();
+        .toList()..sort((a,b) => a.name.compareTo(b.name));
   }
 
   Future<void> init() async {

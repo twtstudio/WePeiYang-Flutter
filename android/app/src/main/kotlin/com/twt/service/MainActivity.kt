@@ -2,7 +2,6 @@ package com.twt.service
 
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
@@ -93,7 +92,7 @@ class MainActivity : FlutterActivity() {
     // 更改字体或显示大小后，自动重启activity（参考了高德地图）
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        ChangeDisplay.recreateWhenConfigChange(newConfig,this)
+        ChangeDisplay.recreateWhenConfigChange(newConfig, this)
     }
 
     companion object {

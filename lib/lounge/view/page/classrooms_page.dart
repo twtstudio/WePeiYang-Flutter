@@ -203,8 +203,6 @@ class FloorWidget extends StatelessWidget {
         .select((_ClassroomsPageData data) => data.area)
         .splitByFloor[floor]!;
 
-    debugPrint(classrooms.length.toString());
-
     final roomsGridView = Column(
       children: List.generate(
         classrooms.length ~/ 4 + 1,

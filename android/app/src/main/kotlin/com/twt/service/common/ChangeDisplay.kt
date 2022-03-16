@@ -36,7 +36,7 @@ object ChangeDisplay {
      */
     fun recreateWhenConfigChange(newConfig: Configuration, activity: Activity) {
         if (newConfig.densityDpi != defaultDisplayDensity || newConfig.fontScale != 1F) {
-            LogUtil.d(TAG,"recreate activity")
+            LogUtil.d(TAG, "recreate activity")
             activity.recreate()
         }
     }
@@ -58,8 +58,8 @@ object ChangeDisplay {
             val densityDpi = getInitialDisplayDensity.invoke(iwm, Display.DEFAULT_DISPLAY)
             densityDpi as Int
         } catch (e: Exception) {
-            e.printStackTrace()
-            -1
+            LogUtil.e(TAG, e)
+            Configuration.DENSITY_DPI_UNDEFINED
         }
     }
 
