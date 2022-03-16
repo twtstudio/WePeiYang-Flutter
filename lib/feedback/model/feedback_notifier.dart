@@ -71,6 +71,7 @@ class NewPostProvider {
     content = "";
     type = 1;
     images = [];
+    tag = Tag();
     department = null;
   }
 }
