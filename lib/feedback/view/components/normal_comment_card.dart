@@ -114,7 +114,7 @@ class _NCommentCardState extends State<NCommentCard>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    widget.comment.nickname,
+                    widget.comment.nickname ?? "null",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),

@@ -397,7 +397,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               }, builder: (_, lakeTabList, __) {
                 if (!context.read<LakeModel>().tabControllerLoaded) {
                   context.read<LakeModel>().tabController =
-                      TabController(length: lakeTabList.length, vsync: this);
+                      TabController(length: lakeTabList.length, vsync: this)..addListener(() {
+                        if (context.read<LakeModel>().tabController.index.toDouble() ==
+                            context.read<LakeModel>().tabController.animation.value) {
+                          if (context.read<LakeModel>().tabController.index != 1 && canSee)
+                            _onFeedbackTapped();
+                        }
+                      });
                 }
                 int cacheNum = 0;
                 return ExtendedTabBarView(
@@ -536,7 +542,6 @@ class FbTagsWrapState extends State<FbTagsWrap>
                       style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
                 ),
                 onTap: () {
-                  tap();
                   Navigator.pushNamed(
                     context,
                     FeedbackRouter.searchResult,
