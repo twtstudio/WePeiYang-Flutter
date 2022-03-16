@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import 'components/normal_comment_card.dart';
 import 'components/widget/PopMenuShape.dart';
 
 class OffcialReplyDetailPage extends StatefulWidget {
@@ -32,7 +33,8 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
   int index;
   int currentPage = 1;
   List<Floor> floors;
-
+  Post post;
+  int rating;
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
   final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
@@ -40,7 +42,24 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
   var _refreshController = RefreshController(initialRefresh: false);
 
   _OffcialReplyDetailPageState();
-
+  Future<bool> _initPost(int id) async {
+    bool success = false;
+    await FeedbackService.getPostById(
+      id: id,
+      onResult: (Post result) {
+        success = true;
+        post = result;
+        rating = post.rating;
+        setState(() {});
+      },
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
+        success = false;
+        return;
+      },
+    );
+    return success;
+  }
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
@@ -88,6 +107,8 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
     super.initState();
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
+    floors = widget.floor;
+    _initPost(widget.floor[0].postId);
     _getComment(
         onSuccess: (comments) {
           setState(() {
@@ -103,11 +124,10 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
   Future<bool> _getComment(
       {Function(List<Floor>) onSuccess, Function onFail, int page}) async {
     bool success = false;
-    FeedbackService.getOfficialComment(
-      id: widget.floor[0].postId,
+   await FeedbackService.getOfficialComment(
+      id: floors[0].postId,
       onSuccess: (floor) {
        floors = floor;
-       onSuccess?.call(floors);
         setState(() {});
       },
       onFailure: (e) {
@@ -129,7 +149,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send(true);
+        launchKey.currentState.send(false);
         setState(() {
           _onRefresh();
         });
@@ -141,25 +161,40 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
       ),
     );
     Widget mainList1 = ListView.builder(
-      itemCount: floors != null ? floors.length + 1 : 0 + 1,
+      itemCount:   floors != null ? floors.length + 1 : 0 + 1 ,
       itemBuilder: (context, index) {
         if (index == 0) {
           return OfficialReplyCard.reply(
-            comment: widget.floor[0],
-            ancestorId: widget.floor[0].postId,
-
+            comment: floors[0],
+            placeAppeared: index,
+            ancestorId: floors[0].postId,
+            tag: post.department.name ?? '',
+            ratings: rating,
           );
         }
-       if(index>1) index--;
+       if(index>=1) index--;
 
         var data = floors[index];
         return Column(
           children: [
+            if(data.sender ==1)
         OfficialReplyCard.reply(
         comment: data,
+          placeAppeared: index,
+          tag: post.department.name ?? '',
+          ratings: rating,
           ancestorId: widget.floor[0].postId,
-          ImageUrl: data.imageUrls,
         ),
+            if(data.sender ==0)
+              NCommentCard(
+                comment: data,
+                uid: data.uid,
+                ancestorName:data.uid.toString(),
+                ancestorId: floors[0].postId,
+                commentFloor: index + 1,
+                isSubFloor: true,
+                isFullView: true,
+              ),
             Container(
                 width: WePeiYangApp.screenWidth - 60,
                 height: 1,

@@ -8,12 +8,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -322,18 +320,16 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender == 1
-                ? OfficialReplyCard.reply(
-                    tag: post.department.name ?? '',
-                    comment: data,
-                    placeAppeared: index,
-                    ImageUrl: data.imageUrls,
-                    ancestorId: post.uid,
-                    onContentPressed: (refresh) async {
-                      refresh.call(list);
-                    },
-                  )
-                : SizedBox(width: 0, height: 0);
+            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
+              tag: post.department.name ?? '',
+              comment: data,
+              placeAppeared: index,
+                ImageUrl: data.imageUrls,
+                ancestorId:post.uid,
+              onContentPressed: (refresh) async {
+               refresh.call(list);
+              },
+            ):SizedBox(width: 0,height: 0);
             return _officialCommentList[index].sender == 1
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',
@@ -739,23 +735,24 @@ class CommentInputFieldState extends State<CommentInputField> {
           '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
         ),
       );
-    } else {
-      FeedbackService.replyOffcialFloor(
-        id: context.read<NewFloorProvider>().replyTo.toString(),
-        content: _textEditingController.text,
-        images: list == [] ? '' : list,
-        onSuccess: () {
-          setState(() => _commentLengthIndicator = '0/200');
-          FocusManager.instance.primaryFocus.unfocus();
-          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-          _textEditingController.text = '';
-          ToastProvider.success("回复成功 (❁´3`❁)");
-        },
-        onFailure: (e) => ToastProvider.error(
-          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-        ),
-      );
     }
+   else{
+     FeedbackService.replyOffcialFloor(
+       id: context.read<NewFloorProvider>().replyTo.toString(),
+       content: _textEditingController.text,
+       images: list == [] ? '' : list,
+       onSuccess: () {
+         setState(() => _commentLengthIndicator = '0/200');
+         FocusManager.instance.primaryFocus.unfocus();
+         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+         _textEditingController.text = '';
+         ToastProvider.success("回复成功 (❁´3`❁)");
+       },
+       onFailure: (e) => ToastProvider.error(
+         '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
+       ),
+     );
+   }
   }
 }
 
