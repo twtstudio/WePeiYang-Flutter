@@ -348,3 +348,18 @@ class PostTagId {
         "id": id,
       };
 }
+class Error {
+  Error({
+    this.error,
+  });
+
+  String error;
+
+  factory  Error.fromJson(Map<String, dynamic> json) => Error(
+    error: json["error"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "error": error,
+  };
+}

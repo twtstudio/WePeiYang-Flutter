@@ -29,12 +29,24 @@ class NewPostPage extends StatefulWidget {
 
 class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
-
   final campusNotifier = ValueNotifier(0);
 
   // 0 -> 青年湖底; 1 -> 校务专区 2->学习
-  final postTypeNotifier = ValueNotifier(PostType.feedback);
+  final postTypeNotifier = ValueNotifier(0);
+  @override
+  void initState() {
+    super.initState();
+    initTabList();
 
+  }
+  Future<void> initTabList() async {
+    await FeedbackService.getTabList().then((tabList) {
+      if(PostType.isEmpty)
+        PostType.addAll(tabList);
+    }, onError: (e) {
+      ToastProvider.error(e.error.toString());
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
@@ -101,15 +113,7 @@ class _NewPostPageState extends State<NewPostPage> {
   }
 }
 
-enum PostType { lake, feedback, study }
-
-extension PostTypeExt on PostType {
-  int get value => [0, 1, 2][index];
-  int get post  => [3, 1, 2][index];
-  //后端的数字和现有的对不上，先鸵鸟
-  String get title => ["青年湖底", "校务专区", "学习"][index];
-}
-
+List<WPYTab> PostType = [];
 class LakeSelector extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => LakeSelectorState();
@@ -120,33 +124,48 @@ class LakeSelectorState extends State<LakeSelector> {
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    return ValueListenableBuilder<PostType>(
+    return ValueListenableBuilder<int>(
       valueListenable: notifier,
       builder: (context, type, _) {
         return SizedBox(
           height: 60,
           child: ListView.builder(
-            itemCount: 3,
+            itemCount: PostType.length,
             scrollDirection: Axis.horizontal,
-            physics: NeverScrollableScrollPhysics(),
+            physics: ScrollPhysics(),
             itemBuilder: (context, index) {
               return SizedBox(
                 height: 58,
-                width: (WePeiYangApp.screenWidth - 40) / 3,
+                width: (WePeiYangApp.screenWidth - 40) / PostType.length,
                 child: ElevatedButton(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if(index == 0)
+                        Text(
+                          PostType[1].shortname,
+                          style: type == index
+                              ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
+                              : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
+                        ),
+                      if(index == 1)
+                        Text(
+                          PostType[0].shortname,
+                          style: type == index
+                              ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
+                              : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
+                        ),//湖底和校务是反的，回头再改
+                     if(index>1)
                       Text(
-                        PostType.values[index].title,
-                        style: type.value == index
+                        PostType[index].shortname,
+                        style: type == index
                             ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
                             : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            color: type.value == index
+                            color: type == index
                                 ? ColorUtil.mainColor
                                 : Colors.white,
                             borderRadius:
@@ -163,7 +182,7 @@ class LakeSelectorState extends State<LakeSelector> {
                     elevation: 0,
                   ),
                   onPressed: () {
-                    notifier.value = PostType.values[index];
+                    notifier.value = index;
                   },
                 ),
               );
@@ -177,7 +196,7 @@ class LakeSelectorState extends State<LakeSelector> {
   BorderRadius _judgeBorder(int index) {
     if (index == 0)
       return BorderRadius.horizontal(left: Radius.circular(16));
-    else if (index == 2)
+    else if (index == PostType.length-1)
       return BorderRadius.horizontal(right: Radius.circular(16));
     else
       return BorderRadius.horizontal();
@@ -199,28 +218,11 @@ class SubmitButton extends StatelessWidget {
             print(images);
             dataModel.images.clear();
             dataModel.type =
-                postTypeNotifier.value == PostType.feedback ? 1 :postTypeNotifier.value == PostType.lake ?2 : 3;
+                postTypeNotifier.value ;
             if (dataModel.check) {
-              if (postTypeNotifier.value == PostType.study) {
-                FeedbackService.sendPost(
-                  type: PostType.study.value,
-                  title: dataModel.title,
-                  content: dataModel.content,
-                  tagId: dataModel.tag.id,
-                  images: images,
-                  campus: campusNotifier.value,
-                  onSuccess: () {
-                    ToastProvider.success(S.current.feedback_post_success);
-                    Navigator.pop(context);
-                  },
-                  onFailure: (e) {
-                    ToastProvider.error(e.error.toString());
-                  },
-                );
-              } else
-                postTypeNotifier.value == PostType.feedback
+                postTypeNotifier.value == PostType[0].id
                     ? FeedbackService.sendPost(
-                        type: PostType.feedback.value,
+                        type: PostType[0].id,
                         title: dataModel.title,
                         content: dataModel.content,
                         departmentId: dataModel.department.id,
@@ -236,7 +238,7 @@ class SubmitButton extends StatelessWidget {
                         },
                       )
                     : FeedbackService.sendPost(
-                        type: PostType.lake.value,
+                        type:  postTypeNotifier.value,
                         title: dataModel.title,
                         content: dataModel.content,
                         tagId: dataModel.tag.id,
@@ -260,31 +262,10 @@ class SubmitButton extends StatelessWidget {
             ToastProvider.error(e.error.toString());
           });
     } else {
-      postTypeNotifier.value == PostType.feedback ? 1 :postTypeNotifier.value == PostType.lake ?2 : 3;
-      if (postTypeNotifier.value == PostType.study) {
-        dataModel.type = 2;
-      }
-      if (postTypeNotifier.value == PostType.study) {
-        FeedbackService.sendPost(
-          type: PostType.study.value,
-          title: dataModel.title,
-          content: dataModel.content,
-          tagId: dataModel.tag.id,
-          images: [],
-          campus: campusNotifier.value,
-          onSuccess: () {
-            ToastProvider.success(S.current.feedback_post_success);
-            Navigator.pop(context);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          },
-        );
-      } else
       if (dataModel.check) {
-        postTypeNotifier.value == PostType.feedback
+        postTypeNotifier.value == PostType[0].id
             ? FeedbackService.sendPost(
-                type: PostType.feedback.value,
+                type:  postTypeNotifier.value,
                 title: dataModel.title,
                 content: dataModel.content,
                 departmentId: dataModel.department.id,
@@ -299,7 +280,7 @@ class SubmitButton extends StatelessWidget {
                 },
               )
             : FeedbackService.sendPost(
-                type: PostType.lake.value,
+                type:  postTypeNotifier.value,
                 title: dataModel.title,
                 content: dataModel.content,
                 tagId: dataModel.tag != Tag() ? dataModel.tag.id : '',
@@ -358,17 +339,26 @@ class _TagViewState extends State<TagView> {
   void initState() {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
+    initTabList();
     department = ValueNotifier(dataModel.department)
       ..addListener(() {
         dataModel.department = department.value;
       });
+  }
+  Future<void> initTabList() async {
+    await FeedbackService.getTabList().then((tabList) {
+      if(PostType.isEmpty)
+      PostType.addAll(tabList);
+    }, onError: (e) {
+      ToastProvider.error(e.error.toString());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    return ValueListenableBuilder<PostType>(
+    return ValueListenableBuilder<int>(
         valueListenable: notifier,
         builder: (context, type, _) {
           return Container(
@@ -379,7 +369,7 @@ class _TagViewState extends State<TagView> {
             ),
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
-            child: notifier.value == PostType.feedback
+            child: notifier.value == PostType[0].id
                 ? TabGridView(
                     department: department.value,
                   )
@@ -474,6 +464,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
   @override
   void initState() {
     super.initState();
+    initTabList();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
     _titleController = TextEditingController(text: dataModel.title);
     titleCounter = ValueNotifier('${dataModel.title.characters.length}/30')
@@ -481,7 +472,14 @@ class _TitleInputFieldState extends State<TitleInputField> {
         dataModel.title = _titleController.text;
       });
   }
-
+  Future<void> initTabList() async {
+    await FeedbackService.getTabList().then((tabList) {
+      if(PostType.isEmpty)
+      PostType.addAll(tabList);
+    }, onError: (e) {
+      ToastProvider.error(e.error.toString());
+    });
+  }
   @override
   void dispose() {
     _titleController.dispose();

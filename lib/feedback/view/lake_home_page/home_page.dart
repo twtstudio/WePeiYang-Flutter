@@ -42,7 +42,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   ///根据tab的index得到对应type
   ///
-  final postTypeNotifier = ValueNotifier(PostType.lake);
+  final postTypeNotifier = ValueNotifier(int);
 
   bool scroll = false;
 

@@ -160,7 +160,18 @@ class FeedbackService with AsyncTimer {
     }
     return list;
   }
-
+  static Future<Error> getError(
+      name,
+      ) async {
+    Error error;
+    var response = await feedbackDio.post('tag',
+        formData: FormData.fromMap({
+          'name': '$name',
+        }));
+    Map<String, dynamic> json = response.data['data'];
+     error = Error.fromJson(json);
+     return error;
+  }
   static getHotTags({
     @required OnResult<List<Tag>> onSuccess,
     @required OnFailure onFailure,

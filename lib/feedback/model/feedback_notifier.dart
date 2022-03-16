@@ -65,10 +65,7 @@ class NewPostProvider {
   bool get check =>
       title.isNotEmpty &&
       content.isNotEmpty &&
-      ((type == 1 && department.id != null) ||
-          type == 0 ||
-          type == 2 ||
-          type == 3);
+      (type == 1 && department.id != null);
 
   void clear() {
     title = "";
