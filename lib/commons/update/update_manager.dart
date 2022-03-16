@@ -12,7 +12,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_apk_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_install_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/service/time_factory.dart';
+import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 
 import 'dialog/update_hotfix_dialog.dart';
 import 'hotfix_util.dart';

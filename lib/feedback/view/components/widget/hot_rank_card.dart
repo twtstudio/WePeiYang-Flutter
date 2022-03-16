@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -30,6 +30,16 @@ class _HotCardState extends State<HotCard> {
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg"),
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg"),
   ];
+
+  // getHotList() {
+  //   _hotTagsProvider.initHotTags(success: () {
+  //     _refreshController.refreshCompleted();
+  //     ToastProvider.success("${wpyTab}");
+  //   }, failure: (e) {
+  //     ToastProvider.error(e.error.toString());
+  //     _refreshController.refreshFailed();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +79,7 @@ class _HotCardState extends State<HotCard> {
                         FeedbackRouter.searchResult,
                         arguments: SearchResultPageArgs(
                           '',
-                          '${data.hotTagsList[index].id}',
+                          '${data.hotTagsList[index].tagId}',
                           '',
                           S.current.feedback_search_result,
                           0

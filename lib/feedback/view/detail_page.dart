@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -19,11 +20,11 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
+import 'components/widget/PopMenuShape.dart';
 
 enum DetailPageStatus {
   loading,
@@ -319,6 +320,16 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
+            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
+              tag: post.department.name ?? '',
+              comment: data,
+              placeAppeared: index,
+                ImageUrl: data.imageUrls,
+                ancestorId:post.uid,
+              onContentPressed: (refresh) async {
+               refresh.call(list);
+              },
+            ):SizedBox(width: 0,height: 0);
             return _officialCommentList[index].sender == 1
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',

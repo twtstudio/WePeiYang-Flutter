@@ -7,7 +7,7 @@ import 'package:package_info/package_info.dart';
 class UpdateUtil {
   static int? _versionCode;
 
-  static int _flutterCodeVersion = 91;
+  static int _flutterCodeVersion = 93;
 
   /// 获取应用版本号，由于有热更新的存在，所以每次打包时请无比修改 _flutterCodeVersion
   /// 如果获取不到安卓端的 versionCode，则默认返回 _flutterCodeVersion
@@ -17,6 +17,9 @@ class UpdateUtil {
       final _androidCodeVersion =
           int.tryParse(packageInfo.buildNumber) ?? _flutterCodeVersion;
       _versionCode = max(_androidCodeVersion, _flutterCodeVersion);
+    }
+    if (_versionCode! > 1000) {
+      _versionCode = _versionCode! % 1000;
     }
     return _versionCode!;
   }

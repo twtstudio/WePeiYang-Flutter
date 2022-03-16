@@ -27,13 +27,13 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
                   title: '一键已读：',
                   titleTextStyle:
                       TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
-                  content: Text('这将删除所有的消息记录'),
+                  content: Text('这将清除所有的消息提醒'),
                   cancelText: "取消",
                   confirmTextStyle:
                       TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
                   cancelTextStyle:
                       TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                  confirmText: "删除",
+                  confirmText: "确认",
                   cancelFun: () {
                     Navigator.pop(context);
                   },

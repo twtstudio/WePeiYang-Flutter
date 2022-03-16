@@ -81,9 +81,9 @@ class CommonPreferences {
   static final otherWeekSchedule =
       PrefsBean<bool>('otherWeekSchedule', true); // 课表显示非本周课程
 
-  /// lounge temporary data update time
-  static final temporaryUpdateTime = PrefsBean<String>('temporaryUpdateTime');
-  static final lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
+  /// 自习室
+  static final  loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
+  static final  lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
 
   /// 健康信息提交时间
   static final reportTime = PrefsBean<String>('reportTime');

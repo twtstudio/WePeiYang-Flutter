@@ -55,9 +55,9 @@ GPABean _data2GPABean(String data, bool isMaster) {
         : data.match(r'(?<=总计</th>)[\s\S]*?(?=</tr)');
 
     List<double> thList = [];
-    totalData
-        .matches(r'(?<=<th>)[0-9.]*')
-        .forEach((e) => thList.add(double.parse(e)));
+    totalData.matches(r'(?<=<th>)[0-9.]*').forEach((e) {
+      if (e != '') thList.add(double.parse(e));
+    });
 
     /// 下标321是因为html数据的顺序和数据类的顺序不一样
     var total = Total(
@@ -166,8 +166,12 @@ GPACourse? _data2GPACourse(Map<String, String> data) {
       score = double.parse(data['score'] ?? '0.0');
   }
   double credit = 0.0;
-  if (score >= 60) credit = double.parse(data['credit'] ?? '0.0');
-  double gpa = double.parse(data['gpa'] ?? '0.0');
+  if (score >= 60) {
+    if (data['credit'] == null || data['credit'] == '') data['credit'] = '0.0';
+    credit = double.parse(data['credit']!);
+  }
+  if (data['gpa'] == null || data['gpa'] == '') data['gpa'] = '0.0';
+  double gpa = double.parse(data['gpa']!);
   return GPACourse(data['name'] ?? '', data['type'] ?? '', score, credit, gpa);
 }
 

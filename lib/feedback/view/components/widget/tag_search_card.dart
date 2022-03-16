@@ -81,7 +81,8 @@ class _SearchTagCardState extends State<SearchTagCard>
       }
       if (tagList.length > 5) tagList = tagList.sublist(0, 5);
       _showAdd
-          ? tagList.add(GestureDetector(
+          ? tagList.add(
+          GestureDetector(
               onTap: () async {
                 await FeedbackService.postTags(
                   name: _controller.text,
@@ -101,12 +102,12 @@ class _SearchTagCardState extends State<SearchTagCard>
                           });
                         },
                         onFailure: (e) {
-                          ToastProvider.error(e.error.toString());
+                          ToastProvider.error(e.toString());
                         });
                   },
-                  onFailure: (tags) {
-                    context.read<NewPostProvider>().tag = Tag(id: tags.id);
-                    ToastProvider.error("该标签已存在或违规");
+                  onFailure: (e) async {
+                   // context.read<NewPostProvider>().tag = Tag(id: tags.id);
+                      ToastProvider.error(e.toString());
                   },
                 );
               },
@@ -160,7 +161,7 @@ class _SearchTagCardState extends State<SearchTagCard>
           });
         },
         onFailure: (e) {
-          ToastProvider.error(e.error.toString());
+          ToastProvider.error("操作过快，请稍后");
         });
   }
 

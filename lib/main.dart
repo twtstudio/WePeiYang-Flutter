@@ -26,8 +26,6 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/lounge/lounge_providers.dart';
-import 'package:we_pei_yang_flutter/lounge/service/hive_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
@@ -36,6 +34,8 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import 'commons/statistics/umeng_statistics.dart';
 import 'commons/util/text_util.dart';
+import 'lounge/lounge_providers.dart';
+import 'lounge/server/hive_manager.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -107,7 +107,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     with WidgetsBindingObserver {
   @override
   void dispose() async {
-    await HiveManager.instance.closeBoxes();
+    LoungeDB.closeDB();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -123,8 +123,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
-      HiveManager.init();
-      FeedbackService.getToken(forceRefresh: true);
+      LoungeDB.initDB();
+      FeedbackService.getToken();
     });
   }
 

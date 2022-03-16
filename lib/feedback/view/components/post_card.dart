@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -10,16 +10,16 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 
 enum PostCardType { simple, detail, outSide }
 
@@ -266,6 +266,19 @@ class _PostCardState extends State<PostCard> {
               ClipboardData(text: '【' + post.title + '】 ' + post.content));
           ToastProvider.success('复制冒泡内容成功');
         },
+        onTap: () async {
+          if (widget.type == PostCardType.simple) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            ).then((p) {
+              setState(() {
+                post = p;
+              });
+            });
+          }
+        },
         child: SizedBox(
           width: double.infinity,
           child: ExpandableText(
@@ -305,6 +318,19 @@ class _PostCardState extends State<PostCard> {
                 Clipboard.setData(ClipboardData(
                     text: '【' + post.title + '】 ' + post.content));
                 ToastProvider.success('复制提问成功');
+              },
+              onTap: () async {
+                if (widget.type == PostCardType.simple) {
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.detail,
+                    arguments: post,
+                  ).then((p) {
+                    setState(() {
+                      post = p;
+                    });
+                  });
+                }
               },
               child: title,
             ),
@@ -366,14 +392,14 @@ class _PostCardState extends State<PostCard> {
                     child: Text(
                       '#MP' + post.id.toString().padLeft(6, '0'),
                       style:
-                          TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
+                          TextUtil.base.w400.grey6C.ProductSans.sp(14),
                     ),
                   ),
                 if (widget.type == PostCardType.simple)
                   SizedBox(width: WePeiYangApp.screenWidth - 164, child: title),
                 Spacer(),
                 SizedBox(width: 10),
-                if (post.type == 0 && widget.type == PostCardType.simple)
+                if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
                 if (post.solved == true &&
                     post.type == 1 &&
@@ -609,10 +635,10 @@ class _PostCardState extends State<PostCard> {
       color: Colors.white,
       boxShadow: [
         BoxShadow(
-            blurRadius: 5,
-            color: ColorUtil.greyF7F8Color,
+            blurRadius: 1.6,
+            color: Colors.black12,
             offset: Offset(0, 0),
-            spreadRadius: 3),
+            spreadRadius: -1),
       ],
     );
 
@@ -672,7 +698,7 @@ class _PostCardState extends State<PostCard> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: EdgeInsets.all(4.w),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(6)),
           child: Image.network(
@@ -681,19 +707,17 @@ class _PostCardState extends State<PostCard> {
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
               width:
-                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
-              height: (ScreenUtil.defaultSize.width - 74) /
-                  post.imageUrls.length *
-                  0.9,
+                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              height: (WePeiYangApp.screenWidth - 64.w) /
+                  post.imageUrls.length * 0.8,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
             return SizedBox(
               width:
-                  (ScreenUtil.defaultSize.width - 74) / post.imageUrls.length,
-              height: (ScreenUtil.defaultSize.width - 74) /
-                  post.imageUrls.length *
-                  0.9,
+                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              height: (WePeiYangApp.screenWidth - 64.w) /
+                  post.imageUrls.length * 0.8,
               child: Center(
                 child: Container(
                   height: 40,

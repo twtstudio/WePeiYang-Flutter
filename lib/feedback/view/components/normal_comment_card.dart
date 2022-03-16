@@ -8,11 +8,13 @@ import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/PopMenuShape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -22,7 +24,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/loading.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -183,7 +184,7 @@ class _NCommentCardState extends State<NCommentCard>
                   if (widget.isSubFloor &&
                       widget.comment.replyTo != widget.ancestorId)
                     CommentIdentificationContainer(
-                        '回复-> ID：' + widget.comment.replyTo.toString(), false),
+                        '回复ID：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
               Text(
@@ -408,6 +409,7 @@ class _NCommentCardState extends State<NCommentCard>
             widget.comment.subFloors.length),
         itemBuilder: (context, index) {
           return NCommentCard(
+            uid: widget.uid,
             ancestorName: widget.comment.nickname,
             ancestorId: widget.comment.id,
             comment: widget.comment.subFloors[index],
@@ -530,10 +532,10 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.isFullView && widget.isSubFloor
                       ? BoxShadow(color: Colors.transparent)
                       : BoxShadow(
-                      blurRadius: 5,
-                      color: Color.fromARGB(64, 236, 237, 239),
+                      blurRadius: 1.6,
+                      color: Colors.black12,
                       offset: Offset(0, 0),
-                      spreadRadius: 3),
+                      spreadRadius: -1),
                 ],
               ),
               child: mainBody,
@@ -583,41 +585,3 @@ class _NCommentCardState extends State<NCommentCard>
   }
 }
 
-class RacTangle extends ShapeBorder {
-  ///todo popMenu调不了宽度，现阶段采用的是我强行用裁剪剪出理想形状，回头我重写一个
-  @override
-  // ignore: missing_return
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    return null;
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    var path = Path();
-    Rect rects = Rect.fromLTWH(27.5.w, 0, 87.6.w, rect.height);
-    path.addRRect(RRect.fromRectAndRadius(rects, Radius.circular(20)));
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    // var w = rect.width;
-    // var tang = Paint()
-    //   ..isAntiAlias = true
-    //   ..strokeCap = StrokeCap.square
-    //   ..color = Colors.white
-    //   ..strokeWidth = 5;
-    //var h = rect.height;
-    //
-    // canvas.drawLine(Offset(w - 20.w, 5), Offset(w - 15.w, -5), tang);
-    // canvas.drawLine(Offset(w - 15.w, -5), Offset(w - 10.w, 5), tang);
-  }
-
-  @override
-  ShapeBorder scale(double t) {
-    return null;
-  }
-
-  @override
-  EdgeInsetsGeometry get dimensions => null;
-}

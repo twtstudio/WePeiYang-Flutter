@@ -1,21 +1,20 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
-import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
-import 'package:we_pei_yang_flutter/lounge/service/images.dart';
-import 'package:we_pei_yang_flutter/lounge/ui/widget/favour_list.dart';
+import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
@@ -30,7 +29,6 @@ class WPYPage extends StatefulWidget {
 }
 
 class WPYPageState extends State<WPYPage> {
-  ValueNotifier<bool> canNotGoIntoLounge = ValueNotifier<bool>(false);
   GlobalKey<ErCiYuanWidgetState> erCiYuanKey = GlobalKey();
   GlobalKey majorColumnHeightKey = GlobalKey();
 
@@ -55,8 +53,6 @@ class WPYPageState extends State<WPYPage> {
               color: MyColors.darkGrey, size: 25),
           '考表',
           ScheduleRouter.exam))
-
-      /// 别改变自习室的位置，确定下标为5，不然请去wpy_page最下面改一下index
       ..add(CardBean(
           ImageIcon(AssetImage(Images.building),
               color: Color(0xffcecfd4), size: 20),
@@ -111,28 +107,28 @@ class WPYPageState extends State<WPYPage> {
                   /// 当天课程
                   SliverToBoxAdapter(
                       child: GestureDetector(
-                    onLongPress: () => Navigator.pushNamed(
-                        context, AuthRouter.setting,
-                        arguments: SettingPageArgs(true)),
-                    child: Column(
-                      key: majorColumnHeightKey,
-                      children: [
-                        toolCards[0],
-                        toolCards[1],
-                        toolCards[2],
-                        toolCards[3]
-                      ], //以后可以写排序
-                    ),
-                  )),
+                        onLongPress: () => Navigator.pushNamed(
+                            context, AuthRouter.setting,
+                            arguments: SettingPageArgs(true)),
+                        child: Column(
+                          key: majorColumnHeightKey,
+                          children: [
+                            toolCards[0],
+                            toolCards[1],
+                            toolCards[2],
+                            toolCards[3],
+                          ], //以后可以写排序
+                        ),
+                      )),
 
                   !CommonPreferences.showPosterGirl.value
                       ? SliverToBoxAdapter()
                       : SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            width: 1,
-                          ),
-                        )
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      width: 1,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -147,7 +143,7 @@ class WPYPageState extends State<WPYPage> {
     TodayCoursesWidget(),
     WpyExamWidget(),
     GPAPreview(),
-    LoungeFavourWidget(title: S.current.lounge, init: true),
+    MainPageLoungeWidget(),
   ];
 }
 
@@ -179,16 +175,16 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               SizedBox(width: 5),
               Expanded(
                   child: Text(
-                CommonPreferences.nickname.value,
-                style: hintStyle,
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
-              )),
+                    CommonPreferences.nickname.value,
+                    style: hintStyle,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  )),
               GestureDetector(
                 onTap: () =>
                     Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {
-                  onChanged(null);
-                }),
+                      onChanged(null);
+                    }),
                 child: Container(
                   margin: const EdgeInsets.only(left: 7, right: 10),
                   child: UserAvatarImage(size: 40),
@@ -259,6 +255,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
 class SliverCardsWidget extends StatelessWidget {
   final List<CardBean> cards;
   final ScrollController controller = ScrollController();
+  int itemCount = 0;
 
   SliverCardsWidget(this.cards);
 
@@ -271,23 +268,8 @@ class SliverCardsWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (cards[i].label == S.current.lounge) {
-          return ValueListenableBuilder(
-            valueListenable: context
-                .findAncestorStateOfType<WPYPageState>()
-                .canNotGoIntoLounge,
-            builder: (_, bool absorbing, __) => GestureDetector(
-              onTap: () {
-                if (absorbing) {
-                  ToastProvider.running("正在加载数据，请稍后");
-                } else {
-                  Navigator.pushNamed(context, cards[i].route);
-                }
-              },
-              child: generateCard(context, cards[i]),
-            ),
-          );
-        } else if (cards[i].label == 'Wiki') {
+        if (itemCount < i) itemCount = i;
+        if (cards[i].label == 'Wiki') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {
@@ -330,14 +312,13 @@ class SliverCardsWidget extends StatelessWidget {
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   onTap: () {
-                    controller.offset <= 130 * (cards.length - 2)
+                    controller.offset <= 130 * (itemCount - 1)
                         ? controller.animateTo(controller.offset + 130,
-                            duration: Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn)
-                        : controller.animateTo(
-                            140 * (cards.length - 2).toDouble(),
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.slowMiddle);
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.fastOutSlowIn)
+                        : controller.animateTo(140 * (itemCount - 1).toDouble(),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.slowMiddle);
                   },
                   child: Container(
                     height: 90,

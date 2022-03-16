@@ -19,6 +19,7 @@ class GPAPreview extends StatelessWidget {
     if (hideGPA) return Container();
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+      behavior: HitTestBehavior.opaque,
       child: Column(children: <Widget>[
         _CurveText(),
         GPACurve(FavorColors.gpaColor, isPreview: true),

@@ -145,6 +145,7 @@ List<Course> _parseCourseHTML(String data) {
           : names[0].replaceAll(RegExp(r'\s'), '') + " (${names[1]})";
       courseName = courseName.trim();
 
+      if (tdList[4] == '') tdList[4] = '0.0';
       /// 整理其余的Course信息，并与Arrange匹配
       var credit = double.parse(tdList[4]).toStringAsFixed(1);
       var teacherList = tdList[5].split(',');

@@ -1,5 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -9,7 +10,6 @@ import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 

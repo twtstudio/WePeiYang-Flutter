@@ -17,7 +17,8 @@ class Logger {
     }
   }
 
-  static void reportError(Object error, StackTrace stack) {
+  static void reportError(Object error, StackTrace? stack) {
+    stack ??= StackTrace.empty;
     // 限制错误日志的长度
     final shortError =
         error.toString().substring(0, min(3000, error.toString().length));

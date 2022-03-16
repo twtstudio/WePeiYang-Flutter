@@ -1,84 +1,142 @@
+// @dart = 2.12
+import 'package:collection/collection.dart';
 import 'package:hive/hive.dart';
 
+part 'classroom.g.dart';
+
+@HiveType(typeId: 3)
 class Classroom {
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   int capacity;
+
+  @HiveField(3)
+  Map<int, String> statuses;
+
   String status;
+
+  @HiveField(4)
   String bId;
+
+  @HiveField(5)
   String aId;
+
+  @HiveField(6)
   String bName;
 
-  Classroom(
-      {this.id,
-      this.name,
-      this.capacity,
-      this.status = '',
-      this.bId = '',
-      this.aId = '',
-      this.bName = ''});
+  Classroom({
+    required this.id,
+    required this.name,
+    required this.capacity,
+    required this.statuses,
+    required this.status,
+    required this.bId,
+    required this.aId,
+    required this.bName,
+  });
 
-  static Classroom fromMap(Map<String, dynamic> map, {String aId}) {
-    if (map == null) return null;
-    Classroom classroom = Classroom();
-    classroom.id = map['classroom_id'] ?? '';
-    classroom.capacity = map['capacity'] ?? 0;
-    classroom.status = map['status'] ?? '';
-    classroom.name = map['classroom'] ?? '';
-    classroom.aId = aId ?? '';
-
-    return classroom;
-  }
-
-  Map toJson() =>
-      {"id": id, "name": name, "capacity": capacity, 'bId': bId, 'aId': aId};
-}
-
-class ClassroomAdapter extends TypeAdapter<Classroom> {
-  @override
-  final int typeId = 3;
-
-  @override
-  Classroom read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+  factory Classroom.fromMap(
+    Map<String, dynamic> map, {
+    String? aId,
+    String? bId,
+    String? bName,
+  }) {
     return Classroom(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      capacity: fields[2] as int,
-      status: fields[3] as String,
-      bId: fields[4] as String,
-      aId: fields[5] as String,
+      id: map['classroom_id'] ?? '',
+      name: map['classroom'] ?? '',
+      capacity: map['capacity'] ?? 0,
+      status: map['status'] ?? '',
+      aId: aId ?? '',
+      bId: bId ?? '',
+      bName: bName ?? '',
+      statuses: {
+        1: '111111111111',
+        2: '111111111111',
+        3: '111111111111',
+        4: '111111111111',
+        5: '111111111111',
+        6: '111111111111',
+        7: '111111111111',
+      },
     );
   }
 
-  @override
-  void write(BinaryWriter writer, Classroom obj) {
-    writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.capacity)
-      ..writeByte(3)
-      ..write(obj.status)
-      ..writeByte(4)
-      ..write(obj.bId)
-      ..writeByte(5)
-      ..write(obj.aId);
+  factory Classroom.empty() {
+    return Classroom(
+        id: 'unknown',
+        name: 'unknown',
+        capacity: 0,
+        statuses: {},
+        status: '',
+        bId: '',
+        aId: '',
+        bName: '');
   }
 
   @override
-  int get hashCode => typeId.hashCode;
+  String toString() {
+    return 'Classroom(id: $id, name: $name, capacity: $capacity, statuses: $statuses, status: $status, bId: $bId, aId: $aId, bName: $bName)';
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'capacity': capacity,
+      'statuses': statuses,
+      'status': status,
+      'bId': bId,
+      'aId': aId,
+      'bName': bName,
+    };
+  }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is ClassroomAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    final mapEquals = const DeepCollectionEquality().equals;
+
+    return other is Classroom &&
+        other.id == id &&
+        other.name == name &&
+        other.capacity == capacity &&
+        mapEquals(other.statuses, statuses) &&
+        other.status == status &&
+        other.bId == bId &&
+        other.aId == aId &&
+        other.bName == bName;
+  }
+
+  bool baseDataEqual(Classroom other) =>
+      other.aId == aId && other.bId == bId && other.id == other.id;
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        capacity.hashCode ^
+        statuses.hashCode ^
+        status.hashCode ^
+        bId.hashCode ^
+        aId.hashCode ^
+        bName.hashCode;
+  }
+
+  factory Classroom.deepCopy(Classroom other) {
+    return Classroom(
+      id: other.id,
+      name: other.name,
+      capacity: other.capacity,
+      statuses: Map.from(other.statuses),
+      status: other.status,
+      bId: other.bId,
+      aId: other.aId,
+      bName: other.bName,
+    );
+  }
 }

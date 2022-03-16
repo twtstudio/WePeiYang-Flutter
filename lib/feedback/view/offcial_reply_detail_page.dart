@@ -11,11 +11,12 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import 'components/widget/PopMenuShape.dart';
 
 class OffcialReplyDetailPage extends StatefulWidget {
   final List<Floor> floor;
@@ -157,6 +158,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
         OfficialReplyCard.reply(
         comment: data,
           ancestorId: widget.floor[0].postId,
+          ImageUrl: data.imageUrls,
         ),
             Container(
                 width: WePeiYangApp.screenWidth - 60,

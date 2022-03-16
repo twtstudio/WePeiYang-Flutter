@@ -2,16 +2,13 @@ package com.twt.service.image
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import com.twt.service.common.LogUtil
-import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
@@ -36,8 +33,8 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "savePictureToAlbum" -> savePictureToAlbum(call,result)
-            "savePictureFromUrl" -> savePictureFromUrl(call,result)
+            "savePictureToAlbum" -> savePictureToAlbum(call, result)
+            "savePictureFromUrl" -> savePictureFromUrl(call, result)
         }
     }
 
@@ -58,46 +55,37 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private fun savePictureFromUrl(call: MethodCall, result: MethodChannel.Result) {
         runCatching {
             val url = call.argument<String>("url")
-            var path = call.argument<String>("path")
             // TODO: path如果一样怎么办？
             val saveToAlbum = call.argument<Boolean>("album") ?: false
             if (url == null) {
                 result.error("", "url is null", null)
                 return
             }
+            val fileName = call.argument<String>("fileName") ?: url.split("/").last()
 
-            if (path == null && "[0-9a-zA-Z].jpg$".toRegex().containsMatchIn(url)) {
-                path = File(imgDir, url.split("/").last()).path
-            }
+            val path = File(imgDir, fileName).path
 
-            if (path == null) {
-                result.error("", "path is null", null)
-                return
-            }
+            val request = Request.Builder().url(url).build()
+            OkHttpClient().newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    result.error("", e.message, "$e")
+                }
 
-            call.argument<String>("url")?.let {
-                val request = Request.Builder().url(it).build()
-                OkHttpClient().newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        result.error("", e.message, "$e")
-                    }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        response.body?.byteStream()?.let { input ->
-                            FileOutputStream(path).use { output ->
-                                input.copyTo(output)
-                                output.flush()
-                            }
-                        }
-                        if (saveToAlbum){
-                            ImageSave.savePictureToAlbum(context,path)
-                        }
-                        CoroutineScope(Dispatchers.Main).launch {
-                            result.success(path)
+                override fun onResponse(call: Call, response: Response) {
+                    response.body?.byteStream()?.let { input ->
+                        FileOutputStream(path).use { output ->
+                            input.copyTo(output)
+                            output.flush()
                         }
                     }
-                })
-            }
+                    if (saveToAlbum) {
+                        ImageSave.savePictureToAlbum(context, path)
+                    }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        result.success(path)
+                    }
+                }
+            })
         }.onFailure {
             result.error("", it.message, "$it")
         }

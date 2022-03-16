@@ -141,6 +141,11 @@ class _UserPageState extends State<UserPage> {
                     child: InkWell(
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.aboutTwt),
+                      onLongPress: (){
+                        if (kDebugMode) {
+                          Navigator.pushNamed(context, TestRouter.qnhdTest);
+                        }
+                      },
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
                       child: Row(

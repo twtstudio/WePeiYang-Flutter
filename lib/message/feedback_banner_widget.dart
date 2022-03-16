@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/provider_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 class FeedbackBannerWidget extends StatelessWidget {

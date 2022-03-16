@@ -7,11 +7,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.RemoteViews
 import com.twt.service.MainActivity
 import com.twt.service.R
-import com.twt.service.common.BASEURL
+import com.twt.service.push.BASEURL
 import com.twt.service.common.LogUtil
 import java.util.*
 
