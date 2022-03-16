@@ -86,7 +86,8 @@ class MainActivity : FlutterActivity() {
 
     // 禁用显示大小改变和文字大小改变
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(ChangeDisplay.attachBaseContext(newBase))
+        ChangeDisplay.changeConfig(newBase)
+        super.attachBaseContext(newBase)
     }
 
     // 更改字体或显示大小后，自动重启activity（参考了高德地图）

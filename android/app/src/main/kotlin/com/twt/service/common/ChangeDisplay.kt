@@ -17,17 +17,14 @@ object ChangeDisplay {
     /**
      * 不进行文字和显示大小改变，保持1：1
      */
-    fun attachBaseContext(context: Context): Context {
-        return try {
-            context.createConfigurationContext(
-                context.resources.configuration.apply {
-                    fontScale = 1F
-                    densityDpi = defaultDisplayDensity
-                }
-            )
+    fun changeConfig(context: Context) {
+        try {
+            context.resources.configuration.apply {
+                fontScale = 1F
+//                densityDpi = defaultDisplayDensity
+            }
         } catch (e: Throwable) {
             LogUtil.e(TAG, e)
-            context
         }
     }
 
@@ -35,7 +32,7 @@ object ChangeDisplay {
      * 当更改手机字体大小，或显示大小后，重启activity
      */
     fun recreateWhenConfigChange(newConfig: Configuration, activity: Activity) {
-        if (newConfig.densityDpi != defaultDisplayDensity || newConfig.fontScale != 1F) {
+        if ( /* newConfig.densityDpi != defaultDisplayDensity || */ newConfig.fontScale != 1F) {
             LogUtil.d(TAG, "recreate activity")
             activity.recreate()
         }
