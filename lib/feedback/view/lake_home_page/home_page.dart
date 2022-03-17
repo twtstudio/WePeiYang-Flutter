@@ -118,6 +118,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       firstInLake();
     });
     context.read<LakeModel>().checkTokenAndGetTabList();
+    context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
+      ToastProvider.error(e.error.toString());
+    });
     context.read<LakeModel>().nController = new ScrollController();
 
     getClipboardWeKoContents();
@@ -298,12 +301,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           .read<LakeModel>()
                                           .checkTokenAndGetTabList(),
                                       child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text('Loading...φ(゜▽゜*)♪',
-                                              style: TextUtil
-                                                  .base.mainColor.w200
-                                                  .sp(16))),
-                                    )
+                                        alignment: Alignment.center,
+                                        child: Text('点击重新加载分区',
+                                            style: TextUtil.base.mainColor.w400
+                                                .sp(16)),
+                                      ))
                                   : TabBar(
                                       indicatorPadding:
                                           EdgeInsets.only(bottom: 2),
@@ -333,9 +335,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           (index) => DaTab(
                                               text:
                                                   lakeTabList[index].shortname,
-                                              withDropDownButton: index == 1)),
+                                              withDropDownButton:
+                                                  lakeTabList[index].name ==
+                                                      '校务专区')),
                                       onTap: (index) {
-                                        if (index == 1) {
+                                        if (lakeTabList[index].name == '校务专区') {
                                           _onFeedbackTapped();
                                         }
                                       },
@@ -397,13 +401,30 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               }, builder: (_, lakeTabList, __) {
                 if (!context.read<LakeModel>().tabControllerLoaded) {
                   context.read<LakeModel>().tabController =
-                      TabController(length: lakeTabList.length, vsync: this)..addListener(() {
-                        if (context.read<LakeModel>().tabController.index.toDouble() ==
-                            context.read<LakeModel>().tabController.animation.value) {
-                          if (context.read<LakeModel>().tabController.index != 1 && canSee)
-                            _onFeedbackTapped();
-                        }
-                      });
+                      TabController(length: lakeTabList.length, vsync: this)
+                        ..addListener(() {
+                          if (context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .index
+                                  .toDouble() ==
+                              context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .animation
+                                  .value) {
+                            int canMove = -1;
+                            context
+                                .read<LakeModel>()
+                                .lakeTabList
+                                .forEach((element) {
+                              if (element.name == '校务专区') canMove = element.id;
+                            });
+                            if (context.read<LakeModel>().tabController.index !=
+                                    canMove &&
+                                canSee) _onFeedbackTapped();
+                          }
+                        });
                 }
                 int cacheNum = 0;
                 return ExtendedTabBarView(
@@ -416,7 +437,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             )));
               }),
               Visibility(
-                child: FbTagsWrap(key: fbKey),
+                child: InkWell(
+                    onTap: () {
+                      if (canSee) _onFeedbackTapped();
+                    },
+                    child: FbTagsWrap(key: fbKey)),
                 maintainState: true,
                 visible: canSee,
               ),

@@ -387,12 +387,15 @@ class _PostCardState extends State<PostCard> {
               children: [
                 if (widget.type == PostCardType.detail)
                   GestureDetector(
-                    onLongPress: () => Clipboard.setData(ClipboardData(
-                        text: '#MP' + post.id.toString().padLeft(6, '0'))),
+                    onLongPress: () {
+                      return Clipboard.setData(ClipboardData(
+                              text: '#MP' + post.id.toString().padLeft(6, '0')))
+                          .whenComplete(
+                              () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
+                    },
                     child: Text(
                       '#MP' + post.id.toString().padLeft(6, '0'),
-                      style:
-                          TextUtil.base.w400.grey6C.ProductSans.sp(14),
+                      style: TextUtil.base.w400.grey6C.ProductSans.sp(14),
                     ),
                   ),
                 if (widget.type == PostCardType.simple)
@@ -468,15 +471,10 @@ class _PostCardState extends State<PostCard> {
         SizedBox(
           width: 5.17.w,
         ),
-        SizedBox(
-          width: 20.w,
-          child: Text(
-            post.commentCount.toString(),
-            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
-          ),
-        ),
-        SizedBox(
-          width: 5.17.w,
+        Text(
+          post.commentCount.toString() +
+              (post.commentCount < 100 ? '   ' : ' '),
+          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
         ),
       ],
     );
@@ -706,18 +704,20 @@ class _PostCardState extends State<PostCard> {
                   ? picBaseUrl + 'origin/' + post.imageUrls[index]
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
-              width:
-                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
+                  8.w,
               height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length * 0.8,
+                  post.imageUrls.length *
+                  0.8,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
             return SizedBox(
-              width:
-                  (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length - 8.w,
+              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
+                  8.w,
               height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length * 0.8,
+                  post.imageUrls.length *
+                  0.8,
               child: Center(
                 child: Container(
                   height: 40,

@@ -186,7 +186,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
                   comment: data,
                   uid: data.uid,
                   ancestorName: data.uid.toString(),
-                  ancestorId: floors[0].postId,
+                  ancestorUId: floors[0].postId,
                   commentFloor: index + 1,
                   isSubFloor: true,
                   isFullView: true,
@@ -353,11 +353,19 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
-      title: Text(
-        '官方回复',
-        style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+      title: InkWell(
+        onTap: () => _refreshController.requestRefresh(),
+        child: SizedBox(
+          width: double.infinity,
+          height: kToolbarHeight,
+          child: Center(
+            child: Text(
+              '官方回复',
+              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+            ),
+          ),
+        ),
       ),
-      centerTitle: true,
       elevation: 0,
       brightness: Brightness.light,
     );

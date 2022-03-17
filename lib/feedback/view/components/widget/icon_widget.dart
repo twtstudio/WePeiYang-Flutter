@@ -124,16 +124,10 @@ class _IconWidgetState extends State<IconWidget> {
     var likeCount = ValueListenableBuilder(
         valueListenable: widget.countNotifier,
         builder: (_, value, __) {
-          return Padding(
-            padding: EdgeInsets.only(right: 5.17.w),
-            child: SizedBox(
-              width: 20.w,
-              child: Text(
-                value.toString(),
-                style: TextUtil.base.black2A.bold.ProductSans
-                    .sp(widget.iconType.textSize),
-              ),
-            ),
+          return Text(
+            value.toString() + (value < 100 ? '   ' : ' '),
+            style: TextUtil.base.black2A.bold.ProductSans
+                .sp(widget.iconType.textSize),
           );
         });
 

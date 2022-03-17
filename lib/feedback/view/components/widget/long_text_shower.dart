@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/linkify_text.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 
 class ExpandableText extends StatefulWidget {
   @required

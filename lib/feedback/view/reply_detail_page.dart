@@ -156,7 +156,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           return NCommentCard(
             comment: floor,
             uid: uid,
-            ancestorId: floor.postId,
+            ancestorUId: floor.postId,
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: true,
@@ -171,7 +171,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               comment: data,
               uid: uid,
               ancestorName: floor.nickname,
-              ancestorId: floor.id,
+              ancestorUId: floor.id,
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: true,
@@ -334,9 +334,18 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
-      title: Text(
-        '回复',
-        style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+      title: InkWell(
+        onTap: () => _refreshController.requestRefresh(),
+        child: SizedBox(
+          width: double.infinity,
+          height: kToolbarHeight,
+          child: Center(
+            child: Text(
+              '回复',
+              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+            ),
+          ),
+        ),
       ),
       centerTitle: true,
       elevation: 0,

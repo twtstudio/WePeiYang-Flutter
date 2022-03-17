@@ -31,24 +31,14 @@ class _HotCardState extends State<HotCard> {
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg"),
   ];
 
-  // getHotList() {
-  //   _hotTagsProvider.initHotTags(success: () {
-  //     _refreshController.refreshCompleted();
-  //     ToastProvider.success("${wpyTab}");
-  //   }, failure: (e) {
-  //     ToastProvider.error(e.error.toString());
-  //     _refreshController.refreshFailed();
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 19),
-      SizedBox(width: 2),
+          width: 24),
+      SizedBox(width: 3),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 90)
+          width: 110)
     ]);
 
     return Container(

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -321,22 +320,12 @@ class _DetailPageState extends State<DetailPage>
           if (index < _officialCommentList.length) {
             var data = _officialCommentList[index];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender==1?OfficialReplyCard.reply(
-              tag: post.department.name ?? '',
-              comment: data,
-              placeAppeared: index,
-                ratings: post.rating,
-                ancestorId:post.uid,
-              onContentPressed: (refresh) async {
-               refresh.call(list);
-              },
-            ):SizedBox(width: 0,height: 0);
             return _officialCommentList[index].sender == 1
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',
                     comment: data,
                     placeAppeared: index,
-                    ratings: widget.post.rating,
+                    ratings: post.rating,
                     ancestorId: post.uid,
                     onContentPressed: (refresh) async {
                       refresh.call(list);
@@ -351,7 +340,7 @@ class _DetailPageState extends State<DetailPage>
             return NCommentCard(
               uid: post.uid,
               comment: data,
-              ancestorId: post.id,
+              ancestorUId: post.id,
               commentFloor: index + 1,
               isSubFloor: false,
               isFullView: false,
@@ -562,11 +551,19 @@ class _DetailPageState extends State<DetailPage>
         onPressed: () => Navigator.pop(context, post),
       ),
       actions: [shareButton, menuButton],
-      title: Text(
-        S.current.feedback_detail,
-        style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+      title: InkWell(
+        onTap: () => _refreshController.requestRefresh(),
+        child: SizedBox(
+          width: double.infinity,
+          height: kToolbarHeight,
+          child: Center(
+            child: Text(
+              S.current.feedback_detail,
+              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+            ),
+          ),
+        ),
       ),
-      centerTitle: true,
       elevation: 0,
       brightness: Brightness.light,
     );
@@ -736,24 +733,23 @@ class CommentInputFieldState extends State<CommentInputField> {
           '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
         ),
       );
+    } else {
+      FeedbackService.replyOffcialFloor(
+        id: context.read<NewFloorProvider>().replyTo.toString(),
+        content: _textEditingController.text,
+        images: list == [] ? '' : list,
+        onSuccess: () {
+          setState(() => _commentLengthIndicator = '0/200');
+          FocusManager.instance.primaryFocus.unfocus();
+          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          _textEditingController.text = '';
+          ToastProvider.success("回复成功 (❁´3`❁)");
+        },
+        onFailure: (e) => ToastProvider.error(
+          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
+        ),
+      );
     }
-   else{
-     FeedbackService.replyOffcialFloor(
-       id: context.read<NewFloorProvider>().replyTo.toString(),
-       content: _textEditingController.text,
-       images: list == [] ? '' : list,
-       onSuccess: () {
-         setState(() => _commentLengthIndicator = '0/200');
-         FocusManager.instance.primaryFocus.unfocus();
-         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-         _textEditingController.text = '';
-         ToastProvider.success("回复成功 (❁´3`❁)");
-       },
-       onFailure: (e) => ToastProvider.error(
-         '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-       ),
-     );
-   }
   }
 }
 
