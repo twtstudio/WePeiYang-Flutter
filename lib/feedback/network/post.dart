@@ -169,7 +169,6 @@ class Floor {
     this.content,
     this.nickname,
     this.imageUrl,
-    this.imageUrls,
     this.sender,
     this.replyTo,
     this.replyToName,
@@ -191,7 +190,6 @@ class Floor {
   String content;
   String nickname;
   String imageUrl;
-  String imageUrls;
   int replyTo;
   String replyToName;
   int subTo;
@@ -214,7 +212,6 @@ class Floor {
         nickname: json["nickname"],
         sender: json["sender"],
         imageUrl: json["image_url"],
-        imageUrls: json["image_urls"],
         replyTo: json["reply_to"],
         replyToName: json["reply_to_name"],
         rating: json["rating"],
@@ -239,7 +236,6 @@ class Floor {
         "sender": sender,
         "nickname": nickname,
         "image_url": imageUrl,
-        "image_urls": imageUrls,
         "reply_to": replyTo,
         "reply_to_name": replyToName,
         "sub_to": subTo,

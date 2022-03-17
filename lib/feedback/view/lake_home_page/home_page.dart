@@ -22,7 +22,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
-import '../new_post_page.dart';
 import '../search_result_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
@@ -298,8 +297,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                           .read<LakeModel>()
                                           .checkTokenAndGetTabList(),
                                       child: Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Text('加载分区失败, 请点击刷新',
+                                          alignment: Alignment.center,
+                                          child: Text('Loading...φ(゜▽゜*)♪',
                                               style: TextUtil
                                                   .base.mainColor.w200
                                                   .sp(16))),
@@ -397,7 +396,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               }, builder: (_, lakeTabList, __) {
                 if (!context.read<LakeModel>().tabControllerLoaded) {
                   context.read<LakeModel>().tabController =
-                      TabController(length: lakeTabList.length, vsync: this);
+                      TabController(length: lakeTabList.length, vsync: this)..addListener(() {
+                        if (context.read<LakeModel>().tabController.index.toDouble() ==
+                            context.read<LakeModel>().tabController.animation.value) {
+                          if (context.read<LakeModel>().tabController.index != 1 && canSee)
+                            _onFeedbackTapped();
+                        }
+                      });
                 }
                 int cacheNum = 0;
                 return ExtendedTabBarView(
@@ -536,7 +541,6 @@ class FbTagsWrapState extends State<FbTagsWrap>
                       style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
                 ),
                 onTap: () {
-                  tap();
                   Navigator.pushNamed(
                     context,
                     FeedbackRouter.searchResult,

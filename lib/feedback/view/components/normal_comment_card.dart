@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -56,7 +57,7 @@ class NCommentCard extends StatefulWidget {
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
   final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
-  bool _picFullView = false;
+  bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) =>
       SizedBox(
@@ -70,23 +71,21 @@ class _NCommentCardState extends State<NCommentCard>
     return showDialog<bool>(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('提示'),
-            content: Text('您确定要删除这条评论吗?'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('确定'),
-                onPressed: () {
-                  //关闭对话框并返回true
-                  Navigator.of(context).pop(true);
-                },
-              ),
-              TextButton(
-                child: Text('取消'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
+          return DialogWidget(
+              title: '删除评论',
+              content: Text('您确定要删除这条评论吗？'),
+              cancelText: "取消",
+              confirmTextStyle:
+              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              confirmText: "确认",
+              cancelFun: () {
+                Navigator.of(context).pop();
+              },
+              confirmFun: () {
+                Navigator.of(context).pop(true);
+              });
         });
   }
 
@@ -115,7 +114,7 @@ class _NCommentCardState extends State<NCommentCard>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    widget.comment.nickname,
+                    widget.comment.nickname ?? "null",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
@@ -217,8 +216,8 @@ class _NCommentCardState extends State<NCommentCard>
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
-                  '我在微北洋发现了个有趣的问题，你也来看看吧~\n将本条微口令复制到微北洋校务专区打开问题 wpy://school_project/${widget
-                  .ancestorId}\n【${widget.comment.nickname}】';
+                  '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget
+                  .ancestorId}\n【${widget.comment.content}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
               CommonPreferences.feedbackLastWeCo.value =
@@ -236,7 +235,9 @@ class _NCommentCardState extends State<NCommentCard>
                   id: widget.comment.id,
                   onSuccess: () {
                     ToastProvider.success(S.current.feedback_delete_success);
-                    setState(() {});
+                    setState(() {
+                      _isDeleted = true;
+                    });
                   },
                   onFailure: (e) {
                     ToastProvider.error(e.error.toString());
@@ -512,7 +513,7 @@ class _NCommentCardState extends State<NCommentCard>
       ],
     );
 
-    return Column(
+    return _isDeleted ? SizedBox(height: 1) :Column(
       children: [
         ClipCopy(
           copy: widget.comment.content,

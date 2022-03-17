@@ -219,6 +219,7 @@ class FeedbackService with AsyncTimer {
       }
       onResult(list);
     } on DioError catch (e) {
+      ToastProvider.running('搜索速度过快，请稍等片刻再输入');
       onFailure(e);
     }
   }

@@ -64,14 +64,15 @@ class NewPostProvider {
 
   bool get check =>
       title.isNotEmpty &&
-      content.isNotEmpty &&
-      (type == 1 && department.id != null);
+      content.isNotEmpty && ((type == 1 && department != null) || (type != 1));
 
   void clear() {
     title = "";
     content = "";
     type = 1;
     images = [];
+    tag = Tag();
+    department = null;
   }
 }
 
@@ -129,6 +130,7 @@ class LakeArea {
 class LakeModel extends ChangeNotifier {
   Map<WPYTab, LakeArea> lakeAreas = {};
   List<WPYTab> lakeTabList = [];
+  List<WPYTab> newPostTabList = [];
   int currentTab = 0;
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false, lockSaver = false;
   double opacity = 0;
@@ -142,6 +144,8 @@ class LakeModel extends ChangeNotifier {
           lakeTabList = [oTab];
           lakeTabList.addAll(tabList);
           lakeAreas.addAll({oTab: LakeArea.empty()});
+          newPostTabList.clear();
+          newPostTabList.addAll(tabList);
           tabList.forEach((element) {
             lakeAreas.addAll({element: LakeArea.empty()});
           });
@@ -206,11 +210,10 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> getNextPage(WPYTab tab,
-      int mode,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${tab.id}',
-      mode: mode,
+      mode: sortSeq,
       page: lakeAreas[tab].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, tab);
@@ -243,7 +246,7 @@ class LakeModel extends ChangeNotifier {
       onResult: (token) {
         CommonPreferences.feedbackToken.value = token;
         provider.initDepartments();
-        initPostList(tab, mode);
+        initPostList(tab);
       },
       onFailure: (e) {
         lakeAreas[tab].status = LakePageStatus.error;
@@ -254,7 +257,6 @@ class LakeModel extends ChangeNotifier {
   }
 
   Future<void> initPostList(WPYTab tab,
-      int mode,
       {OnSuccess success, OnFailure failure, bool reset = false}) async {
     if (reset) {
       lakeAreas[tab].status = LakePageStatus.loading;
@@ -262,7 +264,7 @@ class LakeModel extends ChangeNotifier {
     }
     await FeedbackService.getPosts(
       type: '${tab.id}',
-      mode: mode,
+      mode: sortSeq,
       page: '1',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;

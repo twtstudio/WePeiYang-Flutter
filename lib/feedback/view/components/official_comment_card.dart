@@ -40,7 +40,6 @@ class OfficialReplyCard extends StatefulWidget {
   final ContentPressedCallback onContentPressed;
   final LikeCallback onLikePressed;
   final int placeAppeared;
-  final String ImageUrl;
   int ratings;
 
   OfficialReplyCard.detail({
@@ -49,7 +48,6 @@ class OfficialReplyCard extends StatefulWidget {
     this.title,
     this.ratings,
     this.ancestorId,
-    this.ImageUrl,
     this.onLikePressed,
     this.placeAppeared,
   })  : type = Official.detail,
@@ -61,7 +59,6 @@ class OfficialReplyCard extends StatefulWidget {
     this.ratings,
     this.title,
     this.ancestorId,
-    this.ImageUrl,
     this.onContentPressed,
     this.onLikePressed,
     this.placeAppeared,
@@ -71,13 +68,11 @@ class OfficialReplyCard extends StatefulWidget {
   _OfficialReplyCardState createState() => _OfficialReplyCardState();
 }
 
-class _OfficialReplyCardState extends State<OfficialReplyCard> with SingleTickerProviderStateMixin{
+class _OfficialReplyCardState extends State<OfficialReplyCard> {
   double _rating;
   double _initialRating = 0;
   String postRating;
   String postId;
-  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
-  bool _picFullView = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
   @override
@@ -90,93 +85,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> with SingleTicker
   @override
   Widget build(BuildContext context) {
     List<Widget> column = [];
-    var commentImage = Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        child: AnimatedSize(
-          vsync: this,
-          duration: Duration(milliseconds: 150),
-          curve: Curves.decelerate,
-          child: InkWell(
-              onTap: () {
-                setState(() {
-                  _picFullView = true;
-                });
-              },
-              child: _picFullView
-                  ? InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, FeedbackRouter.imageView,
-                      arguments: {
-                        "urlList": [widget.ImageUrl],
-                        "urlListLength": 1,
-                        "indexNow": 0
-                      });
-                },
-                child: Image.network(
-                  picBaseUrl + 'origin/' + widget.ImageUrl,
-                  loadingBuilder: (BuildContext context, Widget child,
-                      ImageChunkEvent loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes
-                            : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace stackTrace) {
-                    return Text(
-                      '💔[图片加载失败]' +
-                          widget.ImageUrl.replaceRange(10,
-                              widget.ImageUrl.length - 6, '...'),
-                      style: TextUtil.base.grey6C.w400.sp(12),
-                    );
-                  },
-                ),
-              )
-                  : Row(
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(
-                          picBaseUrl + 'thumb/' + widget.ImageUrl,
-                          width: 70,
-                          height: 64,
-                          fit: BoxFit.cover, loadingBuilder:
-                          (BuildContext context, Widget child,
-                          ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 40,
-                          width: 40,
-                          padding: EdgeInsets.all(4),
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes !=
-                                null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
-                        );
-                      }, errorBuilder: (BuildContext context,
-                          Object exception, StackTrace stackTrace) {
-                        return Text(
-                          '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                              widget.ImageUrl.replaceRange(
-                                  10,
-                                  widget.ImageUrl.length - 6,
-                                  '...'),
-                          style: TextUtil.base.grey6C.w400.sp(12),
-                        );
-                      })),
-                  Spacer()
-                ],
-              )),
-        ));
-
     var OfficialLogo = widget.comment.sender==1?Row(
       children: [
         Image.asset(
@@ -426,25 +334,6 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> with SingleTicker
           box,
           comment,
           box,
-          if (widget.comment.imageUrl != '') commentImage,
-          _picFullView == true
-              ? TextButton(
-              style: ButtonStyle(
-                  alignment: Alignment.topRight,
-                  padding: MaterialStateProperty.all(EdgeInsets.zero)),
-              onPressed: () {
-                setState(() {
-                  _picFullView = false;
-                });
-              },
-              child: Row(
-                children: [
-                  Spacer(),
-                  Text('收起',
-                      style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
-                ],
-              ))
-              : SizedBox(height: 8),
           bottomWidget,
           box
         ]);
