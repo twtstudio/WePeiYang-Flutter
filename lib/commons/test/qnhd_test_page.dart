@@ -1,9 +1,7 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 
 class QNHDTestPage extends StatefulWidget {
   const QNHDTestPage({Key? key}) : super(key: key);
@@ -26,7 +24,6 @@ class _QNHDTestPageState extends State<QNHDTestPage> {
   }
 
   Widget getToken(BuildContext context) {
-    final manager = context.read<PushManager>();
     return ListView(
       children: [
         SelectableText(token),

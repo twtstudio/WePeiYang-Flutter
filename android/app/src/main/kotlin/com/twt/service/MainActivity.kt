@@ -2,6 +2,7 @@ package com.twt.service
 
 import android.content.Context
 import android.content.res.Configuration
+import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbySharePreference
@@ -47,6 +48,8 @@ class MainActivity : FlutterActivity() {
                     WbyFixPlugin(),
                     // 友盟统计
                     WbyStatisticsPlugin(),
+                    // 友盟云参数
+                    WbyCloudConfigPlugin(),
                 )
             )
         }

@@ -12,9 +12,9 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.google.gson.Gson
 import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,9 +23,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import java.io.File
 
-class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+class WbyDownloadPlugin : WbyPlugin() {
+    override val name: String
+        get() = "com.twt.service/download"
+
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        super.onAttachedToEngine(binding)
+        manager = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
+    }
+
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val downloadProgress = MutableStateFlow(Progress(0, "unknown", Status.BEGIN, 0.0, ""))
     private lateinit var manager: DownloadManager
@@ -38,33 +44,10 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
     private val handler = CoroutineExceptionHandler { _, throwable ->
         reportError(
-                DOWNLOAD_ERROR,
-                "all",
-                "handle error when emit stateFlow : ${throwable.message}"
+            DOWNLOAD_ERROR,
+            "all",
+            "handle error when emit stateFlow : ${throwable.message}"
         )
-    }
-
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/download")
-        channel.setMethodCallHandler(this)
-        manager = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
-//        clearFontsDownloadFile()
-    }
-
-    @Suppress("unused")
-    private fun clearFontsDownloadFile() {
-        log("clearFontsDownloadFile")
-        downloadDirectory?.let {
-            File(it.path + File.separator + "font").listFiles()?.forEach { file ->
-                log("clear last time download font file : ${file.path}")
-                file.delete()
-            }
-        }
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
     }
 
     private fun updateProgress(report: Map<*, *>) {
@@ -74,10 +57,10 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     private fun reportError(listenerId: String, code: String, message: String?) {
         val report = mapOf(
-                "listenerId" to listenerId,
-                "state" to "ERROR",
-                "code" to code,
-                "message" to message
+            "listenerId" to listenerId,
+            "state" to "ERROR",
+            "code" to code,
+            "message" to message
         )
         updateProgress(report)
     }
@@ -85,10 +68,10 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private fun reportSuccess(task: DownloadItem) {
         downloadDirectory?.let {
             val report = mapOf(
-                    "listenerId" to task.listenerId,
-                    "state" to "SUCCESS",
-                    "taskId" to task.id,
-                    "path" to it.path + File.separator + task.path()
+                "listenerId" to task.listenerId,
+                "state" to "SUCCESS",
+                "taskId" to task.id,
+                "path" to it.path + File.separator + task.path()
             )
             updateProgress(report)
         }
@@ -96,28 +79,28 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     private fun reportSuccess(task: Progress) {
         val report = mapOf(
-                "listenerId" to task.listenerId,
-                "state" to "SUCCESS",
-                "taskId" to task.taskId,
-                "path" to task.path,
+            "listenerId" to task.listenerId,
+            "state" to "SUCCESS",
+            "taskId" to task.taskId,
+            "path" to task.path,
         )
         updateProgress(report)
     }
 
     private fun reportAllSuccess(listenerId: String) {
         val allSuccess = mapOf(
-                "listenerId" to listenerId,
-                "state" to "ALL_SUCCESS",
+            "listenerId" to listenerId,
+            "state" to "ALL_SUCCESS",
         )
         updateProgress(allSuccess)
     }
 
     private fun reportRunning(task: Progress) {
         val report = mapOf(
-                "listenerId" to task.listenerId,
-                "state" to "RUNNING",
-                "taskId" to task.taskId,
-                "progress" to task.progress
+            "listenerId" to task.listenerId,
+            "state" to "RUNNING",
+            "taskId" to task.taskId,
+            "progress" to task.progress
         )
         updateProgress(report)
     }
@@ -212,9 +195,9 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }.forEach {
                 val request = DownloadManager.Request(Uri.parse(it.url)).apply {
                     setDestinationInExternalFilesDir(
-                            context,
-                            Environment.DIRECTORY_DOWNLOADS,
-                            it.temporaryPath(),
+                        context,
+                        Environment.DIRECTORY_DOWNLOADS,
+                        it.temporaryPath(),
                     )
                     if (it.showNotification) {
                         setTitle(it.title)
@@ -248,10 +231,10 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 if (it.status() == DownloadManager.STATUS_RUNNING) {
                     log("id : $id downloading : ${it.progress()}")
                     running(
-                            id,
-                            task.listenerId,
-                            it.progress(),
-                            downloadList[id]?.id ?: "unknown"
+                        id,
+                        task.listenerId,
+                        it.progress(),
+                        downloadList[id]?.id ?: "unknown"
                     )
                 }
             }
@@ -285,7 +268,7 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         Status.BEGIN -> {
                             takeIf { downloadList.isNotEmpty() }?.let {
                                 val report =
-                                        mapOf("listenerId" to task.listenerId, "state" to "BEGIN")
+                                    mapOf("listenerId" to task.listenerId, "state" to "BEGIN")
                                 updateProgress(report)
                             }
                         }
@@ -293,16 +276,16 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                             reportSuccess(task)
                             downloadList.remove(task.id)
                             if (downloadList.filter { it.value.listenerId == task.listenerId }
-                                            .isEmpty()) {
+                                    .isEmpty()) {
                                 // 所有的都下载完了就清除注册的接收器
                                 reportAllSuccess(task.listenerId)
                                 try {
                                     stopAllAndRemoveRegister()
                                 } catch (e: Throwable) {
                                     reportError(
-                                            task.listenerId,
-                                            REMOVE_REGISTER_ERROR,
-                                            "remove register error when complete download :${e.message}"
+                                        task.listenerId,
+                                        REMOVE_REGISTER_ERROR,
+                                        "remove register error when complete download :${e.message}"
                                     )
                                 }
                             }
@@ -321,9 +304,9 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                             }
                             downloadList.remove(task.id)
                             reportError(
-                                    task.listenerId,
-                                    DOWNLOAD_ERROR,
-                                    "download ${task.taskId} error: ${task.message}"
+                                task.listenerId,
+                                DOWNLOAD_ERROR,
+                                "download ${task.taskId} error: ${task.message}"
                             )
                         }
                     }
@@ -331,15 +314,15 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }
             receiver = CompleteReceiver().also {
                 context.registerReceiver(
-                        it,
-                        IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                    it,
+                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
                 )
             }
             observer = DownloadChangeObserver(Handler(Looper.getMainLooper())).also {
                 context.contentResolver?.registerContentObserver(
-                        Uri.parse("content://downloads/my_downloads"),
-                        true,
-                        it
+                    Uri.parse("content://downloads/my_downloads"),
+                    true,
+                    it
                 )
             }
         }.onFailure {
@@ -353,11 +336,11 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     // 下载完成接收器  每次下载完都会接收到一次，所以接收到之后从列表中删除对应项
     inner class CompleteReceiver : BroadcastReceiver() {
         override fun onReceive(
-                context: Context,
-                intent: Intent
+            context: Context,
+            intent: Intent
         ) {
             val completeId =
-                    intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
+                intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
             if (downloadList.containsKey(completeId)) {
                 val item = downloadList[completeId]!!
                 kotlin.runCatching {
@@ -374,21 +357,21 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                                         if (from.renameTo(to)) {
                                             // 文件下载完后发送信息并从下载列表中删除
                                             success(
-                                                    completeId,
-                                                    item.listenerId,
-                                                    to.path,
-                                                    item.id
+                                                completeId,
+                                                item.listenerId,
+                                                to.path,
+                                                item.id
                                             )
                                         }
                                     }
                                 }
                                 else -> {
                                     failure(
-                                            completeId,
-                                            item.listenerId,
-                                            1.0,
-                                            "download apk fail , progress : 1.0 , state : ${it.status()}",
-                                            item.id
+                                        completeId,
+                                        item.listenerId,
+                                        1.0,
+                                        "download apk fail , progress : 1.0 , state : ${it.status()}",
+                                        item.id
                                     )
                                 }
                             }
@@ -397,11 +380,11 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     }
                 }.onFailure {
                     failure(
-                            completeId,
-                            item.listenerId,
-                            1.0,
-                            "handling error on receive broadcast : ${it.message}",
-                            item.id
+                        completeId,
+                        item.listenerId,
+                        1.0,
+                        "handling error on receive broadcast : ${it.message}",
+                        item.id
                     )
                 }
             }
@@ -417,24 +400,24 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             kotlin.runCatching {
                 downloadList.forEach { task ->
                     manager.query(DownloadManager.Query().setFilterById(task.key))
-                            .takeIf { it.moveToFirst() }?.let {
-                                if (it.status() == DownloadManager.STATUS_RUNNING && progressList[task.key] != it.progress()) {
-                                    progressList[task.key] = it.progress()
-                                    log("id : ${task.key} downloading : ${it.progress()} onChangeCount : $onChangeCount")
-                                    if (it.progress() == 0.0) {
-                                        begin(task.key, task.value.listenerId, task.value.id)
-                                    } else {
-                                        running(
-                                                task.key,
-                                                task.value.listenerId,
-                                                it.progress(),
-                                                task.value.id
-                                        )
-                                    }
+                        .takeIf { it.moveToFirst() }?.let {
+                            if (it.status() == DownloadManager.STATUS_RUNNING && progressList[task.key] != it.progress()) {
+                                progressList[task.key] = it.progress()
+                                log("id : ${task.key} downloading : ${it.progress()} onChangeCount : $onChangeCount")
+                                if (it.progress() == 0.0) {
+                                    begin(task.key, task.value.listenerId, task.value.id)
                                 } else {
-                                    log("id : ${task.value.fileName} downloading : ${it.progress()} state : ${it.statusString()}")
+                                    running(
+                                        task.key,
+                                        task.value.listenerId,
+                                        it.progress(),
+                                        task.value.id
+                                    )
                                 }
+                            } else {
+                                log("id : ${task.value.fileName} downloading : ${it.progress()} state : ${it.statusString()}")
                             }
+                        }
                 }
                 onChangeCount++
             }.onFailure {
@@ -454,14 +437,14 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     private fun success(id: Long, listenerId: String, path: String, taskId: String) {
         mainScope.launch(handler) {
             downloadProgress.emit(
-                    Progress(
-                            id,
-                            listenerId,
-                            Status.SUCCESS,
-                            1.0,
-                            taskId,
-                            path = path
-                    )
+                Progress(
+                    id,
+                    listenerId,
+                    Status.SUCCESS,
+                    1.0,
+                    taskId,
+                    path = path
+                )
             )
         }
     }
@@ -473,22 +456,22 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     private fun failure(
-            id: Long,
-            listenerId: String,
-            progress: Double,
-            errorDetail: String,
-            taskId: String
+        id: Long,
+        listenerId: String,
+        progress: Double,
+        errorDetail: String,
+        taskId: String
     ) {
         mainScope.launch(handler) {
             downloadProgress.emit(
-                    Progress(
-                            id,
-                            listenerId,
-                            Status.FAILURE,
-                            progress,
-                            taskId = taskId,
-                            message = errorDetail
-                    )
+                Progress(
+                    id,
+                    listenerId,
+                    Status.FAILURE,
+                    progress,
+                    taskId = taskId,
+                    message = errorDetail
+                )
             )
         }
     }
@@ -564,12 +547,12 @@ fun Cursor.statusString(): String {
 
 fun Cursor.currentSize(): Double {
     return getInt(getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-            .toDouble()
+        .toDouble()
 }
 
 fun Cursor.totalSize(): Double {
     return getInt(getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-            .toDouble()
+        .toDouble()
 }
 
 fun Cursor.progress(): Double {

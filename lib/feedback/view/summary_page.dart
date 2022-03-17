@@ -1,22 +1,24 @@
-import 'dart:convert' show base64;
-import 'dart:typed_data' show Uint8List;
+// @dart = 2.12
+
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
+import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class RestartSchoolDaysGamePage extends StatefulWidget {
-  const RestartSchoolDaysGamePage({Key key}) : super(key: key);
+class FeedbackSummaryPage extends StatefulWidget {
+  const FeedbackSummaryPage({Key? key}) : super(key: key);
 
   @override
-  _RestartSchoolDaysGamePageState createState() =>
-      _RestartSchoolDaysGamePageState();
+  _FeedbackSummaryPageState createState() => _FeedbackSummaryPageState();
 }
 
-class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
+class _FeedbackSummaryPageState extends State<FeedbackSummaryPage> {
   double opacity = 0.0;
 
   @override
@@ -24,9 +26,13 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("大学重开模拟器",
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 16, color: Color.fromRGBO(36, 43, 69, 1))),
+        title: Text(
+          "校务专区总结",
+          style: FontManager.YaHeiRegular.copyWith(
+            fontSize: 16,
+            color: Color.fromRGBO(36, 43, 69, 1),
+          ),
+        ),
         elevation: 0,
         brightness: Brightness.light,
         centerTitle: true,
@@ -42,7 +48,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
       body: Opacity(
         opacity: opacity,
         child: WebView(
-          initialUrl: "http://restart.twtstudio.com",
+          initialUrl: "https://areas.twt.edu.cn/summary",
           javascriptMode: JavascriptMode.unrestricted,
           onPageFinished: (_) {
             setState(() {
@@ -54,19 +60,22 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
           },
           javascriptChannels: <JavascriptChannel>[
             JavascriptChannel(
-                name: "Toast",
-                onMessageReceived: (JavascriptMessage message) async {
-                  try {
-                    Uint8List bytes =
-                        base64.decode(message.message.split(",")[1]);
-                    final fileName =
-                        "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
-                    await ImageSave.saveImageToAlbum(bytes, fileName);
-                    ToastProvider.success("保存成功");
-                  } catch (_) {
-                    ToastProvider.error('图片保存失败');
-                  }
-                }),
+              name: "Toast",
+              onMessageReceived: (JavascriptMessage message) async {
+                try {
+                  Uint8List bytes =
+                      base64.decode(message.message.split(",")[1]);
+                  final fileName =
+                      "校务总结页面${DateTime.now().millisecondsSinceEpoch}.jpg";
+                  await ImageSave.saveImageToAlbum(bytes, fileName)
+                      .then((path) async {
+                    await ShareManager.shareImgToQQ(path);
+                  });
+                } catch (_) {
+                  ToastProvider.error('分享失败');
+                }
+              },
+            ),
           ].toSet(),
         ),
       ),

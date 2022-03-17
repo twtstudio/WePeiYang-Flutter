@@ -25,6 +25,7 @@ object IntentUtil {
 
 enum class IntentEvent(val type: Int) {
     FeedbackPostPage(1),
+    FeedbackSummaryPage(2),
     MailBox(3),
     SchedulePage(4),
     Update(5),

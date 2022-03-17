@@ -6,6 +6,8 @@ import android.content.Context
 import android.os.Process
 import com.twt.service.push.model.Event
 import com.twt.service.statistics.WbyStatisticsPlugin
+import com.umeng.cconfig.RemoteConfigSettings
+import com.umeng.cconfig.UMRemoteConfig
 import com.umeng.commonsdk.UMConfigure
 import io.flutter.FlutterInjector
 import java.lang.ref.WeakReference
@@ -25,6 +27,12 @@ class WBYApplication : Application() {
             if (BuildConfig.LOG_OUTPUT) {
                 WbyStatisticsPlugin.log("log output")
                 UMConfigure.setLogEnabled(true)
+            }
+            UMRemoteConfig.getInstance().apply {
+                setDefaults(R.xml.cloud_config_parms)
+                setConfigSettings(
+                    RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(true).build()
+                )
             }
             WbyStatisticsPlugin.log("preInit umeng sdk")
             UMConfigure.preInit(applicationContext, "60464782b8c8d45c1390e7e3", "android")

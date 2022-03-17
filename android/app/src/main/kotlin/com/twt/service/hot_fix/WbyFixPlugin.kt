@@ -1,12 +1,10 @@
 package com.twt.service.hot_fix
 
-import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.twt.service.BuildConfig
 import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
 import com.twt.service.common.WbySharePreference
-import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
@@ -32,19 +30,9 @@ import java.io.FileOutputStream
 // 如果localVersionCode > remoteVersionCode 这就必定有问题，要不是写错了，要不是开发人员
 // 所以本地没必要存fixCode，只用在更新的接口中告诉是否能通过替换libapp.so文件进行更新
 
-class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
-
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/hot_fix")
-        channel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
+class WbyFixPlugin : WbyPlugin() {
+    override val name: String
+        get() = "com.twt.service/hot_fix"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -71,7 +59,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     )
                     Runtime.getRuntime().exit(0)
                 }.onFailure {
-                    result.error("","","")
+                    result.error("", "", "")
                 }.onSuccess {
                     // 如果success，那么当然就重启应用了
                     result.success("")
@@ -103,8 +91,8 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             return
         }
 
-        val fixDir = File(context.filesDir,"hotfix")
-        if (!fixDir.exists()){
+        val fixDir = File(context.filesDir, "hotfix")
+        if (!fixDir.exists()) {
             fixDir.mkdir()
         }
 
@@ -112,7 +100,7 @@ class WbyFixPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
         fix.runCatching {
             // 如果不存在，就移动文件到这里
-            if (!exists()){
+            if (!exists()) {
                 FileInputStream(download).use { input ->
                     FileOutputStream(absolutePath).use { output ->
                         input.copyTo(output)

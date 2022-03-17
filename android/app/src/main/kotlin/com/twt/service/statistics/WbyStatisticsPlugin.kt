@@ -1,28 +1,17 @@
 package com.twt.service.statistics
 
-import android.content.Context
 import android.util.Log
 import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
-import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class WbyStatisticsPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var context: Context
-    private lateinit var statisticsChannel: MethodChannel
+class WbyStatisticsPlugin : WbyPlugin() {
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        statisticsChannel =
-            MethodChannel(binding.binaryMessenger, "com.twt.service/umeng_statistics")
-        statisticsChannel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        statisticsChannel.setMethodCallHandler(null)
-    }
+    override val name: String
+        get() = "com.twt.service/umeng_statistics"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         try {

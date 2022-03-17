@@ -6,7 +6,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:we_pei_yang_flutter/commons/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_apk_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_install_dialog.dart';
@@ -18,7 +19,6 @@ import 'hotfix_util.dart';
 import 'update_service.dart';
 import 'update_util.dart';
 import 'version_data.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 
 enum UpdateState {
   nothing,
@@ -267,52 +267,41 @@ class UpdateManager extends ChangeNotifier {
   Future<void> forceUpdateApk(int testVersionCode) async {
     state = UpdateState.checkUpdate;
     var response = await updateDio.get(UpdateService.wbyUpdateUrl);
-    var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
+    var version =
+        VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
     if (testVersionCode + version.flutterFixCode < version.versionCode) {
       _updateWithApk(version, true);
     } else if (testVersionCode < version.versionCode &&
         testVersionCode + version.flutterFixCode >= version.versionCode) {
       hotFix(
-        version.flutterFixSoFile,
-        version.versionCode,
-        version.flutterFixCode,
-        fixLoadSoFileSuccess: () {
-          _showHotfixDialog(version, true);
-        },
-        fixError: (e) {
-          _updateWithApk(version, true);
-        },
-        downloadError: (e) {
-          ToastProvider.error(e.toString());
-        },
-        fixDownloadSuccess: (path){
-          debugPrint('download : $path');
-        }
-      );
+          version.flutterFixSoFile, version.versionCode, version.flutterFixCode,
+          fixLoadSoFileSuccess: () {
+        _showHotfixDialog(version, true);
+      }, fixError: (e) {
+        _updateWithApk(version, true);
+      }, downloadError: (e) {
+        ToastProvider.error(e.toString());
+      }, fixDownloadSuccess: (path) {
+        debugPrint('download : $path');
+      });
     }
   }
 
   Future<void> forceUpdateSo() async {
     state = UpdateState.checkUpdate;
     var response = await updateDio.get(UpdateService.wbyUpdateUrl);
-    var version = VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
+    var version =
+        VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
     hotFix(
-        version.flutterFixSoFile,
-        version.versionCode,
-        version.flutterFixCode,
+        version.flutterFixSoFile, version.versionCode, version.flutterFixCode,
         fixLoadSoFileSuccess: () {
-          _showHotfixDialog(version, true);
-        },
-        fixError: (e) {
-          _updateWithApk(version, true);
-        },
-        downloadError: (e) {
-          ToastProvider.error(e.toString());
-        },
-        fixDownloadSuccess: (path){
-          debugPrint('download : $path');
-        }
-    );
+      _showHotfixDialog(version, true);
+    }, fixError: (e) {
+      _updateWithApk(version, true);
+    }, downloadError: (e) {
+      ToastProvider.error(e.toString());
+    }, fixDownloadSuccess: (path) {
+      debugPrint('download : $path');
+    });
   }
-
 }

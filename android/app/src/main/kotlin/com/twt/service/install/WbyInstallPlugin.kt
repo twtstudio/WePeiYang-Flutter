@@ -2,7 +2,6 @@ package com.twt.service.install
 
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -10,7 +9,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.WbyPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
@@ -18,23 +17,14 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.File
 
-class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-    PluginRegistry.ActivityResultListener {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResultListener {
+
+    override val name: String
+        get() = "com.twt.service/install"
+
     private lateinit var activityBinding: ActivityPluginBinding
     private lateinit var resultFile: File
     private lateinit var methodCall: MethodChannel.Result
-
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/install")
-        channel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
