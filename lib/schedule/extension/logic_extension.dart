@@ -6,14 +6,15 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 /// 为每周的点阵图生成bool矩阵
-List<List<bool>> getBoolMatrix(
-    int week, int weekCount, List<Course> courses, bool showSevenDay) {
-  List<List<bool>> list =
-      List.filled(5, [false, false, false, false, false, false]);
+List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
+  // 这里不能 `list = List.filled(5, List.filled(6, false))` 这么写，不然外层List中会是同一个引用对象
+  List<List<bool>> list = [];
+  for (int i = 0; i < 5; i++) list.add(List.filled(6, false));
   courses.forEach((course) {
     course.arrangeList.forEach((arrange) {
       if (judgeActiveInWeek(week, weekCount, arrange)) {
         var day = arrange.weekday;
+        if (day == 7) return; // 忽略周日
         var start = arrange.unitList.first;
         var end = arrange.unitList.last;
 
@@ -23,11 +24,8 @@ List<List<bool>> getBoolMatrix(
         /// 第11~12小节展示不开了，故去除掉
         if (end > 10) end = 10;
 
-        /// 判断周日的课是否需要显示在课表上
-        if (showSevenDay || day != 7) {
-          for (var i = start; i <= end; i++) {
-            list[(i / 2).ceil() - 1][day - 1] = true;
-          }
+        for (var i = start; i <= end; i++) {
+          list[(i / 2).ceil() - 1][day - 1] = true;
         }
       }
     });
@@ -43,7 +41,8 @@ List<List<bool>> getBoolMatrix(
 List<List<List<Pair<Course, int>>>> getMergedCourses(
     CourseProvider provider, int dayNumber) {
   List<Course> courses = provider.courses;
-  List<List<List<Pair<Course, int>>>> result = List.filled(dayNumber, []);
+  List<List<List<Pair<Course, int>>>> result = [];
+  for (int i = 0; i < dayNumber; i++) result.add([]);
   courses.forEach((course) {
     for (int i = 0; i < course.arrangeList.length; i++) {
       /// 当前需要判断的课程

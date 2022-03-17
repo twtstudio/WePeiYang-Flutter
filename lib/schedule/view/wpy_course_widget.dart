@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -21,10 +22,9 @@ class TodayCoursesWidget extends StatelessWidget {
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
+              padding: const EdgeInsets.fromLTRB(22, 20, 22, 12),
               alignment: Alignment.centerLeft,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(S.current.schedule,
                       style: FontManager.YaQiHei.copyWith(
@@ -32,29 +32,25 @@ class TodayCoursesWidget extends StatelessWidget {
                           color: Color.fromRGBO(100, 103, 122, 1),
                           fontWeight: FontWeight.bold)),
                   Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25, top: 2),
-                    child: (todayPairs.length == 0)
-                        ? Container()
-                        : DefaultTextStyle(
-                            style: FontManager.YaHeiRegular.copyWith(
-                                fontSize: 12,
-                                color: Color.fromRGBO(100, 103, 122, 1)),
-                            child: Text.rich(TextSpan(children: [
-                              TextSpan(
-                                  text: (nightMode && DateTime.now().hour >= 21)
-                                      ? "明天 "
-                                      : "今天 "),
-                              TextSpan(
-                                  text: todayPairs.length.toString(),
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text: " 节课 "),
-                              TextSpan(
-                                  text: "> ", style: TextStyle(fontSize: 15))
-                            ])),
-                          ),
-                  )
+                  if (todayPairs.length != 0)
+                    DefaultTextStyle(
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 12,
+                          color: Color.fromRGBO(100, 103, 122, 1)),
+                      child: Text.rich(TextSpan(children: [
+                        TextSpan(
+                            text: (nightMode && DateTime.now().hour >= 21)
+                                ? "明天 "
+                                : "今天 "),
+                        TextSpan(
+                            text: todayPairs.length.toString(),
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: " 节课"),
+                      ])),
+                    ),
+                  Icon(Icons.keyboard_arrow_right,
+                      color: ColorUtil.lightTextColor),
+                  SizedBox(width: 5),
                 ],
               ),
             ),
@@ -117,8 +113,8 @@ class TodayCoursesWidget extends StatelessWidget {
     }
 
     /// 给本日课程排序
-    todayPairs
-        .sort((a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
+    todayPairs.sort(
+        (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
     return SizedBox(
       height: 185,
       child: ListView.builder(
@@ -158,7 +154,8 @@ class TodayCoursesWidget extends StatelessWidget {
                         SizedBox(height: 5),
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(getCourseTime(todayPairs[i].arrange.unitList),
+                          child: Text(
+                              getCourseTime(todayPairs[i].arrange.unitList),
                               style: FontManager.Aspira.copyWith(
                                   fontSize: 11.5, color: Colors.white)),
                         ),

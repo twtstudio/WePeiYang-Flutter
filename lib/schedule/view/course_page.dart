@@ -142,7 +142,7 @@ class _TitleWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8, top: 12),
             child: Builder(builder: (context) {
               var currentWeek =
-                  context.select<CourseProvider, int>((p) => p.currentWeek);
+                  context.select<CourseProvider, int>((p) => p.selectedWeek);
               return Text('WEEK $currentWeek',
                   style: FontManager.Texta.copyWith(
                       color: Color.fromRGBO(114, 113, 113, 1), fontSize: 16));

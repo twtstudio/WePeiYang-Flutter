@@ -11,7 +11,7 @@ class WpyExamWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22.0),
+        padding: const EdgeInsets.symmetric(horizontal: 22),
         child: Consumer<ExamProvider>(
           builder: (context, provider, child) {
             if (provider.hideExam) return Container();

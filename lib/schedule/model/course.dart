@@ -6,8 +6,8 @@ class CourseTable {
   CourseTable(this.courses);
 
   CourseTable.fromJson(Map<String, dynamic> map)
-      : courses = []..addAll(
-            (map['courses'] as List).map((e) => Course.fromJson(e)));
+      : courses = []
+          ..addAll((map['courses'] as List).map((e) => Course.fromJson(e)));
 
   Map<String, dynamic> toJson() =>
       {'courses': courses.map((e) => e.toJson()).toList()};
@@ -44,7 +44,7 @@ class Course {
         credit = map['credit'],
         campus = map['campus'],
         weeks = map['weeks'],
-        teacherList = map['teacherList'],
+        teacherList = List<String>.from(map['teacherList']),
         arrangeList = []..addAll(
             (map['arrangeList'] as List).map((e) => Arrange.fromJson(e)));
 
@@ -76,9 +76,10 @@ class Arrange {
   Arrange.fromJson(Map<String, dynamic> map)
       : location = map['location'],
         weekday = map['weekday'],
-        weekList = map['weekList'],
-        unitList = map['unitList'],
-        teacherList = map['teacherList'];
+        weekList = List<int>.from(map['weekList']),
+        unitList = List<int>.from(map['unitList']),
+        teacherList = []
+          ..addAll((map['teacherList'] as List).map((e) => e.toString()));
 
   Map<String, dynamic> toJson() => {
         'location': location,

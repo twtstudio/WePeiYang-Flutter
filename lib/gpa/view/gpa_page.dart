@@ -423,17 +423,20 @@ class GPAStatsWidget extends StatelessWidget {
               ],
             ),
           ),
-          InkResponse(
-            onTap: () => quietPvd.type = 1,
-            radius: 45,
-            splashFactory: InkRipple.splashFactory,
-            child: Column(
-              children: <Widget>[
-                /// 这里两边加上空格，让UI分布更均匀
-                Text(' GPA  ', style: _textStyle),
-                SizedBox(height: 8),
-                Text(gpa, style: _numStyle)
-              ],
+          /// 这里加个padding，让UI分布更均匀
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: InkResponse(
+              onTap: () => quietPvd.type = 1,
+              radius: 45,
+              splashFactory: InkRipple.splashFactory,
+              child: Column(
+                children: <Widget>[
+                  Text('GPA', style: _textStyle),
+                  SizedBox(height: 8),
+                  Text(gpa, style: _numStyle)
+                ],
+              ),
             ),
           ),
           InkResponse(

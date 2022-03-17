@@ -183,6 +183,7 @@ List<Course> _parseCourseHTML(String data) {
 
         course.arrangeList.add(arrange);
       });
+      courseList.add(course);
     });
     return courseList;
   } catch (e) {

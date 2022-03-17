@@ -17,7 +17,6 @@ const double _canvasHeight = _cubeSideLength * 5 + _spacingLength * 4;
 
 /// 星期切换栏
 class WeekSelectWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     var listView = Builder(
@@ -63,16 +62,19 @@ class WeekSelectWidget extends StatelessWidget {
       },
     );
 
-    return Builder(
-      builder: (context) {
-        var shrink =
-            context.select<CourseDisplayProvider, bool>((p) => p.shrink);
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: shrink ? 0 : 90,
-          child: shrink ? Container() : listView,
-        );
-      },
+    return Theme(
+      data: ThemeData(accentColor: Colors.white),
+      child: Builder(
+        builder: (context) {
+          var shrink =
+              context.select<CourseDisplayProvider, bool>((p) => p.shrink);
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: shrink ? 0 : 90,
+            child: shrink ? Container() : listView,
+          );
+        },
+      ),
     );
   }
 
@@ -91,7 +93,7 @@ class WeekSelectWidget extends StatelessWidget {
           ),
           child: CustomPaint(
             painter: _WeekSelectPainter(getBoolMatrix(
-                i + 1, provider.weekCount, provider.courses, false)),
+                i + 1, provider.weekCount, provider.courses)),
             size: const Size(_canvasWidth, _canvasHeight),
           ),
         ),
