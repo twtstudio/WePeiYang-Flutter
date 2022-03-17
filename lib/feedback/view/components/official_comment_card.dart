@@ -319,7 +319,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       case Official.reply:
         var comment = RichText(
           overflow: TextOverflow.ellipsis,
-          maxLines: 3,
+          maxLines: 15,
           text: HTML.toTextSpan(
             context,
             widget.comment.content,

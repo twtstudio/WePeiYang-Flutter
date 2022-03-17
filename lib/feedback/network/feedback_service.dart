@@ -281,11 +281,18 @@ class FeedbackService with AsyncTimer {
 
   static getMyPosts({
     @required OnResult<List<Post>> onResult,
+    @required page,
+    @required page_size,
     @required OnFailure onFailure,
   }) async {
+    AsyncTimer.runRepeatChecked('getPosts', () async {
     try {
       var response = await feedbackDio.get(
         'posts/user',
+        queryParameters: {
+          'page': '$page',
+          'page_size': '$page_size',
+        },
       );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
@@ -295,14 +302,23 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
+    });
   }
 
   static getFavoritePosts({
     @required OnResult<List<Post>> onResult,
+    @required page_size,
+    @required page,
     @required OnFailure onFailure,
   }) async {
+    AsyncTimer.runRepeatChecked('getFav', () async {
     try {
-      var response = await feedbackDio.get('posts/fav');
+      var response = await feedbackDio.get('posts/fav',
+        queryParameters: {
+        'page': '$page',
+        'page_size': '$page_size',
+        },
+      );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));
@@ -311,6 +327,7 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
+    });
   }
 
   static getFloorReplyById({
