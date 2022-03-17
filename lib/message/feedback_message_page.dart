@@ -240,7 +240,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
   _onLoading() async {
     try {
       await MessageService.getLikeMessages(
-          page: items.length ~/ 10 + 2,
+          page: items.length ~/ 10 + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -374,7 +374,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-          id: widget.data.post.id,
+          id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
           onResult: (result) {
             post = result;
             setState(() {});
@@ -626,7 +626,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
   _onLoading() async {
     try {
       await MessageService.getFloorMessages(
-          page: items.length ~/ 10 + 2,
+          page: items.length ~/ 10 + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -1016,7 +1016,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
   _onLoading() async {
     try {
       await MessageService.getReplyMessages(
-          page: items.length ~/ 10 + 2,
+          page: items.length ~/ 10 + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -1359,7 +1359,7 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
   _onLoading() async {
     try {
       await MessageService.getNoticeMessages(
-          page: items.length ~/ 10 + 2,
+          page: items.length ~/ 10 + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
