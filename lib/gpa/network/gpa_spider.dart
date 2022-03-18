@@ -168,8 +168,13 @@ GPACourse _data2GPACourse(Map<String, String> data) {
       score = double.parse(data['score'] ?? '0.0');
   }
   double credit = 0.0;
-  if (score >= 60) credit = double.parse(data['credit'] ?? '0.0');
-  double gpa = double.parse(data['gpa'] ?? '0.0');
+
+  if (score >= 60) {
+    if (data['credit'] == null || data['credit'] == '') data['credit'] = '0.0';
+    credit = double.parse(data['credit']);
+  }
+  if (data['gpa'] == null || data['gpa'] == '') data['gpa'] = '0.0';
+  double gpa = double.parse(data['gpa']);
   return GPACourse(data['name'] ?? '', data['type'] ?? '', score, credit, gpa);
 }
 
