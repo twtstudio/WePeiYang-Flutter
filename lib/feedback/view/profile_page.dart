@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -147,14 +148,23 @@ class _PostList extends StatefulWidget {
 class _PostListState extends State<_PostList> {
   List<Post> _postList = [];
   MessageProvider messageProvider;
-  int page = 0;
-  var _refreshController = RefreshController(initialRefresh: false);
-
+  int page_post = 30;
+  int page_fav = 30;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       messageProvider = Provider.of<MessageProvider>(context, listen: false);
+      messageProvider..addListener(() {
+        switch (widget.type) {
+          case _CurrentTab.myPosts:
+            _initMyPosts();
+            break;
+          case _CurrentTab.myCollect:
+            _initMyCollects();
+            break;
+        }
+      });
       switch (widget.type) {
         case _CurrentTab.myPosts:
           _initMyPosts();
@@ -168,33 +178,31 @@ class _PostListState extends State<_PostList> {
 
   _initMyPosts() {
     FeedbackService.getMyPosts(
-        page: page,
-        page_size: 30,
+        page: 0,
+        page_size: page_post,
         onResult: (list) {
           setState(() {
             _addPostList(list);
-            _refreshController.refreshCompleted();
+            page_post+=30;
           });
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
-          _refreshController.refreshFailed();
         });
   }
 
   _initMyCollects() {
     FeedbackService.getFavoritePosts(
-        page: page,
-        page_size: 30,
+        page: 0,
+        page_size: page_fav,
         onResult: (list) {
           setState(() {
             _addPostList(list);
-            _refreshController.refreshCompleted();
+            page_fav+=30;
           });
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
-          _refreshController.refreshFailed();
         });
   }
 
@@ -231,46 +239,6 @@ class _PostListState extends State<_PostList> {
       });
   }
 
-  _onLoading() {
-    page++;
-    if (widget.type == _CurrentTab.myPosts) {
-      FeedbackService.getMyPosts(
-          page: page,
-          page_size: 30,
-          onResult: (list) {
-            if (list.length == 0) {
-              page--;
-            }
-            setState(() {
-              _postList.addAll(list);
-              _refreshController.refreshCompleted();
-            });
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            _refreshController.refreshFailed();
-            page--;
-          });
-    } else if (widget.type == _CurrentTab.myCollect) {
-      FeedbackService.getFavoritePosts(
-          page: page,
-          page_size: 30,
-          onResult: (list) {
-            if (list.length == 0) {
-              page--;
-            }
-            setState(() {
-              _postList.addAll(list);
-              _refreshController.refreshCompleted();
-            });
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            _refreshController.refreshFailed();
-            page--;
-          });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
