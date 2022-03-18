@@ -160,18 +160,20 @@ class FeedbackService with AsyncTimer {
     }
     return list;
   }
+
   static Future<Error> getError(
-      name,
-      ) async {
+    name,
+  ) async {
     Error error;
     var response = await feedbackDio.post('tag',
         formData: FormData.fromMap({
           'name': '$name',
         }));
     Map<String, dynamic> json = response.data['data'];
-     error = Error.fromJson(json);
-     return error;
+    error = Error.fromJson(json);
+    return error;
   }
+
   static getHotTags({
     @required OnResult<List<Tag>> onSuccess,
     @required OnFailure onFailure,
@@ -285,7 +287,6 @@ class FeedbackService with AsyncTimer {
     @required page_size,
     @required OnFailure onFailure,
   }) async {
-    AsyncTimer.runRepeatChecked('getPosts', () async {
     try {
       var response = await feedbackDio.get(
         'posts/user',
@@ -302,7 +303,6 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
-    });
   }
 
   static getFavoritePosts({
@@ -311,12 +311,12 @@ class FeedbackService with AsyncTimer {
     @required page,
     @required OnFailure onFailure,
   }) async {
-    AsyncTimer.runRepeatChecked('getFav', () async {
     try {
-      var response = await feedbackDio.get('posts/fav',
+      var response = await feedbackDio.get(
+        'posts/fav',
         queryParameters: {
-        'page': '$page',
-        'page_size': '$page_size',
+          'page': '$page',
+          'page_size': '$page_size',
         },
       );
       List<Post> list = [];
@@ -327,7 +327,6 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
-    });
   }
 
   static getFloorReplyById({
