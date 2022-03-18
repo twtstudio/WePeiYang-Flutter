@@ -63,7 +63,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
-      if (wpyTab.name == '青年湖底')
+      if (wpyTab.name == '全部')
         context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(wpyTab, success: () {
@@ -139,7 +139,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
-    if (wpyTab.name == '青年湖底') context.read<FbHotTagsProvider>().initHotTags();
+    if (wpyTab.name == '全部') context.read<FbHotTagsProvider>().initHotTags();
     super.initState();
   }
 
@@ -185,10 +185,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 model.lakeAreas[wpyTab].dataList.values.toList().length),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
-                if (wpyTab.name == '青年湖底' && ind == 0) {
-                  ind--;
+                if (wpyTab.name == '全部' && ind == 0) {
                   return HotCard();
                 }
+                if (wpyTab.name == '全部') ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[wpyTab]

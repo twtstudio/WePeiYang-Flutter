@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
+  //String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
   String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   var headers = {};
 
@@ -311,6 +311,24 @@ class FeedbackService with AsyncTimer {
     @required page,
     @required OnFailure onFailure,
   }) async {
+    AsyncTimer.runRepeatChecked('getFav', () async {
+      try {
+        var response = await feedbackDio.get(
+          'posts/fav',
+          queryParameters: {
+            'page': '$page',
+            'page_size': '$page_size',
+          },
+        );
+        List<Post> list = [];
+        for (Map<String, dynamic> json in response.data['data']['list']) {
+          list.add(Post.fromJson(json));
+        }
+        onResult(list);
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
     try {
       var response = await feedbackDio.get(
         'posts/fav',

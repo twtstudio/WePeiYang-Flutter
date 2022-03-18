@@ -45,6 +45,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool scroll = false;
 
+  bool initializeRefresh = false;
+
   bool canSee = false;
 
   /// nestedScrollView 展示 appbar
@@ -186,6 +188,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             maxHeight: MediaQuery.of(context).size.height),
         designSize: Size(390, 844),
         orientation: Orientation.portrait);
+    if (initializeRefresh == true) {
+      context
+          .read<LakeModel>()
+          .lakeAreas[context
+          .read<LakeModel>()
+          .lakeTabList[context.read<LakeModel>().tabController.index]]
+          .controller
+          .animateTo(-85,
+          duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
+      initializeRefresh = false;
+    }
 
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
@@ -270,6 +283,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                     image: AssetImage(
                                         "assets/images/lake_butt_icons/add_post.png")))),
                         onTap: () {
+                          initializeRefresh = true;
                           Navigator.pushNamed(context, FeedbackRouter.newPost);
                         }),
                   ),

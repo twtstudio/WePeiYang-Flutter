@@ -105,13 +105,12 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
-
   List<WPYTab> postType = [];
 
   @override
   void initState() {
     super.initState();
-    if(context.read<LakeModel>().newPostTabList == []){
+    if (context.read<LakeModel>().newPostTabList == []) {
       context.read<LakeModel>().initTabList();
     }
     postType = context.read<LakeModel>().newPostTabList;
@@ -121,17 +120,15 @@ class _LakeSelectorState extends State<LakeSelector> {
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    return postType == [] ?
-      Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16)
-        ),
-        child: Center(
-          child: Text('Loading...φ(゜▽゜*)♪'),
-        ),
-      )
+    return postType == []
+        ? Container(
+            height: 60,
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(16)),
+            child: Center(
+              child: Text('Loading...φ(゜▽゜*)♪'),
+            ),
+          )
         : ValueListenableBuilder<int>(
             valueListenable: notifier,
             builder: (context, type, _) {
@@ -153,12 +150,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                             Text(
                               postType[index].shortname,
                               style: type == index
-                                  ? TextUtil.base.NotoSansSC.w500
-                                      .sp(18)
-                                      .black2A
-                                  : TextUtil.base.NotoSansSC.w400
-                                      .sp(18)
-                                      .grey6C,
+                                  ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
+                                  : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -220,7 +213,8 @@ class SubmitButton extends StatelessWidget {
                 title: dataModel.title,
                 content: dataModel.content,
                 tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-                departmentId: dataModel.department == null ? '' : dataModel.department.id,
+                departmentId:
+                    dataModel.department == null ? '' : dataModel.department.id,
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -248,7 +242,8 @@ class SubmitButton extends StatelessWidget {
           title: dataModel.title,
           content: dataModel.content,
           tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-          departmentId: dataModel.department == null ? '' : dataModel.department.id,
+          departmentId:
+              dataModel.department == null ? '' : dataModel.department.id,
           images: [],
           campus: campusNotifier.value,
           onSuccess: () {
