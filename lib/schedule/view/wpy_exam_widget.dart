@@ -11,15 +11,14 @@ class WpyExamWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22),
+        padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
         child: Consumer<ExamProvider>(
           builder: (context, provider, child) {
             if (provider.hideExam) return Container();
             return Column(
               children: [
-                SizedBox(height: 7),
                 child!,
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 _detail(provider, context),
               ],
             );

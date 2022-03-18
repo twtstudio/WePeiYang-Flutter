@@ -93,7 +93,7 @@ class WeekSelectWidget extends StatelessWidget {
           ),
           child: CustomPaint(
             painter: _WeekSelectPainter(getBoolMatrix(
-                i + 1, provider.weekCount, provider.courses)),
+                i + 1, provider.weekCount, provider.totalCourses)),
             size: const Size(_canvasWidth, _canvasHeight),
           ),
         ),

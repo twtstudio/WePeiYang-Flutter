@@ -94,6 +94,12 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         ),
         IconButton(
+          icon: Icon(Icons.edit_location_outlined, color: titleColor, size: 28),
+          onPressed: () {
+
+          },
+        ),
+        IconButton(
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
             if (CommonPreferences.isBindTju.value) {
@@ -159,10 +165,10 @@ class _HoursCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = context.watch<CourseProvider>();
-    if (provider.courses.length == 0) return Container();
+    if (provider.schoolCourses.length == 0) return Container();
     int currentHours = getCurrentHours(
-        provider.currentWeek, DateTime.now().weekday, provider.courses);
-    int totalHours = getTotalHours(provider.courses);
+        provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
+    int totalHours = getTotalHours(provider.schoolCourses);
     double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;

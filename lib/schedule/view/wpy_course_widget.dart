@@ -22,7 +22,7 @@ class TodayCoursesWidget extends StatelessWidget {
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(22, 20, 22, 12),
+              padding: const EdgeInsets.fromLTRB(22, 20, 22, 10),
               alignment: Alignment.centerLeft,
               child: Row(
                 children: [
@@ -71,7 +71,7 @@ class TodayCoursesWidget extends StatelessWidget {
     bool readNightMode = nightMode;
     if (DateTime.now().hour < 21) readNightMode = false;
     bool flag;
-    provider.courses.forEach((course) {
+    provider.totalCourses.forEach((course) {
       for (int i = 0; i < course.arrangeList.length; i++) {
         if (readNightMode) {
           flag = judgeActiveTomorrow(provider.currentWeek, today,

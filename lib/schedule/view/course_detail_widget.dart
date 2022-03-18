@@ -87,7 +87,7 @@ class _CourseDisplayWidget extends StatelessWidget {
       height: _singleCourseHeight * 12 + _cardStep * 11 + _middleStep,
       child: Consumer<CourseProvider>(
         builder: (context, provider, child) {
-          if (provider.courses.length == 0) {
+          if (provider.totalCourses.length == 0) {
             return Stack(children: [child!]);
           }
           var merged = getMergedCourses(provider, _dayCount);

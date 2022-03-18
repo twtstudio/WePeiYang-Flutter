@@ -40,7 +40,7 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
 /// [List.first]的课显示在外，同时用于冲突判断
 List<List<List<Pair<Course, int>>>> getMergedCourses(
     CourseProvider provider, int dayNumber) {
-  List<Course> courses = provider.courses;
+  List<Course> courses = provider.totalCourses;
   List<List<List<Pair<Course, int>>>> result = [];
   for (int i = 0; i < dayNumber; i++) result.add([]);
   courses.forEach((course) {

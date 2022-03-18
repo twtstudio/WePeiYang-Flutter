@@ -11,15 +11,19 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
 
 class CourseProvider with ChangeNotifier {
-  /// 所有课程
-  List<Course> _courses = [];
+  /// 学校课程
+  List<Course> _schoolCourses = [];
 
-  set courses(List<Course> newList) {
-    _courses = newList;
-    notifyListeners();
-  }
+  List<Course> get schoolCourses => _schoolCourses; // 用于统计学时
 
-  List<Course> get courses => _courses;
+  /// 自定义课程
+  List<Course> _customCourses = [];
+
+  List<Course> get customCourses => _customCourses; // 用于自定义课程编辑页
+
+  /// 全部课程
+  List<Course> get totalCourses =>
+      []..addAll(_customCourses)..addAll(_schoolCourses); // 课表相关一般都用这个
 
   /// 当前显示的星期
   int _selectedWeek = 1;
@@ -56,9 +60,10 @@ class CourseProvider with ChangeNotifier {
     if (hint) ToastProvider.running("刷新数据中……");
     fetchCourses(onResult: (courses) {
       if (hint) ToastProvider.success("刷新课程表数据成功");
-      this.courses = courses; // 这一步会刷新widget
+      _schoolCourses = courses;
+      notifyListeners();
       CommonPreferences.courseData.value =
-          json.encode(CourseTable(_courses)); // 刷新本地缓存
+          json.encode(CourseTable(_schoolCourses, _customCourses)); // 刷新本地缓存
       _widgetChannel.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);
@@ -70,13 +75,16 @@ class CourseProvider with ChangeNotifier {
     if (CommonPreferences.courseData.value == '') return;
     CourseTable table =
         CourseTable.fromJson(json.decode(CommonPreferences.courseData.value));
-    this.courses = table.courses; // 这一步会刷新widget
+    _schoolCourses = table.schoolCourses;
+    _customCourses = table.customCourses;
+    notifyListeners();
   }
 
   /// 办公网解绑时清除数据
   void clear() {
-    this.courses = []; // 这一步会刷新widget
+    _schoolCourses = [];
     _selectedWeek = 1;
+    notifyListeners();
   }
 }
 

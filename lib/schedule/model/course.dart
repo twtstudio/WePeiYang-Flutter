@@ -1,16 +1,21 @@
 // @dart = 2.12
 /// 本地缓存用
 class CourseTable {
-  List<Course> courses;
+  List<Course> schoolCourses;
+  List<Course> customCourses;
 
-  CourseTable(this.courses);
+  CourseTable(this.schoolCourses, this.customCourses);
 
   CourseTable.fromJson(Map<String, dynamic> map)
-      : courses = []
-          ..addAll((map['courses'] as List).map((e) => Course.fromJson(e)));
+      : schoolCourses = []..addAll(
+            (map['schoolCourses'] as List).map((e) => Course.fromJson(e))),
+        customCourses = []..addAll(
+            (map['customCourses'] as List).map((e) => Course.fromJson(e)));
 
-  Map<String, dynamic> toJson() =>
-      {'courses': courses.map((e) => e.toJson()).toList()};
+  Map<String, dynamic> toJson() => {
+        'schoolCourses': schoolCourses.map((e) => e.toJson()).toList(),
+        'customCourses': customCourses.map((e) => e.toJson()).toList()
+      };
 }
 
 class Pair<A, B> {

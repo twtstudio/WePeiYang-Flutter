@@ -493,6 +493,7 @@ class _CourseListState extends State<CourseListWidget> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
                             child: InkWell(
+                              onTap: () {},
                               splashFactory: InkRipple.splashFactory,
                               borderRadius: BorderRadius.circular(12),
                               child: Row(
