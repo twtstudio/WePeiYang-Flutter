@@ -161,6 +161,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
+      color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(

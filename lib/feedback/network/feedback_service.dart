@@ -158,18 +158,20 @@ class FeedbackService with AsyncTimer {
     }
     return list;
   }
+
   static Future<Error> getError(
-      name,
-      ) async {
+    name,
+  ) async {
     Error error;
     var response = await feedbackDio.post('tag',
         formData: FormData.fromMap({
           'name': '$name',
         }));
     Map<String, dynamic> json = response.data['data'];
-     error = Error.fromJson(json);
-     return error;
+    error = Error.fromJson(json);
+    return error;
   }
+
   static getHotTags({
     @required OnResult<List<Tag>> onSuccess,
     @required OnFailure onFailure,
@@ -279,11 +281,17 @@ class FeedbackService with AsyncTimer {
 
   static getMyPosts({
     @required OnResult<List<Post>> onResult,
+    @required page,
+    @required page_size,
     @required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
         'posts/user',
+        queryParameters: {
+          'page': '$page',
+          'page_size': '$page_size',
+        },
       );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
@@ -297,10 +305,18 @@ class FeedbackService with AsyncTimer {
 
   static getFavoritePosts({
     @required OnResult<List<Post>> onResult,
+    @required page_size,
+    @required page,
     @required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get('posts/fav');
+      var response = await feedbackDio.get(
+        'posts/fav',
+        queryParameters: {
+          'page': '$page',
+          'page_size': '$page_size',
+        },
+      );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Post.fromJson(json));

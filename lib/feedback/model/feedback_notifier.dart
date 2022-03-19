@@ -244,7 +244,6 @@ class LakeModel extends ChangeNotifier {
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
-        CommonPreferences.feedbackToken.value = token;
         provider.initDepartments();
         initPostList(tab);
       },

@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
-import '../feedback_router.dart';
+import '../../../feedback_router.dart';
 
 class LinkText extends StatefulWidget {
   final TextStyle style;
@@ -30,27 +30,24 @@ class _LinkTextState extends State<LinkText> {
         overflow: TextOverflow.ellipsis,
         textStyle: widget.style,
         linkStyle: widget.style.linkBlue.w500, onTap: (link) async {
-      if (link.type == LinkType.hashTag) {
-        if (link.value.startsWith('#MP') &&
-            RegExp(r'^-?[0-9]+').hasMatch(link.value.substring(3))) {
-          FeedbackService.getPostById(
-            id: int.parse(link.value.substring(3)),
-            onResult: (post) {
-              Navigator.pushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              );
-            },
-            onFailure: (e) {
-              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
-              return;
-            },
-          );
-        } else
-          ToastProvider.error('无效的帖子编号！');
-      } else {
-        //粗暴地解决了，但是肯定不是个长久之计
+      //粗暴地解决了，但是肯定不是个长久之计
+      if (link.value.startsWith('#MP') &&
+          RegExp(r'^-?[0-9]+').hasMatch(link.value.substring(3))) {
+        FeedbackService.getPostById(
+          id: int.parse(link.value.substring(3)),
+          onResult: (post) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: post,
+            );
+          },
+          onFailure: (e) {
+            ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
+            return;
+          },
+        );
+      } else if (link.type == LinkType.url) {
         var url = link.value.startsWith('http')
             ? link.value
             : 'https://${link.value}';
@@ -120,7 +117,8 @@ class _LinkTextState extends State<LinkText> {
         } else {
           ToastProvider.error('请检查网址是否有误或检查网络状态');
         }
-      }
+      } else
+        ToastProvider.error('无效的帖子编号！');
     });
   }
 }

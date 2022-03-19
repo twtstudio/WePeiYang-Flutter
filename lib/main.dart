@@ -264,7 +264,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
-        context: context,
         orientation: Orientation.portrait);
     TextUtil.init(context);
     return GestureDetector(

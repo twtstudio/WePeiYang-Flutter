@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -145,12 +146,23 @@ class _PostList extends StatefulWidget {
 class _PostListState extends State<_PostList> {
   List<Post> _postList = [];
   MessageProvider messageProvider;
-
+  int page_post = 30;
+  int page_fav = 30;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       messageProvider = Provider.of<MessageProvider>(context, listen: false);
+      messageProvider..addListener(() {
+        switch (widget.type) {
+          case _CurrentTab.myPosts:
+            _initMyPosts();
+            break;
+          case _CurrentTab.myCollect:
+            _initMyCollects();
+            break;
+        }
+      });
       switch (widget.type) {
         case _CurrentTab.myPosts:
           _initMyPosts();
@@ -163,23 +175,33 @@ class _PostListState extends State<_PostList> {
   }
 
   _initMyPosts() {
-    FeedbackService.getMyPosts(onResult: (list) {
-      setState(() {
-        _addPostList(list);
-      });
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
+    FeedbackService.getMyPosts(
+        page: 0,
+        page_size: page_post,
+        onResult: (list) {
+          setState(() {
+            _addPostList(list);
+            page_post+=30;
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
   }
 
   _initMyCollects() {
-    FeedbackService.getFavoritePosts(onResult: (list) {
-      setState(() {
-        _addPostList(list);
-      });
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
+    FeedbackService.getFavoritePosts(
+        page: 0,
+        page_size: page_fav,
+        onResult: (list) {
+          setState(() {
+            _addPostList(list);
+            page_fav+=30;
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
   }
 
   _addPostList(List<Post> list) {
@@ -215,30 +237,38 @@ class _PostListState extends State<_PostList> {
       });
   }
 
+
   @override
   Widget build(BuildContext context) {
     Widget child;
+    var contentList = ListView.builder(
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        Widget post = PostCard.simple(
+          _postList[index],
+          onContentLongPressed: () => _deletePostOnLongPressed(index),
+          showBanner: true,
+          key: ValueKey(_postList[index].id),
+        );
+        return post;
+      },
+      itemCount: _postList.length,
+    );
+
     if (_postList.length.isZero) {
       child = Container(
           height: 200,
           alignment: Alignment.center,
           child: Text("暂无提问", style: TextStyle(color: Color(0xff62677b))));
     } else {
-      child = ListView.builder(
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          Widget post = PostCard.simple(
-            _postList[index],
-            onContentLongPressed: () => _deletePostOnLongPressed(index),
-            showBanner: true,
-            key: ValueKey(_postList[index].id),
-          );
-          return post;
-        },
-        itemCount: _postList.length,
-      );
+            child= Column(
+              children: [
+                contentList,
+                SizedBox(height: 20.w,)
+              ],
+            );
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context
