@@ -6,7 +6,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_apk_dialog.dart';
@@ -15,67 +17,111 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 
 import 'dialog/update_hotfix_dialog.dart';
+import 'dialog/util.dart';
+import 'file_util.dart';
 import 'hotfix_util.dart';
 import 'update_service.dart';
 import 'update_util.dart';
 import 'version_data.dart';
 
-enum UpdateState {
-  nothing,
-  checkUpdate,
-  download,
-  load,
-}
+part 'update_listener.dart';
 
-enum DialogTag { apk, hotfix, install }
-
-extension DialogTagExt on DialogTag {
-  String get text => ['updateDialog', 'hotfixDialog', 'installDialog'][index];
-}
+enum ApkType { beta, release }
 
 /// 版本更新管理
-class UpdateManager extends ChangeNotifier {
+class UpdateManager extends UpdateListener {
   Version? _version;
 
-  double _progress = 0;
+  final BuildContext _context;
 
-  double get progress => _progress;
+  UpdateManager(this._context);
 
-  set progress(double value) {
-    _progress = value;
-    notifyListeners();
+  /// 当前是测试版('beta')还是正式版('release')
+  ApkType get apkType {
+    final type = CommonPreferences().apkType.value;
+    if (type == 'release') {
+      return ApkType.release;
+    } else {
+      return ApkType.beta;
+    }
   }
 
-  UpdateState _state = UpdateState.nothing;
-
-  UpdateState get state => _state;
-
-  set state(UpdateState value) {
-    _state = value;
-    notifyListeners();
-  }
-
+  /// 手动调用检查更新，[showToast]表示是否弹出检查更新或失败的提示。
   Future<void> checkUpdate({bool showToast = false}) async {
-    debugPrint('check update');
-    if (state == UpdateState.nothing) {
-      debugPrint('check update123');
-      state = UpdateState.checkUpdate;
-      // 先删除原来的apk和so
-      await _deleteOriginalFile();
-      // 再检查更新
-      await UpdateService.checkUpdate(
-          onResult: (version) => _updateApp(version, showToast),
-          onSuccess: () {
-            state = UpdateState.nothing;
-            if (showToast) SmartDialog.showToast('已是最新版本');
-          },
-          onFailure: (_) {
-            state = UpdateState.nothing;
-            if (showToast) SmartDialog.showToast("检查更新失败");
-          });
+    if (state.isIdle) {
+      setGetVersion();
+      // 删除原来的（不是当前版本的）apk和so
+      await FileUtil.deleteOriginalFile().catchError((error, stack) {
+        // TODO
+      });
+
+      final v = await latestVersion;
+
+      if (v == null) {
+        setIdle();
+        if (showToast) SmartDialog.showToast("检查更新失败");
+        return;
+      } else {
+        _version = v;
+      }
+
+      final localVersionCode = await UpdateUtil.getVersionCode();
+      debugPrint("localVersionCode  $localVersionCode");
+      debugPrint("remoteVersionCode ${v.versionCode}");
+
+      if (v.versionCode <= localVersionCode) {
+        setIdle();
+        if (showToast) SmartDialog.showToast('已是最新版本');
+      } else {
+        _updateApp(v, showToast);
+      }
     } else if (state == UpdateState.download && _version != null) {
       _showApkDialog(_version!, showToast);
     }
+  }
+
+  /// 获取最新的版本
+  Future<Version?> get latestVersion async {
+    // 从个腿上获取配置的最新版本
+    final remoteConfigVersionData =
+        _context.read<RemoteConfig>().latestVersionData;
+
+    // 从天外天服务器上获取最新版本
+    final serverLatestVersionData =
+        await UpdateService.latestVersionData.catchError(
+      (error, stack) {
+        // TODO
+        return null;
+      },
+    );
+
+    Version? remoteConfigVersion;
+    Version? serverLatestVersion;
+
+    switch (apkType) {
+      case ApkType.release:
+        remoteConfigVersion = remoteConfigVersionData?.info.release;
+        serverLatestVersion = serverLatestVersionData?.info.release;
+        break;
+      case ApkType.beta:
+        remoteConfigVersion = remoteConfigVersionData?.info.beta;
+        serverLatestVersion = serverLatestVersionData?.info.beta;
+        break;
+    }
+
+    // 如果同时没有获取到两个版本，即检查更新失败
+    if (remoteConfigVersion == null && serverLatestVersion == null) {
+      return null;
+    }
+
+    // 此时_version 必然不是null
+    var v = remoteConfigVersion ?? serverLatestVersion;
+
+    if (v! < serverLatestVersion) {
+      v = serverLatestVersion;
+    }
+
+    return v;
   }
 
   /// webFixCode(更新的接口中) remoteVersionCode(新的apk版本)
@@ -99,21 +145,14 @@ class UpdateManager extends ChangeNotifier {
         localVersion + version.flutterFixCode >= version.versionCode) {
       // 则代表可以通过热修复更新 也可以通过下载新的安装包更新
       // 自动更新，下载完成后再弹对话框
-      hotFix(
-        version.flutterFixSoFile,
-        version.versionCode,
-        version.flutterFixCode,
-        fixLoadSoFileSuccess: () {
-          _showHotfixDialog(version, showToast);
-        },
-        fixError: (e) {
-          // 如果失败了，就下载apk更新
-          _updateWithApk(version, showToast);
-        },
-        downloadError: (e) {
-          ToastProvider.error(e.toString());
-        },
-      );
+      hotFix(version, fixLoadSoFileSuccess: () {
+        _showHotfixDialog(version, showToast);
+      }, fixError: (e) {
+        // 如果失败了，就下载apk更新
+        _updateWithApk(version, showToast);
+      }, downloadError: (e) {
+        ToastProvider.error(e.toString());
+      });
     }
   }
 
@@ -136,43 +175,51 @@ class UpdateManager extends ChangeNotifier {
 
   void download(Version version) {
     state = UpdateState.download;
-    DownloadManager.getInstance().download(
-      DownloadItem(
-        url: version.path,
-        fileName: version.apkName,
-        title: '微北洋',
-        showNotification: true,
-        type: DownloadType.apk,
-      ),
-      error: (message) {
-        debugPrint("ffffffffffffffffffffkkkkkkkkkkkkkkkkkkk");
-        SmartDialog.showToast("下载失败");
+
+    final task = DownloadItem(
+      url: version.path,
+      fileName: version.apkName,
+      title: '微北洋',
+      showNotification: true,
+      type: DownloadType.apk,
+    );
+
+    Future<void> downloadSuccess(DownloadItem task) async {
+      if (task.fileName == version.apkName) {
+        progress = 1.0;
+        state = UpdateState.load;
+        await Future.delayed(const Duration(seconds: 1));
         cancelDialog(DialogTag.apk);
-        state = UpdateState.nothing;
-      },
-      success: (task) async {
-        if (task.fileName == version.apkName) {
-          progress = 1.0;
-          state = UpdateState.load;
-          await Future.delayed(const Duration(seconds: 1));
-          cancelDialog(DialogTag.apk);
-          SmartDialog.show(
-            clickBgDismissTemp: false,
-            backDismiss: false,
-            tag: DialogTag.install.text,
-            widget: UpdateInstallDialog(version),
-            onDismiss: () {
-              state = UpdateState.nothing;
-              progress = 0;
-            },
-          );
-        }
-      },
-      running: (task, p) {
-        if (task.fileName == version.apkName) {
-          progress = p;
-        }
-      },
+        SmartDialog.show(
+          clickBgDismissTemp: false,
+          backDismiss: false,
+          tag: DialogTag.install.text,
+          widget: UpdateInstallDialog(version),
+          onDismiss: () {
+            state = UpdateState.idle;
+            progress = 0;
+          },
+        );
+      }
+    }
+
+    void downloadFailure(message) {
+      SmartDialog.showToast("下载失败");
+      cancelDialog(DialogTag.apk);
+      state = UpdateState.idle;
+    }
+
+    void downloadRunning(DownloadItem task, double p) {
+      if (task.fileName == version.apkName) {
+        progress = p;
+      }
+    }
+
+    DownloadManager.getInstance().download(
+      task,
+      error: downloadFailure,
+      success: downloadSuccess,
+      running: downloadRunning,
     );
   }
 
@@ -199,11 +246,11 @@ class UpdateManager extends ChangeNotifier {
         tag: DialogTag.install.text,
         widget: UpdateInstallDialog(version),
         onDismiss: () {
-          state = UpdateState.nothing;
+          state = UpdateState.idle;
         },
       );
     } else {
-      state = UpdateState.nothing;
+      state = UpdateState.idle;
     }
   }
 
@@ -215,11 +262,11 @@ class UpdateManager extends ChangeNotifier {
         tag: DialogTag.hotfix.text,
         widget: UpdateHotfixFinishDialog(version),
         onDismiss: () {
-          state = UpdateState.nothing;
+          state = UpdateState.idle;
         },
       );
     } else {
-      state = UpdateState.nothing;
+      state = UpdateState.idle;
     }
   }
 
@@ -232,50 +279,24 @@ class UpdateManager extends ChangeNotifier {
         tag: DialogTag.apk.text,
         widget: UpdateApkDialog(version),
         onDismiss: () {
-          state = UpdateState.nothing;
+          state = UpdateState.idle;
         },
       );
     } else {
-      state = UpdateState.nothing;
-    }
-  }
-
-  Future<void> _deleteOriginalFile() async {
-    final dir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))
-            ?.first;
-    if (dir == null) {
-      // 没有这个文件夹就很尬
-    }
-    final apkDir = Directory(dir!.path + Platform.pathSeparator + 'apk');
-    final currentVersionCode = await UpdateUtil.getVersionCode();
-    if (apkDir.existsSync()) {
-      for (var file in apkDir.listSync()) {
-        final name = file.path.split(Platform.pathSeparator).last;
-        debugPrint('current file: ' + name);
-        final list = name.split('-');
-        if (name.endsWith('.apk') && list.length == 3) {
-          final versionCode = int.tryParse(list[1]) ?? 0;
-          if (versionCode < currentVersionCode) {
-            file.delete();
-          }
-        }
-      }
+      state = UpdateState.idle;
     }
   }
 
   Future<void> forceUpdateApk(int testVersionCode) async {
-    state = UpdateState.checkUpdate;
+    state = UpdateState.getVersion;
     var response = await updateDio.get(UpdateService.wbyUpdateUrl);
     var version =
-        VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
+        VersionData.fromJson(jsonDecode(response.data.toString())).info.beta;
     if (testVersionCode + version.flutterFixCode < version.versionCode) {
       _updateWithApk(version, true);
     } else if (testVersionCode < version.versionCode &&
         testVersionCode + version.flutterFixCode >= version.versionCode) {
-      hotFix(
-          version.flutterFixSoFile, version.versionCode, version.flutterFixCode,
-          fixLoadSoFileSuccess: () {
+      hotFix(version, fixLoadSoFileSuccess: () {
         _showHotfixDialog(version, true);
       }, fixError: (e) {
         _updateWithApk(version, true);
@@ -288,13 +309,11 @@ class UpdateManager extends ChangeNotifier {
   }
 
   Future<void> forceUpdateSo() async {
-    state = UpdateState.checkUpdate;
+    state = UpdateState.getVersion;
     var response = await updateDio.get(UpdateService.wbyUpdateUrl);
     var version =
-        VersionData.fromJson(jsonDecode(response.data.toString())).info!.beta;
-    hotFix(
-        version.flutterFixSoFile, version.versionCode, version.flutterFixCode,
-        fixLoadSoFileSuccess: () {
+        VersionData.fromJson(jsonDecode(response.data.toString())).info.beta;
+    hotFix(version, fixLoadSoFileSuccess: () {
       _showHotfixDialog(version, true);
     }, fixError: (e) {
       _updateWithApk(version, true);

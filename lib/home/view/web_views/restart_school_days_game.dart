@@ -61,7 +61,7 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                         base64.decode(message.message.split(",")[1]);
                     final fileName =
                         "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
-                    await ImageSave.saveImageToAlbum(bytes, fileName);
+                    await ImageSave.saveImageFromBytes(bytes, fileName);
                     ToastProvider.success("保存成功");
                   } catch (_) {
                     ToastProvider.error('图片保存失败');

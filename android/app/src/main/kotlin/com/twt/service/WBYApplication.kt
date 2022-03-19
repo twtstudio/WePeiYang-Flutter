@@ -4,10 +4,12 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.os.Process
+import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.push.model.Event
 import com.twt.service.statistics.WbyStatisticsPlugin
 import com.umeng.cconfig.RemoteConfigSettings
 import com.umeng.cconfig.UMRemoteConfig
+import com.umeng.cconfig.listener.OnConfigStatusChangedListener
 import com.umeng.commonsdk.UMConfigure
 import io.flutter.FlutterInjector
 import java.lang.ref.WeakReference
@@ -30,9 +32,25 @@ class WBYApplication : Application() {
             }
             UMRemoteConfig.getInstance().apply {
                 setDefaults(R.xml.cloud_config_parms)
-                setConfigSettings(
-                    RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(true).build()
-                )
+                if (BuildConfig.LOG_OUTPUT) {
+                    // 方便调试
+                    setConfigSettings(
+                        RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(false).build()
+                    )
+                    setOnNewConfigfecthed(object : OnConfigStatusChangedListener {
+                        override fun onFetchComplete() {
+                            activeFetchConfig()
+                        }
+
+                        override fun onActiveComplete() {
+                            WbyCloudConfigPlugin.log("获取到最新配置")
+                        }
+                    })
+                } else {
+                    setConfigSettings(
+                        RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(true).build()
+                    )
+                }
             }
             WbyStatisticsPlugin.log("preInit umeng sdk")
             UMConfigure.preInit(applicationContext, "60464782b8c8d45c1390e7e3", "android")

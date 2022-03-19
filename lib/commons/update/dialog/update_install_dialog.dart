@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
+import 'util.dart';
+
 // 下载安装apk时的dialog
 class UpdateInstallDialog extends StatelessWidget {
   final Version version;

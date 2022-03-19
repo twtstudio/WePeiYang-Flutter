@@ -5,6 +5,7 @@ import com.twt.service.BuildConfig
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
 import com.twt.service.common.WbySharePreference
+import com.umeng.analytics.MobclickAgent
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
@@ -49,6 +50,7 @@ class WbyFixPlugin : WbyPlugin() {
             }
             "restartApp" -> {
                 runCatching {
+                    MobclickAgent.onKillProcess(context)
                     // https://github.com/gabrimatic/restart_app/blob/master/android/src/main/kotlin/gabrimatic/info/restart/RestartPlugin.kt
                     context.startActivity(
                         Intent.makeRestartActivityTask(

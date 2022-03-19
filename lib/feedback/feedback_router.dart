@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/offcial_reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/summary_page.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/summary_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';

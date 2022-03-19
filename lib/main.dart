@@ -31,6 +31,7 @@ import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import 'commons/channel/push/push_manager.dart';
+import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/util/text_util.dart';
 import 'lounge/lounge_providers.dart';
@@ -191,12 +192,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => GPANotifier()),
-        ChangeNotifierProvider(create: (context) => ScheduleNotifier()),
-        ChangeNotifierProvider(create: (context) => ExamNotifier()),
-        ChangeNotifierProvider(create: (context) => LocaleModel()),
-        ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ChangeNotifierProvider(create: (_) => RemoteConfig()),
+        ChangeNotifierProvider(create: (_) => LocaleModel()),
+        ChangeNotifierProvider(create: (_) => GPANotifier()),
+        ChangeNotifierProvider(create: (_) => ScheduleNotifier()),
+        ChangeNotifierProvider(create: (_) => ExamNotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
+        ChangeNotifierProvider(create: (context) => UpdateManager(context)),
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
@@ -220,6 +222,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
         Provider.value(value: ReportDataModel()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
+        // 获取友盟在线参数
+        context.read<RemoteConfig>().getRemoteConfig();
+
         return MaterialApp(
           theme: ThemeData(
             splashColor: Colors.transparent,

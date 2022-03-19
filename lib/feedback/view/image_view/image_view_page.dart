@@ -104,8 +104,11 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void shareImageToQQ() {
+    final url = baseUrl + urlList[tempSelect];
+    final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
-      baseUrl + urlList[tempSelect],
+      url,
+      fileName,
       album: false,
     ).then((path) async {
       await ShareManager.shareImgToQQ(path);
@@ -118,8 +121,11 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void saveImgToAlbum() {
+    final url = baseUrl + urlList[tempSelect];
+    final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
-      baseUrl + urlList[tempSelect],
+      url,
+      fileName,
       album: true,
     ).then((_) {
       ToastProvider.success("成功保存到相册");
