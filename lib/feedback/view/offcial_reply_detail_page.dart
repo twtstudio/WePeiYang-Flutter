@@ -182,14 +182,11 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
                   ancestorId: widget.floor[0].postId,
                 ),
               if (data.sender == 0)
-                NCommentCard(
+                OfficialReplyCard.reply(
                   comment: data,
-                  uid: data.uid,
-                  ancestorName: data.uid.toString(),
-                  ancestorUId: floors[0].postId,
-                  commentFloor: index + 1,
-                  isSubFloor: true,
-                  isFullView: true,
+                  ratings: rating,
+                  placeAppeared: index,
+                  ancestorId: widget.floor[0].postId,
                 ),
               Container(
                   width: WePeiYangApp.screenWidth - 60,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -36,7 +37,132 @@ extension _CurrentTabb on _CurrentTab {
 class _ProfilePageState extends State<ProfilePage> {
   ValueNotifier<_CurrentTab> _currentTab = ValueNotifier(_CurrentTab.myPosts);
   PageController _tabController;
+  List<Post> _postList = [];
+  List<Post> _favList = [];
+  MessageProvider messageProvider;
+  var _refreshController = RefreshController(initialRefresh: true);
   bool tap = false;
+  int page_post = 30;
+  int page_fav = 30;
+
+  _initMyPosts({Function onSuccess, Function onFail}) async {
+    FeedbackService.getMyPosts(
+        page: 0,
+        page_size: page_post,
+        onResult: (list) {
+          setState(() {
+            _addPostList(list);
+            onSuccess?.call();
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+          onFail?.call();
+        });
+    onSuccess?.call();
+  }
+
+  _initMyCollects({Function onSuccess, Function onFail}) {
+    FeedbackService.getFavoritePosts(
+        page: 0,
+        page_size: page_fav,
+        onResult: (list) {
+          setState(() {
+            _addFavList(list);
+            onSuccess?.call();
+          });
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+          onFail?.call();
+        });
+  }
+
+  _addPostList(List<Post> list) {
+    _postList = list;
+  }
+  _addFavList(List<Post> list) {
+    _favList = list;
+  }
+  //刷新
+  _onRefresh() {
+    switch (_currentTab.value) {
+      case _CurrentTab.myPosts:
+        _initMyPosts(onSuccess: () {
+          setState(() {
+            _refreshController.refreshCompleted();
+          });
+        }, onFail: () {
+          _refreshController.refreshFailed();
+        });
+        break;
+      case _CurrentTab.myCollect:
+        _initMyCollects(onSuccess: () {
+          setState(() {
+            _refreshController.refreshCompleted();
+          });
+        }, onFail: () {
+          _refreshController.refreshFailed();
+        });
+        break;
+    }
+  }
+//下拉加载
+  _onLoading() {
+    switch (_currentTab.value) {
+      case _CurrentTab.myPosts:
+        page_post += 30;
+        _initMyPosts(onSuccess: () {
+          setState(() {
+            _refreshController.loadComplete();
+          });
+        }, onFail: () {
+          page_post -= 30;
+          _refreshController.loadFailed();
+        });
+        break;
+      case _CurrentTab.myCollect:
+        page_fav += 30;
+        _initMyCollects(onSuccess: () {
+          setState(() {
+            _refreshController.loadComplete();
+          });
+        }, onFail: () {
+          page_fav -= 30;
+          _refreshController.loadFailed();
+        });
+        break;
+    }
+  }
+
+  _deletePostOnLongPressed(int index) {
+    if (_currentTab.value == _CurrentTab.myPosts)
+      showDialog<bool>(
+        context: context,
+        builder: (context) => ProfileDialog(
+          post: _postList[index],
+          onConfirm: () => Navigator.pop(context, true),
+          onCancel: () => Navigator.pop(context, false),
+        ),
+      ).then((confirm) {
+        if (confirm) {
+          FeedbackService.deletePost(
+            id: _postList[index].id,
+            onSuccess: () {
+              _postList.removeAt(index);
+              ToastProvider.success(S.current.feedback_delete_success);
+              context.read<MessageProvider>().refreshFeedbackCount();
+              setState(() {
+                _postList = List.from(_postList);
+              });
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
+          );
+        }
+      });
+  }
 
   @override
   void initState() {
@@ -72,178 +198,22 @@ class _ProfilePageState extends State<ProfilePage> {
           break;
       }
     });
-    context.read<MessageProvider>().refreshFeedbackCount();
+    switch (_currentTab.value) {
+      case _CurrentTab.myPosts:
+        _initMyPosts();
+        break;
+      case _CurrentTab.myCollect:
+        _initMyCollects();
+        break;
+    }
+    ;
   }
 
   @override
   Widget build(BuildContext context) {
-    var myPost = ProfileTabButton(
-      type: _CurrentTab.myPosts,
-      img: 'lib/feedback/assets/img/my_post.png',
-      text: S.current.feedback_my_post,
-    );
-
-    var myFavor = ProfileTabButton(
-      type: _CurrentTab.myCollect,
-      img: 'lib/feedback/assets/img/my_favorite.png',
-      text: S.current.feedback_my_favorite,
-    );
-
-    Widget tabs = Container(
-      height: 36,
-      child: Card(
-        color: Color.fromRGBO(246, 246, 247, 1.0),
-        elevation: 0,
-        child: Row(
-          children: [myPost, myFavor],
-        ),
-      ),
-    );
-
-    Widget appBar = SliverToBoxAdapter(
-      child: ProfileHeader(
-        child: SliverToBoxAdapter(
-          child: tabs,
-        ),
-      ),
-    );
-
-    var list = ExpandablePageView(
-      controller: _tabController,
-      children: [
-        _PostList(key: PageStorageKey(0), type: _CurrentTab.myPosts),
-        _PostList(key: PageStorageKey(1), type: _CurrentTab.myCollect)
-      ],
-    );
-
-    // var list = Container();
-
-    Widget body = ScrollConfiguration(
-      behavior: CustomScrollBehavior(),
-      child: CustomScrollView(
-        slivers: [
-          appBar,
-          SliverToBoxAdapter(child: SizedBox(height: 5)),
-          SliverToBoxAdapter(child: list),
-        ],
-      ),
-    );
-
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 247, 1.0),
-      body: body,
-    );
-  }
-}
-
-class _PostList extends StatefulWidget {
-  final _CurrentTab type;
-
-  const _PostList({Key key, this.type}) : super(key: key);
-
-  @override
-  _PostListState createState() => _PostListState();
-}
-
-class _PostListState extends State<_PostList> {
-  List<Post> _postList = [];
-  MessageProvider messageProvider;
-  int page_post = 30;
-  int page_fav = 30;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      messageProvider = Provider.of<MessageProvider>(context, listen: false);
-      messageProvider..addListener(() {
-        switch (widget.type) {
-          case _CurrentTab.myPosts:
-            _initMyPosts();
-            break;
-          case _CurrentTab.myCollect:
-            _initMyCollects();
-            break;
-        }
-      });
-      switch (widget.type) {
-        case _CurrentTab.myPosts:
-          _initMyPosts();
-          break;
-        case _CurrentTab.myCollect:
-          _initMyCollects();
-          break;
-      }
-    });
-  }
-
-  _initMyPosts() {
-    FeedbackService.getMyPosts(
-        page: 0,
-        page_size: page_post,
-        onResult: (list) {
-          setState(() {
-            _addPostList(list);
-            page_post+=30;
-          });
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        });
-  }
-
-  _initMyCollects() {
-    FeedbackService.getFavoritePosts(
-        page: 0,
-        page_size: page_fav,
-        onResult: (list) {
-          setState(() {
-            _addPostList(list);
-            page_fav+=30;
-          });
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        });
-  }
-
-  _addPostList(List<Post> list) {
-    _postList = list;
-  }
-
-  _deletePostOnLongPressed(int index) {
-    if (widget.type == _CurrentTab.myPosts)
-      showDialog<bool>(
-        context: context,
-        builder: (context) => ProfileDialog(
-          post: _postList[index],
-          onConfirm: () => Navigator.pop(context, true),
-          onCancel: () => Navigator.pop(context, false),
-        ),
-      ).then((confirm) {
-        if (confirm) {
-          FeedbackService.deletePost(
-            id: _postList[index].id,
-            onSuccess: () {
-              _postList.removeAt(index);
-              ToastProvider.success(S.current.feedback_delete_success);
-              context.read<MessageProvider>().refreshFeedbackCount();
-              setState(() {
-                _postList = List.from(_postList);
-              });
-            },
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-            },
-          );
-        }
-      });
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    Widget child;
-    var contentList = ListView.builder(
+    //这两个被拆出去单写会刷新错误..
+    //postList栏，为空时显示无
+    var postLists = (ListView.builder(
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -257,27 +227,118 @@ class _PostListState extends State<_PostList> {
         return post;
       },
       itemCount: _postList.length,
-    );
-
+    ));
+    var postListShow;
     if (_postList.length.isZero) {
-      child = Container(
+      postListShow = Container(
           height: 200,
           alignment: Alignment.center,
           child: Text("暂无提问", style: TextStyle(color: Color(0xff62677b))));
     } else {
-            child= Column(
-              children: [
-                contentList,
-                SizedBox(height: 20.w,)
-              ],
-            );
+      postListShow = Column(
+        children: [
+          postLists,
+          SizedBox(
+            height: 20.w,
+          )
+        ],
+      );
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context
-          .findAncestorStateOfType<_SizeReportingWidgetState>()
-          ._notifySize();
-    });
-    return child;
+    //收藏List栏，为空时显示无
+    var favLists = (ListView.builder(
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        Widget fav = PostCard.simple(
+          _favList[index],
+          showBanner: true,
+          key: ValueKey(_favList[index].id),
+        );
+        return fav;
+      },
+      itemCount: _favList.length,
+    ));
+    var favListShow;
+    if (_favList.length.isZero) {
+      favListShow = Container(
+          height: 200,
+          alignment: Alignment.center,
+          child: Text("网络不佳，下拉刷新试试", style: TextStyle(color: Color(0xff62677b))));
+    } else {
+      favListShow = Column(
+        children: [
+          favLists,
+          SizedBox(
+            height: 20.w,
+          )
+        ],
+      );
+    }
+    var myPost = ProfileTabButton(
+      type: _CurrentTab.myPosts,
+      text: S.current.feedback_my_post,
+    );
+
+    var myFavor = ProfileTabButton(
+      type: _CurrentTab.myCollect,
+      text: S.current.feedback_my_favorite,
+    );
+//选择栏
+    Widget tabs = Container(
+      height: 36,
+      child: Card(
+        color: Color.fromRGBO(246, 246, 247, 1.0),
+        elevation: 0,
+        child: Row(
+          children: [myPost, myFavor],
+        ),
+      ),
+    );
+//静态header，头像和资料以及appbar
+    Widget appBar = SliverToBoxAdapter(
+      child: ProfileHeader(
+        child: SliverToBoxAdapter(
+          child: tabs,
+        ),
+      ),
+    );
+
+    var list = ExpandablePageView(
+      controller: _tabController,
+      children: [
+       postListShow,
+        favListShow,
+      ],
+    );
+
+    // var list = Container();
+
+    Widget body = CustomScrollView(
+      slivers: [
+        appBar,
+        SliverToBoxAdapter(child: SizedBox(height: 5)),
+        SliverToBoxAdapter(child: list),
+      ],
+    );
+
+    return Container(
+      //改背景色用
+      decoration: BoxDecoration(
+        color: ColorUtil.backgroundColor
+      ),
+      child: SmartRefresher(
+        physics: BouncingScrollPhysics(),
+        controller: _refreshController,
+        header: ClassicHeader(),
+        footer: ClassicFooter(),
+        enablePullDown: true,
+        onRefresh: _onRefresh,
+        enablePullUp: true,
+        onLoading: _onLoading,
+        child: body,
+      ),
+    );
   }
 }
 
@@ -285,10 +346,13 @@ class ProfileTabButton extends StatefulWidget {
   final _CurrentTab type;
   final VoidCallback onTap;
   final String text;
-  final String img;
 
-  const ProfileTabButton({Key key, this.type, this.onTap, this.text, this.img})
-      : super(key: key);
+  const ProfileTabButton({
+    Key key,
+    this.type,
+    this.onTap,
+    this.text,
+  }) : super(key: key);
 
   @override
   _ProfileTabButtonState createState() => _ProfileTabButtonState();
