@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
+import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
+    color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -39,9 +43,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
 
   final FocusNode _userNumFocus = FocusNode();
   final FocusNode _nicknameFocus = FocusNode();
-
-  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
-      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -199,9 +200,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _codeFocus = FocusNode();
-
-  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
-      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
 
   @override
   Widget build(BuildContext context) {
@@ -452,7 +450,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (password1 != password2)
       ToastProvider.error("两次输入密码不一致");
     else if (!checkNotifier.value)
-      ToastProvider.error("请同意用户须知并继续");
+      ToastProvider.error("请同意用户协议与隐私政策并继续");
     else {
       AuthService.register(widget.userNum, widget.nickname, widget.phone,
           widget.code, password1, widget.email, widget.idNum,
@@ -468,8 +466,11 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
   final FocusNode _pw1Focus = FocusNode();
   final FocusNode _pw2Focus = FocusNode();
 
-  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
-      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final _normalStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11);
+
+  static final _highlightStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 11, color: Colors.blue, decoration: TextDecoration.underline);
 
   @override
   Widget build(BuildContext context) {
@@ -554,7 +555,6 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(25, 20, 40, 0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ValueListenableBuilder(
                   valueListenable: checkNotifier,
@@ -570,21 +570,24 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     );
                   },
                 ),
-                Text(S.current.register_hint1,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11)),
+                Text(S.current.register_hint1, style: _normalStyle),
                 GestureDetector(
                   onTap: () => showDialog(
                       context: context,
                       barrierDismissible: true,
-                      builder: (BuildContext context) =>
+                      builder: (context) =>
+                          UserAgreementDialog(check: checkNotifier)),
+                  child: Text('《用户协议》', style: _highlightStyle),
+                ),
+                Text('与', style: _normalStyle),
+                GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (context) =>
                           PrivacyDialog(check: checkNotifier)),
-                  child: Text(S.current.register_hint2,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 11,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline)),
-                )
+                  child: Text('《隐私政策》', style: _highlightStyle),
+                ),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -22,7 +23,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       if (account == "" || password == "")
         ToastProvider.error("账号密码不能为空");
       else if (!checkNotifier.value)
-        ToastProvider.error("请同意用户须知并继续");
+        ToastProvider.error("请同意用户协议与隐私政策并继续");
       else
         AuthService.pwLogin(account, password,
             onResult: (result) {
@@ -40,7 +41,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       } else if (code == "") {
         ToastProvider.error("短信验证码不能为空");
       } else if (!checkNotifier.value)
-        ToastProvider.error("请同意用户须知并继续");
+        ToastProvider.error("请同意用户协议与隐私政策并继续");
       else
         AuthService.codeLogin(account, code,
             onResult: (result) {
@@ -57,6 +58,12 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
 
   static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
       color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+
+  static final _normalStyle = FontManager.YaHeiRegular.copyWith(
+      color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11);
+
+  static final _highlightStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 11, color: Colors.blue, decoration: TextDecoration.underline);
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +134,24 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     );
                   },
                 ),
-                Text(S.current.register_hint1,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11)),
+                Text(S.current.register_hint1, style: _normalStyle),
+                GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (context) =>
+                          UserAgreementDialog(check: checkNotifier)),
+                  child: Text('《用户协议》', style: _highlightStyle),
+                ),
+                Text('与', style: _normalStyle),
                 GestureDetector(
                   onTap: () => showDialog(
                       context: context,
                       barrierDismissible: true,
                       builder: (context) =>
                           PrivacyDialog(check: checkNotifier)),
-                  child: Text(S.current.register_hint2,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 11,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline)),
-                )
+                  child: Text('《隐私政策》', style: _highlightStyle),
+                ),
               ],
             ),
           ],
@@ -227,19 +237,12 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           children: [
             SizedBox(width: 10),
             GestureDetector(
-              child: Text(S.current.forget_password,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 11,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline)),
-              onTap: () =>
-                  Navigator.pushNamed(context, AuthRouter.findHome),
+              child: Text(S.current.forget_password, style: _highlightStyle),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             Spacer(),
             GestureDetector(
-              child: Text('短信登陆→',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 11, color: Color.fromRGBO(79, 88, 107, 1))),
+              child: Text('短信登陆→', style: _normalStyle),
               onTap: () {
                 if (CommonPreferences().usePwLogin.value) {
                   _accountFocus.unfocus();
@@ -375,9 +378,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           children: [
             Spacer(),
             GestureDetector(
-              child: Text('密码登陆→',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 11, color: Color.fromRGBO(79, 88, 107, 1))),
+              child: Text('密码登陆→', style: _normalStyle),
               onTap: () {
                 if (CommonPreferences().usePwLogin.value) {
                   _accountFocus.unfocus();

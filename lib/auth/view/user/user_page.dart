@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
@@ -141,7 +141,7 @@ class _UserPageState extends State<UserPage> {
                     child: InkWell(
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.aboutTwt),
-                      onLongPress: (){
+                      onLongPress: () {
                         if (kDebugMode) {
                           Navigator.pushNamed(context, TestRouter.qnhdTest);
                         }
@@ -230,7 +230,8 @@ class _UserPageState extends State<UserPage> {
                       onTap: () => showDialog(
                           context: context,
                           barrierDismissible: true,
-                          builder: (BuildContext context) => PrivacyDialog()),
+                          builder: (BuildContext context) =>
+                              AgreementAndPrivacyDialog()),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
                       child: Row(
@@ -239,7 +240,7 @@ class _UserPageState extends State<UserPage> {
                           Icon(Icons.lock_outline,
                               color: Color.fromRGBO(98, 103, 122, 1), size: 20),
                           SizedBox(width: 10),
-                          Text('查看隐私政策', style: textStyle),
+                          Text('用户协议及隐私政策', style: textStyle),
                           Spacer(),
                           arrow,
                           SizedBox(width: 22),
