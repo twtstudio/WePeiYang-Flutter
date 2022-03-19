@@ -89,6 +89,16 @@ class CourseProvider with ChangeNotifier {
 }
 
 class CourseDisplayProvider with ChangeNotifier {
+  /// 是否处于编辑模式
+  bool _editMode = false;
+
+  bool get editMode => _editMode;
+
+  void changeEditMode() {
+    _editMode = !_editMode;
+    notifyListeners();
+  }
+
   /// 课表页星期栏是否收缩
   set shrink(bool value) {
     CommonPreferences.courseAppBarShrink.value = value;

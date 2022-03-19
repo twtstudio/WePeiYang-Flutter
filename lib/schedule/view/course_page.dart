@@ -48,6 +48,8 @@ class _CoursePageState extends State<CoursePage> {
 
   @override
   Widget build(BuildContext context) {
+    var appBar = con
+
     return Scaffold(
       appBar: _CourseAppBar(),
       backgroundColor: Colors.white,
