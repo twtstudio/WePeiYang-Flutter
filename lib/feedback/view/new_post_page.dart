@@ -156,7 +156,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                             ),
                             Container(
                               decoration: BoxDecoration(
-                                  color: type == index
+                                  color: type ==  postType[index].id
                                       ? ColorUtil.mainColor
                                       : Colors.white,
                                   borderRadius:
@@ -173,7 +173,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                           elevation: 0,
                         ),
                         onPressed: () {
-                          notifier.value = index;
+                          notifier.value =  postType[index].id;
                         },
                       ),
                     );
@@ -202,7 +202,7 @@ class SubmitButton extends StatelessWidget {
 
   void submit(BuildContext context) {
     var dataModel = context.read<NewPostProvider>();
-    dataModel.type = postTypeNotifier.value + 1;
+    dataModel.type = postTypeNotifier.value;
     if (dataModel.images.isNotEmpty && dataModel.check) {
       FeedbackService.postPic(
           images: dataModel.images,
@@ -321,7 +321,7 @@ class _departmentTagViewState extends State<departmentTagView> {
             ),
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
-            child: notifier.value == 0
+            child: notifier.value == 1
                 ? TabGridView(
                     department: department.value,
                   )
