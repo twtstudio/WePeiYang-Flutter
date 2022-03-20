@@ -105,12 +105,13 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
+
   List<WPYTab> postType = [];
 
   @override
   void initState() {
     super.initState();
-    if (context.read<LakeModel>().newPostTabList == []) {
+    if(context.read<LakeModel>().newPostTabList == []){
       context.read<LakeModel>().initTabList();
     }
     postType = context.read<LakeModel>().newPostTabList;
@@ -213,8 +214,7 @@ class SubmitButton extends StatelessWidget {
                 title: dataModel.title,
                 content: dataModel.content,
                 tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-                departmentId:
-                    dataModel.department == null ? '' : dataModel.department.id,
+                departmentId: dataModel.department == null ? '' : dataModel.department.id,
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -242,8 +242,7 @@ class SubmitButton extends StatelessWidget {
           title: dataModel.title,
           content: dataModel.content,
           tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-          departmentId:
-              dataModel.department == null ? '' : dataModel.department.id,
+          departmentId: dataModel.department == null ? '' : dataModel.department.id,
           images: [],
           campus: campusNotifier.value,
           onSuccess: () {
