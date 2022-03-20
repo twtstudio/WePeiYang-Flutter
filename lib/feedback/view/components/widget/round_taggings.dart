@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:provider/provider.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -66,34 +68,51 @@ class UnSolvedWidget extends StatelessWidget {
 class TagShowWidget extends StatelessWidget {
   final String tag;
   final double width;
-  final bool notFeedback;
-  final int id;
 
-  TagShowWidget(this.tag, this.width, this.notFeedback, this.id);
+  ///0 湖底 1 校务 2 分区
+  final int type;
+  final int id;
+  final int tar;
+
+  TagShowWidget(this.tag, this.width, this.type, this.id, this.tar);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        id == -1 ?  Navigator.pushNamed(
-          context,
-          FeedbackRouter.searchResult,
-          arguments: SearchResultPageArgs(
-              '$tag', '', '', '模糊搜索#$tag', 2),
-        ):
-        notFeedback
-          ? Navigator.pushNamed(
-              context,
-              FeedbackRouter.searchResult,
-              arguments: SearchResultPageArgs(
-                  '', '$id', '', '标签 #$tag', 0),
-            )
-          : Navigator.pushNamed(
-              context,
-              FeedbackRouter.searchResult,
-              arguments: SearchResultPageArgs(
-                  '', '', '$id', '部门 #$tag', 1),
-            );
+        id == -1
+            ? Navigator.pushNamed(
+                context,
+                FeedbackRouter.searchResult,
+                arguments: SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2),
+              )
+            : type == 0
+                ? {
+                    Navigator.pushNamed(
+                      context,
+                      FeedbackRouter.searchResult,
+                      arguments: SearchResultPageArgs(
+                        '',
+                        '',
+                        '',
+                        '$tag 分区详情',
+                        tar
+                      ),
+                    )
+                  }
+                : type == 1
+                    ? Navigator.pushNamed(
+                        context,
+                        FeedbackRouter.searchResult,
+                        arguments:
+                            SearchResultPageArgs('', '', '$id', '部门 #$tag', 1),
+                      )
+                    : Navigator.pushNamed(
+                        context,
+                        FeedbackRouter.searchResult,
+                        arguments:
+                            SearchResultPageArgs('', '$id', '', '标签 #$tag', 0),
+                      );
       },
       child: Container(
         height: 20,
@@ -103,18 +122,25 @@ class TagShowWidget extends StatelessWidget {
               height: 14,
               width: 14,
               alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 5, 3),
+              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: notFeedback ? Colors.white : ColorUtil.mainColor,
+                color: type == 0
+                    ? Color(0xffeaeaea)
+                    : type == 1
+                        ? ColorUtil.mainColor
+                        : Colors.white,
               ),
               child: SvgPicture.asset(
-                notFeedback
-                    ? "assets/svg_pics/lake_butt_icons/hashtag.svg"
-                    : "assets/svg_pics/lake_butt_icons/flag.svg",
+                type == 0
+                    ? "assets/svg_pics/lake_butt_icons/districts.svg"
+                    : type == 1
+                        ? "assets/svg_pics/lake_butt_icons/flag.svg"
+                        : "assets/svg_pics/lake_butt_icons/hashtag.svg",
               ),
             ),
+            SizedBox(width: type == 0 ? 0 : 2),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: width - 30),
               child: Text(

@@ -117,14 +117,14 @@ class _LakeSelectorState extends State<LakeSelector> {
     if (context.read<LakeModel>().newPostTabList == []) {
       context.read<LakeModel>().initTabList();
     }
-
-    postType = context.read<LakeModel>().newPostTabList;
   }
 
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    postType = context.read<LakeModel>().newPostTabList;
+    notifier.value = postType[1].id;
     return postType == []
         ? Container(
             height: 60,
@@ -168,10 +168,10 @@ class _LakeSelectorState extends State<LakeSelector> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      postType[index].name,
-                                      style: TextUtil.base.NotoSansSC.w600.sp(18).black2A
-                                    ),
+                                    Text(postType[index].name,
+                                        style: TextUtil.base.NotoSansSC.w600
+                                            .sp(18)
+                                            .black2A),
                                     Container(
                                       margin: EdgeInsets.only(top: 2),
                                       decoration: BoxDecoration(
@@ -181,8 +181,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                   ? ColorUtil.mainColor
                                                   : Colors.white,
                                               width: 1),
-                                          borderRadius:
-                                              BorderRadius.all(Radius.circular(16))),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16))),
                                       width: 24,
                                       height: 3,
                                     ),
@@ -204,7 +204,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                         begin: Alignment.centerLeft,
                         end: Alignment.center,
                         colors: [Colors.transparent, ColorUtil.backgroundColor],
-                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                      ).createShader(
+                          Rect.fromLTRB(0, 0, rect.width, rect.height));
                     },
                     blendMode: BlendMode.dstIn,
                     child: InkWell(
@@ -213,11 +214,12 @@ class _LakeSelectorState extends State<LakeSelector> {
                       onTap: () {
                         controller.offset <= 100 * (postType.length - 1)
                             ? controller.animateTo(controller.offset + 100,
-                            duration: Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn)
-                            : controller.animateTo(140 * (postType.length - 1).toDouble(),
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.slowMiddle);
+                                duration: Duration(milliseconds: 400),
+                                curve: Curves.fastOutSlowIn)
+                            : controller.animateTo(
+                                140 * (postType.length - 1).toDouble(),
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.slowMiddle);
                       },
                       child: Container(
                         height: 90,
