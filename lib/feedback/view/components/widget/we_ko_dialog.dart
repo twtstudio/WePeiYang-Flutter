@@ -8,6 +8,7 @@ class WeKoDialog extends StatelessWidget {
   final void Function() onCancel;
   final String baseUrl = 'https://qnhd.twt.edu.cn/';
   //final String baseUrl = 'https://www.zrzz.site:7013/';
+
   WeKoDialog(
       {Key key,
       @required this.post,

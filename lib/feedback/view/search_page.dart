@@ -4,11 +4,13 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -53,7 +55,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           FeedbackRouter.searchResult,
           arguments: SearchResultPageArgs(
-              text, '', '', S.current.feedback_search_result, 2),
+              text, '', '', S.current.feedback_search_result, 0),
         ).then((_) {
           Navigator.pop(context);
         });
@@ -127,7 +129,7 @@ class _SearchPageState extends State<SearchPage> {
                 '',
                 '',
                 S.current.feedback_search_result,
-                2);
+                0);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,

@@ -24,21 +24,23 @@ class _HotCardState extends State<HotCard> {
   }
 
   List<SvgPicture> leads = [
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg"),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 16),
+    //下面的这个是图钉
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg", width: 16),
   ];
 
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 24),
+          width: 22),
       SizedBox(width: 3),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 110)
+          width: 95)
     ]);
 
     return Container(
@@ -53,7 +55,28 @@ class _HotCardState extends State<HotCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           title,
-          SizedBox(height: 10),
+          SizedBox(height: 8),
+          InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: leads[5],
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    '点击查看年度总结',
+                    style: TextUtil.base.w400.NotoSansSC
+                        .sp(16)
+                        .black2A,
+                  ),
+                ],
+              ),
+            ),
+          ),
           Consumer<FbHotTagsProvider>(
             builder: (_, data, __) =>
             data.hotTagsList.length > 0 ? ListView.builder(
