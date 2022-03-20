@@ -30,7 +30,7 @@ class _HotCardState extends State<HotCard> {
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 16),
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 16),
     //下面的这个是图钉
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg", width: 16,color: Colors.red),
   ];
 
   @override
@@ -57,7 +57,9 @@ class _HotCardState extends State<HotCard> {
           title,
           SizedBox(height: 8),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, FeedbackRouter.summary);
+            },
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Row(

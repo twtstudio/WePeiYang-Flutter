@@ -120,6 +120,17 @@
                     android:pathPrefix="/mailbox"
                     android:scheme="twtstudio" />
             </intent-filter>
+            <!--        校务总结页面跳转-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="qnhd"
+                    android:scheme="wpy" />
+            </intent-filter>
             <!--        友盟卖点验证  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

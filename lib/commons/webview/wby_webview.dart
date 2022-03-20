@@ -35,7 +35,7 @@ class WbyWebViewState extends State<WbyWebView> {
   PreferredSizeWidget get appBar => AppBar(
         title: Text(
           widget.page,
-          style: TextStyle(fontSize: 16,color: Colors.black),
+          style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         elevation: 0,
         brightness: Brightness.light,
@@ -52,17 +52,21 @@ class WbyWebViewState extends State<WbyWebView> {
       );
 
   Future<String> getInitialUrl(BuildContext context) async {
+    return context
+        .select(
+          (RemoteConfig config) => config.webViews[widget.page]?.url,
+        )
+        .toString();
+  }
+
+  List<JavascriptChannel>? getJsChannels() {
     return context.select(
-      (RemoteConfig config) => config.webViews[widget.page]?.url,
-    ).toString();
+          (RemoteConfig config) => config.webViews[widget.page]?.channels,
+        ) ;
   }
 
   @override
   Widget build(BuildContext context) {
-    final channels = context.select(
-      (RemoteConfig config) => config.webViews[widget.page]?.channels,
-    );
-
     final body = Stack(
       alignment: Alignment.center,
       children: [
@@ -76,7 +80,7 @@ class WbyWebViewState extends State<WbyWebView> {
                   initialUrl: snapshot.data.toString(),
                   javascriptMode: JavascriptMode.unrestricted,
                   onPageStarted: (_) {
-                    if (!loadSuccess){
+                    if (!loadSuccess) {
                       setState(() {
                         loadSuccess = true;
                       });
@@ -85,7 +89,7 @@ class WbyWebViewState extends State<WbyWebView> {
                   onWebResourceError: (error) {
                     ToastProvider.error('加载遇到了错误');
                   },
-                  javascriptChannels: (channels ?? []).toSet(),
+                  javascriptChannels: (getJsChannels() ?? []).toSet(),
                 ),
               );
             }
