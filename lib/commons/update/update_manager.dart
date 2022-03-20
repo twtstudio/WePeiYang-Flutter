@@ -87,13 +87,7 @@ class UpdateManager extends UpdateListener {
         _context.read<RemoteConfig>().latestVersionData;
 
     // 从天外天服务器上获取最新版本
-    final serverLatestVersionData =
-        await UpdateService.latestVersionData.catchError(
-      (error, stack) {
-        // TODO
-        return null;
-      },
-    );
+    final serverLatestVersionData = await UpdateService.latestVersionData;
 
     Version? remoteConfigVersion;
     Version? serverLatestVersion;

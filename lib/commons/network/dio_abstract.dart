@@ -14,6 +14,7 @@ typedef OnSuccess = void Function();
 typedef OnResult<T> = void Function(T data);
 typedef OnFailure = void Function(DioError e);
 
+// TODO: 是否考虑删除 abstract ，这样有些简单使用的地方就不用再继承一个类了？
 abstract class DioAbstract {
   String baseUrl;
   Map<String, String> headers;

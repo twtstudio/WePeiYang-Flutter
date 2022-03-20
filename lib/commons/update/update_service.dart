@@ -7,11 +7,9 @@ import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
-class UpdateDio extends DioAbstract {
-  @override
-  ResponseType responseType = ResponseType.plain;
-}
+class UpdateDio extends DioAbstract {}
 
 final updateDio = UpdateDio();
 
@@ -23,8 +21,9 @@ class UpdateService with AsyncTimer {
       var response = await updateDio.get(wbyUpdateUrl);
       return VersionData.fromJson(response.data);
     } catch (error,stack){
+      Logger.reportError(error, stack);
       // TODO
-      throw error;
+      return null;
     }
   }
 }

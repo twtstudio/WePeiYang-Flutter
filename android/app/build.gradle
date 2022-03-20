@@ -102,11 +102,26 @@ android {
 
             buildConfigField("Boolean", "LOG_OUTPUT", "false")
 
+            def dartEnvironmentVariables = []
+
+            // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
+            // flutter 1.20 ~ 2.2 的读取方式
+            if (project.hasProperty('dart-defines')) {
+                dartEnvironmentVariables = project.property('dart-defines')
+                        .split(',')
+                        .collectEntries { entry ->
+                            def pair = URLDecoder.decode(entry).split('=')
+                            [(pair.first()): pair.last()]
+                        }
+            }
+
             // 谷歌规定 Google Play 多个安装包不能 versionCode一样
             // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     output.versionCodeOverride = android.defaultConfig.versionCode
+                    // https://viblo.asia/p/how-to-config-your-output-file-name-in-gradle-kotlin-dsl-android-L4x5x6qYZBM
+                    output.outputFileName = dartEnvironmentVariables.FLAVOR + "-" + output.outputFileName
                 }
             }
 
