@@ -59,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ToastProvider.error(e.error.toString());
           onFail?.call();
         });
-    onSuccess?.call();
   }
 
   _initMyCollects({Function onSuccess, Function onFail}) {
@@ -91,18 +90,14 @@ class _ProfilePageState extends State<ProfilePage> {
     switch (_currentTab.value) {
       case _CurrentTab.myPosts:
         _initMyPosts(onSuccess: () {
-          setState(() {
             _refreshController.refreshCompleted();
-          });
         }, onFail: () {
           _refreshController.refreshFailed();
         });
         break;
       case _CurrentTab.myCollect:
         _initMyCollects(onSuccess: () {
-          setState(() {
             _refreshController.refreshCompleted();
-          });
         }, onFail: () {
           _refreshController.refreshFailed();
         });
@@ -116,9 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case _CurrentTab.myPosts:
         page_post += 30;
         _initMyPosts(onSuccess: () {
-          setState(() {
-            _refreshController.loadNoData();
-          });
+            _refreshController.loadComplete();
         }, onFail: () {
           page_post -= 30;
           _refreshController.loadFailed();
@@ -127,9 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case _CurrentTab.myCollect:
         page_fav += 30;
         _initMyCollects(onSuccess: () {
-          setState(() {
-            _refreshController.loadNoData();
-          });
+            _refreshController.refreshCompleted();
         }, onFail: () {
           page_fav -= 30;
           _refreshController.loadFailed();
@@ -157,6 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
               context.read<MessageProvider>().refreshFeedbackCount();
               setState(() {
                 _postList = List.from(_postList);
+                _refreshController.requestRefresh();
               });
             },
             onFailure: (e) {
@@ -237,7 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
       postListShow = Container(
           height: 200,
           alignment: Alignment.center,
-          child: Text("暂无提问", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
     } else {
       postListShow = Column(
         children: [
@@ -268,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
       favListShow = Container(
           height: 200,
           alignment: Alignment.center,
-          child: Text("暂无提问", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
     } else {
       favListShow = Column(
         children: [
@@ -333,7 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
         header: RefreshHeader(),
-        footer: ClassicFooter(),
+        footer: ClassicFooter(idleText: '没有更多数据了:>',idleIcon: Icon(Icons.check),),
         enablePullDown: true,
         onRefresh: _onRefresh,
         enablePullUp: true,

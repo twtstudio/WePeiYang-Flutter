@@ -109,7 +109,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             .read<LakeModel>()
             .lakeAreas[wpyTab]
             .refreshController
-            .loadNoData();
+            .loadComplete();
       },
       failure: (e) {
         context

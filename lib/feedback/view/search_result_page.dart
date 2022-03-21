@@ -87,7 +87,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
         onSuccess: (list, page) {
           totalPage = page;
           setState(() => _list.addAll(list));
-          _refreshController.loadNoData();
+          _refreshController.loadComplete();
+          if(list.isEmpty) _refreshController.loadNoData();
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
