@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
         page_post += 30;
         _initMyPosts(onSuccess: () {
           setState(() {
-            _refreshController.loadComplete();
+            _refreshController.loadNoData();
           });
         }, onFail: () {
           page_post -= 30;
@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
         page_fav += 30;
         _initMyCollects(onSuccess: () {
           setState(() {
-            _refreshController.loadComplete();
+            _refreshController.loadNoData();
           });
         }, onFail: () {
           page_fav -= 30;

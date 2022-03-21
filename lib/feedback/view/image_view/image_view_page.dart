@@ -28,7 +28,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
     urlListLength = obj['urlListLength'];
     indexNow = obj['indexNow'];
     isLongPic = obj['isLongPic'] ?? false;
-    tempSelect = indexNow;
 
     return GestureDetector(
       onTap: () {
@@ -104,7 +103,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void shareImageToQQ() {
-    final url = baseUrl + urlList[tempSelect];
+    final url = baseUrl + urlList[tempSelect ?? indexNow];
     final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
       url,
@@ -121,7 +120,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void saveImgToAlbum() {
-    final url = baseUrl + urlList[tempSelect];
+    final url = baseUrl + urlList[tempSelect ?? indexNow];
     final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
       url,
