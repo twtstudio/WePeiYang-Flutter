@@ -10,7 +10,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackSummaryPage extends WbyWebView {
-  const FeedbackSummaryPage({Key? key}) : super(page: "年终总结", key: key);
+  const FeedbackSummaryPage({Key? key}) : super(page: "年度总结", key: key);
 
   @override
   _FeedbackSummaryPageState createState() => _FeedbackSummaryPageState();

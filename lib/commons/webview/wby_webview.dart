@@ -17,13 +17,17 @@ class WbyWebView extends StatefulWidget {
   WbyWebViewState createState() => WbyWebViewState();
 }
 
+enum _PageState { initUrl, initError, initWebView, showWebView }
+
 class WbyWebViewState extends State<WbyWebView> {
-  var loadSuccess = false;
+  _PageState state = _PageState.initUrl;
+  WebViewController? _controller;
 
   @override
   void initState() {
     super.initState();
     UmengCommonSdk.onPageStart('webview/${widget.page}');
+    WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
   }
 
   @override
@@ -51,52 +55,75 @@ class WbyWebViewState extends State<WbyWebView> {
         ),
       );
 
-  Future<String> getInitialUrl(BuildContext context) async {
+  Future<String?> getInitialUrl(BuildContext context) async {
     return context
         .select(
           (RemoteConfig config) => config.webViews[widget.page]?.url,
-        )
-        .toString();
+        );
   }
 
   List<JavascriptChannel>? getJsChannels() {
     return context.select(
-          (RemoteConfig config) => config.webViews[widget.page]?.channels,
-        ) ;
+      (RemoteConfig config) => config.webViews[widget.page]?.channels,
+    );
+  }
+
+  void initUrl() async {
+    if (state == _PageState.initError) {
+      setState(() {
+        state = _PageState.initUrl;
+      });
+    }
+    final url = await getInitialUrl(context).then((u) => u, onError: (_) => null);
+    if (url != null) {
+      setState(() {
+        state = _PageState.initWebView;
+        _controller?.loadUrl(url);
+      });
+    } else {
+      setState(() {
+        state = _PageState.initError;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget top;
+
+    if (state == _PageState.initError) {
+      top = TextButton(onPressed: initUrl, child: Text("遇到错误请重试"));
+    } else {
+      top = Loading();
+    }
+
+    top = Visibility(
+      visible: !(state == _PageState.showWebView),
+      child: top,
+    );
+
     final body = Stack(
       alignment: Alignment.center,
       children: [
-        FutureBuilder(
-          future: getInitialUrl(context),
-          builder: (_, snapshot) {
-            if (snapshot.hasData) {
-              return Opacity(
-                opacity: loadSuccess ? 1.0 : 0.0,
-                child: WebView(
-                  initialUrl: snapshot.data.toString(),
-                  javascriptMode: JavascriptMode.unrestricted,
-                  onPageStarted: (_) {
-                    if (!loadSuccess) {
-                      setState(() {
-                        loadSuccess = true;
-                      });
-                    }
-                  },
-                  onWebResourceError: (error) {
-                    ToastProvider.error('加载遇到了错误');
-                  },
-                  javascriptChannels: (getJsChannels() ?? []).toSet(),
-                ),
-              );
-            }
-            return SizedBox.shrink();
-          },
+        Opacity(
+          opacity: state == _PageState.showWebView ? 1.0 : 0.0,
+          child: WebView(
+            onWebViewCreated: (controller){
+              _controller = controller;
+            },
+            javascriptMode: JavascriptMode.unrestricted,
+            onPageStarted: (_) {
+              setState(() {
+                state = _PageState.showWebView;
+              });
+            },
+            onWebResourceError: (error) {
+              ToastProvider.error('加载遇到了错误');
+            },
+            javascriptChannels: (getJsChannels() ?? []).toSet(),
+          ),
         ),
-        Visibility(visible: !loadSuccess, child: Loading()),
+        top,
       ],
     );
 

@@ -13,33 +13,47 @@ mkdir $allApksPath
 
 flutter clean
 
+function New-Apk {
+    param (
+        [Parameter()]
+        [string]$channel,
+        [Parameter()]
+        [string]$environment,
+        [Parameter()]
+        [string]$platforms,
+        [Parameter()]
+        [string]$qnhd,
+        [Parameter()]
+        [string]$qnhdpic
+    )
+    $channelPath = $allApksPath + "\" + $channel + "_" + $environment
+    New-Item $channelPath -ItemType "directory"
+    $arguments = @(
+        "--dart-define=CHANNEL=$channel",
+        "--dart-define=ENVIRONMENT=$environment",
+        "--dart-define=QNHD=$qnhd",
+        " --dart-define=QNHDPIC=$qnhdpic"
+    ) -join " "
+    flutter build apk  $arguments  --target-platform $platforms --split-per-abi
+    Move-Item  -Path ($releasePath + "\*") -Destination $channelPath
+}
+
 # RELEASE版
 # 每个渠道下有32位和64位两个apk
 
-$type = "RELEASE"
 $qnhd = ""
 $qnhdpic = ""
 $channels = @("HUAWEI", "XIAOMI", "OPPO", "VIVO", "DOWNLOAD")
-$platforms = "android-arm,android-arm64"
 foreach ($channel in $channels) {
-    $channelPath = $allApksPath + "\" + $channel + "_" + $type
-    New-Item $channelPath -ItemType "directory"
-    flutter build apk --dart-define=FLAVOR=$channel --dart-define=VERSION=$type --dart-define=QNHD=$qnhd --dart-define=QNHDPIC=$qnhdpic --target-platform $platforms --split-per-abi
-    Move-Item  -Path ($releasePath + "\*") -Destination $channelPath
+    New-Apk -channel $channel -environment "RELEASE" -platforms "android-arm,android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 } 
 
 # DEBUG版
 # 仅打包64位
 
-$type = "DEBUG"
 $qnhd = ""
 $qnhdpic = ""
-$channel = "OTHER"
-$platform = "android-arm64"
-$channelPath = $allApksPath + "\" + $channel + "_" + $type
-New-Item $channelPath -ItemType "directory"
-flutter build apk --dart-define=FLAVOR=$channel --dart-define=VERSION=$type --dart-define=QNHD=$qnhd --dart-define=QNHDPIC=$qnhdpic --target-platform $platform --split-per-abi
-Move-Item  -Path ($releasePath + "\*") -Destination $channelPath
+New-Apk -channel "OTHER" -environment "DEBUG" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 
 tree $allApksPath /F
 

@@ -21,7 +21,6 @@ class ImgSaveChannel implements JavascriptChannel {
 
   Future<void> imgSave(JavascriptMessage message) async {
     try {
-      debugPrint(message.message);
       final bytes = base64.decode(message.message.split(",")[1]);
       final fileName = "$page${DateTime.now().millisecondsSinceEpoch}.jpg";
       await ImageSave.saveImageFromBytes(bytes, fileName,album: true);

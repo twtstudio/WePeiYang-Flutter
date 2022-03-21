@@ -58,25 +58,19 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                HUAWEI_APP_ID  : "103402255",
+                "HUAWEI_APP_ID"  : "103402255",
 
-                XIAOMI_APP_ID  : "2882303761517785783",
-                XIAOMI_APP_KEY : "5851778525783",
+                "XIAOMI_APP_ID"  : "2882303761517785783",
+                "XIAOMI_APP_KEY" : "5851778525783",
 
-                MEIZU_APP_ID   : "146410",
-                MEIZU_APP_KEY  : "77b312b3e3b9497bb25298911f7b14d7",
+                "MEIZU_APP_ID"   : "146410",
+                "MEIZU_APP_KEY"  : "77b312b3e3b9497bb25298911f7b14d7",
 
-                VIVO_APP_ID    : "105266463",
-                VIVO_APP_KEY   : "40e5b229553e31f1842b80915781e2e8",
+                "VIVO_APP_ID"    : "105266463",
+                "VIVO_APP_KEY"   : "40e5b229553e31f1842b80915781e2e8",
 
-                OPPO_APP_KEY   : "7cuaXvykA58gkOW4c4oGkG8o0",
-                OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
-
-                // project
-                GETUI_APPID    : "43HGFmIKsnAmjrjDLr60X4",
-
-                // develop
-//                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
+                "OPPO_APP_KEY"   : "7cuaXvykA58gkOW4c4oGkG8o0",
+                "OPPO_APP_SECRET": "f7098A23C18d4B504deCB0caaF1d6064",
         ]
     }
 
@@ -93,6 +87,15 @@ android {
         }
     }
 
+//    flavorDimensions "app"
+//
+//    productFlavors {
+//        huawei {
+//            dimension "app"
+//        }
+//
+//    }
+
     buildTypes {
         release {
             signingConfig signingConfigs.config
@@ -100,28 +103,81 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             shrinkResources true // 删除无用资源
 
-            buildConfigField("Boolean", "LOG_OUTPUT", "false")
+            // applicationIdSuffix
+            // http://www.androidchina.net/10565.html
+            // package和applicationId的区别
+            // https://blog.csdn.net/he_xiang_/article/details/81080507
+            // 询问了个推和高德，只要包名不变，就行
 
-            def dartEnvironmentVariables = []
+            // 动态配置string.xml
+            // https://blog.csdn.net/jerycoupter/article/details/70159410
 
             // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
             // flutter 1.20 ~ 2.2 的读取方式
             if (project.hasProperty('dart-defines')) {
-                dartEnvironmentVariables = project.property('dart-defines')
+                // 如果是通过 package.ps1 打包的话就解析固定参数
+                def dartEnvironmentVariables = project.property('dart-defines')
                         .split(',')
                         .collectEntries { entry ->
                             def pair = URLDecoder.decode(entry).split('=')
                             [(pair.first()): pair.last()]
                         }
+
+                switch (dartEnvironmentVariables.ENVIRONMENT) {
+                    case "DEBUG":
+                        // 个推 develop
+                        manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+                        // 不覆盖正式版安装
+                        applicationIdSuffix ".debug"
+                        // 输出调试信息
+                        buildConfigField("Boolean", "LOG_OUTPUT", "true")
+                        // 设置应用名称
+                        resValue("string", "label", "微北洋测试版")
+                        break
+                    default:
+                        // 个推 project
+                        manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                        // 不输出调试信息
+                        buildConfigField("Boolean", "LOG_OUTPUT", "false")
+                        // 设置应用名称
+                        resValue("string", "label", "微北洋")
+                        break
+                }
+
+                android.applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        // 更改输出的安装包的名字 如 HUAWEI-RELEASE-4.2.1-app-arm64-v8a-release.apk
+                        def arguments = [
+                                dartEnvironmentVariables.CHANNEL,
+                                dartEnvironmentVariables.ENVIRONMENT,
+                                android.defaultConfig.versionName,
+                        ].join("-")
+                        output.outputFileName = arguments + "-" + output.outputFileName
+                    }
+                }
+            } else {
+                // 个推 project
+                manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                // 设置应用名称
+                resValue("string", "label", "微北洋")
+                // 不输出调试信息
+                buildConfigField("Boolean", "LOG_OUTPUT", "false")
+                // 没有通过脚本打包
+                android.applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        // 更改输出的安装包的名字 如 4.2.1-app-arm64-v8a-release.apk
+                        output.outputFileName = android.defaultConfig.versionName + "-" + output.outputFileName
+                    }
+                }
             }
 
             // 谷歌规定 Google Play 多个安装包不能 versionCode一样
             // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
+            // 所以将所有 Apk 的版本号重置
+            // https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     output.versionCodeOverride = android.defaultConfig.versionCode
-                    // https://viblo.asia/p/how-to-config-your-output-file-name-in-gradle-kotlin-dsl-android-L4x5x6qYZBM
-                    output.outputFileName = dartEnvironmentVariables.FLAVOR + "-" + output.outputFileName
                 }
             }
 
@@ -138,8 +194,14 @@ android {
             signingConfig signingConfigs.config
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
-
+            // 个推 develop
+            manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+            // 不覆盖安装
+//            applicationIdSuffix ".debug"
+            // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
+            // 设置应用名称
+            resValue("string", "label", "微北洋")
         }
     }
 }
@@ -149,7 +211,6 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
@@ -160,19 +221,15 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
 
-    def work_version = "2.7.1"
-    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     implementation "androidx.core:core-ktx:1.7.0"
 
-    def lifecycle_version = "2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 
-    implementation "androidx.fragment:fragment-ktx:1.4.0"
+//    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     // 高德 sdk
     // https://lbs.amap.com/api/android-location-sdk/changelog
