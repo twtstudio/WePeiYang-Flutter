@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
@@ -33,8 +35,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   List<bool> shouldBeInitialized;
   final fbKey = new GlobalKey<FbTagsWrapState>();
-
-  List<WPYTab> tabList;
 
   ///根据tab的index得到对应type
   ///
@@ -93,25 +93,19 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (context
             .read<LakeModel>()
-            .lakeAreas[context
-                .read<LakeModel>()
-                .lakeTabList[context.read<LakeModel>().tabController.index]]
+            .lakeAreas[context.read<LakeModel>().tabController.index]
             .controller
             .offset >
         1500) {
       context
           .read<LakeModel>()
-          .lakeAreas[context
-              .read<LakeModel>()
-              .lakeTabList[context.read<LakeModel>().tabController.index]]
+          .lakeAreas[context.read<LakeModel>().tabController.index]
           .controller
           .jumpTo(1500);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context
-            .read<LakeModel>()
-            .lakeTabList[context.read<LakeModel>().tabController.index]]
+        .lakeAreas[context.read<LakeModel>().tabController.index]
         .controller
         .animateTo(-85,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
@@ -138,6 +132,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final status = context.select((LakeModel model) => model.mainStatus);
+
     //控制动画速率
     timeDilation = 0.9;
     ScreenUtil.init(
@@ -149,9 +146,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (initializeRefresh == true) {
       context
           .read<LakeModel>()
-          .lakeAreas[context
-              .read<LakeModel>()
-              .lakeTabList[context.read<LakeModel>().tabController.index]]
+          .lakeAreas[context.read<LakeModel>().tabController.index]
           .controller
           .animateTo(-85,
               duration: Duration(milliseconds: 1000),
@@ -260,65 +255,77 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         children: [
                           SizedBox(width: 4),
                           Expanded(
-                            child: Selector<LakeModel, List<WPYTab>>(selector:
-                                (BuildContext context, LakeModel lakeModel) {
-                              return lakeModel.lakeTabList;
-                            }, builder: (_, lakeTabList, __) {
-                              return context
-                                          .read<LakeModel>()
-                                          .lakeTabList
-                                          .length ==
-                                      0
-                                  ? InkWell(
-                                      onTap: () => context
-                                          .read<LakeModel>()
-                                          .checkTokenAndGetTabList(),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text('点击重新加载分区',
-                                            style: TextUtil.base.mainColor.w400
-                                                .sp(16)),
-                                      ))
-                                  : TabBar(
-                                      indicatorPadding:
-                                          EdgeInsets.only(bottom: 2),
-                                      labelPadding: EdgeInsets.only(bottom: 3),
-                                      isScrollable: true,
-                                      physics: BouncingScrollPhysics(),
-                                      controller: context
-                                          .read<LakeModel>()
-                                          .tabController,
-                                      labelColor: ColorUtil.black2AColor,
-                                      labelStyle: TextUtil
-                                          .base.black2A.w600.NotoSansSC
-                                          .sp(18),
-                                      unselectedLabelColor:
-                                          ColorUtil.lightTextColor,
-                                      unselectedLabelStyle: TextUtil
-                                          .base.greyB2.w600.NotoSansSC
-                                          .sp(18),
-                                      indicator: CustomIndicator(
-                                          borderSide: BorderSide(
-                                              color: ColorUtil.mainColor,
-                                              width: 2)),
-                                      tabs: List<Widget>.generate(
-                                          lakeTabList == null
-                                              ? 1
-                                              : lakeTabList.length,
-                                          (index) => DaTab(
-                                              text:
-                                                  lakeTabList[index].shortname,
-                                              withDropDownButton:
-                                                  lakeTabList[index].name ==
-                                                      '校务专区')),
-                                      onTap: (index) {
-                                        if (lakeTabList[index].name == '校务专区') {
-                                          _onFeedbackTapped();
-                                        }
-                                      },
-                                    );
-                            }),
-                          ),
+                              child: status == LakePageStatus.unload
+                                  ? SizedBox()
+                                  : status == LakePageStatus.loading
+                                      ? Align(
+                                          alignment: Alignment.center,
+                                          child: Text('加载中',
+                                              style: TextUtil
+                                                  .base.mainColor.w400
+                                                  .sp(16)),
+                                        )
+                                      : status == LakePageStatus.idle
+                                          ? TabBar(
+                                              indicatorPadding:
+                                                  EdgeInsets.only(bottom: 2),
+                                              labelPadding:
+                                                  EdgeInsets.only(bottom: 3),
+                                              isScrollable: true,
+                                              physics: BouncingScrollPhysics(),
+                                              controller: context
+                                                  .read<LakeModel>()
+                                                  .tabController,
+                                              labelColor:
+                                                  ColorUtil.black2AColor,
+                                              labelStyle: TextUtil
+                                                  .base.black2A.w600.NotoSansSC
+                                                  .sp(18),
+                                              unselectedLabelColor:
+                                                  ColorUtil.lightTextColor,
+                                              unselectedLabelStyle: TextUtil
+                                                  .base.greyB2.w600.NotoSansSC
+                                                  .sp(18),
+                                              indicator: CustomIndicator(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          ColorUtil.mainColor,
+                                                      width: 2)),
+                                              tabs: List<Widget>.generate(
+                                                  context
+                                                      .read<LakeModel>()
+                                                      .tabList
+                                                      .length,
+                                                  (index) => DaTab(
+                                                      text: context
+                                                          .read<LakeModel>()
+                                                          .tabList[index]
+                                                          .shortname,
+                                                      withDropDownButton: context
+                                                              .read<LakeModel>()
+                                                              .tabList[index]
+                                                              .name ==
+                                                          '校务专区')),
+                                              onTap: (index) {
+                                                if (context
+                                                        .read<LakeModel>()
+                                                        .tabList[index]
+                                                        .id ==
+                                                    1) {
+                                                  _onFeedbackTapped();
+                                                }
+                                              },
+                                            )
+                                          : InkWell(
+                                              onTap: () => context
+                                                  .read<LakeModel>()
+                                                  .checkTokenAndGetTabList(),
+                                              child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text('点击重新加载分区',
+                                                      style: TextUtil
+                                                          .base.mainColor.w400
+                                                          .sp(16))))),
                           PopupMenuButton(
                             padding: EdgeInsets.zero,
                             tooltip: "排序方式",
@@ -370,11 +377,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             children: [
               Selector<LakeModel, List<WPYTab>>(
                   selector: (BuildContext context, LakeModel lakeModel) {
-                return lakeModel.lakeTabList;
-              }, builder: (_, lakeTabList, __) {
+                return lakeModel.tabList;
+              }, builder: (_, tabs, __) {
                 if (!context.read<LakeModel>().tabControllerLoaded) {
                   context.read<LakeModel>().tabController =
-                      TabController(length: lakeTabList.length, vsync: this)
+                      TabController(length: tabs.length, vsync: this)
                         ..addListener(() {
                           if (context
                                   .read<LakeModel>()
@@ -387,10 +394,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   .animation
                                   .value) {
                             int canMove = -1;
-                            context
-                                .read<LakeModel>()
-                                .lakeTabList
-                                .forEach((element) {
+                            tabs.forEach((element) {
                               if (element.name == '校务专区') canMove = element.id;
                             });
                             if (context.read<LakeModel>().tabController.index !=
@@ -404,9 +408,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     cacheExtent: cacheNum,
                     controller: context.read<LakeModel>().tabController,
                     children: List<Widget>.generate(
-                        lakeTabList == null ? 1 : lakeTabList.length,
-                        (ind) => NSubPage(
-                              wpyTab: lakeTabList[ind],
+                        tabs == null ? 1 : tabs.length,
+                        (i) => NSubPage(
+                              index: i,
                             )));
               }),
               Visibility(

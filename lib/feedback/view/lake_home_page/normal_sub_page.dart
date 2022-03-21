@@ -9,26 +9,26 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class NSubPage extends StatefulWidget {
-  final WPYTab wpyTab;
+  final int index;
 
-  const NSubPage({Key key, this.wpyTab}) : super(key: key);
+  const NSubPage({Key key, this.index}) : super(key: key);
 
   @override
-  NSubPageState createState() => NSubPageState(this.wpyTab);
+  NSubPageState createState() => NSubPageState(this.index);
 }
 
 class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
-  WPYTab wpyTab;
+  int index;
   FbDepartmentsProvider _departmentsProvider;
   double _previousOffset = 0;
 
-  NSubPageState(this.wpyTab);
+  NSubPageState(this.index);
 
   void getRecTag() {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
@@ -39,13 +39,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context
             .read<LakeModel>()
-            .lakeAreas[wpyTab]
+            .lakeAreas[index]
             .refreshController
             .isRefresh &&
         scrollInfo.metrics.pixels >= 2)
       context
           .read<LakeModel>()
-          .lakeAreas[wpyTab]
+          .lakeAreas[index]
           .refreshController
           .refreshToIdle();
     if (scrollInfo.metrics.pixels == 0)
@@ -64,14 +64,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
       context.read<LakeModel>().getClipboardWeKoContents(context);
-      if (wpyTab.name == '全部')
+      if (index == 0)
         context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
-      context.read<LakeModel>().initPostList(wpyTab, success: () {
+      context.read<LakeModel>().initPostList(index, success: () {
         setState(() {});
         context
             .read<LakeModel>()
-            .lakeAreas[wpyTab]
+            .lakeAreas[index]
             .refreshController
             .refreshCompleted();
       }, failure: (e) {
@@ -80,13 +80,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             e.type == DioErrorType.sendTimeout)
           context
               .read<LakeModel>()
-              .lakeAreas[wpyTab]
+              .lakeAreas[index]
               .refreshController
               .refreshToIdle();
         controller?.stop();
         context
             .read<LakeModel>()
-            .lakeAreas[wpyTab]
+            .lakeAreas[index]
             .refreshController
             .refreshFailed();
       });
@@ -95,7 +95,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       controller?.stop();
       context
           .read<LakeModel>()
-          .lakeAreas[wpyTab]
+          .lakeAreas[index]
           .refreshController
           .refreshFailed();
     });
@@ -103,18 +103,18 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   _onLoading() {
     context.read<LakeModel>().getNextPage(
-      wpyTab,
+      index,
       success: () {
         context
             .read<LakeModel>()
-            .lakeAreas[wpyTab]
+            .lakeAreas[index]
             .refreshController
             .loadComplete();
       },
       failure: (e) {
         context
             .read<LakeModel>()
-            .lakeAreas[wpyTab]
+            .lakeAreas[index]
             .refreshController
             .loadFailed();
       },
@@ -122,10 +122,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   void listToTop() {
-    if (context.read<LakeModel>().lakeAreas[wpyTab].controller.offset > 1500) {
-      context.read<LakeModel>().lakeAreas[wpyTab].controller.jumpTo(1500);
+    if (context.read<LakeModel>().lakeAreas[index].controller.offset > 1500) {
+      context.read<LakeModel>().lakeAreas[index].controller.jumpTo(1500);
     }
-    context.read<LakeModel>().lakeAreas[wpyTab].controller.animateTo(-85,
+    context.read<LakeModel>().lakeAreas[index].controller.animateTo(-85,
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
@@ -133,14 +133,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
-    context.read<LakeModel>().initLakeArea(
-        wpyTab, RefreshController(initialRefresh: false), ScrollController());
+    context.read<LakeModel>().fillLakeArea(
+        index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
-        _departmentsProvider, wpyTab, context.read<LakeModel>().sortSeq ?? 0,
+        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 0,
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
-    if (wpyTab.name == '全部') context.read<FbHotTagsProvider>().initHotTags();
+    if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
     super.initState();
   }
 
@@ -152,14 +152,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     final status =
-        context.select((LakeModel model) => model.lakeAreas[wpyTab].status);
+        context.select((LakeModel model) => model.lakeAreas[index].status);
 
     if (status == LakePageStatus.idle)
       return NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller:
-              context.read<LakeModel>().lakeAreas[wpyTab].refreshController,
+              context.read<LakeModel>().lakeAreas[index].refreshController,
           header: ClassicHeader(
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
@@ -179,20 +179,20 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           enablePullUp: true,
           onLoading: _onLoading,
           child: ListView.builder(
-            controller: context.read<LakeModel>().lakeAreas[wpyTab].controller,
+            controller: context.read<LakeModel>().lakeAreas[index].controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: context.select((LakeModel model) =>
-                model.lakeAreas[wpyTab].dataList.values.toList().length),
+                model.lakeAreas[index].dataList.values.toList().length),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
-                if (wpyTab.name == '全部' && ind == 0) {
+                if (index == 0 && ind == 0) {
                   return HotCard();
                 }
-                if (wpyTab.name == '全部') ind--;
+                if (index == 0) ind--;
                 final post = context
                     .read<LakeModel>()
-                    .lakeAreas[wpyTab]
+                    .lakeAreas[index]
                     .dataList
                     .values
                     .toList()[ind];
@@ -207,7 +207,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     else if (status == LakePageStatus.unload)
       return SizedBox();
     else if (status == LakePageStatus.error)
-      return HomeErrorContainer(onRefresh, true, wpyTab);
+      return HomeErrorContainer(onRefresh, true, index);
     else
       return Loading();
   }
@@ -216,9 +216,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 class HomeErrorContainer extends StatefulWidget {
   final void Function(AnimationController) onPressed;
   final bool networkFailPageUsage;
-  final WPYTab wpyTab;
+  final int index;
 
-  HomeErrorContainer(this.onPressed, this.networkFailPageUsage, this.wpyTab);
+  HomeErrorContainer(this.onPressed, this.networkFailPageUsage, this.index);
 
   @override
   _HomeErrorContainerState createState() => _HomeErrorContainerState();
@@ -263,7 +263,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             forceRefresh: true,
             onResult: (_) {
               _tagsProvider.initDepartments();
-              _listProvider.initPostList(widget.wpyTab, success: () {
+              _listProvider.initPostList(widget.index, success: () {
                 widget.onPressed;
               }, failure: (_) {
                 controller.reset();

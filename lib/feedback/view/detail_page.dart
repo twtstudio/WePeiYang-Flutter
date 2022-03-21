@@ -25,6 +25,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'components/widget/PopMenuShape.dart';
+import 'lake_home_page/lake_notifier.dart';
 
 enum DetailPageStatus {
   loading,
@@ -499,8 +500,7 @@ class _DetailPageState extends State<DetailPage>
                 onSuccess: () {
                   context
                       .read<LakeModel>()
-                      .lakeAreas[context.read<LakeModel>().lakeTabList[
-                          context.read<LakeModel>().tabController.index]]
+                      .lakeAreas[post.type]
                       .refreshController
                       .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);

@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_vie
 import '../feedback_router.dart';
 import 'components/widget/PopMenuShape.dart';
 import 'components/widget/tag_search_card.dart';
+import 'lake_home_page/lake_notifier.dart';
 
 class NewPostPage extends StatefulWidget {
   @override
@@ -108,131 +109,170 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
-  List<WPYTab> postType = [];
   ScrollController controller = new ScrollController();
 
   @override
   void initState() {
     super.initState();
-    if (context.read<LakeModel>().newPostTabList == []) {
-      context.read<LakeModel>().initTabList();
-    }
+    context.read<LakeModel>().initTabList();
   }
 
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    postType = context.read<LakeModel>().newPostTabList;
-    notifier.value = postType[0].id;
-    return postType == []
-        ? Container(
-            height: 60,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(16)),
-            child: Center(
-              child: Text('Loading...φ(゜▽゜*)♪'),
-            ),
-          )
-        : Container(
-            padding: EdgeInsets.only(left: 8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(16)),
-              color: Colors.white,
-            ),
-            height: 60,
-            width: double.infinity,
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                ValueListenableBuilder<int>(
-                  valueListenable: notifier,
-                  builder: (context, type, _) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 40.0),
-                      child: ListView.builder(
-                        controller: controller,
-                        itemCount: postType.length,
-                        scrollDirection: Axis.horizontal,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              notifier.value = postType[index].id;
-                            },
-                            child: SizedBox(
-                              height: 58,
-                              width: 100,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(postType[index].name,
-                                        style: TextUtil.base.NotoSansSC.w600
-                                            .sp(18)
-                                            .black2A),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 2),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          border: Border.all(
-                                              color: type == postType[index].id
-                                                  ? ColorUtil.mainColor
-                                                  : Colors.white,
-                                              width: 1),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16))),
-                                      width: 24,
-                                      height: 3,
+    final status = context.select((LakeModel model) => model.mainStatus);
+
+    return status == LakePageStatus.unload
+        ? SizedBox()
+        : status == LakePageStatus.loading
+            ? Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16)),
+                child: Center(
+                  child: Text('Loading...φ(゜▽゜*)♪'),
+                ),
+              )
+            : status == LakePageStatus.idle
+                ? Container(
+                    padding: EdgeInsets.only(left: 8),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(16)),
+                      color: Colors.white,
+                    ),
+                    height: 60,
+                    width: double.infinity,
+                    child: Stack(
+                      alignment: Alignment.centerLeft,
+                      children: [
+                        ValueListenableBuilder<int>(
+                          valueListenable: notifier,
+                          builder: (context, type, _) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 40.0),
+                              child: ListView.builder(
+                                controller: controller,
+                                itemCount: LakeModel().tabLength,
+                                scrollDirection: Axis.horizontal,
+                                physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      notifier.value = context
+                                          .read<LakeModel>()
+                                          .lakeAreas[index]
+                                          .tab
+                                          .id;
+                                    },
+                                    child: SizedBox(
+                                      height: 58,
+                                      width: 100,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                context
+                                                    .read<LakeModel>()
+                                                    .lakeAreas[index]
+                                                    .tab
+                                                    .name,
+                                                style: TextUtil
+                                                    .base.NotoSansSC.w600
+                                                    .sp(18)
+                                                    .black2A),
+                                            Container(
+                                              margin: EdgeInsets.only(top: 2),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: type ==
+                                                              context
+                                                                  .read<
+                                                                      LakeModel>()
+                                                                  .lakeAreas[
+                                                                      index]
+                                                                  .tab
+                                                                  .id
+                                                          ? ColorUtil.mainColor
+                                                          : Colors.white,
+                                                      width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(16))),
+                                              width: 24,
+                                              height: 3,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ShaderMask(
+                            shaderCallback: (rect) {
+                              return LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.center,
+                                colors: [
+                                  Colors.transparent,
+                                  ColorUtil.backgroundColor
+                                ],
+                              ).createShader(
+                                  Rect.fromLTRB(0, 0, rect.width, rect.height));
+                            },
+                            blendMode: BlendMode.dstIn,
+                            child: InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                controller.offset <=
+                                        100 * (LakeModel().tabLength - 1)
+                                    ? controller.animateTo(
+                                        controller.offset + 100,
+                                        duration: Duration(milliseconds: 400),
+                                        curve: Curves.fastOutSlowIn)
+                                    : controller.animateTo(
+                                        140 *
+                                            (LakeModel().tabLength - 1)
+                                                .toDouble(),
+                                        duration: Duration(milliseconds: 800),
+                                        curve: Curves.slowMiddle);
+                              },
+                              child: Container(
+                                height: 90,
+                                width: 70,
+                                child: Icon(Icons.arrow_forward_ios_sharp,
+                                    color: Color.fromRGBO(98, 103, 124, 1.0),
+                                    size: 25),
+                                color: ColorUtil.backgroundColor,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ShaderMask(
-                    shaderCallback: (rect) {
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.center,
-                        colors: [Colors.transparent, ColorUtil.backgroundColor],
-                      ).createShader(
-                          Rect.fromLTRB(0, 0, rect.width, rect.height));
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () {
-                        controller.offset <= 100 * (postType.length - 1)
-                            ? controller.animateTo(controller.offset + 100,
-                                duration: Duration(milliseconds: 400),
-                                curve: Curves.fastOutSlowIn)
-                            : controller.animateTo(
-                                140 * (postType.length - 1).toDouble(),
-                                duration: Duration(milliseconds: 800),
-                                curve: Curves.slowMiddle);
-                      },
-                      child: Container(
-                        height: 90,
-                        width: 70,
-                        child: Icon(Icons.arrow_forward_ios_sharp,
-                            color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
-                        color: ColorUtil.backgroundColor,
-                      ),
+                          ),
+                        ),
+                      ],
+                    ))
+                : Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Center(
+                      child: Text('点击刷新'),
                     ),
-                  ),
-                ),
-              ],
-            ));
+                  );
   }
 }
 
