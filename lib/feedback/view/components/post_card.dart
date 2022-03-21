@@ -7,11 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -34,14 +36,13 @@ class PostCard extends StatefulWidget {
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
-  final WPYTab district;
 
   PostCard.simple(
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
     this.showBanner = false,
-    Key key, this.district,
+    Key key,
   })  : type = PostCardType.simple,
         super(key: key);
 
@@ -50,14 +51,14 @@ class PostCard extends StatefulWidget {
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
-    this.showBanner = false, this.district,
+    this.showBanner = false,
   }) : type = PostCardType.detail;
 
   PostCard.outSide(
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
-    this.showBanner = false, this.district,
+    this.showBanner = false,
   }) : type = PostCardType.outSide;
 
   @override
@@ -308,22 +309,12 @@ class _PostCardState extends State<PostCard> {
                       (post.campus > 0 ? 40 : 0) -
                       (widget.type == PostCardType.simple ? 240 : 120),
                   post.type,
-                  id, 0),
-            if (tag != '')
-            SizedBox(width: 8),
-            if (widget.district != null)
+                  id,
+                  0),
+            if (tag != '') SizedBox(width: 8),
             TagShowWidget(
-                widget.district
-                    .shortname
-                    .toString(),
-                56,
-                0,
-                id,
-                widget.district
-                    .id
-            ),
-            if (widget.district != null)
-              SizedBox(width: 8),
+                getTypeName(widget.post.type), 60, 0, 0, widget.post.type),
+            SizedBox(width: 8),
             campus
           ]),
           SizedBox(height: 6),
@@ -759,5 +750,13 @@ class _PostCardState extends State<PostCard> {
         ),
       ),
     );
+  }
+
+  String getTypeName(int type) {
+    Map<int, String> typeName = {};
+    context.read<LakeModel>().newPostTabList.forEach((e) {
+      typeName.addAll({e.id: e.shortname});
+    });
+    return typeName[type];
   }
 }
