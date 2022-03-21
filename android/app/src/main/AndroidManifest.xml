@@ -67,7 +67,7 @@
 
         <!--    应用主Activity    -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.twt.service.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:fitsSystemWindows="true"
@@ -128,7 +128,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="qnhd"
+                    android:host="qnhd.app"
+                    android:pathPrefix="/qnhd"
                     android:scheme="wpy" />
             </intent-filter>
             <!--        友盟卖点验证  -->

@@ -370,7 +370,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     //    2.点击桌面小组件：暂时只有课程表小组件
     private fun handleIntent(intent: Intent): Boolean {
         // 走 url scheme 打开微北洋的拦截
-        if (intent.scheme == "wpy" && intent.data?.host == "qnhd") {
+        if (intent.scheme == "wpy" && intent.data?.host == "qnhd.app" && intent.data?.getQueryParameter("page") == "summary") {
             log("jump from url")
             WBYApplication.eventList.add(
                 Event(IntentEvent.FeedbackSummaryPage.type, "null")
