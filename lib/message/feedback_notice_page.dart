@@ -17,7 +17,7 @@ class FeedbackNoticePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appBar = PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(60),
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,

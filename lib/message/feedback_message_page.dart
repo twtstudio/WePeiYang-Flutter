@@ -63,12 +63,6 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             }
           });
   }
-
-  onRefresh() {
-    context.read<MessageProvider>().refreshFeedbackCount();
-    refresh.value++;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,14 +227,12 @@ class _LikeMessagesListState extends State<LikeMessagesList>
     } catch (e) {
       _refreshController.refreshFailed();
     }
-    // if failed,use refreshFailed()
-    // _refreshController.refreshCompleted();
   }
 
   _onLoading() async {
     try {
       await MessageService.getLikeMessages(
-          page: items.length ~/ 10 + 1,
+          page: (items.length / 20).ceil() + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -256,34 +248,6 @@ class _LikeMessagesListState extends State<LikeMessagesList>
     } catch (e) {
       _refreshController.loadFailed();
     }
-
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // items.add((items.length + 1).toString());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MessageService.getLikeMessages(
-          page: 1,
-          onSuccess: (list, total) {
-            items.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      if (mounted) {
-        context.read<MessageProvider>().refreshFeedbackCount();
-        setState(() {});
-        context
-            .findAncestorStateOfType<_FeedbackMessagePageState>()
-            .refresh
-            .addListener(() => onRefresh(
-                  refreshCount: false,
-                ));
-      }
-    });
   }
 
   @override
@@ -310,7 +274,10 @@ class _LikeMessagesListState extends State<LikeMessagesList>
               await MessageService.setLikeMessageRead(
                   items[i].type == 0 ? items[i].post.id : items[i].floor.id,
                   items[i].type,
-                  onSuccess: () {}, onFailure: (e) {
+                  onSuccess: () {
+                    items.removeAt(i);
+                    context.read<MessageProvider>().refreshFeedbackCount();
+                  }, onFailure: (e) {
                 ToastProvider.error(e.error.toString());
               });
             },
@@ -548,9 +515,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               context,
               FeedbackRouter.detail,
               arguments: post,
-            ).then((_) => context
-                .findAncestorStateOfType<_FeedbackMessagePageState>()
-                .onRefresh());
+            );
           }
           // else {
           //   await Navigator.pushNamed(
@@ -626,7 +591,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
   _onLoading() async {
     try {
       await MessageService.getFloorMessages(
-          page: items.length ~/ 10 + 1,
+          page: (items.length / 20).ceil() + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -645,31 +610,6 @@ class _FloorMessagesListState extends State<FloorMessagesList>
 
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     // items.add((items.length + 1).toString());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MessageService.getFloorMessages(
-          page: 1,
-          onSuccess: (list, total) {
-            items.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      if (mounted) {
-        context.read<MessageProvider>().refreshFeedbackCount();
-        setState(() {});
-        context
-            .findAncestorStateOfType<_FeedbackMessagePageState>()
-            .refresh
-            .addListener(() => onRefresh(
-                  refreshCount: false,
-                ));
-      }
-    });
   }
 
   @override
@@ -695,7 +635,10 @@ class _FloorMessagesListState extends State<FloorMessagesList>
             onTapDown: () async {
               if (!items[i].isRead) {
                 await MessageService.setFloorMessageRead(items[i].floor.id,
-                    onSuccess: () {}, onFailure: (e) {
+                    onSuccess: () {
+                      items[i].isRead = true;
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                    }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -754,10 +697,6 @@ class FloorMessageItem extends StatefulWidget {
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
   final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
-  @override
-  void initState() {
-    super.initState();
-  }
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -932,9 +871,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             context,
             FeedbackRouter.detail,
             arguments: widget.data.post,
-          ).then((_) => context
-              .findAncestorStateOfType<_FeedbackMessagePageState>()
-              .onRefresh());
+          ).then((_) =>
+              context.read<MessageProvider>().refreshFeedbackCount());
           // }
           // else {
           //   await Navigator.pushNamed(
@@ -1016,7 +954,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
   _onLoading() async {
     try {
       await MessageService.getReplyMessages(
-          page: items.length ~/ 10 + 1,
+          page: (items.length / 20).ceil() + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -1032,34 +970,6 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
     } catch (e) {
       _refreshController.loadFailed();
     }
-
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // items.add((items.length + 1).toString());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MessageService.getReplyMessages(
-          page: 1,
-          onSuccess: (list, total) {
-            items.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      if (mounted) {
-        context.read<MessageProvider>().refreshFeedbackCount();
-        setState(() {});
-        context
-            .findAncestorStateOfType<_FeedbackMessagePageState>()
-            .refresh
-            .addListener(() => onRefresh(
-                  refreshCount: false,
-                ));
-      }
-    });
   }
 
   @override
@@ -1085,7 +995,10 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
             onTapDown: () async {
               if (!items[i].isRead) {
                 await MessageService.setReplyMessageRead(items[i].reply.id,
-                    onSuccess: () {}, onFailure: (e) {
+                    onSuccess: () {
+                      items[i].isRead = true;
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                      }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1285,9 +1198,8 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
             context,
             FeedbackRouter.detail,
             arguments: widget.data.post,
-          ).then((_) => context
-              .findAncestorStateOfType<_FeedbackMessagePageState>()
-              .onRefresh());
+          ).then((_) =>
+              context.read<MessageProvider>().refreshFeedbackCount());
         },
         child: Container(
           decoration: BoxDecoration(
@@ -1359,7 +1271,7 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
   _onLoading() async {
     try {
       await MessageService.getNoticeMessages(
-          page: items.length ~/ 10 + 1,
+          page: (items.length / 20).ceil() + 1,
           onSuccess: (list, total) {
             items.addAll(list);
             if (list.isEmpty) {
@@ -1378,31 +1290,6 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
 
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     // items.add((items.length + 1).toString());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MessageService.getNoticeMessages(
-          page: 1,
-          onSuccess: (list, total) {
-            items.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      if (mounted) {
-        context.read<MessageProvider>().refreshFeedbackCount();
-        setState(() {});
-        context
-            .findAncestorStateOfType<_FeedbackMessagePageState>()
-            .refresh
-            .addListener(() => onRefresh(
-                  refreshCount: false,
-                ));
-      }
-    });
   }
 
   @override
@@ -1428,7 +1315,10 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
             onTapDown: () async {
               if (!items[i].isRead) {
                 await MessageService.setNoticeMessageRead(items[i].id,
-                    onSuccess: () {}, onFailure: (e) {
+                    onSuccess: () {
+                      items[i].isRead = true;
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                    }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1486,10 +1376,6 @@ class NoticeMessageItem extends StatefulWidget {
 }
 
 class _NoticeMessageItemState extends State<NoticeMessageItem> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -1596,9 +1482,8 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
             context,
             FeedbackRouter.notice,
             arguments: widget.data,
-          ).then((_) => context
-              .findAncestorStateOfType<_FeedbackMessagePageState>()
-              .onRefresh());
+          ).then((_) =>
+              context.read<MessageProvider>().refreshFeedbackCount());
         },
         child: Container(
           decoration: BoxDecoration(
