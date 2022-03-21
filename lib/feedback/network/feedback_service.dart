@@ -583,13 +583,13 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static replyOffcialFloor(
+  static replyOfficialFloor(
       {@required id,
       @required content,
       @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
+    AsyncTimer.runRepeatChecked('replyOfficialFloor', () async {
       try {
         var formData = FormData.fromMap({
           'post_id': id,
