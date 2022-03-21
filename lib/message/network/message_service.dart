@@ -25,7 +25,7 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("likes", queryParameters: {
-        "page_size": 10,
+        "page_size": '20',
         "page": page,
       });
       List<LikeMessage> list = [];
@@ -44,7 +44,7 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("floors", queryParameters: {
-        "page_size": 10,
+        "page_size": '20',
         "page": page,
       });
       List<FloorMessage> list = [];
@@ -63,7 +63,7 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("replys", queryParameters: {
-        "page_size": 10,
+        "page_size": '20',
         "page": page,
       });
       List<ReplyMessage> list = [];
@@ -85,7 +85,7 @@ class MessageService {
           OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("notices", queryParameters: {
-        "page_size": 10,
+        "page_size": '20',
         "page": page,
       });
       List<NoticeMessage> list = [];

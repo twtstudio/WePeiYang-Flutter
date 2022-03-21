@@ -63,6 +63,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
+      context.read<LakeModel>().getClipboardWeKoContents(context);
       if (wpyTab.name == '全部')
         context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
@@ -195,7 +196,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     .dataList
                     .values
                     .toList()[ind];
-                return PostCard.simple(post, key: ValueKey(post.id));
+                return PostCard.simple(post, key: ValueKey(post.id), district: wpyTab);
               });
             },
           ),

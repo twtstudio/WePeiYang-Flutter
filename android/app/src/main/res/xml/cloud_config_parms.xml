@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>webViewList</key>
+        <entry>summary,restart</entry>
+        <key>summary</key>
+        <value>http://summary.twtstudio.com/</value>
+        <key>restart</key>
+        <value>http://restart.twtstudio.com/</value>
+        <key>summary_channels</key>
+        <value>saveImg</value>
+        <key>restart_channels</key>
+        <value>saveImg</value>
+        <key>restart_title</key>
+        <value>大学重开模拟器</value>
+        <key>summary_title</key>
+        <value>年终总结</value>
+    </entry>
+</defaultsMap>

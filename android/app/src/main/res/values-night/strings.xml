@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label">微北洋</string>
+    <!--    gradle中修改-->
+    <!--    <string name="label">微北洋</string>-->
     <string name="widget_label">微北洋课程表-简约</string>
 </resources>

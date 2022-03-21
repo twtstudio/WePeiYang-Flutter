@@ -23,7 +23,7 @@ class _FeedbackReadAllButtonState extends State<FeedbackReadAllButton> {
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return DialogWidget(
+                return LakeDialogWidget(
                   title: '一键已读：',
                   titleTextStyle:
                       TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,

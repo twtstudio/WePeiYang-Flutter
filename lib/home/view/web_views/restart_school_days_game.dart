@@ -1,15 +1,12 @@
-import 'dart:io';
 import 'dart:convert' show base64;
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show StringCodec, BasicMessageChannel;
-import 'package:we_pei_yang_flutter/commons/channels/image_save.dart';
-import 'package:webview_flutter/platform_interface.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:webview_flutter/platform_interface.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class RestartSchoolDaysGamePage extends StatefulWidget {
   const RestartSchoolDaysGamePage({Key key}) : super(key: key);
@@ -64,7 +61,8 @@ class _RestartSchoolDaysGamePageState extends State<RestartSchoolDaysGamePage> {
                         base64.decode(message.message.split(",")[1]);
                     final fileName =
                         "人生重开模拟器${DateTime.now().millisecondsSinceEpoch}.jpg";
-                    await saveImageToAlbum(bytes, fileName);
+                    await ImageSave.saveImageFromBytes(bytes, fileName);
+                    ToastProvider.success("保存成功");
                   } catch (_) {
                     ToastProvider.error('图片保存失败');
                   }

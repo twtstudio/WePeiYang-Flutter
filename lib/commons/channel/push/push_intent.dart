@@ -49,8 +49,21 @@ class MailboxIntent extends PushIntent {
       'type': type.text,
       'url': url,
       'title': title,
-      'content':content,
-      'createdAt':createdAt,
+      'content': content,
+      'createdAt': createdAt,
+    };
+  }
+}
+
+class FeedbackSummaryIntent extends PushIntent {
+  @override
+  IntentType get type => IntentType.feedback;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type.text,
+      'page': 'summary',
     };
   }
 }

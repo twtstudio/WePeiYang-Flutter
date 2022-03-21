@@ -39,7 +39,7 @@ class _NewPostPageState extends State<NewPostPage> {
       centerTitle: true,
       title: Text(
         S.current.feedback_new_post,
-        style: TextUtil.base.NotoSansSC.w500.sp(18).black2A,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).black2A,
       ),
       brightness: Brightness.light,
       elevation: 0,
@@ -67,18 +67,21 @@ class _NewPostPageState extends State<NewPostPage> {
         body: ListView(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.only(left: 20),
             children: [
               LakeSelector(),
               SizedBox(height: 10),
-              departmentTagView(postTypeNotifier),
+              Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: departmentTagView(postTypeNotifier),
+              ),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     shape: BoxShape.rectangle,
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  margin: const EdgeInsets.only(right: 20, top: 4),
                   padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,22 +108,23 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
-
   List<WPYTab> postType = [];
+  ScrollController controller = new ScrollController();
 
   @override
   void initState() {
     super.initState();
-    if(context.read<LakeModel>().newPostTabList == []){
+    if (context.read<LakeModel>().newPostTabList == []) {
       context.read<LakeModel>().initTabList();
     }
-    postType = context.read<LakeModel>().newPostTabList;
   }
 
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+    postType = context.read<LakeModel>().newPostTabList;
+    notifier.value = postType[1].id;
     return postType == []
         ? Container(
             height: 60,
@@ -130,67 +134,105 @@ class _LakeSelectorState extends State<LakeSelector> {
               child: Text('Loading...φ(゜▽゜*)♪'),
             ),
           )
-        : ValueListenableBuilder<int>(
-            valueListenable: notifier,
-            builder: (context, type, _) {
-              return SizedBox(
-                height: 60,
-                child: ListView.builder(
-                  itemCount: postType.length,
-                  scrollDirection: Axis.horizontal,
-                  physics: ScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      height: 58,
-                      width: (WePeiYangApp.screenWidth - 40) / postType.length,
-                      child: ElevatedButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              postType[index].shortname,
-                              style: type == index
-                                  ? TextUtil.base.NotoSansSC.w500.sp(18).black2A
-                                  : TextUtil.base.NotoSansSC.w400.sp(18).grey6C,
+        : Container(
+            padding: EdgeInsets.only(left: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(16)),
+              color: Colors.white,
+            ),
+            height: 60,
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                ValueListenableBuilder<int>(
+                  valueListenable: notifier,
+                  builder: (context, type, _) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 40.0),
+                      child: ListView.builder(
+                        controller: controller,
+                        itemCount: postType.length,
+                        scrollDirection: Axis.horizontal,
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              notifier.value = postType[index].id;
+                            },
+                            child: SizedBox(
+                              height: 58,
+                              width: 100,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(postType[index].name,
+                                        style: TextUtil.base.NotoSansSC.w600
+                                            .sp(18)
+                                            .black2A),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: type == postType[index].id
+                                                  ? ColorUtil.mainColor
+                                                  : Colors.white,
+                                              width: 1),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16))),
+                                      width: 24,
+                                      height: 3,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: type ==  postType[index].id
-                                      ? ColorUtil.mainColor
-                                      : Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16))),
-                              width: 30,
-                              height: 4,
-                            ),
-                          ],
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: _judgeBorder(index)),
-                          primary: Colors.white,
-                          elevation: 0,
-                        ),
-                        onPressed: () {
-                          notifier.value =  postType[index].id;
+                          );
                         },
                       ),
                     );
                   },
                 ),
-              );
-            },
-          );
-  }
-
-  BorderRadius _judgeBorder(int index) {
-    if (index == 0)
-      return BorderRadius.horizontal(left: Radius.circular(16));
-    else if (index == postType.length - 1)
-      return BorderRadius.horizontal(right: Radius.circular(16));
-    else
-      return BorderRadius.horizontal();
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ShaderMask(
+                    shaderCallback: (rect) {
+                      return LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.center,
+                        colors: [Colors.transparent, ColorUtil.backgroundColor],
+                      ).createShader(
+                          Rect.fromLTRB(0, 0, rect.width, rect.height));
+                    },
+                    blendMode: BlendMode.dstIn,
+                    child: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () {
+                        controller.offset <= 100 * (postType.length - 1)
+                            ? controller.animateTo(controller.offset + 100,
+                                duration: Duration(milliseconds: 400),
+                                curve: Curves.fastOutSlowIn)
+                            : controller.animateTo(
+                                140 * (postType.length - 1).toDouble(),
+                                duration: Duration(milliseconds: 800),
+                                curve: Curves.slowMiddle);
+                      },
+                      child: Container(
+                        height: 90,
+                        width: 70,
+                        child: Icon(Icons.arrow_forward_ios_sharp,
+                            color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
+                        color: ColorUtil.backgroundColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ));
   }
 }
 
@@ -214,7 +256,8 @@ class SubmitButton extends StatelessWidget {
                 title: dataModel.title,
                 content: dataModel.content,
                 tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-                departmentId: dataModel.department == null ? '' : dataModel.department.id,
+                departmentId:
+                    dataModel.department == null ? '' : dataModel.department.id,
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -242,7 +285,8 @@ class SubmitButton extends StatelessWidget {
           title: dataModel.title,
           content: dataModel.content,
           tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-          departmentId: dataModel.department == null ? '' : dataModel.department.id,
+          departmentId:
+              dataModel.department == null ? '' : dataModel.department.id,
           images: [],
           campus: campusNotifier.value,
           onSuccess: () {

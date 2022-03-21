@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
-class DialogWidget extends Dialog {
+class LakeDialogWidget extends Dialog {
   final String title; //标题
   final Widget content; //内容
   final String cancelText; //是否需要"取消"按钮
@@ -16,7 +16,7 @@ class DialogWidget extends Dialog {
 
   Color confirmButtonColor;
   TextStyle titleTextStyle;
-  DialogWidget( {
+  LakeDialogWidget( {
     @required this.title,
     @required this.content,
     @required this.cancelText,

@@ -10,8 +10,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
   String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
-  //String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   var headers = {};
 
   @override
@@ -95,9 +95,7 @@ class FeedbackService with AsyncTimer {
         ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
-      if (!forceRefresh) {
-        getToken(forceRefresh: true);
-      } else if (onFailure != null) onFailure(e);
+      if (onFailure != null) onFailure(e);
     }
   }
 
@@ -573,7 +571,7 @@ class FeedbackService with AsyncTimer {
           'reply_to_floor': id,
           'content': content,
         });
-        if (images.isEmpty) {
+        if (images.isNotEmpty) {
           for (int i = 0; i < images.length; i++)
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
@@ -585,20 +583,19 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static replyOfficialFloor(
+  static replyOffcialFloor(
       {@required id,
       @required content,
       @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('replyOfficialFloor', () async {
+    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
       try {
         var formData = FormData.fromMap({
           'post_id': id,
           'content': content,
         });
         if (images.isNotEmpty) {
-          ToastProvider.error("images.isNotEmpty");
           for (int i = 0; i < images.length; i++)
             formData.fields.addAll([MapEntry('images', images[i])]);
         }

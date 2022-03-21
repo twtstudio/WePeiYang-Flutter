@@ -34,13 +34,14 @@ class PostCard extends StatefulWidget {
   final VoidCallback onContentLongPressed;
   final bool showBanner;
   final PostCardType type;
+  final WPYTab district;
 
   PostCard.simple(
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
     this.showBanner = false,
-    Key key,
+    Key key, this.district,
   })  : type = PostCardType.simple,
         super(key: key);
 
@@ -49,14 +50,14 @@ class PostCard extends StatefulWidget {
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
-    this.showBanner = false,
+    this.showBanner = false, this.district,
   }) : type = PostCardType.detail;
 
   PostCard.outSide(
     this.post, {
     this.onContentPressed,
     this.onContentLongPressed,
-    this.showBanner = false,
+    this.showBanner = false, this.district,
   }) : type = PostCardType.outSide;
 
   @override
@@ -305,10 +306,24 @@ class _PostCardState extends State<PostCard> {
                   tag,
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 180 : 0),
-                  post.type != 1,
-                  id),
+                      (widget.type == PostCardType.simple ? 240 : 120),
+                  post.type,
+                  id, 0),
+            if (tag != '')
             SizedBox(width: 8),
+            if (widget.district != null)
+            TagShowWidget(
+                widget.district
+                    .shortname
+                    .toString(),
+                56,
+                0,
+                id,
+                widget.district
+                    .id
+            ),
+            if (widget.district != null)
+              SizedBox(width: 8),
             campus
           ]),
           SizedBox(height: 6),

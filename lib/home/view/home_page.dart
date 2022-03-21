@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';

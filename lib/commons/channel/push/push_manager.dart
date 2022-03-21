@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-import '../channels/push.dart';
 import 'push_intent.dart';
 import 'request_push_dialog.dart';
 
@@ -13,7 +12,7 @@ export 'push_intent.dart';
 
 class PushManager extends ChangeNotifier {
   PushManager() {
-    pushChannel.setMethodCallHandler((call) async {
+    _pushChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'refreshPushPermission':
           openPush = false;
@@ -36,7 +35,7 @@ class PushManager extends ChangeNotifier {
 
   static const Tag = 'PushManager_RequestNotification';
 
-  void showRequestNotificationDialog(){
+  void showRequestNotificationDialog() {
     SmartDialog.show(
       clickBgDismissTemp: false,
       backDismiss: false,
@@ -47,20 +46,20 @@ class PushManager extends ChangeNotifier {
 
   void closeDialogAndRetryTurnOnPush() {
     SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
-    turnOnPushService((){
+    turnOnPushService(() {
       openPush = true;
-    }, (){
+    }, () {
       ToastProvider.success("可以在设置中打开推送");
-    }, (){
+    }, () {
       //
     });
   }
 
   void closeDialogAndTurnOffPush() {
     SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
-    turnOffPushService((){
+    turnOffPushService(() {
       openPush = false;
-    }, (){
+    }, () {
       //
     });
   }
@@ -69,7 +68,7 @@ class PushManager extends ChangeNotifier {
   Future<void> initGeTuiSdk() async {
     try {
       debugPrint("initGeTuiSdk---");
-      final result = await initSdk();
+      final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
       switch (result) {
         case 'open push service success':
           openPush = true;
@@ -112,7 +111,7 @@ class PushManager extends ChangeNotifier {
   Future<void> turnOnPushService(
       Function success, Function failure, Function error) async {
     try {
-      final result = await turnOnPush();
+      final result = await _pushChannel.invokeMethod("turnOnPushService");
       switch (result) {
         case 'open push service success':
           openPush = true;
@@ -146,7 +145,7 @@ class PushManager extends ChangeNotifier {
 
   Future<void> turnOffPushService(Function success, Function error) async {
     try {
-      await turnOffPush();
+      await _pushChannel.invokeMethod("turnOffPushService");
       openPush = false;
       success();
     } catch (e) {
@@ -157,7 +156,8 @@ class PushManager extends ChangeNotifier {
   Future<void> getCurrentCanReceivePush(
       Function(bool) success, Function(Object) error, Function noResult) async {
     try {
-      final result = await canPush;
+      final result =
+          await _pushChannel.invokeMethod<bool>("getCurrentCanReceivePush");
       if (result != null) {
         success(result);
       } else {
@@ -170,7 +170,7 @@ class PushManager extends ChangeNotifier {
 
   Future<String?> getCid() async {
     try {
-      return await cid;
+      return await _pushChannel.invokeMethod<String>("getCid");
     } catch (e) {
       return null;
     }
@@ -179,7 +179,7 @@ class PushManager extends ChangeNotifier {
   Future<void> cancelNotification(
       int id, Function success, Function error) async {
     try {
-      await cancelNotificationOf(id);
+      await _pushChannel.invokeMethod("cancelNotification", {"id", id});
       success();
     } catch (e) {
       error();
@@ -188,7 +188,7 @@ class PushManager extends ChangeNotifier {
 
   Future<void> cancelAllNotification(Function success, Function error) async {
     try {
-      await cancelAllNotifications();
+      await _pushChannel.invokeMethod("cancelAllNotification");
       success();
     } catch (e) {
       error();
@@ -197,9 +197,14 @@ class PushManager extends ChangeNotifier {
 
   Future<String?> getIntentUri<T extends PushIntent>(T intent) async {
     try {
-      return getIntent(intent);
+      return _pushChannel.invokeMethod<String>(
+        "getIntentUri",
+        intent.toMap(),
+      );
     } catch (e) {
       return null;
     }
   }
 }
+
+const _pushChannel = MethodChannel('com.twt.service/push');

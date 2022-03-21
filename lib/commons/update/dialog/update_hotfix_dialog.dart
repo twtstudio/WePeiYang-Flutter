@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/util.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
@@ -10,7 +11,7 @@ import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
-import '../hotfix_util.dart';
+import '../../channel/install/hotfix.dart';
 
 // 下载安装apk时的dialog
 class UpdateHotfixFinishDialog extends StatelessWidget {
@@ -45,7 +46,7 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
         context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
       },
       ok: () {
-        restartApp();
+        HotFixManager.restartApp();
       },
       cancelText: "稍后重启",
       okText: "立刻重启",

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';

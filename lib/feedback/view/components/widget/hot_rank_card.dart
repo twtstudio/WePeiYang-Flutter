@@ -24,21 +24,24 @@ class _HotCardState extends State<HotCard> {
   }
 
   List<SvgPicture> leads = [
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg"),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg"),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 16),
+    //下面的这个是图钉
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg",
+        width: 16, color: Colors.red),
   ];
 
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 24),
+          width: 22),
       SizedBox(width: 3),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 110)
+          width: 95)
     ]);
 
     return Container(
@@ -53,59 +56,80 @@ class _HotCardState extends State<HotCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           title,
-          SizedBox(height: 10),
-          Consumer<FbHotTagsProvider>(
-            builder: (_, data, __) =>
-            data.hotTagsList.length > 0 ? ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount:
-              data.hotTagsList.length <= 5 ? data.hotTagsList.length : 5,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(
-                        context,
-                        FeedbackRouter.searchResult,
-                        arguments: SearchResultPageArgs(
-                          '',
-                          '${data.hotTagsList[index].tagId}',
-                          '',
-                          S.current.feedback_search_result,
-                          0
-                        ),
-                      ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: Row(
-                      children: [
-                        leads[index],
-                        SizedBox(width: 5),
-                        Center(
-                            child: Text(
-                              data.hotTagsList[index].name,
-                              style: TextUtil.base.w400.NotoSansSC
-                                  .sp(16)
-                                  .black2A,
-                            )),
-                        Spacer(),
-                        Text(
-                          data.hotTagsList[index].point.toString() ?? '0',
-                          style: TextUtil.base.w400.NotoSansSC
-                              .sp(14)
-                              .black2A,
-                        )
-                      ],
-                    ),
-                  ),
-                );
+          SizedBox(height: 8),
+          ///定时发布年度总结
+          if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, FeedbackRouter.summary);
               },
-            ) : Text(
-              '     loading...',
-              style: TextUtil.base.w400.NotoSansSC
-                  .sp(16)
-                  .black2A,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: leads[5],
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      '点击查看年度总结',
+                      style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                    ),
+                  ],
+                ),
+              ),
             ),
+          Consumer<FbHotTagsProvider>(
+            builder: (_, data, __) => data.hotTagsList.length > 0
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: data.hotTagsList.length <= 5
+                        ? data.hotTagsList.length
+                        : 5,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.searchResult,
+                          arguments: SearchResultPageArgs(
+                              '',
+                              '${data.hotTagsList[index].tagId}',
+                              '',
+                              S.current.feedback_search_result,
+                              0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Row(
+                            children: [
+                              leads[index],
+                              SizedBox(width: 5),
+                              Center(
+                                  child: Text(
+                                data.hotTagsList[index].name,
+                                style: TextUtil.base.w400.NotoSansSC
+                                    .sp(16)
+                                    .black2A,
+                              )),
+                              Spacer(),
+                              Text(
+                                data.hotTagsList[index].point.toString() ?? '0',
+                                style: TextUtil.base.w400.NotoSansSC
+                                    .sp(14)
+                                    .black2A,
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : Text(
+                    '     loading...',
+                    style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                  ),
           ),
         ],
       ),

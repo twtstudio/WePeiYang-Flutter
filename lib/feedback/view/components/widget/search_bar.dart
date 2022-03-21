@@ -166,7 +166,7 @@ class _SearchBarState extends State<SearchBar>
                           FeedbackRouter.searchResult,
                           arguments: SearchResultPageArgs(
                               '',
-                              '${data.recTag.id}',
+                              '${data.recTag.tagId}',
                               '',
                               '推荐：#${data.recTag.name}',
                               0),

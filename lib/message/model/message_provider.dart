@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
@@ -8,11 +9,15 @@ import 'package:we_pei_yang_flutter/auth/view/message/message_dialog.dart';
 class MessageProvider extends ChangeNotifier {
   List<LikeMessage> _likeMessages = [];
   List<FloorMessage> _floorMessages = [];
+  List<ReplyMessage> _replyMessages = [];
+  List<NoticeMessage> _noticeMessages = [];
 
   MessageCount _messageCount = MessageCount(like: 0, floor: 0, reply: 0, notice: 0);
 
   List<LikeMessage> get likeMessages => _likeMessages;
   List<FloorMessage> get floorMessages => _floorMessages;
+  List<ReplyMessage> get replyMessages => _replyMessages;
+  List<NoticeMessage> get noticeMessages => _noticeMessages;
 
   MessageCount get messageCount => _messageCount;
 
@@ -20,13 +25,15 @@ class MessageProvider extends ChangeNotifier {
       (likeMessages?.length ?? 0) == 0;
 
   refreshFeedbackCount() async {
-    await MessageService.getUnreadMessagesCount(
-        onResult: (count) {
-          _messageCount = count;
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
-    notifyListeners();
+    if(CommonPreferences().feedbackToken.value != ""){
+      await MessageService.getUnreadMessagesCount(
+          onResult: (count) {
+            _messageCount = count;
+          }, onFailure: (e) {
+        ToastProvider.error(e.error.toString());
+      });
+      notifyListeners();
+    }
   }
 
   setAllMessageRead() async {
@@ -36,6 +43,21 @@ class MessageProvider extends ChangeNotifier {
       ToastProvider.success('所有消息已读成功');
     }, onFailure: (e) => ToastProvider.error(e.error.toString()));
     notifyListeners();
+  }
+
+  getLikeMessages({int page, bool isRefresh}) async {
+      await MessageService.getLikeMessages(
+          page: page,
+          onSuccess: (list, total) {
+            _likeMessages.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+  }
+
+  clearLikeMessages() {
+    _likeMessages.clear();
   }
 
   int getMessageCount(MessageType type) {

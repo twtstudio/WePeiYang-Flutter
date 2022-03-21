@@ -1,9 +1,12 @@
 // @dart = 2.12
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:provider/provider.dart';
 
 class QNHDTestPage extends StatefulWidget {
   const QNHDTestPage({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class QNHDTestPage extends StatefulWidget {
 }
 
 class _QNHDTestPageState extends State<QNHDTestPage> {
-  String token = "unknown";
+  String token = 'null';
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +29,35 @@ class _QNHDTestPageState extends State<QNHDTestPage> {
   }
 
   Widget getToken(BuildContext context) {
-    final manager = context.read<PushManager>();
     return ListView(
       children: [
         SelectableText(token),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            final response = await _dio.post("user/login",formData: FormData.fromMap({
+              "username":CommonPreferences().account.value,
+              "password":CommonPreferences().password.value,
+            }));
             setState(() {
-              token = CommonPreferences().feedbackToken.value;
+              token = response.data['data']['token'] ?? "null";
             });
           },
           child: const Text('点击获取token'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pushNamed(context, FeedbackRouter.summary);
+          },
+          child: const Text('前往页面'),
         ),
       ],
     );
   }
 }
+
+class QNHDSummaryDio extends DioAbstract {
+  @override
+  String get baseUrl => "https://areas.twt.edu.cn/api/";
+}
+
+final _dio = QNHDSummaryDio();

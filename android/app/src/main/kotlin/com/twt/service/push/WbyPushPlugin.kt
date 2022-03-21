@@ -2,7 +2,6 @@ package com.twt.service.push
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
@@ -16,6 +15,7 @@ import com.twt.service.MainActivity
 import com.twt.service.WBYApplication
 import com.twt.service.common.CanPushType
 import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
 import com.twt.service.common.WbySharePreference
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -39,10 +39,7 @@ import io.flutter.plugin.common.PluginRegistry
 
 // Assist_
 
-class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
-        PluginRegistry.NewIntentListener, ActivityAware {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAware {
     private var receiver: PushBroadCastReceiver? = null
     private lateinit var binding: ActivityPluginBinding
     private val pushManager by lazy { PushManager.getInstance() }
@@ -50,10 +47,11 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private var goToPushPermissionPage = false
     private lateinit var permissionResult: MethodChannel.Result
 
+    override val name: String
+        get() = "com.twt.service/push"
+
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/push")
-        context = binding.applicationContext
-        channel.setMethodCallHandler(this)
+        super.onAttachedToEngine(binding)
         // 从 Android 8.0（API 26）开始，所有的 Notification 都要指定 Channel
         createNotificationChannel()
         // 如果用户同意了条款，并且打开通知权限，就初始化个推 sdk
@@ -86,20 +84,17 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     // 如果用户同意了条款，就初始化个推 sdk，如果用户没有允许推送，或者没有权限，就关闭推送
     // 但只要同意了条款，就会初始化sdk，
     private fun initSdkWhenOpenApp() {
-        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }?.apply {
-            initGeTuiSdk()
-            initSdk = true
-            log("init push sdk success when open app")
-            if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
-                canPush = CanPushType.Not
-                pushManager.turnOffPush(context)
-                log("don't allow push ,so turn off push service")
+        WbySharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
+            ?.apply {
+                initGeTuiSdk()
+                initSdk = true
+                log("init push sdk success when open app")
+                if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
+                    canPush = CanPushType.Not
+                    pushManager.turnOffPush(context)
+                    log("don't allow push ,so turn off push service")
+                }
             }
-        }
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
     }
 
     fun onWindowFocusChanged() {
@@ -290,9 +285,9 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                     }.onFailure {
                         log("turnOnPushService error : $it")
                         error(
-                                OPEN_PUSH_SERVICE_ERROR,
-                                "turnOnPushService error when enable notification",
-                                it.message
+                            OPEN_PUSH_SERVICE_ERROR,
+                            "turnOnPushService error when enable notification",
+                            it.message
                         )
                     }
                 } else {
@@ -342,7 +337,7 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     private val isNotificationEnabled: Boolean
         get() = NotificationManagerCompat.from(context)
-                .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
+            .areNotificationsEnabled() && pushManager.areNotificationsEnabled(context)
 
     // 和产品商量过，暂时不用这两个权限
 //    private val checkPermission: Boolean
@@ -374,15 +369,33 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     //       Ⅲ：热修复通知推送
     //    2.点击桌面小组件：暂时只有课程表小组件
     private fun handleIntent(intent: Intent): Boolean {
+        // 走 url scheme 打开微北洋的拦截
+        if (intent.scheme == "wpy" && intent.data?.host == "qnhd.app" && intent.data?.getQueryParameter("page") == "summary") {
+            log("jump from url")
+            WBYApplication.eventList.add(
+                Event(IntentEvent.FeedbackSummaryPage.type, "null")
+            )
+            return true
+        }
+
+        // 下面是走intent打开微北洋的拦截
         // 华为和小米厂商通道可以传递 data ，魅族厂商通道只能产地 extra ，所以只通过 extra 传递数据
         log("WbyPushPlugin handle intent : $intent")
         when (intent.getStringExtra("type")) {
             "feedback" -> {
-                val id = intent.getIntExtra("question_id", -1)
-                log("question_id : $id")
-                WBYApplication.eventList.add(
+                intent.getIntExtra("question_id", -1).takeIf { it != -1 }?.let { id ->
+                    log("question_id : $id")
+                    WBYApplication.eventList.add(
                         Event(IntentEvent.FeedbackPostPage.type, id)
-                )
+                    )
+                    return true
+                }
+                intent.getStringExtra("page")?.takeIf { it == "summary" }?.let {
+                    WBYApplication.eventList.add(
+                        Event(IntentEvent.FeedbackSummaryPage.type, "null")
+                    )
+                    return true
+                }
                 return true
             }
             "mailbox" -> {
@@ -390,24 +403,28 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                 val url = intent.getStringExtra("url")
                 val title = intent.getStringExtra("title")
                 val content = intent.getStringExtra("content")
-                val data = mapOf("url" to url, "title" to title, "createdAt" to createdAt, "content" to content)
+                val data = mapOf(
+                    "url" to url,
+                    "title" to title,
+                    "createdAt" to createdAt,
+                    "content" to content
+                )
                 WBYApplication.eventList.add(
-                        Event(IntentEvent.MailBox.type, data)
+                    Event(IntentEvent.MailBox.type, data)
                 )
                 return true
             }
             "update" -> {
-                // 默认是重要更新
                 val versionCode = intent.getIntExtra("versionCode", 0)
                 val fixCode = intent.getIntExtra("fixCode", 0)
                 val url = intent.getStringExtra("url") ?: ""
                 val data = mapOf(
-                        "versionCode" to versionCode,
-                        "fixCode" to fixCode,
-                        "url" to url,
+                    "versionCode" to versionCode,
+                    "fixCode" to fixCode,
+                    "url" to url,
                 )
                 WBYApplication.eventList.add(
-                        Event(IntentEvent.Update.type, data)
+                    Event(IntentEvent.Update.type, data)
                 )
                 return true
             }
@@ -464,20 +481,33 @@ class WbyPushPlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
         when (call.argument<String>("type")) {
             "feedback" -> {
-                val id = call.argument<Int>("question_id")
-                if (id == null) {
-                    result.error("-1", "question_id can't be null!", "")
+                // 跳转问题详情页面
+                call.argument<Int>("question_id")?.let { id ->
+                    val intentUri = intent.apply {
+                        data = Uri.parse("twtstudio://weipeiyang.app/feedback?")
+                        putExtra("question_id", id)
+                        putExtra("type", "feedback")
+                    }.toUri(Intent.URI_INTENT_SCHEME)
+
+                    log("get feedback intent success : $intentUri")
+                    result.success(intentUri)
+                    return
+                }
+                // 跳转校务总结页面
+                call.argument<String>("page")?.takeIf { it == "summary" }?.let {
+                    val intentUri = intent.apply {
+                        data = Uri.parse("wpy://qnhd?page=summary")
+                        putExtra("page", "summary")
+                        putExtra("type", "feedback")
+                    }.toUri(Intent.URI_INTENT_SCHEME)
+
+                    log("get feedback intent success : $intentUri")
+                    result.success(intentUri)
                     return
                 }
 
-                val intentUri = intent.apply {
-                    data = Uri.parse("twtstudio://weipeiyang.app/feedback?")
-                    putExtra("question_id", id)
-                    putExtra("type", "feedback")
-                }.toUri(Intent.URI_INTENT_SCHEME)
-
-                log("get feedback intent success : $intentUri")
-                result.success(intentUri)
+                result.error("-1", "question_id can't be null!", "")
+                return
             }
             "mailbox" -> {
                 val url = call.argument<String>("url")

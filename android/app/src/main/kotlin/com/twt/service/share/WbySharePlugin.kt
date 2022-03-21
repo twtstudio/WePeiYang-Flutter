@@ -1,48 +1,37 @@
 package com.twt.service.share
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.tencent.connect.common.Constants
 import com.tencent.tauth.DefaultUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import com.twt.service.common.LogUtil
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.WbyPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 
-class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-        PluginRegistry.RequestPermissionsResultListener, PluginRegistry.ActivityResultListener {
-    private lateinit var shareChannel: MethodChannel
-    private lateinit var context: Context
+class WbySharePlugin : WbyPlugin(), ActivityAware, PluginRegistry.RequestPermissionsResultListener,
+    PluginRegistry.ActivityResultListener {
     private lateinit var activityBinding: ActivityPluginBinding
     private lateinit var result: MethodChannel.Result
     private var continueDo: (() -> Unit)? = null
 
     private val mTencent: Tencent? by lazy {
         Tencent.createInstance(
-                APP_ID,
-                context,
-                APP_AUTHORITIES
+            APP_ID,
+            context,
+            APP_AUTHORITIES
         )
     }
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        shareChannel = MethodChannel(binding.binaryMessenger, "com.twt.service/share")
-        shareChannel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        shareChannel.setMethodCallHandler(null)
-    }
+    override val name: String
+        get() = "com.twt.service/share"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -63,7 +52,7 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
                     Tencent.setIsPermissionGranted(true)
                     activityBinding.addActivityResultListener(this)
                     QQFactory(mTencent!!, activityBinding.activity, qqShareListener).shareImg(
-                            call
+                        call
                     )
                 }
                 this.result = result
@@ -94,9 +83,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>?,
-            grantResults: IntArray?
+        requestCode: Int,
+        permissions: Array<out String>?,
+        grantResults: IntArray?
     ): Boolean {
         if (REQUEST_CODE != requestCode) {
             return false
@@ -127,9 +116,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         mPermissions.clear()
         for (permission in PERMISSIONS) {
             if (ActivityCompat.checkSelfPermission(
-                            activityBinding.activity,
-                            permission
-                    ) != PackageManager.PERMISSION_GRANTED
+                    activityBinding.activity,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 mPermissions.add(permission)
             }
@@ -139,9 +128,9 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         if (mPermissions.size > 0) {
             activityBinding.addRequestPermissionsResultListener(this)
             ActivityCompat.requestPermissions(
-                    activityBinding.activity,
-                    mPermissions.toTypedArray(),
-                    REQUEST_CODE
+                activityBinding.activity,
+                mPermissions.toTypedArray(),
+                REQUEST_CODE
             )
         }
         return mPermissions.isNotEmpty()
@@ -186,7 +175,8 @@ class WbySharePlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityA
         const val TAG = "WBY_SHARE"
         const val REQUEST_CODE = 10086
         val PERMISSIONS =
-                listOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            listOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }
