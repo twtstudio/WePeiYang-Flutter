@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'
+    hide RefreshIndicator, RefreshIndicatorState;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -10,6 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
@@ -81,9 +81,11 @@ class _ProfilePageState extends State<ProfilePage> {
   _addPostList(List<Post> list) {
     _postList = list;
   }
+
   _addFavList(List<Post> list) {
     _favList = list;
   }
+
   //刷新
   _onRefresh() {
     switch (_currentTab.value) {
@@ -107,6 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
         break;
     }
   }
+
 //下拉加载
   _onLoading() {
     switch (_currentTab.value) {
@@ -174,6 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (absPosition > 0.5 && !tap) {
           _currentTab.value = _CurrentTab.values[_tabController.page.round()];
         }
+        _refreshController.requestRefresh();
       });
     _currentTab.addListener(() {
       tap = true;
@@ -264,7 +268,7 @@ class _ProfilePageState extends State<ProfilePage> {
       favListShow = Container(
           height: 200,
           alignment: Alignment.center,
-          child: Text("网络不佳，下拉刷新试试", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无提问", style: TextStyle(color: Color(0xff62677b))));
     } else {
       favListShow = Column(
         children: [
@@ -307,7 +311,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var list = ExpandablePageView(
       controller: _tabController,
       children: [
-       postListShow,
+        postListShow,
         favListShow,
       ],
     );
@@ -324,13 +328,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Container(
       //改背景色用
-      decoration: BoxDecoration(
-        color: ColorUtil.backgroundColor
-      ),
+      decoration: BoxDecoration(color: ColorUtil.backgroundColor),
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
-        header: ClassicHeader(),
+        header: RefreshHeader(),
         footer: ClassicFooter(),
         enablePullDown: true,
         onRefresh: _onRefresh,

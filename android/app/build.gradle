@@ -120,7 +120,7 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
 
