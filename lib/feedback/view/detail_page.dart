@@ -585,7 +585,7 @@ class _DetailPageState extends State<DetailPage>
     return showDialog<bool>(
         context: context,
         builder: (context) {
-          return DialogWidget(
+          return LakeDialogWidget(
               title: '删除冒泡',
               content: Text('您确定要删除这条冒泡吗？'),
               cancelText: "取消",

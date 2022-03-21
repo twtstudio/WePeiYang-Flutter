@@ -95,9 +95,7 @@ class FeedbackService with AsyncTimer {
         ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
-      if (!forceRefresh) {
-        getToken(forceRefresh: true);
-      } else if (onFailure != null) onFailure(e);
+      if (onFailure != null) onFailure(e);
     }
   }
 

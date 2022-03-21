@@ -70,7 +70,7 @@ class _NCommentCardState extends State<NCommentCard>
     return showDialog<bool>(
         context: context,
         builder: (context) {
-          return DialogWidget(
+          return LakeDialogWidget(
               title: '删除评论',
               content: Text('您确定要删除这条评论吗？'),
               cancelText: "取消",

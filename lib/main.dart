@@ -21,7 +21,6 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
@@ -125,7 +124,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      FeedbackService.getToken();
     });
   }
 

@@ -2,7 +2,6 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/screen_util.dart';
@@ -12,12 +11,10 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
@@ -75,57 +72,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  ///微口令的识别
-  getClipboardWeKoContents() async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    if (clipboardData != null && clipboardData.text.trim() != '') {
-      String weCo = clipboardData.text.trim();
-      RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
-      if (regExp.hasMatch(weCo)) {
-        var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if (CommonPreferences().feedbackLastWeCo.value != id) {
-          FeedbackService.getPostById(
-              id: int.parse(id),
-              onResult: (post) {
-                showDialog<bool>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return WeKoDialog(
-                      post: post,
-                      onConfirm: () => Navigator.pop(context, true),
-                      onCancel: () => Navigator.pop(context, true),
-                    );
-                  },
-                ).then((confirm) {
-                  if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail,
-                        arguments: post);
-                    CommonPreferences().feedbackLastWeCo.value = id;
-                  } else {
-                    CommonPreferences().feedbackLastWeCo.value = id;
-                  }
-                });
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              });
-        }
-      }
-    }
-  }
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       firstInLake();
     });
-    context.read<LakeModel>().checkTokenAndGetTabList();
-    context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
-      ToastProvider.error(e.error.toString());
+    context.read<LakeModel>().checkTokenAndGetTabList(success: () {
+      context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
+        ToastProvider.error(e.error.toString());
+      });
     });
     context.read<LakeModel>().nController = new ScrollController();
-
-    getClipboardWeKoContents();
+    context.read<LakeModel>().getClipboardWeKoContents(context);
     super.initState();
   }
 
@@ -192,11 +150,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       context
           .read<LakeModel>()
           .lakeAreas[context
-          .read<LakeModel>()
-          .lakeTabList[context.read<LakeModel>().tabController.index]]
+              .read<LakeModel>()
+              .lakeTabList[context.read<LakeModel>().tabController.index]]
           .controller
           .animateTo(-85,
-          duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
+              duration: Duration(milliseconds: 1000),
+              curve: Curves.easeOutCirc);
       initializeRefresh = false;
     }
 

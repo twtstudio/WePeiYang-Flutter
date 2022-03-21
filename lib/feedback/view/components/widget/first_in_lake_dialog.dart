@@ -23,7 +23,7 @@ class FirstInLakeDialogState extends State<FirstInLakeDialog>{
 
   @override
   Widget build(BuildContext context) {
-   return DialogWidget(
+   return LakeDialogWidget(
        confirmButtonColor: ColorUtil.selectionButtonColor,
        title: '同学你好：',
        content: Column(

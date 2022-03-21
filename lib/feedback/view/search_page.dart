@@ -191,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return DialogWidget(
+          return LakeDialogWidget(
               title: '清除记录',
               confirmButtonColor: ColorUtil.selectionButtonColor,
               titleTextStyle:

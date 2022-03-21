@@ -410,7 +410,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return DialogWidget(
+          return LakeDialogWidget(
               title: "",
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

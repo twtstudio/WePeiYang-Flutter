@@ -63,6 +63,12 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             }
           });
   }
+
+  onRefresh() {
+    context.read<MessageProvider>().refreshFeedbackCount();
+    refresh.value++;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -251,6 +257,32 @@ class _LikeMessagesListState extends State<LikeMessagesList>
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MessageService.getLikeMessages(
+          page: 1,
+          onSuccess: (list, total) {
+            items.addAll(list);
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
+      if (mounted) {
+        context.read<MessageProvider>().refreshFeedbackCount();
+        setState(() {});
+        context
+            .findAncestorStateOfType<_FeedbackMessagePageState>()
+            .refresh
+            .addListener(() =>
+            onRefresh(
+              refreshCount: false,
+            ));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 
@@ -275,8 +307,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
                   items[i].type == 0 ? items[i].post.id : items[i].floor.id,
                   items[i].type,
                   onSuccess: () {
-                    items.removeAt(i);
-                    context.read<MessageProvider>().refreshFeedbackCount();
+                    // items.removeAt(i); 会出问题 不能这么搞 目前先刷新处理了
                   }, onFailure: (e) {
                 ToastProvider.error(e.error.toString());
               });
@@ -515,7 +546,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               context,
               FeedbackRouter.detail,
               arguments: post,
-            );
+            ).then((_) => context
+                .findAncestorStateOfType<_FeedbackMessagePageState>()
+                .onRefresh());
           }
           // else {
           //   await Navigator.pushNamed(
