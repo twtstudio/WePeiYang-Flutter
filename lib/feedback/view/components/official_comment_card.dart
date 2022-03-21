@@ -134,7 +134,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-              Text(widget.tag ?? '用户'+CommonPreferences().feedbackUid.value.toString(),
+              Text(widget.tag ?? '帖主',
                   style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
             ]),
             Text(
@@ -355,7 +355,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           setState(() {
             Navigator.pushNamed(
               context,
-              FeedbackRouter.offcialCommentDetail,
+              FeedbackRouter.officialCommentDetail,
               arguments: comment,
             );
           });

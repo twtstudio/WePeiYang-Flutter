@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -17,19 +18,18 @@ import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-import 'components/normal_comment_card.dart';
 import 'components/widget/PopMenuShape.dart';
 
-class OffcialReplyDetailPage extends StatefulWidget {
+class OfficialReplyDetailPage extends StatefulWidget {
   final List<Floor> floor;
 
-  OffcialReplyDetailPage(this.floor);
+  OfficialReplyDetailPage(this.floor);
 
   @override
-  _OffcialReplyDetailPageState createState() => _OffcialReplyDetailPageState();
+  _OfficialReplyDetailPageState createState() => _OfficialReplyDetailPageState();
 }
 
-class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
+class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     with SingleTickerProviderStateMixin {
   int index;
   int currentPage = 1;
@@ -42,7 +42,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
 
   var _refreshController = RefreshController(initialRefresh: false);
 
-  _OffcialReplyDetailPageState();
+  _OfficialReplyDetailPageState();
 
   Future<bool> _initPost(int id) async {
     bool success = false;
@@ -65,7 +65,6 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
 
   _onRefresh() {
     currentPage = 1;
-    _refreshController.resetNoData();
     _getComment(
         onSuccess: (comments) {
           setState(() {
@@ -109,7 +108,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
   void initState() {
     super.initState();
     context.read<NewFloorProvider>().inputFieldEnabled = false;
-    context.read<NewFloorProvider>().replyTo = 0;
+    context.read<NewFloorProvider>().replyTo = widget.floor[0].postId;
     floors = widget.floor;
     _initPost(widget.floor[0].postId);
     _getComment(
@@ -131,10 +130,12 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
       id: floors[0].postId,
       onSuccess: (floor) {
         floors = floor;
+        _refreshController.refreshCompleted();
         setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
+        _refreshController.refreshFailed();
         onFail?.call();
       },
     );
@@ -152,7 +153,10 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send(false);
+        if(CommonPreferences().feedbackUid.value.toString() != post.uid)
+          ToastProvider.error("只有帖主能回复哦！");
+        else
+        launchKey.currentState.send(true);
         setState(() {
           _onRefresh();
         });
@@ -217,7 +221,7 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
     );
 
     var inputField =
-        CommentInputField(postId: widget.floor[0].postId, key: launchKey);
+        CommentInputField(postId:  floors[0].postId, key: launchKey);
 
     body = Column(
       children: [
@@ -251,20 +255,10 @@ class _OffcialReplyDetailPageState extends State<OffcialReplyDetailPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           inputField,
-                          ImageSelectAndView(key: imageSelectionKey),
                           SizedBox(height: 4),
                           Row(
                             children: [
                               SizedBox(width: 4),
-                              IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/lake_butt_icons/image.png',
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  onPressed: () => imageSelectionKey
-                                      .currentState
-                                      .loadAssets()),
                               Spacer(),
                               checkButton,
                               SizedBox(width: 16),

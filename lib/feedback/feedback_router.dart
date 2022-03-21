@@ -18,7 +18,7 @@ class FeedbackRouter {
   static String profile = 'feedback/profile';
   static String detail = 'feedback/detail';
   static String commentDetail = 'feedback/comment_detail';
-  static String offcialCommentDetail = 'feedback/offical_comment_detail';
+  static String officialCommentDetail = 'feedback/offical_comment_detail';
   static String newPost = 'feedback/new_post';
   static String officialComment = 'feedback/official_comment';
   static String search = 'feedback/search';
@@ -34,7 +34,7 @@ class FeedbackRouter {
     profile: (_) => ProfilePage(),
     detail: (args) => DetailPage(args),
     commentDetail: (args) => ReplyDetailPage(args),
-    offcialCommentDetail: (args) => OffcialReplyDetailPage(args),
+    officialCommentDetail: (args) => OfficialReplyDetailPage(args),
     newPost: (_) => NewPostPage(),
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),

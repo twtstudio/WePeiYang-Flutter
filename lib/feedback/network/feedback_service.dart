@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   //String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   var headers = {};
 
@@ -573,7 +573,7 @@ class FeedbackService with AsyncTimer {
           'reply_to_floor': id,
           'content': content,
         });
-        if (images.isNotEmpty) {
+        if (images.isEmpty) {
           for (int i = 0; i < images.length; i++)
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
@@ -585,19 +585,20 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static replyOffcialFloor(
+  static replyOfficialFloor(
       {@required id,
       @required content,
       @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
+    AsyncTimer.runRepeatChecked('replyOfficialFloor', () async {
       try {
         var formData = FormData.fromMap({
           'post_id': id,
           'content': content,
         });
         if (images.isNotEmpty) {
+          ToastProvider.error("images.isNotEmpty");
           for (int i = 0; i < images.length; i++)
             formData.fields.addAll([MapEntry('images', images[i])]);
         }

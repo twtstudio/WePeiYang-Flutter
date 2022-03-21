@@ -715,9 +715,9 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor(List<String> list, bool isOffcial) {
+  _replyFloor(List<String> list, bool isOfficial) {
     ToastProvider.running('回复中 q(≧▽≦)/');
-    if (isOffcial == false) {
+    if (isOfficial == false) {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: _textEditingController.text,
@@ -734,7 +734,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         ),
       );
     } else {
-      FeedbackService.replyOffcialFloor(
+      FeedbackService.replyOfficialFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: _textEditingController.text,
         images: list == [] ? '' : list,
