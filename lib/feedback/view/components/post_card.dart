@@ -20,6 +20,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
@@ -754,7 +755,7 @@ class _PostCardState extends State<PostCard> {
 
   String getTypeName(int type) {
     Map<int, String> typeName = {};
-    context.read<LakeModel>().newPostTabList.forEach((e) {
+    context.read<LakeModel>().tabList.forEach((e) {
       typeName.addAll({e.id: e.shortname});
     });
     return typeName[type];

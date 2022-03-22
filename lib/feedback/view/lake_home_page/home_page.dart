@@ -134,6 +134,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     super.build(context);
 
     final status = context.select((LakeModel model) => model.mainStatus);
+    final tabList = context.select((LakeModel model) => model.tabList);
 
     //控制动画速率
     timeDilation = 0.9;
@@ -255,18 +256,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         children: [
                           SizedBox(width: 4),
                           Expanded(
-                              child: status == LakePageStatus.unload
-                                  ? SizedBox()
-                                  : status == LakePageStatus.loading
-                                      ? Align(
-                                          alignment: Alignment.center,
-                                          child: Text('加载中',
-                                              style: TextUtil
-                                                  .base.mainColor.w400
-                                                  .sp(16)),
-                                        )
-                                      : status == LakePageStatus.idle
-                                          ? TabBar(
+                            child: status == LakePageStatus.unload
+                                ? SizedBox()
+                                : status == LakePageStatus.loading
+                                    ? Align(
+                                        alignment: Alignment.center,
+                                        child: Text('加载中',
+                                            style: TextUtil.base.mainColor.w400
+                                                .sp(16)),
+                                      )
+                                    : status == LakePageStatus.idle
+                                        ? Builder(builder: (context) {
+                                            return TabBar(
                                               indicatorPadding:
                                                   EdgeInsets.only(bottom: 2),
                                               labelPadding:
@@ -292,40 +293,35 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                                           ColorUtil.mainColor,
                                                       width: 2)),
                                               tabs: List<Widget>.generate(
-                                                  context
-                                                      .read<LakeModel>()
-                                                      .tabList
-                                                      .length,
+                                                  tabList.length,
                                                   (index) => DaTab(
-                                                      text: context
-                                                          .read<LakeModel>()
-                                                          .tabList[index]
+                                                      text: tabList[index]
                                                           .shortname,
-                                                      withDropDownButton: context
-                                                              .read<LakeModel>()
-                                                              .tabList[index]
-                                                              .name ==
-                                                          '校务专区')),
+                                                      withDropDownButton:
+                                                          tabList[index].name ==
+                                                              '校务专区')),
                                               onTap: (index) {
-                                                if (context
-                                                        .read<LakeModel>()
-                                                        .tabList[index]
-                                                        .id ==
-                                                    1) {
+                                                if (tabList[index].id == 1) {
                                                   _onFeedbackTapped();
                                                 }
                                               },
-                                            )
-                                          : InkWell(
-                                              onTap: () => context
-                                                  .read<LakeModel>()
-                                                  .checkTokenAndGetTabList(),
-                                              child: Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text('点击重新加载分区',
-                                                      style: TextUtil
-                                                          .base.mainColor.w400
-                                                          .sp(16))))),
+                                            );
+                                          })
+                                        : InkWell(
+                                            onTap: () => context
+                                                .read<LakeModel>()
+                                                .checkTokenAndGetTabList(),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '点击重新加载分区',
+                                                style: TextUtil
+                                                    .base.mainColor.w400
+                                                    .sp(16),
+                                              ),
+                                            ),
+                                          ),
+                          ),
                           PopupMenuButton(
                             padding: EdgeInsets.zero,
                             tooltip: "排序方式",

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
+
+import '../../feedback_router.dart';
 
 class FbDepartmentsProvider {
   List<Department> departmentList = [];
@@ -86,7 +90,6 @@ class LakeModel extends ChangeNotifier {
   ScrollController nController;
   int sortSeq;
 
-  int get tabLength => tabList.length;
 
   Future<void> initTabList() async {
     if (mainStatus == LakePageStatus.error ||
@@ -245,5 +248,44 @@ class LakeModel extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  getClipboardWeKoContents(BuildContext context) async {
+    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null && clipboardData.text.trim() != '') {
+      String weCo = clipboardData.text.trim();
+      RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
+      if (regExp.hasMatch(weCo)) {
+        var id = RegExp(r'\d{1,}').stringMatch(weCo);
+        if (CommonPreferences().feedbackLastWeCo.value != id &&
+            CommonPreferences().feedbackToken.value != "") {
+          FeedbackService.getPostById(
+              id: int.parse(id),
+              onResult: (post) {
+                showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WeKoDialog(
+                      post: post,
+                      onConfirm: () => Navigator.pop(context, true),
+                      onCancel: () => Navigator.pop(context, true),
+                    );
+                  },
+                ).then((confirm) {
+                  if (confirm != null && confirm) {
+                    Navigator.pushNamed(context, FeedbackRouter.detail,
+                        arguments: post);
+                    CommonPreferences().feedbackLastWeCo.value = id;
+                  } else {
+                    CommonPreferences().feedbackLastWeCo.value = id;
+                  }
+                });
+              },
+              onFailure: (e) {
+                // ToastProvider.error(e.error.toString());
+              });
+        }
+      }
+    }
   }
 }

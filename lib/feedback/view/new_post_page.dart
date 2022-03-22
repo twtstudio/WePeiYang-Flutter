@@ -114,7 +114,6 @@ class _LakeSelectorState extends State<LakeSelector> {
   @override
   void initState() {
     super.initState();
-    context.read<LakeModel>().initTabList();
   }
 
   @override
@@ -122,6 +121,7 @@ class _LakeSelectorState extends State<LakeSelector> {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     final status = context.select((LakeModel model) => model.mainStatus);
+    final tabList = context.select((LakeModel model) => model.tabList);
 
     return status == LakePageStatus.unload
         ? SizedBox()
@@ -152,71 +152,63 @@ class _LakeSelectorState extends State<LakeSelector> {
                           valueListenable: notifier,
                           builder: (context, type, _) {
                             return Padding(
-                              padding: const EdgeInsets.only(right: 40.0),
-                              child: ListView.builder(
-                                controller: controller,
-                                itemCount: LakeModel().tabLength,
-                                scrollDirection: Axis.horizontal,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      notifier.value = context
-                                          .read<LakeModel>()
-                                          .lakeAreas[index]
-                                          .tab
-                                          .id;
-                                    },
-                                    child: SizedBox(
-                                      height: 58,
-                                      width: 100,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                                context
-                                                    .read<LakeModel>()
-                                                    .lakeAreas[index]
-                                                    .tab
-                                                    .name,
-                                                style: TextUtil
-                                                    .base.NotoSansSC.w600
-                                                    .sp(18)
-                                                    .black2A),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 2),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  border: Border.all(
-                                                      color: type ==
-                                                              context
-                                                                  .read<
-                                                                      LakeModel>()
-                                                                  .lakeAreas[
-                                                                      index]
-                                                                  .tab
-                                                                  .id
-                                                          ? ColorUtil.mainColor
-                                                          : Colors.white,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(16))),
-                                              width: 24,
-                                              height: 3,
+                                padding: const EdgeInsets.only(right: 40.0),
+                                child: Builder(builder: (context) {
+                                  return ListView.builder(
+                                    controller: controller,
+                                    itemCount: tabList.length - 1,
+                                    scrollDirection: Axis.horizontal,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          notifier.value =
+                                              tabList[index + 1].id;
+                                        },
+                                        child: SizedBox(
+                                          height: 58,
+                                          width: 100,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(tabList[index + 1].name,
+                                                    style: TextUtil
+                                                        .base.NotoSansSC.w600
+                                                        .sp(18)
+                                                        .black2A),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 2),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          color: type ==
+                                                                  tabList[index +
+                                                                          1]
+                                                                      .id
+                                                              ? ColorUtil
+                                                                  .mainColor
+                                                              : Colors.white,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  16))),
+                                                  width: 24,
+                                                  height: 3,
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   );
-                                },
-                              ),
-                            );
+                                }));
                           },
                         ),
                         Align(
@@ -238,16 +230,13 @@ class _LakeSelectorState extends State<LakeSelector> {
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () {
-                                controller.offset <=
-                                        100 * (LakeModel().tabLength - 1)
+                                controller.offset <= 100 * (tabList.length - 1)
                                     ? controller.animateTo(
                                         controller.offset + 100,
                                         duration: Duration(milliseconds: 400),
                                         curve: Curves.fastOutSlowIn)
                                     : controller.animateTo(
-                                        140 *
-                                            (LakeModel().tabLength - 1)
-                                                .toDouble(),
+                                        140 * (tabList.length - 1).toDouble(),
                                         duration: Duration(milliseconds: 800),
                                         curve: Curves.slowMiddle);
                               },
