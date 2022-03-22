@@ -496,7 +496,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 // 跳转校务总结页面
                 call.argument<String>("page")?.takeIf { it == "summary" }?.let {
                     val intentUri = intent.apply {
-                        data = Uri.parse("wpy://qnhd?page=summary")
+                        data = Uri.parse("wpy://qnhd.app/qnhd?page=summary")
                         putExtra("page", "summary")
                         putExtra("type", "feedback")
                     }.toUri(Intent.URI_INTENT_SCHEME)

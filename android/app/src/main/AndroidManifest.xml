@@ -67,7 +67,7 @@
 
         <!--    应用主Activity    -->
         <activity
-            android:name="com.twt.service.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:fitsSystemWindows="true"
@@ -163,17 +163,6 @@
             </intent-filter>
         </activity>
 
-        <!--    个推ID配置 -->
-        <!--        product-->
-        <meta-data
-            android:name="PUSH_APPID"
-            android:value="43HGFmIKsnAmjrjDLr60X4" />
-
-        <!--        develop-->
-        <!--        <meta-data-->
-        <!--            android:name="PUSH_APPID"-->
-        <!--            android:value="bj16oBtQ3VAvqPbGtEHB69" />-->
-
         <!--    高德-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -182,11 +171,11 @@
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
-            android:name="com.twt.service.push.WBYIntentService"
+            android:name=".push.WBYIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <!-- 用户自定义服务名 -->
         <service
-            android:name="com.twt.service.push.WBYPushService"
+            android:name=".push.WBYPushService"
             android:exported="false"
             android:label="PushService"
             android:process=":pushservice" />
@@ -220,7 +209,7 @@
         <!--    QQ分享 -->
         <provider
             android:name=".share.QQProvider"
-            android:authorities="com.twt.service.qqprovider"
+            android:authorities="${applicationId}.qqprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -231,7 +220,7 @@
         <!--    应用内更新apk存储地址  -->
         <provider
             android:name=".install.InstallProvider"
-            android:authorities="com.twt.service.apkprovider"
+            android:authorities="${applicationId}.apkprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

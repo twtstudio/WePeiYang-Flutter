@@ -10,8 +10,8 @@
 		"CN_back":"connect-drcn.hispace.hicloud.com",
 		"DE":"connect-dre.dbankcloud.cn",
 		"DE_back":"connect-dre.hispace.hicloud.com",
-		"RU":"connect-drru.dbankcloud.cn",
-		"RU_back":"connect-drru.hispace.hicloud.com",
+		"RU":"connect-drru.hispace.dbankcloud.ru",
+		"RU_back":"connect-drru.hispace.dbankcloud.ru",
 		"SG":"connect-dra.dbankcloud.cn",
 		"SG_back":"connect-dra.hispace.hicloud.com"
 	},
@@ -36,7 +36,7 @@
 	"service":{
 		"analytics":{
 			"collector_url":"datacollector-drcn.dt.hicloud.com,datacollector-drcn.dt.dbankcloud.cn",
-			"collector_url_ru":"datacollector-drru.dt.hicloud.com,datacollector-drru.dt.dbankcloud.cn",
+			"collector_url_ru":"datacollector-drru.dt.dbankcloud.ru,datacollector-drru.dt.hicloud.com",
 			"collector_url_sg":"datacollector-dra.dt.hicloud.com,datacollector-dra.dt.dbankcloud.cn",
 			"collector_url_de":"datacollector-dre.dt.hicloud.com,datacollector-dre.dt.dbankcloud.cn",
 			"collector_url_cn":"datacollector-drcn.dt.hicloud.com,datacollector-drcn.dt.dbankcloud.cn",
@@ -56,6 +56,20 @@
 	"region":"CN",
 	"configuration_version":"3.0",
 	"appInfos":[
+		{
+			"package_name":"com.twt.service.develop",
+			"client":{
+				"app_id":"105791489"
+			},
+			"app_info":{
+				"package_name":"com.twt.service.develop",
+				"app_id":"105791489"
+			},
+			"oauth_client":{
+				"client_type":1,
+				"client_id":"105791489"
+			}
+		},
 		{
 			"package_name":"com.twt.service",
 			"client":{

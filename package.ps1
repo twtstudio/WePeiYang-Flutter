@@ -11,7 +11,7 @@ if (Test-Path $allApksPath) {
 } 
 mkdir $allApksPath
 
-flutter clean
+# flutter clean
 
 function New-Apk {
     param (
@@ -32,7 +32,7 @@ function New-Apk {
         "--dart-define=CHANNEL=$channel",
         "--dart-define=ENVIRONMENT=$environment",
         "--dart-define=QNHD=$qnhd",
-        " --dart-define=QNHDPIC=$qnhdpic"
+        "--dart-define=QNHDPIC=$qnhdpic"
     ) -join " "
     flutter build apk  $arguments  --target-platform $platforms --split-per-abi
     Move-Item  -Path ($releasePath + "\*") -Destination $channelPath
@@ -41,8 +41,8 @@ function New-Apk {
 # RELEASE版
 # 每个渠道下有32位和64位两个apk
 
-$qnhd = ""
-$qnhdpic = ""
+$qnhd = "123"
+$qnhdpic = "234"
 $channels = @("HUAWEI", "XIAOMI", "OPPO", "VIVO", "DOWNLOAD")
 foreach ($channel in $channels) {
     New-Apk -channel $channel -environment "RELEASE" -platforms "android-arm,android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
@@ -51,9 +51,9 @@ foreach ($channel in $channels) {
 # DEBUG版
 # 仅打包64位
 
-$qnhd = ""
-$qnhdpic = ""
-New-Apk -channel "OTHER" -environment "DEBUG" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
+$qnhd = "345"
+$qnhdpic = "456"
+New-Apk -channel "OTHER" -environment "DEVELOP" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 
 tree $allApksPath /F
 

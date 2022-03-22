@@ -87,15 +87,6 @@ android {
         }
     }
 
-//    flavorDimensions "app"
-//
-//    productFlavors {
-//        huawei {
-//            dimension "app"
-//        }
-//
-//    }
-
     buildTypes {
         release {
             signingConfig signingConfigs.config
@@ -107,7 +98,12 @@ android {
             // http://www.androidchina.net/10565.html
             // package和applicationId的区别
             // https://blog.csdn.net/he_xiang_/article/details/81080507
-            // 询问了个推和高德，只要包名不变，就行
+            // 询问了个推技术人员，只要包名不变，就行
+            // 高德需要包名和applicationId一致
+            // https://lbs.amap.com/faq/android/map-sdk/create-project/46723
+            // 华为需要在网站注册所用的包名，已注册
+            // 所以测试包不能使用厂商推送
+            // QQ sdk也是只需要包名（经测试）
 
             // 动态配置string.xml
             // https://blog.csdn.net/jerycoupter/article/details/70159410
@@ -116,19 +112,19 @@ android {
             // flutter 1.20 ~ 2.2 的读取方式
             if (project.hasProperty('dart-defines')) {
                 // 如果是通过 package.ps1 打包的话就解析固定参数
-                def dartEnvironmentVariables = project.property('dart-defines')
-                        .split(',')
+                def dartEnvironmentVariables = URLDecoder.decode(project.property('dart-defines'))
+                        .split(' --dart-define=')
                         .collectEntries { entry ->
-                            def pair = URLDecoder.decode(entry).split('=')
+                            def pair = entry.split('=')
                             [(pair.first()): pair.last()]
                         }
 
                 switch (dartEnvironmentVariables.ENVIRONMENT) {
-                    case "DEBUG":
+                    case "DEVELOP":
                         // 个推 develop
                         manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
                         // 不覆盖正式版安装
-                        applicationIdSuffix ".debug"
+                        applicationIdSuffix ".develop"
                         // 输出调试信息
                         buildConfigField("Boolean", "LOG_OUTPUT", "true")
                         // 设置应用名称
@@ -150,7 +146,6 @@ android {
                         def arguments = [
                                 dartEnvironmentVariables.CHANNEL,
                                 dartEnvironmentVariables.ENVIRONMENT,
-                                android.defaultConfig.versionName,
                         ].join("-")
                         output.outputFileName = arguments + "-" + output.outputFileName
                     }
@@ -162,32 +157,20 @@ android {
                 resValue("string", "label", "微北洋")
                 // 不输出调试信息
                 buildConfigField("Boolean", "LOG_OUTPUT", "false")
-                // 没有通过脚本打包
-                android.applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        // 更改输出的安装包的名字 如 4.2.1-app-arm64-v8a-release.apk
-                        output.outputFileName = android.defaultConfig.versionName + "-" + output.outputFileName
-                    }
-                }
             }
 
-            // 谷歌规定 Google Play 多个安装包不能 versionCode一样
-            // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
-            // 所以将所有 Apk 的版本号重置
-            // https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions
+
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
+                    output.outputFileName = android.defaultConfig.versionName + "-" + output.outputFileName
+
+                    // 谷歌规定 Google Play 多个安装包不能 versionCode一样
+                    // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
+                    // 所以将所有 Apk 的版本号重置
+                    // https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions
                     output.versionCodeOverride = android.defaultConfig.versionCode
                 }
             }
-
-            // 消除安装包内的二进制文件
-//            packagingOptions {
-//                exclude 'lib/armeabi-v7a/libapp.so'
-//                exclude 'lib/armeabi-v7a/libflutter.so'
-//                exclude 'lib/arm64-v8a/libapp.so'
-//                exclude 'lib/arm64-v8a/libflutter.so'
-//            }
         }
 
         debug {
@@ -197,11 +180,11 @@ android {
             // 个推 develop
             manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
             // 不覆盖安装
-//            applicationIdSuffix ".debug"
+            applicationIdSuffix ".develop"
             // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
             // 设置应用名称
-            resValue("string", "label", "微北洋")
+            resValue("string", "label", "微北洋测试版")
         }
     }
 }
@@ -229,8 +212,6 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 
-//    implementation "androidx.fragment:fragment-ktx:1.4.1"
-
     // 高德 sdk
     // https://lbs.amap.com/api/android-location-sdk/changelog
     implementation 'com.amap.api:location:6.0.0'
@@ -252,6 +233,8 @@ dependencies {
     implementation 'com.assist-v3:vivo:3.1.0'
     implementation 'com.getui.opt:mzp:3.2.0'
     implementation 'com.huawei.hms:push:6.1.0.300'
+    // 华为多版本
+    // https://developer.huawei.com/consumer/cn/doc/development/AppGallery-connect-Guides/agc-config-flavor-android-0000001057944603
 
     // QQ sdk
     implementation fileTree(dir: 'libs', include: '*.jar')

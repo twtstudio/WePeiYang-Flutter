@@ -35,6 +35,7 @@ import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/util/text_util.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
+import 'commons/environment/config.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -228,7 +229,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: EnvConfig.isDevelop,
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
