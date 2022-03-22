@@ -124,7 +124,7 @@ class _LakeSelectorState extends State<LakeSelector> {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     postType = context.read<LakeModel>().newPostTabList;
-    notifier.value = postType[1].id;
+    notifier.value = postType[0].id;
     return postType == []
         ? Container(
             height: 60,
