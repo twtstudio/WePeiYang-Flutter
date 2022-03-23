@@ -60,7 +60,9 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
+
+  //final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -317,10 +319,32 @@ class _NCommentCardState extends State<NCommentCard>
                             });
                       },
                       child: new Image(
-                          image: NetworkImageSSL(
-                            picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                          ),
-                          fit: BoxFit.cover)
+                        image: NetworkImageSSL(
+                          picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                        ),
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace stackTrace) {
+                          return Text(
+                            '💔[图片加载失败]' +
+                                widget.comment.imageUrl.replaceRange(10,
+                                    widget.comment.imageUrl.length - 6, '...'),
+                            style: TextUtil.base.grey6C.w400.sp(12),
+                          );
+                        },
+                      ),
                       // Image.network(
                       //   picBaseUrl + 'origin/' + widget.comment.imageUrl,
                       //   loadingBuilder: (BuildContext context, Widget child,
@@ -345,7 +369,7 @@ class _NCommentCardState extends State<NCommentCard>
                       //     );
                       //   },
                       // ),
-                      )
+                    )
                   : Row(
                       children: [
                         ClipRRect(
@@ -356,6 +380,36 @@ class _NCommentCardState extends State<NCommentCard>
                                 image: NetworkImageSSL(picBaseUrl +
                                     'thumb/' +
                                     widget.comment.imageUrl),
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    padding: EdgeInsets.all(4),
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress
+                                                  .expectedTotalBytes !=
+                                              null
+                                          ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes
+                                          : null,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Text(
+                                    '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                        widget.comment.imageUrl.replaceRange(
+                                            10,
+                                            widget.comment.imageUrl.length - 6,
+                                            '...'),
+                                    style: TextUtil.base.grey6C.w400.sp(12),
+                                  );
+                                },
                                 fit: BoxFit.cover)
 
                             // Image.network(

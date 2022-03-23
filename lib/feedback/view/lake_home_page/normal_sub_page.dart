@@ -5,6 +5,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -63,8 +65,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   onRefresh([AnimationController controller]) async {
     FeedbackService.getToken(onResult: (_) {
       context.read<LakeModel>().getClipboardWeKoContents(context);
-      if (index == 0)
-        context.read<FbHotTagsProvider>().initHotTags();
+      if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(index, success: () {
         setState(() {});
@@ -189,6 +190,37 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   return HotCard();
                 }
                 if (index == 0) ind--;
+                if (ind == 0)
+                  return Container(
+                    margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
+                    padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('您现在使用的不是稳定版本，请在检查更新可用后更新最新版本',
+                            style:
+                                TextUtil.base.w500.NotoSansSC.sp(18).black2A),
+                        SizedBox(height: 6),
+                        Text('【维护公告】\n目前服务器证书正在升级，微北洋服务可能有不稳定的情况，我们将在恢复后通知大家。',
+                            style: TextUtil.base.NotoSansSC.w400
+                                .sp(16)
+                                .black2A
+                                .h(1.4))
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Color.fromRGBO(255, 243, 243, 1.0),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 1.6,
+                            color: Colors.black26,
+                            offset: Offset(0, 0),
+                            spreadRadius: -0.8),
+                      ],
+                    ),
+                  );
+                if (ind == 0) ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]

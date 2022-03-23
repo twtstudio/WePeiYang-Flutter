@@ -86,14 +86,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: InkWell(
-                onTap: () => Navigator.pushNamed(context, HomeRouter.home),
-                child: Text("${S.current.WBY}4.0",
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Color.fromRGBO(98, 103, 123, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16)),
-              ),
+              child: Text("${S.current.WBY}4.0",
+                  style: FontManager.YaHeiRegular.copyWith(
+                      color: Color.fromRGBO(98, 103, 123, 1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
             ),
             SizedBox(height: 30),
             CommonPreferences().usePwLogin.value ? _pwWidget : _codeWidget,

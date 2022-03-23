@@ -80,13 +80,8 @@ class _DetailPageState extends State<DetailPage>
   _onLoading() {
     currentPage++;
     _getComments(onSuccess: (comments) {
-      if (comments.length == 0) {
-        _refreshController.loadNoData();
-        currentPage--;
-      } else {
         _commentList.addAll(comments);
         _refreshController.loadComplete();
-      }
     }, onFail: () {
       _refreshController.loadFailed();
       currentPage--;
@@ -356,7 +351,7 @@ class _DetailPageState extends State<DetailPage>
             physics: BouncingScrollPhysics(),
             controller: _refreshController,
             header: ClassicHeader(),
-            footer: ClassicFooter(),
+            footer: ClassicFooter(idleText: '没有更多了', idleIcon: Icon(Icons.check),),
             enablePullDown: true,
             onRefresh: _onRefresh,
             enablePullUp: true,

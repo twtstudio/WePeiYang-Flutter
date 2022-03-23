@@ -733,6 +733,12 @@ class _PostCardState extends State<PostCard> {
                       ? picBaseUrl + 'origin/' + post.imageUrls[0]
                       : picBaseUrl + 'thumb/' + post.imageUrls[0],
                 ),
+                width:
+                    (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
+                        8.w,
+                height: (WePeiYangApp.screenWidth - 64.w) /
+                    post.imageUrls.length *
+                    0.8,
                 fit: BoxFit.cover)
             // Image.network(
             //     widget.type == PostCardType.detail
