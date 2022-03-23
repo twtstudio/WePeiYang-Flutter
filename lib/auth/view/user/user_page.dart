@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
@@ -142,7 +142,7 @@ class _UserPageState extends State<UserPage> {
                       onTap: () =>
                           Navigator.pushNamed(context, AuthRouter.aboutTwt),
                       onLongPress: () {
-                        if (kDebugMode) {
+                        if (EnvConfig.isDevelop) {
                           Navigator.pushNamed(context, TestRouter.qnhdTest);
                         }
                       },
@@ -175,7 +175,7 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onLongPress: () {
-                        if (kDebugMode) {
+                        if (EnvConfig.isDevelop) {
                           Navigator.pushNamed(context, TestRouter.updateTest);
                         }
                       },

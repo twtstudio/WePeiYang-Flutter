@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -365,7 +366,7 @@ class LikeMessageItem extends StatefulWidget {
 
 class _LikeMessageItemState extends State<LikeMessageItem> {
   Post post;
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
 
   @override
   void initState() {
@@ -396,7 +397,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -729,7 +730,7 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -741,7 +742,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -1089,7 +1090,7 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
 
   @override
   Widget build(BuildContext context) {
@@ -1420,7 +1421,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.id}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,

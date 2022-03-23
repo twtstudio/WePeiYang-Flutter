@@ -37,7 +37,6 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
 
-
         // 高刷新率
         // https://juejin.cn/post/6844904163579527181
         // https://juejin.cn/post/6844904195909222414

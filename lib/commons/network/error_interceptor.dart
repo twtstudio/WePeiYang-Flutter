@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 class ErrorInterceptor extends InterceptorsWrapper {
   @override
@@ -21,7 +21,7 @@ class ErrorInterceptor extends InterceptorsWrapper {
       e.error = "办公网绑定失效，请重新绑定";
 
     /// 除了以上列出的错误之外，其他的所有错误给一个统一的名称，防止让用户看到奇奇怪怪的错误代码
-    else if (!kDebugMode) e.error = "发生未知错误，请联系开发人员解决";
+    else if (!EnvConfig.isDevelop) e.error = "发生未知错误，请联系开发人员解决";
 
     return handler.reject(e);
   }

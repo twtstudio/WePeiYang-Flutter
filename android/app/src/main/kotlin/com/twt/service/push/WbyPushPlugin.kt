@@ -185,7 +185,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                     if (pushManager.isPushTurnedOn(context)) {
                         pushManager.getClientid(context)
                     } else {
-                        null
+                        throw Exception("don't turn on cid")
                     }
                 }.onSuccess {
                     log("get cid success : $it")
@@ -232,7 +232,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     private fun initGeTuiSdk() {
         pushManager.initialize(context)
         log("init push sdk success")
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.LOG_OUTPUT) {
             pushManager.setDebugLogger(context) { s -> Log.i(TAG, s) }
         }
     }

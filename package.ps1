@@ -1,22 +1,17 @@
-chcp 65001
-
 $start = Get-Date
 
-$basePath = ".\build\app\outputs"
-$allApksPath = $basePath + "\all_apks"
-$releasePath = $basePath + "\apk\release"
+flutter clean
+
+$allApksPath = "..\all_apks"
+$releasePath = ".\build\app\outputs\apk\release"
 
 if (Test-Path $allApksPath) {
     Remove-Item $allApksPath -Recurse -Force
 } 
 mkdir $allApksPath
 
-# flutter clean
-
 function New-Apk {
     param (
-        [Parameter()]
-        [string]$channel,
         [Parameter()]
         [string]$environment,
         [Parameter()]
@@ -26,34 +21,33 @@ function New-Apk {
         [Parameter()]
         [string]$qnhdpic
     )
-    $channelPath = $allApksPath + "\" + $channel + "_" + $environment
-    New-Item $channelPath -ItemType "directory"
+    $environmentPath = $allApksPath + "\" + $environment
+    New-Item $environmentPath -ItemType "directory"
+
     $arguments = @(
-        "--dart-define=CHANNEL=$channel",
         "--dart-define=ENVIRONMENT=$environment",
         "--dart-define=QNHD=$qnhd",
         "--dart-define=QNHDPIC=$qnhdpic"
-    ) -join " "
-    flutter build apk  $arguments  --target-platform $platforms --split-per-abi
-    Move-Item  -Path ($releasePath + "\*") -Destination $channelPath
+    )
+    flutter build apk  @arguments  --target-platform $platforms --split-per-abi
+    Move-Item  -Path ($releasePath + "\*") -Destination $environmentPath
 }
 
-# RELEASE版
-# 每个渠道下有32位和64位两个apk
+# RELEASE版 - 正式服务器 + com.twt.service 无注释
+# 打包32和64位
+$qnhd = "https://qnhd.twt.edu.cn/"
+$qnhdpic = "https://qnhdpic.twt.edu.cn/"
+New-Apk -environment "RELEASE" -platforms "android-arm,android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 
-$qnhd = "123"
-$qnhdpic = "234"
-$channels = @("HUAWEI", "XIAOMI", "OPPO", "VIVO", "DOWNLOAD")
-foreach ($channel in $channels) {
-    New-Apk -channel $channel -environment "RELEASE" -platforms "android-arm,android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
-} 
-
-# DEBUG版
+# ONLINE_TEST版 - 正式服务器 + com.twt.service + 注释
 # 仅打包64位
+New-Apk -environment "ONLINE_TEST" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 
-$qnhd = "345"
-$qnhdpic = "456"
-New-Apk -channel "OTHER" -environment "DEVELOP" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
+# DEVELOP版 - 测试服务器 + com.twt.service.develop + 注释
+# 仅打包64位
+$qnhd = "https://www.zrzz.site:7013/"
+$qnhdpic = "https://www.zrzz.site:7015/"
+New-Apk -environment "DEVELOP" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
 
 tree $allApksPath /F
 

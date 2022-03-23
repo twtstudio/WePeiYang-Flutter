@@ -58,19 +58,19 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                "HUAWEI_APP_ID"  : "103402255",
+                HUAWEI_APP_ID  : "103402255",
 
-                "XIAOMI_APP_ID"  : "2882303761517785783",
-                "XIAOMI_APP_KEY" : "5851778525783",
+                XIAOMI_APP_ID  : "2882303761517785783",
+                XIAOMI_APP_KEY : "5851778525783",
 
-                "MEIZU_APP_ID"   : "146410",
-                "MEIZU_APP_KEY"  : "77b312b3e3b9497bb25298911f7b14d7",
+                MEIZU_APP_ID   : "146410",
+                MEIZU_APP_KEY  : "77b312b3e3b9497bb25298911f7b14d7",
 
-                "VIVO_APP_ID"    : "105266463",
-                "VIVO_APP_KEY"   : "40e5b229553e31f1842b80915781e2e8",
+                VIVO_APP_ID    : "105266463",
+                VIVO_APP_KEY   : "40e5b229553e31f1842b80915781e2e8",
 
-                "OPPO_APP_KEY"   : "7cuaXvykA58gkOW4c4oGkG8o0",
-                "OPPO_APP_SECRET": "f7098A23C18d4B504deCB0caaF1d6064",
+                OPPO_APP_KEY   : "7cuaXvykA58gkOW4c4oGkG8o0",
+                OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
         ]
     }
 
@@ -96,6 +96,7 @@ android {
 
             // applicationIdSuffix
             // http://www.androidchina.net/10565.html
+
             // package和applicationId的区别
             // https://blog.csdn.net/he_xiang_/article/details/81080507
             // 询问了个推技术人员，只要包名不变，就行
@@ -108,61 +109,63 @@ android {
             // 动态配置string.xml
             // https://blog.csdn.net/jerycoupter/article/details/70159410
 
+            // buildConfigField
+            // https://www.jianshu.com/p/a614aca9d191
+
+            // 版本：
+            //    RELEASE :            微北洋              无Log     com.twt.service           getui.product  正式服务器
+            //    ONLINE_TEST :        微北洋ONLINE_TEST   有Log     com.twt.service           getui.product  正式服务器
+            //    DEVELOP (default) :  微北洋DEVELOP       有Log     com.twt.service.develop   getui.develop  测试服务器
+            def channel = "DEVELOP"
+
             // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
             // flutter 1.20 ~ 2.2 的读取方式
             if (project.hasProperty('dart-defines')) {
                 // 如果是通过 package.ps1 打包的话就解析固定参数
-                def dartEnvironmentVariables = URLDecoder.decode(project.property('dart-defines'))
-                        .split(' --dart-define=')
-                        .collectEntries { entry ->
-                            def pair = entry.split('=')
-                            [(pair.first()): pair.last()]
-                        }
-
-                switch (dartEnvironmentVariables.ENVIRONMENT) {
-                    case "DEVELOP":
-                        // 个推 develop
-                        manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
-                        // 不覆盖正式版安装
-                        applicationIdSuffix ".develop"
-                        // 输出调试信息
-                        buildConfigField("Boolean", "LOG_OUTPUT", "true")
-                        // 设置应用名称
-                        resValue("string", "label", "微北洋测试版")
-                        break
-                    default:
-                        // 个推 project
-                        manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
-                        // 不输出调试信息
-                        buildConfigField("Boolean", "LOG_OUTPUT", "false")
-                        // 设置应用名称
-                        resValue("string", "label", "微北洋")
-                        break
-                }
-
-                android.applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        // 更改输出的安装包的名字 如 HUAWEI-RELEASE-4.2.1-app-arm64-v8a-release.apk
-                        def arguments = [
-                                dartEnvironmentVariables.CHANNEL,
-                                dartEnvironmentVariables.ENVIRONMENT,
-                        ].join("-")
-                        output.outputFileName = arguments + "-" + output.outputFileName
-                    }
+                def dartEnvironmentVariables = getDartDefines()
+                channel = dartEnvironmentVariables.ENVIRONMENT
+                if (channel == null) {
+                    channel = "RELEASE"
                 }
             } else {
-                // 个推 project
-                manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
-                // 设置应用名称
-                resValue("string", "label", "微北洋")
-                // 不输出调试信息
-                buildConfigField("Boolean", "LOG_OUTPUT", "false")
+                channel = "RELEASE"
+            }
+
+            switch (channel) {
+                case "ONLINE_TEST":
+                    // 个推 develop
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    // 输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "true")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋${channel}")
+                    break
+                case "DEVELOP":
+                    // 个推 develop
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
+                    // 不覆盖正式版安装
+                    applicationIdSuffix ".develop"
+                    // 输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "true")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋${channel}")
+                    break
+                default:  // RELEASE
+                    channel = "RELEASE"
+                    // 个推 project
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    // 不输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "false")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋")
+                    break
             }
 
 
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
-                    output.outputFileName = android.defaultConfig.versionName + "-" + output.outputFileName
+                    // 更改输出的安装包的名字 如 4.2.1-RELEASE-app-arm64-v8a-release.apk
+                    output.outputFileName = channel + "- " + android.defaultConfig.versionName + "-" + output.outputFileName
 
                     // 谷歌规定 Google Play 多个安装包不能 versionCode一样
                     // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
@@ -174,17 +177,35 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.config
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
             // 个推 develop
-            manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
-            // 不覆盖安装
-            applicationIdSuffix ".develop"
+            manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
             // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
-            // 设置应用名称
-            resValue("string", "label", "微北洋测试版")
+
+            def channel = "DEVELOP"
+            if (project.hasProperty('dart-defines')) {
+                def dartEnvironmentVariables = getDartDefines()
+                if (dartEnvironmentVariables.ENVIRONMENT == "RELEASE") {
+                    channel = "RELEASE"
+                }
+            }
+
+            switch (channel) {
+                case "RELEASE":
+                    // 如果要测试厂商推送的话，就不更改包名
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋DEBUG_RELEASE")
+                    break
+                default:
+                    // 不覆盖正式版安装
+                    applicationIdSuffix ".develop"
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋DEBUG_DEVELOP")
+                    break
+            }
         }
     }
 }
@@ -244,4 +265,15 @@ dependencies {
     implementation 'com.umeng.umsdk:asms:1.5.0'// 必选
     implementation 'com.umeng.umsdk:apm:1.6.2' // 错误分析
     implementation 'com.umeng.umsdk:abtest:1.0.0'//U-App中ABTest能力
+}
+
+def getDartDefines() {
+    def arguments = URLDecoder.decode(project.property('dart-defines'))
+            .split(',')
+            .collectEntries { entry ->
+                def pair = entry.split('=')
+                [(pair.first()): pair.last()]
+            }
+    println(arguments)
+    return arguments
 }

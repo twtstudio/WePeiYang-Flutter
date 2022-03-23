@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -352,7 +352,7 @@ class _SettingPageState extends State<SettingPage> {
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
                 child: GestureDetector(
                   onLongPress: () {
-                    if (kDebugMode) {
+                    if (EnvConfig.isDevelop) {
                       Navigator.pushNamed(context, TestRouter.pushTest);
                     }
                   },

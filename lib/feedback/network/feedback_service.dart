@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -11,7 +12,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 class FeedbackDio extends DioAbstract {
   @override
   // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
-  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
   var headers = {};
 
   @override
@@ -44,7 +45,7 @@ class FeedbackDio extends DioAbstract {
 class FeedbackPicPostDio extends DioAbstract {
   @override
   // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
+  String baseUrl = EnvConfig.QNHDPIC;
   var headers = {};
 
   @override
