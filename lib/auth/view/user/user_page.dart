@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
@@ -230,37 +231,6 @@ class _UserPageState extends State<UserPage> {
                       onTap: () => showDialog(
                           context: context,
                           barrierDismissible: true,
-                          builder: (BuildContext context) =>
-                              AgreementAndPrivacyDialog()),
-                      splashFactory: InkRipple.splashFactory,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(width: 20),
-                          Icon(Icons.lock_outline,
-                              color: Color.fromRGBO(98, 103, 122, 1), size: 20),
-                          SizedBox(width: 10),
-                          Text('用户协议及隐私政策', style: textStyle),
-                          Spacer(),
-                          arrow,
-                          SizedBox(width: 22),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 80,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: InkWell(
-                      onTap: () => showDialog(
-                          context: context,
-                          barrierDismissible: true,
                           builder: (BuildContext context) => LogoutDialog()),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
@@ -277,7 +247,40 @@ class _UserPageState extends State<UserPage> {
                       ),
                     ),
                   ),
-                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => UserAgreementDialog()),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(),
+                        child: Text('《用户协议》',
+                            style: FontManager.YaHeiRegular.copyWith(
+                                fontSize: 11,
+                                color: Color.fromRGBO(98, 103, 122, 1))),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => PrivacyDialog()),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(),
+                        child: Text('《隐私政策》',
+                            style: FontManager.YaHeiRegular.copyWith(
+                                fontSize: 11,
+                                color: Color.fromRGBO(98, 103, 122, 1))),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
