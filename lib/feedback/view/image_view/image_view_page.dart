@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/image_without_auth.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int indexNow = 0;
   int tempSelect;
   bool isLongPic;
+
   //final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
   final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/origin/';
 
@@ -36,44 +38,51 @@ class _ImageViewPageState extends State<ImageViewPage> {
         Navigator.pop(context);
       },
       onLongPress: () {
-        showSaveImageBottomSheet(context);
+        ToastProvider.error('当前暂时无法保存图片');
+        //showSaveImageBottomSheet(context);
       },
       child: Container(
-          child: PhotoViewGallery.builder(
-              loadingBuilder: (context, event) => Center(
-                  child: Container(
-                      width: 20.0,
-                      height: 20.0,
-                      child: CircularProgressIndicator(
-                        value: event == null
-                            ? 0
-                            : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes,
-                      ))),
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: (BuildContext context, int index) {
-                return PhotoViewGalleryPageOptions(
-                  basePosition:
-                      isLongPic ? Alignment.topCenter : Alignment.center,
-                  imageProvider: NetworkImage(baseUrl + urlList[index]),
-                  maxScale: isLongPic
-                      ? PhotoViewComputedScale.contained * 20
-                      : PhotoViewComputedScale.contained * 5.0,
-                  minScale: PhotoViewComputedScale.contained * 1.0,
-                  initialScale: isLongPic
-                      ? PhotoViewComputedScale.covered
-                      : PhotoViewComputedScale.contained,
-                );
-              },
-              scrollDirection: Axis.horizontal,
-              itemCount: urlListLength,
-              backgroundDecoration: BoxDecoration(color: Colors.black),
-              pageController: PageController(
-                initialPage: indexNow,
-              ),
-              onPageChanged: (index) => setState(() {
-                    tempSelect = index;
-                  }))),
+        child: new Image(
+            image: NetworkImageSSL(baseUrl + urlList[indexNow]),
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.contain),
+        // child: PhotoViewGallery.builder(
+        //     loadingBuilder: (context, event) => Center(
+        //         child: Container(
+        //             width: 20.0,
+        //             height: 20.0,
+        //             child: CircularProgressIndicator(
+        //               value: event == null
+        //                   ? 0
+        //                   : event.cumulativeBytesLoaded /
+        //                       event.expectedTotalBytes,
+        //             ))),
+        //     scrollPhysics: const BouncingScrollPhysics(),
+        //     builder: (BuildContext context, int index) {
+        //       return PhotoViewGalleryPageOptions(
+        //         basePosition:
+        //             isLongPic ? Alignment.topCenter : Alignment.center,
+        //         imageProvider: NetworkImage(baseUrl + urlList[index]),
+        //         maxScale: isLongPic
+        //             ? PhotoViewComputedScale.contained * 20
+        //             : PhotoViewComputedScale.contained * 5.0,
+        //         minScale: PhotoViewComputedScale.contained * 1.0,
+        //         initialScale: isLongPic
+        //             ? PhotoViewComputedScale.covered
+        //             : PhotoViewComputedScale.contained,
+        //       );
+        //     },
+        //     scrollDirection: Axis.horizontal,
+        //     itemCount: urlListLength,
+        //     backgroundDecoration: BoxDecoration(color: Colors.black),
+        //     pageController: PageController(
+        //       initialPage: indexNow,
+        //     ),
+        //     onPageChanged: (index) => setState(() {
+        //           tempSelect = index;
+        //         }))
+      ),
     );
   }
 
@@ -89,14 +98,14 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 '保存图片',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              onTap: saveImgToAlbum,
+              //onTap: saveImgToAlbum,
             ),
             ListTile(
               title: Text(
                 '分享图片到QQ',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              onTap: shareImageToQQ,
+              //onTap: shareImageToQQ,
             )
           ],
         );
@@ -105,7 +114,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void shareImageToQQ() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
+    //final url = baseUrl + urlList[tempSelect ?? indexNow];
+    final url = baseUrl + urlList[indexNow];
     final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
       url,
@@ -122,7 +132,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
   }
 
   void saveImgToAlbum() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
+    //final url = baseUrl + urlList[tempSelect ?? indexNow];
+    final url = baseUrl + urlList[indexNow];
     final fileName = url.split("/").last;
     ImageSave.saveImageFromUrl(
       url,
@@ -132,5 +143,5 @@ class _ImageViewPageState extends State<ImageViewPage> {
       ToastProvider.success("成功保存到相册");
       Navigator.pop(context);
     });
-  }
-}
+   }
+ }

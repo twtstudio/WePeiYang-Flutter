@@ -60,6 +60,7 @@ class _DetailPageState extends State<DetailPage>
   final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
+  var _controller = ScrollController();
 
   _DetailPageState(this.post);
 
@@ -80,8 +81,13 @@ class _DetailPageState extends State<DetailPage>
   _onLoading() {
     currentPage++;
     _getComments(onSuccess: (comments) {
+      if (comments.length == 0) {
+        _refreshController.loadNoData();
+        currentPage--;
+      } else {
         _commentList.addAll(comments);
         _refreshController.loadComplete();
+      }
     }, onFail: () {
       _refreshController.loadFailed();
       currentPage--;
@@ -283,6 +289,7 @@ class _DetailPageState extends State<DetailPage>
       }
     } else if (status == DetailPageStatus.idle) {
       Widget contentList = ListView.builder(
+        controller: _controller,
         itemCount: _officialCommentList.length + _commentList.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -351,7 +358,7 @@ class _DetailPageState extends State<DetailPage>
             physics: BouncingScrollPhysics(),
             controller: _refreshController,
             header: ClassicHeader(),
-            footer: ClassicFooter(idleText: '没有更多了', idleIcon: Icon(Icons.check),),
+            footer: ClassicFooter(),
             enablePullDown: true,
             onRefresh: _onRefresh,
             enablePullUp: true,

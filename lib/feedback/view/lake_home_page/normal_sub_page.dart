@@ -220,7 +220,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                       ],
                     ),
                   );
-                if (ind == 0) ind--;
+                ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]
