@@ -345,7 +345,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                 context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
+                context, HomeRouter.home, (route) => false);
           }));
     } else if (prefs.isLogin.value && prefs.token.value != '') {
       /// 如果是短信登陆的，尝试用token刷新
@@ -357,7 +357,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
           },
           onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
+                context, HomeRouter.home, (route) => false);
           },
         ),
       );
