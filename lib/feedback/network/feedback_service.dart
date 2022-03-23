@@ -11,7 +11,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = 'https://https://qnhd.twt.edu.cn/api/v1/f/';
+  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
   //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
   var headers = {};
 
@@ -44,8 +44,8 @@ class FeedbackDio extends DioAbstract {
 
 class FeedbackPicPostDio extends DioAbstract {
   @override
-  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = EnvConfig.QNHDPIC;
+  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
+  //String baseUrl = EnvConfig.QNHDPIC;
   var headers = {};
 
   @override

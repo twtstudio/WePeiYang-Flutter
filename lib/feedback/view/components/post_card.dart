@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/image_without_auth.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
@@ -70,7 +71,9 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
-  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+
+  //final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
 
   _PostCardState(this.post);
 
@@ -80,14 +83,22 @@ class _PostCardState extends State<PostCard> {
     var longPicOutsideLook;
 
     if (post.imageUrls != null && post.imageUrls.length == 1) {
-      Image image = new Image.network(
-        widget.type == PostCardType.detail
-            ? picBaseUrl + 'origin/' + post.imageUrls[0]
-            : picBaseUrl + 'thumb/' + post.imageUrls[0],
-        width: double.infinity,
-        fit: BoxFit.cover,
-        alignment: Alignment.topCenter,
-      );
+      Image image = new Image(
+          image: NetworkImageSSL(
+            widget.type == PostCardType.detail
+                ? picBaseUrl + 'origin/' + post.imageUrls[0]
+                : picBaseUrl + 'thumb/' + post.imageUrls[0],
+          ),
+          width: double.infinity,
+          fit: BoxFit.cover);
+      // new Image.network(
+      //   widget.type == PostCardType.detail
+      //       ? picBaseUrl + 'origin/' + post.imageUrls[0]
+      //       : picBaseUrl + 'thumb/' + post.imageUrls[0],
+      //   width: double.infinity,
+      //   fit: BoxFit.cover,
+      //   alignment: Alignment.topCenter,
+      // );
       Completer<ui.Image> completer = new Completer<ui.Image>();
       image.image
           .resolve(new ImageConfiguration())
@@ -310,7 +321,7 @@ class _PostCardState extends State<PostCard> {
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
                       (widget.type == PostCardType.simple ? 140 : 20) -
-                      (widget.post.imageUrls.isEmpty ? 0 : 80),
+                      (widget.post.imageUrls.isEmpty ? 0 : 84),
                   post.type,
                   id,
                   0),
@@ -358,21 +369,29 @@ class _PostCardState extends State<PostCard> {
             borderRadius: BorderRadius.all(Radius.circular(8)),
             child: post.imageUrls.length == 1
                 ? longPicOutsideLook
-                : Image.network(
-                    picBaseUrl + 'thumb/' + post.imageUrls[0],
+                : new Image(
                     width: 97,
                     height: 76,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                          width: 97,
-                          height: 76,
-                          padding: EdgeInsets.all(20),
-                          child: Loading());
-                    },
-                  )),
+                    image: NetworkImageSSL(
+                      picBaseUrl + 'thumb/' + post.imageUrls[0],
+                    ),
+                    fit: BoxFit.cover)
+            // Image.network(
+            //         picBaseUrl + 'thumb/' + post.imageUrls[0],
+            //         width: 97,
+            //         height: 76,
+            //         fit: BoxFit.cover,
+            //         loadingBuilder: (BuildContext context, Widget child,
+            //             ImageChunkEvent loadingProgress) {
+            //           if (loadingProgress == null) return child;
+            //           return Container(
+            //               width: 97,
+            //               height: 76,
+            //               padding: EdgeInsets.all(20),
+            //               child: Loading());
+            //         },
+            //       )
+            ),
       ]);
     }
     var createTime = Text(
@@ -707,50 +726,57 @@ class _PostCardState extends State<PostCard> {
       child: Padding(
         padding: EdgeInsets.all(4.w),
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          child: Image.network(
-              widget.type == PostCardType.detail
-                  ? picBaseUrl + 'origin/' + post.imageUrls[index]
-                  : picBaseUrl + 'thumb/' + post.imageUrls[index],
-              fit: BoxFit.cover,
-              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
-                  8.w,
-              height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length *
-                  0.8,
-              loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent loadingProgress) {
-            if (loadingProgress == null) return child;
-            return SizedBox(
-              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
-                  8.w,
-              height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length *
-                  0.8,
-              child: Center(
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  padding: EdgeInsets.all(4),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    backgroundColor: Colors.black12,
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes
-                        : null,
-                  ),
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+            child: new Image(
+                image: NetworkImageSSL(
+                  widget.type == PostCardType.detail
+                      ? picBaseUrl + 'origin/' + post.imageUrls[0]
+                      : picBaseUrl + 'thumb/' + post.imageUrls[0],
                 ),
-              ),
-            );
-          }, errorBuilder: (BuildContext context, Object exception,
-                  StackTrace stackTrace) {
-            return Text(
-              '💔[图片加载失败]',
-              style: TextUtil.base.grey6C.w400.sp(12),
-            );
-          }),
-        ),
+                fit: BoxFit.cover)
+            // Image.network(
+            //     widget.type == PostCardType.detail
+            //         ? picBaseUrl + 'origin/' + post.imageUrls[index]
+            //         : picBaseUrl + 'thumb/' + post.imageUrls[index],
+            //     fit: BoxFit.cover,
+            //     width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
+            //         8.w,
+            //     height: (WePeiYangApp.screenWidth - 64.w) /
+            //         post.imageUrls.length *
+            //         0.8,
+            //     loadingBuilder: (BuildContext context, Widget child,
+            //         ImageChunkEvent loadingProgress) {
+            //   if (loadingProgress == null) return child;
+            //   return SizedBox(
+            //     width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
+            //         8.w,
+            //     height: (WePeiYangApp.screenWidth - 64.w) /
+            //         post.imageUrls.length *
+            //         0.8,
+            //     child: Center(
+            //       child: Container(
+            //         height: 40,
+            //         width: 40,
+            //         padding: EdgeInsets.all(4),
+            //         child: CircularProgressIndicator(
+            //           strokeWidth: 2,
+            //           backgroundColor: Colors.black12,
+            //           value: loadingProgress.expectedTotalBytes != null
+            //               ? loadingProgress.cumulativeBytesLoaded /
+            //                   loadingProgress.expectedTotalBytes
+            //               : null,
+            //         ),
+            //       ),
+            //     ),
+            //   );
+            // }, errorBuilder: (BuildContext context, Object exception,
+            //         StackTrace stackTrace) {
+            //   return Text(
+            //     '💔[图片加载失败]',
+            //     style: TextUtil.base.grey6C.w400.sp(12),
+            //   );
+            // }),
+            ),
       ),
     );
   }

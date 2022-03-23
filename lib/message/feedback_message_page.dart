@@ -83,8 +83,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: Text('消息中心',
-              style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
+          title:
+              Text('消息中心', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
           leading: IconButton(
             icon: Image.asset('assets/images/lake_butt_icons/back.png',
                 width: 14),
@@ -92,37 +92,45 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               Navigator.pop(context);
             },
           ),
-          actions: [IconButton(
-        icon: Image.asset('assets/images/lake_butt_icons/check-square.png',
-            width: 15.w),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return LakeDialogWidget(
-                    title: '一键已读：',
-                    titleTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
-                    content: Text('这将清除所有的消息提醒'),
-                    cancelText: "取消",
-                    confirmTextStyle:
-                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
-                    cancelTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                    confirmText: "确认",
-                    cancelFun: () {
-                      Navigator.pop(context);
-                    },
-                    confirmFun: () async {
-                      await context.read<MessageProvider>().setAllMessageRead();
-                      setState(() {
+          actions: [
+            IconButton(
+                icon: Image.asset(
+                    'assets/images/lake_butt_icons/check-square.png',
+                    width: 15.w),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return LakeDialogWidget(
+                          title: '一键已读：',
+                          titleTextStyle: TextUtil
+                              .base.normal.black2A.NotoSansSC
+                              .sp(18)
+                              .w600,
+                          content: Text('这将清除所有的消息提醒'),
+                          cancelText: "取消",
+                          confirmTextStyle:
+                              TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                          cancelTextStyle: TextUtil
+                              .base.normal.black2A.NotoSansSC
+                              .sp(16)
+                              .w400,
+                          confirmText: "确认",
+                          cancelFun: () {
+                            Navigator.pop(context);
+                          },
+                          confirmFun: () async {
+                            await context
+                                .read<MessageProvider>()
+                                .setAllMessageRead();
+                            setState(() {});
+                            Navigator.pop(context);
+                          },
+                          confirmButtonColor: ColorUtil.selectionButtonColor,
+                        );
                       });
-                      Navigator.pop(context);
-                    },
-                    confirmButtonColor: ColorUtil.selectionButtonColor,
-                  );
-                });
-          })],
+                })
+          ],
           bottom: PreferredSize(
             preferredSize: Size.infinite,
             child: Theme(
@@ -211,7 +219,7 @@ class _MessageTabState extends State<MessageTab> {
         messageProvider.getMessageCount(widget.type));
     return Tab(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(width: _tabPaddingWidth),
         count == 0
@@ -306,10 +314,9 @@ class _LikeMessagesListState extends State<LikeMessagesList>
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
             .refresh
-            .addListener(() =>
-            onRefresh(
-              refreshCount: false,
-            ));
+            .addListener(() => onRefresh(
+                  refreshCount: false,
+                ));
       }
     });
   }
@@ -337,10 +344,9 @@ class _LikeMessagesListState extends State<LikeMessagesList>
             onTapDown: () async {
               await MessageService.setLikeMessageRead(
                   items[i].type == 0 ? items[i].post.id : items[i].floor.id,
-                  items[i].type,
-                  onSuccess: () {
-                    // items.removeAt(i); 会出问题 不能这么搞 目前先刷新处理了
-                  }, onFailure: (e) {
+                  items[i].type, onSuccess: () {
+                // items.removeAt(i); 会出问题 不能这么搞 目前先刷新处理了
+              }, onFailure: (e) {
                 ToastProvider.error(e.error.toString());
               });
             },
@@ -397,14 +403,18 @@ class LikeMessageItem extends StatefulWidget {
 
 class _LikeMessageItemState extends State<LikeMessageItem> {
   Post post;
-  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await FeedbackService.getPostById(
-          id: widget.data.type == 0 ? widget.data.post.id : widget.data.floor.postId,
+          id: widget.data.type == 0
+              ? widget.data.post.id
+              : widget.data.floor.postId,
           onResult: (result) {
             post = result;
             setState(() {});
@@ -428,7 +438,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -701,9 +712,9 @@ class _FloorMessagesListState extends State<FloorMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setFloorMessageRead(items[i].floor.id,
                     onSuccess: () {
-                      items[i].isRead = true;
-                      context.read<MessageProvider>().refreshFeedbackCount();
-                    }, onFailure: (e) {
+                  items[i].isRead = true;
+                  context.read<MessageProvider>().refreshFeedbackCount();
+                }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -761,7 +772,8 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -773,7 +785,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -936,8 +949,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             context,
             FeedbackRouter.detail,
             arguments: widget.data.post,
-          ).then((_) =>
-              context.read<MessageProvider>().refreshFeedbackCount());
+          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
           // }
           // else {
           //   await Navigator.pushNamed(
@@ -1061,9 +1073,9 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setReplyMessageRead(items[i].reply.id,
                     onSuccess: () {
-                      items[i].isRead = true;
-                      context.read<MessageProvider>().refreshFeedbackCount();
-                      }, onFailure: (e) {
+                  items[i].isRead = true;
+                  context.read<MessageProvider>().refreshFeedbackCount();
+                }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1121,7 +1133,8 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   @override
   Widget build(BuildContext context) {
@@ -1263,8 +1276,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
             context,
             FeedbackRouter.detail,
             arguments: widget.data.post,
-          ).then((_) =>
-              context.read<MessageProvider>().refreshFeedbackCount());
+          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
         },
         child: Container(
           decoration: BoxDecoration(
@@ -1381,9 +1393,9 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setNoticeMessageRead(items[i].id,
                     onSuccess: () {
-                      items[i].isRead = true;
-                      context.read<MessageProvider>().refreshFeedbackCount();
-                    }, onFailure: (e) {
+                  items[i].isRead = true;
+                  context.read<MessageProvider>().refreshFeedbackCount();
+                }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1441,7 +1453,6 @@ class NoticeMessageItem extends StatefulWidget {
 }
 
 class _NoticeMessageItemState extends State<NoticeMessageItem> {
-
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
 
@@ -1452,7 +1463,8 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
+          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
+          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.id}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -1547,8 +1559,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
             context,
             FeedbackRouter.notice,
             arguments: widget.data,
-          ).then((_) =>
-              context.read<MessageProvider>().refreshFeedbackCount());
+          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
         },
         child: Container(
           decoration: BoxDecoration(

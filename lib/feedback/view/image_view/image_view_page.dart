@@ -19,7 +19,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
   int indexNow = 0;
   int tempSelect;
   bool isLongPic;
-  final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/origin/';
 
   @override
   Widget build(BuildContext context) {
