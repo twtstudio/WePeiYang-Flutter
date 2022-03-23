@@ -20,7 +20,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 
 import '../feedback_router.dart';
-import 'components/widget/PopMenuShape.dart';
+import 'components/widget/pop_menu_shape.dart';
 import 'components/widget/tag_search_card.dart';
 import 'lake_home_page/lake_notifier.dart';
 
@@ -122,6 +122,7 @@ class _LakeSelectorState extends State<LakeSelector> {
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
+    notifier.value = tabList[1].id;
 
     return status == LakePageStatus.unload
         ? SizedBox()
@@ -167,7 +168,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                         },
                                         child: SizedBox(
                                           height: 58,
-                                          width: 100,
+                                          width: 80,
                                           child: Center(
                                             child: Column(
                                               mainAxisAlignment:
@@ -176,10 +177,16 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(tabList[index + 1].name,
-                                                    style: TextUtil
-                                                        .base.NotoSansSC.w600
-                                                        .sp(18)
-                                                        .black2A),
+                                                    style: type ==
+                                                            tabList[index + 1]
+                                                                .id
+                                                        ? TextUtil.base
+                                                            .NotoSansSC.w600
+                                                            .sp(18)
+                                                            .black2A
+                                                        : TextUtil.base.w400
+                                                            .sp(18)
+                                                            .greyA6),
                                                 Container(
                                                   margin:
                                                       EdgeInsets.only(top: 2),
@@ -230,9 +237,9 @@ class _LakeSelectorState extends State<LakeSelector> {
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () {
-                                controller.offset <= 100 * (tabList.length - 1)
+                                controller.offset <= 80 * (tabList.length - 1)
                                     ? controller.animateTo(
-                                        controller.offset + 100,
+                                        controller.offset + 80,
                                         duration: Duration(milliseconds: 400),
                                         curve: Curves.fastOutSlowIn)
                                     : controller.animateTo(

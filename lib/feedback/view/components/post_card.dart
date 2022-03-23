@@ -309,7 +309,8 @@ class _PostCardState extends State<PostCard> {
                   tag,
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 240 : 120),
+                      (widget.type == PostCardType.simple ? 140 : 20) -
+                      (widget.post.imageUrls.isEmpty ? 0 : 80),
                   post.type,
                   id,
                   0),

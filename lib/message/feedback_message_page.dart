@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -18,7 +19,6 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-
 import 'model/message_model.dart';
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
@@ -92,6 +92,37 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               Navigator.pop(context);
             },
           ),
+          actions: [IconButton(
+        icon: Image.asset('assets/images/lake_butt_icons/check-square.png',
+            width: 15.w),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LakeDialogWidget(
+                    title: '一键已读：',
+                    titleTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                    content: Text('这将清除所有的消息提醒'),
+                    cancelText: "取消",
+                    confirmTextStyle:
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                    cancelTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                    confirmText: "确认",
+                    cancelFun: () {
+                      Navigator.pop(context);
+                    },
+                    confirmFun: () async {
+                      await context.read<MessageProvider>().setAllMessageRead();
+                      setState(() {
+                      });
+                      Navigator.pop(context);
+                    },
+                    confirmButtonColor: ColorUtil.selectionButtonColor,
+                  );
+                });
+          })],
           bottom: PreferredSize(
             preferredSize: Size.infinite,
             child: Theme(

@@ -18,7 +18,7 @@ import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-import 'components/widget/PopMenuShape.dart';
+import 'components/widget/pop_menu_shape.dart';
 
 class OfficialReplyDetailPage extends StatefulWidget {
   final List<Floor> floor;

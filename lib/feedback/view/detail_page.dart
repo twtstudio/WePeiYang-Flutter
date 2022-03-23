@@ -24,7 +24,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
-import 'components/widget/PopMenuShape.dart';
+import 'components/widget/pop_menu_shape.dart';
 import 'lake_home_page/lake_notifier.dart';
 
 enum DetailPageStatus {

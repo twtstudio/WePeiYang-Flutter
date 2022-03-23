@@ -16,7 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/PopMenuShape.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';

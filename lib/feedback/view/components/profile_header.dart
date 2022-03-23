@@ -3,11 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
-import 'package:we_pei_yang_flutter/message/feedback_set_read_all.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 class ProfileHeader extends StatelessWidget {
   final Widget child;
@@ -37,7 +39,7 @@ class ProfileHeader extends StatelessWidget {
                 style: TextUtil.base.NotoSansSC.black2A.sp(18).w500,
               ),
               centerTitle: true,
-              actions: [FeedbackReadAllButton(), FeedbackMailbox()],
+              actions: [FeedbackMailbox()],
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -110,14 +112,41 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
       padding: EdgeInsets.only(right: 10),
       child: SizedBox(
         width: 45,
-        child: InkResponse(
+        child: GestureDetector(
           onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
-          radius: 25,
-          child: Center(
-            child: FeedbackBadgeWidget(
-              child: SvgPicture.asset(
-                'assets/svg_pics/lake_butt_icons/bell.svg',
-                width: 16.w,
+          onLongPress: () => showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return LakeDialogWidget(
+                  title: '一键已读：',
+                  titleTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                  content: Text('这将清除所有的消息提醒'),
+                  cancelText: "取消",
+                  confirmTextStyle:
+                  TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                  cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  confirmText: "确认",
+                  cancelFun: () {
+                    Navigator.pop(context);
+                  },
+                  confirmFun: () async {
+                    await context.read<MessageProvider>().setAllMessageRead();
+                    Navigator.pop(context);
+                  },
+                  confirmButtonColor: ColorUtil.selectionButtonColor,
+                );
+              }),
+          child: SizedBox(
+            height: 25,
+            width: 25,
+            child: Center(
+              child: FeedbackBadgeWidget(
+                child: SvgPicture.asset(
+                  'assets/svg_pics/lake_butt_icons/bell.svg',
+                  width: 16.w,
+                ),
               ),
             ),
           ),

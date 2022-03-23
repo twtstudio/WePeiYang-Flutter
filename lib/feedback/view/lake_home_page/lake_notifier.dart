@@ -90,7 +90,6 @@ class LakeModel extends ChangeNotifier {
   ScrollController nController;
   int sortSeq;
 
-
   Future<void> initTabList() async {
     if (mainStatus == LakePageStatus.error ||
         mainStatus == LakePageStatus.unload)

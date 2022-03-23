@@ -186,12 +186,12 @@ android {
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
 
             def channel = "DEVELOP"
-            if (project.hasProperty('dart-defines')) {
-                def dartEnvironmentVariables = getDartDefines()
-                if (dartEnvironmentVariables.ENVIRONMENT == "RELEASE") {
-                    channel = "RELEASE"
-                }
-            }
+//            if (project.hasProperty('dart-defines')) {
+//                def dartEnvironmentVariables = getDartDefines()
+//                if ( "RELEASE" == dartEnvironmentVariables.ENVIRONMENT) {
+//                    channel = "RELEASE"
+//                }
+//            }
 
             switch (channel) {
                 case "RELEASE":

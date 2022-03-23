@@ -17,12 +17,6 @@ class EnvConfig {
             : "https://qnhdpic.twt.edu.cn/";
   }
 
-  /// 应用获取渠道 "HUAWEI", "XIAOMI", "OPPO", "VIVO", "DOWNLOAD", "OTHER"（默认）
-  static const CHANNEL = String.fromEnvironment(
-    "CHANNEL",
-    defaultValue: "OTHER",
-  );
-
   static bool get isDevelop =>
       ENVIRONMENT == "DEVELOP" || ENVIRONMENT == "ONLINE_TEST" || kDebugMode;
 
