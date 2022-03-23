@@ -50,6 +50,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
 
   /// 字体
+  TextStyle get Aspira => this.copyWith(fontFamily: 'Aspira');
+  TextStyle get PingFangSC => this;
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
 

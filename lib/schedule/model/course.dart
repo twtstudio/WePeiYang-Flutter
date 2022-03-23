@@ -67,16 +67,18 @@ class Course {
 
 class Arrange {
   String? name; // 课程名称，仅供爬虫时对照用
-  String location; // 上课地点
-  int weekday; // 周几 （1 -> 周一）
-  List<int> weekList; // 哪些周有课
-  List<int> unitList; // 从第几节上到第几节（从1开始数）
-  List<String> teacherList; // 讲这节课的所有老师，带职称
+  String location = ''; // 上课地点
+  int weekday = 1; // 周几 （1 -> 周一）
+  List<int> weekList = []; // 哪些周有课
+  List<int> unitList = []; // 从第几节上到第几节（从1开始数）
+  List<String> teacherList = []; // 讲这节课的所有老师，带职称
 
   /// 构造后需要补上location属性
   Arrange.spider(
       this.name, this.weekday, this.weekList, this.unitList, this.teacherList)
       : location = '';
+
+  Arrange.empty();
 
   Arrange.fromJson(Map<String, dynamic> map)
       : location = map['location'],

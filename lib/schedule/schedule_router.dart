@@ -1,7 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
-import 'package:we_pei_yang_flutter/schedule/view/course_page.dart';
-import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/course_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
 
 class ScheduleRouter {
   static String course = 'schedule/course';

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -14,6 +15,7 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
 /// 课表总页面
@@ -48,8 +50,6 @@ class _CoursePageState extends State<CoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    var appBar = con
-
     return Scaffold(
       appBar: _CourseAppBar(),
       backgroundColor: Colors.white,
@@ -66,68 +66,115 @@ class _CoursePageState extends State<CoursePage> {
   }
 }
 
-/// 课表页AppBar
+/// 课表页默认AppBar
 class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    var quietDisplayPvd = context.read<CourseDisplayProvider>();
     var titleColor = FavorColors.scheduleTitleColor;
+
+    var provider = context.watch<CourseDisplayProvider>();
+
+    var shrinkButton = IconButton(
+      icon: Icon(
+          provider.shrink ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+          size: 35),
+      onPressed: () {
+        provider.shrink = !provider.shrink;
+      },
+    );
+
+    var leading;
+    if (provider.editMode) {
+      leading = Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Center(
+          child: TextButton(
+            onPressed: () {
+              // TODO save
+              provider.editMode = false;
+            },
+            child: Text('保存',
+                style: TextUtil.base.PingFangSC.bold
+                    .customColor(titleColor)
+                    .sp(18)),
+          ),
+        ),
+      );
+    } else {
+      leading = IconButton(
+        icon: Icon(Icons.arrow_back, size: 32),
+        onPressed: () => Navigator.pop(context),
+      );
+    }
+
+    var actions;
+    if (provider.editMode) {
+      actions = [
+        shrinkButton,
+        IconButton(
+          icon: Icon(Icons.widgets_outlined),
+          onPressed: () {
+            // TODO list
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.add, size: 30),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              isDismissible: false,
+              enableDrag: false,
+              isScrollControlled: true,
+              builder: (context) => EditBottomSheet(),
+            );
+          },
+        ),
+        SizedBox(width: 10),
+      ];
+    } else {
+      actions = [
+        shrinkButton,
+        IconButton(
+          icon: Icon(Icons.edit_location_outlined),
+          onPressed: () => provider.editMode = true,
+        ),
+        IconButton(
+          icon: Icon(Icons.autorenew),
+          onPressed: () {
+            if (!CommonPreferences.isBindTju.value) {
+              ToastProvider.error("请绑定办公网");
+              Navigator.pushNamed(context, AuthRouter.tjuBind);
+              return;
+            }
+            context.read<CourseProvider>().refreshCourse(
+                hint: true,
+                onFailure: (e) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => TjuRebindDialog(
+                      reason: e is WpyDioError ? e.error.toString() : null,
+                    ),
+                  );
+                });
+          },
+        ),
+        SizedBox(width: 10),
+      ];
+    }
+
     return AppBar(
       backgroundColor: Colors.white,
       brightness: Brightness.light,
       elevation: 0,
-      leading: GestureDetector(
-          child: Icon(Icons.arrow_back, color: titleColor, size: 32),
-          onTap: () => Navigator.pop(context)),
-      actions: [
-        Builder(
-          builder: (context) {
-            var shrink =
-                context.select<CourseDisplayProvider, bool>((p) => p.shrink);
-            return IconButton(
-              icon: Icon(
-                  shrink ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  color: titleColor,
-                  size: 35),
-              onPressed: () {
-                quietDisplayPvd.shrink = !shrink;
-              },
-            );
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.edit_location_outlined, color: titleColor, size: 28),
-          onPressed: () {
-
-          },
-        ),
-        IconButton(
-          icon: Icon(Icons.autorenew, color: titleColor, size: 28),
-          onPressed: () {
-            if (CommonPreferences.isBindTju.value) {
-              context.read<CourseProvider>().refreshCourse(
-                    hint: true,
-                    onFailure: (e) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return TjuRebindDialog(
-                            reason:
-                                e is WpyDioError ? e.error.toString() : null,
-                          );
-                        },
-                      );
-                    },
-                  );
-            } else {
-              ToastProvider.error("请绑定办公网");
-              Navigator.pushNamed(context, AuthRouter.tjuBind);
-            }
-          },
-        ),
-        SizedBox(width: 10),
-      ],
+      leading: leading,
+      actions: actions,
+      iconTheme: IconThemeData(color: titleColor, size: 28),
+      leadingWidth: 60,
     );
   }
 

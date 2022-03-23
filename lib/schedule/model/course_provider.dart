@@ -94,8 +94,9 @@ class CourseDisplayProvider with ChangeNotifier {
 
   bool get editMode => _editMode;
 
-  void changeEditMode() {
-    _editMode = !_editMode;
+  set editMode(bool value) {
+    if (_editMode == value) return;
+    _editMode = value;
     notifyListeners();
   }
 

@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
 
 class WpyExamWidget extends StatelessWidget {
   @override
