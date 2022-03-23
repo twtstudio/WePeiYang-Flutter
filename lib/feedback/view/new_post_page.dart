@@ -7,6 +7,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -133,7 +134,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16)),
                 child: Center(
-                  child: Text('Loading...φ(゜▽゜*)♪'),
+                  child: Loading(),
                 ),
               )
             : status == LakePageStatus.idle

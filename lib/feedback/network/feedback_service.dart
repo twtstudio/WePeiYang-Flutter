@@ -11,8 +11,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  String baseUrl = 'https://https://qnhd.twt.edu.cn/api/v1/f/';
+  //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
   var headers = {};
 
   @override

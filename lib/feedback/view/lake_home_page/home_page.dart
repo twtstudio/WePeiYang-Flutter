@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -236,8 +237,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                     image: AssetImage(
                                         "assets/images/lake_butt_icons/add_post.png")))),
                         onTap: () {
-                          initializeRefresh = true;
-                          Navigator.pushNamed(context, FeedbackRouter.newPost);
+                          if (tabList.isNotEmpty) {
+                            initializeRefresh = true;
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.newPost);
+                          }
                         }),
                   ),
                   SizedBox(width: 15)
@@ -255,14 +259,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           SizedBox(width: 4),
                           Expanded(
                             child: status == LakePageStatus.unload
-                                ? SizedBox()
+                                ? Align(
+                                    alignment: Alignment.center,
+                                    child: Loading())
                                 : status == LakePageStatus.loading
                                     ? Align(
                                         alignment: Alignment.center,
-                                        child: Text('加载中',
-                                            style: TextUtil.base.mainColor.w400
-                                                .sp(16)),
-                                      )
+                                        child: Loading())
                                     : status == LakePageStatus.idle
                                         ? Builder(builder: (context) {
                                             return TabBar(
@@ -387,12 +390,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                   .tabController
                                   .animation
                                   .value) {
-                            int canMove = -1;
-                            tabs.forEach((element) {
-                              if (element.name == '校务专区') canMove = element.id;
-                            });
+                            WPYTab tab =
+                                context.read<LakeModel>().lakeAreas[1].tab;
                             if (context.read<LakeModel>().tabController.index !=
-                                    canMove &&
+                                    tabList.indexOf(tab) &&
                                 canSee) _onFeedbackTapped();
                           }
                         });
@@ -404,7 +405,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     children: List<Widget>.generate(
                         tabs == null ? 1 : tabs.length,
                         (i) => NSubPage(
-                              index: i,
+                              index: tabList[i].id,
                             )));
               }),
               Visibility(

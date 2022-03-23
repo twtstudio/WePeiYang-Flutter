@@ -83,6 +83,7 @@ class LakeModel extends ChangeNotifier {
   LakePageStatus mainStatus = LakePageStatus.unload;
   Map<int, LakeArea> lakeAreas = {};
   List<WPYTab> tabList = [];
+  List<WPYTab> backupList = [WPYTab()];
   int currentTab = 0;
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
   double opacity = 0;
