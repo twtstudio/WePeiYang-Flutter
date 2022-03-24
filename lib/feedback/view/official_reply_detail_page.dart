@@ -158,7 +158,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         else
         launchKey.currentState.send(true);
         setState(() {
-          _onRefresh();
+         _refreshController.requestRefresh();
         });
       },
       child: Padding(
@@ -181,14 +181,16 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                 OfficialReplyCard.reply(
                   comment: data,
                   placeAppeared: index,
+                  detail: false,
                   tag: post.department.name ?? '',
                   ratings: rating,
-                  ancestorId: widget.floor[0].postId,
+                  ancestorId: widget.floor[0].uid,
                 ),
               if (data.sender == 0)
                 OfficialReplyCard.reply(
                   comment: data,
                   ratings: rating,
+                  detail: false,
                   placeAppeared: index,
                   ancestorId: widget.floor[0].postId,
                 ),

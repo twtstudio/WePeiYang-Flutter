@@ -42,17 +42,15 @@ class _ProfilePageState extends State<ProfilePage> {
   MessageProvider messageProvider;
   var _refreshController = RefreshController(initialRefresh: true);
   bool tap = false;
-  int page_post = 30;
-  int page_fav = 30;
+  int currentPage = 1;
 
-  _initMyPosts({Function onSuccess, Function onFail}) async {
+  _getMyPosts({Function(List<Post>) onSuccess, Function onFail, int current}){
     FeedbackService.getMyPosts(
-        page: 0,
-        page_size: page_post,
+        page: current ?? currentPage,
+        page_size: 10,
         onResult: (list) {
           setState(() {
-            _addPostList(list);
-            onSuccess?.call();
+            onSuccess?.call(list);
           });
         },
         onFailure: (e) {
@@ -61,14 +59,13 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  _initMyCollects({Function onSuccess, Function onFail}) {
+  _getMyCollects({Function(List<Post>) onSuccess, Function onFail, int current}) {
     FeedbackService.getFavoritePosts(
-        page: 0,
-        page_size: page_fav,
+        page: current ?? currentPage,
+        page_size: 10,
         onResult: (list) {
           setState(() {
-            _addFavList(list);
-            onSuccess?.call();
+            onSuccess?.call(list);
           });
         },
         onFailure: (e) {
@@ -77,26 +74,24 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  _addPostList(List<Post> list) {
-    _postList = list;
-  }
 
-  _addFavList(List<Post> list) {
-    _favList = list;
-  }
 
   //刷新
   _onRefresh() {
+    currentPage =1;
+    _refreshController.resetNoData();
     switch (_currentTab.value) {
       case _CurrentTab.myPosts:
-        _initMyPosts(onSuccess: () {
+        _getMyPosts(onSuccess: (list) {
+          _postList =list;
             _refreshController.refreshCompleted();
         }, onFail: () {
           _refreshController.refreshFailed();
         });
         break;
       case _CurrentTab.myCollect:
-        _initMyCollects(onSuccess: () {
+        _getMyCollects(onSuccess: (list) {
+          _favList = list;
             _refreshController.refreshCompleted();
         }, onFail: () {
           _refreshController.refreshFailed();
@@ -109,20 +104,32 @@ class _ProfilePageState extends State<ProfilePage> {
   _onLoading() {
     switch (_currentTab.value) {
       case _CurrentTab.myPosts:
-        page_post += 30;
-        _initMyPosts(onSuccess: () {
+        currentPage++;
+        _getMyPosts(onSuccess: (list) {
+          if (list.length == 0) {
+            _refreshController.loadNoData();
+            currentPage--;
+          } else {
+            _postList.addAll(list);
             _refreshController.loadComplete();
+          }
         }, onFail: () {
-          page_post -= 30;
+          currentPage--;
           _refreshController.loadFailed();
         });
         break;
       case _CurrentTab.myCollect:
-        page_fav += 30;
-        _initMyCollects(onSuccess: () {
-            _refreshController.refreshCompleted();
+        currentPage++;
+        _getMyCollects(onSuccess: (list) {
+          if (list.length == 0) {
+            _refreshController.loadNoData();
+            currentPage--;
+          } else {
+            _favList.addAll(list);
+            _refreshController.loadComplete();
+          }
         }, onFail: () {
-          page_fav -= 30;
+          currentPage--;
           _refreshController.loadFailed();
         });
         break;
@@ -147,7 +154,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ToastProvider.success(S.current.feedback_delete_success);
               context.read<MessageProvider>().refreshFeedbackCount();
               setState(() {
-                _postList = List.from(_postList);
                 _refreshController.requestRefresh();
               });
             },
@@ -196,10 +202,10 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     switch (_currentTab.value) {
       case _CurrentTab.myPosts:
-        _initMyPosts();
+        _getMyPosts();
         break;
       case _CurrentTab.myCollect:
-        _initMyCollects();
+        _getMyCollects();
         break;
     }
     ;

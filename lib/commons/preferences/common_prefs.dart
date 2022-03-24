@@ -43,6 +43,10 @@ class CommonPreferences {
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
   var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
   var isFirstLogin = PrefsBean<bool>("firstLogin", true);
+  ///愚人节用
+  var isAprilFool = PrefsBean<bool>("aprilFool", false);
+  ///海棠节用
+  var isBegonia = PrefsBean<bool>("begonia", false);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据

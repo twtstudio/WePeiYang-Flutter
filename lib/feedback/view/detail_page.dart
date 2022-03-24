@@ -321,23 +321,34 @@ class _DetailPageState extends State<DetailPage>
           index--;
 
           if (index < _officialCommentList.length) {
+            if(index>=2)
+              index--;
             var data = _officialCommentList[index];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender == 1
+            return  index==0
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',
                     comment: data,
                     placeAppeared: index,
                     ratings: post.rating,
                     ancestorId: post.uid,
+                    detail: false,
                     onContentPressed: (refresh) async {
                       refresh.call(list);
                     },
                   )
-                : SizedBox(width: 0, height: 0);
+                :  index==1?OfficialReplyCard.subFloor(
+              tag: "",
+              comment: data,
+              placeAppeared: index,
+              ratings: post.rating,
+              ancestorId: post.uid,
+              detail: true,
+              onContentPressed: (refresh) async {
+                refresh.call(list);
+              },
+            ):SizedBox(width: 0, height: 0);
           }
-
-          ///_officialCommentList,点赞注释了
           else {
             var data = _commentList[index - _officialCommentList.length];
             return NCommentCard(

@@ -143,6 +143,8 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
       ),
       child: InkWell(
         onTap: () {
+          if(CommonPreferences().isAprilFool.value){
+          }
           if (wpy) Navigator.pushNamed(context, ScheduleRouter.exam);
         },
         borderRadius: BorderRadius.circular(10),
