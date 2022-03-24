@@ -45,9 +45,9 @@ class CommonPreferences {
   var isFirstLogin = PrefsBean<bool>("firstLogin", true);
   ///愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像
   var isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
-  var isAprilFool = PrefsBean<bool>("aprilFool", true);
-  var isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", true);
-  var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", true);
+  var isAprilFool = PrefsBean<bool>("aprilFool", false);
+  var isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
+  var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
   ///海棠节用
   var isBegonia = PrefsBean<bool>("begonia", false);
 

@@ -141,7 +141,7 @@ class FirstInLakeDialogState extends State<FirstInLakeDialog>{
            Navigator.pop(context);
            CommonPreferences().isFirstLogin.value = false;
          } else {
-           ToastProvider.error('请同意《青年湖底社区规范》');
+           ToastProvider.error('请同意《求实论坛社区规范》');
          }
        });
   }
