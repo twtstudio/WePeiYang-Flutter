@@ -68,7 +68,7 @@ class _SearchBarState extends State<SearchBar>
             context,
             FeedbackRouter.searchResult,
             arguments: SearchResultPageArgs('', '${tagUtil[total].id}', '',
-                '搜索结果 #${tagUtil[total].name}', 0),
+                '搜索结果 #${tagUtil[total].name}', 0, 0),
           ).then((_) {
             Navigator.pop(context);
           });
@@ -169,7 +169,7 @@ class _SearchBarState extends State<SearchBar>
                               '${data.recTag.tagId}',
                               '',
                               '推荐：#${data.recTag.name}',
-                              0),
+                              0, 0),
                         );
                       }
                     },

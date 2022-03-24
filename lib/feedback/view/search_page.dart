@@ -53,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           FeedbackRouter.searchResult,
           arguments: SearchResultPageArgs(
-              text, '', '', S.current.feedback_search_result, 0),
+              text, '', '', S.current.feedback_search_result, 0, 0),
         ).then((_) {
           Navigator.pop(context);
         });
@@ -127,7 +127,7 @@ class _SearchPageState extends State<SearchPage> {
                 '',
                 '',
                 S.current.feedback_search_result,
-                0);
+                0, 0);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,

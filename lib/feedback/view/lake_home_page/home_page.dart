@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -240,7 +241,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           if (tabList.isNotEmpty) {
                             initializeRefresh = true;
                             Navigator.pushNamed(
-                                context, FeedbackRouter.newPost);
+                                context, FeedbackRouter.newPost, arguments: NewPostArgs(false, '', 0, ''));
                           }
                         }),
                   ),
@@ -252,7 +253,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   pinned: true,
                   delegate: HomeHeaderDelegate(
                       child: Container(
-                    color: ColorUtil.whiteFDFE,
+                    color: Colors.white,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -547,7 +548,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
                         '',
                         provider.departmentList[index].id.toString(),
                         '#${provider.departmentList[index].name}',
-                        1),
+                        1, 0),
                   );
                 },
               );

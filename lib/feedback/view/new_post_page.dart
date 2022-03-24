@@ -26,8 +26,21 @@ import 'components/widget/tag_search_card.dart';
 import 'lake_home_page/lake_notifier.dart';
 
 class NewPostPage extends StatefulWidget {
+  final NewPostArgs args;
+
+  const NewPostPage(this.args);
+
   @override
   _NewPostPageState createState() => _NewPostPageState();
+}
+
+class NewPostArgs {
+  final bool isFollowing;
+  final String tagId;
+  final String tagName;
+  final int type;
+
+  NewPostArgs(this.isFollowing, this.tagId, this.type, this.tagName);
 }
 
 class _NewPostPageState extends State<NewPostPage> {
@@ -71,12 +84,28 @@ class _NewPostPageState extends State<NewPostPage> {
             physics: BouncingScrollPhysics(),
             padding: const EdgeInsets.only(left: 20),
             children: [
-              LakeSelector(),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: departmentTagView(postTypeNotifier),
-              ),
+              Container(
+                  decoration: widget.args.isFollowing
+                      ? BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          shape: BoxShape.rectangle,
+                        )
+                      : BoxDecoration(),
+                  margin: widget.args.isFollowing ? const EdgeInsets.only(right: 20, top: 4, bottom: 10) : EdgeInsets.zero,
+                  padding: widget.args.isFollowing ? const EdgeInsets.fromLTRB(22, 10, 22, 10) : EdgeInsets.zero,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        widget.args.isFollowing ? Text('跟帖:', style: TextUtil.base.NotoSansSC.w500.sp(14).black2A) : LakeSelector(),
+                        SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: widget.args.isFollowing
+                              ? Text('${widget.args.tagName}'.substring(3), style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                              : departmentTagView(postTypeNotifier),
+                        ),
+                      ])),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -96,7 +125,8 @@ class _NewPostPageState extends State<NewPostPage> {
                           children: [
                             Spacer(),
                             CampusSelector(campusNotifier),
-                            SubmitButton(campusNotifier, postTypeNotifier),
+                            SubmitButton(campusNotifier, postTypeNotifier,
+                                args: widget.args),
                           ],
                         ),
                       ]))
@@ -169,7 +199,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                         },
                                         child: SizedBox(
                                           height: 58,
-                                          width: 80,
+                                          width: 100,
                                           child: Center(
                                             child: Column(
                                               mainAxisAlignment:
@@ -238,13 +268,13 @@ class _LakeSelectorState extends State<LakeSelector> {
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () {
-                                controller.offset <= 80 * (tabList.length - 1)
+                                controller.offset <= 100 * (tabList.length - 2)
                                     ? controller.animateTo(
-                                        controller.offset + 80,
+                                        controller.offset + 100,
                                         duration: Duration(milliseconds: 400),
                                         curve: Curves.fastOutSlowIn)
                                     : controller.animateTo(
-                                        140 * (tabList.length - 1).toDouble(),
+                                        100 * (tabList.length - 2).toDouble(),
                                         duration: Duration(milliseconds: 800),
                                         curve: Curves.slowMiddle);
                               },
@@ -275,8 +305,10 @@ class _LakeSelectorState extends State<LakeSelector> {
 
 class SubmitButton extends StatelessWidget {
   final ValueNotifier campusNotifier, postTypeNotifier;
+  final NewPostArgs args;
 
-  const SubmitButton(this.campusNotifier, this.postTypeNotifier, {Key key})
+  const SubmitButton(this.campusNotifier, this.postTypeNotifier,
+      {Key key, this.args})
       : super(key: key);
 
   void submit(BuildContext context) {
@@ -289,10 +321,14 @@ class SubmitButton extends StatelessWidget {
             dataModel.images.clear();
             if (dataModel.check) {
               FeedbackService.sendPost(
-                type: dataModel.type,
+                type: args.isFollowing ? args.type : dataModel.type,
                 title: dataModel.title,
                 content: dataModel.content,
-                tagId: dataModel.tag == null ? '' : dataModel.tag.id,
+                tagId: args.isFollowing
+                    ? args.tagId
+                    : dataModel.tag == null
+                    ? ''
+                    : dataModel.tag.id,
                 departmentId:
                     dataModel.department == null ? '' : dataModel.department.id,
                 images: images,
@@ -302,6 +338,7 @@ class SubmitButton extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 onFailure: (e) {
+                  dataModel.clear();
                   ToastProvider.error(e.error.toString());
                 },
               );
@@ -313,15 +350,20 @@ class SubmitButton extends StatelessWidget {
             }
           },
           onFailure: (e) {
+            dataModel.clear();
             ToastProvider.error(e.error.toString());
           });
     } else {
       if (dataModel.check) {
         FeedbackService.sendPost(
-          type: dataModel.type,
+          type: args.isFollowing ? args.type : dataModel.type,
           title: dataModel.title,
           content: dataModel.content,
-          tagId: dataModel.tag == null ? '' : dataModel.tag.id,
+          tagId: args.isFollowing
+              ? args.tagId
+              : dataModel.tag == null
+                  ? ''
+                  : dataModel.tag.id,
           departmentId:
               dataModel.department == null ? '' : dataModel.department.id,
           images: [],
@@ -331,6 +373,7 @@ class SubmitButton extends StatelessWidget {
             Navigator.pop(context);
           },
           onFailure: (e) {
+            dataModel.clear();
             ToastProvider.error(e.error.toString());
           },
         );

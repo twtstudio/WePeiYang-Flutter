@@ -38,7 +38,7 @@ class FeedbackRouter {
     detail: (args) => DetailPage(args),
     commentDetail: (args) => ReplyDetailPage(args),
     officialCommentDetail: (args) => OfficialReplyDetailPage(args),
-    newPost: (_) => NewPostPage(),
+    newPost: (args) => NewPostPage(args),
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     imageView: (_) => ImageViewPage(),
