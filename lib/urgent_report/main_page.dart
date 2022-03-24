@@ -40,8 +40,8 @@ class ReportMainPage extends StatefulWidget {
 }
 
 class _ReportMainPageState extends State<ReportMainPage> {
-  List<ValueNotifier<Color>> _partBackgroundColor =
-      List.generate(ReportPart.values.length, (index) => ValueNotifier(Colors.transparent));
+  List<ValueNotifier<Color>> _partBackgroundColor = List.generate(
+      ReportPart.values.length, (index) => ValueNotifier(Colors.transparent));
 
   ValueNotifier<bool> clearAll = ValueNotifier(true);
 
@@ -202,7 +202,8 @@ class _ReportMainPageState extends State<ReportMainPage> {
             SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
-                var url = 'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
+                var url =
+                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {
@@ -380,14 +381,19 @@ class _ReportListItem extends StatelessWidget {
       child: Text(
         monthAndDay,
         maxLines: 1,
-        style: FontManager.Gilroy.copyWith(color: Color(0xffD9DEEA), fontWeight: FontWeight.w800, fontSize: 60),
+        style: FontManager.Gilroy.copyWith(
+            color: Color(0xffD9DEEA),
+            fontWeight: FontWeight.w800,
+            fontSize: 60),
       ),
     );
 
-    var healthCode =
-        data.healthCode != null ? _code('健康码', Color(0xc14caf50), codeHeight, codeWidth) : SizedBox.shrink();
-    var travelCode =
-        data.travelCode != null ? _code('行程码', Color(0xc14caf50), codeHeight, codeWidth) : SizedBox.shrink();
+    var healthCode = data.healthCode != null
+        ? _code('健康码', Color(0xc14caf50), codeHeight, codeWidth)
+        : SizedBox.shrink();
+    var travelCode = data.travelCode != null
+        ? _code('行程码', Color(0xc14caf50), codeHeight, codeWidth)
+        : SizedBox.shrink();
 
     var codeColumn = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -477,7 +483,8 @@ class _ReportListItem extends StatelessWidget {
         elevation: 0.2,
         margin: EdgeInsets.zero,
         child: textStack,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       ),
     );
   }
@@ -512,7 +519,10 @@ class _TodayTempState extends State<TodayTemp> {
     super.initState();
     _temperature = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.findAncestorStateOfType<_ReportMainPageState>().clearAll.addListener(() {
+      context
+          .findAncestorStateOfType<_ReportMainPageState>()
+          .clearAll
+          .addListener(() {
         _setText("");
       });
       _initTemperatureData();
@@ -533,7 +543,8 @@ class _TodayTempState extends State<TodayTemp> {
   }
 
   _reportTemperature() {
-    Provider.of<ReportDataModel>(context, listen: false).add(ReportPart.temperature, _temperature.text);
+    Provider.of<ReportDataModel>(context, listen: false)
+        .add(ReportPart.temperature, _temperature.text);
   }
 
   @override
@@ -551,7 +562,10 @@ class _TodayTempState extends State<TodayTemp> {
           children: [
             Text(
               "今日体温",
-              style: TextStyle(color: Color(0xff63677b), fontSize: 13, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Color(0xff63677b),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500),
             ),
             SizedBox(width: 15),
             Container(
@@ -645,7 +659,8 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
   }
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     String value = newValue.text;
     int selectionIndex = newValue.selection.end;
     if (value == ".") {
@@ -654,7 +669,9 @@ class _MyNumberTextInputFormatter extends TextInputFormatter {
     } else if (value == "-") {
       value = "-";
       selectionIndex++;
-    } else if (value != "" && value != defaultDouble.toString() && strToFloat(value, defaultDouble) == defaultDouble ||
+    } else if (value != "" &&
+            value != defaultDouble.toString() &&
+            strToFloat(value, defaultDouble) == defaultDouble ||
         getValueDigit(value) > digit ||
         getValueInteger(value) > integer) {
       value = oldValue.text;
@@ -675,7 +692,8 @@ enum _Image {
 extension _Name on _Image {
   String get name => ['健康码', '行程码'][this.index];
 
-  ReportPart get key => [ReportPart.healthCode, ReportPart.itineraryCode][this.index];
+  ReportPart get key =>
+      [ReportPart.healthCode, ReportPart.itineraryCode][this.index];
 }
 
 class PickImage extends StatefulWidget {
@@ -691,7 +709,8 @@ class _PickImageState extends State<PickImage> {
   File _image;
 
   _imgFromGallery() async {
-    XFile xFile = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile xFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
 
     if (xFile != null) {
       _setImg(File(xFile.path));
@@ -700,14 +719,18 @@ class _PickImageState extends State<PickImage> {
   }
 
   _reportImage(XFile file) async {
-    Provider.of<ReportDataModel>(context, listen: false).add(widget.image.key, file.path);
+    Provider.of<ReportDataModel>(context, listen: false)
+        .add(widget.image.key, file.path);
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.findAncestorStateOfType<_ReportMainPageState>().clearAll.addListener(() {
+      context
+          .findAncestorStateOfType<_ReportMainPageState>()
+          .clearAll
+          .addListener(() {
         _setImg(null);
       });
       _initFileData();
@@ -738,7 +761,10 @@ class _PickImageState extends State<PickImage> {
           alignment: Alignment.center,
           child: Text(
             '上传${widget.image.name}',
-            style: TextStyle(fontSize: 13, color: Color(0xff63677b), fontWeight: FontWeight.w700),
+            style: TextStyle(
+                fontSize: 13,
+                color: Color(0xff63677b),
+                fontWeight: FontWeight.w700),
           ),
         ),
         GestureDetector(
@@ -749,7 +775,9 @@ class _PickImageState extends State<PickImage> {
               ? DecoratedBox(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 12)]),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 12)
+                      ]),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.file(
@@ -766,7 +794,8 @@ class _PickImageState extends State<PickImage> {
                   child: SizedBox(
                     width: imageWidth - 32,
                     height: imageWidth - 32,
-                    child: Icon(Icons.add_circle, size: 40, color: Color(0xffd0d1d6)),
+                    child: Icon(Icons.add_circle,
+                        size: 40, color: Color(0xffd0d1d6)),
                   ),
                 ),
         ),
@@ -785,7 +814,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   TextEditingController _controller = TextEditingController();
 
   _allowLocationPermission() async {
-    switch (await LocationPermissions().requestPermissions()) {
+    final status = await LocationPermissions().requestPermissions(
+      permissionLevel: LocationPermissionLevel.locationWhenInUse,
+    );
+    switch (status) {
       case PermissionStatus.granted:
         return true;
       default:
@@ -800,7 +832,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   }
 
   _checkLocationPermissions() async {
-    switch (await LocationPermissions().checkPermissionStatus()) {
+    final status = await LocationPermissions().checkPermissionStatus(
+      level: LocationPermissionLevel.locationWhenInUse,
+    );
+    switch (status) {
       case PermissionStatus.denied:
         if (!await _allowLocationPermission()) return;
         break;
@@ -833,14 +868,18 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   }
 
   _reportLocation(LocationData data) {
-    Provider.of<ReportDataModel>(context, listen: false).add(ReportPart.currentLocation, data);
+    Provider.of<ReportDataModel>(context, listen: false)
+        .add(ReportPart.currentLocation, data);
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.findAncestorStateOfType<_ReportMainPageState>().clearAll.addListener(() {
+      context
+          .findAncestorStateOfType<_ReportMainPageState>()
+          .clearAll
+          .addListener(() {
         canInputAddress = false;
         _setLocation("");
       });
@@ -889,11 +928,16 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           ),
           decoration: InputDecoration(
               hintText: "点击此处填写当前位置",
-              hintStyle: TextStyle(color: Color(0x9f626774), fontWeight: FontWeight.normal, fontSize: 15),
+              hintStyle: TextStyle(
+                  color: Color(0x9f626774),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15),
               isCollapsed: true,
               isDense: true,
               // contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none)),
           onChanged: (input) {
             _reportLocation(LocationData.onlyAddress(input));
           }),
@@ -931,7 +975,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [if (_controller.text != '' || canInputAddress) placeText, chosePlaceButton],
+            children: [
+              if (_controller.text != '' || canInputAddress) placeText,
+              chosePlaceButton
+            ],
           ),
         ],
       ),
@@ -945,14 +992,21 @@ class CurrentState extends StatefulWidget {
 }
 
 class _CurrentStateState extends State<CurrentState> {
-  List<LocationState> states = [LocationState.home, LocationState.school, LocationState.travel];
+  List<LocationState> states = [
+    LocationState.home,
+    LocationState.school,
+    LocationState.travel
+  ];
   LocationState currentState;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.findAncestorStateOfType<_ReportMainPageState>().clearAll.addListener(() {
+      context
+          .findAncestorStateOfType<_ReportMainPageState>()
+          .clearAll
+          .addListener(() {
         _setState(null);
       });
       _initStateData();
@@ -1005,7 +1059,8 @@ class _CurrentStateState extends State<CurrentState> {
   }
 
   _reportCurrentState() {
-    Provider.of<ReportDataModel>(context, listen: false).add(ReportPart.currentState, currentState);
+    Provider.of<ReportDataModel>(context, listen: false)
+        .add(ReportPart.currentState, currentState);
   }
 }
 
@@ -1082,8 +1137,8 @@ class _ReportButtonState extends State<ReportButton> {
               ),
             ),
             style: ButtonStyle(
-                shape:
-                    MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(height / 2))),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(height / 2))),
                 backgroundColor: MaterialStateProperty.all(Color(0XFF62677B)),
                 minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
@@ -1097,12 +1152,15 @@ class BackgroundColorListener extends StatelessWidget {
   final ReportPart part;
   final ValueWidgetBuilder<Color> builder;
 
-  const BackgroundColorListener({Key key, this.part, this.builder}) : super(key: key);
+  const BackgroundColorListener({Key key, this.part, this.builder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: context.findAncestorStateOfType<_ReportMainPageState>()._partBackgroundColor[part.index],
+        valueListenable: context
+            .findAncestorStateOfType<_ReportMainPageState>()
+            ._partBackgroundColor[part.index],
         builder: builder);
   }
 }

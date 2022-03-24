@@ -4,13 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.view.Surface
-import android.view.SurfaceControl
 import androidx.core.content.FileProvider
-import androidx.lifecycle.lifecycleScope
 import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
@@ -28,9 +24,8 @@ import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
+
 
 class MainActivity : FlutterActivity() {
 

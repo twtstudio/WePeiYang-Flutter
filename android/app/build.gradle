@@ -116,29 +116,29 @@ android {
             //    RELEASE :            微北洋              无Log     com.twt.service           getui.product  正式服务器
             //    ONLINE_TEST :        微北洋ONLINE_TEST   有Log     com.twt.service           getui.product  正式服务器
             //    DEVELOP (default) :  微北洋DEVELOP       有Log     com.twt.service.develop   getui.develop  测试服务器
-            def channel = "DEVELOP"
+            def environment = "DEVELOP"
 
             // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
             // flutter 1.20 ~ 2.2 的读取方式
             if (project.hasProperty('dart-defines')) {
                 // 如果是通过 package.ps1 打包的话就解析固定参数
                 def dartEnvironmentVariables = getDartDefines()
-                channel = dartEnvironmentVariables.ENVIRONMENT
-                if (channel == null) {
-                    channel = "RELEASE"
+                environment = dartEnvironmentVariables.ENVIRONMENT
+                if (environment == null) {
+                    environment = "RELEASE"
                 }
             } else {
-                channel = "RELEASE"
+                environment = "RELEASE"
             }
 
-            switch (channel) {
+            switch (environment) {
                 case "ONLINE_TEST":
-                    // 个推 develop
+                    // 个推 product
                     manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
                     // 输出调试信息
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     // 设置应用名称
-                    resValue("string", "label", "微北洋${channel}")
+                    resValue("string", "label", "微北洋${environment}")
                     break
                 case "DEVELOP":
                     // 个推 develop
@@ -148,11 +148,11 @@ android {
                     // 输出调试信息
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     // 设置应用名称
-                    resValue("string", "label", "微北洋${channel}")
+                    resValue("string", "label", "微北洋${environment}")
                     break
                 default:  // RELEASE
-                    channel = "RELEASE"
-                    // 个推 project
+                    environment = "RELEASE"
+                    // 个推 product
                     manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
                     // 不输出调试信息
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
@@ -165,7 +165,7 @@ android {
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     // 更改输出的安装包的名字 如 4.2.1-RELEASE-app-arm64-v8a-release.apk
-                    output.outputFileName = channel + "- " + android.defaultConfig.versionName + "-" + output.outputFileName
+                    output.outputFileName = environment + "- " + android.defaultConfig.versionName + "-" + output.outputFileName
 
                     // 谷歌规定 Google Play 多个安装包不能 versionCode一样
                     // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
@@ -180,30 +180,32 @@ android {
             signingConfig signingConfigs.config
             minifyEnabled false//删除无用代码
             shrinkResources false//删除无用资源
-            // 个推 develop
-            manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
             // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
 
-            def channel = "DEVELOP"
-//            if (project.hasProperty('dart-defines')) {
-//                def dartEnvironmentVariables = getDartDefines()
-//                if ( "RELEASE" == dartEnvironmentVariables.ENVIRONMENT) {
-//                    channel = "RELEASE"
-//                }
-//            }
+            def environment = "RELEASE"
+            if (project.hasProperty('dart-defines')) {
+                def dartEnvironmentVariables = getDartDefines()
+                if (dartEnvironmentVariables.ENVIRONMENT == "DEVELOP") {
+                    environment = "DEVELOP"
+                }
+            }
 
-            switch (channel) {
+            switch (environment) {
                 case "RELEASE":
                     // 如果要测试厂商推送的话，就不更改包名
                     // 设置应用名称
                     resValue("string", "label", "微北洋DEBUG_RELEASE")
+                    // 个推 product
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
                     break
                 default:
                     // 不覆盖正式版安装
                     applicationIdSuffix ".develop"
                     // 设置应用名称
                     resValue("string", "label", "微北洋DEBUG_DEVELOP")
+                    // 个推 develop
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
                     break
             }
         }

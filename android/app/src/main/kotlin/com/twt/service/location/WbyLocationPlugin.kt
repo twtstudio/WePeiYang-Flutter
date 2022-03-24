@@ -23,8 +23,8 @@ class WbyLocationPlugin : WbyPlugin() {
                         result.error(START_LOCATION_ERROR, "start location failure", it.message)
                     }
                 } else {
-                    Toast.makeText(context,"测试版微北洋不能调用地图接口",Toast.LENGTH_LONG).apply {
-                        setGravity(Gravity.CENTER,0,0)
+                    Toast.makeText(context, "测试版微北洋不能调用地图接口", Toast.LENGTH_LONG).apply {
+                        setGravity(Gravity.CENTER, 0, 0)
                     }.show()
                     result.error(START_LOCATION_ERROR, "package name error", "")
                 }

@@ -15,19 +15,13 @@ function New-Apk {
         [Parameter()]
         [string]$environment,
         [Parameter()]
-        [string]$platforms,
-        [Parameter()]
-        [string]$qnhd,
-        [Parameter()]
-        [string]$qnhdpic
+        [string]$platforms
     )
     $environmentPath = $allApksPath + "\" + $environment
     New-Item $environmentPath -ItemType "directory"
 
     $arguments = @(
-        "--dart-define=ENVIRONMENT=$environment",
-        "--dart-define=QNHD=$qnhd",
-        "--dart-define=QNHDPIC=$qnhdpic"
+        "--dart-define=ENVIRONMENT=$environment"
     )
     flutter build apk  @arguments  --target-platform $platforms --split-per-abi
     Move-Item  -Path ($releasePath + "\*") -Destination $environmentPath
@@ -35,19 +29,15 @@ function New-Apk {
 
 # RELEASE版 - 正式服务器 + com.twt.service 无注释
 # 打包32和64位
-$qnhd = "https://qnhd.twt.edu.cn/"
-$qnhdpic = "https://qnhdpic.twt.edu.cn/"
-New-Apk -environment "RELEASE" -platforms "android-arm,android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
+New-Apk -environment "RELEASE" -platforms "android-arm,android-arm64"
 
 # ONLINE_TEST版 - 正式服务器 + com.twt.service + 注释
 # 仅打包64位
-New-Apk -environment "ONLINE_TEST" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
+New-Apk -environment "ONLINE_TEST" -platforms "android-arm64"
 
 # DEVELOP版 - 测试服务器 + com.twt.service.develop + 注释
 # 仅打包64位
-$qnhd = "https://www.zrzz.site:7013/"
-$qnhdpic = "https://www.zrzz.site:7015/"
-New-Apk -environment "DEVELOP" -platforms "android-arm64" -qnhd $qnhd -qnhdpic $qnhdpic
+New-Apk -environment "DEVELOP" -platforms "android-arm64"
 
 tree $allApksPath /F
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 /// release模式下在内存中存储log信息，debug模式下直接打印
@@ -11,7 +11,7 @@ class Logger {
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
     String line = _getFormatTime() + ' | ' + str;
     // 如果是测试版，就打印方便随时调试
-    if (EnvConfig.isDevelop) {
+    if (EnvConfig.isDevelop || kDebugMode) {
       parent.print(zone, line);
     }
     checkList();
@@ -31,7 +31,7 @@ class Logger {
       '----------------------------------------------------------------------'
     ];
     // 如果是测试版，就打印方便随时调试
-    if (EnvConfig.isDevelop) {
+    if (EnvConfig.isDevelop || kDebugMode) {
       for (String line in lines) debugPrint(line);
     }
     checkList();

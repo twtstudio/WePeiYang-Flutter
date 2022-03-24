@@ -49,6 +49,7 @@ import 'commons/environment/config.dart';
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    // 初始化环境变量
     EnvConfig.init();
     /// 程序中的同步（sync）错误也交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
