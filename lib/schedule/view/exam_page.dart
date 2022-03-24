@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
@@ -144,6 +145,20 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
       child: InkWell(
         onTap: () {
           if(CommonPreferences().isAprilFool.value){
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AprilFoolDialog(
+                    content: exam.name,
+                    confirmText: "返回真实课表",
+                    cancelText: "保留课表",
+                    confirmFun: (){
+                      CommonPreferences().isAprilFool.value = false;
+                      Navigator.popAndPushNamed(context, HomeRouter.home);
+                    },
+                  );
+                });
           }
           if (wpy) Navigator.pushNamed(context, ScheduleRouter.exam);
         },

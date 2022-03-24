@@ -64,6 +64,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
     });
+    if(DateTime.now().month==3&&DateTime.now().day==24&&CommonPreferences().isAprilFoolGen.value){
+      CommonPreferences().isAprilFool.value = true;
+      CommonPreferences().isAprilFoolLike.value = true;
+      CommonPreferences().isAprilFoolGPA.value = true;
+      CommonPreferences().isAprilFoolGen.value = false;
+    }
   }
 
   @override

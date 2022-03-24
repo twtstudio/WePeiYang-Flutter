@@ -147,6 +147,10 @@ GPABean _data2GPABean(String data, bool isMaster) {
 /// 对课程数据进行整理后生成gpaCourse对象，注意研究生的list元素顺序和本科生的不一样
 GPACourse _data2GPACourse(Map<String, String> data) {
   double score = 0.0;
+  if(CommonPreferences().isAprilFoolGPA.value){
+    score =100.0;
+  }
+  else
   switch (data['score'] ?? '0.0') {
     case '缓考':
     case '--':
@@ -168,13 +172,16 @@ GPACourse _data2GPACourse(Map<String, String> data) {
       score = double.parse(data['score'] ?? '0.0');
   }
   double credit = 0.0;
-
   if (score >= 60) {
     if (data['credit'] == null || data['credit'] == '') data['credit'] = '0.0';
     credit = double.parse(data['credit']);
   }
+  ///愚人节措施
+  if(CommonPreferences().isAprilFoolGPA.value){
+    credit = 7157.125;
+  }
   if (data['gpa'] == null || data['gpa'] == '') data['gpa'] = '0.0';
-  double gpa = double.parse(data['gpa']);
+  double gpa = CommonPreferences().isAprilFoolGPA.value?4.0:double.parse(data['gpa']);
   return GPACourse(data['name'] ?? '', data['type'] ?? '', score, credit, gpa);
 }
 

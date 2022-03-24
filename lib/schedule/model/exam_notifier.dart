@@ -1,4 +1,5 @@
 import 'dart:convert' show json;
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -26,7 +27,10 @@ class ExamNotifier with ChangeNotifier {
     List<Exam> unscheduled = [];
     List<Exam> after = [];
     if(CommonPreferences().isAprilFool.value){
-      after.addAll(april);
+      var rng = new Random();
+      for(var i =0 ; i < 8;i++) {
+        after.add(april[rng.nextInt(20)]);
+      }
     }
     else {
       _examTable.exams.forEach((e) {

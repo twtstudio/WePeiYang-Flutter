@@ -1,3 +1,5 @@
+
+
 class GPABean {
   Total total;
   List<GPAStat> stats;
@@ -47,6 +49,7 @@ class GPAStat {
         courses = []
           ..addAll(
               (map['courses'] as List ?? []).map((e) => GPACourse.fromJson(e)));
+
 
   Map<String, dynamic> toJson() => {
         'weighted': weighted,

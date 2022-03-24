@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
+import 'package:we_pei_yang_flutter/home/home_router.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
@@ -112,6 +114,22 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
               onTap: () {
+                if(CommonPreferences().isAprilFoolGPA.value){
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AprilFoolDialog(
+                          content: "愚人节快乐呀！",
+                          confirmText: "返回真实绩点",
+                          cancelText: "保留满绩",
+                          confirmFun: (){
+                            CommonPreferences().isAprilFoolGPA.value = false;
+                            Navigator.popAndPushNamed(context, HomeRouter.home);
+                          },
+                        );
+                      });
+                }
                 Provider.of<GPANotifier>(context, listen: false)
                     .refreshGPA(
                         hint: true,
@@ -476,7 +494,9 @@ class _CourseListState extends State<CourseListWidget> {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => widget.notifier.reSort(),
+            onTap: () {
+              widget.notifier.reSort();
+            },
             child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: RichText(

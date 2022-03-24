@@ -126,7 +126,7 @@ class GPANotifier with ChangeNotifier {
   GestureTapCallback refreshGPA({bool hint = false, OnFailure onFailure}) {
     return () {
       if (hint) ToastProvider.running("刷新数据中……");
-      getGPABean(onResult: (gpaBean) {
+      getGPABean(onResult: ( gpaBean) {
         if (hint) ToastProvider.success("刷新gpa数据成功");
         _gpaStats = gpaBean.stats;
         total = gpaBean.total;
