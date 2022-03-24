@@ -110,43 +110,41 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(right: 10),
-      child: SizedBox(
-        width: 45,
-        child: GestureDetector(
-          onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
-          onLongPress: () => showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return LakeDialogWidget(
-                  title: '一键已读：',
-                  titleTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
-                  content: Text('这将清除所有的消息提醒'),
-                  cancelText: "取消",
-                  confirmTextStyle:
-                  TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
-                  cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                  confirmText: "确认",
-                  cancelFun: () {
-                    Navigator.pop(context);
-                  },
-                  confirmFun: () async {
-                    await context.read<MessageProvider>().setAllMessageRead();
-                    Navigator.pop(context);
-                  },
-                  confirmButtonColor: ColorUtil.selectionButtonColor,
-                );
-              }),
-          child: SizedBox(
-            height: 25,
-            width: 25,
-            child: Center(
-              child: FeedbackBadgeWidget(
-                child: SvgPicture.asset(
-                  'assets/svg_pics/lake_butt_icons/bell.svg',
-                  width: 16.w,
-                ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
+        onLongPress: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return LakeDialogWidget(
+                title: '一键已读：',
+                titleTextStyle:
+                TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                content: Text('这将清除所有的消息提醒'),
+                cancelText: "取消",
+                confirmTextStyle:
+                TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                cancelTextStyle:
+                TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                confirmText: "确认",
+                cancelFun: () {
+                  Navigator.pop(context);
+                },
+                confirmFun: () async {
+                  await context.read<MessageProvider>().setAllMessageRead();
+                  Navigator.pop(context);
+                },
+                confirmButtonColor: ColorUtil.selectionButtonColor,
+              );
+            }),
+        child: SizedBox(
+          height: 45,
+          width: 45,
+          child: Center(
+            child: FeedbackBadgeWidget(
+              child: SvgPicture.asset(
+                'assets/svg_pics/lake_butt_icons/bell.svg',
+                width: 16.w,
               ),
             ),
           ),

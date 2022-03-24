@@ -4,21 +4,22 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
+
 import 'model/message_model.dart';
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
@@ -78,7 +79,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
         preferredSize: Size.fromHeight(100),
         child: AppBar(
           titleSpacing: 0,
-          leadingWidth: 25,
+          leadingWidth: 50,
           brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -86,8 +87,11 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           title:
               Text('消息中心', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
           leading: IconButton(
-            icon: Image.asset('assets/images/lake_butt_icons/back.png',
-                width: 14),
+            icon: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: ColorUtil.bold42TextColor,
+              size: 20.w,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -438,8 +442,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -785,8 +788,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -1463,8 +1465,7 @@ class _NoticeMessageItemState extends State<NoticeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          //'${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
-          'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.data.id}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,

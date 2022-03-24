@@ -3,6 +3,7 @@ import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
@@ -173,7 +174,7 @@ final messageDio = MessageDio();
 class MessageDio extends DioAbstract {
 
   @override
-  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/message/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/message/';
 
   @override
   List<InterceptorsWrapper> interceptors = [

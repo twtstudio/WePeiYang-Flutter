@@ -8,9 +8,7 @@ class WeKoDialog extends StatelessWidget {
   final Post post;
   final void Function() onConfirm;
   final void Function() onCancel;
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
-  //final String baseUrl = 'https://www.zrzz.site:7013/';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
   WeKoDialog(
       {Key key,

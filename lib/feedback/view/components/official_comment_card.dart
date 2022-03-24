@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:simple_html_css/simple_html_css.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -11,23 +13,18 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 
 import '../../feedback_router.dart';
-
 import '../report_question_page.dart';
-
 
 enum Official { subFloor, reply }
 
 typedef LikeCallback = void Function(bool, int);
 typedef ContentPressedCallback = void Function(void Function(List<Floor>));
-
-
 
 class OfficialReplyCard extends StatefulWidget {
   final String tag;
@@ -41,7 +38,6 @@ class OfficialReplyCard extends StatefulWidget {
   final int placeAppeared;
   int ratings;
 
-
   OfficialReplyCard.reply({
     this.tag,
     this.comment,
@@ -53,6 +49,7 @@ class OfficialReplyCard extends StatefulWidget {
     this.detail,
     this.placeAppeared,
   }) : type = Official.reply;
+
   OfficialReplyCard.subFloor({
     this.tag,
     this.comment,
@@ -64,6 +61,7 @@ class OfficialReplyCard extends StatefulWidget {
     this.detail,
     this.placeAppeared,
   }) : type = Official.subFloor;
+
   @override
   _OfficialReplyCardState createState() => _OfficialReplyCardState();
 }
@@ -73,6 +71,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
   double _initialRating = 0;
   String postRating;
   String postId;
+
   Future<bool> _showDeleteConfirmDialog() {
     return showDialog<bool>(
         context: context,
@@ -96,8 +95,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           );
         });
   }
+
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
+
   @override
   void initState() {
     _initialRating = widget.ratings.toDouble();
@@ -108,76 +109,91 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
   @override
   Widget build(BuildContext context) {
     List<Widget> column = [];
-    var OfficialLogo = widget.comment.sender==1?Row(
-      children: [
-        Image.asset(
-          widget.tag == '天外天' ? 'assets/images/twt.png' : 'assets/images/school.png',
-          height: widget.tag == '天外天' ? 18 : 24,
-          width: 30,
-          fit: BoxFit.contain,
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-              Text(widget.tag ?? '官方',
-                  style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
-              CommentIdentificationContainer('官方', true),
-            ]),
-            Text(
-              DateTime.now().difference(widget.comment.createAt).inHours >= 11
-                  ? widget.comment.createAt
-                      .toLocal()
-                      .toIso8601String()
-                      .replaceRange(10, 11, ' ')
-                      .substring(0, 19)
-                  : DateTime.now()
-                      .difference(widget.comment.createAt)
-                      .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
-            ),
-          ],
-        )
-      ],
-    ): Row(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          child: SvgPicture.network(
-            'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            width: 30,
-            height: 24,
-            fit: BoxFit.fitHeight,
-            placeholderBuilder: defaultPlaceholderBuilder,
-          ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-              Text( '帖主',
-                  style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14)),
-            ]),
-            Text(
-              DateTime.now().difference(widget.comment.createAt).inHours >= 11
-                  ? widget.comment.createAt
-                  .toLocal()
-                  .toIso8601String()
-                  .replaceRange(10, 11, ' ')
-                  .substring(0, 19)
-                  : DateTime.now()
-                  .difference(widget.comment.createAt)
-                  .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
-            ),
-          ],
-        )
-      ],
-    );
-    var popMenu =  PopupMenuButton(
+    var OfficialLogo = widget.comment.sender == 1
+        ? Row(
+            children: [
+              Image.asset(
+                widget.tag == '天外天'
+                    ? 'assets/images/twt.png'
+                    : 'assets/images/school.png',
+                height: widget.tag == '天外天' ? 18 : 24,
+                width: 30,
+                fit: BoxFit.contain,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(widget.tag ?? '官方',
+                            style: TextUtil.base.NotoSansSC.black2A.normal.w500
+                                .sp(14)),
+                        CommentIdentificationContainer('官方', true),
+                      ]),
+                  Text(
+                    DateTime.now()
+                                .difference(widget.comment.createAt)
+                                .inHours >=
+                            11
+                        ? widget.comment.createAt
+                            .toLocal()
+                            .toIso8601String()
+                            .replaceRange(10, 11, ' ')
+                            .substring(0, 19)
+                        : DateTime.now()
+                            .difference(widget.comment.createAt)
+                            .dayHourMinuteSecondFormatted(),
+                    style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+                  ),
+                ],
+              )
+            ],
+          )
+        : Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                child: SvgPicture.network(
+                  '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+                  width: 30,
+                  height: 24,
+                  fit: BoxFit.fitHeight,
+                  placeholderBuilder: defaultPlaceholderBuilder,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text('帖主',
+                            style: TextUtil.base.NotoSansSC.black2A.normal.w500
+                                .sp(14)),
+                      ]),
+                  Text(
+                    DateTime.now()
+                                .difference(widget.comment.createAt)
+                                .inHours >=
+                            11
+                        ? widget.comment.createAt
+                            .toLocal()
+                            .toIso8601String()
+                            .replaceRange(10, 11, ' ')
+                            .substring(0, 19)
+                        : DateTime.now()
+                            .difference(widget.comment.createAt)
+                            .dayHourMinuteSecondFormatted(),
+                    style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+                  ),
+                ],
+              )
+            ],
+          );
+    var popMenu = PopupMenuButton(
       padding: EdgeInsets.zero,
       shape: RacTangle(),
       offset: Offset(0, 0),
@@ -208,27 +224,26 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String>>[
-          CommonPreferences().feedbackUid.value.toString() == widget.comment.postId
+          CommonPreferences().feedbackUid.value.toString() ==
+                  widget.comment.postId
               ? PopupMenuItem<String>(
-            value: '删除',
-            child: Center(
-              child: Text(
-                '删除',
-                style:
-                TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-              ),
-            ),
-          )
+                  value: '删除',
+                  child: Center(
+                    child: Text(
+                      '删除',
+                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                )
               : PopupMenuItem<String>(
-            value: '举报',
-            child: Center(
-              child: Text(
-                '举报',
-                style:
-                TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-              ),
-            ),
-          ),
+                  value: '举报',
+                  child: Center(
+                    child: Text(
+                      '举报',
+                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
         ];
       },
     );
@@ -237,14 +252,14 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       children: [
         OfficialLogo,
         Spacer(),
-        if(widget.comment.sender==0)
-         popMenu
+        if (widget.comment.sender == 0) popMenu
       ],
     );
     Widget starWidget;
-    if (CommonPreferences().feedbackUid.value.toString() == widget.ancestorId.toString()) {
+    if (CommonPreferences().feedbackUid.value.toString() ==
+        widget.ancestorId.toString()) {
       starWidget = GestureDetector(
-        onTap: ()async{
+        onTap: () async {
           ratingCard();
         },
         child: Row(children: [
@@ -292,7 +307,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     }
 
     var bottomWidget = Row(
-      children: [if(widget.comment.sender==1)starWidget, Spacer()],
+      children: [if (widget.comment.sender == 1) starWidget, Spacer()],
     );
     var detailWidget = Padding(
         padding: EdgeInsets.only(left: 24),
@@ -315,14 +330,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Chip(
                   padding: const EdgeInsets.all(0),
-                  labelPadding: EdgeInsets.symmetric(
-                      horizontal: 15, vertical: 0),
+                  labelPadding:
+                      EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                   backgroundColor: Color(0xffebebeb),
-                  label: Text(
-                      '查看回复详情 >',
-                      style: TextUtil.base.ProductSans.w400
-                          .sp(14)
-                          .grey6C),
+                  label: Text('查看回复详情 >',
+                      style: TextUtil.base.ProductSans.w400.sp(14).grey6C),
                 ),
               ),
             )
@@ -360,7 +372,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             context,
             widget.comment.content,
             defaultTextStyle:
-            TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+                TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
           ),
         );
 
@@ -378,7 +390,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     }
 
     Widget list = Padding(
-      padding:const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,7 +401,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       toast: '复制评论成功',
       child: Container(
         padding: EdgeInsets.fromLTRB(2, 8, 2, 8),
-        margin: widget.detail==true?EdgeInsets.fromLTRB(40, 3, 20, 3):EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+        margin: widget.detail == true
+            ? EdgeInsets.fromLTRB(40, 3, 20, 3)
+            : EdgeInsets.symmetric(vertical: 6, horizontal: 20),
         child: list,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -416,20 +430,26 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           });
         });
       },
-      child: widget.detail == true?Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          card,
-          detailWidget
-        ],
-      ):card,
+      child: widget.detail == true
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [card, detailWidget],
+            )
+          : card,
     );
   }
 
-  ratingCard()  {
+  ratingCard() {
     final checkedNotifier = ValueNotifier(_rating);
-    final List<String> comments= ['请对官方回复态度进行评分','很差','较差','一般','较好','非常满意'];
-    Widget ratingBars =  RatingBar.builder(
+    final List<String> comments = [
+      '请对官方回复态度进行评分',
+      '很差',
+      '较差',
+      '一般',
+      '较好',
+      '非常满意'
+    ];
+    Widget ratingBars = RatingBar.builder(
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
@@ -444,7 +464,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       onRatingUpdate: (rating) {
         setState(() {
           _rating = rating;
-          checkedNotifier.value =rating;
+          checkedNotifier.value = rating;
         });
       },
       updateOnDrag: true,
@@ -460,11 +480,16 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   ValueListenableBuilder<double>(
                       valueListenable: checkedNotifier,
                       builder: (context, type, _) {
-                      return Text('「'+(checkedNotifier.value<1?comments[0]:comments[checkedNotifier.value.toInt()])+'」',
-                          style:
-                              TextUtil.base.normal.black00.NotoSansSC.sp(16).w400);
-                    }
-                  ),
+                        return Text(
+                            '「' +
+                                (checkedNotifier.value < 1
+                                    ? comments[0]
+                                    : comments[checkedNotifier.value.toInt()]) +
+                                '」',
+                            style: TextUtil.base.normal.black00.NotoSansSC
+                                .sp(16)
+                                .w400);
+                      }),
                   ratingBars,
                 ],
               ),
@@ -480,22 +505,20 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               confirmFun: () {
                 postRating = _rating.toInt().toString();
                 postId = widget.comment.postId.toString();
-               FeedbackService.rate(
-                   id:postId,
-                   rating: postRating,
-                   onSuccess: (){
-                     ToastProvider.success("评分成功！");
-                     setState(() {
-                       Navigator.pop(context);
-                     });
-                   },
-                   onFailure:(e) {
-                     ToastProvider.error("204 no content");
-                     Navigator.pop(context);
-                   });
+                FeedbackService.rate(
+                    id: postId,
+                    rating: postRating,
+                    onSuccess: () {
+                      ToastProvider.success("评分成功！");
+                      setState(() {
+                        Navigator.pop(context);
+                      });
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error("204 no content");
+                      Navigator.pop(context);
+                    });
               });
         });
   }
-
 }
-
