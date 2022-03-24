@@ -116,7 +116,7 @@ class _DetailPageState extends State<DetailPage>
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
-      if (post == null || post.isLike == null) {
+      if (post == null || post.isLike == null || post.isOwner == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -528,13 +528,15 @@ class _DetailPageState extends State<DetailPage>
         },
         itemBuilder: (context) {
           return <PopupMenuItem<String>>[
-            PopupMenuItem<String>(
+
+            if (!(widget.post.isOwner ?? false))
+              PopupMenuItem<String>(
               value: '举报',
               child: Center(
                 child: new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
               ),
             ),
-            if (widget.post.isOwner)
+            if (widget.post.isOwner ?? false)
               PopupMenuItem<String>(
                 value: '删除',
                 child: Center(

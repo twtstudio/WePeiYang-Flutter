@@ -45,15 +45,17 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getLikeMessages({int page, bool isRefresh}) async {
+  getLikeMessages({int page = 1, bool isRefresh = true}) async {
       await MessageService.getLikeMessages(
           page: page,
           onSuccess: (list, total) {
+            if(isRefresh) clearLikeMessages();
             _likeMessages.addAll(list);
           },
           onFailure: (e) {
             ToastProvider.error(e.error.toString());
           });
+      notifyListeners();
   }
 
   clearLikeMessages() {

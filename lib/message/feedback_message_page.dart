@@ -66,11 +66,6 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           });
   }
 
-  onRefresh() {
-    context.read<MessageProvider>().refreshFeedbackCount();
-    refresh.value++;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -344,13 +339,16 @@ class _LikeMessagesListState extends State<LikeMessagesList>
         physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
           return LikeMessageItem(
+            key: Key(items.length.toString()),
             data: items[i],
             onTapDown: () async {
               await MessageService.setLikeMessageRead(
                   items[i].type == 0 ? items[i].post.id : items[i].floor.id,
-                  items[i].type, onSuccess: () {
-                // items.removeAt(i); 会出问题 不能这么搞 目前先刷新处理了
-              }, onFailure: (e) {
+                  items[i].type,
+                  onSuccess: () {
+                    items.removeAt(i);
+                    context.read<MessageProvider>().refreshFeedbackCount();
+                  }, onFailure: (e) {
                 ToastProvider.error(e.error.toString());
               });
             },
@@ -368,7 +366,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(S.current.up_load);
+            body = Text('加载完成:)');
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
@@ -592,9 +590,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               context,
               FeedbackRouter.detail,
               arguments: post,
-            ).then((_) => context
-                .findAncestorStateOfType<_FeedbackMessagePageState>()
-                .onRefresh());
+            );
           }
           // else {
           //   await Navigator.pushNamed(
@@ -715,9 +711,9 @@ class _FloorMessagesListState extends State<FloorMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setFloorMessageRead(items[i].floor.id,
                     onSuccess: () {
-                  items[i].isRead = true;
-                  context.read<MessageProvider>().refreshFeedbackCount();
-                }, onFailure: (e) {
+                      items[i].isRead = true;
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                    }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -736,7 +732,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(S.current.up_load);
+            body = Text('加载完成:)');
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
@@ -775,7 +771,6 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
   final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
 
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -1075,9 +1070,9 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setReplyMessageRead(items[i].reply.id,
                     onSuccess: () {
-                  items[i].isRead = true;
-                  context.read<MessageProvider>().refreshFeedbackCount();
-                }, onFailure: (e) {
+                      items[i].isRead = true;
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                      }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1096,7 +1091,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(S.current.up_load);
+            body = Text('加载完成:)');
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
@@ -1416,7 +1411,7 @@ class _NoticeMessagesListState extends State<NoticeMessagesList>
         builder: (BuildContext context, LoadStatus mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
-            body = Text(S.current.up_load);
+            body = Text('加载完成:)');
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
