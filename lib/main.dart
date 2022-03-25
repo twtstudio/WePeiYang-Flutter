@@ -28,8 +28,9 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/schedule_providers.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import 'commons/statistics/umeng_statistics.dart';
@@ -189,12 +190,10 @@ class WePeiYangAppState extends State<WePeiYangApp>
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => GPANotifier()),
-        ChangeNotifierProvider(create: (context) => CourseProvider()),
-        ChangeNotifierProvider(create: (context) => CourseDisplayProvider()),
-        ChangeNotifierProvider(create: (context) => ExamProvider()),
         ChangeNotifierProvider(create: (context) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
         ChangeNotifierProvider(create: (_) => PushManager()),
+        ...scheduleProviders,
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(

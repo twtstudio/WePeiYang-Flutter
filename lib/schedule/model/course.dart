@@ -31,16 +31,21 @@ extension PairArrange on Pair<Course, int> {
 
 class Course {
   String name;
-  String classId;
-  String courseId;
+  String classId = '';
+  String courseId = '';
   String credit;
-  String campus;
+  String campus = '';
   String weeks; // 格式为 `1-16`
   List<String> teacherList; // 讲这门课的所有老师，带职称
   List<Arrange> arrangeList;
 
+  /// 爬课表用
   Course.spider(this.name, this.classId, this.courseId, this.credit,
       this.campus, this.weeks, this.teacherList, this.arrangeList);
+
+  /// 自定义课表用，没有classId、courseId、campus
+  Course.custom(
+      this.name, this.credit, this.weeks, this.teacherList, this.arrangeList);
 
   Course.fromJson(Map<String, dynamic> map)
       : name = map['name'],
@@ -65,19 +70,20 @@ class Course {
       };
 }
 
+/// [weekday], [weekList], [unitList]均从1开始数，例如[weekDay] == 1代表周一
 class Arrange {
   String? name; // 课程名称，仅供爬虫时对照用
   String location = ''; // 上课地点
-  int weekday = 1; // 周几 （1 -> 周一）
+  int weekday = 1; // 周几
   List<int> weekList = []; // 哪些周有课
-  List<int> unitList = []; // 从第几节上到第几节（从1开始数）
+  List<int> unitList = [0, 0]; // 从第几节上到第几节
   List<String> teacherList = []; // 讲这节课的所有老师，带职称
 
-  /// 构造后需要补上location属性
+  /// 爬课表用，构造后需要补上location属性
   Arrange.spider(
-      this.name, this.weekday, this.weekList, this.unitList, this.teacherList)
-      : location = '';
+      this.name, this.weekday, this.weekList, this.unitList, this.teacherList);
 
+  /// 自定义课表用
   Arrange.empty();
 
   Arrange.fromJson(Map<String, dynamic> map)

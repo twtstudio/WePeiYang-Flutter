@@ -21,6 +21,16 @@ class CourseProvider with ChangeNotifier {
 
   List<Course> get customCourses => _customCourses; // 用于自定义课程编辑页
 
+  void addCustomCourse(Course course) {
+    _customCourses.add(course);
+    notifyListeners();
+  }
+
+  void saveCustomCourse() {
+    CommonPreferences.courseData.value =
+        json.encode(CourseTable(_schoolCourses, _customCourses));
+  }
+
   /// 全部课程
   List<Course> get totalCourses =>
       []..addAll(_customCourses)..addAll(_schoolCourses); // 课表相关一般都用这个
@@ -62,8 +72,9 @@ class CourseProvider with ChangeNotifier {
       if (hint) ToastProvider.success("刷新课程表数据成功");
       _schoolCourses = courses;
       notifyListeners();
+      /// TODO: 这里！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
       CommonPreferences.courseData.value =
-          json.encode(CourseTable(_schoolCourses, _customCourses)); // 刷新本地缓存
+          json.encode(CourseTable(_schoolCourses, [])); // 刷新本地缓存
       _widgetChannel.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);
@@ -89,7 +100,7 @@ class CourseProvider with ChangeNotifier {
 }
 
 class CourseDisplayProvider with ChangeNotifier {
-  /// 是否处于编辑模式
+  /// 编辑模式
   bool _editMode = false;
 
   bool get editMode => _editMode;
@@ -108,7 +119,7 @@ class CourseDisplayProvider with ChangeNotifier {
 
   bool get shrink => CommonPreferences.courseAppBarShrink.value;
 
-  /// 夜猫子模式，这个变量的主要作用是通知widget更新
+  /// 夜猫子模式
   set nightMode(bool value) {
     CommonPreferences.nightMode.value = value;
     notifyListeners();

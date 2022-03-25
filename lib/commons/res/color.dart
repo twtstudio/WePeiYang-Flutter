@@ -22,6 +22,8 @@ class MyColors {
 }
 
 class FavorColors {
+  FavorColors._();
+
   /// gpa主色调，缓存类型是List<String>哦
   static final _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
 
