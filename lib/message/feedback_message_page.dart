@@ -80,7 +80,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           elevation: 0,
           centerTitle: true,
           title:
-              Text('消息中心', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
+              Text('消息中心', style: TextUtil.base.NotoSansSC.black2A.w600.sp(18)),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,

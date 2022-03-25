@@ -99,33 +99,70 @@ class _IconWidgetState extends State<IconWidget> {
               }
             },
             onTap: (value) async {
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //傻逼许鼎汉
+              //永别了
               CommonPreferences().isAprilFoolLike.value = true;
               if (value) {
-                ///愚人节临时处理
-                if(CommonPreferences().isAprilFoolLike.value){
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AprilFoolDialog(
-                          content: " 今天点赞似乎反了捏~~",
-                          confirmText: "返回正常点赞",
-                          cancelText: "保留整蛊",
-                          confirmFun: (){
-                            CommonPreferences().isAprilFoolLike.value = false;
-                            Navigator.popAndPushNamed(context, HomeRouter.home);
-                          },
-                        );
-                      });
-                  widget.countNotifier.value = widget.countNotifier.value + 1;
-                }
-                else
+                // ///愚人节临时处理
+                // if(CommonPreferences().isAprilFoolLike.value){
+                //   showDialog(
+                //       context: context,
+                //       barrierDismissible: false,
+                //       builder: (BuildContext context) {
+                //         return AprilFoolDialog(
+                //           content: " 今天点赞似乎反了捏~~",
+                //           confirmText: "返回正常点赞",
+                //           cancelText: "保留整蛊",
+                //           confirmFun: (){
+                //             CommonPreferences().isAprilFoolLike.value = false;
+                //             Navigator.popAndPushNamed(context, HomeRouter.home);
+                //           },
+                //         );
+                //       });
+                //   widget.countNotifier.value = widget.countNotifier.value + 1;
+                // }
+                //else
                 widget.countNotifier.value = widget.countNotifier.value - 1;
               } else {
-                if(CommonPreferences().isAprilFoolLike.value) {
-                  widget.countNotifier.value = widget.countNotifier.value - 1;
-                }
-                else
+                // if(CommonPreferences().isAprilFoolLike.value) {
+                //   widget.countNotifier.value = widget.countNotifier.value - 1;
+                // }
+                //else
                 widget.countNotifier.value = widget.countNotifier.value + 1;
               }
               widget.onLikePressed(value, widget.countNotifier.value, () {

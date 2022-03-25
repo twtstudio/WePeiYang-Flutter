@@ -103,25 +103,25 @@ class _NCommentCardState extends State<NCommentCard>
         //     image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/dive_page.png'))
         //   ),
         //   child:
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            child: SvgPicture.network(
-              '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-              width: 30,
-              height: 24,
-              fit: BoxFit.fitHeight,
-              placeholderBuilder: defaultPlaceholderBuilder,
-            ),
-            // SvgPicture.network(
-            //   'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            //   width: 30,
-            //   height: 24,
-            //   fit: BoxFit.fitHeight,
-            //   placeholderBuilder: defaultPlaceholderBuilder,
-            // ),
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          child: SvgPicture.network(
+            '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+            width: 30,
+            height: 24,
+            fit: BoxFit.fitHeight,
+            placeholderBuilder: defaultPlaceholderBuilder,
           ),
-      //  ),
+          // SvgPicture.network(
+          //   'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+          //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+          //   width: 30,
+          //   height: 24,
+          //   fit: BoxFit.fitHeight,
+          //   placeholderBuilder: defaultPlaceholderBuilder,
+          // ),
+        ),
+        //  ),
         SizedBox(width: 4),
         Expanded(
           child: Column(
@@ -163,9 +163,17 @@ class _NCommentCardState extends State<NCommentCard>
                   //后面有东西时出现
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorUId)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: Icon(Icons.play_arrow, size: 8),
+                    Row(
+                      children: [
+                        SizedBox(width: 2),
+                        Icon(Icons.play_arrow, size: 8),
+                        SizedBox(width: 2),
+                        Text(
+                          widget.comment.replyToName ?? "",
+                          style: TextUtil.base.black2A.w400.NotoSansSC.sp(12),
+                        ),
+                        SizedBox(width: 2)
+                      ],
                     ),
                   //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
                   //回的是层主但回复的不是这条评论
@@ -324,79 +332,81 @@ class _NCommentCardState extends State<NCommentCard>
                               "indexNow": 0
                             });
                       },
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: WePeiYangApp.screenWidth * 2),
-                  child: Image.network(
-                    picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                    loadingBuilder:
-                        (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        height: 40,
-                        width: double.infinity,
-                        padding: EdgeInsets.all(4),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes !=
-                                null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: WePeiYangApp.screenWidth * 2),
+                        child: Image.network(
+                          picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 40,
+                              width: double.infinity,
+                              padding: EdgeInsets.all(4),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Text(
+                              '💔[图片加载失败]' +
+                                  widget.comment.imageUrl.replaceRange(
+                                      10,
+                                      widget.comment.imageUrl.length - 6,
+                                      '...'),
+                              style: TextUtil.base.grey6C.w400.sp(12),
+                            );
+                          },
                         ),
-                      );
-                    },
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      return Text(
-                        '💔[图片加载失败]' +
-                            widget.comment.imageUrl.replaceRange(10,
-                                widget.comment.imageUrl.length - 6, '...'),
-                        style: TextUtil.base.grey6C.w400.sp(12),
-                      );
-                    },
-                  ),
-                ),
-              )
+                      ),
+                    )
                   : Row(
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(
-                          picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                          width: 70,
-                          height: 64,
-                          fit: BoxFit.cover, loadingBuilder:
-                          (BuildContext context, Widget child,
-                          ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 40,
-                          width: 40,
-                          padding: EdgeInsets.all(4),
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes !=
-                                null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
-                        );
-                      }, errorBuilder: (BuildContext context,
-                          Object exception, StackTrace stackTrace) {
-                        return Text(
-                          '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                              widget.comment.imageUrl.replaceRange(
-                                  10,
-                                  widget.comment.imageUrl.length - 6,
-                                  '...'),
-                          style: TextUtil.base.grey6C.w400.sp(12),
-                        );
-                      })),
-                  Spacer()
-                ],
-              )),
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            child: Image.network(
+                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                                width: 70,
+                                height: 64,
+                                fit: BoxFit.cover, loadingBuilder:
+                                    (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 40,
+                                width: 40,
+                                padding: EdgeInsets.all(4),
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              );
+                            }, errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                              return Text(
+                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                    widget.comment.imageUrl.replaceRange(
+                                        10,
+                                        widget.comment.imageUrl.length - 6,
+                                        '...'),
+                                style: TextUtil.base.grey6C.w400.sp(12),
+                              );
+                            })),
+                        Spacer()
+                      ],
+                    )),
         ));
 
     var replyButton = IconButton(

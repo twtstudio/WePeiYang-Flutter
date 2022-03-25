@@ -241,86 +241,93 @@ class _DetailPageState extends State<DetailPage>
         );
       }
     } else if (status == DetailPageStatus.idle) {
-      Widget contentList = ListView.builder(
+      Widget contentList = ListView.custom(
+        key: Key('messageListView'),
         controller: _controller,
-        itemCount: _officialCommentList.length + _commentList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Column(
-              children: [
-                PostCard.detail(post),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          '回复 ' + post.commentCount.toString(),
-                          style:
-                              TextUtil.base.ProductSans.black2A.medium.sp(18),
+        childrenDelegate: SliverChildBuilderDelegate(
+          (context, i) {
+            if (i == 0) {
+              return Column(
+                children: [
+                  PostCard.detail(post),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            '回复 ' + post.commentCount.toString(),
+                            style:
+                                TextUtil.base.ProductSans.black2A.medium.sp(18),
+                          ),
                         ),
-                      ),
-                    ]),
-                SizedBox(
-                  height: 10,
-                ),
-                //topCard,
-              ],
-            );
-          }
-          index--;
+                      ]),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  //topCard,
+                ],
+              );
+            }
+            i--;
 
-          if (index < _officialCommentList.length) {
-            if (index >= 2) index--;
-            var data = _officialCommentList[index];
-            var list = _officialCommentList;
-            return index == 0
-                ? OfficialReplyCard.reply(
-                    tag: post.department.name ?? '',
-                    comment: data,
-                    placeAppeared: index,
-                    ratings: post.rating,
-                    ancestorId: post.uid,
-                    detail: false,
-                    onContentPressed: (refresh) async {
-                      refresh.call(list);
-                    },
-                  )
-                : index == 1
-                    ? OfficialReplyCard.subFloor(
-                        tag: "",
-                        comment: data,
-                        placeAppeared: index,
-                        ratings: post.rating,
-                        ancestorId: post.uid,
-                        detail: true,
-                        onContentPressed: (refresh) async {
-                          refresh.call(list);
-                        },
-                      )
-                    : SizedBox(width: 0, height: 0);
-          } else {
-            var data = _commentList[index - _officialCommentList.length];
-            return NCommentCard(
-              uid: post.uid,
-              comment: data,
-              ancestorUId: post.id,
-              commentFloor: index + 1,
-              isSubFloor: false,
-              isFullView: false,
-            );
-          }
-        },
+            if (i < _officialCommentList.length) {
+              if (i >= 2) i--;
+              var data = _officialCommentList[i];
+              var list = _officialCommentList;
+              return i == 0
+                  ? OfficialReplyCard.reply(
+                      tag: post.department.name ?? '',
+                      comment: data,
+                      placeAppeared: i,
+                      ratings: post.rating,
+                      ancestorId: post.uid,
+                      detail: false,
+                      onContentPressed: (refresh) async {
+                        refresh.call(list);
+                      },
+                    )
+                  : i == 1
+                      ? OfficialReplyCard.subFloor(
+                          tag: "",
+                          comment: data,
+                          placeAppeared: i,
+                          ratings: post.rating,
+                          ancestorId: post.uid,
+                          detail: true,
+                          onContentPressed: (refresh) async {
+                            refresh.call(list);
+                          },
+                        )
+                      : SizedBox(width: 0, height: 0);
+            } else {
+              var data = _commentList[i - _officialCommentList.length];
+              return NCommentCard(
+                uid: post.uid,
+                comment: data,
+                ancestorUId: post.id,
+                commentFloor: i + 1,
+                isSubFloor: false,
+                isFullView: false,
+              );
+            }
+          },
+          childCount: _officialCommentList.length + _commentList.length + 1,
+          findChildIndexCallback: (key) {
+            final ValueKey<String> valueKey = key;
+            return _commentList
+                .indexWhere((m) => 'message-${m.id}' == valueKey.value);
+          },
+        ),
       );
 
       Widget mainList = NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController,
-          cacheExtent: 11,
           header: ClassicHeader(
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
@@ -366,9 +373,9 @@ class _DetailPageState extends State<DetailPage>
                     boxShadow: [
                       BoxShadow(
                           color: Colors.black12,
-                          offset: Offset(0, -1),
-                          blurRadius: 2,
-                          spreadRadius: 3),
+                          offset: Offset(0, 1),
+                          blurRadius: 6,
+                          spreadRadius: 0),
                     ],
                     color: ColorUtil.whiteF8Color),
                 child: Column(
@@ -408,20 +415,21 @@ class _DetailPageState extends State<DetailPage>
                                                         .currentState
                                                         .loadAssets()),
                                           if (context
-                                              .read<NewFloorProvider>()
-                                              .images
-                                              .length ==
+                                                  .read<NewFloorProvider>()
+                                                  .images
+                                                  .length ==
                                               0)
-                                          IconButton(
-                                              icon: Image.asset(
-                                                'assets/images/lake_butt_icons/camera.png',
-                                                width: 24,
-                                                height: 24,
-                                                fit: BoxFit.contain,
-                                              ),
-                                              onPressed: () => imageSelectionKey
-                                                  .currentState
-                                                  .shotPic()),
+                                            IconButton(
+                                                icon: Image.asset(
+                                                  'assets/images/lake_butt_icons/camera.png',
+                                                  width: 24,
+                                                  height: 24,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                                onPressed: () =>
+                                                    imageSelectionKey
+                                                        .currentState
+                                                        .shotPic()),
                                           Spacer(),
                                           checkButton,
                                           SizedBox(width: 16),
@@ -554,6 +562,7 @@ class _DetailPageState extends State<DetailPage>
         });
 
     var appBar = AppBar(
+      titleSpacing: 0,
       backgroundColor: ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
@@ -773,18 +782,19 @@ class ImageSelectAndView extends StatefulWidget {
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
   shotPic() async {
     final asset = await ImagePicker().pickImage(source: ImageSource.camera);
-      File file = await File(asset.path);
-      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
-        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
-        if (j == 10) {
-          ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
-          return;
-        }
+    File file = await File(asset.path);
+    for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+      if (j == 10) {
+        ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
+        return;
       }
-      Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+    }
+    Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
     if (!mounted) return 0;
     setState(() {});
   }
+
   loadAssets() async {
     final List<AssetEntity> assets = await AssetPicker.pickAssets(
       context,
