@@ -47,10 +47,18 @@ class ProfileHeader extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    UserAvatarImage(
-                        size: (ScreenUtil.defaultSize.width - 60) / 3,
-                        iconColor: Colors.white),
-                    SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
+                    Container(
+                      decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
+                        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
+                      ):BoxDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(48.0),
+                        child: UserAvatarImage(
+                            size: (ScreenUtil.defaultSize.width - 60) / 3,
+                            iconColor: Colors.white),
+                      ),
+                    ),
+                   // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
                     SizedBox(
                       width: (ScreenUtil.defaultSize.width - 60) / 2,
                       child: Column(

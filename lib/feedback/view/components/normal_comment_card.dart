@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -15,7 +16,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/image_without_auth.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
@@ -97,24 +97,23 @@ class _NCommentCardState extends State<NCommentCard>
       children: [
         Container(
           padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
-          ),
-          child:
-          Padding(
+          decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
+            image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.cover),
+          ):BoxDecoration(),
+          child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(15)),
               child:
-              // Image.asset(
-              //   'assets/images/lake_butt_icons/monkie.png',
-              //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-              //   width: 30,
-              //   height: 24,
-              //   fit: BoxFit.fitHeight,
-              //   //placeholderBuilder: defaultPlaceholderBuilder,
-              // ),
-              SvgPicture.network(
+                  // Image.asset(
+                  //   'assets/images/lake_butt_icons/monkie.png',
+                  //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+                  //   width: 30,
+                  //   height: 24,
+                  //   fit: BoxFit.fitHeight,
+                  //   //placeholderBuilder: defaultPlaceholderBuilder,
+                  // ),
+                  SvgPicture.network(
                 //'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
                 '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
                 width: 24,
@@ -124,7 +123,7 @@ class _NCommentCardState extends State<NCommentCard>
               ),
             ),
           ),
-       ),
+        ),
         SizedBox(width: 4),
         Expanded(
           child: Column(

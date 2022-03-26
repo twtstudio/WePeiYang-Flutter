@@ -78,9 +78,9 @@ class _UserPageState extends State<UserPage> {
                         Navigator.pushNamed(context, AuthRouter.userInfo)
                             .then((_) => setState(() {})),
                     child: Container(
-                        decoration: BoxDecoration(
+                        decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
                           image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.cover),
-                        ),
+                        ):BoxDecoration(),
                         child: Padding(
                           padding: const EdgeInsets.all(48.0),
                           child: UserAvatarImage(size: 90, iconColor: Colors.white),
