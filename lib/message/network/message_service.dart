@@ -27,7 +27,7 @@ class MessageService {
     try {
       var response = await messageDio.get("likes", queryParameters: {
         "page_size": '20',
-        "page": page,
+        "page": '$page',
       });
       List<LikeMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -46,7 +46,7 @@ class MessageService {
     try {
       var response = await messageDio.get("floors", queryParameters: {
         "page_size": '20',
-        "page": page,
+        "page": '$page',
       });
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -65,7 +65,7 @@ class MessageService {
     try {
       var response = await messageDio.get("replys", queryParameters: {
         "page_size": '20',
-        "page": page,
+        "page": '$page',
       });
       List<ReplyMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -87,7 +87,7 @@ class MessageService {
     try {
       var response = await messageDio.get("notices", queryParameters: {
         "page_size": '20',
-        "page": page,
+        "page": '$page',
       });
       List<NoticeMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {

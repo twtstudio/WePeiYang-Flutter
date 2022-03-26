@@ -175,6 +175,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
             failedText: '刷新失败（；´д｀）ゞ',
           ),
+          cacheExtent: 11,
           enablePullDown: true,
           onRefresh: onRefresh,
           footer: ClassicFooter(
@@ -197,37 +198,41 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   return HotCard();
                 }
                 if (index == 0) ind--;
-                if (ind == 0)
-                  return Container(
-                    margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
-                    padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('您现在使用的不是稳定版本，请在检查更新可用后更新最新版本',
-                            style:
-                                TextUtil.base.w500.NotoSansSC.sp(18).black2A),
-                        SizedBox(height: 6),
-                        Text('【维护公告】\n目前服务器证书正在升级，微北洋服务可能有不稳定的情况，我们将在恢复后通知大家。',
-                            style: TextUtil.base.NotoSansSC.w400
-                                .sp(16)
-                                .black2A
-                                .h(1.4))
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Color.fromRGBO(255, 243, 243, 1.0),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 1.6,
-                            color: Colors.black26,
-                            offset: Offset(0, 0),
-                            spreadRadius: -0.8),
-                      ],
-                    ),
-                  );
-                ind--;
+                // if (ind == 0)
+                //   return Container(
+                //     margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
+                //     padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
+                //     child: Column(
+                //       mainAxisSize: MainAxisSize.min,
+                //       children: [
+                //         SizedBox(height: 14),
+                //         Text('海❀棠❀季❀特❀别❀企❀划',
+                //             style:
+                //             TextUtil.base.w900.NotoSansSC.sp(24).black4E),
+                //         SizedBox(height: 40),
+                //         Row(children: [Spacer(), Text('瑄瑄可爱捏',
+                //             style:
+                //             TextUtil.base.w400.NotoSansSC.sp(18).black00)],)
+                //       ],
+                //     ),
+                //     decoration: BoxDecoration(
+                //       image: DecorationImage(
+                //           image: NetworkImage(
+                //               'https://qnhdpic.twt.edu.cn/download/origin/730d18d380743163c7edb225f84f9848.jpeg'),
+                //           colorFilter: ColorFilter.mode(Colors.white70, BlendMode.lighten),
+                //           fit: BoxFit.cover),
+                //       borderRadius: BorderRadius.circular(15),
+                //       // color: Color.fromRGBO(255, 243, 243, 1.0),
+                //       boxShadow: [
+                //         BoxShadow(
+                //             blurRadius: 1.6,
+                //             color: Colors.black26,
+                //             offset: Offset(0, 0),
+                //             spreadRadius: -0.8),
+                //       ],
+                //     ),
+                //   );
+                // ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]

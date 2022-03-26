@@ -97,8 +97,8 @@ class _HotCardState extends State<HotCard> {
                               '',
                               '${data.hotTagsList[index].tagId}',
                               '',
-                              S.current.feedback_search_result,
-                              0),
+                              '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
+                              0, 0),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),

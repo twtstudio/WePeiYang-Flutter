@@ -37,7 +37,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
   final Floor floor;
   final int uid;
-  
+
   int index;
   int currentPage = 1;
   List<Floor> floors;
@@ -328,6 +328,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     );
 
     var appBar = AppBar(
+      titleSpacing: 0,
       backgroundColor: ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
@@ -339,15 +340,15 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
-          child: Center(
+          child: Align(
+            alignment: Alignment.centerLeft,
             child: Text(
               '回复',
-              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+              style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
             ),
           ),
         ),
       ),
-      centerTitle: true,
       elevation: 0,
       brightness: Brightness.light,
     );

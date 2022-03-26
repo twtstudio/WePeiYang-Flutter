@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -27,6 +26,7 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -59,9 +59,8 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
-
-  //final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+  //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
+  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -167,9 +166,17 @@ class _NCommentCardState extends State<NCommentCard>
                   //后面有东西时出现
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorUId)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: Icon(Icons.play_arrow, size: 8),
+                    Row(
+                      children: [
+                        SizedBox(width: 2),
+                        Icon(Icons.play_arrow, size: 8),
+                        SizedBox(width: 2),
+                        Text(
+                          widget.comment.replyToName ?? "",
+                          style: TextUtil.base.black2A.w400.NotoSansSC.sp(12),
+                        ),
+                        SizedBox(width: 2)
+                      ],
                     ),
                   //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
                   //回的是层主但回复的不是这条评论
@@ -229,7 +236,7 @@ class _NCommentCardState extends State<NCommentCard>
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
-                  '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.ancestorUId}\n【${widget.comment.content}】';
+                  '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.comment.postId}\n【${widget.comment.content}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
               CommonPreferences().feedbackLastWeCo.value =
@@ -328,132 +335,78 @@ class _NCommentCardState extends State<NCommentCard>
                               "indexNow": 0
                             });
                       },
-                      child: new Image(
-                        image: NetworkImageSSL(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: WePeiYangApp.screenWidth * 2),
+                        child: Image.network(
                           picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 40,
+                              width: double.infinity,
+                              padding: EdgeInsets.all(4),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Text(
+                              '💔[图片加载失败]' +
+                                  widget.comment.imageUrl.replaceRange(
+                                      10,
+                                      widget.comment.imageUrl.length - 6,
+                                      '...'),
+                              style: TextUtil.base.grey6C.w400.sp(12),
+                            );
+                          },
                         ),
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace stackTrace) {
-                          return Text(
-                            '💔[图片加载失败]' +
-                                widget.comment.imageUrl.replaceRange(10,
-                                    widget.comment.imageUrl.length - 6, '...'),
-                            style: TextUtil.base.grey6C.w400.sp(12),
-                          );
-                        },
                       ),
-                      // Image.network(
-                      //   picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                      //   loadingBuilder: (BuildContext context, Widget child,
-                      //       ImageChunkEvent loadingProgress) {
-                      //     if (loadingProgress == null) return child;
-                      //     return Center(
-                      //       child: CircularProgressIndicator(
-                      //         value: loadingProgress.expectedTotalBytes != null
-                      //             ? loadingProgress.cumulativeBytesLoaded /
-                      //                 loadingProgress.expectedTotalBytes
-                      //             : null,
-                      //       ),
-                      //     );
-                      //   },
-                      //   errorBuilder: (BuildContext context, Object exception,
-                      //       StackTrace stackTrace) {
-                      //     return Text(
-                      //       '💔[图片加载失败]' +
-                      //           widget.comment.imageUrl.replaceRange(10,
-                      //               widget.comment.imageUrl.length - 6, '...'),
-                      //       style: TextUtil.base.grey6C.w400.sp(12),
-                      //     );
-                      //   },
-                      // ),
                     )
                   : Row(
                       children: [
                         ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(4)),
-                            child: new Image(
+                            child: Image.network(
+                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
                                 width: 70,
                                 height: 64,
-                                image: NetworkImageSSL(picBaseUrl +
-                                    'thumb/' +
-                                    widget.comment.imageUrl),
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    padding: EdgeInsets.all(4),
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress
-                                                  .expectedTotalBytes !=
-                                              null
-                                          ? loadingProgress
-                                                  .cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes
-                                          : null,
-                                    ),
-                                  );
-                                },
-                                errorBuilder: (BuildContext context,
+                                fit: BoxFit.cover, loadingBuilder:
+                                    (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 40,
+                                width: 40,
+                                padding: EdgeInsets.all(4),
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              );
+                            }, errorBuilder: (BuildContext context,
                                     Object exception, StackTrace stackTrace) {
-                                  return Text(
-                                    '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                                        widget.comment.imageUrl.replaceRange(
-                                            10,
-                                            widget.comment.imageUrl.length - 6,
-                                            '...'),
-                                    style: TextUtil.base.grey6C.w400.sp(12),
-                                  );
-                                },
-                                fit: BoxFit.cover)
-
-                            // Image.network(
-                            //     picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                            //     width: 70,
-                            //     height: 64,
-                            //     fit: BoxFit.cover, loadingBuilder:
-                            //         (BuildContext context, Widget child,
-                            //             ImageChunkEvent loadingProgress) {
-                            //   if (loadingProgress == null) return child;
-                            //   return Container(
-                            //     height: 40,
-                            //     width: 40,
-                            //     padding: EdgeInsets.all(4),
-                            //     child: CircularProgressIndicator(
-                            //       value: loadingProgress.expectedTotalBytes !=
-                            //               null
-                            //           ? loadingProgress.cumulativeBytesLoaded /
-                            //               loadingProgress.expectedTotalBytes
-                            //           : null,
-                            //     ),
-                            //   );
-                            // }, errorBuilder: (BuildContext context,
-                            //         Object exception, StackTrace stackTrace) {
-                            //   return Text(
-                            //     '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                            //         widget.comment.imageUrl.replaceRange(
-                            //             10,
-                            //             widget.comment.imageUrl.length - 6,
-                            //             '...'),
-                            //     style: TextUtil.base.grey6C.w400.sp(12),
-                            //   );
-                            // })
-                            ),
+                              return Text(
+                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                    widget.comment.imageUrl.replaceRange(
+                                        10,
+                                        widget.comment.imageUrl.length - 6,
+                                        '...'),
+                                style: TextUtil.base.grey6C.w400.sp(12),
+                              );
+                            })),
                         Spacer()
                       ],
                     )),

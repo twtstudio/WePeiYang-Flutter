@@ -73,8 +73,9 @@ class TagShowWidget extends StatelessWidget {
   final int type;
   final int id;
   final int tar;
+  final int lakeType;
 
-  TagShowWidget(this.tag, this.width, this.type, this.id, this.tar);
+  TagShowWidget(this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +85,7 @@ class TagShowWidget extends StatelessWidget {
             ? Navigator.pushNamed(
                 context,
                 FeedbackRouter.searchResult,
-                arguments: SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2),
+                arguments: SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
               )
             : type == 0
                 ? {
@@ -96,7 +97,7 @@ class TagShowWidget extends StatelessWidget {
                         '',
                         '',
                         '$tag 分区详情',
-                        tar
+                        tar, 0
                       ),
                     )
                   }
@@ -105,13 +106,13 @@ class TagShowWidget extends StatelessWidget {
                         context,
                         FeedbackRouter.searchResult,
                         arguments:
-                            SearchResultPageArgs('', '', '$id', '部门 #$tag', 1),
+                            SearchResultPageArgs('', '', '$id', '部门 #$tag', 1, 0),
                       )
                     : Navigator.pushNamed(
                         context,
                         FeedbackRouter.searchResult,
                         arguments:
-                            SearchResultPageArgs('', '$id', '', '标签 #$tag', 0),
+                            SearchResultPageArgs('', '$id', '', '标签 #$tag', 0, lakeType),
                       );
       },
       child: Container(

@@ -36,7 +36,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               title: Text(
                 "我的湖底",
-                style: TextUtil.base.NotoSansSC.black2A.sp(18).w500,
+                style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
               ),
               centerTitle: true,
               actions: [FeedbackMailbox()],

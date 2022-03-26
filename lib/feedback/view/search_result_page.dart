@@ -8,7 +8,9 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../feedback_router.dart';
 import 'components/post_card.dart';
+import 'new_post_page.dart';
 
 class SearchResultPage extends StatefulWidget {
   final SearchResultPageArgs args;
@@ -16,8 +18,8 @@ class SearchResultPage extends StatefulWidget {
   SearchResultPage(this.args);
 
   @override
-  _SearchResultPageState createState() =>
-      _SearchResultPageState(args.keyword, args.tagId, args.departmentId, args.title, args.type);
+  _SearchResultPageState createState() => _SearchResultPageState(args.keyword,
+      args.tagId, args.departmentId, args.title, args.type, args.lakeType);
 }
 
 class SearchResultPageArgs {
@@ -25,10 +27,11 @@ class SearchResultPageArgs {
   final String tagId;
   final String departmentId;
   final String title;
-
+  final int lakeType;
   final int type;
 
-  SearchResultPageArgs(this.keyword, this.tagId, this.departmentId, this.title, this.type);
+  SearchResultPageArgs(this.keyword, this.tagId, this.departmentId, this.title,
+      this.type, this.lakeType);
 }
 
 enum SearchPageStatus {
@@ -40,6 +43,7 @@ enum SearchPageStatus {
 class _SearchResultPageState extends State<SearchResultPage> {
   final String keyword;
   final String tagId;
+  final int lakeType;
   final String departmentId;
   final String title;
   final int type;
@@ -52,7 +56,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   List<Post> _list = [];
 
-  _SearchResultPageState(this.keyword, this.tagId, this.departmentId, this.title, this.type);
+  _SearchResultPageState(this.keyword, this.tagId, this.departmentId,
+      this.title, this.type, this.lakeType);
 
   _onRefresh() {
     currentPage = 1;
@@ -88,7 +93,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           totalPage = page;
           setState(() => _list.addAll(list));
           _refreshController.loadComplete();
-          if(list.isEmpty) _refreshController.loadNoData();
+          if (list.isEmpty) _refreshController.loadNoData();
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
@@ -129,28 +134,59 @@ class _SearchResultPageState extends State<SearchResultPage> {
   @override
   Widget build(BuildContext context) {
     Widget appBar = AppBar(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: ColorUtil.mainColor,
+        titleSpacing: 0,
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: ColorUtil.mainColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
         ),
-        onPressed: () {
-          Navigator.pop(context, true);
-        },
-      ),
-      title: Text(
-        title,
-        style: FontManager.YaHeiRegular.copyWith(
-          fontSize: 17,
-          fontWeight: FontWeight.bold,
-          color: ColorUtil.boldTextColor,
+        title: Text(
+          title,
+          style: FontManager.YaHeiRegular.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: ColorUtil.boldTextColor,
+          ),
         ),
-      ),
-      centerTitle: true,
-      elevation: 0,
-      primary: true,
-    );
+        actions: [
+          if (lakeType != 0)
+            InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '跟帖',
+                      style: FontManager.YaHeiRegular.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: ColorUtil.boldTextColor,
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Container(
+                        height: 24,
+                        width: 24,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/lake_butt_icons/add_post.png")))),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, FeedbackRouter.newPost,
+                      arguments: NewPostArgs(true, tagId, lakeType, title));
+                }),
+          SizedBox(width: 14)
+        ]);
 
     Widget body;
 
