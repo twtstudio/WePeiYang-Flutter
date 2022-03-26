@@ -78,6 +78,8 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     var singlePictureLoader;
     var longPicOutsideLook;
+if(post.imageUrls.isNotEmpty)
+    print(picBaseUrl + 'origin/' + post.imageUrls[0]);
 
     if (post.imageUrls != null && post.imageUrls.length == 1) {
       Image image = new Image.network(

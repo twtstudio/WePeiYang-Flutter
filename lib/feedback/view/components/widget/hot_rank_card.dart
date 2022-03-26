@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -31,58 +32,69 @@ class _HotCardState extends State<HotCard> {
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 16),
     //下面的这个是图钉
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg",
-        width: 16, color: Colors.red),
+        width: 16),
   ];
 
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 22),
+          width: 18),
       SizedBox(width: 3),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 95)
+          width: 80)
     ]);
 
     return Container(
-      width: double.infinity,
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 2),
-      padding: EdgeInsets.all(15.0),
+      margin: EdgeInsets.fromLTRB(14, 16, 14, 2),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black12,
         borderRadius: BorderRadius.all(Radius.circular(16)),
+        image: DecorationImage(alignment: Alignment.centerRight, image: NetworkImage('https://qnhdpic.twt.edu.cn/download/origin/792172dd53ac79bda86a2859a912cde0.jpeg'), fit: BoxFit.contain)
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          title,
-          SizedBox(height: 8),
-          ///定时发布年度总结
-          if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
-            InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, FeedbackRouter.summary);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: leads[5],
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      '点击查看年度总结',
-                      style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
-                    ),
-                  ],
-                ),
-              ),
+          Container(
+            width: WePeiYangApp.screenWidth * 0.52,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
-          Consumer<FbHotTagsProvider>(
-            builder: (_, data, __) => data.hotTagsList.length > 0
-                ? ListView.builder(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title,
+                SizedBox(height: 8),
+                ///定时发布年度总结
+                if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, FeedbackRouter.summary);
+                    },
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: leads[5],
+                        ),
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            '点击查看年度总结',
+                            style: TextUtil.base.w400.NotoSansSC
+                                .sp(16)
+                                .black2A,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Consumer<FbHotTagsProvider>(
+                  builder: (_, data, __) =>
+                  data.hotTagsList.length > 0
+                      ? ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: data.hotTagsList.length <= 5
@@ -90,46 +102,59 @@ class _HotCardState extends State<HotCard> {
                         : 5,
                     itemBuilder: (context, index) {
                       return InkWell(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.searchResult,
-                          arguments: SearchResultPageArgs(
-                              '',
-                              '${data.hotTagsList[index].tagId}',
-                              '',
-                              '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
-                              0, 0),
-                        ),
+                        onTap: () =>
+                            Navigator.pushNamed(
+                              context,
+                              FeedbackRouter.searchResult,
+                              arguments: SearchResultPageArgs(
+                                  '',
+                                  '${data.hotTagsList[index].tagId}',
+                                  '',
+                                  '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
+                                  0, 0),
+                            ),
                         child: Padding(
-                          padding: const EdgeInsets.all(3.0),
+                          padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Row(
                             children: [
                               leads[index],
                               SizedBox(width: 5),
-                              Center(
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
                                   child: Text(
-                                data.hotTagsList[index].name,
-                                style: TextUtil.base.w400.NotoSansSC
-                                    .sp(16)
-                                    .black2A,
-                              )),
-                              Spacer(),
-                              Text(
-                                data.hotTagsList[index].point.toString() ?? '0',
-                                style: TextUtil.base.w400.NotoSansSC
-                                    .sp(14)
-                                    .black2A,
-                              )
+                                    data.hotTagsList[index].name,
+                                    style: TextUtil.base.w400.NotoSansSC
+                                        .sp(14)
+                                        .black2A,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  data.hotTagsList[index].point.toString() ?? '0',
+                                  style: TextUtil.base.w400.NotoSansSC
+                                      .sp(14)
+                                      .black2A,
+                                ),),
                             ],
                           ),
                         ),
                       );
                     },
                   )
-                : Text(
+                      : Text(
                     '     loading...',
-                    style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                    style: TextUtil.base.w400.NotoSansSC
+                        .sp(16)
+                        .black2A,
                   ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
