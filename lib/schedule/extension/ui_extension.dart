@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -27,6 +30,9 @@ final quietHintStyle =
 Color generateColor(ScheduleCourse course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
   int hashCode = course.courseName.hashCode + now.day;
+  if(CommonPreferences().isAprilFoolClass.value)
+  return ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
+  else
   return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
 }
 

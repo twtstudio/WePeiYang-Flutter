@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -95,32 +96,36 @@ class _NCommentCardState extends State<NCommentCard>
   Widget build(BuildContext context) {
     var topWidget = Row(
       children: [
-        ///todo 等小丑头像框
-        // Container(
-        //   decoration: BoxDecoration(
-        //     image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/dive_page.png'))
-        //   ),
-        //   child:
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            child: Image.asset(
-              'assets/images/lake_butt_icons/monkie.png',
-              //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-              width: 30,
-              height: 24,
-              fit: BoxFit.fitHeight,
-              //placeholderBuilder: defaultPlaceholderBuilder,
-            ),
-            // SvgPicture.network(
-            //   'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-            //   width: 30,
-            //   height: 24,
-            //   fit: BoxFit.fitHeight,
-            //   placeholderBuilder: defaultPlaceholderBuilder,
-            // ),
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
           ),
-      //  ),
+          child:
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              child:
+              // Image.asset(
+              //   'assets/images/lake_butt_icons/monkie.png',
+              //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+              //   width: 30,
+              //   height: 24,
+              //   fit: BoxFit.fitHeight,
+              //   //placeholderBuilder: defaultPlaceholderBuilder,
+              // ),
+              SvgPicture.network(
+                //'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+                '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+                width: 24,
+                height: 24,
+                fit: BoxFit.fitHeight,
+                placeholderBuilder: defaultPlaceholderBuilder,
+              ),
+            ),
+          ),
+       ),
         SizedBox(width: 4),
         Expanded(
           child: Column(

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
@@ -120,7 +124,7 @@ class _WeekSelectPainter extends CustomPainter {
         if (list[j][k]) {
           /// 深色cube，代表该点有课
           final Paint cubePaint = Paint()
-            ..color = FavorColors.scheduleColor.first
+            ..color = CommonPreferences().isAprilFoolClass.value?ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]:FavorColors.scheduleColor.first
             ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, cubePaint);
         } else {

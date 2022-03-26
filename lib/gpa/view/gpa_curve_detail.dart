@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui'as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -67,9 +71,15 @@ class GPAIntro extends StatelessWidget {
     var grade = "知";
     var credit = "道";
     if (notifier.total != null) {
-      weighted = notifier.total.weighted.toString();
-      grade = notifier.total.gpa.toString();
-      credit = notifier.total.credits.toString();
+      if(CommonPreferences().isAprilFoolGPA.value){
+        weighted = 100.toString();
+        grade = 4.0.toString();
+        credit = 114514.toString();
+      }else {
+        weighted = notifier.total.weighted.toString();
+        grade = notifier.total.gpa.toString();
+        credit = notifier.total.credits.toString();
+      }
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,12 +147,26 @@ class _GPACurveState extends State<GPACurve>
   static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
   static Color _popupCardColor;
   static Color _popupTextColor;
-
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
 
   /// 上次 / 本次选中的点
   int _lastTaped = 1;
   int _newTaped = 1;
+  // _getAssetImage() async{
+  //   ui.Image imageFrame = await ui.ImageDescriptor.encoded('assets/images/lake_butt_icons/flower.png');
+  //   setState(() {
+  //     _assetImageFrame = imageFrame;
+  //   });
+  // }
+  Future<ui.Image> loadImageByUint8List(Uint8List list) async{
+    ui.Codec codec= await ui.instantiateImageCodec(list);
+    ui.FrameInfo frame= await codec.getNextFrame();
+    return frame.image;
+  }
+ // Future<ui.Image> loadImageByFile(String path) async{
+ //    var list =await File(path).readAsBytes();
+ //    return loadImageByUint8List(list);
+ //  }
 
   @override
   void initState() {
@@ -327,7 +351,7 @@ class _GPACurvePainter extends CustomPainter {
   final bool isPreview;
   final List<Point<double>> points;
   final int taped;
-
+  ui.Image _image;///画图用
   _GPACurvePainter(List<Color> gpaColors,
       {@required this.isPreview, @required this.points, @required this.taped}) {
     _lineColor = gpaColors[3];
@@ -350,7 +374,22 @@ class _GPACurvePainter extends CustomPainter {
       ..cubicThrough(points);
     canvas.drawPath(path, paint);
   }
-
+  ///todo 先别删，海棠节用
+  // _drawFlower(Canvas canvas, List<Point<double>> points, int selected,
+  //     {double radius = 6.0}){
+  //   final Paint paint = Paint()
+  //     ..color = isPreview ? _pointPreview : _pointColor
+  //     ..style = PaintingStyle.fill
+  //     ..isAntiAlias = true
+  //     ..strokeCap = StrokeCap.butt
+  //     ..strokeWidth = 30.0;
+  //   for (var i = 1; i < points.length - 1; i++) {
+  //     if (i == selected)
+  //       canvas.drawImage(_image, Offset(points[i].x, points[i].y), paint);
+  //     else
+  //       canvas.drawCircle(Offset(points[i].x, points[i].y), radius, paint);
+  //   }
+  // }
   /// 默认黑点半径为6.0，选中后为8.0
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
@@ -370,6 +409,7 @@ class _GPACurvePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _drawLine(canvas, points);
     _drawPoint(canvas, points, taped);
+    //_drawFlower(canvas, points, taped);
   }
 
   @override

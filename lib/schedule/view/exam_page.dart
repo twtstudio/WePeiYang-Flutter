@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
@@ -116,7 +117,8 @@ class _ExamPageState extends State<ExamPage> {
 Widget examCard(BuildContext context, Exam exam, bool finished,
     {bool wpy = false}) {
   int code = exam.name.hashCode + DateTime.now().day;
-  var unfinishedColor = wpy
+  ///愚人节配色
+  var unfinishedColor =CommonPreferences().isAprilFool.value? ColorUtil.aprilFoolColor[code %  ColorUtil.aprilFoolColor.length]: wpy
       ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
       : FavorColors.scheduleColor[code % FavorColors.scheduleColor.length];
   var name = exam.name;

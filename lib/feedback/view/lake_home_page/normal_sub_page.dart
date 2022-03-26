@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,7 +8,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -30,7 +31,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   double _previousOffset = 0;
 
   NSubPageState(this.index);
-
+  List<String> topText = [
+    "当我在刷新时，我很火大",
+    "我学不完啊啊啊啊啊啊啊",
+    "仙客来根雕",
+    "（^_^）你作业写完了吗",
+    "OvO昆",
+  ];
   void getRecTag() {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
       ToastProvider.error(e.error.toString());
@@ -164,7 +171,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
             releaseText: '下拉以刷新',
-            refreshingText: '正在刷新中，请稍等 (*￣3￣)/',
+            refreshingText: topText[Random().nextInt(topText.length)],
             completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
             failedText: '刷新失败（；´д｀）ゞ',
           ),

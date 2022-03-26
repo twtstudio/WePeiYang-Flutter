@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -69,7 +72,7 @@ class WeekDisplayWidget extends StatelessWidget {
         height: 28,
         width: width,
         decoration: BoxDecoration(
-            color: deepColor ? titleColor : Color.fromRGBO(236, 238, 237, 1),
+            color: deepColor ? CommonPreferences().isAprilFoolClass.value?ColorUtil.aprilFoolColor[Random().nextInt(4)]:titleColor : Color.fromRGBO(236, 238, 237, 1),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,

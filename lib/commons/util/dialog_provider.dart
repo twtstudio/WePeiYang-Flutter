@@ -13,7 +13,7 @@ class LakeDialogWidget extends Dialog {
   final String confirmText; //是否需要"确定"按钮
   final Function cancelFun; //取消回调
   final Function confirmFun; //确定回调
-
+  Color cancelButtonColor;
   Color confirmButtonColor;
   TextStyle titleTextStyle;
   LakeDialogWidget( {
@@ -25,6 +25,7 @@ class LakeDialogWidget extends Dialog {
     @required this.confirmText,
     @required this.cancelFun,
     @required this.confirmFun,
+    this.cancelButtonColor,
     this.confirmButtonColor,
     this.titleTextStyle
   });
@@ -41,7 +42,16 @@ class LakeDialogWidget extends Dialog {
           children: <Widget>[
             Container(
               padding:EdgeInsets.all(28.w),
-              decoration: ShapeDecoration(
+              ///节日用处理
+              decoration:  DateTime.now().month==4&&DateTime.now().day==1? ShapeDecoration(
+        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/mask_group.png'),fit: BoxFit.cover),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+      ):ShapeDecoration(
                 color: Color(0xfff2f2f2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
@@ -99,14 +109,14 @@ class LakeDialogWidget extends Dialog {
         child: Text(cancelText,
             style: cancelTextStyle),
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3),
+          elevation: DateTime.now().month==4&&DateTime.now().day==1? MaterialStateProperty.all(0):MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);
             return  ColorUtil.backgroundColor;
           }),
           backgroundColor:
-          MaterialStateProperty.all(ColorUtil.backgroundColor),
+          MaterialStateProperty.all(cancelButtonColor ?? ColorUtil.backgroundColor),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10))),
         ),
@@ -123,7 +133,7 @@ class LakeDialogWidget extends Dialog {
         child: Text(confirmText,
             style: confirmTextStyle),
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3),
+          elevation: DateTime.now().month==4&&DateTime.now().day==1? MaterialStateProperty.all(0):MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);

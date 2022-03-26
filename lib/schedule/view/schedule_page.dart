@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
@@ -103,6 +104,23 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
+            if(CommonPreferences().isAprilFoolClass.value){
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AprilFoolDialog(
+                      content: "愚人节快乐呀！",
+                      confirmText: "返回真实课表",
+                      cancelText: "保留多色",
+                      confirmFun: (){
+                        CommonPreferences().isAprilFoolGPA.value = false;
+                        Navigator.pop(context);
+                        Navigator.popAndPushNamed(context, HomeRouter.home);
+                      },
+                    );
+                  });
+            }
             if (CommonPreferences().isBindTju.value) {
               Provider.of<ScheduleNotifier>(context, listen: false)
                   .refreshSchedule(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class AprilFoolDialog extends StatefulWidget{
   @override
@@ -21,7 +20,9 @@ class AprilFoolDialogState extends State<AprilFoolDialog>{
   @override
   Widget build(BuildContext context) {
     return LakeDialogWidget(
-        confirmButtonColor: ColorUtil.selectionButtonColor,
+      cancelButtonColor:Color(0xFFF8DA9D),
+      titleTextStyle: TextUtil.base.NotoSansSC.sp(26).w700.bold.mainPurple,
+        confirmButtonColor:Color(0XFF99DDC7),
         title: '愚人节快乐！',
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -39,13 +40,14 @@ class AprilFoolDialogState extends State<AprilFoolDialog>{
         ),
         cancelText: widget.cancelText,
         confirmTextStyle:
-        TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+        TextUtil.base.normal.green1B.NotoSansSC.sp(16).w400,
         cancelTextStyle:
-        TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+        TextUtil.base.normal.yellowD9.NotoSansSC.sp(16).w400,
         confirmText:widget.confirmText,
         cancelFun: () {
           Navigator.pop(context);
         },
+
         confirmFun: () {
           widget.confirmFun.call();
             Navigator.pop(context);

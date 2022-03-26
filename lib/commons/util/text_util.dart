@@ -35,6 +35,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get linkBlue => this.copyWith(color: const Color(0xFF302280));
   TextStyle get mainYellow => this.copyWith(color: const Color(0xFFFABC35));
   TextStyle get mainGrey => this.copyWith(color: const Color(0xFFB6B2AF));
+  TextStyle get mainPurple => this.copyWith(color: const Color(0xFF6A63E1));
   TextStyle get greyEB => this.copyWith(color: const Color(0xFFEBEBEB));
   TextStyle get greyAA => this.copyWith(color: const Color(0xFFAAAAAA));
   TextStyle get greyA8 => this.copyWith(color: const Color(0xFFA8A8A8));
@@ -46,6 +47,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle get black00 => this.copyWith(color: const Color(0xFF000000));
   TextStyle get black4E => this.copyWith(color: const Color(0xFF4E4E4E));
   TextStyle get black2A => this.copyWith(color: const Color(0xFF2A2A2A));
+  TextStyle get green1B => this.copyWith(color: const Color(0xFF1B7457));
+  TextStyle get yellowD9 => this.copyWith(color: const Color(0xFFD9621F));
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
 
   /// 字体

@@ -43,11 +43,12 @@ class CommonPreferences {
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
   var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
   var isFirstLogin = PrefsBean<bool>("firstLogin", true);
-  ///愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像
+  ///愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
   var isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
   var isAprilFool = PrefsBean<bool>("aprilFool", false);
   var isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
   var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
+  var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
   ///海棠节用
   var isBegonia = PrefsBean<bool>("begonia", false);
 

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -68,6 +71,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFool.value = true;
       CommonPreferences().isAprilFoolLike.value = true;
       CommonPreferences().isAprilFoolGPA.value = true;
+      CommonPreferences().isAprilFoolClass.value = true;
+      ///如果不刷新GPA，就不会显示满绩
+      Provider.of<GPANotifier>(context, listen: false)
+          .refreshGPA(
+          hint: true,
+          onFailure: (e) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) => TjuRebindDialog(
+                  reason: e is WpyDioError
+                      ? e.error.toString()
+                      : null),
+            );
+          })
+          .call();
       CommonPreferences().isAprilFoolGen.value = false;
     }
   }

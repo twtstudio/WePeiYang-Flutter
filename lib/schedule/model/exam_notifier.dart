@@ -27,9 +27,12 @@ class ExamNotifier with ChangeNotifier {
     List<Exam> unscheduled = [];
     List<Exam> after = [];
     if(CommonPreferences().isAprilFool.value){
+      ///不重复
       var rng = new Random();
-      for(var i =0 ; i < 8;i++) {
-        after.add(april[rng.nextInt(20)]);
+      for(int i =0 ; i < 8;i++) {
+        if(!after.contains(april[rng.nextInt(20)])) {
+          after.add(april[rng.nextInt(20)]);
+        }else;
       }
     }
     else {
@@ -126,6 +129,5 @@ class ExamNotifier with ChangeNotifier {
     Exam("18", "一句话让这周考了十八场试", "期末考试", "2022-04-08", "9:00-12:00","33教 A305","41", "未完成",""),
     Exam("19", "足痰酸菜发酵微生物提纯", "期末考试", "2022-04-08", "15：00-17：00 ","43教  A204","03", "未完成",""),
     Exam("20", "考完了，但又没完全考完", "期末考试", "2022-04-08", "23：00-23：59","青年湖底"," 座位任选", "未完成",""),
-
   ];
 }

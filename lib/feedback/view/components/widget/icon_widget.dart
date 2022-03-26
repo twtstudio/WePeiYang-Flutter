@@ -99,7 +99,6 @@ class _IconWidgetState extends State<IconWidget> {
               }
             },
             onTap: (value) async {
-              CommonPreferences().isAprilFoolLike.value = true;
               if (value) {
                 ///愚人节临时处理
                 if(CommonPreferences().isAprilFoolLike.value){

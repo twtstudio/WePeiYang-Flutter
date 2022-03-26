@@ -125,6 +125,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                           cancelText: "保留满绩",
                           confirmFun: (){
                             CommonPreferences().isAprilFoolGPA.value = false;
+                            Navigator.pop(context);
                             Navigator.popAndPushNamed(context, HomeRouter.home);
                           },
                         );

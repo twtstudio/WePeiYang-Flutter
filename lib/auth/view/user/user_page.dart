@@ -71,12 +71,20 @@ class _UserPageState extends State<UserPage> {
                         )
                       ],
                     )),
-                Center(
+                Align(
+                  alignment: Alignment.bottomCenter,
                   child: GestureDetector(
                     onTap: () =>
                         Navigator.pushNamed(context, AuthRouter.userInfo)
                             .then((_) => setState(() {})),
-                    child: UserAvatarImage(size: 90, iconColor: Colors.white),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.cover),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(48.0),
+                          child: UserAvatarImage(size: 90, iconColor: Colors.white),
+                        )),
                   ),
                 ),
                 Padding(
