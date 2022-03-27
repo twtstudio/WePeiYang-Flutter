@@ -18,6 +18,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double _width = ScreenUtil.defaultSize.width;
     return Stack(
       children: <Widget>[
         CustomScrollView(
@@ -43,7 +44,7 @@ class ProfileHeader extends StatelessWidget {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -52,15 +53,13 @@ class ProfileHeader extends StatelessWidget {
                         image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
                       ):BoxDecoration(),
                       child: Padding(
-                        padding: const EdgeInsets.all(48.0),
+                        padding: EdgeInsets.all((_width - 80) / 6),
                         child: UserAvatarImage(
-                            size: (ScreenUtil.defaultSize.width - 60) / 3,
-                            iconColor: Colors.white),
+                            size: (_width - 80) / 3, iconColor: Colors.white),
                       ),
                     ),
-                   // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
-                    SizedBox(
-                      width: (ScreenUtil.defaultSize.width - 60) / 2,
+                    // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
+                    Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,13 +126,13 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
               return LakeDialogWidget(
                 title: '一键已读：',
                 titleTextStyle:
-                TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
                 content: Text('这将清除所有的消息提醒'),
                 cancelText: "取消",
                 confirmTextStyle:
-                TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
                 cancelTextStyle:
-                TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                 confirmText: "确认",
                 cancelFun: () {
                   Navigator.pop(context);

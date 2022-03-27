@@ -166,7 +166,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
     return Container(
-      color: Color.fromRGBO(247, 247, 248, 1), // 比其他区域rgb均高了一些,遮挡后方滚动区域
+      color: ColorUtil.backgroundColor, // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
@@ -226,7 +226,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 65;
+  double get maxExtent => 66;
 
   @override
   double get minExtent => 49;
@@ -311,7 +311,7 @@ class SliverCardsWidget extends StatelessWidget {
                     return AprilFoolDialog(
                       content: "要体验愚人节模式吗？",
                       confirmText: "好耶",
-                      cancelText: "算了",
+                      cancelText: "坏耶",
                       confirmFun: (){
                         CommonPreferences().isAprilFool.value = true;
                         CommonPreferences().isAprilFoolLike.value = true;

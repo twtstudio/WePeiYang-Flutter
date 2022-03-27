@@ -771,7 +771,7 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -861,6 +861,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
     );
 
     Widget questionItem = Container(
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
@@ -868,12 +869,11 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             ? ColorUtil.greyF7F8Color
             : ColorUtil.whiteFDFE,
       ),
-      child: Padding(
-        padding: EdgeInsets.all(10.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -887,15 +887,15 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 likeFloorFav,
               ],
             ),
-            if (widget.data.post.imageUrls.isNotEmpty)
-              Image.network(
-                baseUrl + widget.data.post.imageUrls[0],
-                fit: BoxFit.cover,
-                height: 50,
-                width: 70,
-              ),
-          ],
-        ),
+          ),
+          if (widget.data.post.imageUrls.length != 0)
+            Image.network(
+              baseUrl + widget.data.post.imageUrls[0],
+              fit: BoxFit.cover,
+              height: 50,
+              width: 70,
+            ),
+        ],
       ),
     );
 

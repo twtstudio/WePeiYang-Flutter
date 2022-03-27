@@ -51,6 +51,7 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     // 初始化环境变量
     EnvConfig.init();
+
     /// 程序中的同步（sync）错误也交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
       /// 生成错误信息
@@ -64,7 +65,14 @@ void main() async {
     };
     await CommonPreferences.initPrefs();
     await NetStatusListener.init();
-    runApp(WePeiYangApp());
+    (DateTime.now().toLocal().isAfter(DateTime(2022, 3, 27)) &&
+                DateTime.now().toLocal().isBefore(DateTime(2022, 3, 28))) ||
+            (DateTime.now().toLocal().month == 12 &&
+                DateTime.now().toLocal().day == 13)
+        ? runApp(ColorFiltered(
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+            child: WePeiYangApp()))
+        : runApp(WePeiYangApp());
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

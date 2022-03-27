@@ -67,7 +67,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
     });
-    if(DateTime.now().month==4&&DateTime.now().day==1&&CommonPreferences().isAprilFoolGen.value){
+    if (DateTime.now().month == 4 &&
+        DateTime.now().day == 1 &&
+        CommonPreferences().isAprilFoolGen.value) {
       CommonPreferences().isAprilFool.value = true;
       CommonPreferences().isAprilFoolLike.value = true;
       CommonPreferences().isAprilFoolGPA.value = true;
@@ -76,19 +78,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ///如果不刷新GPA，就不会显示满绩
       Provider.of<GPANotifier>(context, listen: false)
           .refreshGPA(
-          hint: true,
-          onFailure: (e) {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) => TjuRebindDialog(
-                  reason: e is WpyDioError
-                      ? e.error.toString()
-                      : null),
-            );
-          })
+              hint: true,
+              onFailure: (e) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => TjuRebindDialog(
+                      reason: e is WpyDioError ? e.error.toString() : null),
+                );
+              })
           .call();
       CommonPreferences().isAprilFoolGen.value = false;
+    } else {
+      CommonPreferences().isAprilFool.value = false;
+      CommonPreferences().isAprilFoolLike.value = false;
+      CommonPreferences().isAprilFoolGPA.value = false;
+      CommonPreferences().isAprilFoolClass.value = false;
+      CommonPreferences().isAprilFoolGen.value = true;
+      CommonPreferences().isAprilFoolHead.value = false;
     }
   }
 
@@ -152,7 +159,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var bottomNavigationBar = Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.95),
-          boxShadow: [BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)],
+          boxShadow: [
+            BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)
+          ],
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         ),

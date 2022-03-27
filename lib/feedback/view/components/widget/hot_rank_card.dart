@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -46,118 +44,118 @@ class _HotCardState extends State<HotCard> {
     ]);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(14, 16, 14, 2),
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        image: DecorationImage(alignment: Alignment.centerRight, image: NetworkImage('https://qnhdpic.twt.edu.cn/download/origin/792172dd53ac79bda86a2859a912cde0.jpeg'), fit: BoxFit.contain)
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: WePeiYangApp.screenWidth * 0.52,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                title,
-                SizedBox(height: 8),
-                ///定时发布年度总结
-                if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, FeedbackRouter.summary);
-                    },
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: leads[5],
-                        ),
-                        SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            '点击查看年度总结',
-                            style: TextUtil.base.w400.NotoSansSC
-                                .sp(16)
-                                .black2A,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+      // margin: EdgeInsets.fromLTRB(14, 16, 14, 2),
+      // decoration: BoxDecoration(
+      //     color: Colors.black12,
+      //     borderRadius: BorderRadius.all(Radius.circular(16)),
+      //     image: DecorationImage(
+      //         alignment: Alignment.centerRight,
+      //         image: NetworkImage(
+      //             'https://qnhdpic.twt.edu.cn/download/origin/792172dd53ac79bda86a2859a912cde0.jpeg'),
+      //         fit: BoxFit.contain)),
+      // child: Container(
+        margin: EdgeInsets.fromLTRB(14, 16, 14, 2),
+        //width: WePeiYangApp.screenWidth * 0.52,
+        padding: EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            title,
+            SizedBox(height: 8),
+            ///定时发布年度总结
+            if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, FeedbackRouter.summary);
+                },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: leads[5],
                     ),
-                  ),
-                Consumer<FbHotTagsProvider>(
-                  builder: (_, data, __) =>
-                  data.hotTagsList.length > 0
-                      ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: data.hotTagsList.length <= 5
-                        ? data.hotTagsList.length
-                        : 5,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () =>
-                            Navigator.pushNamed(
-                              context,
-                              FeedbackRouter.searchResult,
-                              arguments: SearchResultPageArgs(
-                                  '',
-                                  '${data.hotTagsList[index].tagId}',
-                                  '',
-                                  '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
-                                  0, 0),
-                            ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: Row(
-                            children: [
-                              leads[index],
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
+                    SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        '点击查看年度总结',
+                        style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            SizedBox(height: 4),
+            Consumer<FbHotTagsProvider>(
+              builder: (_, data, __) => data.hotTagsList.length > 0
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: data.hotTagsList.length <= 5
+                          ? data.hotTagsList.length
+                          : 5,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            FeedbackRouter.searchResult,
+                            arguments: SearchResultPageArgs(
+                                '',
+                                '${data.hotTagsList[index].tagId}',
+                                '',
+                                '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
+                                0,
+                                0),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 3),
+                            child: Row(
+                              children: [
+                                leads[index],
+                                SizedBox(width: 5),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      data.hotTagsList[index].name,
+                                      style: TextUtil.base.w400.NotoSansSC
+                                          .sp(16)
+                                          .black2A,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Align(
+                                  alignment: Alignment.centerRight,
                                   child: Text(
-                                    data.hotTagsList[index].name,
+                                    data.hotTagsList[index].point
+                                            .toString() ??
+                                        '0',
                                     style: TextUtil.base.w400.NotoSansSC
                                         .sp(14)
                                         .black2A,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 5),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  data.hotTagsList[index].point.toString() ?? '0',
-                                  style: TextUtil.base.w400.NotoSansSC
-                                      .sp(14)
-                                      .black2A,
-                                ),),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                      : Text(
-                    '     loading...',
-                    style: TextUtil.base.w400.NotoSansSC
-                        .sp(16)
-                        .black2A,
-                  ),
-                ),
-              ],
+                        );
+                      },
+                    )
+                  : Text(
+                      '     loading...',
+                      style: TextUtil.base.w400.NotoSansSC.sp(18).black2A,
+                    ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      //),
     );
   }
 }

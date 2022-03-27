@@ -114,16 +114,14 @@ class _UserPageState extends State<UserPage> {
                         )),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(CommonPreferences().nickname.value,
-                      textAlign: TextAlign.center,
-                      style: FontManager.YaHeiRegular.copyWith(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
+                Text(CommonPreferences().nickname.value,
+                    textAlign: TextAlign.center,
+                    style: FontManager.YaHeiRegular.copyWith(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    )),
+                SizedBox(height: 6),
                 GestureDetector(
                     onLongPress: () => showDialog(
                         context: context,

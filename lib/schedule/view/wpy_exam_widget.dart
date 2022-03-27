@@ -45,8 +45,15 @@ class WpyExamWidget extends StatelessWidget {
   }
 
   Widget _detail(ExamNotifier notifier, BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    Gradient gradient = LinearGradient(colors: [Colors.blueAccent, Colors.redAccent]);
+    Shader shader = gradient.createShader(Rect.fromLTWH(0,0,size.width, size.height));
     if (notifier.unscheduled.length == 0) {
-      var msg = CommonPreferences().isAprilFool.value?'您最近有新的考试哦，打开考表查看详情':notifier.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
+      var msg = CommonPreferences().isAprilFool.value
+          ? '您最近有新的考试哦，打开考表查看详情'
+          : notifier.unfinished.length == 0
+              ? '目前没有考试哦'
+              : '没有已安排时间的考试哦';
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
@@ -56,10 +63,14 @@ class WpyExamWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(msg,
-                  style:CommonPreferences().isAprilFool.value? TextUtil.base.black00.w500.bold:FontManager.YaHeiLight.copyWith(
-                      color: Color.fromRGBO(207, 208, 212, 1),
-                      fontSize: 14,
-                      letterSpacing: 0.5)),
+                  style: CommonPreferences().isAprilFool.value
+                      ? FontManager.YaHeiLight.copyWith(
+                      foreground: Paint()..shader = shader,
+                          fontSize: 14, letterSpacing: 0.5)
+                      : FontManager.YaHeiLight.copyWith(
+                          color: Color.fromRGBO(207, 208, 212, 1),
+                          fontSize: 14,
+                          letterSpacing: 0.5)),
             )),
       );
     } else if (notifier.unscheduled.length > 1) {

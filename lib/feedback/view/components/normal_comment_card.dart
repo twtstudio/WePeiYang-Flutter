@@ -96,12 +96,18 @@ class _NCommentCardState extends State<NCommentCard>
     var topWidget = Row(
       children: [
         Container(
-          padding: EdgeInsets.all(10),
-          decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
-            image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.cover),
-          ):BoxDecoration(),
+          decoration: DateTime.now().month == 4 && DateTime.now().day == 1
+              ? BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/lake_butt_icons/jokers.png'),
+                      fit: BoxFit.contain),
+                )
+              : BoxDecoration(),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: DateTime.now().month == 4 && DateTime.now().day == 1
+                ? const EdgeInsets.all(10)
+                : const EdgeInsets.all(0),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(15)),
               child:
@@ -116,9 +122,13 @@ class _NCommentCardState extends State<NCommentCard>
                   SvgPicture.network(
                 //'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
                 '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-                width: 24,
-                height: 24,
-                fit: BoxFit.fitHeight,
+                width: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 24,
+                height: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 24,
+                fit: BoxFit.contain,
                 placeholderBuilder: defaultPlaceholderBuilder,
               ),
             ),
@@ -134,7 +144,7 @@ class _NCommentCardState extends State<NCommentCard>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    widget.comment.nickname ?? "null",
+                    widget.comment.nickname ?? "匿名用户",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
@@ -166,13 +176,14 @@ class _NCommentCardState extends State<NCommentCard>
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorUId)
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(width: 2),
                         Icon(Icons.play_arrow, size: 8),
                         SizedBox(width: 2),
                         Text(
                           widget.comment.replyToName ?? "",
-                          style: TextUtil.base.black2A.w400.NotoSansSC.sp(12),
+                          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(12),
                         ),
                         SizedBox(width: 2)
                       ],
@@ -513,9 +524,9 @@ class _NCommentCardState extends State<NCommentCard>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 6),
+        SizedBox(height: 5),
         topWidget,
-        SizedBox(height: 10),
+        SizedBox(height: 5),
         commentContent,
         if (widget.comment.imageUrl != '') commentImage,
         _picFullView == true
@@ -591,24 +602,29 @@ class _NCommentCardState extends State<NCommentCard>
                                     widget.comment, widget.uid),
                               );
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Chip(
-                                padding: const EdgeInsets.all(0),
-                                labelPadding: EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 0),
-                                backgroundColor: Color(0xffebebeb),
-                                label: Text(
-                                    widget.comment.subFloorCnt > 2
-                                        ? '查看全部 ' +
-                                            widget.comment.subFloorCnt
-                                                .toString() +
-                                            ' 条回复 >'
-                                        : '查看回复详情 >',
-                                    style: TextUtil.base.ProductSans.w400
-                                        .sp(14)
-                                        .grey6C),
-                              ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(left: 20.0, top: 4, bottom: 6),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    color: Color(0xffebebeb),
+                                  ),
+                                  child: Text(
+                                      widget.comment.subFloorCnt > 2
+                                          ? '查看全部 ' +
+                                              widget.comment.subFloorCnt
+                                                  .toString() +
+                                              ' 条回复 >'
+                                          : '查看回复详情 >',
+                                      style: TextUtil.base.ProductSans.w400
+                                          .sp(14)
+                                          .grey6C),
+                                ),
+                                Spacer()
+                              ],
                             ),
                           )
                       ],

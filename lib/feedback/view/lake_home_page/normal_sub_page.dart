@@ -32,11 +32,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   NSubPageState(this.index);
   List<String> topText = [
-    "当我在刷新时，我很火大",
-    "我学不完啊啊啊啊啊啊啊",
-    "仙客来根雕",
-    "（^_^）你作业写完了吗",
-    "OvO昆",
+    "正在刷新喵",
   ];
   void getRecTag() {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
