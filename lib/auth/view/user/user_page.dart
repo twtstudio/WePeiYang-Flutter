@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -74,16 +75,42 @@ class _UserPageState extends State<UserPage> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
-                    onTap: () =>
-                        Navigator.pushNamed(context, AuthRouter.userInfo)
-                            .then((_) => setState(() {})),
+                    onTap: () {
+                      if(CommonPreferences().isAprilFoolHead.value){
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return AprilFoolDialog(
+                                content: "今天，我们都是小丑！\n 不是你没办法修改头像框了，是我小丑还想玩呢！",
+                                confirmText: "去掉小丑帽",
+                                cancelText: "再玩玩？",
+                                confirmFun: (){
+                                  CommonPreferences().isAprilFoolHead.value = false;
+                                  Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, HomeRouter.home);
+                                },
+                              );
+                            });
+                      }
+                      else
+                      Navigator.pushNamed(context, AuthRouter.userInfo)
+                          .then((_) => setState(() {}));
+                    },
                     child: Container(
-                        decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
-                          image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.cover),
-                        ):BoxDecoration(),
+                        decoration:
+                        CommonPreferences().isAprilFoolHead.value
+                                ? BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/lake_butt_icons/jokers.png'),
+                                        fit: BoxFit.cover),
+                                  )
+                                : BoxDecoration(),
                         child: Padding(
                           padding: const EdgeInsets.all(48.0),
-                          child: UserAvatarImage(size: 90, iconColor: Colors.white),
+                          child: UserAvatarImage(
+                              size: 90, iconColor: Colors.white),
                         )),
                   ),
                 ),

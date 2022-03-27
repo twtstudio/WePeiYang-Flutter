@@ -48,7 +48,7 @@ class ProfileHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      decoration: DateTime.now().month==4&&DateTime.now().day==1?BoxDecoration(
+                      decoration: CommonPreferences().isAprilFoolHead.value?BoxDecoration(
                         image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
                       ):BoxDecoration(),
                       child: Padding(

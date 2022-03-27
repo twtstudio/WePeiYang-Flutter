@@ -30,8 +30,9 @@ class ExamNotifier with ChangeNotifier {
       ///不重复
       var rng = new Random();
       for(int i =0 ; i < 8;i++) {
-        if(!after.contains(april[rng.nextInt(20)])) {
-          after.add(april[rng.nextInt(20)]);
+        int temp = rng.nextInt(20);
+        if(!after.contains(april[temp])) {
+          after.add(april[temp]);
         }else;
       }
     }

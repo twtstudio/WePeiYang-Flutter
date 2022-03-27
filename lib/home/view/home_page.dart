@@ -72,6 +72,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFoolLike.value = true;
       CommonPreferences().isAprilFoolGPA.value = true;
       CommonPreferences().isAprilFoolClass.value = true;
+      CommonPreferences().isAprilFoolHead.value = true;
       ///如果不刷新GPA，就不会显示满绩
       Provider.of<GPANotifier>(context, listen: false)
           .refreshGPA(

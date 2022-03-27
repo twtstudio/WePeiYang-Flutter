@@ -47,6 +47,7 @@ class CommonPreferences {
   var isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
   var isAprilFool = PrefsBean<bool>("aprilFool", false);
   var isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
+  var isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
   var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
   var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
   ///海棠节用
