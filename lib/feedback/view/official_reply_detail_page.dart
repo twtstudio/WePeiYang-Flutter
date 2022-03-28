@@ -153,7 +153,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        if(CommonPreferences().feedbackUid.value.toString() != post.uid)
+        if(CommonPreferences().feedbackUid.value.toString() != post.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
         launchKey.currentState.send(true);

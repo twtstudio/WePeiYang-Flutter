@@ -275,7 +275,7 @@ class _DetailPageState extends State<DetailPage>
             i--;
 
             if (i < _officialCommentList.length) {
-              if (i >= 2) i--;
+              if (i > 2) i--;
               var data = _officialCommentList[i];
               var list = _officialCommentList;
               return i == 0
