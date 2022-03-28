@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
@@ -40,14 +38,14 @@ abstract class DioAbstract {
       ..interceptors.addAll(interceptors)
       ..interceptors.add(ErrorInterceptor())
       ..interceptors.add(LogInterceptor(responseBody: responseBody));
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
-      };
-      return client;
-    };
+    // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) {
+    //     return true;
+    //   };
+    //   return client;
+    // };
 
     // 不要删除！！！！
     // 配置 fiddler 代理
