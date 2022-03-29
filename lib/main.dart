@@ -33,6 +33,7 @@ import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/util/text_util.dart';
+import 'feedback/network/feedback_service.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
 import 'commons/environment/config.dart';
@@ -134,6 +135,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
+      if(CommonPreferences().token != null && CommonPreferences().token != "") {
+        FeedbackService.getToken(forceRefresh: true);
+      }
     });
   }
 
