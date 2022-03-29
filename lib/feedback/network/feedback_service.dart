@@ -351,6 +351,20 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static visitPost({
+    @required int id,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      await feedbackDio.post('post/visit',
+          formData: FormData.fromMap({
+            'post_id': '$id',
+          }));
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getPostById({
     @required int id,
     @required OnResult<Post> onResult,

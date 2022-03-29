@@ -273,6 +273,9 @@ if(post.imageUrls.isNotEmpty)
         },
         onTap: () async {
           if (widget.type == PostCardType.simple) {
+            await FeedbackService.visitPost(
+              id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+            );
             Navigator.pushNamed(
               context,
               FeedbackRouter.detail,
@@ -331,6 +334,9 @@ if(post.imageUrls.isNotEmpty)
               },
               onTap: () async {
                 if (widget.type == PostCardType.simple) {
+                  await FeedbackService.visitPost(
+                    id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+                  );
                   Navigator.pushNamed(
                     context,
                     FeedbackRouter.detail,
@@ -652,6 +658,9 @@ if(post.imageUrls.isNotEmpty)
 
     var body = GestureDetector(
         onTap: () async {
+          await FeedbackService.visitPost(
+            id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+          );
           if (widget.type == PostCardType.simple) {
             Navigator.pushNamed(
               context,

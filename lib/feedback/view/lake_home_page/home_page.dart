@@ -81,6 +81,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
         ToastProvider.error(e.error.toString());
       });
+      context.read<FbHotTagsProvider>().initHotTags();
     });
     context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);
