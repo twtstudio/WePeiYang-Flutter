@@ -130,7 +130,10 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
               isDismissible: false,
               enableDrag: false,
               isScrollControlled: true,
-              builder: (context) => EditBottomSheet(),
+              builder: (context) {
+                context.read<EditProvider>().init();
+                return EditBottomSheet();
+              },
             );
           },
         ),

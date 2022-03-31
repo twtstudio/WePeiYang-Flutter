@@ -231,6 +231,7 @@ class _TimeFrameWidget extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
+                    pvd.initWeekList();
                     showDialog(
                       context: context,
                       barrierDismissible: true,

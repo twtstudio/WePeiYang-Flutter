@@ -5,6 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 
 class EditProvider with ChangeNotifier {
+  /// 新建课程前初始化
+  void init() {
+    _arrangeList = [Arrange.empty()];
+    _totalCount = 1;
+    _initIndexList = [0];
+    initWeekList();
+  }
+
+  /// 编辑课程前初始化
+  void load(Course course) {
+    _arrangeList = course.arrangeList;
+    _totalCount = _arrangeList.length;
+    _initIndexList = List.generate(_totalCount, (index) => index);
+    initWeekList();
+  }
+
   /// time frames
   List<Arrange> _arrangeList = [Arrange.empty()];
 
@@ -65,8 +81,8 @@ class EditProvider with ChangeNotifier {
   int weekEnd = 1;
   String weekType = '每周';
 
-  /// WeekPicker打开前重设临时变量，这个本地调用就行
-  void _initWeekList() {
+  /// WeekPicker打开前重设临时变量
+  void initWeekList() {
     weekStart = 1;
     weekEnd = 1;
     weekType = '每周';
@@ -92,7 +108,6 @@ class EditProvider with ChangeNotifier {
         if (i % 2 == 0) arrangeList[index].weekList.add(i);
       }
     }
-    _initWeekList();
     notifyListeners();
   }
 }
