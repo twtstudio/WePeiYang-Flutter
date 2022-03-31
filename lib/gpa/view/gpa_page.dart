@@ -120,7 +120,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return AprilFoolDialog(
-                          content: "愚人节快乐呀！",
+                          content: "不满绩的你一样完美",
                           confirmText: "返回真实绩点",
                           cancelText: "保留满绩",
                           confirmFun: (){
