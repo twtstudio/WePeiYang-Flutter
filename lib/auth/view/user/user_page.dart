@@ -87,7 +87,6 @@ class _UserPageState extends State<UserPage> {
                                 cancelText: "再玩玩？",
                                 confirmFun: (){
                                   CommonPreferences().isAprilFoolHead.value = false;
-                                  Navigator.pop(context);
                                   Navigator.popAndPushNamed(context, HomeRouter.home);
                                 },
                               );
