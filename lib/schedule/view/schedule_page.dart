@@ -114,7 +114,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                       confirmText: "返回真实课表",
                       cancelText: "保留多色",
                       confirmFun: (){
-                        CommonPreferences().isAprilFoolGPA.value = false;
+                        CommonPreferences().isAprilFoolClass.value = false;
                         Navigator.pop(context);
                         Navigator.popAndPushNamed(context, HomeRouter.home);
                       },
