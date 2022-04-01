@@ -94,19 +94,28 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (context
             .read<LakeModel>()
-            .lakeAreas[context.read<LakeModel>().tabController.index]
+            .lakeAreas[context
+                .read<LakeModel>()
+                .tabList[context.read<LakeModel>().tabController.index]
+                .id]
             .controller
             .offset >
         1500) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]
+          .lakeAreas[context
+              .read<LakeModel>()
+              .tabList[context.read<LakeModel>().tabController.index]
+              .id]
           .controller
           .jumpTo(1500);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context.read<LakeModel>().tabController.index]
+        .lakeAreas[context
+            .read<LakeModel>()
+            .tabList[context.read<LakeModel>().tabController.index]
+            .id]
         .controller
         .animateTo(-85,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
@@ -241,8 +250,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         onTap: () {
                           if (tabList.isNotEmpty) {
                             initializeRefresh = true;
-                            Navigator.pushNamed(
-                                context, FeedbackRouter.newPost, arguments: NewPostArgs(false, '', 0, ''));
+                            Navigator.pushNamed(context, FeedbackRouter.newPost,
+                                arguments: NewPostArgs(false, '', 0, ''));
                           }
                         }),
                   ),
@@ -325,51 +334,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                             ),
                                           ),
                           ),
-                          PopupMenuButton(
-                            padding: EdgeInsets.zero,
-                            tooltip: "排序方式",
-                            shape: RacTangle(),
-                            child: Image(
-                              height: ScreenUtil().setHeight(25),
-                              width: ScreenUtil().setWidth(25),
-                              image: AssetImage(
-                                  "assets/images/lake_butt_icons/menu.png"),
-                            ),
-                            //0-->时间排序，1-->动态排序
-                            onSelected: (value) {
-                              context.read<LakeModel>().sortSeq = value;
-                              listToTop();
-                            },
-                            itemBuilder: (context) {
-                              return <PopupMenuEntry<int>>[
-                                PopupMenuItem<int>(
-                                  value: 0,
-                                  child: Text(
-                                    '时间排序',
-                                    style:
-                                        context.read<LakeModel>().sortSeq == 1
-                                            ? TextUtil.base.mainColor.w200
-                                            : TextUtil.base.mainColor.w600,
-                                  ),
-                                ),
-                                PopupMenuItem<int>(
-                                  value: 1,
-                                  child: Text(
-                                    '动态排序',
-                                    style: context.read<LakeModel>().sortSeq !=
-                                            null
-                                        ? context.read<LakeModel>().sortSeq == 1
-                                            ? TextUtil.base.mainColor.w600
-                                            : TextUtil.base.mainColor.w200
-                                        : TextUtil.base.mainColor.w200,
-                                  ),
-                                ),
-                              ];
-                            },
-                          ),
                           SizedBox(width: 17)
                         ]),
-                  )))
+                  ))),
             ];
           },
           body: Stack(
@@ -397,6 +364,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             if (context.read<LakeModel>().tabController.index !=
                                     tabList.indexOf(tab) &&
                                 canSee) _onFeedbackTapped();
+                            _onFeedbackOpen();
+                            context.read<LakeModel>().currentTab =
+                                context.read<LakeModel>().tabController.index;
                           }
                         });
                 }
@@ -549,7 +519,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
                         '',
                         provider.departmentList[index].id.toString(),
                         '#${provider.departmentList[index].name}',
-                        1, 0),
+                        1,
+                        0),
                   );
                 },
               );

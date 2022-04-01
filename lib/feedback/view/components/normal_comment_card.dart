@@ -443,8 +443,8 @@ class _NCommentCardState extends State<NCommentCard>
         shrinkWrap: true,
         itemCount: widget.isFullView
             ? widget.comment.subFloorCnt
-            : widget.comment.subFloorCnt > 2
-                ? 2
+            : widget.comment.subFloorCnt > 4
+                ? 4
                 : min(widget.comment.subFloorCnt,
                     widget.comment.subFloors.length),
         itemBuilder: (context, index) {
@@ -524,9 +524,9 @@ class _NCommentCardState extends State<NCommentCard>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 5),
+        SizedBox(height: 4),
         topWidget,
-        SizedBox(height: 5),
+        SizedBox(height: 6),
         commentContent,
         if (widget.comment.imageUrl != '') commentImage,
         _picFullView == true

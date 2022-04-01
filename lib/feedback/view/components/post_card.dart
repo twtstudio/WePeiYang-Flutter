@@ -295,7 +295,7 @@ if(post.imageUrls.isNotEmpty)
             style: TextUtil.base.NotoSansSC.w400
                 .sp(16)
                 .black2A
-                .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
+                .h(widget.type == PostCardType.detail ? 1.6 : 1.4),
             expand: false,
             buttonIsShown: widget.type == PostCardType.detail,
           ),
@@ -313,7 +313,7 @@ if(post.imageUrls.isNotEmpty)
                   tag,
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 140 : 20) -
+                      (widget.type == PostCardType.simple ? 140 : 114) -
                       (widget.post.imageUrls.isEmpty ? 0 : 84),
                   post.type,
                   id,

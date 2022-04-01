@@ -37,10 +37,10 @@ class _HotCardState extends State<HotCard> {
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 18),
+          width: 24),
       SizedBox(width: 3),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 80)
+          width: 94)
     ]);
 
     return Container(
@@ -54,7 +54,7 @@ class _HotCardState extends State<HotCard> {
       //             'https://qnhdpic.twt.edu.cn/download/origin/792172dd53ac79bda86a2859a912cde0.jpeg'),
       //         fit: BoxFit.contain)),
       // child: Container(
-        margin: EdgeInsets.fromLTRB(14, 16, 14, 2),
+        margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
         //width: WePeiYangApp.screenWidth * 0.52,
         padding: EdgeInsets.all(14),
         decoration: BoxDecoration(
@@ -66,30 +66,6 @@ class _HotCardState extends State<HotCard> {
           children: [
             title,
             SizedBox(height: 8),
-            ///定时发布年度总结
-            if (DateTime.now().isAfter(DateTime(2022, 3, 25)))
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, FeedbackRouter.summary);
-                },
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: leads[5],
-                    ),
-                    SizedBox(width: 5),
-                    Expanded(
-                      child: Text(
-                        '点击查看年度总结',
-                        style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            SizedBox(height: 4),
             Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => data.hotTagsList.length > 0
                   ? ListView.builder(

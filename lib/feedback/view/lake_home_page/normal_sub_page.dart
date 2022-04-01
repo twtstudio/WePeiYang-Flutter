@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/special_event_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
@@ -31,9 +30,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   double _previousOffset = 0;
 
   NSubPageState(this.index);
+
   List<String> topText = [
     "正在刷新喵",
   ];
+
   void getRecTag() {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
       ToastProvider.error(e.error.toString());
@@ -63,6 +64,22 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         context.read<LakeModel>().onClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+  }
+
+  String get _getGreetText {
+    int hour = DateTime.now().hour;
+    if (hour < 5)
+      return '晚上好';
+    else if (hour >= 5 && hour < 12)
+      return '早上好';
+    else if (hour >= 12 && hour < 14)
+      return '中午好';
+    else if (hour >= 12 && hour < 17)
+      return '下午好';
+    else if (hour >= 17 && hour < 19)
+      return '傍晚好';
+    else
+      return '晚上好';
   }
 
   onRefresh([AnimationController controller]) async {
@@ -139,7 +156,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
-        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 0,
+        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 1,
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
@@ -190,45 +207,143 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 model.lakeAreas[index].dataList.values.toList().length),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
+                if (ind == 0)
+                  return Container(
+                    height: 35,
+                    margin: EdgeInsets.only(top: 12, left: 14, right: 14),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        color: Colors.white),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '   ${_getGreetText}, 微友',
+                              style:
+                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(16),
+                            ),
+                          ),
+                          Text(
+                            '排序  ',
+                            style: TextUtil.base.grey6C.w600.NotoSansSC.sp(12),
+                          ),
+                          Container(
+                            height: double.infinity,
+                            width: 90,
+                            padding: EdgeInsets.symmetric(vertical: 1.5),
+                            margin: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: ColorUtil.greyF7F8Color,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                            ),
+                            child: Stack(
+                              children: [
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 500),
+                                  margin: EdgeInsets.only(
+                                      left:
+                                          context.read<LakeModel>().sortSeq != 0
+                                              ? 4
+                                              : 42),
+                                  width: 44,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      color: Color.fromARGB(125, 54, 60, 84)),
+                                ),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            context.read<LakeModel>().sortSeq =
+                                                1;
+                                            listToTop();
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Text('默认',
+                                              style: context
+                                                          .read<LakeModel>()
+                                                          .sortSeq !=
+                                                      0
+                                                  ? TextUtil.base.white.w500
+                                                      .sp(12)
+                                                  : TextUtil.base.black2A.w500
+                                                      .sp(12)),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            context.read<LakeModel>().sortSeq =
+                                                0;
+                                            listToTop();
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Text('最新',
+                                              style: context
+                                                          .read<LakeModel>()
+                                                          .sortSeq !=
+                                                      0
+                                                  ? TextUtil.base.black2A.w500
+                                                      .sp(12)
+                                                  : TextUtil.base.white.w500
+                                                      .sp(12)),
+                                        ),
+                                      ),
+                                    ]),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 2)
+                        ]),
+                  );
+                //   Container(
+                //   margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
+                //   padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       SizedBox(height: 14),
+                //       Text('海❀棠❀季❀特❀别❀企❀划',
+                //           style:
+                //           TextUtil.base.w900.NotoSansSC.sp(24).black4E),
+                //       SizedBox(height: 40),
+                //       Row(children: [Spacer(), Text('瑄瑄可爱捏',
+                //           style:
+                //           TextUtil.base.w400.NotoSansSC.sp(18).black00)],)
+                //     ],
+                //   ),
+                //   decoration: BoxDecoration(
+                //     image: DecorationImage(
+                //         image: NetworkImage(
+                //             'https://qnhdpic.twt.edu.cn/download/origin/730d18d380743163c7edb225f84f9848.jpeg'),
+                //         colorFilter: ColorFilter.mode(Colors.white70, BlendMode.lighten),
+                //         fit: BoxFit.cover),
+                //     borderRadius: BorderRadius.circular(15),
+                //     // color: Color.fromRGBO(255, 243, 243, 1.0),
+                //     boxShadow: [
+                //       BoxShadow(
+                //           blurRadius: 1.6,
+                //           color: Colors.black26,
+                //           offset: Offset(0, 0),
+                //           spreadRadius: -0.8),
+                //     ],
+                //   ),
+                // );
+                ind--;
                 if (index == 0 && ind == 0) {
                   return HotCard();
                 }
                 if (index == 0) ind--;
-                // if (ind == 0)
-                //   return Container(
-                //     margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
-                //     padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
-                //     child: Column(
-                //       mainAxisSize: MainAxisSize.min,
-                //       children: [
-                //         SizedBox(height: 14),
-                //         Text('海❀棠❀季❀特❀别❀企❀划',
-                //             style:
-                //             TextUtil.base.w900.NotoSansSC.sp(24).black4E),
-                //         SizedBox(height: 40),
-                //         Row(children: [Spacer(), Text('瑄瑄可爱捏',
-                //             style:
-                //             TextUtil.base.w400.NotoSansSC.sp(18).black00)],)
-                //       ],
-                //     ),
-                //     decoration: BoxDecoration(
-                //       image: DecorationImage(
-                //           image: NetworkImage(
-                //               'https://qnhdpic.twt.edu.cn/download/origin/730d18d380743163c7edb225f84f9848.jpeg'),
-                //           colorFilter: ColorFilter.mode(Colors.white70, BlendMode.lighten),
-                //           fit: BoxFit.cover),
-                //       borderRadius: BorderRadius.circular(15),
-                //       // color: Color.fromRGBO(255, 243, 243, 1.0),
-                //       boxShadow: [
-                //         BoxShadow(
-                //             blurRadius: 1.6,
-                //             color: Colors.black26,
-                //             offset: Offset(0, 0),
-                //             spreadRadius: -0.8),
-                //       ],
-                //     ),
-                //   );
-                // ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]

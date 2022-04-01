@@ -515,7 +515,9 @@ class _DetailPageState extends State<DetailPage>
                 onSuccess: () {
                   context
                       .read<LakeModel>()
-                      .lakeAreas[post.type]
+                      .lakeAreas[context
+                          .read<LakeModel>()
+                          .tabList[context.read<LakeModel>().currentTab].id]
                       .refreshController
                       .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);
@@ -530,14 +532,14 @@ class _DetailPageState extends State<DetailPage>
         },
         itemBuilder: (context) {
           return <PopupMenuItem<String>>[
-
             if (!(widget.post.isOwner ?? false))
               PopupMenuItem<String>(
-              value: '举报',
-              child: Center(
-                child: new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
+                value: '举报',
+                child: Center(
+                  child:
+                      new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
+                ),
               ),
-            ),
             if (widget.post.isOwner ?? false)
               PopupMenuItem<String>(
                 value: '删除',
