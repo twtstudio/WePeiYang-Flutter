@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFoolLike.value = false;
       CommonPreferences().isAprilFoolGPA.value = false;
       CommonPreferences().isAprilFoolClass.value = false;
-      CommonPreferences().isAprilFoolGen.value = true;
+      CommonPreferences().isAprilFoolGen.value = false;
       CommonPreferences().isAprilFoolHead.value = false;
     }
   }
