@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
     });
+    ///检测愚人节
     if (DateTime.now().month == 4 &&
         DateTime.now().day == 1 &&
         CommonPreferences().isAprilFoolGen.value) {
@@ -93,8 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFool.value = false;
       CommonPreferences().isAprilFoolLike.value = false;
       CommonPreferences().isAprilFoolGPA.value = false;
-      CommonPreferences().isAprilFoolClass.value = false;
-      CommonPreferences().isAprilFoolGen.value = false;
+      CommonPreferences().isAprilFoolGen.value = true;
       CommonPreferences().isAprilFoolHead.value = false;
     }
   }
