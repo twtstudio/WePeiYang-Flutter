@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
 class FeedbackNoticePage extends StatelessWidget {
@@ -28,8 +28,8 @@ class FeedbackNoticePage extends StatelessWidget {
         title:
             Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
         leading: IconButton(
-          icon: Image.asset('assets/images/lake_butt_icons/back.png',
-              width: 14),
+          icon:
+              Image.asset('assets/images/lake_butt_icons/back.png', width: 14),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -60,21 +60,22 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     var content = InkWell(
-        onLongPress: () {
-          Clipboard.setData(
-              ClipboardData(text: '【' + notice.title + '】 ' + notice.content));
-          ToastProvider.success('复制通知内容成功');
-        },
-        child: SizedBox(
-          width: double.infinity,
-          child: ExpandableText(
-            text: notice.content,
-            maxLines: 8,
-            style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
-            expand: false,
-            buttonIsShown: true,
-          ),
-        ));
+      onLongPress: () {
+        Clipboard.setData(
+            ClipboardData(text: '【' + notice.title + '】 ' + notice.content));
+        ToastProvider.success('复制通知内容成功');
+      },
+      child: Container(
+        constraints: BoxConstraints(maxHeight: 0.65.sh),
+        width: double.infinity,
+        child: Markdown(
+          shrinkWrap: true,
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
+          data: notice.content,
+        ),
+      ),
+    );
 
     var middleWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,

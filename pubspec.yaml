@@ -39,6 +39,7 @@ dependencies:
   dotted_border: ^2.0.0+1
   fluttertoast: ^8.0.8
   flutter_html: ^2.0.0
+  flutter_markdown: ^0.6.9+1
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
   flutter_screenutil: ^4.0.4
