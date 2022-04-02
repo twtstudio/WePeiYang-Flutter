@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui'as ui;
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -71,56 +71,61 @@ class GPAIntro extends StatelessWidget {
     var grade = "知";
     var credit = "道";
     if (notifier.total != null) {
-      if(CommonPreferences().isAprilFoolGPA.value){
+      if (CommonPreferences().isAprilFoolGPA.value) {
         weighted = 100.toString();
         grade = 4.0.toString();
         credit = 114514.toString();
-      }else {
+      } else {
         weighted = notifier.total.weighted.toString();
         grade = notifier.total.gpa.toString();
         credit = notifier.total.credits.toString();
       }
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        InkResponse(
-          onTap: () => notifier.typeWithNotify = 0,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总加权', style: textStyle),
-              SizedBox(height: 8),
-              Text(weighted, style: numStyle)
-            ],
+    return Container(
+      decoration: CommonPreferences().isBegonia.value
+          ? BoxDecoration(color: Color(0xFFF8ECF2))
+          : BoxDecoration(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 0,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总加权', style: textStyle),
+                SizedBox(height: 8),
+                Text(weighted, style: numStyle)
+              ],
+            ),
           ),
-        ),
-        InkResponse(
-          onTap: () => notifier.typeWithNotify = 1,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总绩点', style: textStyle),
-              SizedBox(height: 8),
-              Text(grade, style: numStyle)
-            ],
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 1,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总绩点', style: textStyle),
+                SizedBox(height: 8),
+                Text(grade, style: numStyle)
+              ],
+            ),
           ),
-        ),
-        InkResponse(
-          onTap: () => notifier.typeWithNotify = 2,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总学分', style: textStyle),
-              SizedBox(height: 8),
-              Text(credit, style: numStyle)
-            ],
-          ),
-        )
-      ],
+          InkResponse(
+            onTap: () => notifier.typeWithNotify = 2,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总学分', style: textStyle),
+                SizedBox(height: 8),
+                Text(credit, style: numStyle)
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -152,21 +157,10 @@ class _GPACurveState extends State<GPACurve>
   /// 上次 / 本次选中的点
   int _lastTaped = 1;
   int _newTaped = 1;
+
   // _getAssetImage() async{
-  //   ui.Image imageFrame = await ui.ImageDescriptor.encoded('assets/images/lake_butt_icons/flower.png');
-  //   setState(() {
-  //     _assetImageFrame = imageFrame;
-  //   });
-  // }
-  Future<ui.Image> loadImageByUint8List(Uint8List list) async{
-    ui.Codec codec= await ui.instantiateImageCodec(list);
-    ui.FrameInfo frame= await codec.getNextFrame();
-    return frame.image;
-  }
- // Future<ui.Image> loadImageByFile(String path) async{
- //    var list =await File(path).readAsBytes();
- //    return loadImageByUint8List(list);
- //  }
+  ///自定义绘制图片
+  ImageInfo flowerPicture;
 
   @override
   void initState() {
@@ -198,70 +192,94 @@ class _GPACurveState extends State<GPACurve>
             widget.notifier.indexWithNotify = result - 1;
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Stack(
-            children: <Widget>[
-              /// Stack底层
-              CustomPaint(
-                painter: _GPACurvePainter(widget.gpaColors,
+        child: Container(
+          decoration: (widget.isPreview && CommonPreferences().isBegonia.value)
+              ? BoxDecoration(color: Color(0xFFF8ECF2))
+              : BoxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Stack(
+              children: <Widget>[
+                /// Stack底层
+                CustomPaint(
+                  painter: _GPACurvePainter(
+                    widget.gpaColors,
                     isPreview: widget.isPreview,
                     points: points,
-                    taped: _newTaped),
-                size: Size(double.maxFinite, _canvasHeight),
-              ),
+                    taped: _newTaped,
+                  ),
+                  size: Size(double.maxFinite, _canvasHeight),
+                ),
 
-              /// Stack顶层
-              TweenAnimationBuilder(
-                duration: const Duration(milliseconds: 500),
-                tween: Tween(
-                    begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
-                onEnd: () => setState(() => _lastTaped = _newTaped),
-                curve: Curves.easeInOutSine,
-                builder: (BuildContext context, value, Widget child) {
-                  var lT = points[_lastTaped], nT = points[_newTaped];
-                  return Transform.translate(
-                    /// 计算两次点击之间的偏移量Offset
-                    /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
-                    offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                        lT.y - 60 + (nT.y - lT.y) * value),
-                    child: SizedBox(
-                      width: 80,
-                      height: 75,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 80,
-                            height: 45,
-                            child: Card(
-                              color: widget.isPreview
-                                  ? _popupCardPreview
-                                  : _popupCardColor,
-                              elevation: widget.isPreview ? 1 : 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Center(
-                                child: Text('${curveData[_newTaped - 1]}',
-                                    style: FontManager.Montserrat.copyWith(
-                                        fontSize: 16,
-                                        color: widget.isPreview
-                                            ? _popupTextPreview
-                                            : _popupTextColor)),
+                /// Stack顶层
+                TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 500),
+                  tween: Tween(
+                      begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
+                  onEnd: () => setState(() => _lastTaped = _newTaped),
+                  curve: Curves.easeInOutSine,
+                  builder: (BuildContext context, value, Widget child) {
+                    var lT = points[_lastTaped], nT = points[_newTaped];
+                    return Transform.translate(
+                      /// 计算两次点击之间的偏移量Offset
+                      /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
+                      offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                          lT.y - 60 + (nT.y - lT.y) * value),
+                      child: SizedBox(
+                        width: 80,
+                        height: 75,
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 80,
+                              height: 45,
+                              child: Card(
+                                color: widget.isPreview
+                                    ? _popupCardPreview
+                                    : _popupCardColor,
+                                elevation: widget.isPreview ? 1 : 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Center(
+                                  child: Text('${curveData[_newTaped - 1]}',
+                                      style: FontManager.Montserrat.copyWith(
+                                          fontSize: 16,
+                                          color: widget.isPreview
+                                              ? _popupTextPreview
+                                              : _popupTextColor)),
+                                ),
                               ),
                             ),
-                          ),
-                          CustomPaint(
-                            painter: _GPAPopupPainter(widget.gpaColors,
-                                isPreview: widget.isPreview),
-                            size: const Size(80, 30),
-                          )
-                        ],
+                            Container(
+                              decoration: CommonPreferences().isBegonia.value
+                                  ? BoxDecoration(
+                                      image: widget.isPreview
+                                          ? DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/images/begonia/flower_grey.png'),
+                                              fit: BoxFit.contain,
+                                            )
+                                          : DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/images/lake_butt_icons/flower.png'),
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                    )
+                                  : BoxDecoration(),
+                              child: CustomPaint(
+                                painter: _GPAPopupPainter(widget.gpaColors,
+                                    isPreview: widget.isPreview),
+                                size: const Size(80, 30),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -351,7 +369,7 @@ class _GPACurvePainter extends CustomPainter {
   final bool isPreview;
   final List<Point<double>> points;
   final int taped;
-  ui.Image _image;///画图用
+
   _GPACurvePainter(List<Color> gpaColors,
       {@required this.isPreview, @required this.points, @required this.taped}) {
     _lineColor = gpaColors[3];
@@ -374,22 +392,7 @@ class _GPACurvePainter extends CustomPainter {
       ..cubicThrough(points);
     canvas.drawPath(path, paint);
   }
-  ///todo 先别删，海棠节用
-  // _drawFlower(Canvas canvas, List<Point<double>> points, int selected,
-  //     {double radius = 6.0}){
-  //   final Paint paint = Paint()
-  //     ..color = isPreview ? _pointPreview : _pointColor
-  //     ..style = PaintingStyle.fill
-  //     ..isAntiAlias = true
-  //     ..strokeCap = StrokeCap.butt
-  //     ..strokeWidth = 30.0;
-  //   for (var i = 1; i < points.length - 1; i++) {
-  //     if (i == selected)
-  //       canvas.drawImage(_image, Offset(points[i].x, points[i].y), paint);
-  //     else
-  //       canvas.drawCircle(Offset(points[i].x, points[i].y), radius, paint);
-  //   }
-  // }
+
   /// 默认黑点半径为6.0，选中后为8.0
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
@@ -409,7 +412,6 @@ class _GPACurvePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _drawLine(canvas, points);
     _drawPoint(canvas, points, taped);
-    //_drawFlower(canvas, points, taped);
   }
 
   @override

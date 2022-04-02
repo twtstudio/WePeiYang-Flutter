@@ -17,6 +17,12 @@ final activeTeacherStyle =
     FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
 final activeClassroomStyle =
     FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
+final activeNameAlterStyle = FontManager.YaQiHei.copyWith(
+    color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
+final activeTeacherAlterStyle =
+FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
+final activeClassroomAlterStyle =
+FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
 
 const Color quietBackColor = Color.fromRGBO(236, 238, 237, 1);
 const Color quiteFrontColor = Color.fromRGBO(205, 206, 210, 1);
@@ -70,7 +76,12 @@ class AnimatedActiveCourse extends StatelessWidget {
   final double height;
 
   AnimatedActiveCourse(this.courses, this.width, this.height);
-
+  bool colorAlter(){
+    if((generateColor(courses[0]).value== Color.fromRGBO(221, 182, 190, 1.0).value))
+      return true;
+    else
+      return false;
+  }
   @override
   Widget build(BuildContext context) {
     var start = int.parse(courses[0].arrange.start) - 1;
@@ -117,17 +128,17 @@ class AnimatedActiveCourse extends StatelessWidget {
               children: [
                 Spacer(),
                 Text(formatText(courses[0].courseName),
-                    style: activeNameStyle, textAlign: TextAlign.center),
+                    style:colorAlter()?activeNameAlterStyle: activeNameStyle, textAlign: TextAlign.center),
                 SizedBox(height: 2),
                 Text(removeParentheses(courses[0].teacher),
-                    style: activeTeacherStyle, textAlign: TextAlign.center),
+                    style:colorAlter()?activeTeacherAlterStyle:  activeTeacherStyle, textAlign: TextAlign.center),
                 courses[0].arrange.room == ""
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
                             replaceBuildingWord(courses[0].arrange.room),
-                            style: activeClassroomStyle,
+                            style: colorAlter()?activeClassroomAlterStyle: activeClassroomStyle,
                             textAlign: TextAlign.center),
                       ),
                 courses.length == 1

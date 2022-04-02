@@ -44,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool tap = false;
   int currentPage = 1;
 
-  _getMyPosts({Function(List<Post>) onSuccess, Function onFail, int current}){
+  _getMyPosts({Function(List<Post>) onSuccess, Function onFail, int current}) {
     FeedbackService.getMyPosts(
         page: current ?? currentPage,
         page_size: 10,
@@ -59,7 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  _getMyCollects({Function(List<Post>) onSuccess, Function onFail, int current}) {
+  _getMyCollects(
+      {Function(List<Post>) onSuccess, Function onFail, int current}) {
     FeedbackService.getFavoritePosts(
         page: current ?? currentPage,
         page_size: 10,
@@ -74,17 +75,15 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-
-
   //刷新
   _onRefresh() {
-    currentPage =1;
+    currentPage = 1;
     _refreshController.resetNoData();
     switch (_currentTab.value) {
       case _CurrentTab.myPosts:
         _getMyPosts(onSuccess: (list) {
-          _postList =list;
-            _refreshController.refreshCompleted();
+          _postList = list;
+          _refreshController.refreshCompleted();
         }, onFail: () {
           _refreshController.refreshFailed();
         });
@@ -92,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
       case _CurrentTab.myCollect:
         _getMyCollects(onSuccess: (list) {
           _favList = list;
-            _refreshController.refreshCompleted();
+          _refreshController.refreshCompleted();
         }, onFail: () {
           _refreshController.refreshFailed();
         });
@@ -247,7 +246,8 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
     //收藏List栏，为空时显示无
-    var favLists = (ListView.builder(
+    var favLists = (
+        ListView.builder(
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -331,7 +331,10 @@ class _ProfilePageState extends State<ProfilePage> {
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
         header: RefreshHeader(),
-        footer: ClassicFooter(idleText: '没有更多数据了:>',idleIcon: Icon(Icons.check),),
+        footer: ClassicFooter(
+          idleText: '没有更多数据了:>',
+          idleIcon: Icon(Icons.check),
+        ),
         enablePullDown: true,
         onRefresh: _onRefresh,
         enablePullUp: true,

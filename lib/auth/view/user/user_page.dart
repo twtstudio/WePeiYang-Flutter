@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
@@ -40,12 +41,14 @@ class _UserPageState extends State<UserPage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            Image.asset('assets/images/user_back.png',
+            CommonPreferences().isBegonia.value?Image.asset('assets/images/begonia/profie_background.png',width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height/2, alignment: Alignment.topCenter, fit: BoxFit.fill):Image.asset('assets/images/user_back.png',
                 height: 350, alignment: Alignment.topCenter, fit: BoxFit.fill),
             ListView(
               physics: BouncingScrollPhysics(),
               children: <Widget>[
                 SizedBox(height: 15),
+                if(!CommonPreferences().isBegonia.value)
                 Container(
                     height: 50,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -129,7 +132,36 @@ class _UserPageState extends State<UserPage> {
                     child: Text(CommonPreferences().userNumber.value,
                         textAlign: TextAlign.center,
                         style: FontManager.Texta.copyWith(
-                            color: MyColors.deepDust, fontSize: 15))),
+                            color: CommonPreferences().isBegonia.value?Colors.white:MyColors.deepDust, fontSize: 15))),
+                if(CommonPreferences().isBegonia.value)
+                  Container(
+                      height: 50,
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      alignment: Alignment.bottomRight,
+                      child: Row(
+                        children: <Widget>[
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () =>
+                                Navigator.pushNamed(context, AuthRouter.mailbox),
+                            child: Icon(
+                              Icons.email_outlined,
+                              size: 28,
+                              color: Color.fromRGBO(255,251,240, 0.5),
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                                context, AuthRouter.setting,
+                                arguments: SettingPageArgs(false)),
+                            child: Image.asset('assets/images/setting.png',
+                                width: 24, height: 24,color: Color.fromRGBO(255,251,240, 0.5),),
+                          ),
+                          SizedBox(width: 30.w,)
+                        ],
+
+                      )),
                 SizedBox(height: 40),
                 //NavigationWidget(),
                 Container(
@@ -236,7 +268,7 @@ class _UserPageState extends State<UserPage> {
                                   child: Text(
                                     "${S.current.current_version}: ${snapshot.data}",
                                     style: FontManager.YaHeiLight.copyWith(
-                                      color: Colors.grey,
+                                      color: CommonPreferences().isBegonia.value?Color(0xFFF3C9D9):Colors.grey,
                                       fontSize: 11,
                                     ),
                                   ),

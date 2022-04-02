@@ -103,10 +103,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         1500) {
       context
           .read<LakeModel>()
-          .lakeAreas[context
-              .read<LakeModel>()
-              .tabList[context.read<LakeModel>().tabController.index]
-              .id]
+          .lakeAreas[context.read<LakeModel>().tabController.index]
           .controller
           .jumpTo(1500);
     }
@@ -217,7 +214,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             return <Widget>[
               SliverAppBar(
                 toolbarHeight: 48,
-                backgroundColor: Colors.white,
+                backgroundColor: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):Colors.white,
                 titleSpacing: 0,
                 leading: InkWell(
                   highlightColor: Colors.transparent,
@@ -263,7 +260,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   pinned: true,
                   delegate: HomeHeaderDelegate(
                       child: Container(
-                    color: Colors.white,
+                    color: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):Colors.white,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -339,57 +336,62 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   ))),
             ];
           },
-          body: Stack(
-            children: [
-              Selector<LakeModel, List<WPYTab>>(
-                  selector: (BuildContext context, LakeModel lakeModel) {
-                return lakeModel.tabList;
-              }, builder: (_, tabs, __) {
-                if (!context.read<LakeModel>().tabControllerLoaded) {
-                  context.read<LakeModel>().tabController =
-                      TabController(length: tabs.length, vsync: this)
-                        ..addListener(() {
-                          if (context
-                                  .read<LakeModel>()
-                                  .tabController
-                                  .index
-                                  .toDouble() ==
-                              context
-                                  .read<LakeModel>()
-                                  .tabController
-                                  .animation
-                                  .value) {
-                            WPYTab tab =
-                                context.read<LakeModel>().lakeAreas[1].tab;
-                            if (context.read<LakeModel>().tabController.index !=
-                                    tabList.indexOf(tab) &&
-                                canSee) _onFeedbackTapped();
-                            _onFeedbackOpen();
-                            context.read<LakeModel>().currentTab =
-                                context.read<LakeModel>().tabController.index;
-                          }
-                        });
-                }
-                int cacheNum = 0;
-                return ExtendedTabBarView(
-                    cacheExtent: cacheNum,
-                    controller: context.read<LakeModel>().tabController,
-                    children: List<Widget>.generate(
-                        tabs == null ? 1 : tabs.length,
-                        (i) => NSubPage(
-                              index: tabList[i].id,
-                            )));
-              }),
-              Visibility(
-                child: InkWell(
-                    onTap: () {
-                      if (canSee) _onFeedbackTapped();
-                    },
-                    child: FbTagsWrap(key: fbKey)),
-                maintainState: true,
-                visible: canSee,
-              ),
-            ],
+          body: Container(
+            decoration: BoxDecoration(
+                color: CommonPreferences().isBegonia.value?Color(0xFFf4e2ec):ColorUtil.backgroundColor
+            ),
+            child: Stack(
+              children: [
+                Selector<LakeModel, List<WPYTab>>(
+                    selector: (BuildContext context, LakeModel lakeModel) {
+                  return lakeModel.tabList;
+                }, builder: (_, tabs, __) {
+                  if (!context.read<LakeModel>().tabControllerLoaded) {
+                    context.read<LakeModel>().tabController =
+                        TabController(length: tabs.length, vsync: this)
+                          ..addListener(() {
+                            if (context
+                                    .read<LakeModel>()
+                                    .tabController
+                                    .index
+                                    .toDouble() ==
+                                context
+                                    .read<LakeModel>()
+                                    .tabController
+                                    .animation
+                                    .value) {
+                              WPYTab tab =
+                                  context.read<LakeModel>().lakeAreas[1].tab;
+                              if (context.read<LakeModel>().tabController.index !=
+                                      tabList.indexOf(tab) &&
+                                  canSee) _onFeedbackTapped();
+                              _onFeedbackOpen();
+                              context.read<LakeModel>().currentTab =
+                                  context.read<LakeModel>().tabController.index;
+                            }
+                          });
+                  }
+                  int cacheNum = 0;
+                  return ExtendedTabBarView(
+                      cacheExtent: cacheNum,
+                      controller: context.read<LakeModel>().tabController,
+                      children: List<Widget>.generate(
+                          tabs == null ? 1 : tabs.length,
+                          (i) => NSubPage(
+                                index: tabList[i].id,
+                              )));
+                }),
+                Visibility(
+                  child: InkWell(
+                      onTap: () {
+                        if (canSee) _onFeedbackTapped();
+                      },
+                      child: FbTagsWrap(key: fbKey)),
+                  maintainState: true,
+                  visible: canSee,
+                ),
+              ],
+            ),
           )),
     );
   }
@@ -519,8 +521,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
                         '',
                         provider.departmentList[index].id.toString(),
                         '#${provider.departmentList[index].name}',
-                        1,
-                        0),
+                        1, 0),
                   );
                 },
               );

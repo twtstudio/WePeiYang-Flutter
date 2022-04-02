@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ColorSettingPage extends StatefulWidget {
@@ -24,7 +27,15 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
         style: FontManager.Aspira.copyWith(
             color: color, fontSize: 14, fontWeight: FontWeight.bold));
   }
-
+  ///判断活动皮肤用
+   changeSkin(){
+    if(CommonPreferences().isBegonia.value){
+      CommonPreferences().isBegonia.value = false;
+    }
+    if(CommonPreferences().isAprilFoolClass.value){
+      CommonPreferences().isAprilFoolClass.value = false;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var titleTextStyle = FontManager.YaHeiBold.copyWith(
@@ -97,6 +108,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setLightRelatedGPA();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -116,6 +128,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setPinkRelatedGPA();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -135,6 +148,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setBlueRelatedGPA();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -142,6 +156,26 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     child: Center(
                         child: getText("#47535f",
                             Color.fromRGBO(206, 198, 185, 1), 'blue', 0)))),
+          ),
+          SizedBox(
+            height: 75,
+            child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                elevation: 0,
+                color: Color.fromRGBO(217, 162, 169, 1.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(9)),
+                child: InkWell(
+                    onTap: () {
+                      FavorColors.setBegoniaGPA();
+                      CommonPreferences().isBegonia.value =true;
+                      setState(() {});
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(9),
+                    child: Center(
+                        child: getText("海棠节",
+                            Colors.white, 'begonia', 0)))),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
@@ -159,6 +193,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setBlueRelatedSchedule();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -178,6 +213,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setGreenRelatedSchedule();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -197,6 +233,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setBrownRelatedSchedule();
+                      changeSkin();
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,
@@ -204,6 +241,45 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     child: Center(
                         child: getText(
                             "earth yellow", Colors.white, 'brown', 1)))),
+          ),
+          SizedBox(
+            height: 75,
+            child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                elevation: 0,
+                color: Color.fromRGBO(217, 162, 169, 1.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(9)),
+                child: InkWell(
+                    onTap: () {
+                      FavorColors.setBegoniaSchedule();
+                      CommonPreferences().isBegonia.value = true;
+                      setState(() {});
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(9),
+                    child: Center(
+                        child: getText(
+                            "海棠节皮肤", Colors.white, 'begonia', 1)))),
+          ),
+          SizedBox(
+            height: 75,
+            child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                elevation: 0,
+                color: ColorUtil.aprilFoolColor[Random().nextInt(3)],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(9)),
+                child: InkWell(
+                    onTap: () {
+                      CommonPreferences().isAprilFoolClass.value  =true;
+                      setState(() {});
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    borderRadius: BorderRadius.circular(9),
+                    child: Center(
+                        child: getText(
+                            "AprilFool Color", Colors.white, 'begonia', 1)))),
           ),
           SizedBox(height: 40)
         ],

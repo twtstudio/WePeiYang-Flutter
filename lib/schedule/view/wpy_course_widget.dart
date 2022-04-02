@@ -145,7 +145,8 @@ class TodayCoursesWidget extends StatelessWidget {
                           child: Text(formatText(todayCourses[i].courseName),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
-                                  color: Colors.white,
+                                  color: (FavorColors.homeSchedule[i % FavorColors.homeSchedule.length].value== Color.fromRGBO(221, 182, 190, 1.0).value)? Color(0xfff1dce0)
+                                      :Colors.white,
                                   fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 5),

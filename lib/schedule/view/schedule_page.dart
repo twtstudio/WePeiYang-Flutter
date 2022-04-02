@@ -59,8 +59,17 @@ class _SchedulePageState extends State<SchedulePage> {
         children: [
           TitleWidget(titleColor),
           WeekSelectWidget(),
-          ClassTableWidget(titleColor),
-          HoursCounterWidget(titleColor)
+          Container(
+            decoration: CommonPreferences().isBegonia.value?BoxDecoration(
+              image: DecorationImage(image: AssetImage('assets/images/begonia/haitang_class_background.png'),fit: BoxFit.cover),
+            ):BoxDecoration(),
+            child: Column(
+              children: [
+                ClassTableWidget(titleColor),
+                HoursCounterWidget(titleColor),
+              ],
+            ),
+          )
         ],
       ),
     );

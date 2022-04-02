@@ -98,7 +98,7 @@ class WeekSelectWidget extends StatelessWidget {
         Text('WEEK ${i + 1}',
             style: FontManager.Aspira.copyWith(
                 color: (notifier.selectedWeekWithNotify == i + 1)
-                    ? Colors.black
+                    ? MyColors.deepBlue
                     : Color.fromRGBO(200, 200, 200, 1),
                 fontSize: 11,
                 fontWeight: FontWeight.bold))

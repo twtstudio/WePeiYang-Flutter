@@ -72,16 +72,28 @@ class _GPAPageState extends State<GPAPage> {
           builder: (context, notifier, _) => Scaffold(
                 appBar: GPAppBar(widget.gpaColors),
                 backgroundColor: widget.gpaColors[0],
-                body: Theme(
-                  /// 修改scrollView滚动至头/尾时溢出的颜色
-                  data: ThemeData(accentColor: Colors.white),
-                  child: ListView(
-                    children: [
-                      RadarChartWidget(notifier, widget.gpaColors),
-                      GPAStatsWidget(notifier, widget.gpaColors),
-                      GPACurve(notifier, widget.gpaColors, isPreview: false),
-                      CourseListWidget(notifier, widget.gpaColors)
-                    ],
+                body: Container(
+                  decoration: CommonPreferences().isBegonia.value?BoxDecoration(
+                    gradient: new LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          widget.gpaColors[0],
+                          widget.gpaColors[2],
+                          widget.gpaColors[3]
+                        ]),
+                  ):BoxDecoration(),
+                  child: Theme(
+                    /// 修改scrollView滚动至头/尾时溢出的颜色
+                    data: ThemeData(accentColor: Colors.white),
+                    child: ListView(
+                      children: [
+                        RadarChartWidget(notifier, widget.gpaColors),
+                        GPAStatsWidget(notifier, widget.gpaColors),
+                        GPACurve(notifier, widget.gpaColors, isPreview: false),
+                        CourseListWidget(notifier, widget.gpaColors)
+                      ],
+                    ),
                   ),
                 ),
               )),
@@ -256,7 +268,7 @@ class _RadarChartPainter extends CustomPainter {
       if (element.credit > maxCredit) maxCredit = element.credit;
     });
     final Paint creditPaint = Paint()
-      ..color = Color.fromRGBO(178, 178, 158, 0.2)
+      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.111):Color.fromRGBO(178, 178, 158, 0.2)
       ..style = PaintingStyle.fill;
     final Path creditPath = Path();
     for (var i = 0; i < courses.length; i++) {
@@ -298,7 +310,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawLine(Canvas canvas) {
     final Paint linePaint = Paint()
-      ..color = Color.fromRGBO(158, 158, 138, 0.45)
+      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.45):Color.fromRGBO(158, 158, 138, 0.45)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     final Path linePath = Path();
@@ -312,7 +324,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawScoreOutLine(Canvas canvas) {
     final Paint outLinePaint = Paint()
-      ..color = gpaColors[1]
+      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.9):gpaColors[1]
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeJoin = StrokeJoin.round;
@@ -408,7 +420,7 @@ class GPAStatsWidget extends StatelessWidget {
 
   GPAStatsWidget(this.notifier, List<Color> gpaColors) {
     textStyle = FontManager.Aspira.copyWith(
-        color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13);
+        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 13);
     numStyle = FontManager.Montserrat.copyWith(
         color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
   }
@@ -527,7 +539,7 @@ class _CourseListState extends State<CourseListWidget> {
                       padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
                       child: Card(
                         color: widget.gpaColors[3],
-                        elevation: 0,
+                        elevation: 1,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                         child: InkWell(
@@ -559,7 +571,7 @@ class _CourseListState extends State<CourseListWidget> {
                                           style:
                                               FontManager.YaHeiLight.copyWith(
                                                   fontSize: 11,
-                                                  color: widget.gpaColors[2])),
+                                                  color: widget.gpaColors[1])),
                                     )
                                   ],
                                 ),

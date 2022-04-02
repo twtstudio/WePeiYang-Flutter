@@ -91,6 +91,9 @@ class WPYPageState extends State<WPYPage> {
       child: Stack(
         children: [
           Container(
+            decoration: CommonPreferences().isBegonia.value?BoxDecoration(
+              image: DecorationImage(image: AssetImage('assets/images/begonia/haitang_background.png'),fit: BoxFit.cover),
+            ):BoxDecoration(),
             child: ScrollConfiguration(
               behavior: WPYScrollBehavior(),
               child: CustomScrollView(
@@ -165,8 +168,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     DateTime now = DateTime.now();
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
-    return Container(
-      color: ColorUtil.backgroundColor, // 比其他区域rgb均高了一些,遮挡后方滚动区域
+    return Container(// 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
