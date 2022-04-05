@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_notice_page.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/haitang_page.dart';
 
 class FeedbackRouter {
   static String home = 'feedback/home';
@@ -31,6 +32,7 @@ class FeedbackRouter {
   static String reportOther = 'feedback/report_other_reason';
   static String notice = 'feedback/notice';
   static String summary = 'feedback/summary';
+  static String haitang = 'feedback/haitang';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     home: (_) => HomePage(),
@@ -47,5 +49,6 @@ class FeedbackRouter {
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
     summary:(_) => FeedbackSummaryPage(),
+    haitang:(_) => HaitangPage(),
   };
 }

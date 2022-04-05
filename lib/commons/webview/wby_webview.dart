@@ -27,7 +27,6 @@ class WbyWebViewState extends State<WbyWebView> {
   void initState() {
     super.initState();
     UmengCommonSdk.onPageStart('webview/${widget.page}');
-    WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
   }
 
   @override
@@ -68,7 +67,7 @@ class WbyWebViewState extends State<WbyWebView> {
     );
   }
 
-  void initUrl() async {
+  Future<void> initUrl() async {
     if (state == _PageState.initError) {
       setState(() {
         state = _PageState.initUrl;
@@ -77,6 +76,7 @@ class WbyWebViewState extends State<WbyWebView> {
     final url = await getInitialUrl(context).then((u) => u, onError: (_) => null);
     if (url != null) {
       setState(() {
+        print(url);
         state = _PageState.initWebView;
         _controller?.loadUrl(url);
       });
@@ -110,6 +110,7 @@ class WbyWebViewState extends State<WbyWebView> {
           child: WebView(
             onWebViewCreated: (controller){
               _controller = controller;
+              WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
             },
             javascriptMode: JavascriptMode.unrestricted,
             onPageStarted: (_) {

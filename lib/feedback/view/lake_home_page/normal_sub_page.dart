@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class NSubPage extends StatefulWidget {
@@ -341,7 +342,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 // );
                 ind--;
                 if (index == 0 && ind == 0) {
-                  return HotCard();
+                  return //HotCard();
+                      ActivityCard();
                 }
                 if (index == 0) ind--;
                 final post = context

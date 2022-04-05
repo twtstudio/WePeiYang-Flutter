@@ -44,6 +44,8 @@ class WPYPageState extends State<WPYPage> {
           ? CardBean(Image.asset('assets/images/lake_butt_icons/joker_stamp.png',width: 30,),
              '愚人节模式？')
           : null)
+      ..add(CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
+          '核酸号码牌', ReportRouter.domain))
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
