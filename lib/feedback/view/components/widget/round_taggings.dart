@@ -54,17 +54,26 @@ class SolvedWidget extends StatelessWidget {
   }
 }
 
-class UnSolvedWidget extends StatelessWidget {
+class ResponseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/solved_not_tag.svg',
+      'assets/svg_pics/lake_butt_icons/responsed_tag.svg',
       width: 60,
       fit: BoxFit.fitWidth,
     );
   }
 }
-
+class QuestionedWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      'assets/svg_pics/lake_butt_icons/questioned_tag.svg',
+      width: 60,
+      fit: BoxFit.fitWidth,
+    );
+  }
+}
 class TagShowWidget extends StatelessWidget {
   final String tag;
   final double width;

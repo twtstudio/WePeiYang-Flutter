@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -34,10 +35,11 @@ class OfficialReplyCard extends StatefulWidget {
   final int ancestorId;
   final ContentPressedCallback onContentPressed;
   final LikeCallback onLikePressed;
+  ///是否显示楼中楼
   final bool detail;
   final int placeAppeared;
+  ///评分数
   int ratings;
-
   OfficialReplyCard.reply({
     this.tag,
     this.comment,
@@ -193,6 +195,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               )
             ],
           );
+    ///举报/删除区
     var popMenu = PopupMenuButton(
       padding: EdgeInsets.zero,
       shape: RacTangle(),
@@ -247,7 +250,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ];
       },
     );
+    ///致敬lxx的box封装
     var box = SizedBox(height: 6);
+    ///头像区
     var createTime = Row(
       children: [
         OfficialLogo,
@@ -255,6 +260,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         if (widget.comment.sender == 0) popMenu
       ],
     );
+    ///评分系统，只有楼主可评分
     Widget starWidget;
     if (CommonPreferences().feedbackUid.value.toString() ==
         widget.ancestorId.toString()) {
@@ -305,7 +311,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ]);
     }
-
+  ///楼中楼笨方法，建议先去看lyx版本
     var bottomWidget = Row(
       children: [if (widget.comment.sender == 1) starWidget, Spacer()],
     );
@@ -342,15 +348,12 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ));
     switch (widget.type) {
       case Official.reply:
-        var comment = RichText(
-          overflow: TextOverflow.ellipsis,
-          maxLines: 15,
-          text: HTML.toTextSpan(
-            context,
-            widget.comment.content,
-            defaultTextStyle:
-                TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
-          ),
+        var comment =  ExpandableText(
+          text:  widget.comment.content,
+          maxLines: 5,
+          style:TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+          expand: false,
+          buttonIsShown: true,
         );
 
         column.addAll([

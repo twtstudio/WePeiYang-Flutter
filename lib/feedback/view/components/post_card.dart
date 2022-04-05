@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -423,11 +424,15 @@ if(post.imageUrls.isNotEmpty)
                 if (post.solved == true &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
-                  SolvedWidget(),
+                  QuestionedWidget(),
                 if (post.solved == false &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
-                  UnSolvedWidget(),
+                 ResponseWidget(),
+                if (post.solved == 2 &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  SolvedWidget(),
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),
@@ -646,7 +651,7 @@ if(post.imageUrls.isNotEmpty)
 
     var decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(15),
-      color: Colors.white,
+      color: CommonPreferences().isBegonia.value?Color(0xFFFCF8FA):Colors.white,
       boxShadow: [
         BoxShadow(
             blurRadius: 1.6,

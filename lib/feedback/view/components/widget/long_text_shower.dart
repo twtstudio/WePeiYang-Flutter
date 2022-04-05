@@ -34,6 +34,7 @@ class _ExpandableTextState extends State<ExpandableText> {
   final int maxLines;
   final TextStyle style;
   bool expand;
+  ///显示全文字样
   bool buttonIsShown;
 
   _ExpandableTextState(

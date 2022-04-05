@@ -51,7 +51,7 @@ class CommonPreferences {
   var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
   var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
   ///海棠节用
-  var isBegonia = PrefsBean<bool>("begonia", true);
+  var isBegonia = PrefsBean<bool>("begonia", false);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
