@@ -16,12 +16,12 @@ class EnvConfig {
   }
 
   static bool get isDevelop =>
-      ENVIRONMENT == "DEVELOP" || ENVIRONMENT == "ONLINE_TEST";
+      ENVIRONMENT == "DEVELOP";
 
   /// 测试版还是正式版 "RELEASE", "DEVELOP"（默认）, "ONLINE_TEST"
   static const ENVIRONMENT = String.fromEnvironment(
     "ENVIRONMENT",
-    defaultValue: "DEVELOP",
+    defaultValue: "ONLINE_TEST",
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"
