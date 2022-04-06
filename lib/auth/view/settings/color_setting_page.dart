@@ -272,6 +272,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
                     onTap: () {
+                      FavorColors.setAprilFoolSchedule();
                       CommonPreferences().isAprilFoolClass.value  =true;
                       setState(() {});
                     },
@@ -279,7 +280,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     borderRadius: BorderRadius.circular(9),
                     child: Center(
                         child: getText(
-                            "AprilFool Color", Colors.white, 'begonia', 1)))),
+                            "AprilFool Color", Colors.white, 'april', 1)))),
           ),
           SizedBox(height: 40)
         ],

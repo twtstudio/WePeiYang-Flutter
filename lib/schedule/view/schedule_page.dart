@@ -113,7 +113,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
-            if(CommonPreferences().isAprilFoolClass.value){
+            if(CommonPreferences().isAprilFoolClass.value&&DateTime.now().day==1&&DateTime.now().month==4){
               showDialog(
                   context: context,
                   barrierDismissible: false,

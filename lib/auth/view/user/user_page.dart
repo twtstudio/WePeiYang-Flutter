@@ -26,6 +26,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  var pref = CommonPreferences();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -41,45 +43,53 @@ class _UserPageState extends State<UserPage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            CommonPreferences().isBegonia.value?Image.asset('assets/images/begonia/profie_background.png',width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height/2, alignment: Alignment.topCenter, fit: BoxFit.fill):Image.asset('assets/images/user_back.png',
-                height: 350, alignment: Alignment.topCenter, fit: BoxFit.fill),
+            CommonPreferences().isBegonia.value
+                ? Image.asset('assets/images/begonia/profie_background.png',
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 2,
+                    alignment: Alignment.topCenter,
+                    fit: BoxFit.fill)
+                : Image.asset('assets/images/user_back.png',
+                    height: 350,
+                    alignment: Alignment.topCenter,
+                    fit: BoxFit.fill),
             ListView(
               physics: BouncingScrollPhysics(),
               children: <Widget>[
                 SizedBox(height: 15),
-                if(!CommonPreferences().isBegonia.value)
-                Container(
-                    height: 50,
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: <Widget>[
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, AuthRouter.mailbox),
-                          child: Icon(
-                            Icons.email_outlined,
-                            size: 28,
-                            color: Colors.white,
+                if (!CommonPreferences().isBegonia.value)
+                  Container(
+                      height: 50,
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: <Widget>[
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                                context, AuthRouter.mailbox),
+                            child: Icon(
+                              Icons.email_outlined,
+                              size: 28,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 15),
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                              context, AuthRouter.setting,
-                              arguments: SettingPageArgs(false)),
-                          child: Image.asset('assets/images/setting.png',
-                              width: 24, height: 24),
-                        )
-                      ],
-                    )),
+                          SizedBox(width: 15),
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                                    context, AuthRouter.setting,
+                                    arguments: SettingPageArgs(false))
+                                .then((value) => this.setState(() {})),
+                            child: Image.asset('assets/images/setting.png',
+                                width: 24, height: 24),
+                          )
+                        ],
+                      )),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
                     onTap: () {
-                      if(CommonPreferences().isAprilFoolHead.value){
+                      if (CommonPreferences().isAprilFoolHead.value) {
                         showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -88,27 +98,27 @@ class _UserPageState extends State<UserPage> {
                                 content: "今天，我们都是小丑！\n 不是你没办法修改头像框了，是我小丑还想玩呢！",
                                 confirmText: "去掉小丑帽",
                                 cancelText: "再玩玩？",
-                                confirmFun: (){
-                                  CommonPreferences().isAprilFoolHead.value = false;
-                                  Navigator.popAndPushNamed(context, HomeRouter.home);
+                                confirmFun: () {
+                                  CommonPreferences().isAprilFoolHead.value =
+                                      false;
+                                  Navigator.popAndPushNamed(
+                                      context, HomeRouter.home);
                                 },
                               );
                             });
-                      }
-                      else
-                      Navigator.pushNamed(context, AuthRouter.userInfo)
-                          .then((_) => setState(() {}));
+                      } else
+                        Navigator.pushNamed(context, AuthRouter.userInfo)
+                            .then((_) => setState(() {}));
                     },
                     child: Container(
-                        decoration:
-                        CommonPreferences().isAprilFoolHead.value
-                                ? BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/lake_butt_icons/jokers.png'),
-                                        fit: BoxFit.cover),
-                                  )
-                                : BoxDecoration(),
+                        decoration: CommonPreferences().isAprilFoolHead.value
+                            ? BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/lake_butt_icons/jokers.png'),
+                                    fit: BoxFit.cover),
+                              )
+                            : BoxDecoration(),
                         child: Padding(
                           padding: const EdgeInsets.all(48.0),
                           child: UserAvatarImage(
@@ -116,7 +126,7 @@ class _UserPageState extends State<UserPage> {
                         )),
                   ),
                 ),
-                Text(CommonPreferences().nickname.value,
+                Text(pref.nickname.value,
                     textAlign: TextAlign.center,
                     style: FontManager.YaHeiRegular.copyWith(
                       color: Colors.white,
@@ -132,8 +142,11 @@ class _UserPageState extends State<UserPage> {
                     child: Text(CommonPreferences().userNumber.value,
                         textAlign: TextAlign.center,
                         style: FontManager.Texta.copyWith(
-                            color: CommonPreferences().isBegonia.value?Colors.white:MyColors.deepDust, fontSize: 15))),
-                if(CommonPreferences().isBegonia.value)
+                            color: CommonPreferences().isBegonia.value
+                                ? Colors.white
+                                : MyColors.deepDust,
+                            fontSize: 15))),
+                if (CommonPreferences().isBegonia.value)
                   Container(
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -142,25 +155,31 @@ class _UserPageState extends State<UserPage> {
                         children: <Widget>[
                           Spacer(),
                           GestureDetector(
-                            onTap: () =>
-                                Navigator.pushNamed(context, AuthRouter.mailbox),
+                            onTap: () => Navigator.pushNamed(
+                                context, AuthRouter.mailbox),
                             child: Icon(
                               Icons.email_outlined,
                               size: 28,
-                              color: Color.fromRGBO(255,251,240, 0.5),
+                              color: Color.fromRGBO(255, 251, 240, 0.5),
                             ),
                           ),
                           SizedBox(width: 15),
                           GestureDetector(
                             onTap: () => Navigator.pushNamed(
-                                context, AuthRouter.setting,
-                                arguments: SettingPageArgs(false)),
-                            child: Image.asset('assets/images/setting.png',
-                                width: 24, height: 24,color: Color.fromRGBO(255,251,240, 0.5),),
+                                    context, AuthRouter.setting,
+                                    arguments: SettingPageArgs(false))
+                                .then((value) => this.setState(() {})),
+                            child: Image.asset(
+                              'assets/images/setting.png',
+                              width: 24,
+                              height: 24,
+                              color: Color.fromRGBO(255, 251, 240, 0.5),
+                            ),
                           ),
-                          SizedBox(width: 30.w,)
+                          SizedBox(
+                            width: 30.w,
+                          )
                         ],
-
                       )),
                 SizedBox(height: 40),
                 //NavigationWidget(),
@@ -174,7 +193,8 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.userInfo),
+                          Navigator.pushNamed(context, AuthRouter.userInfo)
+                              .then((value) => this.setState(() {})),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
                       child: Row(
@@ -268,7 +288,9 @@ class _UserPageState extends State<UserPage> {
                                   child: Text(
                                     "${S.current.current_version}: ${snapshot.data}",
                                     style: FontManager.YaHeiLight.copyWith(
-                                      color: CommonPreferences().isBegonia.value?Color(0xFFF3C9D9):Colors.grey,
+                                      color: CommonPreferences().isBegonia.value
+                                          ? Color(0xFFF3C9D9)
+                                          : Colors.grey,
                                       fontSize: 11,
                                     ),
                                   ),

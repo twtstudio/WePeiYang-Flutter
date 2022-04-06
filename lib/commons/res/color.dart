@@ -114,6 +114,9 @@ class FavorColors {
     _scheduleColor.value = _begoniaSchedule;
     scheduleType.value = 'begonia';
   }
+  static setAprilFoolSchedule() {
+    scheduleType.value = 'april';
+  }
   static Color scheduleTitleColor() {
     var type = scheduleType.value;
     if (type == 'green')
@@ -127,9 +130,8 @@ class FavorColors {
   }
 
   /// 这套配色暴露出来给主页使用
-  static final List<Color> homeSchedule =
-     CommonPreferences().isBegonia.value?_begoniaSchedule.map((e) => Color(int.parse(e, radix: 10))).toList(): _blueSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
-
+  static final List<Color> homeSchedule = _begoniaSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
+  static final List<Color> defaultHomeSchedule =_blueSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
   static final List<String> _blueSchedule = [
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
     Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5

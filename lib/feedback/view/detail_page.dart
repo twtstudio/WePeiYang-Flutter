@@ -596,7 +596,7 @@ class _DetailPageState extends State<DetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),

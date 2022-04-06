@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -8,7 +9,13 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
 
-class TodayCoursesWidget extends StatelessWidget {
+class TodayCoursesWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => TodayCoursesWidgetState();
+}
+
+class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
@@ -34,24 +41,26 @@ class TodayCoursesWidget extends StatelessWidget {
                     child: (todayCourses.length == 0)
                         ? Container()
                         : DefaultTextStyle(
-                            style: FontManager.YaHeiRegular.copyWith(
-                                fontSize: 12,
-                                color: Color.fromRGBO(100, 103, 122, 1)),
-                            child: Text.rich(TextSpan(children: [
-                              TextSpan(
-                                  text: (notifier.nightMode &&
-                                          DateTime.now().hour >= 21)
-                                      ? "明天 "
-                                      : "今天 "),
-                              TextSpan(
-                                  text: todayCourses.length.toString(),
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text: " 节课 "),
-                              TextSpan(
-                                  text: "> ", style: TextStyle(fontSize: 15))
-                            ])),
-                          ),
+                      style: FontManager.YaHeiRegular.copyWith(
+                          fontSize: 12,
+                          color: Color.fromRGBO(100, 103, 122, 1)),
+                      child: Text.rich(TextSpan(children: [
+                        TextSpan(
+                            text: (notifier.nightMode &&
+                                DateTime
+                                    .now()
+                                    .hour >= 21)
+                                ? "明天 "
+                                : "今天 "),
+                        TextSpan(
+                            text: todayCourses.length.toString(),
+                            style:
+                            TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: " 节课 "),
+                        TextSpan(
+                            text: "> ", style: TextStyle(fontSize: 15))
+                      ])),
+                    ),
                   )
                 ],
               ),
@@ -68,9 +77,13 @@ class TodayCoursesWidget extends StatelessWidget {
     /// 如果学期还没开始，则不显示
     if (notifier.isOneDayBeforeTermStart) return [];
     List<ScheduleCourse> todayCourses = [];
-    int today = DateTime.now().weekday;
+    int today = DateTime
+        .now()
+        .weekday;
     bool nightMode = notifier.nightMode;
-    if (DateTime.now().hour < 21) nightMode = false;
+    if (DateTime
+        .now()
+        .hour < 21) nightMode = false;
     bool flag;
     notifier.coursesWithNotify.forEach((course) {
       if (nightMode)
@@ -90,7 +103,11 @@ class TodayCoursesWidget extends StatelessWidget {
     if (todayCourses.length == 0) {
       // 如果今天没有课，就返回文字框
       return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, ScheduleRouter.schedule),
+        onTap: () =>
+            Navigator.pushNamed(context, ScheduleRouter.schedule).then((
+                value) =>
+                this.setState(() {
+                })),
         child: Container(
             height: 60,
             margin: const EdgeInsets.symmetric(horizontal: 22),
@@ -99,7 +116,9 @@ class TodayCoursesWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(
-                  (notifier.nightMode && DateTime.now().hour >= 21)
+                  (notifier.nightMode && DateTime
+                      .now()
+                      .hour >= 21)
                       ? "明天没有课哦"
                       : "今天没有课哦",
                   style: FontManager.YaHeiLight.copyWith(
@@ -125,8 +144,9 @@ class TodayCoursesWidget extends StatelessWidget {
               width: 140,
               padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
               child: Material(
-                color: FavorColors
-                    .homeSchedule[i % FavorColors.homeSchedule.length],
+                color: CommonPreferences().isBegonia.value?FavorColors
+                    .homeSchedule[i % FavorColors.homeSchedule.length]:FavorColors
+                    .defaultHomeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
                 elevation: 2,
                 child: InkWell(
@@ -145,8 +165,12 @@ class TodayCoursesWidget extends StatelessWidget {
                           child: Text(formatText(todayCourses[i].courseName),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
-                                  color: (FavorColors.homeSchedule[i % FavorColors.homeSchedule.length].value== Color.fromRGBO(221, 182, 190, 1.0).value)? Color(0xfff1dce0)
-                                      :Colors.white,
+                                  color: CommonPreferences().isBegonia.value?(FavorColors.homeSchedule[i %
+                                      FavorColors.homeSchedule.length].value ==
+                                      Color
+                                          .fromRGBO(221, 182, 190, 1.0)
+                                          .value) ? Color(0xfff1dce0):Colors.white
+                                      : Colors.white,
                                   fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 5),

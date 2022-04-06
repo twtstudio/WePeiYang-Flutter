@@ -605,11 +605,13 @@ class _NCommentCardState extends State<NCommentCard>
                             child: Row(
                               children: [
                                 Container(
-                                  margin: const EdgeInsets.only(left: 20.0, top: 4, bottom: 6),
+                                  margin: const EdgeInsets.only(
+                                      left: 20.0, top: 4, bottom: 6),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 4),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
                                     color: Color(0xffebebeb),
                                   ),
                                   child: Text(
