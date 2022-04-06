@@ -29,6 +29,7 @@ import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
+import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
@@ -334,6 +335,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     UmengCommonSdk.initCommon();
 
     var prefs = CommonPreferences();
+
+    // 恢复截屏和亮度默认值
+    LocalSetting.changeBrightness(-1);
+    LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
     if (prefs.updateTime.value != "20210906") {

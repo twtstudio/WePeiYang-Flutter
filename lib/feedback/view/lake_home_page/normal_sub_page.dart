@@ -245,12 +245,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                               children: [
                                 AnimatedContainer(
                                   duration: Duration(milliseconds: 500),
+                                  curve: Curves.easeInOutCubic,
                                   margin: EdgeInsets.only(
                                       left:
                                           context.read<LakeModel>().sortSeq != 0
-                                              ? 4
-                                              : 42),
-                                  width: 44,
+                                              ? 2
+                                              : 40),
+                                  width: 48,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(100)),
@@ -274,7 +275,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                           .read<LakeModel>()
                                                           .sortSeq !=
                                                       0
-                                                  ? TextUtil.base.white.w500
+                                                  ? TextUtil.base.white.w900
                                                       .sp(12)
                                                   : TextUtil.base.black2A.w500
                                                       .sp(12)),
@@ -296,7 +297,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                       0
                                                   ? TextUtil.base.black2A.w500
                                                       .sp(12)
-                                                  : TextUtil.base.white.w500
+                                                  : TextUtil.base.white.w900
                                                       .sp(12)),
                                         ),
                                       ),
@@ -307,45 +308,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                           SizedBox(width: 2)
                         ]),
                   );
-                //   Container(
-                //   margin: EdgeInsets.fromLTRB(14, 14, 12, 4),
-                //   padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 10.w),
-                //   child: Column(
-                //     mainAxisSize: MainAxisSize.min,
-                //     children: [
-                //       SizedBox(height: 14),
-                //       Text('海❀棠❀季❀特❀别❀企❀划',
-                //           style:
-                //           TextUtil.base.w900.NotoSansSC.sp(24).black4E),
-                //       SizedBox(height: 40),
-                //       Row(children: [Spacer(), Text('瑄瑄可爱捏',
-                //           style:
-                //           TextUtil.base.w400.NotoSansSC.sp(18).black00)],)
-                //     ],
-                //   ),
-                //   decoration: BoxDecoration(
-                //     image: DecorationImage(
-                //         image: NetworkImage(
-                //             'https://qnhdpic.twt.edu.cn/download/origin/730d18d380743163c7edb225f84f9848.jpeg'),
-                //         colorFilter: ColorFilter.mode(Colors.white70, BlendMode.lighten),
-                //         fit: BoxFit.cover),
-                //     borderRadius: BorderRadius.circular(15),
-                //     // color: Color.fromRGBO(255, 243, 243, 1.0),
-                //     boxShadow: [
-                //       BoxShadow(
-                //           blurRadius: 1.6,
-                //           color: Colors.black26,
-                //           offset: Offset(0, 0),
-                //           spreadRadius: -0.8),
-                //     ],
-                //   ),
-                // );
                 ind--;
                 if (index == 0 && ind == 0) {
-                  return //HotCard();
-                      ActivityCard();
+                  return HotCard();
                 }
                 if (index == 0) ind--;
+                if (ind == 0)
+                  return ActivityCard();
+                ind--;
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]

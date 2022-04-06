@@ -32,6 +32,11 @@ class CommonPreferences {
   var major = PrefsBean<String>('major');
   var stuType = PrefsBean<String>('stuType');
   var avatar = PrefsBean<String>('avatar');
+  var zone = PrefsBean<String>('zone');
+  var building = PrefsBean<String>('building');
+  var floor = PrefsBean<String>('floor');
+  var room = PrefsBean<String>('room');
+  var bed = PrefsBean<String>('bed');
 
   /// 校务专区
   var feedbackToken = PrefsBean<String>("lakeToken");
@@ -136,6 +141,11 @@ class CommonPreferences {
     feedbackToken.clear();
     canPush.clear();
     todayShowUpdateAgain.clear();
+    zone.clear();
+    building.clear();
+    floor.clear();
+    room.clear();
+    bed.clear();
   }
 
   /// 清除办公网缓存

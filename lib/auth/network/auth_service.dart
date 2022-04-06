@@ -243,8 +243,10 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
+        print(AuthDio().headers);
         var result = await authDio.postRst("auth/common",
             queryParameters: {"account": account, "password": password});
+        print(result['ticket']);
         var prefs = CommonPreferences();
         prefs.token.value = result['token'] ?? "";
         if (prefs.account.value != account && prefs.account.value != "") {
@@ -262,6 +264,11 @@ class AuthService with AsyncTimer {
         prefs.major.value = result['major'] ?? "";
         prefs.stuType.value = result['stuType'] ?? "";
         prefs.avatar.value = result['avatar'] ?? "";
+        prefs.zone.value = result['zone'] ?? "";
+        prefs.building.value = result['building'] ?? "";
+        prefs.floor.value = result['floor'] ?? "";
+        prefs.room.value = result['room'] ?? "";
+        prefs.bed.value = result['bed'] ?? "";
         prefs.isLogin.value = true;
         onResult(result);
 
@@ -314,6 +321,11 @@ class AuthService with AsyncTimer {
         prefs.major.value = result['major'] ?? "";
         prefs.stuType.value = result['stuType'] ?? "";
         prefs.avatar.value = result['avatar'] ?? "";
+        prefs.zone.value = result['zone'] ?? "";
+        prefs.building.value = result['building'] ?? "";
+        prefs.floor.value = result['floor'] ?? "";
+        prefs.room.value = result['room'] ?? "";
+        prefs.bed.value = result['bed'] ?? "";
         prefs.isLogin.value = true;
         onResult(result);
 
