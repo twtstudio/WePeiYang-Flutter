@@ -38,8 +38,13 @@ Color generateColor(ScheduleCourse course) {
   int hashCode = course.courseName.hashCode + now.day;
   if(CommonPreferences().isAprilFoolClass.value)
   return ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
-  else
-  return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
+  else {
+    int  idx =  hashCode % FavorColors.scheduleColor.length;
+    if(idx==4)
+      idx--;
+    return FavorColors
+        .scheduleColor[idx];
+  }
 }
 
 /// 返回本周无需上的课（灰色）
