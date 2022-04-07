@@ -406,8 +406,8 @@ class LikeMessageItem extends StatefulWidget {
 class _LikeMessageItemState extends State<LikeMessageItem> {
   Post post;
 
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
 
   @override
   void initState() {
@@ -522,23 +522,26 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post == null ? '...' : post.title,
-                  maxLines: 2,
-                  softWrap: true,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
-                ),
-                SizedBox(height: 6.w),
-                likeFloorFav,
-              ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post == null ? '...' : post.title,
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                  ),
+                  SizedBox(height: 6.w),
+                  likeFloorFav,
+                ],
+              ),
             ),
-            if (widget.data.type == 0 && widget.data.post.imageUrls.isNotEmpty)
+            if (post != null && post.id != -1 && post.imageUrls.isNotEmpty)
               Image.network(
-                baseUrl + widget.data.post.imageUrls[0],
+                baseUrl + post.imageUrls[0],
                 fit: BoxFit.cover,
                 height: 50,
                 width: 70,
@@ -880,6 +883,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 Text(
                   widget.data.post.title,
                   maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   softWrap: true,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
                 ),
@@ -1130,8 +1134,8 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb';
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb';
+  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
+  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
 
   @override
   Widget build(BuildContext context) {
@@ -1227,19 +1231,22 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.data.post.title,
-                  maxLines: 2,
-                  softWrap: true,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
-                ),
-                SizedBox(height: 6.w),
-                likeFloorFav,
-              ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.data.post.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                  ),
+                  SizedBox(height: 6.w),
+                  likeFloorFav,
+                ],
+              ),
             ),
             if (widget.data.post.imageUrls.isNotEmpty)
               Image.network(
