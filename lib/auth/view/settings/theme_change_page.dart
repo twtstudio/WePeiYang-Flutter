@@ -1,13 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../skin_utils.dart';
 
 class ThemeChangePage extends StatefulWidget {
   @override
@@ -16,10 +15,18 @@ class ThemeChangePage extends StatefulWidget {
 
 class _ThemeChangePageState extends State<ThemeChangePage> {
   var pref = CommonPreferences();
+  List<Skin> skins = [];
 
   Widget ThemeCard() {
     return InkWell(
-      onTap: () {},
+      onTap: () async {
+        await ThemeService.addSkin(
+            onFailure: {ToastProvider.success('失败了呢')},
+            onSuccess: () {
+              ToastProvider.success('成功里');
+            });
+        print(pref.token.value);
+      },
       child: Container(
         margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
         child: ClipRRect(
@@ -33,6 +40,23 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
             )),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    ThemeService.loginFromClient(
+        onSuccess: () async {
+          ToastProvider.success(CommonPreferences().themeToken.value);
+          await ThemeService.getSkins(
+              onFailure: {ToastProvider.success('oshuhd')},
+              onResult: (List<Skin> data) {
+                skins.addAll(data);
+                print(skins);
+              });
+        },
+        onFailure: {ToastProvider.success('oshuhd')});
+    //onFailure: ToastProvider.error('皮肤界面登录失败'));
+    super.initState();
   }
 
   @override
@@ -57,6 +81,7 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
             )),
         body: ListView.builder(
           itemCount: 5,
+          physics: BouncingScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             return ThemeCard();
           },

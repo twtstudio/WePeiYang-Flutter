@@ -58,10 +58,12 @@ class FavorColors {
     _gpaColor.value = _lightGPA;
     gpaType.value = 'light';
   }
+
   static setBegoniaGPA() {
     _gpaColor.value = _begoniaGPA;
     gpaType.value = 'begonia';
   }
+
   static final List<String> _greenGPA = [
     Color.fromRGBO(127, 139, 89, 1).value.toString(),
     Color.fromRGBO(255, 255, 255, 1).value.toString(),
@@ -95,6 +97,7 @@ class FavorColors {
     Color.fromRGBO(221, 172, 179, 1.0).value.toString(),
     Color.fromRGBO(217, 162, 169, 1.0).value.toString(),
   ];
+
   /// 这个是课程表默认颜色哦
   static setBlueRelatedSchedule() {
     _scheduleColor.value = _blueSchedule;
@@ -110,28 +113,33 @@ class FavorColors {
     _scheduleColor.value = _brownSchedule;
     scheduleType.value = 'brown';
   }
+
   static setBegoniaSchedule() {
     _scheduleColor.value = _begoniaSchedule;
     scheduleType.value = 'begonia';
   }
+
   static setAprilFoolSchedule() {
     scheduleType.value = 'april';
   }
+
   static Color scheduleTitleColor() {
     var type = scheduleType.value;
     if (type == 'green')
       return Color.fromRGBO(115, 124, 105, 1);
     else if (type == 'brown')
       return Color.fromRGBO(128, 95, 78, 1);
-    else if(type == 'blue')
+    else if (type == 'blue')
       return Color.fromRGBO(98, 103, 123, 1);
     else
       return Color.fromRGBO(224, 171, 178, 1.0);
   }
 
   /// 这套配色暴露出来给主页使用
-  static final List<Color> homeSchedule = _begoniaSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
-  static final List<Color> defaultHomeSchedule =_blueSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
+  static final List<Color> homeSchedule =
+      _begoniaSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
+  static final List<Color> defaultHomeSchedule =
+      _blueSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
   static final List<String> _blueSchedule = [
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
     Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5

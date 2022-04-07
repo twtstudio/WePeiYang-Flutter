@@ -38,6 +38,8 @@ class CommonPreferences {
   var room = PrefsBean<String>('room');
   var bed = PrefsBean<String>('bed');
 
+  var themeToken = PrefsBean<String>("themeToken");
+
   /// 校务专区
   var feedbackToken = PrefsBean<String>("lakeToken");
   var feedbackUid = PrefsBean<String>('feedbackUid');

@@ -309,9 +309,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         ]),
                   );
                 ind--;
-                if (index == 0 && ind == 0) {
+                if (index == 0 && ind == 0)
                   return HotCard();
-                }
                 if (index == 0) ind--;
                 if (ind == 0)
                   return ActivityCard();

@@ -79,9 +79,8 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     var singlePictureLoader;
     var longPicOutsideLook;
-if(post.imageUrls.isNotEmpty)
-
-    if (post.imageUrls != null && post.imageUrls.length == 1) {
+    if (post.imageUrls.isNotEmpty) if (post.imageUrls != null &&
+        post.imageUrls.length == 1) {
       Image image = new Image.network(
         widget.type == PostCardType.detail
             ? picBaseUrl + 'origin/' + post.imageUrls[0]
@@ -275,7 +274,10 @@ if(post.imageUrls.isNotEmpty)
         onTap: () async {
           if (widget.type == PostCardType.simple) {
             await FeedbackService.visitPost(
-              id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+              id: post.id,
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
             );
             Navigator.pushNamed(
               context,
@@ -318,7 +320,8 @@ if(post.imageUrls.isNotEmpty)
                       (widget.post.imageUrls.isEmpty ? 0 : 84),
                   post.type,
                   id,
-                  0, post.type),
+                  0,
+                  post.type),
             if (tag != '') SizedBox(width: 8),
             TagShowWidget(
                 getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
@@ -336,7 +339,10 @@ if(post.imageUrls.isNotEmpty)
               onTap: () async {
                 if (widget.type == PostCardType.simple) {
                   await FeedbackService.visitPost(
-                    id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+                    id: post.id,
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
                   );
                   Navigator.pushNamed(
                     context,
@@ -428,7 +434,7 @@ if(post.imageUrls.isNotEmpty)
                 if (post.solved == false &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
-                 ResponseWidget(),
+                  ResponseWidget(),
                 if (post.solved == 2 &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
@@ -651,7 +657,9 @@ if(post.imageUrls.isNotEmpty)
 
     var decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(15),
-      color: CommonPreferences().isBegonia.value?Color(0xFFFCF8FA):Colors.white,
+      color: CommonPreferences().isBegonia.value
+          ? Color(0xFFFCF8FA)
+          : Colors.white,
       boxShadow: [
         BoxShadow(
             blurRadius: 1.6,
@@ -664,7 +672,10 @@ if(post.imageUrls.isNotEmpty)
     var body = GestureDetector(
         onTap: () async {
           await FeedbackService.visitPost(
-            id: post.id, onFailure: (e) {ToastProvider.error(e.error.toString());},
+            id: post.id,
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
           );
           if (widget.type == PostCardType.simple) {
             Navigator.pushNamed(
