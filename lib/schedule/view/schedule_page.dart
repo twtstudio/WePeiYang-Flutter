@@ -50,7 +50,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleColor = FavorColors.scheduleTitleColor();
+    var titleColor = CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):FavorColors.scheduleTitleColor();
     return Scaffold(
       appBar: ScheduleAppBar(titleColor),
       backgroundColor: Colors.white,
@@ -60,8 +60,8 @@ class _SchedulePageState extends State<SchedulePage> {
           TitleWidget(titleColor),
           WeekSelectWidget(),
           Container(
-            decoration: CommonPreferences().isBegonia.value?BoxDecoration(
-              image: DecorationImage(image: AssetImage('assets/images/begonia/haitang_class_background.png'),fit: BoxFit.cover),
+            decoration: CommonPreferences().isSkinUsed.value?BoxDecoration(
+              image: DecorationImage(image: NetworkImage(CommonPreferences().skinClass.value),fit: BoxFit.cover),
             ):BoxDecoration(),
             child: Column(
               children: [

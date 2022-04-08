@@ -72,7 +72,11 @@ class WeekDisplayWidget extends StatelessWidget {
         height: 28,
         width: width,
         decoration: BoxDecoration(
-            color: deepColor ? CommonPreferences().isAprilFoolClass.value?ColorUtil.aprilFoolColor[Random().nextInt(4)]:titleColor : Color.fromRGBO(236, 238, 237, 1),
+            color: deepColor
+                ? CommonPreferences().isAprilFoolClass.value
+                    ? ColorUtil.aprilFoolColor[Random().nextInt(4)]
+                    : titleColor
+                : Color.fromRGBO(236, 238, 237, 1),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,

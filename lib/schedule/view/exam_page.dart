@@ -26,6 +26,12 @@ class _ExamPageState extends State<ExamPage> {
         .call();
   }
 
+  getColor() {
+    return CommonPreferences().isSkinUsed.value
+        ? Color(CommonPreferences().skinColorB.value)
+        : FavorColors.scheduleTitleColor();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ExamNotifier>(builder: (context, notifier, _) {
@@ -54,12 +60,12 @@ class _ExamPageState extends State<ExamPage> {
           elevation: 0,
           leading: GestureDetector(
               child: Icon(Icons.arrow_back,
-                  color: FavorColors.scheduleTitleColor(), size: 32),
+                  color: getColor(), size: 32),
               onTap: () => Navigator.pop(context)),
           actions: [
             IconButton(
               icon: Icon(Icons.autorenew,
-                  color: FavorColors.scheduleTitleColor(), size: 28),
+                  color: getColor(), size: 28),
               onPressed: () {
                 if (CommonPreferences().isBindTju.value) {
                   Provider.of<ExamNotifier>(context, listen: false)
@@ -94,7 +100,7 @@ class _ExamPageState extends State<ExamPage> {
               Text('未完成',
                   style: FontManager.YaQiHei.copyWith(
                       fontSize: 16,
-                      color: FavorColors.scheduleTitleColor(),
+                      color: getColor(),
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
               ...unfinished,
@@ -102,7 +108,7 @@ class _ExamPageState extends State<ExamPage> {
               Text('已完成',
                   style: FontManager.YaQiHei.copyWith(
                       fontSize: 16,
-                      color: FavorColors.scheduleTitleColor(),
+                      color: getColor(),
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
               ...finished,

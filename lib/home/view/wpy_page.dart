@@ -93,8 +93,8 @@ class WPYPageState extends State<WPYPage> {
       child: Stack(
         children: [
           Container(
-            decoration: CommonPreferences().isBegonia.value?BoxDecoration(
-              image: DecorationImage(image: AssetImage('assets/images/begonia/haitang_background.png'),fit: BoxFit.cover),
+            decoration: CommonPreferences().isSkinUsed.value?BoxDecoration(
+              image: DecorationImage(image: NetworkImage(CommonPreferences().skinMain.value),fit: BoxFit.cover),
             ):BoxDecoration(),
             child: ScrollConfiguration(
               behavior: WPYScrollBehavior(),

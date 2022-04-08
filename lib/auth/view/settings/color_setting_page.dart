@@ -29,9 +29,6 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
   }
   ///判断活动皮肤用
    changeSkin(){
-    if(CommonPreferences().isBegonia.value){
-      CommonPreferences().isBegonia.value = false;
-    }
     if(CommonPreferences().isAprilFoolClass.value){
       CommonPreferences().isAprilFoolClass.value = false;
     }

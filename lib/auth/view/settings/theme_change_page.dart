@@ -27,10 +27,18 @@ class _ThemeChangePageState extends State<ThemeChangePage>
 
   Widget ThemeCard(int index) {
     return InkWell(
-      onTap: () {
-        setState(() {
-          selected = skins[index].id;
-        });
+      onTap: ()  async{
+        selected = skins[index].id;
+        CommonPreferences().isSkinUsed.value = true;
+        CommonPreferences().skinMain.value = skins[index].mainPageImage;
+        CommonPreferences().skinClass.value = skins[index].schedulePageImage;
+        CommonPreferences().skinProfile.value = skins[index].selfPageImage;
+        CommonPreferences().skinColorA.value = skins[index].colorA;
+        CommonPreferences().skinColorB.value = skins[index].colorB;
+        CommonPreferences().skinColorC.value = skins[index].colorC;
+        CommonPreferences().skinColorD.value = skins[index].colorD;
+        CommonPreferences().skinColorE.value = skins[index].colorE;
+        CommonPreferences().skinColorF.value = skins[index].colorF;
       },
       child: AnimatedContainer(
         height: selected == skins[index].id

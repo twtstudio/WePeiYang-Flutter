@@ -82,8 +82,8 @@ class GPAIntro extends StatelessWidget {
       }
     }
     return Container(
-      decoration: CommonPreferences().isBegonia.value
-          ? BoxDecoration(color: Color(0xFFF8ECF2))
+      decoration: CommonPreferences().isSkinUsed.value
+          ? BoxDecoration(color: Color(CommonPreferences().skinColorA.value))
           : BoxDecoration(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,8 +193,8 @@ class _GPACurveState extends State<GPACurve>
           }
         },
         child: Container(
-          decoration: (widget.isPreview && CommonPreferences().isBegonia.value)
-              ? BoxDecoration(color: Color(0xFFF8ECF2))
+          decoration: (widget.isPreview && CommonPreferences().isSkinUsed.value)
+              ? BoxDecoration(color: Color(CommonPreferences().skinColorA.value))
               : BoxDecoration(),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -251,7 +251,7 @@ class _GPACurveState extends State<GPACurve>
                               ),
                             ),
                             Container(
-                              decoration: CommonPreferences().isBegonia.value
+                              decoration: CommonPreferences().isSkinUsed.value
                                   ? BoxDecoration(
                                       image: widget.isPreview
                                           ? DecorationImage(

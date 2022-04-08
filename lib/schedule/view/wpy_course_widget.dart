@@ -15,7 +15,19 @@ class TodayCoursesWidget extends StatefulWidget {
 }
 
 class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
-
+  List<Color> skinList =[];
+  @override
+  void initState() {
+    super.initState();
+    if(CommonPreferences().isSkinUsed.value) {
+      skinList.add(Color(CommonPreferences().skinColorA.value));
+      skinList.add(Color(CommonPreferences().skinColorB.value));
+      skinList.add(Color(CommonPreferences().skinColorC.value));
+      skinList.add(Color(CommonPreferences().skinColorD.value));
+      skinList.add(Color(CommonPreferences().skinColorE.value));
+      skinList.add(Color(CommonPreferences().skinColorF.value));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
@@ -144,8 +156,8 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
               width: 140,
               padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
               child: Material(
-                color: CommonPreferences().isBegonia.value?FavorColors
-                    .homeSchedule[i % FavorColors.homeSchedule.length]:FavorColors
+                color: CommonPreferences().isSkinUsed.value?skinList
+                    [i %4]:FavorColors
                     .defaultHomeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
                 elevation: 2,
@@ -165,8 +177,8 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                           child: Text(formatText(todayCourses[i].courseName),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
-                                  color: CommonPreferences().isBegonia.value?(FavorColors.homeSchedule[i %
-                                      FavorColors.homeSchedule.length].value ==
+                                  color: CommonPreferences().isSkinUsed.value?(skinList[i %
+                                      4].value ==
                                       Color
                                           .fromRGBO(221, 182, 190, 1.0)
                                           .value) ? Color(0xfff1dce0):Colors.white

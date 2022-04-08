@@ -43,8 +43,8 @@ class _UserPageState extends State<UserPage> {
         data: ThemeData(accentColor: Colors.white),
         child: Stack(
           children: <Widget>[
-            CommonPreferences().isBegonia.value
-                ? Image.asset('assets/images/begonia/profie_background.png',
+            CommonPreferences().isSkinUsed.value
+                ? Image.network(CommonPreferences().skinProfile.value,
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height / 2,
                     alignment: Alignment.topCenter,
@@ -57,7 +57,7 @@ class _UserPageState extends State<UserPage> {
               physics: BouncingScrollPhysics(),
               children: <Widget>[
                 SizedBox(height: 15),
-                if (!CommonPreferences().isBegonia.value)
+                if (!CommonPreferences().isSkinUsed.value)
                   Container(
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -142,11 +142,11 @@ class _UserPageState extends State<UserPage> {
                     child: Text(CommonPreferences().userNumber.value,
                         textAlign: TextAlign.center,
                         style: FontManager.Texta.copyWith(
-                            color: CommonPreferences().isBegonia.value
+                            color: CommonPreferences().isSkinUsed.value
                                 ? Colors.white
                                 : MyColors.deepDust,
                             fontSize: 15))),
-                if (CommonPreferences().isBegonia.value)
+                if (CommonPreferences().isSkinUsed.value)
                   Container(
                       height: 50,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -288,8 +288,8 @@ class _UserPageState extends State<UserPage> {
                                   child: Text(
                                     "${S.current.current_version}: ${snapshot.data}",
                                     style: FontManager.YaHeiLight.copyWith(
-                                      color: CommonPreferences().isBegonia.value
-                                          ? Color(0xFFF3C9D9)
+                                      color: CommonPreferences().isSkinUsed.value
+                                          ? Color(CommonPreferences().skinColorC.value)
                                           : Colors.grey,
                                       fontSize: 11,
                                     ),

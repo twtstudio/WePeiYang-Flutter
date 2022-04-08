@@ -31,15 +31,29 @@ final quietNameStyle = FontManager.YaQiHei.copyWith(
     color: quiteFrontColor, fontSize: 10, fontWeight: FontWeight.bold);
 final quietHintStyle =
     FontManager.YaHeiRegular.copyWith(color: quiteFrontColor, fontSize: 9);
-
+List<Color> skinColor = [
+Color(CommonPreferences().skinColorA.value),
+Color(CommonPreferences().skinColorB.value),
+Color(CommonPreferences().skinColorC.value),
+Color(CommonPreferences().skinColorD.value),
+Color(CommonPreferences().skinColorE.value),
+Color(CommonPreferences().skinColorF.value)
+];
 /// 为ActiveCourse生成随机颜色
 Color generateColor(ScheduleCourse course) {
   var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
   int hashCode = course.courseName.hashCode + now.day;
   if(CommonPreferences().isAprilFoolClass.value)
   return ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
+  else if(CommonPreferences().isSkinUsed.value){
+    int  idx =  hashCode % skinColor.length;
+    if(idx==4)
+      idx--;
+    return skinColor[idx];
+}
   else {
     int  idx =  hashCode % FavorColors.scheduleColor.length;
+    ///1435
     if(idx==4)
       idx--;
     return FavorColors

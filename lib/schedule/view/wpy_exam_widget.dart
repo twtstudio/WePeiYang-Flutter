@@ -63,9 +63,7 @@ class WpyExamWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(msg,
-                  style: CommonPreferences().isBegonia.value
-                      ? TextUtil.base.begoniaPink.w400.sp(14)
-                      : FontManager.YaHeiLight.copyWith(
+                  style:  FontManager.YaHeiLight.copyWith(
                           color: Color.fromRGBO(207, 208, 212, 1),
                           fontSize: 14,
                           letterSpacing: 0.5)),

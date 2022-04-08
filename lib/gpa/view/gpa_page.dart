@@ -33,7 +33,13 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 /// * 注：雷达图的成绩区域填充色、放射线条、绩点区域颜色均固定，设计也没给55555
 
 class GPAPage extends StatefulWidget {
-  final List<Color> gpaColors = FavorColors.gpaColor;
+  static List<Color> get skinList => [
+  Color(CommonPreferences().skinColorB.value),
+    Color(CommonPreferences().skinColorE.value),
+    Color(CommonPreferences().skinColorD.value),
+    Color(CommonPreferences().skinColorF.value),
+  ];
+  final List<Color> gpaColors = CommonPreferences().isSkinUsed.value?skinList:FavorColors.gpaColor;
 
   @override
   _GPAPageState createState() => _GPAPageState();
@@ -73,13 +79,12 @@ class _GPAPageState extends State<GPAPage> {
                 appBar: GPAppBar(widget.gpaColors),
                 backgroundColor: widget.gpaColors[0],
                 body: Container(
-                  decoration: CommonPreferences().isBegonia.value?BoxDecoration(
+                  decoration: CommonPreferences().isSkinUsed.value?BoxDecoration(
                     gradient: new LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
                           widget.gpaColors[0],
-                          widget.gpaColors[2],
                           widget.gpaColors[3]
                         ]),
                   ):BoxDecoration(),
@@ -268,7 +273,7 @@ class _RadarChartPainter extends CustomPainter {
       if (element.credit > maxCredit) maxCredit = element.credit;
     });
     final Paint creditPaint = Paint()
-      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.111):Color.fromRGBO(178, 178, 158, 0.2)
+      ..color = CommonPreferences().isSkinUsed.value?Color.fromRGBO(255,251,240, 0.111):Color.fromRGBO(178, 178, 158, 0.2)
       ..style = PaintingStyle.fill;
     final Path creditPath = Path();
     for (var i = 0; i < courses.length; i++) {
@@ -310,7 +315,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawLine(Canvas canvas) {
     final Paint linePaint = Paint()
-      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.45):Color.fromRGBO(158, 158, 138, 0.45)
+      ..color = CommonPreferences().isSkinUsed.value?Color.fromRGBO(255,251,240, 0.45):Color.fromRGBO(158, 158, 138, 0.45)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     final Path linePath = Path();
@@ -324,7 +329,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawScoreOutLine(Canvas canvas) {
     final Paint outLinePaint = Paint()
-      ..color = CommonPreferences().isBegonia.value?Color.fromRGBO(255,251,240, 0.9):gpaColors[1]
+      ..color = CommonPreferences().isSkinUsed.value?Color.fromRGBO(255,251,240, 0.9):gpaColors[1]
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeJoin = StrokeJoin.round;

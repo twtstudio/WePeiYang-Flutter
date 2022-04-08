@@ -566,7 +566,7 @@ class _DetailPageState extends State<DetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor:CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value): ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
@@ -596,7 +596,7 @@ class _DetailPageState extends State<DetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),

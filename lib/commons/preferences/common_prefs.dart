@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_pei_yang_flutter/auth/skin_utils.dart';
 
 class CommonPreferences {
   CommonPreferences._();
@@ -57,9 +60,17 @@ class CommonPreferences {
   var isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
   var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
   var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
-  ///海棠节用
-  var isBegonia = PrefsBean<bool>("begonia", false);
-
+  ///海棠节用->皮肤用
+  var isSkinUsed = PrefsBean<bool>("skin", false);
+  var skinProfile = PrefsBean<String>("skinProfile","");
+  var skinClass = PrefsBean<String>("skinClass","");
+  var skinMain = PrefsBean<String>("skinMain","");
+  var skinColorA = PrefsBean<int>("skinColorA",1);
+  var skinColorB = PrefsBean<int>("skinColorB",1);
+  var skinColorC= PrefsBean<int>("skinColorC",1);
+  var skinColorD = PrefsBean<int>("skinColorD",1);
+  var skinColorE = PrefsBean<int>("skinColorE",1);
+  var skinColorF = PrefsBean<int>("skinColorF",1);
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
   /// 2. 进入 gpa / 课程表 / 考表 页面时再尝试用缓存中办公网的cookie爬取最新数据

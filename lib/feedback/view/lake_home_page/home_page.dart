@@ -214,7 +214,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             return <Widget>[
               SliverAppBar(
                 toolbarHeight: 48,
-                backgroundColor: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):Colors.white,
+                backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):Colors.white,
                 titleSpacing: 0,
                 leading: InkWell(
                   highlightColor: Colors.transparent,
@@ -260,7 +260,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   pinned: true,
                   delegate: HomeHeaderDelegate(
                       child: Container(
-                    color: CommonPreferences().isBegonia.value?Color(0xfff4e2ec):Colors.white,
+                    color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):Colors.white,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -338,7 +338,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           },
           body: Container(
             decoration: BoxDecoration(
-                color: CommonPreferences().isBegonia.value?Color(0xFFf4e2ec):ColorUtil.backgroundColor
+                color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):ColorUtil.backgroundColor
             ),
             child: Stack(
               children: [

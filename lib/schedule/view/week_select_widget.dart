@@ -124,7 +124,12 @@ class _WeekSelectPainter extends CustomPainter {
         if (list[j][k]) {
           /// 深色cube，代表该点有课
           final Paint cubePaint = Paint()
-            ..color = CommonPreferences().isAprilFoolClass.value?ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]:FavorColors.scheduleColor.first
+            ..color = CommonPreferences().isAprilFoolClass.value
+                ? ColorUtil.aprilFoolColor[
+                    Random().nextInt(ColorUtil.aprilFoolColor.length)]
+                : CommonPreferences().isSkinUsed.value
+                    ? Color(CommonPreferences().skinColorA.value)
+                    : FavorColors.scheduleColor.first
             ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, cubePaint);
         } else {
