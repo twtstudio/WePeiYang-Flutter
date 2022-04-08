@@ -114,10 +114,7 @@ class ThemeService with AsyncTimer {
               'skinName': '海棠节',
               'src': haiTangSkin.toJson().toString(),
             }));
-
-      } on DioError catch (e) {
-
-      }
+      } on DioError catch (_) {}
     });
   }
 

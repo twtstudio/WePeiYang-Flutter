@@ -112,6 +112,7 @@ class CommonPreferences {
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
+  var skinNow = PrefsBean<int>("skinNow", -1); // 当前皮肤编号
 
   /// 自习室
   var loungeUpdateTime = PrefsBean<String>("loungeUpdateTime", "");

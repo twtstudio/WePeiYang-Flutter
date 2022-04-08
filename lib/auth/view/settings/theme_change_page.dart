@@ -4,7 +4,6 @@ import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -27,7 +26,10 @@ class _ThemeChangePageState extends State<ThemeChangePage>
 
   Widget ThemeCard(int index) {
     return InkWell(
-      onTap: ()  async{
+      onTap: () {
+        setState(() {
+          selected = skins[index].id;
+          pref.skinNow.value = skins[index].id;
         selected = skins[index].id;
         CommonPreferences().isSkinUsed.value = true;
         CommonPreferences().skinMain.value = skins[index].mainPageImage;
@@ -63,7 +65,10 @@ class _ThemeChangePageState extends State<ThemeChangePage>
 
   Widget DefaultThemeCard(int ind) {
     return InkWell(
-      onTap: () => setState(() => selected = ind),
+      onTap: () => setState(() {
+        selected = ind;
+        pref.skinNow.value = ind;
+      }),
       child: AnimatedContainer(
         height: selected == ind
             ? (WePeiYangApp.screenWidth - 28) * 0.5
@@ -151,8 +156,8 @@ class _ThemeChangePageState extends State<ThemeChangePage>
 
   @override
   void initState() {
+    selected = pref.skinNow.value;
     ThemeService.loginFromClient(onSuccess: () async {
-      ToastProvider.success('登录成功' + CommonPreferences().themeToken.value);
       await ThemeService.getSkins().then((list) {
         skins.clear();
         skins.addAll(list);
@@ -161,9 +166,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
         });
       });
     }, onFailure: () {
-      ToastProvider.success('登陆失败' + CommonPreferences().themeToken.value);
     });
-    //onFailure: ToastProvider.error('皮肤界面登录失败'));
     super.initState();
   }
 
