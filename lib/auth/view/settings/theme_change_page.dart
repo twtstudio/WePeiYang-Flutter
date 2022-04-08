@@ -41,7 +41,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
         CommonPreferences().skinColorD.value = skins[index].colorD;
         CommonPreferences().skinColorE.value = skins[index].colorE;
         CommonPreferences().skinColorF.value = skins[index].colorF;
-      },
+      });},
       child: AnimatedContainer(
         height: selected == skins[index].id
             ? (WePeiYangApp.screenWidth - 28) * 0.5
