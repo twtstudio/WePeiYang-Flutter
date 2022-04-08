@@ -205,7 +205,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: context.select((LakeModel model) =>
-                model.lakeAreas[index].dataList.values.toList().length),
+                model.lakeAreas[index].dataList.values.toList().length + 2),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
                 if (ind == 0)
