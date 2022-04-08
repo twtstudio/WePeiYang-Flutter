@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 
 import '../../skin_utils.dart';
@@ -16,8 +17,9 @@ class ThemeChangePage extends StatefulWidget {
 class _ThemeChangePageState extends State<ThemeChangePage> {
   var pref = CommonPreferences();
   List<Skin> skins = [];
+  bool isReady = false;
 
-  Widget ThemeCard() {
+  Widget ThemeCard(int index) {
     return InkWell(
       onTap: () async {
         await ThemeService.addSkin(
@@ -33,9 +35,9 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
             borderRadius: BorderRadius.all(Radius.circular(16)),
             child: Stack(
               children: [
-                Image.asset('assets/images/lake_butt_icons/haitang_banner.png',
-                    fit: BoxFit.fitWidth),
-                Positioned(bottom: 4, right: 8, child: TextPod('海棠节·活动')),
+                Image.network(skins[index].mainPageImage, fit: BoxFit.fitWidth),
+                Positioned(
+                    bottom: 4, right: 8, child: TextPod(skins[index].name)),
               ],
             )),
       ),
@@ -44,17 +46,18 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
 
   @override
   void initState() {
-    ThemeService.loginFromClient(
-        onSuccess: () async {
-          ToastProvider.success(CommonPreferences().themeToken.value);
-          await ThemeService.getSkins(
-              onFailure: {ToastProvider.success('oshuhd')},
-              onResult: (List<Skin> data) {
-                skins.addAll(data);
-                print(skins);
-              });
-        },
-        onFailure: {ToastProvider.success('oshuhd')});
+    ThemeService.loginFromClient(onSuccess: () async {
+      ToastProvider.success('登录成功' + CommonPreferences().themeToken.value);
+      await ThemeService.getSkins().then((list) {
+        skins.clear();
+        skins.addAll(list);
+        setState(() {
+          isReady = true;
+        });
+      });
+    }, onFailure: () {
+      ToastProvider.success('登陆失败' + CommonPreferences().themeToken.value);
+    });
     //onFailure: ToastProvider.error('皮肤界面登录失败'));
     super.initState();
   }
@@ -79,12 +82,14 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
                       color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
                   onTap: () => Navigator.pop(context)),
             )),
-        body: ListView.builder(
-          itemCount: 5,
-          physics: BouncingScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            return ThemeCard();
-          },
-        ));
+        body: isReady
+            ? ListView.builder(
+                itemCount: skins.length,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  return ThemeCard(index);
+                },
+              )
+            : Center(child: Loading()));
   }
 }

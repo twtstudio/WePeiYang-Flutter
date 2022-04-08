@@ -10,8 +10,15 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class WbyWebView extends StatefulWidget {
   final String page;
+  final bool fullPage;
+  final Color backgroundColor;
 
-  const WbyWebView({Key? key, required this.page}) : super(key: key);
+  const WbyWebView(
+      {Key? key,
+      required this.page,
+      required this.fullPage,
+      required this.backgroundColor})
+      : super(key: key);
 
   @override
   WbyWebViewState createState() => WbyWebViewState();
@@ -55,10 +62,9 @@ class WbyWebViewState extends State<WbyWebView> {
       );
 
   Future<String?> getInitialUrl(BuildContext context) async {
-    return context
-        .select(
-          (RemoteConfig config) => config.webViews[widget.page]?.url,
-        );
+    return context.select(
+      (RemoteConfig config) => config.webViews[widget.page]?.url,
+    );
   }
 
   List<JavascriptChannel>? getJsChannels() {
@@ -73,7 +79,8 @@ class WbyWebViewState extends State<WbyWebView> {
         state = _PageState.initUrl;
       });
     }
-    final url = await getInitialUrl(context).then((u) => u, onError: (_) => null);
+    final url =
+        await getInitialUrl(context).then((u) => u, onError: (_) => null);
     if (url != null) {
       setState(() {
         print(url);
@@ -108,7 +115,7 @@ class WbyWebViewState extends State<WbyWebView> {
         Opacity(
           opacity: state == _PageState.showWebView ? 1.0 : 0.0,
           child: WebView(
-            onWebViewCreated: (controller){
+            onWebViewCreated: (controller) {
               _controller = controller;
               WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
             },
@@ -125,13 +132,31 @@ class WbyWebViewState extends State<WbyWebView> {
           ),
         ),
         top,
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: GestureDetector(
+              child: Icon(Icons.arrow_back,
+                  color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+              onTap: () => Navigator.pop(context),
+            ),
+          ),
+        ),
       ],
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: appBar,
-      body: body,
+      backgroundColor: widget.backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            if (!widget.fullPage)
+              appBar,
+            Expanded(child: body),
+          ],
+        ),
+      ),
     );
   }
 }

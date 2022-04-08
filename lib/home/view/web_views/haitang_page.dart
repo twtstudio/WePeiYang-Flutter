@@ -10,7 +10,12 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
 
 class HaitangPage extends WbyWebView {
-  const HaitangPage({Key? key}) : super(page: "海棠季抽卡", key: key);
+  const HaitangPage({Key? key})
+      : super(
+            page: "海棠季抽卡",
+            backgroundColor: const Color.fromRGBO(221, 182, 190, 1.0),
+            fullPage: true,
+            key: key);
 
   @override
   _HaitangPageState createState() => _HaitangPageState();
@@ -20,6 +25,6 @@ class _HaitangPageState extends WbyWebViewState {
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     print(CommonPreferences().token.value);
-    return "http://192.168.1.112:8080/#/?token=${CommonPreferences().token.value}";
+    return "http://120.48.17.78:1000/#/?token=${CommonPreferences().token.value}";
   }
 }
