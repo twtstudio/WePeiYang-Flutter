@@ -81,7 +81,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
             begin: Alignment.topCenter,
             end: reverse ? Alignment(0, 0.2) : Alignment(0, 1.6),
             colors: [
-              mainColor[CommonPreferences().zone.value] ?? Color(0xFF4F4F4F),
+              mainColor[CommonPreferences().area.value] ?? Color(0xFF4F4F4F),
               assistColor
             ],
           ),
@@ -141,7 +141,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                '${CommonPreferences().zone.value}',
+                                '${CommonPreferences().area.value}',
                                 style: TextUtil.base.white.sp(78).w900.h(1.4)),
                             Text(
                                 '${CommonPreferences().building.value}\n${CommonPreferences().room.value}',

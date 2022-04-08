@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../skin_utils.dart';
 
@@ -21,21 +22,18 @@ class _ThemeChangePageState extends State<ThemeChangePage> {
 
   Widget ThemeCard(int index) {
     return InkWell(
-      onTap: () async {
-        await ThemeService.addSkin(
-            onFailure: {ToastProvider.success('失败了呢')},
-            onSuccess: () {
-              ToastProvider.success('成功里');
-            });
-        print(pref.token.value);
+      onTap: () {
+
       },
       child: Container(
+        height: (WePeiYangApp.screenWidth - 28) * 0.3,
         margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
         child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(16)),
             child: Stack(
+              fit: StackFit.expand,
               children: [
-                Image.network(skins[index].mainPageImage, fit: BoxFit.fitWidth),
+                Image.network(skins[index].selfPageImage, fit: BoxFit.fitWidth),
                 Positioned(
                     bottom: 4, right: 8, child: TextPod(skins[index].name)),
               ],

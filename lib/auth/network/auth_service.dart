@@ -264,7 +264,7 @@ class AuthService with AsyncTimer {
         prefs.major.value = result['major'] ?? "";
         prefs.stuType.value = result['stuType'] ?? "";
         prefs.avatar.value = result['avatar'] ?? "";
-        prefs.zone.value = result['zone'] ?? "";
+        prefs.area.value = result['area'] ?? "";
         prefs.building.value = result['building'] ?? "";
         prefs.floor.value = result['floor'] ?? "";
         prefs.room.value = result['room'] ?? "";
@@ -321,7 +321,7 @@ class AuthService with AsyncTimer {
         prefs.major.value = result['major'] ?? "";
         prefs.stuType.value = result['stuType'] ?? "";
         prefs.avatar.value = result['avatar'] ?? "";
-        prefs.zone.value = result['zone'] ?? "";
+        prefs.area.value = result['area'] ?? "";
         prefs.building.value = result['building'] ?? "";
         prefs.floor.value = result['floor'] ?? "";
         prefs.room.value = result['room'] ?? "";

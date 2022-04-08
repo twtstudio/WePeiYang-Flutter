@@ -32,7 +32,7 @@ class CommonPreferences {
   var major = PrefsBean<String>('major');
   var stuType = PrefsBean<String>('stuType');
   var avatar = PrefsBean<String>('avatar');
-  var zone = PrefsBean<String>('zone');
+  var area = PrefsBean<String>('area');
   var building = PrefsBean<String>('building');
   var floor = PrefsBean<String>('floor');
   var room = PrefsBean<String>('room');
@@ -143,7 +143,7 @@ class CommonPreferences {
     feedbackToken.clear();
     canPush.clear();
     todayShowUpdateAgain.clear();
-    zone.clear();
+    area.clear();
     building.clear();
     floor.clear();
     room.clear();

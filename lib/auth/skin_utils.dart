@@ -15,7 +15,11 @@ class Skin {
       this.colorC,
       this.colorD,
       this.colorE,
-      this.colorF});
+      this.colorF,
+      this.colorG,
+      this.colorH,
+      this.colorI,
+      this.colorJ});
 
   int id;
   String name;
@@ -29,6 +33,10 @@ class Skin {
   int colorD;
   int colorE;
   int colorF;
+  int colorG;
+  int colorH;
+  int colorI;
+  int colorJ;
 
   bool operator ==(Object other) => other is Skin && other.id == id;
 
@@ -45,6 +53,10 @@ class Skin {
         colorD: json["src"]["color_d"],
         colorE: json["src"]["color_e"],
         colorF: json["src"]["color_f"],
+        colorG: json["src"]["color_g"],
+        colorH: json["src"]["color_h"],
+        colorI: json["src"]["color_i"],
+        colorJ: json["src"]["color_j"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,5 +72,9 @@ class Skin {
         "color_d": colorD,
         "color_e": colorE,
         "color_f": colorF,
+        "color_g": colorG,
+        "color_h": colorH,
+        "color_i": colorI,
+        "color_j": colorJ,
       };
 }
