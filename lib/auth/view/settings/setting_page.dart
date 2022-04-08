@@ -83,48 +83,6 @@ class _SettingPageState extends State<SettingPage> {
                     borderRadius: BorderRadius.circular(15)),
                 child: InkWell(
                   onTap: () =>
-                      Navigator.pushNamed(context, AuthRouter.colorSetting)
-                          .then((_) {
-                    /// 使用pop返回此页面时进行rebuild
-                    this.setState(() {});
-                  }),
-                  splashFactory: InkRipple.splashFactory,
-                  borderRadius: BorderRadius.circular(15),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: descriptionMaxWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(S.current.setting_color,
-                                  style: mainTextStyle),
-                              SizedBox(height: 3),
-                              Text(S.current.setting_color_hint,
-                                  style: hintTextStyle)
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        arrow,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          if (!widget.showBrief)
-            Padding(
-              padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-              child: Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: InkWell(
-                  onTap: () =>
                       Navigator.pushNamed(context, AuthRouter.themeSetting)
                           .then((_) {
                     /// 使用pop返回此页面时进行rebuild

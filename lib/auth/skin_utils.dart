@@ -41,7 +41,7 @@ class Skin {
   bool operator ==(Object other) => other is Skin && other.id == id;
 
   factory Skin.fromJson(Map<String, dynamic> json) => Skin(
-        id: json["src"]["id"],
+        id: json["id"],
         name: json["src"]["name"],
         description: json["src"]["description"],
         selfPageImage: json["src"]["self_page_image"],

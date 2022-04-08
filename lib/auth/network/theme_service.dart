@@ -41,11 +41,12 @@ class ThemeService with AsyncTimer {
       try {
         var response = await themeDio.post('auth/client',
             formData: FormData.fromMap({
-              'token': '${CommonPreferences().token.value}',
+              'token': CommonPreferences().token.value.toString(),
             }));
         CommonPreferences().themeToken.value = response.data['result'];
         onSuccess?.call();
       } on DioError catch (e) {
+        ToastProvider.error('登陆失败');
         onFailure(e);
       }
     });
@@ -71,6 +72,7 @@ class ThemeService with AsyncTimer {
   }
 
   static Future<List<Skin>> getSkins() async {
+    //addSkin();
     try {
       var response = await themeDio
           .get('skin/user?token=${CommonPreferences().themeToken.value}');
@@ -85,10 +87,7 @@ class ThemeService with AsyncTimer {
     }
   }
 
-  static Future<void> addSkin({
-    @required void Function() onSuccess,
-    @required onFailure,
-  }) async {
+  static Future<void> addSkin() async {
     Skin haiTangSkin = Skin(
       id: 1,
       name: '海棠季皮肤',
@@ -105,6 +104,7 @@ class ThemeService with AsyncTimer {
       colorD: Color.fromRGBO(236, 206, 217, 1.0).value,
       colorE: Color.fromRGBO(253, 253, 254, 1.0).value,
       colorF: Color.fromRGBO(221, 182, 190, 1.0).value,
+      colorG: Color.fromRGBO(241, 220, 224, 1.0).value,
     );
     print(haiTangSkin.toJson().toString());
     AsyncTimer.runRepeatChecked('uploadSkin', () async {
@@ -114,9 +114,9 @@ class ThemeService with AsyncTimer {
               'skinName': '海棠节',
               'src': haiTangSkin.toJson().toString(),
             }));
-        onSuccess?.call();
+
       } on DioError catch (e) {
-        onFailure(e);
+
       }
     });
   }

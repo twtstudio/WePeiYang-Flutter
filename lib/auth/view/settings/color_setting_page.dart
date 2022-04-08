@@ -157,26 +157,6 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                         child: getText("#47535f",
                             Color.fromRGBO(206, 198, 185, 1), 'blue', 0)))),
           ),
-          SizedBox(
-            height: 75,
-            child: Card(
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                elevation: 0,
-                color: Color.fromRGBO(217, 162, 169, 1.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9)),
-                child: InkWell(
-                    onTap: () {
-                      FavorColors.setBegoniaGPA();
-                      CommonPreferences().isBegonia.value =true;
-                      setState(() {});
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    borderRadius: BorderRadius.circular(9),
-                    child: Center(
-                        child: getText("海棠节",
-                            Colors.white, 'begonia', 0)))),
-          ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
             alignment: Alignment.centerLeft,
@@ -241,26 +221,6 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     child: Center(
                         child: getText(
                             "earth yellow", Colors.white, 'brown', 1)))),
-          ),
-          SizedBox(
-            height: 75,
-            child: Card(
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                elevation: 0,
-                color: Color.fromRGBO(217, 162, 169, 1.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9)),
-                child: InkWell(
-                    onTap: () {
-                      FavorColors.setBegoniaSchedule();
-                      CommonPreferences().isBegonia.value = true;
-                      setState(() {});
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    borderRadius: BorderRadius.circular(9),
-                    child: Center(
-                        child: getText(
-                            "海棠节皮肤", Colors.white, 'begonia', 1)))),
           ),
           SizedBox(
             height: 75,
