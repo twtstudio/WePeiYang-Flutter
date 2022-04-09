@@ -131,8 +131,8 @@ class FavorColors {
       return Color.fromRGBO(128, 95, 78, 1);
     else if (type == 'blue')
       return Color.fromRGBO(98, 103, 123, 1);
-    else
-      return Color.fromRGBO(224, 171, 178, 1.0);
+    else if (type == 'april')
+      return Color.fromRGBO(98, 103, 123, 1);
   }
 
   /// 这套配色暴露出来给主页使用

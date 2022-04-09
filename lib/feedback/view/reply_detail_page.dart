@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -329,7 +330,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
@@ -360,7 +361,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),

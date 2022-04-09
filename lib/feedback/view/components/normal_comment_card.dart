@@ -569,7 +569,7 @@ class _NCommentCardState extends State<NCommentCard>
                     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: widget.isFullView && widget.isSubFloor
+                      color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorE.value):widget.isFullView && widget.isSubFloor
                           ? Colors.transparent
                           : Colors.white,
                       boxShadow: [

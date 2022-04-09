@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -29,19 +30,18 @@ class _ThemeChangePageState extends State<ThemeChangePage>
       onTap: () {
         setState(() {
           selected = skins[index].id;
-          pref.skinNow.value = skins[index].id;
-        selected = skins[index].id;
-        CommonPreferences().isSkinUsed.value = true;
-        CommonPreferences().skinMain.value = skins[index].mainPageImage;
-        CommonPreferences().skinClass.value = skins[index].schedulePageImage;
-        CommonPreferences().skinProfile.value = skins[index].selfPageImage;
-        CommonPreferences().skinColorA.value = skins[index].colorA;
-        CommonPreferences().skinColorB.value = skins[index].colorB;
-        CommonPreferences().skinColorC.value = skins[index].colorC;
-        CommonPreferences().skinColorD.value = skins[index].colorD;
-        CommonPreferences().skinColorE.value = skins[index].colorE;
-        CommonPreferences().skinColorF.value = skins[index].colorF;
-      });},
+          CommonPreferences().isSkinUsed.value = true;
+          CommonPreferences().skinMain.value = skins[index].mainPageImage;
+          CommonPreferences().skinClass.value = skins[index].schedulePageImage;
+          CommonPreferences().skinProfile.value = skins[index].selfPageImage;
+          CommonPreferences().skinColorA.value = skins[index].colorA;
+          CommonPreferences().skinColorB.value = skins[index].colorB;
+          CommonPreferences().skinColorC.value = skins[index].colorC;
+          CommonPreferences().skinColorD.value = skins[index].colorD;
+          CommonPreferences().skinColorE.value = skins[index].colorE;
+          CommonPreferences().skinColorF.value = skins[index].colorF;
+        });
+      },
       child: AnimatedContainer(
         height: selected == skins[index].id
             ? (WePeiYangApp.screenWidth - 28) * 0.5
@@ -68,6 +68,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
       onTap: () => setState(() {
         selected = ind;
         pref.skinNow.value = ind;
+        CommonPreferences().isSkinUsed.value = false;
       }),
       child: AnimatedContainer(
         height: selected == ind
@@ -156,8 +157,8 @@ class _ThemeChangePageState extends State<ThemeChangePage>
 
   @override
   void initState() {
-    selected = pref.skinNow.value;
     ThemeService.loginFromClient(onSuccess: () async {
+      ToastProvider.success('登录成功' + CommonPreferences().themeToken.value);
       await ThemeService.getSkins().then((list) {
         skins.clear();
         skins.addAll(list);
@@ -166,7 +167,9 @@ class _ThemeChangePageState extends State<ThemeChangePage>
         });
       });
     }, onFailure: () {
+      ToastProvider.success('登陆失败' + CommonPreferences().themeToken.value);
     });
+    //onFailure: ToastProvider.error('皮肤界面登录失败'));
     super.initState();
   }
 

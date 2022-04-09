@@ -181,7 +181,6 @@ class _GPACurveState extends State<GPACurve>
     List<double> curveData = widget.notifier.curveDataWithNotify;
     _initPoints(points, curveData);
     return GestureDetector(
-
         /// 点击监听
         onTapDown: (TapDownDetails detail) {
           RenderBox renderBox = context.findRenderObject();
