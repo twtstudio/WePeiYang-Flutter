@@ -18,16 +18,47 @@ class _NucPassportPageState extends State<NucPassportPage> {
   Timer _timer;
   Map<String, Color> mainColor = {
     '格园': Color(0xFFFF3D3F),
-    '诚园': Color(0xFFFF9449),
+    '知园': Color(0xFFFF9449),
+    '诚园': Color(0xFFFFC130),
     '正园': Color(0xFFFFC130),
-    '修园': Color(0xFF73D13D),
-    '齐园': Color(0xFF40A9FF),
-    '平园': Color(0xFFAE45DB),
-    '治园': Color(0xFF6A56D3),
-    '青园': Color(0xFF000000),
+    '修园': Color(0xFF40A9FF),
+    '齐园': Color(0xFFAE45DB),
+    '治园': Color(0xFF53A6D2),
+    '平园': Color(0xFF15D1D3),
+    '青园': Color(0xFFE536BF),
+    '留园': Color(0xFFE536BF)
   };
 
-  Color assistColor = Colors.white70;
+  Map<String, Color> assistColor = {
+    '1斋': Color(0xFFFF9449),
+    '2斋': Color(0xFFFFC130),
+    '3斋': Color(0xFF9254DE),
+    '4斋': Color(0xFFFF3D3F),
+    '5斋': Color(0xFFFFC130),
+    '6斋': Color(0xFFFF3D3F),
+    '7斋': Color(0xFFFF9449),
+    '8斋A': Color(0xFF9254DE),
+    '8斋B': Color(0xFF40A9FF),
+    '9斋': Color(0xFFFFC130),
+    '10斋': Color(0xFF40A9FF),
+    '11斋': Color(0xFFFF3D3F),
+    '12斋': Color(0xFFFFC130),
+    '13斋': Color(0xFFFFC130),
+    '14斋': Color(0xFFFF3D3F),
+    '15斋': Color(0xFF40A9FF),
+    '16斋': Color(0xFF40A9FF),
+    '17斋': Color(0xFFF0CD27),
+    '18斋': Color(0xFF40C7CD),
+    '19斋': Color(0xFFC58EB8),
+    '20斋': Color(0xFFFD779C),
+    '21斋': Color(0xFFFF3D3F),
+    '22斋': Color(0xFFFF9449),
+    '23斋': Color(0xFFFFC130),
+    '24斋': Color(0xFF73D13D),
+    '25斋': Color(0xFF40A9FF),
+    '26斋': Color(0xFF9254DE),
+  };
+
   bool reverse = false;
   int changeContainerState = 0;
 
@@ -38,7 +69,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
       LocalSetting.changeBrightness(1);
       LocalSetting.changeSecurity(true);
     } catch (e) {
-      ToastProvider.error('逊内');
+      ToastProvider.error('亮度调节失败');
     }
 
     ///循环执行
@@ -69,7 +100,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
           LocalSetting.changeBrightness(-1);
           LocalSetting.changeSecurity(false);
         } catch (e) {
-          ToastProvider.error('逊内');
+          ToastProvider.error('亮度调节失败');
         }
         return true;
       },
@@ -82,7 +113,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
             end: reverse ? Alignment(0, 0.2) : Alignment(0, 1.6),
             colors: [
               mainColor[CommonPreferences().area.value] ?? Color(0xFF4F4F4F),
-              assistColor
+              assistColor[CommonPreferences().building.value] ?? Colors.white70
             ],
           ),
         ),
@@ -100,7 +131,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
                     try {
                       LocalSetting.changeBrightness(-1);
                     } catch (e) {
-                      ToastProvider.error('逊内');
+                      ToastProvider.error('亮度调节失败');
                     }
                   },
                   child: Padding(
@@ -121,7 +152,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
                           LocalSetting.changeBrightness(-1);
                           LocalSetting.changeSecurity(false);
                         } catch (e) {
-                          ToastProvider.error('逊内');
+                          ToastProvider.error('亮度调节失败');
                         }
                         Navigator.pop(context);
                       },
@@ -140,8 +171,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                '${CommonPreferences().area.value}',
+                            Text('${CommonPreferences().area.value}',
                                 style: TextUtil.base.white.sp(78).w900.h(1.4)),
                             Text(
                                 '${CommonPreferences().building.value}\n${CommonPreferences().room.value}',

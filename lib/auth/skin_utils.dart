@@ -10,6 +10,8 @@ class Skin {
       this.selfPageImage,
       this.mainPageImage,
       this.schedulePageImage,
+      this.gpaImageInner,
+      this.gpaImageOuter,
       this.colorA,
       this.colorB,
       this.colorC,
@@ -27,6 +29,8 @@ class Skin {
   String selfPageImage;
   String mainPageImage;
   String schedulePageImage;
+  String gpaImageInner;
+  String gpaImageOuter;
   int colorA;
   int colorB;
   int colorC;
@@ -47,6 +51,8 @@ class Skin {
         selfPageImage: json["src"]["self_page_image"],
         mainPageImage: json["src"]["main_page_image"],
         schedulePageImage: json["src"]["schedule_page_image"],
+        gpaImageInner: json["src"]["gpa_image_inner"],
+        gpaImageOuter: json["src"]["gpa_image_outer"],
         colorA: json["src"]["color_a"],
         colorB: json["src"]["color_b"],
         colorC: json["src"]["color_c"],
@@ -66,6 +72,8 @@ class Skin {
         "self_page_image": "'$selfPageImage'",
         "main_page_image": "'$mainPageImage'",
         'schedule_page_image': "'$schedulePageImage'",
+        'gpa_image_inner': "'$gpaImageInner'",
+        'gpa_image_outer': "'$gpaImageOuter'",
         "color_a": colorA,
         "color_b": colorB,
         "color_c": colorC,

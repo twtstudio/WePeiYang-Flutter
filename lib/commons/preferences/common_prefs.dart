@@ -53,6 +53,7 @@ class CommonPreferences {
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
   var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
   var isFirstLogin = PrefsBean<bool>("firstLogin", true);
+
   ///愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
   var isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
   var isAprilFool = PrefsBean<bool>("aprilFool", false);
@@ -60,17 +61,20 @@ class CommonPreferences {
   var isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
   var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
   var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
+
   ///海棠节用->皮肤用
   var isSkinUsed = PrefsBean<bool>("skin", false);
-  var skinProfile = PrefsBean<String>("skinProfile","");
-  var skinClass = PrefsBean<String>("skinClass","");
-  var skinMain = PrefsBean<String>("skinMain","");
-  var skinColorA = PrefsBean<int>("skinColorA",1);
-  var skinColorB = PrefsBean<int>("skinColorB",1);
-  var skinColorC= PrefsBean<int>("skinColorC",1);
-  var skinColorD = PrefsBean<int>("skinColorD",1);
-  var skinColorE = PrefsBean<int>("skinColorE",1);
-  var skinColorF = PrefsBean<int>("skinColorF",1);
+  var isDarkMode = PrefsBean<bool>("isDarkMode", false);
+  var skinProfile = PrefsBean<String>("skinProfile", "");
+  var skinClass = PrefsBean<String>("skinClass", "");
+  var skinMain = PrefsBean<String>("skinMain", "");
+  var skinColorA = PrefsBean<int>("skinColorA", 1);
+  var skinColorB = PrefsBean<int>("skinColorB", 1);
+  var skinColorC = PrefsBean<int>("skinColorC", 1);
+  var skinColorD = PrefsBean<int>("skinColorD", 1);
+  var skinColorE = PrefsBean<int>("skinColorE", 1);
+  var skinColorF = PrefsBean<int>("skinColorF", 1);
+
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
   /// 2. 进入 gpa / 课程表 / 考表 页面时再尝试用缓存中办公网的cookie爬取最新数据
@@ -112,7 +116,7 @@ class CommonPreferences {
   var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
   var otherWeekSchedule =
       PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
-  var skinNow = PrefsBean<int>("skinNow", -1); // 当前皮肤编号
+  var skinNow = PrefsBean<int>("skinNow", 0); // 当前皮肤编号
 
   /// 自习室
   var loungeUpdateTime = PrefsBean<String>("loungeUpdateTime", "");
@@ -160,6 +164,17 @@ class CommonPreferences {
     floor.clear();
     room.clear();
     bed.clear();
+    isSkinUsed.clear();
+    isDarkMode.clear();
+    skinProfile.clear();
+    skinClass.clear();
+    skinMain.clear();
+    skinColorA.clear();
+    skinColorB.clear();
+    skinColorC.clear();
+    skinColorD.clear();
+    skinColorE.clear();
+    skinColorF.clear();
   }
 
   /// 清除办公网缓存
