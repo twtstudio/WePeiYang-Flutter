@@ -25,7 +25,7 @@ class _HaitangPageState extends WbyWebViewState {
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     print(CommonPreferences().token.value);
-    return "http://haitang.twt.edu.cn/#/?token=${CommonPreferences().token.value}";
-    //return "http://202.113.13.171:1000/#/?token=${CommonPreferences().token.value}";
+    return "https://haitang.twt.edu.cn/#/?token=${CommonPreferences().token.value}";
+    //return "https://59.67.37.34/#/?token=${CommonPreferences().token.value}";
   }
 }

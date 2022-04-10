@@ -204,195 +204,209 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       ),
     );
 
-    return SafeArea(
-      child: NestedScrollView(
-          controller: context.read<LakeModel>().nController,
-          physics: BouncingScrollPhysics(),
-          floatHeaderSlivers: false,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            scroll = false;
-            return <Widget>[
-              SliverAppBar(
-                toolbarHeight: 48,
-                backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):Colors.white,
-                titleSpacing: 0,
-                leading: InkWell(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () =>
-                      Navigator.pushNamed(context, FeedbackRouter.profile),
-                  child: Center(
-                    child: FeedbackBadgeWidget(
-                      child: ImageIcon(
-                          AssetImage("assets/images/lake_butt_icons/box.png"),
-                          size: 23,
-                          color: ColorUtil.boldTag54),
+    return Scaffold(
+      backgroundColor: CommonPreferences().isSkinUsed.value
+          ? Color(CommonPreferences().skinColorC.value)
+          : Colors.white,
+      body: SafeArea(
+        child: NestedScrollView(
+            controller: context.read<LakeModel>().nController,
+            physics: BouncingScrollPhysics(),
+            floatHeaderSlivers: false,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              scroll = false;
+              return <Widget>[
+                SliverAppBar(
+                  toolbarHeight: 48,
+                  backgroundColor: CommonPreferences().isSkinUsed.value
+                      ? Color(CommonPreferences().skinColorC.value)
+                      : Colors.white,
+                  titleSpacing: 0,
+                  leading: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () =>
+                        Navigator.pushNamed(context, FeedbackRouter.profile),
+                    child: Center(
+                      child: FeedbackBadgeWidget(
+                        child: ImageIcon(
+                            AssetImage("assets/images/lake_butt_icons/box.png"),
+                            size: 23,
+                            color: ColorUtil.boldTag54),
+                      ),
                     ),
                   ),
+                  title: searchBar,
+                  actions: [
+                    Hero(
+                      tag: "addNewPost",
+                      child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Container(
+                              height: 24,
+                              width: 24,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/lake_butt_icons/add_post.png")))),
+                          onTap: () {
+                            if (tabList.isNotEmpty) {
+                              initializeRefresh = true;
+                              Navigator.pushNamed(
+                                  context, FeedbackRouter.newPost,
+                                  arguments: NewPostArgs(false, '', 0, ''));
+                            }
+                          }),
+                    ),
+                    SizedBox(width: 15)
+                  ],
                 ),
-                title: searchBar,
-                actions: [
-                  Hero(
-                    tag: "addNewPost",
-                    child: InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
+                SliverPersistentHeader(
+                    floating: true,
+                    pinned: true,
+                    delegate: HomeHeaderDelegate(
                         child: Container(
-                            height: 24,
-                            width: 24,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        "assets/images/lake_butt_icons/add_post.png")))),
-                        onTap: () {
-                          if (tabList.isNotEmpty) {
-                            initializeRefresh = true;
-                            Navigator.pushNamed(context, FeedbackRouter.newPost,
-                                arguments: NewPostArgs(false, '', 0, ''));
-                          }
-                        }),
-                  ),
-                  SizedBox(width: 15)
-                ],
-              ),
-              SliverPersistentHeader(
-                  floating: true,
-                  pinned: true,
-                  delegate: HomeHeaderDelegate(
-                      child: Container(
-                    color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):Colors.white,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: status == LakePageStatus.unload
-                                ? Align(
-                                    alignment: Alignment.center,
-                                    child: Loading())
-                                : status == LakePageStatus.loading
-                                    ? Align(
-                                        alignment: Alignment.center,
-                                        child: Loading())
-                                    : status == LakePageStatus.idle
-                                        ? Builder(builder: (context) {
-                                            return TabBar(
-                                              indicatorPadding:
-                                                  EdgeInsets.only(bottom: 2),
-                                              labelPadding:
-                                                  EdgeInsets.only(bottom: 3),
-                                              isScrollable: true,
-                                              physics: BouncingScrollPhysics(),
-                                              controller: context
+                      color: CommonPreferences().isSkinUsed.value
+                          ? Color(CommonPreferences().skinColorC.value)
+                          : Colors.white,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: status == LakePageStatus.unload
+                                  ? Align(
+                                      alignment: Alignment.center,
+                                      child: Loading())
+                                  : status == LakePageStatus.loading
+                                      ? Align(
+                                          alignment: Alignment.center,
+                                          child: Loading())
+                                      : status == LakePageStatus.idle
+                                          ? Builder(builder: (context) {
+                                              return TabBar(
+                                                indicatorPadding:
+                                                    EdgeInsets.only(bottom: 2),
+                                                labelPadding:
+                                                    EdgeInsets.only(bottom: 3),
+                                                isScrollable: true,
+                                                physics:
+                                                    BouncingScrollPhysics(),
+                                                controller: context
+                                                    .read<LakeModel>()
+                                                    .tabController,
+                                                labelColor:
+                                                    ColorUtil.black2AColor,
+                                                labelStyle: TextUtil.base
+                                                    .black2A.w600.NotoSansSC
+                                                    .sp(18),
+                                                unselectedLabelColor:
+                                                    ColorUtil.lightTextColor,
+                                                unselectedLabelStyle: TextUtil
+                                                    .base.greyB2.w600.NotoSansSC
+                                                    .sp(18),
+                                                indicator: CustomIndicator(
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            ColorUtil.mainColor,
+                                                        width: 2)),
+                                                tabs: List<Widget>.generate(
+                                                    tabList.length,
+                                                    (index) => DaTab(
+                                                        text: tabList[index]
+                                                            .shortname,
+                                                        withDropDownButton:
+                                                            tabList[index]
+                                                                    .name ==
+                                                                '校务专区')),
+                                                onTap: (index) {
+                                                  if (tabList[index].id == 1) {
+                                                    _onFeedbackTapped();
+                                                  }
+                                                },
+                                              );
+                                            })
+                                          : InkWell(
+                                              onTap: () => context
                                                   .read<LakeModel>()
-                                                  .tabController,
-                                              labelColor:
-                                                  ColorUtil.black2AColor,
-                                              labelStyle: TextUtil
-                                                  .base.black2A.w600.NotoSansSC
-                                                  .sp(18),
-                                              unselectedLabelColor:
-                                                  ColorUtil.lightTextColor,
-                                              unselectedLabelStyle: TextUtil
-                                                  .base.greyB2.w600.NotoSansSC
-                                                  .sp(18),
-                                              indicator: CustomIndicator(
-                                                  borderSide: BorderSide(
-                                                      color:
-                                                          ColorUtil.mainColor,
-                                                      width: 2)),
-                                              tabs: List<Widget>.generate(
-                                                  tabList.length,
-                                                  (index) => DaTab(
-                                                      text: tabList[index]
-                                                          .shortname,
-                                                      withDropDownButton:
-                                                          tabList[index].name ==
-                                                              '校务专区')),
-                                              onTap: (index) {
-                                                if (tabList[index].id == 1) {
-                                                  _onFeedbackTapped();
-                                                }
-                                              },
-                                            );
-                                          })
-                                        : InkWell(
-                                            onTap: () => context
-                                                .read<LakeModel>()
-                                                .checkTokenAndGetTabList(),
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '点击重新加载分区',
-                                                style: TextUtil
-                                                    .base.mainColor.w400
-                                                    .sp(16),
+                                                  .checkTokenAndGetTabList(),
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '点击重新加载分区',
+                                                  style: TextUtil
+                                                      .base.mainColor.w400
+                                                      .sp(16),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                          ),
-                          SizedBox(width: 17)
-                        ]),
-                  ))),
-            ];
-          },
-          body: Container(
-            decoration: BoxDecoration(
-                color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorC.value):ColorUtil.backgroundColor
-            ),
-            child: Stack(
-              children: [
-                Selector<LakeModel, List<WPYTab>>(
-                    selector: (BuildContext context, LakeModel lakeModel) {
-                  return lakeModel.tabList;
-                }, builder: (_, tabs, __) {
-                  if (!context.read<LakeModel>().tabControllerLoaded) {
-                    context.read<LakeModel>().tabController =
-                        TabController(length: tabs.length, vsync: this)
-                          ..addListener(() {
-                            if (context
-                                    .read<LakeModel>()
-                                    .tabController
-                                    .index
-                                    .toDouble() ==
-                                context
-                                    .read<LakeModel>()
-                                    .tabController
-                                    .animation
-                                    .value) {
-                              WPYTab tab =
-                                  context.read<LakeModel>().lakeAreas[1].tab;
-                              if (context.read<LakeModel>().tabController.index !=
-                                      tabList.indexOf(tab) &&
-                                  canSee) _onFeedbackTapped();
-                              _onFeedbackOpen();
-                              context.read<LakeModel>().currentTab =
-                                  context.read<LakeModel>().tabController.index;
-                            }
-                          });
-                  }
-                  int cacheNum = 0;
-                  return ExtendedTabBarView(
-                      cacheExtent: cacheNum,
-                      controller: context.read<LakeModel>().tabController,
-                      children: List<Widget>.generate(
-                          tabs == null ? 1 : tabs.length,
-                          (i) => NSubPage(
-                                index: tabList[i].id,
-                              )));
-                }),
-                Visibility(
-                  child: InkWell(
-                      onTap: () {
-                        if (canSee) _onFeedbackTapped();
-                      },
-                      child: FbTagsWrap(key: fbKey)),
-                  maintainState: true,
-                  visible: canSee,
-                ),
-              ],
-            ),
-          )),
+                            ),
+                            SizedBox(width: 17)
+                          ]),
+                    ))),
+              ];
+            },
+            body: Container(
+              decoration: BoxDecoration(
+                  color: CommonPreferences().isSkinUsed.value
+                      ? Color(CommonPreferences().skinColorC.value)
+                      : ColorUtil.backgroundColor),
+              child: Stack(
+                children: [
+                  Selector<LakeModel, List<WPYTab>>(
+                      selector: (BuildContext context, LakeModel lakeModel) {
+                    return lakeModel.tabList;
+                  }, builder: (_, tabs, __) {
+                    if (!context.read<LakeModel>().tabControllerLoaded) {
+                      context.read<LakeModel>().tabController = TabController(
+                          length: tabs.length, vsync: this)
+                        ..addListener(() {
+                          if (context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .index
+                                  .toDouble() ==
+                              context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .animation
+                                  .value) {
+                            WPYTab tab =
+                                context.read<LakeModel>().lakeAreas[1].tab;
+                            if (context.read<LakeModel>().tabController.index !=
+                                    tabList.indexOf(tab) &&
+                                canSee) _onFeedbackTapped();
+                            _onFeedbackOpen();
+                            context.read<LakeModel>().currentTab =
+                                context.read<LakeModel>().tabController.index;
+                          }
+                        });
+                    }
+                    int cacheNum = 0;
+                    return ExtendedTabBarView(
+                        cacheExtent: cacheNum,
+                        controller: context.read<LakeModel>().tabController,
+                        children: List<Widget>.generate(
+                            tabs == null ? 1 : tabs.length,
+                            (i) => NSubPage(
+                                  index: tabList[i].id,
+                                )));
+                  }),
+                  Visibility(
+                    child: InkWell(
+                        onTap: () {
+                          if (canSee) _onFeedbackTapped();
+                        },
+                        child: FbTagsWrap(key: fbKey)),
+                    maintainState: true,
+                    visible: canSee,
+                  ),
+                ],
+              ),
+            )),
+      ),
     );
   }
 }
@@ -521,7 +535,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
                         '',
                         provider.departmentList[index].id.toString(),
                         '#${provider.departmentList[index].name}',
-                        1, 0),
+                        1,
+                        0),
                   );
                 },
               );

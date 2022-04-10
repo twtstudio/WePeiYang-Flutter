@@ -56,6 +56,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     await FeedbackService.getPostById(
         id: int.parse(_textEditingController.text.toString()),
         onResult: (Post post) {
+          FocusManager.instance.primaryFocus.unfocus();
           process = '';
           if (post.isOwner) {
             Future.delayed(Duration(milliseconds: 1000)).then((_) {
@@ -67,28 +68,38 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                   setState(() {
                     process = process + '\n该帖符合时间要求（4/8日前）';
                   });
-                  if (post.likeCount >= 15) {
+                  if (post.tag.name == '海棠季') {
                     Future.delayed(Duration(milliseconds: 1000)).then((_) {
                       setState(() {
-                        process = process + '\n该帖符合点赞要求（15+）\n恭喜你获得海棠季限定皮肤';
+                        process = process + '\n该帖符合tag要求（海棠季）';
                       });
-                      ThemeService.postMeSkin(
-                          skinId: -1295945726,
-                          onSuccess: () async {
-                            await ThemeService.getSkins().then((list) {
-                              skins.clear();
-                              skins.addAll(list);
-                              setState(() {
-                                isReady = true;
-                              });
-                            });
-                          },
-                          onFailure: () =>
-                              ToastProvider.error('获得皮肤失败（或已经拥有该皮肤）'));
+                      if (post.likeCount >= 15) {
+                        Future.delayed(Duration(milliseconds: 1000)).then((_) {
+                          setState(() {
+                            process = process + '\n该帖符合点赞要求（15+）\n恭喜你获得海棠季限定皮肤';
+                          });
+                          ThemeService.postMeSkin(
+                              skinId: -1295945726,
+                              onSuccess: () async {
+                                await ThemeService.getSkins().then((list) {
+                                  skins.clear();
+                                  skins.addAll(list);
+                                  setState(() {
+                                    isReady = true;
+                                  });
+                                });
+                              },
+                              onFailure: () =>
+                                  ToastProvider.error('获得皮肤失败（或已经拥有该皮肤）'));
+                        });
+                      } else
+                        setState(() {
+                          process = process + '\n该帖不符合点赞要求（15+）';
+                        });
                     });
                   } else
                     setState(() {
-                      process = process + '\n该帖不符合点赞要求（15+）';
+                      process = process + '\n该帖不符合时间要求（4/8日前）';
                     });
                 });
               } else
@@ -174,7 +185,8 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                   ],
                 ),
               ),
-            if (isSelected && process != '') Text(process, style: TextUtil.base.sp(12).greyA6.w600)
+            if (isSelected && process != '')
+              Text(process, style: TextUtil.base.sp(12).greyA6.w600)
           ],
         ),
       ),
@@ -264,7 +276,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                           Positioned(
                             bottom: 4,
                             right: 8,
-                            child: TextPod(ind == -1 ? '默认-白' : '默认-黑'),
+                            child: TextPod(ind == -1 ? '默认-白' : '敬请期待'),
                           )
                         ],
                       ))),
@@ -350,7 +362,6 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                     selected = pref.skinNow.value;
                     pref.themeToken.clear();
                     ThemeService.loginFromClient(onSuccess: () async {
-                      //ToastProvider.success('登录成功' + CommonPreferences().themeToken.value);
                       await ThemeService.getSkins().then((list) {
                         skins.clear();
                         skins.addAll(list);
@@ -366,8 +377,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
         body: ListView(
           children: [
             DefaultThemeCard(-1),
-            //DefaultThemeCard(-2),
-            ActionCard(),
+            DefaultThemeCard(-2),
             isReady
                 ? ListView.builder(
                     itemCount: skins.length + 2,

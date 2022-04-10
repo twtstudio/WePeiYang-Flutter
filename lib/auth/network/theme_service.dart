@@ -8,8 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class ThemeDio extends DioAbstract {
   @override
-  //String baseUrl = 'http://202.113.13.171:1000/api/v1/';
-  String baseUrl = 'http://haitang.twt.edu.cn/api/v1/';
+  //String baseUrl = 'https://59.67.37.34/api/v1/';
+  String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
   var headers = {};
 
   @override
