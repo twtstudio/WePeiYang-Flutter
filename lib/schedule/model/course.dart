@@ -31,8 +31,8 @@ extension PairArrange on Pair<Course, int> {
 
 class Course {
   String name;
-  String classId = '';
-  String courseId = '';
+  String classId = ''; // serial
+  String courseId = ''; // no
   String credit;
   String campus = '';
   String weeks; // 格式为 `1-16`
