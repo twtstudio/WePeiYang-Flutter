@@ -1,8 +1,11 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -75,15 +78,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
 
     var provider = context.watch<CourseDisplayProvider>();
 
-    var shrinkButton = IconButton(
-      icon: Icon(
-          provider.shrink ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-          size: 35),
-      onPressed: () {
-        provider.shrink = !provider.shrink;
-      },
-    );
-
     var leading;
     if (provider.editMode) {
       leading = Padding(
@@ -91,8 +85,41 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
         child: Center(
           child: TextButton(
             onPressed: () {
-              // TODO save
-              provider.editMode = false;
+              SmartDialog.show(
+                clickBgDismissTemp: false,
+                widget: WbyDialogLayout(
+                  padding: true,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                            'assets/images/schedule/notify.png',
+                            color: FavorColors.scheduleTitleColor,
+                            height: 30,
+                            width: 30),
+                      ),
+                      SizedBox(height: 25),
+                      Text('是否保存已填信息?',
+                          style:
+                              TextUtil.base.PingFangSC.black00.medium.sp(15)),
+                      SizedBox(height: 30),
+                      WbyDialogStandardTwoButton(
+                        cancel: () {
+                          SmartDialog.dismiss();
+                        },
+                        ok: () {
+                          provider.editMode = false;
+                          SmartDialog.dismiss();
+                        },
+                        cancelText: "取消",
+                        okText: "保存",
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
             child: Text('保存',
                 style: TextUtil.base.PingFangSC.bold
@@ -111,7 +138,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var actions;
     if (provider.editMode) {
       actions = [
-        shrinkButton,
         IconButton(
           icon: Icon(Icons.widgets_outlined),
           onPressed: () {
@@ -139,7 +165,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
       ];
     } else {
       actions = [
-        shrinkButton,
         IconButton(
           icon: Icon(Icons.edit_location_outlined),
           onPressed: () => provider.editMode = true,
@@ -205,6 +230,24 @@ class _TitleWidget extends StatelessWidget {
                       color: Color.fromRGBO(114, 113, 113, 1), fontSize: 16));
             }),
           ),
+          Builder(builder: (context) {
+            var provider = context.watch<CourseDisplayProvider>();
+            return GestureDetector(
+                onTap: () {
+                  provider.shrink = !provider.shrink;
+                },
+                child: Container(
+                  decoration: BoxDecoration(),
+                  padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
+                  child: Image.asset(
+                      provider.shrink
+                          ? 'assets/images/schedule/up.png'
+                          : 'assets/images/schedule/down.png',
+                      color: FavorColors.scheduleTitleColor,
+                      height: 20,
+                      width: 20),
+                ));
+          })
         ],
       ),
     );

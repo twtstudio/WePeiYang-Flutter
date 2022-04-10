@@ -8,8 +8,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/view/unit_picker.dart';
-import 'package:we_pei_yang_flutter/schedule/view/week_picker.dart';
+import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
 class EditBottomSheet extends StatefulWidget {
   @override
@@ -61,7 +60,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         return Column(
           children: List.generate(
             provider.arrangeList.length,
-            (index) => _TimeFrameWidget(
+            (index) => TimeFrameWidget(
               index,
               key: ValueKey(provider.initIndex(index)),
             ),
@@ -102,7 +101,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                 child: ListView(
                   controller: _scrollController,
                   children: [
-                    _CardWidget(
+                    CardWidget(
                       onTap: () {},
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -116,16 +115,16 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         ],
                       ),
                     ),
-                    _CardWidget(
+                    CardWidget(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _InputWidget(
+                          InputWidget(
                             onChanged: (text) => name = text,
                             title: '课程名称',
                             hintText: '请输入课程名称（必填）',
                           ),
-                          _InputWidget(
+                          InputWidget(
                             onChanged: (text) => credit = text,
                             title: '课程学分',
                             hintText: '请输入课程学分（选填）',
@@ -134,7 +133,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       ),
                     ),
                     timeFrameBuilder,
-                    _CardWidget(
+                    CardWidget(
                       onTap: () {
                         context.read<EditProvider>().add();
                         Future.delayed(Duration(milliseconds: 100), () {
@@ -164,206 +163,6 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _TimeFrameWidget extends StatelessWidget {
-  final int index;
-
-  _TimeFrameWidget(this.index, {Key? key}) : super(key: key);
-
-  static const _weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-
-  @override
-  Widget build(BuildContext context) {
-    var pvd = context.read<EditProvider>();
-
-    var unitList = pvd.arrangeList[index].unitList;
-
-    var unitText = unitList.every((e) => e == 0)
-        ? '点击选择'
-        : '第${unitList.first}-${unitList.last}节';
-
-    var weekList = pvd.arrangeList[index].weekList;
-
-    var weekText =
-        weekList.isEmpty ? '点击选择' : '第${weekList.first}-${weekList.last}周';
-
-    var weekType = '';
-
-    if (weekList.isEmpty || weekList.length == 1) {
-      // pass
-    } else if (weekList[1] - weekList[0] == 1) {
-      weekType = '每周';
-    } else if (weekList.first.isOdd) {
-      weekType = '单周';
-    } else if (weekList.first.isEven) {
-      weekType = '双周';
-    }
-
-    var weekDay = weekList.isEmpty
-        ? ''
-        : _weekDays[pvd.arrangeList[index].weekday - 1] + '   ';
-
-    return _CardWidget(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text('time frame ${index + 1}',
-                  style: TextUtil.base.Aspira.medium.black2A.sp(16)),
-              Spacer(),
-              GestureDetector(
-                onTap: () => pvd.remove(index),
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(),
-                  child:
-                      Icon(Icons.cancel, color: FavorColors.scheduleTitleColor),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text('周数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    pvd.initWeekList();
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) => WeekPicker(index),
-                    ).then((_) => pvd.saveWeekList(index));
-                  },
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.centerRight,
-                    decoration: const BoxDecoration(),
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text('${weekType}${weekDay}${weekText}',
-                        style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text('节数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    pvd.initUnitList(index);
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) => UnitPicker(index),
-                    ).then((_) => pvd.saveUnitList(index));
-                  },
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.centerRight,
-                    decoration: const BoxDecoration(),
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(unitText,
-                        style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          _InputWidget(
-            onChanged: (text) => pvd.arrangeList[index].location = text,
-            title: '地点',
-            hintText: '请输入地点（选填）',
-          ),
-          _InputWidget(
-            onChanged: (text) => pvd.arrangeList[index].teacherList = [text],
-            title: '教师',
-            hintText: '请输入教师名（选填）',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CardWidget extends StatelessWidget {
-  final Widget child;
-  final GestureTapCallback? onTap;
-
-  _CardWidget({required this.child, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    if (onTap != null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
-        child: Material(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          child: InkWell(
-            onTap: onTap,
-            splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Center(child: child),
-            ),
-          ),
-        ),
-      );
-    }
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(child: child),
-    );
-  }
-}
-
-class _InputWidget extends StatelessWidget {
-  final Key? key;
-  final ValueChanged<String> onChanged;
-  final String title;
-  final String hintText;
-
-  _InputWidget(
-      {required this.onChanged,
-      required this.title,
-      required this.hintText,
-      this.key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('$title：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
-        Expanded(
-          child: TextField(
-            onChanged: onChanged,
-            textAlign: TextAlign.end,
-            style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-            cursorColor: FavorColors.scheduleTitleColor,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
-              border: InputBorder.none,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

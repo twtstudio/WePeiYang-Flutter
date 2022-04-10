@@ -26,6 +26,20 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void modifyCustomCourse(Course course, int index) {
+    if (_customCourses.length >= index + 1) {
+      _customCourses[index] = course;
+      notifyListeners();
+    }
+  }
+
+  void deleteCustomCourse(int index) {
+    if (_customCourses.length >= index + 1) {
+      _customCourses.removeAt(index);
+      notifyListeners();
+    }
+  }
+
   void saveCustomCourse() {
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
@@ -72,6 +86,7 @@ class CourseProvider with ChangeNotifier {
       if (hint) ToastProvider.success("刷新课程表数据成功");
       _schoolCourses = courses;
       notifyListeners();
+
       /// TODO: 这里！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
       CommonPreferences.courseData.value =
           json.encode(CourseTable(_schoolCourses, [])); // 刷新本地缓存

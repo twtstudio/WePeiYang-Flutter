@@ -50,6 +50,9 @@ class CommonPreferences {
   static final isBindTju = PrefsBean<bool>('bindtju');
   static final tjuuname = PrefsBean<String>('tjuuname');
   static final tjupasswd = PrefsBean<String>('tjupasswd');
+  ///
+  /// 自定义课表
+  static final customCourseToken = PrefsBean<String>('customCourseToken');
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
 
   /// 学期信息
