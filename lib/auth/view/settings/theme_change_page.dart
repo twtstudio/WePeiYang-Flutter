@@ -28,6 +28,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
   bool isReady = false;
   int selected;
   bool isSelected = false;
+  bool canRefresh = true;
   String process = '';
   TextEditingController _textEditingController;
 
@@ -256,37 +257,34 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                   Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 18, top: 10),
-                        child: Text(skins[index].description,
-                            style: TextUtil.base.sp(18).black00.w600)
-                      )),
+                          padding: const EdgeInsets.only(left: 18, top: 10),
+                          child: Text(skins[index].description,
+                              style: TextUtil.base.sp(18).white.w600))),
               ],
             )),
       ),
     );
   }
 
-/*
-....................../´¯/)
-....................,/¯../
-.................../..../
-............./´¯/'...'/´¯¯`·¸
-........../'/.../..../......./¨¯\
-........('(...´...´.... ¯~/'...')
-.........\.................'...../
-..........''...\.......... _.·´
-............\..............(
-..............\.............\...
-* */
+//.........................../´¯`/)
   Widget DefaultThemeCard(int ind) {
-    return InkWell(
+//.......................,/¯..../
+    return InkWell(//.../...../
+//..................../...../
       onTap: () => setState(() {
-        selected = ind;
+//............../´¯/'....'/´..¯¯`·¸
+        selected = ind;//.........|\
+//........./'/.../..../............./¨¯\
         pref.skinNow.value = ind;
+//.....('(...´...´........... ¯~/'...')
         pref.isSkinUsed.value = false;
+//......\....................'......./
         pref.isDarkMode.value = ind == -1 ? false : true;
+//......''..\................ _.·´
       }),
+//............\............(
       child: AnimatedContainer(
+//............\..............\...
         height: selected == ind
             ? (WePeiYangApp.screenWidth - 28) * 0.5
             : (WePeiYangApp.screenWidth - 28) * 0.3,
@@ -401,23 +399,36 @@ class _ThemeChangePageState extends State<ThemeChangePage>
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 18),
-              child: GestureDetector(
-                  child: Icon(Icons.loop, color: ColorUtil.mainColor, size: 25),
-                  onTap: () {
-                    if (pref.skinNow.value == 0 || pref.skinNow.value == null)
-                      pref.skinNow.value = -1;
-                    selected = pref.skinNow.value;
-                    pref.themeToken.clear();
-                    ThemeService.loginFromClient(onSuccess: () async {
-                      await ThemeService.getSkins().then((list) {
-                        skins.clear();
-                        skins.addAll(list);
+              child: canRefresh
+                  ? GestureDetector(
+                      child: Icon(Icons.loop,
+                          color: ColorUtil.mainColor, size: 25),
+                      onTap: () {
                         setState(() {
-                          isReady = true;
+                          canRefresh = false;
                         });
-                      });
-                    });
-                  }),
+                        if (pref.skinNow.value == 0 ||
+                            pref.skinNow.value == null) pref.skinNow.value = -1;
+                        selected = pref.skinNow.value;
+                        pref.themeToken.clear();
+                        ThemeService.loginFromClient(onSuccess: () async {
+                          await ThemeService.getSkins().then((list) {
+                            skins.clear();
+                            skins.addAll(list);
+                            setState(() {
+                              isReady = true;
+                            });
+                          });
+                        });
+                        Future.delayed(Duration(milliseconds: 3000)).then((_) {
+                          setState(() {
+                            canRefresh = true;
+                          });
+                        });
+                      })
+                  : Center(
+                      child: Text('刷新中',
+                          style: TextUtil.base.sp(14).grey6C.w700.h(0.8))),
             ),
           ],
         ),
