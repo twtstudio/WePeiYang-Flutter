@@ -41,8 +41,12 @@ class WPYPageState extends State<WPYPage> {
     super.initState();
     cards = []
       ..add(DateTime.now().month == 4 && DateTime.now().day == 1
-          ? CardBean(Image.asset('assets/images/lake_butt_icons/joker_stamp.png',width: 30,),
-             '愚人节模式？')
+          ? CardBean(
+              Image.asset(
+                'assets/images/lake_butt_icons/joker_stamp.png',
+                width: 30,
+              ),
+              '愚人节模式？')
           : null)
       ..add(CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
           '核酸号码牌', ReportRouter.pass))
@@ -89,63 +93,61 @@ class WPYPageState extends State<WPYPage> {
       else
         erCiYuanKey.currentState.onStaged(true);
     });
-    return SafeArea(
-      child: Stack(
-        children: [
-          Container(
-            decoration: CommonPreferences().isSkinUsed.value?BoxDecoration(
-              image: DecorationImage(image: NetworkImage(CommonPreferences().skinMain.value),fit: BoxFit.cover),
-            ):BoxDecoration(),
-            child: ScrollConfiguration(
-              behavior: WPYScrollBehavior(),
-              child: CustomScrollView(
-                controller: customScrollViewController,
-                slivers: <Widget>[
-                  /// 自定义标题栏
-                  SliverPadding(
-                    padding: const EdgeInsets.only(top: 12),
-                    sliver: SliverPersistentHeader(
-                        delegate: _WPYHeader(onChanged: (_) {
-                          setState(() {});
-                        }),
-                        pinned: true),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (CommonPreferences().isSkinUsed.value)
+          Image.network(CommonPreferences().skinMain.value, fit: BoxFit.fitWidth),
+        SafeArea(
+          child: ScrollConfiguration(
+            behavior: WPYScrollBehavior(),
+            child: CustomScrollView(
+              controller: customScrollViewController,
+              slivers: <Widget>[
+                /// 自定义标题栏
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 12),
+                  sliver: SliverPersistentHeader(
+                      delegate: _WPYHeader(onChanged: (_) {
+                        setState(() {});
+                      }),
+                      pinned: true),
+                ),
+
+                /// 功能跳转卡片
+                SliverCardsWidget(cards),
+
+                /// 当天课程
+                SliverToBoxAdapter(
+                    child: GestureDetector(
+                  onLongPress: () => Navigator.pushNamed(
+                      context, AuthRouter.setting,
+                      arguments: SettingPageArgs(true)),
+                  child: Column(
+                    key: majorColumnHeightKey,
+                    children: [
+                      toolCards[0],
+                      toolCards[1],
+                      toolCards[2],
+                      toolCards[3],
+                    ], //以后可以写排序
                   ),
+                )),
 
-                  /// 功能跳转卡片
-                  SliverCardsWidget(cards),
-
-                  /// 当天课程
-                  SliverToBoxAdapter(
-                      child: GestureDetector(
-                    onLongPress: () => Navigator.pushNamed(
-                        context, AuthRouter.setting,
-                        arguments: SettingPageArgs(true)),
-                    child: Column(
-                      key: majorColumnHeightKey,
-                      children: [
-                        toolCards[0],
-                        toolCards[1],
-                        toolCards[2],
-                        toolCards[3],
-                      ], //以后可以写排序
-                    ),
-                  )),
-
-                  !CommonPreferences().showPosterGirl.value
-                      ? SliverToBoxAdapter()
-                      : SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            width: 1,
-                          ),
-                        )
-                ],
-              ),
+                !CommonPreferences().showPosterGirl.value
+                    ? SliverToBoxAdapter()
+                    : SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          width: 1,
+                        ),
+                      )
+              ],
             ),
           ),
-          ErCiYuanWidget(erCiYuanKey),
-        ],
-      ),
+        ),
+        ErCiYuanWidget(erCiYuanKey),
+      ],
     );
   }
 
@@ -170,7 +172,8 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
     DateTime now = DateTime.now();
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
-    return Container(// 比其他区域rgb均高了一些,遮挡后方滚动区域
+    return Container(
+      // 比其他区域rgb均高了一些,遮挡后方滚动区域
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.fromLTRB(30, 0, 10, 0),
       child: Column(
@@ -200,10 +203,10 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                   decoration: CommonPreferences().isAprilFoolHead.value
                       ? BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/lake_butt_icons/jokers.png'),
-                              fit: BoxFit.cover,
-                              ),
+                            image: AssetImage(
+                                'assets/images/lake_butt_icons/jokers.png'),
+                            fit: BoxFit.cover,
+                          ),
                         )
                       : BoxDecoration(),
                   child: Padding(
@@ -291,9 +294,9 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (itemCount < i) itemCount = i;
-        if(cards[i]==null){
+        if (cards[i] == null) {
           return SizedBox();
-        }else if (cards[i].label == 'Wiki') {
+        } else if (cards[i].label == 'Wiki') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {
@@ -304,8 +307,7 @@ class SliverCardsWidget extends StatelessWidget {
             },
             child: generateCard(context, cards[i]),
           );
-        } 
-        else if(cards[i].label == '愚人节模式？'){
+        } else if (cards[i].label == '愚人节模式？') {
           return GestureDetector(
             onTap: () async {
               showDialog(
@@ -316,7 +318,7 @@ class SliverCardsWidget extends StatelessWidget {
                       content: "要体验愚人节模式吗？",
                       confirmText: "好耶",
                       cancelText: "坏耶",
-                      confirmFun: (){
+                      confirmFun: () {
                         CommonPreferences().isAprilFool.value = true;
                         CommonPreferences().isAprilFoolLike.value = true;
                         CommonPreferences().isAprilFoolGPA.value = true;
@@ -329,8 +331,7 @@ class SliverCardsWidget extends StatelessWidget {
             },
             child: generateCard(context, cards[i]),
           );
-        }
-        else {
+        } else {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, cards[i].route),
             child: generateCard(context, cards[i]),
@@ -418,11 +419,7 @@ class CardBean {
   String label;
   String route;
 
-  CardBean(
-    this.icon,
-    this.label,
-    [this.route]
-  );
+  CardBean(this.icon, this.label, [this.route]);
 }
 
 class WPYScrollBehavior extends ScrollBehavior {

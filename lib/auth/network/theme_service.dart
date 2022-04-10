@@ -78,6 +78,7 @@ class ThemeService with AsyncTimer {
           .get('skin/user?token=${CommonPreferences().themeToken.value}');
       List<Skin> list = [];
       for (Map<String, dynamic> json in response.data['result']) {
+        if (json != null)
         list.add(Skin.fromJson(json));
       }
       return list;
@@ -127,12 +128,11 @@ class ThemeService with AsyncTimer {
   }) async {
     AsyncTimer.runRepeatChecked('post_me_skin', () async {
       try {
-        var response = await themeDio.post('skin/user',
+        await themeDio.post('skin/user',
             formData: FormData.fromMap({
               'skinId': '${skinId}',
               'token': '${CommonPreferences().themeToken.value}',
             }));
-        CommonPreferences().themeToken.value = response.data['result'];
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);

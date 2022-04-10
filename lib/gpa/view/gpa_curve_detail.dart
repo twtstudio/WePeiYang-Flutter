@@ -1,7 +1,4 @@
-import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -83,7 +80,7 @@ class GPAIntro extends StatelessWidget {
     }
     return Container(
       decoration: CommonPreferences().isSkinUsed.value
-          ? BoxDecoration(color: Color(CommonPreferences().skinColorA.value))
+          ? BoxDecoration(color: Colors.white10)
           : BoxDecoration(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,7 +190,7 @@ class _GPACurveState extends State<GPACurve>
         },
         child: Container(
           decoration: (widget.isPreview && CommonPreferences().isSkinUsed.value)
-              ? BoxDecoration(color: Color(CommonPreferences().skinColorA.value))
+              ? BoxDecoration(color: Colors.white10)
               : BoxDecoration(),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -325,7 +322,7 @@ class _GPACurveState extends State<GPACurve>
 /// 绘制GPACurve栈上层的可移动点
 class _GPAPopupPainter extends CustomPainter {
   /// 在wpy_page显示的颜色
-  static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1);
+  static const Color _outerPreview = Colors.white10;
   static const Color _innerPreview = Colors.white;
 
   /// 在gpa_page显示的颜色

@@ -309,11 +309,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         ]),
                   );
                 ind--;
-                if (index == 0 && ind == 0)
-                  return HotCard();
+                if (index == 0 && ind == 0) return HotCard();
                 if (index == 0) ind--;
                 if (ind == 0)
-                  return ActivityCard();
+                  return DateTime.now().toLocal().isAfter(DateTime(2022, 4, 19))
+                      ? SizedBox()
+                      : ActivityCard();
                 ind--;
                 final post = context
                     .read<LakeModel>()

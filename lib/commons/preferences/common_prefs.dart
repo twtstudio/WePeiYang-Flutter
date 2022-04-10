@@ -74,6 +74,7 @@ class CommonPreferences {
   var skinColorD = PrefsBean<int>("skinColorD", 1);
   var skinColorE = PrefsBean<int>("skinColorE", 1);
   var skinColorF = PrefsBean<int>("skinColorF", 1);
+  var skinColorG = PrefsBean<int>("skinColorG", 1);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据

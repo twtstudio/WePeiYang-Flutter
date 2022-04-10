@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 
@@ -22,7 +23,7 @@ class ThemeChangePage extends StatefulWidget {
 }
 
 class _ThemeChangePageState extends State<ThemeChangePage>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   var pref = CommonPreferences();
   List<Skin> skins = [];
   bool isReady = false;
@@ -39,7 +40,6 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     selected = pref.skinNow.value;
     pref.themeToken.clear();
     ThemeService.loginFromClient(onSuccess: () async {
-      //ToastProvider.success('登录成功' + CommonPreferences().themeToken.value);
       await ThemeService.getSkins().then((list) {
         skins.clear();
         skins.addAll(list);
@@ -79,7 +79,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                             process = process + '\n该帖符合点赞要求（15+）\n恭喜你获得海棠季限定皮肤';
                           });
                           ThemeService.postMeSkin(
-                              skinId: -1295945726,
+                              skinId: 1271410690,
                               onSuccess: () async {
                                 await ThemeService.getSkins().then((list) {
                                   skins.clear();
@@ -116,81 +116,88 @@ class _ThemeChangePageState extends State<ThemeChangePage>
   }
 
   Widget ActionCard() {
-    return AnimatedSize(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOutBack,
-      vsync: this,
-      child: Container(
-        width: WePeiYangApp.screenWidth - 28,
-        padding: EdgeInsets.all(6),
-        margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-            color: Color(0xCFFFE2E2)),
-        child: Column(
-          children: [
-            InkWell(
-                onTap: () => setState(() {
-                      isSelected = !isSelected;
-                    }),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 8, 0, 10),
-                    child: Text('集赞兑换海棠季主题',
-                        style: TextUtil.base.sp(18).mainColor.w600),
-                  ),
-                )),
-            if (isSelected)
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: Colors.black12),
-                child: Row(
-                  children: [
-                    SizedBox(width: 14),
-                    Text('MP', style: TextUtil.base.sp(18).black00.w600),
-                    SizedBox(width: 2),
-                    Expanded(
-                      child: TextField(
-                        style:
-                            TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
-                        controller: _textEditingController,
-                        maxLength: 200,
-                        textInputAction: TextInputAction.send,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            counterText: '',
-                            hintText: '输入MP号以兑换（纯数字）',
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 20),
-                            fillColor: Colors.white,
-                            filled: true,
-                            isDense: true,
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.check),
-                              onPressed: () {
-                                sure();
-                              },
-                            )),
-                        onEditingComplete: () => sure(),
-                        minLines: 1,
-                        maxLines: 10,
+    return DateTime.now().toLocal().isAfter(DateTime(2022, 4, 19))
+        ? SizedBox()
+        : AnimatedSize(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOutBack,
+            vsync: this,
+            child: Container(
+              width: WePeiYangApp.screenWidth - 28,
+              padding: EdgeInsets.all(6),
+              margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  color: Color(0xCFF7E4E4)),
+              child: Column(
+                children: [
+                  InkWell(
+                      onTap: () => setState(() {
+                            isSelected = !isSelected;
+                          }),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 8, 0, 10),
+                          child: Text('集赞兑换海棠季主题',
+                              style: TextUtil.base.sp(16).mainColor.w600),
+                        ),
+                      )),
+                  if (isSelected)
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          color: Colors.black12),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 14),
+                          Text('MP', style: TextUtil.base.sp(18).black00.w600),
+                          SizedBox(width: 2),
+                          Expanded(
+                            child: TextField(
+                              style: TextUtil.base.w400.NotoSansSC
+                                  .sp(16)
+                                  .h(1.4)
+                                  .black00,
+                              controller: _textEditingController,
+                              maxLength: 200,
+                              textInputAction: TextInputAction.send,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  counterText: '',
+                                  hintText: '输入MP号以兑换（纯数字）',
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 20),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  isDense: true,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.check),
+                                    onPressed: () {
+                                      sure();
+                                    },
+                                  )),
+                              onEditingComplete: () => sure(),
+                              minLines: 1,
+                              maxLines: 10,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  SizedBox(height: 4),
+                  if (isSelected && process != '')
+                    Center(
+                        child: Text(process,
+                            style: TextUtil.base.sp(12).greyA6.w600))
+                ],
               ),
-            if (isSelected && process != '')
-              Text(process, style: TextUtil.base.sp(12).greyA6.w600)
-          ],
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget ThemeCard(int index) {
@@ -208,6 +215,7 @@ class _ThemeChangePageState extends State<ThemeChangePage>
           pref.skinColorD.value = skins[index].colorD;
           pref.skinColorE.value = skins[index].colorE;
           pref.skinColorF.value = skins[index].colorF;
+          pref.skinColorG.value = skins[index].colorG;
         });
       },
       child: AnimatedContainer(
@@ -223,8 +231,36 @@ class _ThemeChangePageState extends State<ThemeChangePage>
               fit: StackFit.expand,
               children: [
                 Image.network(skins[index].selfPageImage, fit: BoxFit.fitWidth),
-                Positioned(
-                    bottom: 4, right: 8, child: TextPod(skins[index].name)),
+                if (selected == skins[index].id)
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        height: double.infinity,
+                        color: Colors.black38,
+                        padding: EdgeInsets.only(right: 6, left: 4),
+                        child: Column(
+                          children: [
+                            Spacer(),
+                            TextPod(skins[index].name),
+                            SizedBox(height: 4)
+                          ],
+                        ),
+                      )),
+                if (selected == skins[index].id)
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 28.0),
+                        child: Icon(Icons.check, color: Colors.white, size: 20),
+                      )),
+                if (selected == skins[index].id)
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18, top: 10),
+                        child: Text(skins[index].description,
+                            style: TextUtil.base.sp(18).black00.w600)
+                      )),
               ],
             )),
       ),
@@ -375,24 +411,20 @@ class _ThemeChangePageState extends State<ThemeChangePage>
           ],
         ),
         body: ListView(
+          physics: BouncingScrollPhysics(),
           children: [
             DefaultThemeCard(-1),
             DefaultThemeCard(-2),
+            if (isReady) ActionCard(),
             isReady
-                ? ListView.builder(
-                    itemCount: skins.length + 2,
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) return ActionCard();
-                      index--;
-                      return ThemeCard(index);
-                    },
-                  )
+                ? Column(
+                    children: List<Widget>.generate(
+                        skins.length, (index) => ThemeCard(index)))
                 : Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Text('加载在线皮肤中\n',
+                        Text('加载在线皮肤中 点击右上角刷新\n',
                             style: TextUtil.base.sp(14).grey6C.w700.h(0.8)),
                         Loading(),
                       ],

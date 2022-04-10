@@ -206,7 +206,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     return Scaffold(
       backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorC.value)
+          ? Color(CommonPreferences().skinColorA.value)
           : Colors.white,
       body: SafeArea(
         child: NestedScrollView(
@@ -220,7 +220,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 SliverAppBar(
                   toolbarHeight: 48,
                   backgroundColor: CommonPreferences().isSkinUsed.value
-                      ? Color(CommonPreferences().skinColorC.value)
+                      ? Color(CommonPreferences().skinColorA.value)
                       : Colors.white,
                   titleSpacing: 0,
                   leading: InkWell(
@@ -269,7 +269,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     delegate: HomeHeaderDelegate(
                         child: Container(
                       color: CommonPreferences().isSkinUsed.value
-                          ? Color(CommonPreferences().skinColorC.value)
+                          ? Color(CommonPreferences().skinColorA.value)
                           : Colors.white,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,7 +351,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             body: Container(
               decoration: BoxDecoration(
                   color: CommonPreferences().isSkinUsed.value
-                      ? Color(CommonPreferences().skinColorC.value)
+                      ? Color(CommonPreferences().skinColorA.value)
                       : ColorUtil.backgroundColor),
               child: Stack(
                 children: [
