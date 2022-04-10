@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 
@@ -205,17 +204,17 @@ class _ThemeChangePageState extends State<ThemeChangePage>
       onTap: () {
         setState(() {
           selected = skins[index].id;
-          pref.isSkinUsed.value = true;
-          pref.skinMain.value = skins[index].mainPageImage;
-          pref.skinClass.value = skins[index].schedulePageImage;
-          pref.skinProfile.value = skins[index].selfPageImage;
-          pref.skinColorA.value = skins[index].colorA;
-          pref.skinColorB.value = skins[index].colorB;
-          pref.skinColorC.value = skins[index].colorC;
-          pref.skinColorD.value = skins[index].colorD;
-          pref.skinColorE.value = skins[index].colorE;
-          pref.skinColorF.value = skins[index].colorF;
-          pref.skinColorG.value = skins[index].colorG;
+          CommonPreferences().isSkinUsed.value = true;
+          CommonPreferences().isAprilFoolClass.value = false;
+          CommonPreferences().skinMain.value = skins[index].mainPageImage;
+          CommonPreferences().skinClass.value = skins[index].schedulePageImage;
+          CommonPreferences().skinProfile.value = skins[index].selfPageImage;
+          CommonPreferences().skinColorA.value = skins[index].colorA;
+          CommonPreferences().skinColorB.value = skins[index].colorB;
+          CommonPreferences().skinColorC.value = skins[index].colorC;
+          CommonPreferences().skinColorD.value = skins[index].colorD;
+          CommonPreferences().skinColorE.value = skins[index].colorE;
+          CommonPreferences().skinColorF.value = skins[index].colorF;
         });
       },
       child: AnimatedContainer(
@@ -267,6 +266,18 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     );
   }
 
+/*
+....................../´¯/)
+....................,/¯../
+.................../..../
+............./´¯/'...'/´¯¯`·¸
+........../'/.../..../......./¨¯\
+........('(...´...´.... ¯~/'...')
+.........\.................'...../
+..........''...\.......... _.·´
+............\..............(
+..............\.............\...
+* */
   Widget DefaultThemeCard(int ind) {
     return InkWell(
       onTap: () => setState(() {
