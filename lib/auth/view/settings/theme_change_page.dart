@@ -266,25 +266,15 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     );
   }
 
-//.........................../´¯`/)
   Widget DefaultThemeCard(int ind) {
-//.......................,/¯..../
-    return InkWell(//.../...../
-//..................../...../
+    return InkWell(
       onTap: () => setState(() {
-//............../´¯/'....'/´..¯¯`·¸
-        selected = ind;//.........|\
-//........./'/.../..../............./¨¯\
+        selected = ind;
         pref.skinNow.value = ind;
-//.....('(...´...´........... ¯~/'...')
         pref.isSkinUsed.value = false;
-//......\....................'......./
         pref.isDarkMode.value = ind == -1 ? false : true;
-//......''..\................ _.·´
       }),
-//............\............(
       child: AnimatedContainer(
-//............\..............\...
         height: selected == ind
             ? (WePeiYangApp.screenWidth - 28) * 0.5
             : (WePeiYangApp.screenWidth - 28) * 0.3,
