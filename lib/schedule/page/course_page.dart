@@ -115,12 +115,13 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.widgets_outlined),
           onPressed: () {
-            // TODO list
+            Navigator.pushNamed(context, ScheduleRouter.customCourse);
           },
         ),
         IconButton(
           icon: Icon(Icons.add, size: 30),
           onPressed: () {
+            context.read<EditProvider>().init();
             showModalBottomSheet(
               context: context,
               elevation: 5,
@@ -130,10 +131,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
               isDismissible: false,
               enableDrag: false,
               isScrollControlled: true,
-              builder: (context) {
-                context.read<EditProvider>().init();
-                return EditBottomSheet();
-              },
+              builder: (context) => EditBottomSheet(),
             );
           },
         ),
