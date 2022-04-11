@@ -37,7 +37,7 @@ class Post {
   int uid;
   int type;
   int campus;
-  bool solved;
+  int solved;
   String title;
   String content;
   int favCount;
