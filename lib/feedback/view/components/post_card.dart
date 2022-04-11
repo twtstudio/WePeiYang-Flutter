@@ -427,16 +427,16 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(width: 10),
                 if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
-                if (post.solved == true &&
-                    post.type == 0 &&
+                if (post.solved == 0 &&
+                    post.type == 1 &&
                     widget.type == PostCardType.simple)
                   QuestionedWidget(),
-                if (post.solved == false &&
+                if (post.solved == 1 &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
                   ResponseWidget(),
                 if (post.solved == 2 &&
-                    post.type == 2 &&
+                    post.type == 1 &&
                     widget.type == PostCardType.simple)
                   SolvedWidget(),
                 if (widget.type == PostCardType.detail) createTimeDetail,
