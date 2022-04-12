@@ -2,7 +2,7 @@
 
 part of 'update_manager.dart';
 
-abstract class UpdateListener extends ChangeNotifier {
+abstract class UpdateStatusListener extends ChangeNotifier {
   double _progress = 0;
 
   double get progress => _progress;
@@ -12,50 +12,62 @@ abstract class UpdateListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  UpdateState _state = UpdateState.idle;
+  UpdateStatus _status = UpdateStatus.idle;
 
-  UpdateState get state => _state;
-
-  set state(UpdateState value) {
-    _state = value;
-    notifyListeners();
-  }
+  UpdateStatus get status => _status;
 
   setIdle() {
-    _state = UpdateState.idle;
+    _status = UpdateStatus.idle;
     notifyListeners();
   }
 
   setGetVersion() {
-    _state = UpdateState.getVersion;
+    _status = UpdateStatus.getVersion;
     notifyListeners();
   }
 
   setDownload() {
-    _state = UpdateState.download;
+    _status = UpdateStatus.download;
     notifyListeners();
   }
 
   setLoad() {
-    _state = UpdateState.load;
+    _status = UpdateStatus.load;
     notifyListeners();
   }
 }
 
-enum UpdateState {
+/// 检查更新状态
+/*
+
+检查更新流程：
+                                                    |- 下载成功 --> [load]
+                        |- 需要更新   --> [download] -|
+[idle] -> [getVersion] -|                           |- 下载失败 ---
+ |                      |- 不需要更新 ---                         |
+ |                                    |                         |
+ <- --- --- --- --- --- --- --- --- <- --- --- --- --- --- --- --
+ */
+enum UpdateStatus {
+  /// 没有事情正在发生
   idle,
+
+  /// 正在获取最新版本
   getVersion,
+
+  /// 正在下载
   download,
+
+  /// 加载最新版
   load,
 }
 
-extension UpdateStateExt on UpdateState {
+extension UpdateStatusExt on UpdateStatus {
+  bool get isIdle => this == UpdateStatus.idle;
 
-  bool get isIdle => this == UpdateState.idle;
+  bool get isGetVersion => this == UpdateStatus.getVersion;
 
-  bool get isGetVersion => this == UpdateState.getVersion;
+  bool get isDownload => this == UpdateStatus.download;
 
-  bool get isDownload => this == UpdateState.download;
-
-  bool get isLoad => this == UpdateState.load;
+  bool get isLoad => this == UpdateStatus.load;
 }

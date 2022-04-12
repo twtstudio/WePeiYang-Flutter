@@ -5,21 +5,20 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 class TodayShowAgainCheck extends StatefulWidget {
-  const TodayShowAgainCheck({Key? key}) : super(key: key);
+  final VoidCallback tap;
+
+  const TodayShowAgainCheck({required this.tap, Key? key}) : super(key: key);
 
   @override
   _TodayShowAgainCheckState createState() => _TodayShowAgainCheckState();
 }
 
 class _TodayShowAgainCheckState extends State<TodayShowAgainCheck> {
-  bool todayNotShowAgain = false;
-
   @override
   Widget build(BuildContext context) {
     final size = DialogSize.getSize(context);
     final checkboxLeftPadding = size.horizontalPadding;
     const checkboxElsePadding = 10.0;
-    final checkboxHeight = size.dialogWidth * 0.053;
 
     const checkboxTextWidget = Padding(
       padding: EdgeInsets.only(top: 0),
@@ -37,37 +36,21 @@ class _TodayShowAgainCheckState extends State<TodayShowAgainCheck> {
       children: [
         GestureDetector(
           onTap: () {
-            setState(() {
-              todayNotShowAgain = !todayNotShowAgain;
-              if(todayNotShowAgain){
-                CommonPreferences().todayShowUpdateAgain.value = DateTime.now().toString();
-              }else {
-                CommonPreferences().todayShowUpdateAgain.value = '';
-              }
-            });
+            CommonPreferences().todayShowUpdateAgain.value =
+                DateTime.now().toString();
+            widget.tap();
           },
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: EdgeInsets.only(
               left: checkboxLeftPadding,
-              top: checkboxElsePadding,
-              bottom: checkboxElsePadding * 2,
+              top: checkboxElsePadding + 4,
+              bottom: checkboxElsePadding * 2 - 4,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                todayNotShowAgain
-                    ? Icon(
-                  Icons.check_circle,
-                  size: checkboxHeight,
-                  color: Colors.black,
-                )
-                    : Icon(
-                  Icons.panorama_fish_eye,
-                  size: checkboxHeight,
-                  color: const Color(0xffdedede),
-                ),
-                const SizedBox(width: checkboxElsePadding - 4),
+                const SizedBox(width: checkboxElsePadding + 10),
                 checkboxTextWidget,
               ],
             ),

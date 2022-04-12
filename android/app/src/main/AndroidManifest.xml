@@ -97,17 +97,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!--        求实论坛通知拉起应用    -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="weipeiyang.app"
-                    android:pathPrefix="/feedback"
-                    android:scheme="twtstudio" />
-            </intent-filter>
             <!--        微北洋信箱通知拉起应用    -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -116,20 +105,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="weipeiyang.app"
-                    android:pathPrefix="/mailbox"
-                    android:scheme="twtstudio" />
-            </intent-filter>
-            <!--        校务总结页面跳转-->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="qnhd.app"
-                    android:pathPrefix="/qnhd"
+                    android:host="wpy.app"
+                    android:pathPrefix="/open"
                     android:scheme="wpy" />
             </intent-filter>
             <!--        友盟卖点验证  -->
@@ -208,8 +185,8 @@
 
         <!--    QQ分享 -->
         <provider
-            android:name=".share.QQProvider"
-            android:authorities="${applicationId}.qqprovider"
+            android:name=".common.ImageProvider"
+            android:authorities="${applicationId}.ImageProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -219,8 +196,8 @@
 
         <!--    应用内更新apk存储地址  -->
         <provider
-            android:name=".install.InstallProvider"
-            android:authorities="${applicationId}.apkprovider"
+            android:name=".common.ApkProvider"
+            android:authorities="${applicationId}.ApkProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

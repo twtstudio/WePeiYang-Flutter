@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 
 class UpdateTestPage extends StatefulWidget {
@@ -24,18 +23,12 @@ class _UpdateTestPageState extends State<UpdateTestPage> {
       body: ListView(
         children: [
           TextButton(onPressed: _deleteAllApk, child: Text('删除所有安装包')),
-          TextButton(
-            onPressed: () {
-              context.read<UpdateManager>().forceUpdateApk(80);
-            },
-            child: Text('强制更新apk'),
-          ),
           TextButton(onPressed: _deleteAllSo, child: Text('删除所有so')),
           TextButton(
             onPressed: () {
-              context.read<UpdateManager>().forceUpdateSo();
+              context.read<UpdateManager>().checkUpdate(show: true);
             },
-            child: Text('强制更新so'),
+            child: Text('检查更新'),
           ),
         ],
       ),

@@ -1,9 +1,11 @@
-$start = Get-Date
+param(
+    [Parameter(mandatory=$true)]
+    [string]$version,
+    [Parameter(mandatory=$true)]
+    [int]$versionCode
+)
 
-flutter clean
-
-$allApksPath = "..\all_apks"
-$releasePath = ".\build\app\outputs\apk\release"
+$allApksPath = "..\..\all_apks"
 
 if (Test-Path $allApksPath) {
     Remove-Item $allApksPath -Recurse -Force
@@ -17,14 +19,14 @@ function New-Apk {
         [Parameter()]
         [string]$platforms
     )
-    $environmentPath = $allApksPath + "\" + $environment
-    New-Item $environmentPath -ItemType "directory"
 
-    $arguments = @(
-        "--dart-define=ENVIRONMENT=$environment"
-    )
-    flutter build apk  @arguments  --target-platform $platforms --split-per-abi
-    Move-Item  -Path ($releasePath + "\*") -Destination $environmentPath
+    $arguments = @{
+        environment = $environment
+        platforms   = $platforms
+        version     = $version
+        versionCode = $versionCode
+    }
+    .\new-apk.ps1 @arguments
 }
 
 # RELEASE版 - 正式服务器 + com.twt.service 无注释
@@ -40,7 +42,3 @@ New-Apk -environment "ONLINE_TEST" -platforms "android-arm64"
 New-Apk -environment "DEVELOP" -platforms "android-arm64"
 
 tree $allApksPath /F
-
-$end = Get-Date
-
-Write-Host -ForegroundColor Red ('Total Runtime: ' + ($end - $start).TotalSeconds)

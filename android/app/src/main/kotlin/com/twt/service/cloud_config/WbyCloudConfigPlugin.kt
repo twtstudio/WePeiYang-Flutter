@@ -6,6 +6,11 @@ import com.umeng.cconfig.UMRemoteConfig
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
+/**
+ * 友盟在线参数
+ *
+ * [https://developer.umeng.com/docs/119267/detail/118637#title-z9f-vtl-7ep]
+ */
 class WbyCloudConfigPlugin : WbyPlugin() {
     override val name: String
         get() = "com.twt.service/cloud_config"
@@ -13,7 +18,8 @@ class WbyCloudConfigPlugin : WbyPlugin() {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         runCatching {
             when (call.method) {
-                latest_version_data -> getConfig(latest_version_data, result)
+                "latest_version_data_release" -> getConfig("latest_version_data_release", result)
+                "latest_version_data_beta" -> getConfig("latest_version_data_beta", result)
                 "getWebViews" -> getWebViews(result)
             }
         }.onFailure {
@@ -22,10 +28,18 @@ class WbyCloudConfigPlugin : WbyPlugin() {
         }
     }
 
+    /**
+     * 获取最新的在线参数
+     *
+     * 特别注意，在线参数只有在友盟上传数据时才能获得
+     */
     private fun getConfig(key: String, result: MethodChannel.Result) {
         result.success(UMRemoteConfig.getInstance().getConfigValue(key))
     }
 
+    /**
+     * 获取有哪些 h5
+     */
     private fun getWebViews(result: MethodChannel.Result) {
         with(UMRemoteConfig.getInstance()) {
             val webViewList = getConfigValue("webViewList")?.split(",") ?: emptyList()
@@ -43,8 +57,7 @@ class WbyCloudConfigPlugin : WbyPlugin() {
     }
 
     companion object {
-        const val latest_version_data = "latest_version_data"
-        const val TAG = "WBY_CLOUD_CONFIG"
+        const val TAG = "CLOUD_CONFIG"
         fun log(msg: String) = LogUtil.d(TAG, msg)
     }
 }

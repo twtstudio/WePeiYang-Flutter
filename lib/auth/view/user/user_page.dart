@@ -13,12 +13,10 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -224,13 +222,13 @@ class _UserPageState extends State<UserPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AuthRouter.aboutTwt),
                       onLongPress: () {
                         if (EnvConfig.isDevelop) {
-                          Navigator.pushNamed(context, TestRouter.qnhdTest);
+                          Navigator.pushNamed(context, TestRouter.mainPage);
                         }
                       },
+                      onTap: () =>
+                          Navigator.pushNamed(context, AuthRouter.aboutTwt),
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
                       child: Row(
@@ -259,15 +257,8 @@ class _UserPageState extends State<UserPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
-                      onLongPress: () {
-                        if (EnvConfig.isDevelop) {
-                          Navigator.pushNamed(context, TestRouter.updateTest);
-                        }
-                      },
                       onTap: () {
-                        context
-                            .read<UpdateManager>()
-                            .checkUpdate(showToast: true);
+                        context.read<UpdateManager>().checkUpdate(show: true);
                       },
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
@@ -279,27 +270,16 @@ class _UserPageState extends State<UserPage> {
                           SizedBox(width: 10),
                           Text(S.current.check_new, style: textStyle),
                           Spacer(),
-                          FutureBuilder(
-                            future: UpdateUtil.getVersion(),
-                            builder: (_, AsyncSnapshot<String> snapshot) {
-                              if (snapshot.hasData) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 26),
-                                  child: Text(
-                                    "${S.current.current_version}: ${snapshot.data}",
-                                    style: FontManager.YaHeiLight.copyWith(
-                                      color: CommonPreferences().isSkinUsed.value
-                                          ? Color(CommonPreferences().skinColorC.value)
-                                          : Colors.grey,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container();
-                              }
-                            },
-                          )
+                          Padding(
+                            padding: const EdgeInsets.only(right: 26),
+                            child: Text(
+                              "${S.current.current_version}: ${EnvConfig.VERSION}",
+                              style: FontManager.YaHeiLight.copyWith(
+                                color: Colors.grey,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -372,275 +352,6 @@ class _UserPageState extends State<UserPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class NavigationWidget extends StatefulWidget {
-  @override
-  _NavigationState createState() => _NavigationState();
-}
-
-class _NavigationState extends State<NavigationWidget> {
-  String cid = "loading";
-  String intent = "get intent";
-  TextEditingController qId = TextEditingController();
-  TextEditingController url = TextEditingController();
-  TextEditingController title = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 800,
-      width: WePeiYangApp.screenWidth - 40,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Card(
-        elevation: 1.8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Center(
-          // child: Image.asset('assets/images/to_be_continue.png', height: 80),
-          child: getCidAndIntent(),
-        ),
-      ),
-    );
-  }
-
-  Column getCidAndIntent() {
-    return Column(
-      children: [
-        SelectableText(cid),
-        TextButton(
-          onPressed: () async {
-            final id = await pushChannel.invokeMethod<String>("getCid");
-            setState(() {
-              cid = id;
-            });
-          },
-          child: Text('点击获取cid'),
-        ),
-        SelectableText(intent),
-        TextField(
-          controller: qId,
-          decoration: InputDecoration(hintText: "输入 question_id"),
-        ),
-        TextButton(
-          onPressed: () async {
-            final intent1 = await pushChannel.invokeMethod<String>(
-              "getIntentUri",
-              {
-                "type": "feedback",
-                "question_id": int.parse(qId.text),
-              },
-            );
-            setState(() {
-              intent = intent1;
-            });
-          },
-          child: Text('点击获取feedback intent'),
-        ),
-        TextField(
-          controller: url,
-          decoration: InputDecoration(hintText: "输入 url"),
-        ),
-        TextField(
-          controller: title,
-          decoration: InputDecoration(hintText: "输入 title"),
-        ),
-        TextButton(
-          onPressed: () async {
-            final intent1 = await pushChannel.invokeMethod<String>(
-              "getIntentUri",
-              {
-                "type": "mailbox",
-                "title": title.text,
-                "url": url.text,
-              },
-            );
-            setState(() {
-              intent = intent1;
-            });
-          },
-          child: Text('点击获取mailbox intent'),
-        ),
-      ],
-    );
-  }
-
-  Column fontTest() {
-    return Column(
-      children: [
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w100,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w200,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        SizedBox(height: 20),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans ExtraLight",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Light",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Normal",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Regular",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Medium",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Bold",
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans Heavy",
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        SizedBox(height: 20),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w100,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w200,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: "source han sans",
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ],
     );
   }
 }

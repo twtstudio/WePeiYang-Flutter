@@ -90,9 +90,6 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.config
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            shrinkResources true // 删除无用资源
 
             // applicationIdSuffix
             // http://www.androidchina.net/10565.html
@@ -139,6 +136,10 @@ android {
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     // 设置应用名称
                     resValue("string", "label", "微北洋${environment}")
+
+                    minifyEnabled false
+                    shrinkResources false
+
                     break
                 case "DEVELOP":
                     // 个推 develop
@@ -149,6 +150,10 @@ android {
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     // 设置应用名称
                     resValue("string", "label", "微北洋${environment}")
+
+                    minifyEnabled false
+                    shrinkResources false
+
                     break
                 default:  // RELEASE
                     environment = "RELEASE"
@@ -158,6 +163,11 @@ android {
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     // 设置应用名称
                     resValue("string", "label", "微北洋")
+
+                    minifyEnabled true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    shrinkResources true // 删除无用资源
+
                     break
             }
 
@@ -165,7 +175,7 @@ android {
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     // 更改输出的安装包的名字 如 4.2.1-RELEASE-app-arm64-v8a-release.apk
-                    output.outputFileName = environment + "- " + android.defaultConfig.versionName + "-" + output.outputFileName
+                    output.outputFileName = environment + "-" + android.defaultConfig.versionName + "-" + output.outputFileName
 
                     // 谷歌规定 Google Play 多个安装包不能 versionCode一样
                     // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
@@ -178,8 +188,8 @@ android {
 
         debug {
             signingConfig signingConfigs.config
-            minifyEnabled false//删除无用代码
-            shrinkResources false//删除无用资源
+            minifyEnabled false
+            shrinkResources false
             // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
 

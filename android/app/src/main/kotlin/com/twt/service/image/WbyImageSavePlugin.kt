@@ -84,7 +84,7 @@ class WbyImageSavePlugin : WbyPlugin() {
 
 
     companion object {
-        const val TAG = "WBY_SAVE_IMAGE"
+        const val TAG = "SAVE_IMAGE"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

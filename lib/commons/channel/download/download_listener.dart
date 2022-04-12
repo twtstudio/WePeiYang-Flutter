@@ -1,34 +1,45 @@
 // @dart = 2.12
 import 'download_item.dart';
 
+typedef PendingCallback = void Function(DownloadTask task);
+typedef RunningCallback = void Function(DownloadTask task, double progress);
+typedef PausedCallback = void Function(DownloadTask task, double progress);
+typedef FailedCallback = void Function(
+    DownloadTask task, double progress, String reason);
+typedef SuccessCallback = void Function(DownloadTask task);
+typedef AllSuccessCallback = void Function(List<String>);
+
 class DownloadListener {
   final String listenerId;
-  final Map<String, DownloadItem> tasks;
-  final void Function(String message) error;
-  final void Function(DownloadItem task) success;
-  final void Function()? begin;
-  final void Function(DownloadItem task, double progress)? running;
-  final void Function(List<String> paths)? allSuccess;
+  final Map<String, DownloadTask> tasks;
+  final PendingCallback? pending;
+  final RunningCallback? running;
+  final PausedCallback? paused;
+  final FailedCallback failed;
+  final SuccessCallback success;
+  final AllSuccessCallback? allSuccess;
+  final Set<String> downloadList = Set();
 
   DownloadListener._(
     this.listenerId,
     this.tasks,
-    this.error,
-    this.success,
-    this.begin,
+    this.pending,
     this.running,
+    this.paused,
+    this.failed,
+    this.success,
     this.allSuccess,
   );
 
-  factory DownloadListener(
-    List<DownloadItem> list,
-    void Function(String message) error,
-    void Function(DownloadItem task) success,
-    void Function()? begin,
-    void Function(DownloadItem task, double progress)? running,
-    void Function(List<String> paths)? allSuccess,
-  ) {
-
+  factory DownloadListener({
+    required List<DownloadTask> list,
+    PendingCallback? pending,
+    RunningCallback? running,
+    PausedCallback? paused,
+    required FailedCallback failed,
+    required SuccessCallback success,
+    AllSuccessCallback? allSuccess,
+  }) {
     final id = "${DateTime.now().millisecondsSinceEpoch}+${list.length}";
 
     final tasks = Map.fromIterables(
@@ -42,10 +53,11 @@ class DownloadListener {
     return DownloadListener._(
       id,
       tasks,
-      error,
-      success,
-      begin,
+      pending,
       running,
+      paused,
+      failed,
+      success,
       allSuccess,
     );
   }

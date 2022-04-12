@@ -9,6 +9,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -85,7 +86,7 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
             //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
             val apkUri = FileProvider.getUriForFile(
                 context,
-                "com.twt.service.apkprovider",
+                "${context.packageName}.ApkProvider",
                 resultFile,
             )
             //添加这一句表示对目标应用临时授权该Uri所代表的文件
@@ -100,18 +101,23 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
+        LogUtil.d(TAG, "onAttachedToActivity")
     }
 
+    // TODO: 看一看请求权限之后，这里会不会调用
+    // 华为不会
     override fun onDetachedFromActivityForConfigChanges() {
-        //
+        LogUtil.d(TAG, "onDetachedFromActivityForConfigChanges")
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        //
+        LogUtil.d(TAG, "onReattachedToActivityForConfigChanges")
+
     }
 
     override fun onDetachedFromActivity() {
-        //
+        LogUtil.d(TAG, "onDetachedFromActivity")
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -132,7 +138,7 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
     }
 
     companion object {
-        const val TAG = "WBY_INSTALL"
+        const val TAG = "INSTALL"
         const val REQUEST_PERMISSION = 101
         const val INSTALL_APK = 202
         const val NO_PERMISSION = ""

@@ -2,20 +2,18 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:provider/provider.dart';
 
-class QNHDTestPage extends StatefulWidget {
-  const QNHDTestPage({Key? key}) : super(key: key);
+class QsltTestPage extends StatefulWidget {
+  const QsltTestPage({Key? key}) : super(key: key);
 
   @override
-  _QNHDTestPageState createState() => _QNHDTestPageState();
+  _QsltTestPageState createState() => _QsltTestPageState();
 }
 
-class _QNHDTestPageState extends State<QNHDTestPage> {
+class _QsltTestPageState extends State<QsltTestPage> {
   String token = 'null';
 
   @override
@@ -34,10 +32,11 @@ class _QNHDTestPageState extends State<QNHDTestPage> {
         SelectableText(token),
         TextButton(
           onPressed: () async {
-            final response = await _dio.post("user/login",formData: FormData.fromMap({
-              "username":CommonPreferences().account.value,
-              "password":CommonPreferences().password.value,
-            }));
+            final response = await _dio.post("user/login",
+                formData: FormData.fromMap({
+                  "username": CommonPreferences().account.value,
+                  "password": CommonPreferences().password.value,
+                }));
             setState(() {
               token = response.data['data']['token'] ?? "null";
             });

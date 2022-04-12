@@ -1,7 +1,7 @@
 package com.twt.service.push.server
 
 import android.util.Base64
-import com.twt.service.common.WbySharePreference
+import com.twt.service.common.FlutterSharePreference
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -16,8 +16,11 @@ internal const val DOMAIN = "weipeiyang.twt.edu.cn"
 internal inline val Request.signed
     get() = with(newBuilder()) {
         addHeader("DOMAIN", DOMAIN)
-        addHeader("ticket", Base64.encodeToString("$APP_KEY.$APP_SECRET".toByteArray(), Base64.NO_WRAP))
-        addHeader("token", WbySharePreference.authToken.orEmpty())
+        addHeader(
+            "ticket",
+            Base64.encodeToString("$APP_KEY.$APP_SECRET".toByteArray(), Base64.NO_WRAP)
+        )
+        addHeader("token", FlutterSharePreference.authToken.orEmpty())
     }.build()
 
 internal object SignatureInterceptor : Interceptor {

@@ -41,12 +41,16 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
       ],
     );
 
+    void cancel() {
+      context.read<UpdateManager>().setIdle();
+      context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
+    }
+
     final buttons = WbyDialogStandardTwoButton(
-      cancel: () {
-        context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
-      },
+      cancel: cancel,
       ok: () {
         HotFixManager.restartApp();
+        cancel();
       },
       cancelText: "稍后重启",
       okText: "立刻重启",
@@ -75,7 +79,7 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
             ],
           ),
         ),
-        TodayShowAgainCheck(),
+        TodayShowAgainCheck(tap: cancel),
       ],
     );
 

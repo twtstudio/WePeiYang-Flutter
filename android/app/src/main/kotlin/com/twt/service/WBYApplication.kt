@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.Process
+import com.twt.service.hot_fix.HotFixPreference
 import com.twt.service.push.model.Event
 import com.umeng.cconfig.RemoteConfigSettings
 import com.umeng.cconfig.UMRemoteConfig
@@ -56,7 +57,7 @@ class WBYApplication : Application() {
             val pid = Process.myPid()
             val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
             for (appProcess in activityManager.runningAppProcesses) {
-                if (appProcess.pid == pid && appProcess.processName == "com.twt.service") {
+                if (appProcess.pid == pid && appProcess.processName == applicationContext.packageName) {
                     return@takeIf true
                 }
             }

@@ -1,27 +1,13 @@
 // @dart = 2.12
 
 class VersionData {
-  final Info info;
+  final Version data;
 
-  VersionData._({required this.info});
+  VersionData._({required this.data});
 
   factory VersionData.fromJson(Map json) {
     return VersionData._(
-      info: Info.fromJson(json["info"]),
-    );
-  }
-}
-
-class Info {
-  final Version release;
-  final Version beta;
-
-  Info._(this.release, this.beta);
-
-  factory Info.fromJson(Map<String, dynamic> json) {
-    return Info._(
-      Version.fromJson(json["release"]),
-      Version.fromJson(json["beta"]),
+      data: Version.fromJson(json['data']),
     );
   }
 }
@@ -53,10 +39,10 @@ class Version {
 
   factory Version.fromJson(Map json) {
     return Version._(
-      versionCode: int.tryParse(json["versionCode"]) ?? 0,
+      versionCode: json["versionCode"] ?? 0,
       version: json["version"] ?? '',
       content: json["content"] ?? '',
-      isForced: json['isForced'] ?? false,
+      isForced: json['isForced'] == 0 ? false : true,
       time: json["time"] ?? '',
       path: json["path"] ?? '',
       apkSize: json['apkSize'] ?? '',

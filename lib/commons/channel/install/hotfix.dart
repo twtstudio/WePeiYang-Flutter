@@ -7,7 +7,7 @@ class HotFixManager {
   static const _hotfixChannel = MethodChannel("com.twt.service/hot_fix");
 
   static Future<void> hotFix(String path) async {
-    await _hotfixChannel.invokeMethod("hotFix", {"path": path});;
+    await _hotfixChannel.invokeMethod("hotFix", {"path": path});
   }
 
   static Future<void> restartApp() async {

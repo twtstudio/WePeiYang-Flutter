@@ -1,49 +1,83 @@
 // @dart = 2.12
 import 'dart:convert';
+import 'dart:io';
 
-class DownloadItem {
+import 'path_util.dart';
+
+class DownloadTask {
   final String url;
   final String fileName;
   final String? title;
   final String? description;
   final bool showNotification;
-  final DownloadType type;
-  String resultPath = "";
+  final String type;
+  final String path;
   final String id;
   late String listenerId;
 
-  DownloadItem({
+  DownloadTask._({
     required this.url,
     required this.fileName,
     required this.showNotification,
     required this.type,
+    required this.id,
+    required this.path,
     this.title,
     this.description,
-  }) : id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";
+  });
+
+  factory DownloadTask({
+    required String url,
+    String? fileName,
+    bool? showNotification,
+    String? type,
+    String? title,
+    String? description,
+  }) {
+    url = "http://152.136.148.227:8001/androidupdate/downloadFile/$url";
+    fileName ??= url.split("/").last;
+    type ??= DownloadType.other;
+    showNotification ??= false;
+    String id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";
+    String path = PathUtil.downloadDir.path +
+        Platform.pathSeparator +
+        type +
+        Platform.pathSeparator +
+        fileName;
+
+    return DownloadTask._(
+        url: url,
+        fileName: fileName,
+        showNotification: showNotification,
+        type: type,
+        id: id,
+        path: path);
+  }
+
+  bool get exist => File(path).existsSync();
 
   Map<String, dynamic> toMap() {
     return {
       'url': url,
       'fileName': fileName,
-      'showNotification': showNotification,
-      'type': type.path,
       'title': title,
       'description': description,
+      'showNotification': showNotification,
+      'type': type,
+      'path': path,
       'id': id,
       'listenerId': listenerId,
     };
   }
 
-  String toJson() => json.encode(toMap());
-
   @override
   String toString() {
-    return toJson();
+    return json.encode(toMap());
   }
 }
 
 class DownloadList {
-  final List<DownloadItem> list;
+  final List<DownloadTask> list;
 
   DownloadList(this.list);
 
@@ -56,8 +90,9 @@ class DownloadList {
   String toJson() => json.encode(toMap());
 }
 
-enum DownloadType { apk, font, hotfix, other }
-
-extension DownloadTypeExt on DownloadType {
-  String get path => ['apk', 'font', 'hotfix', 'other'][index];
+class DownloadType {
+  static final String apk = 'apk';
+  static final String font = 'font';
+  static final String hotfix = 'hotfix';
+  static final String other = 'other';
 }

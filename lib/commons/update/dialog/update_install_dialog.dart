@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
-import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
@@ -23,11 +23,19 @@ class UpdateInstallDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = DialogSize.getSize(context);
 
+    void cancel() {
+      context.read<UpdateManager>().setIdle();
+      context.read<UpdateManager>().cancelDialog(DialogTag.install);
+    }
+
+    void ok() {
+      InstallManager.install(version.apkName);
+      cancel();
+    }
+
     final buttons = WbyDialogStandardTwoButton(
-      cancel: () {
-        context.read<UpdateManager>().cancelDialog(DialogTag.install);
-      },
-      ok: () => InstallManager.install(version.apkName),
+      cancel: cancel,
+      ok: ok,
       cancelText: "稍后安装",
       okText: "立刻安装",
     );
@@ -53,7 +61,7 @@ class UpdateInstallDialog extends StatelessWidget {
             ],
           ),
         ),
-        TodayShowAgainCheck(),
+        TodayShowAgainCheck(tap: cancel),
       ],
     );
 

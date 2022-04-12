@@ -1,4 +1,4 @@
-// @dart = 2.12
+﻿// @dart = 2.12
 
 /// 动态打包配置
 class EnvConfig {
@@ -22,6 +22,16 @@ class EnvConfig {
   static const ENVIRONMENT = String.fromEnvironment(
     "ENVIRONMENT",
     defaultValue: "ONLINE_TEST",
+  );
+
+  static const VERSION = String.fromEnvironment(
+    "VERSION",
+    defaultValue: "4.2.5",
+  );
+
+  static const VERSIONCODE = int.fromEnvironment(
+    "VERSIONCODE",
+    defaultValue: 95,
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"

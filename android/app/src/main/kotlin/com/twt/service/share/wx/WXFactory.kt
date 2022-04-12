@@ -1,4 +1,4 @@
-package com.twt.service.share
+package com.twt.service.share.wx
 //
 //import android.graphics.Bitmap
 //import android.graphics.BitmapFactory

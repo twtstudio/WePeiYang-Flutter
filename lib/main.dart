@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, TextTreeRenderer;
+    show
+        DiagnosticsTreeStyle,
+        TextTreeRenderer,
+        debugPrintThrottled,
+        kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
+import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -33,11 +38,11 @@ import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
+import 'commons/environment/config.dart';
 import 'commons/util/text_util.dart';
 import 'feedback/network/feedback_service.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
-import 'commons/environment/config.dart';
 
 /// 列一下各种东西的初始化：
 /// 1. run app 之前：
@@ -49,10 +54,19 @@ import 'commons/environment/config.dart';
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
+  debugPrint = (message, {wrapWidth}) {
+    Logger.checkList();
+    Logger.logs.add(message);
+    if (EnvConfig.isDevelop || kDebugMode) {
+      debugPrintThrottled(message, wrapWidth: wrapWidth);
+    }
+  };
+
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     // 初始化环境变量
     EnvConfig.init();
+    PathUtil.init();
 
     /// 程序中的同步（sync）错误也交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
@@ -86,7 +100,7 @@ void main() async {
     Logger.reportError(error, stack);
   }, zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-    /// 覆盖zone中的所有[print]和[debugPrint]，统一日志格式
+        /// 覆盖zone中的所有[print]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
 }
@@ -211,7 +225,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (_) => ScheduleNotifier()),
         ChangeNotifierProvider(create: (_) => ExamNotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
-        ChangeNotifierProvider(create: (context) => UpdateManager(context)),
+        ChangeNotifierProvider(create: (_) => UpdateManager()),
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
@@ -243,7 +257,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          debugShowCheckedModeBanner: EnvConfig.isDevelop,
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
