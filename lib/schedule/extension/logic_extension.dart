@@ -48,7 +48,7 @@ List<List<List<Pair<Course, int>>>> getMergedCourses(
       /// 当前需要判断的课程
       var current = Pair<Course, int>(course, i);
       int day = current.arrange.weekday;
-      if (day > dayNumber) return; // 这里return起到continue的作用
+      if (day > dayNumber) continue;
       int start = current.arrange.unitList.first;
       int end = current.arrange.unitList.last;
       bool hasMerged = false;

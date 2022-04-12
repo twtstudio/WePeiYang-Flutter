@@ -82,10 +82,22 @@ class EditProvider with ChangeNotifier {
   String weekType = '每周';
 
   /// WeekPicker打开前重设临时变量
-  void initWeekList() {
+  void initWeekList([List<int>? weekInit]) {
     weekStart = 1;
     weekEnd = 1;
     weekType = '每周';
+    if (weekInit != null && weekInit.isNotEmpty) {
+      var type = '每周';
+      if (weekInit.length > 1) {
+        var odd = weekInit.any((e) => e.isOdd);
+        var even = weekInit.any((e) => e.isEven);
+        if (odd && !even) type = '单周';
+        if (even && !odd) type = '双周';
+      }
+      weekType = type;
+      weekStart = weekInit.first;
+      weekEnd = weekInit.last;
+    }
   }
 
   /// WeekPicker关闭后保存

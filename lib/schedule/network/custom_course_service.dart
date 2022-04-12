@@ -29,18 +29,65 @@ class CustomCourseService with AsyncTimer {
       CommonPreferences.customCourseToken.value = response.data['data'];
       return true;
     } catch (e) {
-      ToastProvider.error('自定义课表服务加载失败');
+      if (!quiet) ToastProvider.error('自定义课表服务加载失败');
       return false;
     }
   }
 
-  static Future<void> updateCustomClass() async {}
+  static Future<void> updateCustomClass(Course course, int index) async {
+    try {
+      Map<String, dynamic> map = {
+        'index': index,
+        'credit': course.credit,
+        'class_name': course.name,
+        'classDetailList': course.arrangeList
+            .map((arrange) => {
+                  'class_order': _unitList2Str(arrange.unitList),
+                  'classroom': arrange.location,
+                  'this_class_teacher': arrange.teacherList.first,
+                  'which_week': _weekList2Str(arrange.weekList),
+                  'which_weekday': arrange.weekday.toString()
+                })
+            .toList()
+      };
+      await customCourseDio.post('customClassTable/update',
+          queryParameters: map);
+    } catch (e) {
+      // ToastProvider.error('更新自定义课程失败');
+    }
+  }
 
-  static Future<void> deleteCustomClassDetail() async {}
+  static Future<void> deleteCustomClass(int index) async {
+    try {
+      await customCourseDio.post('customClassTable/deleteClass',
+          queryParameters: {'index': index});
+    } catch (e) {
+      // ToastProvider.error('删除自定义课程失败');
+    }
+  }
 
-  static Future<void> deleteCustomClass() async {}
-
-  static Future<void> addCustomClass() async {}
+  static Future<void> addCustomClass(Course course, int index) async {
+    try {
+      Map<String, dynamic> map = {
+        'index': index,
+        'credit': course.credit,
+        'class_name': course.name,
+        'classDetailList': course.arrangeList
+            .map((arrange) => {
+                  'class_order': _unitList2Str(arrange.unitList),
+                  'classroom': arrange.location,
+                  'this_class_teacher': arrange.teacherList.first,
+                  'which_week': _weekList2Str(arrange.weekList),
+                  'which_weekday': arrange.weekday.toString()
+                })
+            .toList()
+      };
+      await customCourseDio.post('customClassTable/addCustomClass',
+          queryParameters: map);
+    } catch (e) {
+      // ToastProvider.error('添加自定义课程失败');
+    }
+  }
 
   static Future<List<Course>?> getCustomTable() async {
     try {
@@ -56,11 +103,11 @@ class CustomCourseService with AsyncTimer {
         var arrangeList = <Arrange>[];
         for (Map<String, dynamic> arrangeJson
             in courseJson['classDetailList']) {
-          var weekList = _str2List(arrangeJson['which_week'].toString());
+          var weekList = _weekStr2List(arrangeJson['which_week'].toString());
           if (minWeek > weekList.first) minWeek = weekList.first;
           if (maxWeek < weekList.last) maxWeek = weekList.last;
 
-          var unitList = _str2List(arrangeJson['class_order'].toString());
+          var unitList = _unitStr2List(arrangeJson['class_order'].toString());
 
           var teacherStr = arrangeJson['this_class_teacher'].toString();
           if (!teacherList.contains(teacherStr)) {
@@ -110,10 +157,22 @@ class CustomCourseService with AsyncTimer {
   }
 }
 
-List<int> _str2List(String str) {
+List<int> _weekStr2List(String str) {
   var result = <int>[];
   for (int i = 0; i < str.length; i++) {
-    result.add(int.parse(str[i]));
+    if (str[i] == '1') result.add(i);
   }
   return result;
 }
+
+String _weekList2Str(List<int> list) {
+  var result = '';
+  for (int i = 0; i <= list.last; i++) {
+    result += list.contains(i) ? '1' : '0';
+  }
+  return result;
+}
+
+List<int> _unitStr2List(String str) => [int.parse(str[0]), int.parse(str[1])];
+
+String _unitList2Str(List<int> list) => '${list.first}${list.last}';

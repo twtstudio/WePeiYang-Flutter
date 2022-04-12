@@ -11,8 +11,9 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 
 class TimeFrameWidget extends StatelessWidget {
   final int index;
+  final bool canDelete;
 
-  TimeFrameWidget(this.index, {Key? key}) : super(key: key);
+  TimeFrameWidget(this.index, this.canDelete, {Key? key}) : super(key: key);
 
   static const _weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
@@ -55,13 +56,18 @@ class TimeFrameWidget extends StatelessWidget {
               Text('time frame ${index + 1}',
                   style: TextUtil.base.Aspira.medium.black2A.sp(16)),
               Spacer(),
+              // canDelete为false时改为白色是为了不改变row的高度
               GestureDetector(
-                onTap: () => pvd.remove(index),
+                onTap: () {
+                  if (canDelete) pvd.remove(index);
+                },
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(),
-                  child:
-                      Icon(Icons.cancel, color: FavorColors.scheduleTitleColor),
+                  child: Icon(Icons.cancel,
+                      color: canDelete
+                          ? FavorColors.scheduleTitleColor
+                          : Colors.white),
                 ),
               ),
             ],
@@ -72,12 +78,15 @@ class TimeFrameWidget extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    pvd.initWeekList();
+                    pvd.initWeekList(pvd.arrangeList[index].weekList);
                     showDialog(
                       context: context,
                       barrierDismissible: true,
                       barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) => WeekPicker(index),
+                      builder: (_) => WeekPicker(
+                          index,
+                          pvd.arrangeList[index].weekday,
+                          pvd.arrangeList[index].weekList),
                     ).then((_) => pvd.saveWeekList(index));
                   },
                   child: Container(
@@ -103,7 +112,8 @@ class TimeFrameWidget extends StatelessWidget {
                       context: context,
                       barrierDismissible: true,
                       barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) => UnitPicker(index),
+                      builder: (_) =>
+                          UnitPicker(index, pvd.arrangeList[index].unitList),
                     ).then((_) => pvd.saveUnitList(index));
                   },
                   child: Container(
@@ -185,12 +195,14 @@ class InputWidget extends StatelessWidget {
   final String title;
   final String hintText;
   final String? initText;
+  final TextInputType? keyboardType;
 
   InputWidget(
       {required this.onChanged,
       required this.title,
       required this.hintText,
       this.initText,
+      this.keyboardType,
       this.key})
       : super(key: key) {
     if (initText != null)
@@ -210,6 +222,7 @@ class InputWidget extends StatelessWidget {
           child: TextField(
             controller: _controller,
             onChanged: onChanged,
+            keyboardType: keyboardType,
             textAlign: TextAlign.end,
             style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
             cursorColor: FavorColors.scheduleTitleColor,
@@ -218,10 +231,6 @@ class InputWidget extends StatelessWidget {
               hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
               border: InputBorder.none,
             ),
-            onTap: () {
-              onChanged('');
-              _controller?.clear();
-            },
           ),
         ),
       ],
@@ -231,8 +240,15 @@ class InputWidget extends StatelessWidget {
 
 class UnitPicker extends Dialog {
   final int _index;
+  final List<FixedExtentScrollController> _controllers;
 
-  UnitPicker(this._index);
+  UnitPicker(this._index, List<int> unitInit)
+      : _controllers = List.generate(2, (i) {
+          if (unitInit.every((e) => e == 0)) {
+            unitInit = [1, 1];
+          }
+          return FixedExtentScrollController(initialItem: unitInit[i] - 1);
+        });
 
   static const _text = ['至', '节'];
 
@@ -248,13 +264,24 @@ class UnitPicker extends Dialog {
         Expanded(
           flex: 1,
           child: CupertinoPicker.builder(
+            scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
             selectionOverlay: Container(color: Colors.transparent),
             itemExtent: 40,
             childCount: 12,
             onSelectedItemChanged: (row) {
-              print('section: $section | row: ${row + 1}');
+              if (section == 0) {
+                if (_controllers[0].selectedItem >
+                    _controllers[1].selectedItem) {
+                  _controllers[1].jumpToItem(_controllers[0].selectedItem);
+                }
+              } else {
+                if (_controllers[1].selectedItem <
+                    _controllers[0].selectedItem) {
+                  _controllers[0].jumpToItem(_controllers[1].selectedItem);
+                }
+              }
               context
                   .read<EditProvider>()
                   .arrangeList[_index]
@@ -297,12 +324,23 @@ class UnitPicker extends Dialog {
 
 class WeekPicker extends Dialog {
   final int _index;
+  final int _weekdayInit;
+  final List<FixedExtentScrollController> _controllers;
+  final ValueNotifier<int> _selectedWeekTypeIndex;
 
-  WeekPicker(this._index);
+  WeekPicker(this._index, this._weekdayInit, List<int> weekInit)
+      : _selectedWeekTypeIndex = ValueNotifier(_weekTypeInit(weekInit)),
+        _controllers = List.generate(2, (i) {
+          if (weekInit.isEmpty) {
+            weekInit = [1, 1];
+          }
+          var item = (i == 0) ? weekInit.first - 1 : weekInit.last - 1;
+          return FixedExtentScrollController(initialItem: item);
+        });
 
   static const _text = ['至', '周'];
 
-  static const _weekDays = [
+  static const _weekdays = [
     'Mon.',
     'Tue.',
     'Wed.',
@@ -317,7 +355,16 @@ class WeekPicker extends Dialog {
   final _textStyle =
       TextUtil.base.PingFangSC.w900.black00.space(letterSpacing: 1);
 
-  final _selectedWeekTypeIndex = ValueNotifier<int>(0);
+  static int _weekTypeInit(List<int> weekInit) {
+    var type = '每周';
+    if (weekInit.length > 1) {
+      var odd = weekInit.any((e) => e.isOdd);
+      var even = weekInit.any((e) => e.isEven);
+      if (odd && !even) type = '单周';
+      if (even && !odd) type = '双周';
+    }
+    return _weekTypes.indexOf(type);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -327,17 +374,18 @@ class WeekPicker extends Dialog {
       Expanded(
         flex: 1,
         child: CupertinoPicker.builder(
+          scrollController:
+              FixedExtentScrollController(initialItem: _weekdayInit - 1),
           diameterRatio: 1.5,
           squeeze: 1.45,
           selectionOverlay: Container(color: Colors.transparent),
           itemExtent: 40,
           childCount: 7,
           onSelectedItemChanged: (row) {
-            print('week row: ${row + 1}');
             pvd.arrangeList[_index].weekday = row + 1;
           },
           itemBuilder: (context, row) =>
-              Center(child: Text(_weekDays[row], style: _textStyle.sp(18))),
+              Center(child: Text(_weekdays[row], style: _textStyle.sp(18))),
         ),
       ),
     ];
@@ -347,13 +395,24 @@ class WeekPicker extends Dialog {
         Expanded(
           flex: 1,
           child: CupertinoPicker.builder(
+            scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
             selectionOverlay: Container(color: Colors.transparent),
             itemExtent: 40,
             childCount: weekCount,
             onSelectedItemChanged: (row) {
-              print('section: $section | row: ${row + 1}');
+              if (section == 0) {
+                if (_controllers[0].selectedItem >
+                    _controllers[1].selectedItem) {
+                  _controllers[1].jumpToItem(_controllers[0].selectedItem);
+                }
+              } else {
+                if (_controllers[1].selectedItem <
+                    _controllers[0].selectedItem) {
+                  _controllers[0].jumpToItem(_controllers[1].selectedItem);
+                }
+              }
               if (section == 0) {
                 pvd.weekStart = row + 1;
               } else {

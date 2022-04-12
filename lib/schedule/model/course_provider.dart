@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
 
 class CourseProvider with ChangeNotifier {
@@ -22,27 +23,34 @@ class CourseProvider with ChangeNotifier {
   List<Course> get customCourses => _customCourses; // 用于自定义课程编辑页
 
   void addCustomCourse(Course course) {
+    CustomCourseService.addCustomClass(course, _customCourses.length);
     _customCourses.add(course);
     notifyListeners();
+    saveCustomCourse();
   }
 
   void modifyCustomCourse(Course course, int index) {
     if (_customCourses.length >= index + 1) {
+      CustomCourseService.updateCustomClass(course, index);
       _customCourses[index] = course;
       notifyListeners();
+      saveCustomCourse();
     }
   }
 
   void deleteCustomCourse(int index) {
     if (_customCourses.length >= index + 1) {
+      CustomCourseService.deleteCustomClass(index);
       _customCourses.removeAt(index);
       notifyListeners();
+      saveCustomCourse();
     }
   }
 
   void saveCustomCourse() {
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
+    _widgetChannel.invokeMethod("refreshScheduleWidget");
   }
 
   /// 全部课程
@@ -86,13 +94,29 @@ class CourseProvider with ChangeNotifier {
       if (hint) ToastProvider.success("刷新课程表数据成功");
       _schoolCourses = courses;
       notifyListeners();
-
-      /// TODO: 这里！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
       CommonPreferences.courseData.value =
-          json.encode(CourseTable(_schoolCourses, [])); // 刷新本地缓存
-      _widgetChannel.invokeMethod("refreshScheduleWidget"); // 刷新课程表widget
+          json.encode(CourseTable(_schoolCourses, _customCourses));
+      _widgetChannel.invokeMethod("refreshScheduleWidget");
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);
+    });
+
+    refreshCustomCourse();
+  }
+
+  void refreshCustomCourse() {
+    // TODO 暂时的逻辑是，只要本地有缓存就不获取远程的
+    if (_customCourses.isNotEmpty) return;
+
+    CustomCourseService.getToken().then((success) {
+      if (!success) return;
+      CustomCourseService.getCustomTable().then((courseList) {
+        if (courseList == null) return;
+        _customCourses = courseList;
+        CommonPreferences.courseData.value =
+            json.encode(CourseTable(_schoolCourses, _customCourses));
+        _widgetChannel.invokeMethod("refreshScheduleWidget");
+      });
     });
   }
 
@@ -115,17 +139,6 @@ class CourseProvider with ChangeNotifier {
 }
 
 class CourseDisplayProvider with ChangeNotifier {
-  /// 编辑模式
-  bool _editMode = false;
-
-  bool get editMode => _editMode;
-
-  set editMode(bool value) {
-    if (_editMode == value) return;
-    _editMode = value;
-    notifyListeners();
-  }
-
   /// 课表页星期栏是否收缩
   set shrink(bool value) {
     CommonPreferences.courseAppBarShrink.value = value;

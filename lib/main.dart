@@ -30,6 +30,7 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/schedule_providers.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
@@ -126,6 +127,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
       FeedbackService.getToken();
+      if (CommonPreferences.token != '') {
+        CustomCourseService.getToken();
+      }
     });
   }
 

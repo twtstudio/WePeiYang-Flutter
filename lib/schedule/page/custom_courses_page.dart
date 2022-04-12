@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/view/edit_detail_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 class CustomCoursesPage extends StatelessWidget {
   @override
@@ -20,10 +20,24 @@ class CustomCoursesPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Color.fromRGBO(246, 246, 246, 1),
         brightness: Brightness.light,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorUtil.black2AColor, size: 32),
-          onPressed: () => Navigator.pop(context),
+        leading: Center(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(),
+              padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+              child: Image.asset(
+                'assets/images/schedule/back.png',
+                height: 20,
+                width: 20,
+                color: ColorUtil.black2AColor,
+              ),
+            ),
+          ),
         ),
+        titleSpacing: 0,
         leadingWidth: 40,
         title: Text('我的自定义课程',
             style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),

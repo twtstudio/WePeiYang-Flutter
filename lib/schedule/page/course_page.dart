@@ -1,11 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -76,123 +72,97 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     var titleColor = FavorColors.scheduleTitleColor;
 
-    var provider = context.watch<CourseDisplayProvider>();
-
-    var leading;
-    if (provider.editMode) {
-      leading = Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: Center(
-          child: TextButton(
-            onPressed: () {
-              SmartDialog.show(
-                clickBgDismissTemp: false,
-                widget: WbyDialogLayout(
-                  padding: true,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Image.asset(
-                            'assets/images/schedule/notify.png',
-                            color: FavorColors.scheduleTitleColor,
-                            height: 30,
-                            width: 30),
-                      ),
-                      SizedBox(height: 25),
-                      Text('是否保存已填信息?',
-                          style:
-                              TextUtil.base.PingFangSC.black00.medium.sp(15)),
-                      SizedBox(height: 30),
-                      WbyDialogStandardTwoButton(
-                        cancel: () {
-                          SmartDialog.dismiss();
-                        },
-                        ok: () {
-                          provider.editMode = false;
-                          SmartDialog.dismiss();
-                        },
-                        cancelText: "取消",
-                        okText: "保存",
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            child: Text('保存',
-                style: TextUtil.base.PingFangSC.bold
-                    .customColor(titleColor)
-                    .sp(18)),
+    var leading = Center(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Container(
+          decoration: BoxDecoration(),
+          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+          child: Image.asset(
+            'assets/images/schedule/back.png',
+            height: 22,
+            width: 22,
+            color: titleColor,
           ),
         ),
-      );
-    } else {
-      leading = IconButton(
-        icon: Icon(Icons.arrow_back, size: 32),
-        onPressed: () => Navigator.pop(context),
-      );
-    }
+      ),
+    );
 
-    var actions;
-    if (provider.editMode) {
-      actions = [
-        IconButton(
-          icon: Icon(Icons.widgets_outlined),
-          onPressed: () {
-            Navigator.pushNamed(context, ScheduleRouter.customCourse);
-          },
+    var actions = [
+      GestureDetector(
+        onTap: () {
+          if (!CommonPreferences.isBindTju.value) {
+            ToastProvider.error("请绑定办公网");
+            Navigator.pushNamed(context, AuthRouter.tjuBind);
+            return;
+          }
+          context.read<CourseProvider>().refreshCourse(
+              hint: true,
+              onFailure: (e) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => TjuRebindDialog(
+                    reason: e is WpyDioError ? e.error.toString() : null,
+                  ),
+                );
+              });
+        },
+        child: Container(
+          decoration: BoxDecoration(),
+          padding: const EdgeInsets.all(10),
+          child: Image.asset(
+            'assets/images/schedule/refresh.png',
+            height: 25,
+            width: 25,
+            color: titleColor,
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.add, size: 30),
-          onPressed: () {
-            context.read<EditProvider>().init();
-            showModalBottomSheet(
-              context: context,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              isDismissible: false,
-              enableDrag: false,
-              isScrollControlled: true,
-              builder: (context) => EditBottomSheet(),
-            );
-          },
+      ),
+      GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, ScheduleRouter.customCourse);
+        },
+        child: Container(
+          decoration: BoxDecoration(),
+          padding: const EdgeInsets.all(10),
+          child: Image.asset(
+            'assets/images/schedule/list.png',
+            height: 25,
+            width: 25,
+            color: titleColor,
+          ),
         ),
-        SizedBox(width: 10),
-      ];
-    } else {
-      actions = [
-        IconButton(
-          icon: Icon(Icons.edit_location_outlined),
-          onPressed: () => provider.editMode = true,
+      ),
+      GestureDetector(
+        onTap: () {
+          context.read<EditProvider>().init();
+          showModalBottomSheet(
+            context: context,
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            isDismissible: false,
+            enableDrag: false,
+            isScrollControlled: true,
+            builder: (context) => EditBottomSheet(),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(),
+          padding: const EdgeInsets.all(10),
+          child: Image.asset(
+            'assets/images/schedule/add.png',
+            height: 25,
+            width: 25,
+            color: titleColor,
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.autorenew),
-          onPressed: () {
-            if (!CommonPreferences.isBindTju.value) {
-              ToastProvider.error("请绑定办公网");
-              Navigator.pushNamed(context, AuthRouter.tjuBind);
-              return;
-            }
-            context.read<CourseProvider>().refreshCourse(
-                hint: true,
-                onFailure: (e) {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => TjuRebindDialog(
-                      reason: e is WpyDioError ? e.error.toString() : null,
-                    ),
-                  );
-                });
-          },
-        ),
-        SizedBox(width: 10),
-      ];
-    }
+      ),
+    ];
 
     return AppBar(
       backgroundColor: Colors.white,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/schedule/page/course_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/custom_courses_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
-import 'package:we_pei_yang_flutter/schedule/view/edit_detail_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 class ScheduleRouter {
   static String course = 'schedule/course';
