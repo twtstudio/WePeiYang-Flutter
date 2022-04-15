@@ -1,9 +1,12 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import '../../../feedback_router.dart';
 
-//北洋热搜
 class ActivityCard extends StatefulWidget {
   @override
   _ActivityCardState createState() => _ActivityCardState();
@@ -19,23 +22,76 @@ class _ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, FeedbackRouter.haitang);
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
-        child: ClipRRect(
+    Widget card(BuildContext context, int index) {
+      return InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, FeedbackRouter.haitang);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 1.0),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              child: Stack(
+                children: [
+                  Image.asset(
+                      index == 0
+                          ? 'assets/images/lake_butt_icons/haitang_banner.png'
+                          : 'assets/images/lake_butt_icons/monkie.png',
+                      fit: BoxFit.cover,
+                      width: WePeiYangApp.screenWidth - 28),
+                  Positioned(bottom: 4, right: 8, child: TextPod('海棠节·活动')),
+                ],
+              )),
+        ),
+      );
+    }
+
+    return Container(
+      height: 140,
+      padding: EdgeInsets.fromLTRB(13, 12, 13, 0),
+      child: Consumer<FestivalProvider>(
+          builder: (BuildContext context, value, Widget child) {
+        return ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            child: Stack(
-              children: [
-                Image.asset(
-                    'assets/images/lake_butt_icons/haitang_banner.png',
-                    fit: BoxFit.fitWidth),
-                Positioned(bottom: 4, right: 8, child: TextPod('海棠节·活动')),
-              ],
-            )),
-      ),
+            clipBehavior: Clip.hardEdge,
+            child: Swiper(
+              itemCount:
+                  context.read<FestivalProvider>().festivalList.length == 0
+                      ? 2
+                      : context.read<FestivalProvider>().festivalList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return card(context, index);
+              },
+              fade: 0.3,
+              viewportFraction: 1,
+              scale: 1,
+              pagination: SwiperCustomPagination(
+                builder: (context, config) {
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(config.itemCount, (index) {
+                            return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                      color: index == config.activeIndex
+                                          ? Colors.white
+                                          : Color.fromRGBO(0, 0, 25, 0.22),
+                                      borderRadius: BorderRadius.circular(100)),
+                                ));
+                          })),
+                    ),
+                  );
+                },
+              ),
+            ));
+      }),
     );
   }
 }

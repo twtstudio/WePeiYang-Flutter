@@ -56,7 +56,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           .refreshToIdle();
     if (scrollInfo.metrics.pixels == 0)
       context.read<LakeModel>().onFeedbackOpen();
-    if ((scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
+    if (scrollInfo.metrics.axisDirection == AxisDirection.down && (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
         scrollInfo.metrics.pixels >= 10 &&
         scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
       if (scrollInfo.metrics.pixels <= _previousOffset)
@@ -111,6 +111,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             .refreshController
             .refreshFailed();
       });
+      context.read<FestivalProvider>().initFestivalList();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
@@ -311,10 +312,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 ind--;
                 if (index == 0 && ind == 0) return HotCard();
                 if (index == 0) ind--;
-                if (ind == 0)
-                  return DateTime.now().toLocal().isAfter(DateTime(2022, 4, 19))
-                      ? SizedBox()
-                      : ActivityCard();
+                if (ind == 0) return ActivityCard();
                 ind--;
                 final post = context
                     .read<LakeModel>()

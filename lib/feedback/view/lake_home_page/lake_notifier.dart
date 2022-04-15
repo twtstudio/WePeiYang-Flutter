@@ -289,3 +289,21 @@ class LakeModel extends ChangeNotifier {
     }
   }
 }
+
+class FestivalProvider extends ChangeNotifier {
+  List<WPYTab> festivalList = [];
+
+  Future<void> initFestivalList() async {
+    await FeedbackService.getFestCards(
+      onSuccess: (list) {
+        festivalList.clear();
+        festivalList.addAll(festivalList);
+        notifyListeners();
+      },
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
+        notifyListeners();
+      },
+    );
+  }
+}

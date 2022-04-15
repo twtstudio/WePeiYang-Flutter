@@ -11,7 +11,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  String baseUrl = //'${EnvConfig.QNHD}api/v1/f/';
+  'https://www.zrzz.site:7013/api/v1/f/';
   var headers = {};
 
   @override
@@ -184,6 +185,24 @@ class FeedbackService with AsyncTimer {
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Tag.fromJson(json));
       }
+      onSuccess(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getFestCards({
+    @required OnResult<List<Festival>> onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('banner');
+      List<Festival> list = [];
+      String out = response.data['data']['content'].toString();
+      for (Map<String, dynamic> json in response.data['data']['content']) {
+        list.add(Festival.fromJson(json));
+      }
+      print(list);
       onSuccess(list);
     } on DioError catch (e) {
       onFailure(e);

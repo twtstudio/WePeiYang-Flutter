@@ -9,4 +9,5 @@ List<SingleChildWidget> feedbackProviders = [
   ChangeNotifierProvider.value(value: FbHotTagsProvider()),
   ChangeNotifierProvider.value(value: NewFloorProvider()),
   ChangeNotifierProvider.value(value: LakeModel()),
+  ChangeNotifierProvider.value(value: FestivalProvider()),
 ];

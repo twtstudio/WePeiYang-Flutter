@@ -256,6 +256,26 @@ class Floor {
   }
 }
 
+class Festival {
+  Festival({
+    this.picUrl,
+    this.festUrl,
+  });
+
+  String picUrl;
+  String festUrl;
+
+  factory Festival.fromJson(Map<String, dynamic> json) => Festival(
+    picUrl: json["pic"],
+    festUrl: json["url"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "shortname": picUrl,
+    "name": festUrl,
+  };
+}
+
 class WPYTab {
   WPYTab({
     this.id,
