@@ -38,14 +38,17 @@ class Course {
   String weeks; // 格式为 `1-16`
   List<String> teacherList; // 讲这门课的所有老师，带职称
   List<Arrange> arrangeList;
+  int type; // 0->正常课程; 1->自定义课程
 
   /// 爬课表用
   Course.spider(this.name, this.classId, this.courseId, this.credit,
-      this.campus, this.weeks, this.teacherList, this.arrangeList);
+      this.campus, this.weeks, this.teacherList, this.arrangeList)
+      : type = 0;
 
   /// 自定义课表用，没有classId、courseId、campus
   Course.custom(
-      this.name, this.credit, this.weeks, this.teacherList, this.arrangeList);
+      this.name, this.credit, this.weeks, this.teacherList, this.arrangeList)
+      : type = 1;
 
   Course.fromJson(Map<String, dynamic> map)
       : name = map['name'],
@@ -56,7 +59,8 @@ class Course {
         weeks = map['weeks'],
         teacherList = List<String>.from(map['teacherList']),
         arrangeList = []..addAll(
-            (map['arrangeList'] as List).map((e) => Arrange.fromJson(e)));
+            (map['arrangeList'] as List).map((e) => Arrange.fromJson(e))),
+        type = map['type'];
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -66,13 +70,14 @@ class Course {
         'campus': campus,
         'weeks': weeks,
         'teacherList': teacherList,
-        'arrangeList': arrangeList.map((e) => e.toJson()).toList()
+        'arrangeList': arrangeList.map((e) => e.toJson()).toList(),
+        'type': type
       };
 }
 
 /// [weekday], [weekList], [unitList]均从1开始数，例如[weekDay] == 1代表周一
 class Arrange {
-  String? name; // 课程名称，仅供爬虫时对照用
+  String? name; // 课程名称，仅供爬虫时对照用，不进缓存
   String location = ''; // 上课地点
   int weekday = 1; // 周几
   List<int> weekList = []; // 哪些周有课

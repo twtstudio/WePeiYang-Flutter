@@ -138,7 +138,8 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       GestureDetector(
         onTap: () {
-          context.read<EditProvider>().init();
+          var pvd = context.read<EditProvider>();
+          pvd.init();
           showModalBottomSheet(
             context: context,
             elevation: 5,
@@ -148,7 +149,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
             isDismissible: false,
             enableDrag: false,
             isScrollControlled: true,
-            builder: (context) => EditBottomSheet(),
+            builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),
           );
         },
         child: Container(
@@ -194,7 +195,7 @@ class _TitleWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8, top: 12),
             child: Builder(builder: (context) {
               var currentWeek =
-                  context.select<CourseProvider, int>((p) => p.selectedWeek);
+                  context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
                   style: FontManager.Texta.copyWith(
                       color: Color.fromRGBO(114, 113, 113, 1), fontSize: 16));

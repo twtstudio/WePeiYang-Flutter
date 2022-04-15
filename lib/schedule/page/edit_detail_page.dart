@@ -14,19 +14,22 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
 class EditDetailPageArgs {
-  final Course course;
   final int index;
+  final String name;
+  final String credit;
 
-  EditDetailPageArgs(this.course, this.index);
+  EditDetailPageArgs(this.index, this.name, this.credit);
 }
 
 class EditDetailPage extends StatefulWidget {
-  final Course course;
   final int index;
+  final String name;
+  final String credit;
 
   EditDetailPage(EditDetailPageArgs args)
-      : course = args.course,
-        index = args.index;
+      : index = args.index,
+        name = args.name,
+        credit = args.credit;
 
   @override
   _EditDetailPageState createState() => _EditDetailPageState();
@@ -41,37 +44,41 @@ class _EditDetailPageState extends State<EditDetailPage> {
   @override
   void initState() {
     super.initState();
-    name = widget.course.name;
-    credit = widget.course.credit;
+    name = widget.name;
+    credit = widget.credit;
   }
 
-  bool _check(BuildContext context, {required bool quiet}) {
+  bool _check(BuildContext context) {
     if (name.isEmpty) {
-      if (!quiet) ToastProvider.error('请填写课程名称');
+      ToastProvider.error('请填写课程名称');
       return false;
     }
     var pvd = context.read<EditProvider>();
     int frameCheck = pvd.check();
     if (frameCheck != -1) {
-      if (!quiet) ToastProvider.error('time frame ${frameCheck + 1} 信息不完整');
+      ToastProvider.error('time frame ${frameCheck + 1} 信息不完整');
       return false;
     }
     return true;
   }
 
   void _saveAndQuit(BuildContext context) {
-    if (!_check(context, quiet: false)) return;
+    if (!_check(context)) return;
 
     int start = 100;
     int end = 0;
+    var teacherSet = Set<String>();
+
     var pvd = context.read<EditProvider>();
     pvd.arrangeList.forEach((arrange) {
       if (arrange.weekList.first <= start) start = arrange.weekList.first;
       if (arrange.weekList.last >= end) end = arrange.weekList.last;
+      teacherSet.add(arrange.teacherList.first);
     });
 
     context.read<CourseProvider>().modifyCustomCourse(
-        Course.custom(name, credit, '$start-$end', [], pvd.arrangeList),
+        Course.custom(
+            name, credit, '$start-$end', teacherSet.toList(), pvd.arrangeList),
         widget.index);
     ToastProvider.success('保存成功');
     Navigator.pop(context);
@@ -82,7 +89,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
     Navigator.pop(context);
   }
 
-  void _showDialog(BuildContext context, String text, String okText,
+  void _showDialog(BuildContext context, String text,
       {VoidCallback? ok, VoidCallback? cancel}) {
     SmartDialog.show(
       clickBgDismissTemp: false,
@@ -108,8 +115,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 SmartDialog.dismiss();
                 if (ok != null) ok();
               },
-              cancelText: "取消",
-              okText: okText,
+              cancelText: '取消',
+              okText: '确定',
             ),
           ],
         ),
@@ -139,11 +146,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        var check = _check(context, quiet: true);
-        var text = check ? '是否保存更改内容?' : '是否取消编辑?';
-        var okText = check ? '保存' : '确定';
-        _showDialog(context, text, okText, ok: () {
-          check ? _saveAndQuit(context) : Navigator.pop(context);
+        _showDialog(context, '是否保存修改内容?', ok: () {
+          var check = _check(context);
+          if (check) _saveAndQuit(context);
         }, cancel: () {
           Navigator.pop(context);
         });
@@ -215,13 +220,13 @@ class _EditDetailPageState extends State<EditDetailPage> {
                             onChanged: (text) => name = text,
                             title: '课程名称',
                             hintText: '请输入课程名称（必填）',
-                            initText: widget.course.name,
+                            initText: name,
                           ),
                           InputWidget(
                             onChanged: (text) => credit = text,
                             title: '课程学分',
                             hintText: '请输入课程学分（选填）',
-                            initText: widget.course.credit,
+                            initText: credit,
                             keyboardType: TextInputType.number,
                           ),
                         ],
@@ -260,7 +265,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
               color: Color.fromRGBO(217, 83, 79, 1),
               child: InkWell(
                 onTap: () {
-                  _showDialog(context, '是否删除此课程?', '确定', ok: () {
+                  _showDialog(context, '是否删除此课程?', ok: () {
                     _deleteAndQuit(context);
                   });
                 },

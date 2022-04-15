@@ -1,10 +1,15 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
@@ -19,13 +24,13 @@ class CourseDialog extends Dialog {
   CourseDialog(this._pairs);
 
   final _nameStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 24,
+      fontSize: 20,
       color: Colors.white,
       decoration: TextDecoration.none,
       fontWeight: FontWeight.bold);
 
   final _teacherStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14, color: Colors.white, decoration: TextDecoration.none);
+      fontSize: 12, color: Colors.white, decoration: TextDecoration.none);
 
   final _hintNameStyle = FontManager.YaHeiRegular.copyWith(
       fontSize: 10,
@@ -78,18 +83,47 @@ class CourseDialog extends Dialog {
         onTap: () => Navigator.pop(context),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 35, 20, 35),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Text(pair.first.name, style: _nameStyle),
-              SizedBox(height: 15),
-              Text(teacher, style: _teacherStyle),
-              Spacer(),
-              _getRow1(pair),
-              SizedBox(height: 6),
-              _getRow2(pair),
-              SizedBox(height: 6),
-              _getRow3(pair)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: pair.first.type == 1
+                          ? EdgeInsets.only(right: 24)
+                          : EdgeInsets.zero,
+                      child: Text(pair.first.name * 3, style: _nameStyle),
+                    ),
+                    SizedBox(height: 12),
+                    Text(teacher, style: _teacherStyle),
+                    Spacer(),
+                    _getRow1(pair),
+                    SizedBox(height: 12),
+                    _getRow2(pair),
+                    SizedBox(height: 12),
+                    _getRow3(pair),
+                  ],
+                ),
+              ),
+              if (pair.first.type == 1)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<EditProvider>().load(pair.first);
+                      Navigator.pushNamed(context, ScheduleRouter.editDetail,
+                          arguments: EditDetailPageArgs(
+                              index, pair.first.name, pair.first.credit));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(),
+                      padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                      child: Image.asset('assets/images/schedule/card_edit.png',
+                          height: 18, width: 18),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

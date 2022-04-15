@@ -119,8 +119,9 @@ class CommonPreferences {
     captchaCookie.clear();
     realName.clear();
     department.clear();
-    stuType.clear();
     major.clear();
+    stuType.clear();
+    avatar.clear();
     feedbackToken.clear();
     canPush.clear();
     todayShowUpdateAgain.clear();
@@ -130,6 +131,7 @@ class CommonPreferences {
   static void clearTjuPrefs() {
     gpaData.clear();
     courseData.clear();
+    examData.clear();
     isBindTju.clear();
     tjuuname.clear();
     tjupasswd.clear();

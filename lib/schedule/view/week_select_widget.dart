@@ -1,18 +1,22 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-/// 用这两个变量绘制点阵图（改的时候如果overflow了就改一下下方container的height）
+/// 用这两个变量绘制点阵图
 const double _cubeSideLength = 6;
 const double _spacingLength = 4;
 
 /// 点阵图的宽高
-const double _canvasWidth = _cubeSideLength * 6 + _spacingLength * 5;
+double get _canvasWidth {
+  var count = CommonPreferences.dayNumber.value;
+  return _cubeSideLength * count + _spacingLength * (count - 1);
+}
 const double _canvasHeight = _cubeSideLength * 5 + _spacingLength * 4;
 
 /// 星期切换栏
@@ -39,7 +43,7 @@ class WeekSelectWidget extends StatelessWidget {
                 padding: EdgeInsets.only(left: offset),
                 child: Stack(
                   children: [
-                    _getContent(context, provider, i),
+                    _getContent(provider, i),
 
                     /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
                     SizedBox(
@@ -78,7 +82,7 @@ class WeekSelectWidget extends StatelessWidget {
     );
   }
 
-  Widget _getContent(BuildContext context, CourseProvider provider, int i) {
+  Widget _getContent(CourseProvider provider, int i) {
     return Column(
       children: [
         Container(
@@ -94,7 +98,7 @@ class WeekSelectWidget extends StatelessWidget {
           child: CustomPaint(
             painter: _WeekSelectPainter(getBoolMatrix(
                 i + 1, provider.weekCount, provider.totalCourses)),
-            size: const Size(_canvasWidth, _canvasHeight),
+            size: Size(_canvasWidth, _canvasHeight),
           ),
         ),
         SizedBox(height: 3),

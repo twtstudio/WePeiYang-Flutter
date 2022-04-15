@@ -64,7 +64,8 @@ class CustomCoursesPage extends StatelessWidget {
           onTap: () {
             context.read<EditProvider>().load(course);
             Navigator.pushNamed(context, ScheduleRouter.editDetail,
-                arguments: EditDetailPageArgs(course, index));
+                arguments:
+                    EditDetailPageArgs(index, course.name, course.credit));
           },
           splashFactory: InkRipple.splashFactory,
           borderRadius: BorderRadius.circular(10),

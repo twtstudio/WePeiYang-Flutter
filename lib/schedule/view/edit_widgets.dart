@@ -78,7 +78,8 @@ class TimeFrameWidget extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    pvd.initWeekList(pvd.arrangeList[index].weekList);
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    pvd.initWeekList(index);
                     showDialog(
                       context: context,
                       barrierDismissible: true,
@@ -87,7 +88,7 @@ class TimeFrameWidget extends StatelessWidget {
                           index,
                           pvd.arrangeList[index].weekday,
                           pvd.arrangeList[index].weekList),
-                    ).then((_) => pvd.saveWeekList(index));
+                    ).then((_) => pvd.notify());
                   },
                   child: Container(
                     height: 48,
@@ -107,6 +108,7 @@ class TimeFrameWidget extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
                     pvd.initUnitList(index);
                     showDialog(
                       context: context,
@@ -114,7 +116,7 @@ class TimeFrameWidget extends StatelessWidget {
                       barrierColor: Colors.white.withOpacity(0.1),
                       builder: (_) =>
                           UnitPicker(index, pvd.arrangeList[index].unitList),
-                    ).then((_) => pvd.saveUnitList(index));
+                    ).then((_) => pvd.notify());
                   },
                   child: Container(
                     height: 48,
@@ -209,6 +211,9 @@ class InputWidget extends StatelessWidget {
       _controller = TextEditingController(text: initText);
     else
       _controller = null;
+
+    print('!??!?!?!?!?!?!?!?!?!?!?build input widget!?!?!?!??!?!?!?!?!??!!?');
+    print('title: $title | initText: $initText');
   }
 
   late final TextEditingController? _controller;
@@ -243,12 +248,8 @@ class UnitPicker extends Dialog {
   final List<FixedExtentScrollController> _controllers;
 
   UnitPicker(this._index, List<int> unitInit)
-      : _controllers = List.generate(2, (i) {
-          if (unitInit.every((e) => e == 0)) {
-            unitInit = [1, 1];
-          }
-          return FixedExtentScrollController(initialItem: unitInit[i] - 1);
-        });
+      : _controllers = List.generate(2,
+            (i) => FixedExtentScrollController(initialItem: unitInit[i] - 1));
 
   static const _text = ['至', '节'];
 
@@ -324,16 +325,15 @@ class UnitPicker extends Dialog {
 
 class WeekPicker extends Dialog {
   final int _index;
-  final int _weekdayInit;
+  final ValueNotifier<String> _selectedWeekType;
+  final FixedExtentScrollController _weekdayController;
   final List<FixedExtentScrollController> _controllers;
-  final ValueNotifier<int> _selectedWeekTypeIndex;
 
-  WeekPicker(this._index, this._weekdayInit, List<int> weekInit)
-      : _selectedWeekTypeIndex = ValueNotifier(_weekTypeInit(weekInit)),
+  WeekPicker(this._index, int _weekdayInit, List<int> weekInit)
+      : _selectedWeekType = ValueNotifier(_weekTypeInit(weekInit)),
+        _weekdayController =
+            FixedExtentScrollController(initialItem: _weekdayInit - 1),
         _controllers = List.generate(2, (i) {
-          if (weekInit.isEmpty) {
-            weekInit = [1, 1];
-          }
           var item = (i == 0) ? weekInit.first - 1 : weekInit.last - 1;
           return FixedExtentScrollController(initialItem: item);
         });
@@ -355,15 +355,38 @@ class WeekPicker extends Dialog {
   final _textStyle =
       TextUtil.base.PingFangSC.w900.black00.space(letterSpacing: 1);
 
-  static int _weekTypeInit(List<int> weekInit) {
-    var type = '每周';
-    if (weekInit.length > 1) {
-      var odd = weekInit.any((e) => e.isOdd);
-      var even = weekInit.any((e) => e.isEven);
-      if (odd && !even) type = '单周';
-      if (even && !odd) type = '双周';
+  static String _weekTypeInit(List<int> weekInit) {
+    if (weekInit.every((e) => e == 1)) return '每周';
+    var odd = weekInit.any((e) => e.isOdd);
+    var even = weekInit.any((e) => e.isEven);
+    if (odd && !even) return '单周';
+    if (even && !odd) return '双周';
+    return '每周';
+  }
+
+  void _save(BuildContext context) {
+    int start = _controllers[0].selectedItem + 1;
+    int end = _controllers[1].selectedItem + 1;
+    String type = _selectedWeekType.value;
+
+    var weekList = <int>[];
+    if (start == end) {
+      weekList = [start];
+    } else if (type == '每周') {
+      for (int i = start; i <= end; i++) {
+        weekList.add(i);
+      }
+    } else if (type == '单周') {
+      for (int i = start; i <= end; i++) {
+        if (i % 2 == 1) weekList.add(i);
+      }
+    } else if (type == '双周') {
+      for (int i = start; i <= end; i++) {
+        if (i % 2 == 0) weekList.add(i);
+      }
     }
-    return _weekTypes.indexOf(type);
+
+    context.read<EditProvider>().arrangeList[_index].weekList = weekList;
   }
 
   @override
@@ -374,8 +397,7 @@ class WeekPicker extends Dialog {
       Expanded(
         flex: 1,
         child: CupertinoPicker.builder(
-          scrollController:
-              FixedExtentScrollController(initialItem: _weekdayInit - 1),
+          scrollController: _weekdayController,
           diameterRatio: 1.5,
           squeeze: 1.45,
           selectionOverlay: Container(color: Colors.transparent),
@@ -413,11 +435,7 @@ class WeekPicker extends Dialog {
                   _controllers[0].jumpToItem(_controllers[1].selectedItem);
                 }
               }
-              if (section == 0) {
-                pvd.weekStart = row + 1;
-              } else {
-                pvd.weekEnd = row + 1;
-              }
+              _save(context);
             },
             itemBuilder: (context, row) {
               var str = '${row + 1}';
@@ -455,16 +473,16 @@ class WeekPicker extends Dialog {
                 children: [
                   ...List.generate(3, (index) {
                     return ValueListenableBuilder(
-                      valueListenable: _selectedWeekTypeIndex,
-                      builder: (context, value, _) {
+                      valueListenable: _selectedWeekType,
+                      builder: (context, String type, _) {
                         return ElevatedButton(
                           onPressed: () {
-                            _selectedWeekTypeIndex.value = index;
-                            pvd.weekType = _weekTypes[index];
+                            _selectedWeekType.value = _weekTypes[index];
+                            _save(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            primary: index == value
+                            primary: index == _weekTypes.indexOf(type)
                                 ? FavorColors.scheduleTitleColor
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(
@@ -474,7 +492,7 @@ class WeekPicker extends Dialog {
                           child: Text(_weekTypes[index],
                               style: TextUtil.base.PingFangSC.regular
                                   .sp(12)
-                                  .customColor(index == value
+                                  .customColor(index == _weekTypes.indexOf(type)
                                       ? Colors.white
                                       : ColorUtil.greyCAColor)),
                         );

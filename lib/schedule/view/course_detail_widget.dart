@@ -95,7 +95,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             children: [
               child!,
               ..._generatePositioned(
-                  context, merged, provider.selectedWeek, provider.weekCount),
+                  merged, provider.selectedWeek, provider.weekCount),
             ],
           );
         },
@@ -120,11 +120,8 @@ class _CourseDisplayWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _generatePositioned(
-      BuildContext context,
-      List<List<List<Pair<Course, int>>>> merged,
-      int selectedWeek,
-      int weekCount) {
+  List<Widget> _generatePositioned(List<List<List<Pair<Course, int>>>> merged,
+      int selectedWeek, int weekCount) {
     List<Positioned> list = [];
     for (int i = 0; i < _dayCount; i++) {
       int day = i + 1;

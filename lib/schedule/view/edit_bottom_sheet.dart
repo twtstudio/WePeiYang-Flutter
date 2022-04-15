@@ -1,12 +1,9 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -14,6 +11,11 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
 class EditBottomSheet extends StatefulWidget {
+  final String name;
+  final String credit;
+
+  EditBottomSheet(this.name, this.credit);
+
   @override
   _EditBottomSheetState createState() => _EditBottomSheetState();
 }
@@ -24,69 +26,49 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
   var name = '';
   var credit = '';
 
-  bool _check(BuildContext context, {required bool quiet}) {
+  @override
+  void initState() {
+    super.initState();
+    name = widget.name;
+    credit = widget.credit;
+  }
+
+  bool _check(BuildContext context) {
     if (name.isEmpty) {
-      if (!quiet) ToastProvider.error('请填写课程名称');
+      ToastProvider.error('请填写课程名称');
       return false;
     }
     var pvd = context.read<EditProvider>();
     int frameCheck = pvd.check();
     if (frameCheck != -1) {
-      if (!quiet) ToastProvider.error('time frame ${frameCheck + 1} 信息不完整');
+      ToastProvider.error('time frame ${frameCheck + 1} 信息不完整');
       return false;
     }
     return true;
   }
 
   void _saveAndQuit(BuildContext context) {
-    if (!_check(context, quiet: false)) return;
+    if (!_check(context)) return;
 
     int start = 100;
     int end = 0;
+    var teacherSet = Set<String>();
+
     var pvd = context.read<EditProvider>();
     pvd.arrangeList.forEach((arrange) {
       if (arrange.weekList.first <= start) start = arrange.weekList.first;
       if (arrange.weekList.last >= end) end = arrange.weekList.last;
+      teacherSet.add(arrange.teacherList.first);
     });
 
-    context.read<CourseProvider>().addCustomCourse(
-        Course.custom(name, credit, '$start-$end', [], pvd.arrangeList));
+    context.read<CourseProvider>().addCustomCourse(Course.custom(
+        name, credit, '$start-$end', teacherSet.toList(), pvd.arrangeList));
     ToastProvider.success('保存成功');
-    Navigator.pop(context);
-  }
 
-  void _showDialog(BuildContext context, String text, String okText,
-      {VoidCallback? ok}) {
-    SmartDialog.show(
-      clickBgDismissTemp: false,
-      widget: WbyDialogLayout(
-        padding: true,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image.asset('assets/images/schedule/notify.png',
-                  color: FavorColors.scheduleTitleColor, height: 30, width: 30),
-            ),
-            SizedBox(height: 25),
-            Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
-            SizedBox(height: 30),
-            WbyDialogStandardTwoButton(
-              cancel: () {
-                SmartDialog.dismiss();
-              },
-              ok: () {
-                SmartDialog.dismiss();
-                if (ok != null) ok();
-              },
-              cancelText: "取消",
-              okText: okText,
-            ),
-          ],
-        ),
-      ),
-    );
+    // 这里和EditDetailPage中逻辑不同，需要清空暂存内容
+    pvd.clear();
+
+    Navigator.pop(context);
   }
 
   @override
@@ -111,13 +93,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
     return WillPopScope(
       onWillPop: () async {
-        var check = _check(context, quiet: true);
-        var text = check ? '是否保存已填信息?' : '是否取消编辑?';
-        var okText = check ? '保存' : '确定';
-        _showDialog(context, text, okText, ok: () {
-          check ? _saveAndQuit(context) : Navigator.pop(context);
-        });
-        return false;
+        // 退出前暂存编辑内容
+        context.read<EditProvider>().save(name, credit);
+        return true;
       },
       child: Material(
         color: Color.fromRGBO(246, 246, 246, 1.0),
@@ -133,7 +111,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
                   Spacer(),
                   ElevatedButton(
-                    onPressed: () => _saveAndQuit(context),
+                    onPressed: () {
+                      _saveAndQuit(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: titleColor,
                       shape: RoundedRectangleBorder(
@@ -145,9 +125,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   )
                 ],
               ),
-              Theme(
-                data: ThemeData(accentColor: Colors.white),
-                child: Expanded(
+              Expanded(
+                child: Theme(
+                  data: ThemeData(accentColor: Colors.white),
                   child: ListView(
                     controller: _scrollController,
                     children: [
@@ -173,11 +153,13 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                               onChanged: (text) => name = text,
                               title: '课程名称',
                               hintText: '请输入课程名称（必填）',
+                              initText: name,
                             ),
                             InputWidget(
                               onChanged: (text) => credit = text,
                               title: '课程学分',
                               hintText: '请输入课程学分（选填）',
+                              initText: credit,
                               keyboardType: TextInputType.number,
                             ),
                           ],

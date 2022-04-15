@@ -7,14 +7,15 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 /// 为每周的点阵图生成bool矩阵
 List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
+  var dayCount = CommonPreferences.dayNumber.value;
   // 这里不能 `list = List.filled(5, List.filled(6, false))` 这么写，不然外层List中会是同一个引用对象
   List<List<bool>> list = [];
-  for (int i = 0; i < 5; i++) list.add(List.filled(6, false));
+  for (int i = 0; i < 5; i++)
+    list.add(List.filled(dayCount, false));
   courses.forEach((course) {
     course.arrangeList.forEach((arrange) {
       if (judgeActiveInWeek(week, weekCount, arrange)) {
         var day = arrange.weekday;
-        if (day == 7) return; // 忽略周日
         var start = arrange.unitList.first;
         var end = arrange.unitList.last;
 
@@ -33,16 +34,33 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
   return list;
 }
 
+List<Pair<Course, int>> getMergedInactiveCourses(
+    CourseProvider provider, int dayNumber) {
+  List<Course> courses = provider.totalCourses;
+  List<Course> inactiveList = courses.where((course) => course.type == 1)
+      .toList();
+  inactiveList.sort((a, b) {
+    // 按学分从大到小排序，null(或不能解析成double的值)排最后
+    double? iA = double.tryParse(a.credit);
+    double? iB = double.tryParse(b.credit);
+    if (iA == null) return -1;
+    if (iB == null) return 1;
+    return iB.compareTo(iA);
+  });
+  return [];
+}
+
 /// 返回每天合并冲突后的课程，[courses]是未经检验冲突的课程
 /// 最外层List储存所有天的合并课（周一至周dayNumber）
 /// 次外层List储存每一天的所有合并课
 /// 最内层List储存合并课，合并课由许多[Pair]组成，其通过下标指出了某个[Course]的某个[Arrange]
 /// [List.first]的课显示在外，同时用于冲突判断
-List<List<List<Pair<Course, int>>>> getMergedCourses(
-    CourseProvider provider, int dayNumber) {
+List<List<List<Pair<Course, int>>>> getMergedCourses(CourseProvider provider,
+    int dayNumber) {
   List<Course> courses = provider.totalCourses;
   List<List<List<Pair<Course, int>>>> result = [];
-  for (int i = 0; i < dayNumber; i++) result.add([]);
+  for (int i = 0; i < dayNumber; i++)
+    result.add([]);
   courses.forEach((course) {
     for (int i = 0; i < course.arrangeList.length; i++) {
       /// 当前需要判断的课程
@@ -104,8 +122,10 @@ bool _checkMerged(Arrange a1, Arrange a2) {
   int start2 = a2.unitList.first;
   int end2 = a2.unitList.last;
   List<int> flag = List.filled(12, 0);
-  for (int i = start1; i <= end1; i++) flag[i - 1]++;
-  for (int i = start2; i <= end2; i++) flag[i - 1]++;
+  for (int i = start1; i <= end1; i++)
+    flag[i - 1]++;
+  for (int i = start2; i <= end2; i++)
+    flag[i - 1]++;
   return flag.contains(2);
 }
 
@@ -138,13 +158,17 @@ List<bool> _getWeekStatus(int weekCount, Arrange arrange) {
 
 /// 是否已开学
 bool get isBeforeTermStart =>
-    DateTime.now().millisecondsSinceEpoch / 1000 <
-    CommonPreferences.termStart.value;
+    DateTime
+        .now()
+        .millisecondsSinceEpoch / 1000 <
+        CommonPreferences.termStart.value;
 
 /// 夜猫子模式下，是否已开学，86400代表一天
 bool get isOneDayBeforeTermStart =>
-    (DateTime.now().millisecondsSinceEpoch / 1000 + 86400) <
-    CommonPreferences.termStart.value;
+    (DateTime
+        .now()
+        .millisecondsSinceEpoch / 1000 + 86400) <
+        CommonPreferences.termStart.value;
 
 /// 计算本学期已修学时（week为当前教学周，day从1开始数）
 /// 注：依照此计算方法，只有当天结束时才会更改已修学时
@@ -181,7 +205,9 @@ int getTotalHours(List<Course> courses) {
   return totalHour;
 }
 
-final _today = DateTime.now().day;
+final _today = DateTime
+    .now()
+    .day;
 
 /// 根据课程名生成对应颜色
 Color generateColor(String courseName) {

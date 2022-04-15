@@ -318,15 +318,15 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     UmengCommonSdk.initCommon();
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (CommonPreferences.updateTime.value != "20220318") {
-      CommonPreferences.updateTime.value = "20220318";
+    if (CommonPreferences.updateTime.value != "20220414") {
+      CommonPreferences.updateTime.value = "20220414";
       CommonPreferences.clearTjuPrefs();
       CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
 
-    /// 读取gpa和课程表的缓存
+    /// 读取gpa、考表、课程表的缓存
     context.read<CourseProvider>().readPref();
     context.read<ExamProvider>().readPref();
     context.read<GPANotifier>().readPref();
