@@ -291,13 +291,14 @@ class LakeModel extends ChangeNotifier {
 }
 
 class FestivalProvider extends ChangeNotifier {
-  List<WPYTab> festivalList = [];
+  List<Festival> festivalList = [];
 
   Future<void> initFestivalList() async {
     await FeedbackService.getFestCards(
       onSuccess: (list) {
+        //print(list.first);
         festivalList.clear();
-        festivalList.addAll(festivalList);
+        festivalList.addAll(list);
         notifyListeners();
       },
       onFailure: (e) {

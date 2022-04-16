@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/haitang_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import '../../../feedback_router.dart';
 
@@ -25,7 +26,10 @@ class _ActivityCardState extends State<ActivityCard> {
     Widget card(BuildContext context, int index) {
       return InkWell(
         onTap: () {
-          Navigator.pushNamed(context, FeedbackRouter.haitang);
+          Navigator.pushNamed(context, FeedbackRouter.haitang,
+              arguments: FestivalArgs(
+                  context.read<FestivalProvider>().festivalList[index].url,
+                  context.read<FestivalProvider>().festivalList[index].title));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.0),
@@ -33,13 +37,21 @@ class _ActivityCardState extends State<ActivityCard> {
               borderRadius: BorderRadius.all(Radius.circular(16)),
               child: Stack(
                 children: [
-                  Image.asset(
-                      index == 0
-                          ? 'assets/images/lake_butt_icons/haitang_banner.png'
-                          : 'assets/images/lake_butt_icons/monkie.png',
+                  Image.network(
+                      context
+                          .read<FestivalProvider>()
+                          .festivalList[index]
+                          .image,
                       fit: BoxFit.cover,
-                      width: WePeiYangApp.screenWidth - 28),
-                  Positioned(bottom: 4, right: 8, child: TextPod('海棠节·活动')),
+                      width: WePeiYangApp.screenWidth - 28,
+                      height: 128),
+                  Positioned(
+                      bottom: 4,
+                      right: 8,
+                      child: TextPod(context
+                          .read<FestivalProvider>()
+                          .festivalList[index]
+                          .title)),
                 ],
               )),
         ),
@@ -57,10 +69,12 @@ class _ActivityCardState extends State<ActivityCard> {
             child: Swiper(
               itemCount:
                   context.read<FestivalProvider>().festivalList.length == 0
-                      ? 2
+                      ? 1
                       : context.read<FestivalProvider>().festivalList.length,
               itemBuilder: (BuildContext context, int index) {
-                return card(context, index);
+                return context.read<FestivalProvider>().festivalList.length == 0
+                    ? SizedBox()
+                    : card(context, index);
               },
               fade: 0.3,
               viewportFraction: 1,

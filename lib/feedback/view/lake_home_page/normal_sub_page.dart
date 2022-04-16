@@ -56,7 +56,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           .refreshToIdle();
     if (scrollInfo.metrics.pixels == 0)
       context.read<LakeModel>().onFeedbackOpen();
-    if (scrollInfo.metrics.axisDirection == AxisDirection.down && (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
+    if (scrollInfo.metrics.axisDirection == AxisDirection.down &&
+        (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
         scrollInfo.metrics.pixels >= 10 &&
         scrollInfo.metrics.pixels <= scrollInfo.metrics.maxScrollExtent - 10) {
       if (scrollInfo.metrics.pixels <= _previousOffset)
@@ -153,8 +154,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    _departmentsProvider =
-        Provider.of<FbDepartmentsProvider>(context, listen: false);
+    if (index == 0) {
+      context.read<FbHotTagsProvider>().initHotTags();
+      _departmentsProvider =
+          Provider.of<FbDepartmentsProvider>(context, listen: false);
+      context.read<FestivalProvider>().initFestivalList();
+    }
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
@@ -162,7 +167,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
-    if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
     super.initState();
   }
 

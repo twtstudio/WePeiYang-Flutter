@@ -257,23 +257,42 @@ class Floor {
 }
 
 class Festival {
-  Festival({
-    this.picUrl,
-    this.festUrl,
-  });
+  Festival(
+      {this.id,
+      this.name,
+      this.title,
+      this.image,
+      this.url,
+      this.ord,
+      this.createdAt});
 
-  String picUrl;
-  String festUrl;
+  int id;
+  String name;
+  String title;
+  String image;
+  String url;
+  int ord;
+  String createdAt;
 
   factory Festival.fromJson(Map<String, dynamic> json) => Festival(
-    picUrl: json["pic"],
-    festUrl: json["url"],
-  );
+        id: json["id"],
+        name: json["name"],
+        title: json["title"],
+        image: json["image"],
+        url: json["url"],
+        ord: json["ord"],
+        createdAt: json["createdAt"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "shortname": picUrl,
-    "name": festUrl,
-  };
+        "id": id,
+        "name": name,
+        "title": title,
+        "image": image,
+        "url": url,
+        "ord": ord,
+        "created_at": createdAt
+      };
 }
 
 class WPYTab {
@@ -364,6 +383,7 @@ class PostTagId {
         "id": id,
       };
 }
+
 class Error {
   Error({
     this.error,
@@ -371,11 +391,11 @@ class Error {
 
   String error;
 
-  factory  Error.fromJson(Map<String, dynamic> json) => Error(
-    error: json["error"],
-  );
+  factory Error.fromJson(Map<String, dynamic> json) => Error(
+        error: json["error"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "error": error,
-  };
+        "error": error,
+      };
 }

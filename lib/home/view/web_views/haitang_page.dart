@@ -1,31 +1,36 @@
 // @dart = 2.12
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save_channel.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:provider/provider.dart';
 
-class HaitangPage extends WbyWebView {
-  const HaitangPage({Key? key})
+class FestivalArgs {
+  final String url;
+  final String name;
+
+  FestivalArgs(this.url, this.name);
+}
+
+class FestivalPage extends WbyWebView {
+  final FestivalArgs args;
+  FestivalPage(this.args, {Key? key})
       : super(
-            page: "海棠季抽卡",
-            backgroundColor: const Color.fromRGBO(221, 182, 190, 1.0),
-            fullPage: true,
+            page: args.name,
+            backgroundColor: Colors.white,
+            fullPage: false,
             key: key);
 
   @override
-  _HaitangPageState createState() => _HaitangPageState();
+  _FestivalPageState createState() => _FestivalPageState(this.args);
 }
 
-class _HaitangPageState extends WbyWebViewState {
+class _FestivalPageState extends WbyWebViewState {
+  FestivalArgs args;
+  _FestivalPageState(this.args);
+
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     print(CommonPreferences().token.value);
-    return "https://haitang.twt.edu.cn/#/?token=${CommonPreferences().token.value}";
-    //return "https://59.67.37.34/#/?token=${CommonPreferences().token.value}";
+    return args.url.replaceAll('<token>', '${CommonPreferences().token.value}');
   }
 }

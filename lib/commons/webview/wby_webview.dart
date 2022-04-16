@@ -48,6 +48,7 @@ class WbyWebViewState extends State<WbyWebView> {
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         elevation: 0,
+        toolbarHeight: 50,
         brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -132,7 +133,7 @@ class WbyWebViewState extends State<WbyWebView> {
           ),
         ),
         top,
-        Align(
+        if (widget.fullPage) Align(
           alignment: Alignment.topLeft,
           child: Padding(
             padding: const EdgeInsets.only(left: 15),

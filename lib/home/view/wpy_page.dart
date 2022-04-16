@@ -49,7 +49,7 @@ class WPYPageState extends State<WPYPage> {
               '愚人节模式？')
           : null)
       ..add(CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
-          '核酸号码牌', ReportRouter.pass))
+          '楼宇牌', ReportRouter.pass))
       ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
           S.current.report, ReportRouter.main))
       ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),

@@ -196,10 +196,9 @@ class FeedbackService with AsyncTimer {
     @required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get('banner');
+      var response = await feedbackDio.get('banners');
       List<Festival> list = [];
-      String out = response.data['data']['content'].toString();
-      for (Map<String, dynamic> json in response.data['data']['content']) {
+      for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Festival.fromJson(json));
       }
       print(list);

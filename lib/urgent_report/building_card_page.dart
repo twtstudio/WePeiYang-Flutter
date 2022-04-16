@@ -35,7 +35,8 @@ class _NucPassportPageState extends State<NucPassportPage> {
     '3斋': Color(0xFF9254DE),
     '4斋': Color(0xFFFF3D3F),
     '5斋': Color(0xFFFFC130),
-    '6斋': Color(0xFFFF3D3F),
+    '6斋A': Color(0xFFFF3D3F),
+    '6斋B': Color(0xFFFF3D3F),
     '7斋': Color(0xFFFF9449),
     '8斋A': Color(0xFF9254DE),
     '8斋B': Color(0xFF40A9FF),
@@ -75,7 +76,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
     ///循环执行
     ///间隔1秒
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      if (changeContainerState < 5)
+      if (changeContainerState < 3)
         changeContainerState++;
       else
         changeContainerState = 0;
@@ -105,7 +106,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
         return true;
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 6000),
+        duration: Duration(milliseconds: 4000),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -161,10 +162,10 @@ class _NucPassportPageState extends State<NucPassportPage> {
                     ),
                     SizedBox(height: 34.w),
                     Text('请向志愿者出示您的号码牌',
-                        style: TextUtil.base.white.sp(14).w700),
+                        style: TextUtil.base.white.sp(18).w700),
                     SizedBox(height: 8.w),
                     Text('Please show your number to the volunteer',
-                        style: TextUtil.base.white.sp(14).w700),
+                        style: TextUtil.base.white.sp(16).w700),
                     SizedBox(height: 10.w),
                     Container(
                         padding: EdgeInsets.symmetric(vertical: 6.w),
@@ -183,11 +184,11 @@ class _NucPassportPageState extends State<NucPassportPage> {
                                 horizontal: BorderSide(color: Colors.white)))),
                     SizedBox(height: 10.w),
                     Text(
-                        '${CommonPreferences().major.value} ${CommonPreferences().realName.value}',
-                        style: TextUtil.base.white.sp(14).w700),
+                        '${CommonPreferences().department.value}  ${CommonPreferences().realName.value}',
+                        style: TextUtil.base.white.sp(17).w700),
                     SizedBox(height: 4.w),
-                    Text('${CommonPreferences().tjuuname.value ?? '请绑定办公网'}',
-                        style: TextUtil.base.white.sp(14).w700),
+                    Text('${CommonPreferences().userNumber.value ?? '请绑定办公网'}',
+                        style: TextUtil.base.white.sp(17).w700),
                     Spacer(),
                     Text(
                         DateTime.now()
@@ -199,9 +200,9 @@ class _NucPassportPageState extends State<NucPassportPage> {
                                 .toLocal()
                                 .toIso8601String()
                                 .substring(11, 19),
-                        style: TextUtil.base.white.sp(16).w700),
+                        style: TextUtil.base.white.sp(18).w700),
                     Text('请在核酸检测时出示，请勿截图',
-                        style: TextUtil.base.white.sp(16).w700),
+                        style: TextUtil.base.white.sp(18).w700),
                     SizedBox(
                       height: 20.w,
                     )

@@ -49,6 +49,6 @@ class FeedbackRouter {
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
     summary:(_) => FeedbackSummaryPage(),
-    haitang:(_) => HaitangPage(),
+    haitang:(args) => FestivalPage(args),
   };
 }
