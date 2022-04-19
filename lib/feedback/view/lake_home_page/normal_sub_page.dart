@@ -156,10 +156,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     if (index == 0) {
       context.read<FbHotTagsProvider>().initHotTags();
-      _departmentsProvider =
-          Provider.of<FbDepartmentsProvider>(context, listen: false);
-      context.read<FestivalProvider>().initFestivalList();
     }
+    _departmentsProvider =
+        Provider.of<FbDepartmentsProvider>(context, listen: false);
+    context.read<FestivalProvider>().initFestivalList();
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(

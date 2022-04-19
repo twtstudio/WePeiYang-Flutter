@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,9 @@ class _ActivityCardState extends State<ActivityCard> {
   Widget build(BuildContext context) {
     Widget card(BuildContext context, int index) {
       return InkWell(
-        onTap: () {
+        onTap: () async {
+          context.read<FestivalProvider>().festivalList[index].url.startsWith('https://photograph.twt.edu.cn/') ?
+            await launch('https://photograph.twt.edu.cn/') :
           Navigator.pushNamed(context, FeedbackRouter.haitang,
               arguments: FestivalArgs(
                   context.read<FestivalProvider>().festivalList[index].url,
@@ -67,6 +70,8 @@ class _ActivityCardState extends State<ActivityCard> {
             borderRadius: BorderRadius.all(Radius.circular(16)),
             clipBehavior: Clip.hardEdge,
             child: Swiper(
+              autoplay: true,
+              autoplayDelay: 4000,
               itemCount:
                   context.read<FestivalProvider>().festivalList.length == 0
                       ? 1
