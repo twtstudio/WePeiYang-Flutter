@@ -8,6 +8,7 @@ abstract class UpdateStatusListener extends ChangeNotifier {
   double get progress => _progress;
 
   set progress(double value) {
+    if (_progress == value) return;
     _progress = value;
     notifyListeners();
   }
@@ -18,36 +19,22 @@ abstract class UpdateStatusListener extends ChangeNotifier {
 
   setIdle() {
     _status = UpdateStatus.idle;
-    notifyListeners();
   }
 
   setGetVersion() {
     _status = UpdateStatus.getVersion;
-    notifyListeners();
   }
 
   setDownload() {
     _status = UpdateStatus.download;
-    notifyListeners();
   }
 
   setLoad() {
     _status = UpdateStatus.load;
-    notifyListeners();
   }
 }
 
 /// 检查更新状态
-/*
-
-检查更新流程：
-                                                    |- 下载成功 --> [load]
-                        |- 需要更新   --> [download] -|
-[idle] -> [getVersion] -|                           |- 下载失败 ---
- |                      |- 不需要更新 ---                         |
- |                                    |                         |
- <- --- --- --- --- --- --- --- --- <- --- --- --- --- --- --- --
- */
 enum UpdateStatus {
   /// 没有事情正在发生
   idle,

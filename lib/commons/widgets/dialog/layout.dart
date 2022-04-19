@@ -23,10 +23,7 @@ class WbyDialogLayout extends StatelessWidget {
       ),
       child: padding
           ? Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: size.horizontalPadding,
-                vertical: size.verticalPadding,
-              ),
+              padding: EdgeInsets.symmetric(vertical: size.verticalPadding),
               child: child,
             )
           : child,

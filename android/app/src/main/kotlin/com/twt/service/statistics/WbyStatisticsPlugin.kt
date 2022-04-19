@@ -82,7 +82,7 @@ class WbyStatisticsPlugin : WbyPlugin() {
     }
 
     companion object {
-        const val TAG = "WBY_UMENG_STATISTICS"
+        const val TAG = "UMENG_STATISTICS"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

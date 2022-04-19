@@ -1,15 +1,17 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 
 class UpdateDetail extends StatelessWidget {
-  final Version version;
-  const UpdateDetail(this.version,{Key? key}) : super(key: key);
+  const UpdateDetail({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Text(
+    final version = context.read<UpdateManager>().version;
+
+    return Text(
       version.content,
       style: const TextStyle(
         fontSize: 10,

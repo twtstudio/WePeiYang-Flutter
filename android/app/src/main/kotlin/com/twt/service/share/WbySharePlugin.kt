@@ -95,7 +95,7 @@ class WbySharePlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResult
     }
 
     companion object {
-        const val TAG = "WBY_SHARE"
+        const val TAG = "SHARE"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

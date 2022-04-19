@@ -23,7 +23,7 @@ object HotFixPreference {
 
     private const val fixSoKey = "fix_so"
     private const val currentUseKey = "current_use"
-    private const val TAG = "WBY_HotFixPreference"
+    private const val TAG = "HotFixPreference"
 
     // hotfix的更新方式为改变微北洋启动路径，在应用私有文件夹下创建hotfix文件夹，将热修复的.so文件存储在那里，然后向
     // WbySharePreference.fixSo中添加新获得的.so文件[名字]，存储方式为获取的所有.so文件列表

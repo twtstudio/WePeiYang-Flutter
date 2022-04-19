@@ -15,7 +15,7 @@ object FlutterSharePreference {
             ?.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
     }
 
-    const val TAG = "WBY_SHARE_PREFERENCE"
+    const val TAG = "SHARE_PREFERENCE"
 
     private const val authTokenKey = "flutter.token"
     private const val canPushKey = "flutter.can_push"

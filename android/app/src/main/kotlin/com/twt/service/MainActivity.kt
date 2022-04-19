@@ -1,12 +1,8 @@
 package com.twt.service
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
-import android.os.Bundle
-import android.os.PersistableBundle
-import androidx.core.content.FileProvider
+import android.widget.Toast
 import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
@@ -15,6 +11,7 @@ import com.twt.service.hot_fix.HotFixPreference
 import com.twt.service.hot_fix.WbyFixPlugin
 import com.twt.service.image.WbyImageSavePlugin
 import com.twt.service.install.WbyInstallPlugin
+import com.twt.service.local_setting.WbyLocalSettingPlugin
 import com.twt.service.location.WbyLocationPlugin
 import com.twt.service.message.WbyMessagePlugin
 import com.twt.service.push.WbyPushPlugin
@@ -24,19 +21,9 @@ import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
-import java.io.File
 
 
 class MainActivity : FlutterActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        // 高刷新率
-        // https://juejin.cn/post/6844904163579527181
-        // https://juejin.cn/post/6844904195909222414
-        // https://developer.android.com/guide/topics/media/frame-rate
-        // https://pub.dev/packages/flutter_displaymode
-    }
 
     // 加入微北洋使用的所有自己写的 plugin
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -70,6 +57,9 @@ class MainActivity : FlutterActivity() {
                     WbyLocalSettingPlugin(),
                 )
             )
+        }.onFailure {
+            Toast.makeText(this, "不该出现的错误：$it", Toast.LENGTH_LONG).show()
+            LogUtil.e(TAG, it)
         }
     }
 
@@ -118,7 +108,7 @@ class MainActivity : FlutterActivity() {
     }
 
     companion object {
-        const val TAG = "WBY_MainActivity"
+        const val TAG = "MainActivity"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

@@ -34,7 +34,7 @@ class WbyLocationPlugin : WbyPlugin() {
     }
 
     companion object {
-        const val TAG = "WBY_MAP"
+        const val TAG = "MAP"
         const val START_LOCATION_ERROR = "START_LOCATION_ERROR"
         fun log(message: String) = LogUtil.d(TAG, message)
     }

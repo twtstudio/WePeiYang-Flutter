@@ -6,9 +6,11 @@ param(
 )
 
 $v = $version -split '[.]+'
+$code = [int]$v[2]
 
 for ($i = 0; $i -lt 3; $i++) {
     .\hotfix_package.ps1 -version $version -versionCode $versionCode -rebuild $true
-    $version = "$($v[0]).$($v[1]).$([int]$v[2] + 1)"
+    $code = $code + 1
+    $version = "$($v[0]).$($v[1]).$code"
     $versionCode = $versionCode + 1
 }

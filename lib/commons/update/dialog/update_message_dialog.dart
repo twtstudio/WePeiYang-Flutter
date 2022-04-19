@@ -2,40 +2,54 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/util.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 // 下载安装apk时的dialog
-class UpdateApkDialog extends StatelessWidget {
-  final Version version;
-
-  const UpdateApkDialog(this.version, {Key? key}) : super(key: key);
+class UpdateMessageDialog extends StatelessWidget {
+  const UpdateMessageDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final manager = context.read<UpdateManager>();
+
     final size = DialogSize.getSize(context);
     void cancel() {
-      context.read<UpdateManager>().cancelDialog(DialogTag.apk);
+      manager.setIdle();
     }
 
-    final buttons = WbyDialogStandardTwoButton(
-      cancel: () {
-        context.read<UpdateManager>().setIdle();
-        cancel();
-      },
-      ok: () {
-        context.read<UpdateManager>().download();
-        cancel();
-      },
-      cancelText: '稍后更新',
-      okText: '立刻更新',
-    );
+    void ok() {
+      // 弹出进度对话框
+      UpdateDialog.progress.show();
+      context.read<UpdateManager>().setDownload();
+    }
+
+    Widget buttons;
+
+    if (manager.version.isForced) {
+      buttons = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          WbyDialogButton(
+            onTap: ok,
+            text: '立刻更新',
+            type: ButtonType.dark,
+          ),
+        ],
+      );
+    } else {
+      buttons = WbyDialogStandardTwoButton(
+        cancel: cancel,
+        ok: ok,
+        cancelText: '稍后更新',
+        okText: '立刻更新',
+      );
+    }
 
     final column = Column(
       mainAxisSize: MainAxisSize.min,
@@ -50,9 +64,9 @@ class UpdateApkDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: size.verticalPadding),
-              UpdateTitle(version),
+              UpdateTitle(),
               SizedBox(height: size.verticalPadding),
-              UpdateDetail(version),
+              UpdateDetail(),
               SizedBox(height: size.verticalPadding),
               buttons,
             ],

@@ -79,7 +79,7 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
     override fun onDetachedFromActivity() {}
 
     companion object {
-        const val TAG = "WBY_WIDGET"
+        const val TAG = "WIDGET"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

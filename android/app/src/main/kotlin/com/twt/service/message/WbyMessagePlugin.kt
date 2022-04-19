@@ -37,7 +37,7 @@ class WbyMessagePlugin : WbyPlugin() {
     }
 
     companion object {
-        const val TAG = "WBY_MESSAGE"
+        const val TAG = "MESSAGE"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

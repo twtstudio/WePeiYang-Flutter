@@ -121,6 +121,9 @@ class DownloadManager {
       });
 
       downloadedList.forEach(download_success);
+
+      debugPrint("${tasks.length}");
+
       if (tasks.isEmpty) {
         all_success?.call(downloadedList.map((e) => e.path).toList());
         return;
@@ -136,6 +139,8 @@ class DownloadManager {
         allSuccess: all_success,
       );
       listeners[listener.listenerId] = listener;
+
+      debugPrint("$listener");
 
       await _downloadChannel.invokeMethod(
         "addDownloadTask",

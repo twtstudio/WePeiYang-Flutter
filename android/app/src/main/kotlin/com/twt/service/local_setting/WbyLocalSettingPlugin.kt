@@ -73,7 +73,7 @@ class WbyLocalSettingPlugin : WbyPlugin(), ActivityAware {
     override fun onDetachedFromActivity() {}
 
     companion object {
-        const val TAG = "WBY_LOCAL_SETTING"
+        const val TAG = "LOCAL_SETTING"
         fun log(msg: String) = LogUtil.d(TAG, msg)
     }
 }

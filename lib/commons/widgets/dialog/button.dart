@@ -8,12 +8,14 @@ class WbyDialogButton extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
   final ButtonType type;
+  final bool expand;
 
   const WbyDialogButton({
     Key? key,
     required this.onTap,
     required this.text,
     required this.type,
+    this.expand = false,
   }) : super(key: key);
 
   @override
@@ -26,7 +28,7 @@ class WbyDialogButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: buttonWidth,
+        width: expand ? null : buttonWidth,
         height: buttonHeight,
         alignment: Alignment.center,
         decoration: BoxDecoration(

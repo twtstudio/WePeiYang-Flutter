@@ -39,5 +39,5 @@ object ChangeDisplay {
         }
     }
 
-    const val TAG = "WBY_CHANGE_DISPLAY"
+    const val TAG = "CHANGE_DISPLAY"
 }

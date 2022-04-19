@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart'
     show
         DiagnosticsTreeStyle,
         TextTreeRenderer,
-        debugPrintThrottled,
         kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -58,7 +57,7 @@ void main() async {
     Logger.checkList();
     Logger.logs.add(message);
     if (EnvConfig.isDevelop || kDebugMode) {
-      debugPrintThrottled(message, wrapWidth: wrapWidth);
+      print(message);
     }
   };
 
@@ -150,7 +149,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      if(CommonPreferences().token != null && CommonPreferences().token != "") {
+      if (CommonPreferences().token != null &&
+          CommonPreferences().token != "") {
         FeedbackService.getToken(forceRefresh: true);
       }
     });

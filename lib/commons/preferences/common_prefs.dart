@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:we_pei_yang_flutter/auth/skin_utils.dart';
 
 class CommonPreferences {
   CommonPreferences._();
@@ -139,7 +136,7 @@ class CommonPreferences {
   // 应用更新相关配置
   /// 使用beta版还是release版微北洋
   var apkType = PrefsBean('apkType', "release");
-  var todayShowUpdateAgain = PrefsBean('todayShowUpdateAgain', '');
+  var lastCheckUpdateTime = PrefsBean('lastCheckUpdateTime', '');
   var canPush = PrefsBean('can_push', false);
 
   /// 清除天外天账号系统缓存
@@ -159,7 +156,7 @@ class CommonPreferences {
     major.clear();
     feedbackToken.clear();
     canPush.clear();
-    todayShowUpdateAgain.clear();
+    lastCheckUpdateTime.clear();
     area.clear();
     building.clear();
     floor.clear();

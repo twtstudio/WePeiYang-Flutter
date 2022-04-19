@@ -8,27 +8,6 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 object SystemShare {
-    fun startMarket(context: Context) {
-        // https://blog.csdn.net/weixin_36318548/article/details/117544612
-
-        val intent = Intent(Intent.ACTION_VIEW)
-
-        // 如果不指定具体的报名，则系统弹出弹窗询问用哪个打开
-        intent.`package` = when (Build.BRAND.lowercase()) {
-            "huawei", "honor" -> "com.huawei.appmarket"
-            "xiaomi" -> "com.xiaomi.market"
-            "oppo" -> "com.oppo.market"
-            else -> null
-        }
-
-        intent.data = Uri.parse("market://details?id=${context.packageName}")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        } else {
-            context.startActivity(intent.apply { `package` = null })
-        }
-    }
 
     fun shareText(context: Context) {
         val intent = Intent().apply {

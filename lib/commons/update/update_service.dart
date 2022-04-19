@@ -11,18 +11,17 @@ class UpdateDio extends DioAbstract {}
 final updateDio = UpdateDio();
 
 class UpdateService with AsyncTimer {
-  static const wbyUpdateUrl =
-      'http://152.136.148.227:8001/androidupdate/check/';
+  static const BASEURL = 'https://upgrade.twt.edu.cn/androidupdate/';
 
+  /// 获取最新版本，如果失败则返回null
   static Future<Version?> get latestVersion async {
     try {
       var code = UpdateUtil.apkType == ApkType.release ? 1 : 0;
-      var response = await updateDio.get("$wbyUpdateUrl$code");
+      var response = await updateDio.get("${BASEURL}check/$code");
       debugPrint(response.data.toString());
       return VersionData.fromJson(response.data).data;
     } catch (error, stack) {
       Logger.reportError(error, stack);
-      // TODO
       return null;
     }
   }

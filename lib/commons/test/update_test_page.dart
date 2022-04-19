@@ -26,7 +26,7 @@ class _UpdateTestPageState extends State<UpdateTestPage> {
           TextButton(onPressed: _deleteAllSo, child: Text('删除所有so')),
           TextButton(
             onPressed: () {
-              context.read<UpdateManager>().checkUpdate(show: true);
+              context.read<UpdateManager>().checkUpdate(auto: false);
             },
             child: Text('检查更新'),
           ),

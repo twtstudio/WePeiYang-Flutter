@@ -258,7 +258,7 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onTap: () {
-                        context.read<UpdateManager>().checkUpdate(show: true);
+                        context.read<UpdateManager>().checkUpdate(auto: false);
                       },
                       splashFactory: InkRipple.splashFactory,
                       borderRadius: BorderRadius.circular(12),
@@ -275,7 +275,10 @@ class _UserPageState extends State<UserPage> {
                             child: Text(
                               "${S.current.current_version}: ${EnvConfig.VERSION}",
                               style: FontManager.YaHeiLight.copyWith(
-                                color: Colors.grey,
+                                color: CommonPreferences().isSkinUsed.value
+                                    ? Color(
+                                        CommonPreferences().skinColorC.value)
+                                    : Colors.grey,
                                 fontSize: 11,
                               ),
                             ),

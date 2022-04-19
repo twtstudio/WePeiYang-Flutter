@@ -1,5 +1,6 @@
 package com.twt.service.download
 
+import android.os.Environment
 import androidx.annotation.Keep
 import java.io.File
 
@@ -32,9 +33,9 @@ data class DownloadTask(
     val showNotification: Boolean,
 
     /**
-     * 下载的类型 'apk', 'font', 'hotfix', 'other'
+     * 文件路径
      */
-    val type: String,
+    val path: String,
 
     /**
      * 单个下载任务的id
@@ -58,17 +59,14 @@ data class DownloadTask(
 )
 
 /**
- * 相对于下载文件夹的相对路径
- */
-fun DownloadTask.path(): String {
-    return type + File.separator + fileName
-}
-
-/**
  * 临时文件相对地址
  */
 fun DownloadTask.temporaryPath(): String {
-    return path() + ".temporary"
+    return "$path.temporary"
+}
+
+fun DownloadTask.temporarySubPath(): String {
+    return temporaryPath().split(Environment.DIRECTORY_DOWNLOADS + File.separator).last()
 }
 
 fun DownloadTask.baseData(): MutableMap<String, Any> {

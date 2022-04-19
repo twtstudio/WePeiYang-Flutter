@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+
 import 'path_util.dart';
 
 class DownloadTask {
@@ -10,7 +12,6 @@ class DownloadTask {
   final String? title;
   final String? description;
   final bool showNotification;
-  final String type;
   final String path;
   final String id;
   late String listenerId;
@@ -19,39 +20,53 @@ class DownloadTask {
     required this.url,
     required this.fileName,
     required this.showNotification,
-    required this.type,
     required this.id,
     required this.path,
     this.title,
     this.description,
   });
 
+  factory DownloadTask.updateApk(Version _version) {
+    return DownloadTask(
+      url: _version.apkUrl,
+      fileName: _version.apkName,
+      title: '微北洋',
+      description: _version.apkName,
+      showNotification: false,
+      type: DownloadType.apk,
+    );
+  }
+
+  factory DownloadTask.updateZip(Version _version) {
+    return DownloadTask(
+      url: _version.zipUrl,
+      fileName: _version.zipName,
+      showNotification: false,
+      type: DownloadType.hotfix,
+    );
+  }
+
   factory DownloadTask({
     required String url,
     String? fileName,
     bool? showNotification,
-    String? type,
+    DownloadType? type,
     String? title,
     String? description,
   }) {
-    url = "http://152.136.148.227:8001/androidupdate/downloadFile/$url";
     fileName ??= url.split("/").last;
     type ??= DownloadType.other;
     showNotification ??= false;
     String id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";
-    String path = PathUtil.downloadDir.path +
-        Platform.pathSeparator +
-        type +
-        Platform.pathSeparator +
-        fileName;
+    String path = type.path + Platform.pathSeparator + fileName;
 
     return DownloadTask._(
-        url: url,
-        fileName: fileName,
-        showNotification: showNotification,
-        type: type,
-        id: id,
-        path: path);
+      url: url,
+      fileName: fileName,
+      showNotification: showNotification,
+      id: id,
+      path: path,
+    );
   }
 
   bool get exist => File(path).existsSync();
@@ -63,7 +78,6 @@ class DownloadTask {
       'title': title,
       'description': description,
       'showNotification': showNotification,
-      'type': type,
       'path': path,
       'id': id,
       'listenerId': listenerId,
@@ -90,9 +104,10 @@ class DownloadList {
   String toJson() => json.encode(toMap());
 }
 
-class DownloadType {
-  static final String apk = 'apk';
-  static final String font = 'font';
-  static final String hotfix = 'hotfix';
-  static final String other = 'other';
+enum DownloadType { apk, font, hotfix, other }
+
+extension DownloadTypeExt on DownloadType {
+  String get text => ['apk', 'font', 'hotfix', 'other'][index];
+
+  String get path => PathUtil.downloadDir.path + Platform.pathSeparator + text;
 }

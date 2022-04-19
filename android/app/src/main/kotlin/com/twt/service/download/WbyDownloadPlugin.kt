@@ -44,6 +44,7 @@ class WbyDownloadPlugin : WbyPlugin() {
      *
      * @param action 获取到下载目录后的操作
      */
+    @Suppress("unused")
     private fun getDownloadDir(action: (File) -> Unit) {
         val downloadDir = FileUtil.downloadDirectory(context)
         if (downloadDir == null) {
@@ -68,23 +69,30 @@ class WbyDownloadPlugin : WbyPlugin() {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         runCatching {
             when (call.method) {
-                "addDownloadTask" -> {
-                    log("addDownloadTask")
-                    // 获取下载列表
-                    val data = call.argument<String>("downloadList")
-                    val list = Gson().fromJson(data, DownloadList::class.java).list
-                    log("base list : $list")
-                    log("current download list : $downloadList")
-                    // 先过滤掉正在下载的内容
-                    val unStartList = filterDownloadingFiles(list)
-                    // 再下载没有下载的内容
-                    download(unStartList, result)
-                }
+                "addDownloadTask" -> addDownloadTask(call, result)
+                "cancelDownloadTask" -> cancelDownloadTask(call, result)
                 else -> result.notImplemented()
             }
         }.onFailure {
             result.error("", "${it.message}", "")
         }
+    }
+
+    private fun cancelDownloadTask(call: MethodCall, result: MethodChannel.Result) {
+        // TODO
+    }
+
+    private fun addDownloadTask(call: MethodCall, result: MethodChannel.Result) {
+        log("addDownloadTask")
+        // 获取下载列表
+        val data = call.argument<String>("downloadList")
+        val list = Gson().fromJson(data, DownloadList::class.java).list
+        log("base list : $list")
+        log("current download list : $downloadList")
+        // 先过滤掉正在下载的内容
+        val unStartList = filterDownloadingFiles(list)
+        // 再下载没有下载的内容
+        download(unStartList, result)
     }
 
     /**
@@ -96,7 +104,7 @@ class WbyDownloadPlugin : WbyPlugin() {
     private fun filterDownloadingFiles(list: List<DownloadTask>): List<DownloadTask> {
         // 下载列表中有的任务就更新一下进度
         downloadList.filter { downloading ->
-            list.map { it.path() }.contains(downloading.value.path())
+            list.map { it.path }.contains(downloading.value.path)
         }.keys.forEach {
             listener.updateStatus(it)
         }
@@ -105,8 +113,8 @@ class WbyDownloadPlugin : WbyPlugin() {
         // 只添加下载列表中没有的任务
         return list.filterNot { task ->
             downloadList.values.map {
-                it.path()
-            }.contains(task.path())
+                it.path
+            }.contains(task.path)
         }.apply(::clearTemporaryFiles)
     }
 
@@ -123,10 +131,11 @@ class WbyDownloadPlugin : WbyPlugin() {
             list.forEach {
                 // 创建请求
                 val request = DownloadManager.Request(Uri.parse(it.url)).apply {
+                    log(it.temporarySubPath())
                     setDestinationInExternalFilesDir(
                         context,
                         Environment.DIRECTORY_DOWNLOADS,
-                        it.temporaryPath(),
+                        it.temporarySubPath(),
                     )
                     if (it.showNotification) {
                         setTitle(it.title)
@@ -224,17 +233,15 @@ class WbyDownloadPlugin : WbyPlugin() {
                 }
 
                 if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                    getDownloadDir {
-                        val from = File(it, task.temporaryPath())
-                        val to = File(it, task.path())
-                        if (!from.renameTo(to)) {
-                            listener.updateStatus(
-                                task,
-                                DownloadManager.STATUS_FAILED,
-                                progress,
-                                "can't rename temporary file"
-                            )
-                        }
+                    val from = File(task.temporaryPath())
+                    val to = File(task.path)
+                    if (!from.renameTo(to)) {
+                        listener.updateStatus(
+                            task,
+                            DownloadManager.STATUS_FAILED,
+                            progress,
+                            "can't rename temporary file"
+                        )
                     }
                 }
 
@@ -257,15 +264,12 @@ class WbyDownloadPlugin : WbyPlugin() {
      * @param list 任务列表
      */
     private fun clearTemporaryFiles(list: List<DownloadTask>) {
-        getDownloadDir {
-            runCatching {
-                list.forEach { task ->
-                    val path = it.path + File.separator + task.temporaryPath()
-                    File(path).takeIf { it.exists() }?.delete()
-                }
-            }.onFailure {
-                log("delete apk error when get failure state: ${it.message}")
+        runCatching {
+            list.forEach { task ->
+                File(task.temporaryPath()).takeIf { it.exists() }?.delete()
             }
+        }.onFailure {
+            log("delete apk error when get failure state: ${it.message}")
         }
     }
 

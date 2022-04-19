@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
@@ -11,41 +11,67 @@ import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 // 下载安装apk时的dialog
-class UpdateInstallDialog extends StatelessWidget {
-  const UpdateInstallDialog({Key? key}) : super(key: key);
+class UpdateFailureDialog extends StatelessWidget {
+  const UpdateFailureDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final manager = context.read<UpdateManager>();
 
     final size = DialogSize.getSize(context);
-
     void cancel() {
       manager.setIdle();
     }
 
-    void ok() {
-      InstallManager.install(manager.version.apkPath);
-      manager.setIdle();
+    void retry() {
+      // 弹出进度对话框
+      UpdateDialog.progress.show();
+      context.read<UpdateManager>().setDownload(forced: true);
+    }
+
+    void goToMarket() {
+      InstallManager.goToMarket();
     }
 
     Widget buttons;
 
     if (manager.version.isForced) {
-      buttons = WbyDialogButton(
-        onTap: ok,
-        text: '立刻安装',
-        type: ButtonType.dark,
-        expand: true,
+      buttons = WbyDialogStandardTwoButton(
+        cancel: goToMarket,
+        ok: retry,
+        cancelText: '前往应用市场',
+        okText: '重试',
       );
     } else {
-      buttons = WbyDialogStandardTwoButton(
-        cancel: cancel,
-        ok: ok,
-        cancelText: "稍后安装",
-        okText: "立刻安装",
+      // 如果不是强制更新，那么就可以现在不更新
+      buttons = Column(
+        children: [
+          WbyDialogStandardTwoButton(
+            cancel: cancel,
+            ok: retry,
+            cancelText: '稍后更新',
+            okText: '重试',
+          ),
+          SizedBox(height: size.verticalPadding),
+          WbyDialogButton(
+            onTap: goToMarket,
+            text: '前往应用市场',
+            type: ButtonType.dark,
+            expand: true,
+          ),
+        ],
       );
     }
+
+    final failureText = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "更新失败",
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ],
+    );
 
     final column = Column(
       mainAxisSize: MainAxisSize.min,
@@ -64,14 +90,15 @@ class UpdateInstallDialog extends StatelessWidget {
               SizedBox(height: size.verticalPadding),
               UpdateDetail(),
               SizedBox(height: size.verticalPadding),
+              failureText,
+              SizedBox(height: size.verticalPadding),
               buttons,
             ],
           ),
         ),
-        TodayShowAgainCheck(tap: cancel),
       ],
     );
 
-    return WbyDialogLayout(child: column, padding: false);
+    return WbyDialogLayout(child: column);
   }
 }

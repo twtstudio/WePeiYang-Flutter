@@ -23,6 +23,7 @@ abstract class WbyPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     abstract val name: String
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        LogUtil.d("WbyPlugin", name)
         context = binding.applicationContext
         channel = MethodChannel(binding.binaryMessenger, name)
         channel.setMethodCallHandler(this)
