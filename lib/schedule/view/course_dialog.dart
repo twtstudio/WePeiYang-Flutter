@@ -1,7 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -53,12 +52,15 @@ class CourseDialog extends Dialog {
         height: 340,
         child: _pairs.length == 1
             ? _getSingleCard(context, _pairs[0])
-            : ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                itemCount: _pairs.length,
-                itemBuilder: (context, i) =>
-                    _getSingleCard(context, _pairs[i])),
+            : Theme(
+                data: ThemeData(accentColor: Colors.white),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    itemCount: _pairs.length,
+                    itemBuilder: (context, i) =>
+                        _getSingleCard(context, _pairs[i])),
+              ),
       ),
     );
   }
@@ -85,42 +87,36 @@ class CourseDialog extends Dialog {
           padding: const EdgeInsets.fromLTRB(20, 35, 20, 35),
           child: Stack(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: pair.first.type == 1
-                          ? EdgeInsets.only(right: 24)
-                          : EdgeInsets.zero,
-                      child: Text(pair.first.name * 3, style: _nameStyle),
-                    ),
-                    SizedBox(height: 12),
-                    Text(teacher, style: _teacherStyle),
-                    Spacer(),
-                    _getRow1(pair),
-                    SizedBox(height: 12),
-                    _getRow2(pair),
-                    SizedBox(height: 12),
-                    _getRow3(pair),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(pair.first.name, style: _nameStyle),
+                  SizedBox(height: 12),
+                  Text(teacher, style: _teacherStyle),
+                  Spacer(),
+                  _getRow1(pair),
+                  SizedBox(height: 12),
+                  _getRow2(pair),
+                  SizedBox(height: 12),
+                  _getRow3(pair),
+                ],
               ),
               if (pair.first.type == 1)
                 Align(
-                  alignment: Alignment.topRight,
+                  alignment: Alignment.bottomRight,
                   child: GestureDetector(
                     onTap: () {
                       context.read<EditProvider>().load(pair.first);
+                      Navigator.pop(context);
                       Navigator.pushNamed(context, ScheduleRouter.editDetail,
-                          arguments: EditDetailPageArgs(
-                              index, pair.first.name, pair.first.credit));
+                          arguments: EditDetailPageArgs(pair.first.index!,
+                              pair.first.name, pair.first.credit));
                     },
                     child: Container(
                       decoration: BoxDecoration(),
-                      padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                       child: Image.asset('assets/images/schedule/card_edit.png',
-                          height: 18, width: 18),
+                          height: 16, width: 16),
                     ),
                   ),
                 ),

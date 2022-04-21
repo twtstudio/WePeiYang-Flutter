@@ -399,16 +399,16 @@ class CaptchaWidget extends StatefulWidget {
   CaptchaWidgetState createState() => CaptchaWidgetState();
 }
 
-var index = 0;
+var _index = 0;
 
 class CaptchaWidgetState extends State<CaptchaWidget> {
   refresh() {
-    setState(() => index++);
+    setState(() => _index++);
   }
 
   @override
   void dispose() {
-    index++;
+    _index++;
     super.dispose();
   }
 
@@ -425,8 +425,8 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
           return InkWell(
             onTap: refresh,
             child: Image.network(
-                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                key: ValueKey(index),
+                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$_index",
+                key: ValueKey(_index),
                 headers: {"Cookie": map['session']},
                 fit: BoxFit.fill),
           );

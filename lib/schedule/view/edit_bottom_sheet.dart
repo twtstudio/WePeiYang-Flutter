@@ -58,7 +58,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
     pvd.arrangeList.forEach((arrange) {
       if (arrange.weekList.first <= start) start = arrange.weekList.first;
       if (arrange.weekList.last >= end) end = arrange.weekList.last;
-      teacherSet.add(arrange.teacherList.first);
+      if (arrange.teacherList.isNotEmpty) {
+        teacherSet.add(arrange.teacherList.first);
+      }
     });
 
     context.read<CourseProvider>().addCustomCourse(Course.custom(
@@ -84,6 +86,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             (index) => TimeFrameWidget(
               index,
               !(provider.arrangeList.length == 1 && index == 0),
+              _scrollController,
               key: ValueKey(provider.initIndex(index)),
             ),
           ),
@@ -97,104 +100,104 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         context.read<EditProvider>().save(name, credit);
         return true;
       },
-      child: Material(
-        color: Color.fromRGBO(246, 246, 246, 1.0),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        child: Container(
-          height: WePeiYangApp.screenHeight * 0.6,
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text('新建课程',
-                      style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
-                  Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      _saveAndQuit(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: titleColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+      child: Container(
+        height: WePeiYangApp.screenHeight * 0.6,
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(246, 246, 246, 1.0),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text('新建课程',
+                    style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    _saveAndQuit(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: titleColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text('保存',
+                      style: TextUtil.base.PingFangSC.regular.white.sp(12)),
+                )
+              ],
+            ),
+            Expanded(
+              child: Theme(
+                data: ThemeData(accentColor: Colors.white),
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    CardWidget(
+                      onTap: () {},
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_circle, color: titleColor),
+                          SizedBox(width: 5),
+                          Text('输入逻辑班号导入课程',
+                              style: TextUtil.base.PingFangSC.medium
+                                  .customColor(titleColor)
+                                  .sp(12)),
+                        ],
                       ),
                     ),
-                    child: Text('保存',
-                        style: TextUtil.base.PingFangSC.regular.white.sp(12)),
-                  )
-                ],
-              ),
-              Expanded(
-                child: Theme(
-                  data: ThemeData(accentColor: Colors.white),
-                  child: ListView(
-                    controller: _scrollController,
-                    children: [
-                      CardWidget(
-                        onTap: () {},
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.add_circle, color: titleColor),
-                            SizedBox(width: 5),
-                            Text('输入逻辑班号导入课程',
-                                style: TextUtil.base.PingFangSC.medium
-                                    .customColor(titleColor)
-                                    .sp(12)),
-                          ],
-                        ),
+                    CardWidget(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InputWidget(
+                            onChanged: (text) => name = text,
+                            title: '课程名称',
+                            hintText: '请输入课程名称（必填）',
+                            initText: name,
+                          ),
+                          InputWidget(
+                            onChanged: (text) => credit = text,
+                            title: '课程学分',
+                            hintText: '请输入课程学分（选填）',
+                            initText: credit,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ],
                       ),
-                      CardWidget(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InputWidget(
-                              onChanged: (text) => name = text,
-                              title: '课程名称',
-                              hintText: '请输入课程名称（必填）',
-                              initText: name,
-                            ),
-                            InputWidget(
-                              onChanged: (text) => credit = text,
-                              title: '课程学分',
-                              hintText: '请输入课程学分（选填）',
-                              initText: credit,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ],
-                        ),
+                    ),
+                    timeFrameBuilder,
+                    CardWidget(
+                      onTap: () {
+                        context.read<EditProvider>().add();
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 200),
+                            curve: Curves.linear,
+                          );
+                        });
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_circle, color: titleColor),
+                          SizedBox(width: 5),
+                          Text('新增时段',
+                              style: TextUtil.base.PingFangSC.medium
+                                  .customColor(titleColor)
+                                  .sp(12)),
+                        ],
                       ),
-                      timeFrameBuilder,
-                      CardWidget(
-                        onTap: () {
-                          context.read<EditProvider>().add();
-                          Future.delayed(Duration(milliseconds: 100), () {
-                            _scrollController.animateTo(
-                              _scrollController.position.maxScrollExtent,
-                              duration: Duration(milliseconds: 200),
-                              curve: Curves.linear,
-                            );
-                          });
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.add_circle, color: titleColor),
-                            SizedBox(width: 5),
-                            Text('新增时段',
-                                style: TextUtil.base.PingFangSC.medium
-                                    .customColor(titleColor)
-                                    .sp(12)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

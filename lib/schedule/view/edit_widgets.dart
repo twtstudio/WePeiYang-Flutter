@@ -1,4 +1,6 @@
 // @dart = 2.12
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +14,10 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 class TimeFrameWidget extends StatelessWidget {
   final int index;
   final bool canDelete;
+  final ScrollController parentController;
 
-  TimeFrameWidget(this.index, this.canDelete, {Key? key}) : super(key: key);
+  TimeFrameWidget(this.index, this.canDelete, this.parentController, {Key? key})
+      : super(key: key);
 
   static const _weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
@@ -76,29 +80,41 @@ class TimeFrameWidget extends StatelessWidget {
             children: [
               Text('周数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    pvd.initWeekList(index);
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) => WeekPicker(
-                          index,
-                          pvd.arrangeList[index].weekday,
-                          pvd.arrangeList[index].weekList),
-                    ).then((_) => pvd.notify());
-                  },
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.centerRight,
-                    decoration: const BoxDecoration(),
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text('${weekType}${weekDay}${weekText}',
-                        style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
-                  ),
-                ),
+                child: Builder(builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      var renderBox = context.findRenderObject() as RenderBox;
+                      var top = renderBox.localToGlobal(Offset.zero).dy;
+                      if (top + 220 > WePeiYangApp.screenHeight) {
+                        var jumpPos = min(parentController.offset + 220,
+                            parentController.position.maxScrollExtent);
+                        var jumpDis = jumpPos - parentController.offset;
+                        top -= jumpDis;
+                        parentController.jumpTo(jumpPos);
+                      }
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      pvd.initWeekList(index);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierColor: Colors.white.withOpacity(0.1),
+                        builder: (_) => WeekPicker(
+                            index,
+                            top,
+                            pvd.arrangeList[index].weekday,
+                            pvd.arrangeList[index].weekList),
+                      ).then((_) => pvd.notify());
+                    },
+                    child: Container(
+                      height: 48,
+                      alignment: Alignment.centerRight,
+                      decoration: const BoxDecoration(),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text('${weekType}${weekDay}${weekText}',
+                          style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
+                    ),
+                  );
+                }),
               ),
             ],
           ),
@@ -106,27 +122,38 @@ class TimeFrameWidget extends StatelessWidget {
             children: [
               Text('节数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    pvd.initUnitList(index);
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierColor: Colors.white.withOpacity(0.1),
-                      builder: (_) =>
-                          UnitPicker(index, pvd.arrangeList[index].unitList),
-                    ).then((_) => pvd.notify());
-                  },
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.centerRight,
-                    decoration: const BoxDecoration(),
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(unitText,
-                        style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
-                  ),
-                ),
+                child: Builder(builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      var renderBox = context.findRenderObject() as RenderBox;
+                      var top = renderBox.localToGlobal(Offset.zero).dy;
+                      if (top + 150 > WePeiYangApp.screenHeight) {
+                        var jumpPos = min(parentController.offset + 150,
+                            parentController.position.maxScrollExtent);
+                        var jumpDis = jumpPos - parentController.offset;
+                        top -= jumpDis;
+                        parentController.jumpTo(jumpPos);
+                      }
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      pvd.initUnitList(index);
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierColor: Colors.white.withOpacity(0.1),
+                        builder: (_) => UnitPicker(
+                            index, top, pvd.arrangeList[index].unitList),
+                      ).then((_) => pvd.notify());
+                    },
+                    child: Container(
+                      height: 48,
+                      alignment: Alignment.centerRight,
+                      decoration: const BoxDecoration(),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Text(unitText,
+                          style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
+                    ),
+                  );
+                }),
               ),
             ],
           ),
@@ -211,9 +238,6 @@ class InputWidget extends StatelessWidget {
       _controller = TextEditingController(text: initText);
     else
       _controller = null;
-
-    print('!??!?!?!?!?!?!?!?!?!?!?build input widget!?!?!?!??!?!?!?!?!??!!?');
-    print('title: $title | initText: $initText');
   }
 
   late final TextEditingController? _controller;
@@ -245,9 +269,10 @@ class InputWidget extends StatelessWidget {
 
 class UnitPicker extends Dialog {
   final int _index;
+  final double _top;
   final List<FixedExtentScrollController> _controllers;
 
-  UnitPicker(this._index, List<int> unitInit)
+  UnitPicker(this._index, this._top, List<int> unitInit)
       : _controllers = List.generate(2,
             (i) => FixedExtentScrollController(initialItem: unitInit[i] - 1));
 
@@ -300,11 +325,11 @@ class UnitPicker extends Dialog {
     }
 
     return Align(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       child: Container(
         width: WePeiYangApp.screenWidth * 0.66,
         height: 150,
-        margin: EdgeInsets.only(bottom: WePeiYangApp.screenHeight * 0.15),
+        margin: EdgeInsets.only(top: _top + 10),
         child: Material(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
@@ -325,11 +350,12 @@ class UnitPicker extends Dialog {
 
 class WeekPicker extends Dialog {
   final int _index;
+  final double _top;
   final ValueNotifier<String> _selectedWeekType;
   final FixedExtentScrollController _weekdayController;
   final List<FixedExtentScrollController> _controllers;
 
-  WeekPicker(this._index, int _weekdayInit, List<int> weekInit)
+  WeekPicker(this._index, this._top, int _weekdayInit, List<int> weekInit)
       : _selectedWeekType = ValueNotifier(_weekTypeInit(weekInit)),
         _weekdayController =
             FixedExtentScrollController(initialItem: _weekdayInit - 1),
@@ -449,11 +475,11 @@ class WeekPicker extends Dialog {
     }
 
     return Align(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       child: Container(
         width: WePeiYangApp.screenWidth * 0.8,
         height: 220,
-        margin: EdgeInsets.only(bottom: WePeiYangApp.screenHeight * 0.15),
+        margin: EdgeInsets.only(top: _top + 10),
         child: Material(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),

@@ -148,7 +148,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
             ),
             isDismissible: false,
             enableDrag: false,
-            isScrollControlled: true,
+            isScrollControlled: false,
             builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),
           );
         },

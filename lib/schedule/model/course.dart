@@ -30,6 +30,7 @@ extension PairArrange on Pair<Course, int> {
 }
 
 class Course {
+  /// 以下属性需要缓存
   String name;
   String classId = ''; // serial
   String courseId = ''; // no
@@ -39,13 +40,16 @@ class Course {
   List<String> teacherList; // 讲这门课的所有老师，带职称
   List<Arrange> arrangeList;
   int type; // 0->正常课程; 1->自定义课程
+  /// 以下属性不需要缓存，临时存储
+  int? index; // 在自定义课程列表中的下标
+  bool? needFloat; // 是否需要“漂浮”显示
 
   /// 爬课表用
   Course.spider(this.name, this.classId, this.courseId, this.credit,
       this.campus, this.weeks, this.teacherList, this.arrangeList)
       : type = 0;
 
-  /// 自定义课表用，没有classId、courseId、campus
+  /// 自定义课表用，没有classId、courseId、campus，index需要后续补充
   Course.custom(
       this.name, this.credit, this.weeks, this.teacherList, this.arrangeList)
       : type = 1;

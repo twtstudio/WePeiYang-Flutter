@@ -73,7 +73,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
     pvd.arrangeList.forEach((arrange) {
       if (arrange.weekList.first <= start) start = arrange.weekList.first;
       if (arrange.weekList.last >= end) end = arrange.weekList.last;
-      teacherSet.add(arrange.teacherList.first);
+      if (arrange.teacherList.isNotEmpty) {
+        teacherSet.add(arrange.teacherList.first);
+      }
     });
 
     context.read<CourseProvider>().modifyCustomCourse(
@@ -137,6 +139,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
             (index) => TimeFrameWidget(
               index,
               !(provider.arrangeList.length == 1 && index == 0),
+              _scrollController,
               key: ValueKey(provider.initIndex(index)),
             ),
           ),

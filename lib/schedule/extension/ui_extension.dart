@@ -96,12 +96,6 @@ class AnimatedActiveCourse extends StatelessWidget {
                       style: _activeClassroomStyle,
                       textAlign: TextAlign.center),
                 ),
-              if (_pairs.length != 1)
-                Padding(
-                  padding: const EdgeInsets.only(top: 3),
-                  child: Image.asset('assets/images/schedule_warn.png',
-                      width: 20, height: 20),
-                ),
               Spacer()
             ],
           ),
@@ -123,7 +117,7 @@ class AnimatedActiveCourse extends StatelessWidget {
               .animate(curvedAnimation)
               .value,
           child: Opacity(
-            opacity: Tween<double>(begin: 0.0, end: 1.0)
+            opacity: Tween<double>(begin: 0.0, end: 0.8)
                 .animate(curvedAnimation)
                 .value,
             child: detail,

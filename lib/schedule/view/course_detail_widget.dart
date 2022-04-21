@@ -10,14 +10,15 @@ import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-/// 课程表每个item之间的间距
-const double _cardStep = 6;
+/// 课程表每个item之间的垂直、水平间距
+const double _verStep = 12;
+const double _horStep = 6;
 
-int get _dayCount => CommonPreferences.dayNumber.value;
+int get _dayNumber => CommonPreferences.dayNumber.value;
 
 double get _width => WePeiYangApp.screenWidth - 15 * 2;
 
-double get _cardWidth => (_width - (_dayCount - 1) * _cardStep) / _dayCount;
+double get _cardWidth => (_width - (_dayNumber - 1) * _horStep) / _dayNumber;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class CourseDetailWidget extends StatelessWidget {
@@ -28,7 +29,7 @@ class CourseDetailWidget extends StatelessWidget {
       child: Column(
         children: [
           _WeekDisplayWidget(),
-          SizedBox(height: _cardStep),
+          SizedBox(height: 6),
           _CourseDisplayWidget(),
         ],
       ),
@@ -42,7 +43,7 @@ class _WeekDisplayWidget extends StatelessWidget {
     var selectedWeek =
         context.select<CourseProvider, int>((p) => p.selectedWeek);
     List<String> dates = getWeekDayString(
-        CommonPreferences.termStart.value, selectedWeek, _dayCount);
+        CommonPreferences.termStart.value, selectedWeek, _dayNumber);
     var now = DateTime.now();
     var month = now.month.toString();
     var day = now.day.toString();
@@ -84,24 +85,74 @@ class _CourseDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: _singleCourseHeight * 12 + _cardStep * 11 + _middleStep,
+      height: _singleCourseHeight * 12 + _verStep * 11 + _middleStep,
       child: Consumer<CourseProvider>(
         builder: (context, provider, child) {
           if (provider.totalCourses.length == 0) {
             return Stack(children: [child!]);
           }
-          var merged = getMergedCourses(provider, _dayCount);
+          var positionedList = <Widget>[];
+
+          var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
+          // 先添加非本周课程
+          inactiveList.forEach((pair) {
+            int start = pair.arrange.unitList.first;
+            int end = pair.arrange.unitList.last;
+            int day = pair.arrange.weekday;
+            double top = (start - 1) * (_singleCourseHeight + _verStep);
+            double left = (day - 1) * (_cardWidth + _horStep);
+            double height = (end - start + 1) * _singleCourseHeight +
+                (end - start) * _verStep;
+            // 绕开"午休"栏
+            if (start > 4) top += _middleStep;
+            if (start <= 4 && end > 4) height += _middleStep;
+            positionedList.add(Positioned(
+              top: top,
+              left: left,
+              height: height,
+              width: _cardWidth,
+              child: QuietCourse(pair.first.name),
+            ));
+          });
+
+          var activeList = getMergedActiveCourses(provider, _dayNumber);
+          var tempList = <Widget>[];
+          // 添加本周课程
+          for (int i = 0; i < activeList.length; i++) {
+            int start = activeList[i][0].arrange.unitList.first;
+            int end = activeList[i][0].arrange.unitList.last;
+            int day = activeList[i][0].arrange.weekday;
+            double top = (start - 1) * (_singleCourseHeight + _verStep);
+            double left = (day - 1) * (_cardWidth + _horStep);
+            double height = (end - start + 1) * _singleCourseHeight +
+                (end - start) * _verStep;
+            // 绕开"午休"栏
+            if (start > 4) top += _middleStep;
+            if (start <= 4 && end > 4) height += _middleStep;
+            // 是否需要“漂浮”显示
+            if (true == activeList[i][0].first.needFloat) top += 6;
+
+            tempList.add(Positioned(
+              top: top,
+              left: left,
+              height: height,
+              width: _cardWidth,
+              child: AnimatedActiveCourse(activeList[i]),
+            ));
+          }
+          // 靠后的课需要先加入到stack中，所以需要reverse
+          positionedList.addAll(tempList.reversed);
+
           return Stack(
             children: [
               child!,
-              ..._generatePositioned(
-                  merged, provider.selectedWeek, provider.weekCount),
+              ...positionedList,
             ],
           );
         },
         child: Positioned(
           left: 0,
-          top: 4 * _singleCourseHeight + 3 * _cardStep,
+          top: 4 * _singleCourseHeight + 3 * _verStep,
           width: _width,
           height: _middleStep,
           child: Column(
@@ -118,35 +169,5 @@ class _CourseDisplayWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<Widget> _generatePositioned(List<List<List<Pair<Course, int>>>> merged,
-      int selectedWeek, int weekCount) {
-    List<Positioned> list = [];
-    for (int i = 0; i < _dayCount; i++) {
-      int day = i + 1;
-      merged[i].forEach((pairs) {
-        int start = pairs[0].arrange.unitList.first;
-        int end = pairs[0].arrange.unitList.last;
-        double top =
-            (start == 1) ? 0 : (start - 1) * (_singleCourseHeight + _cardStep);
-        double left = (day == 1) ? 0 : (day - 1) * (_cardWidth + _cardStep);
-        double height =
-            (end - start + 1) * _singleCourseHeight + (end - start) * _cardStep;
-
-        /// 绕开"午休"栏
-        if (start > 4) top += _middleStep;
-        if (start <= 4 && end > 4) height += _middleStep;
-        list.add(Positioned(
-            top: top,
-            left: left,
-            height: height,
-            width: _cardWidth,
-            child: judgeActiveInWeek(selectedWeek, weekCount, pairs[0].arrange)
-                ? AnimatedActiveCourse(pairs)
-                : QuietCourse(pairs[0].first.name)));
-      });
-    }
-    return list;
   }
 }
