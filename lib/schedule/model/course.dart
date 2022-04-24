@@ -42,7 +42,6 @@ class Course {
   int type; // 0->正常课程; 1->自定义课程
   /// 以下属性不需要缓存，临时存储
   int? index; // 在自定义课程列表中的下标
-  bool? needFloat; // 是否需要“漂浮”显示
 
   /// 爬课表用
   Course.spider(this.name, this.classId, this.courseId, this.credit,
@@ -87,6 +86,8 @@ class Arrange {
   List<int> weekList = []; // 哪些周有课
   List<int> unitList = [0, 0]; // 从第几节上到第几节
   List<String> teacherList = []; // 讲这节课的所有老师，带职称
+  /// 以下属性不需要缓存，临时存储
+  bool? needFloat; // 是否需要“漂浮”显示
 
   /// 爬课表用，构造后需要补上location属性
   Arrange.spider(

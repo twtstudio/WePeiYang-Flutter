@@ -1,5 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -158,6 +159,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                             title: '课程名称',
                             hintText: '请输入课程名称（必填）',
                             initText: name,
+                            inputFormatter: [
+                              LengthLimitingTextInputFormatter(20)
+                            ],
                           ),
                           InputWidget(
                             onChanged: (text) => credit = text,
@@ -165,6 +169,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                             hintText: '请输入课程学分（选填）',
                             initText: credit,
                             keyboardType: TextInputType.number,
+                            inputFormatter: [
+                              LengthLimitingTextInputFormatter(10)
+                            ],
                           ),
                         ],
                       ),

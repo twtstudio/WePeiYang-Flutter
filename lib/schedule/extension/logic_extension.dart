@@ -94,8 +94,8 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   for (int i = 0; i < provider.customCourses.length; i++) {
     var course = provider.customCourses[i];
     course.index = null; // 这里很坑，需要重置状态
-    course.needFloat = null;
     for (int j = 0; j < course.arrangeList.length; j++) {
+      course.arrangeList[j].needFloat = null; // 重置状态
       if (judgeActiveInWeek(
           provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
         course.index = i;
@@ -156,7 +156,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
       var status = _checkMerged(pair.arrange, mergedList[i][0].arrange);
       switch (status) {
         case 2: // 如果完全重叠，标记该外显课程需要“漂浮”显示
-          if (needAppend) mergedList[i][0].first.needFloat = true;
+          if (needAppend) mergedList[i][0].arrange.needFloat = true;
           continue c1;
         c1:
         case 1: // 如果存在重叠，互相添加至冲突列表中

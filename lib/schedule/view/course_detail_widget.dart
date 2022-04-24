@@ -130,7 +130,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             if (start > 4) top += _middleStep;
             if (start <= 4 && end > 4) height += _middleStep;
             // 是否需要“漂浮”显示
-            if (true == activeList[i][0].first.needFloat) top += 6;
+            if (true == activeList[i][0].arrange.needFloat) top += 6;
 
             tempList.add(Positioned(
               top: top,

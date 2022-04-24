@@ -1,8 +1,10 @@
 // @dart = 2.12
-import 'dart:math';
+import 'dart:math' show min;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'
+    show TextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -164,6 +166,7 @@ class TimeFrameWidget extends StatelessWidget {
             initText: pvd.arrangeList[index].location == ''
                 ? null
                 : pvd.arrangeList[index].location,
+            inputFormatter: [LengthLimitingTextInputFormatter(10)],
           ),
           InputWidget(
             onChanged: (text) => pvd.arrangeList[index].teacherList = [text],
@@ -172,6 +175,7 @@ class TimeFrameWidget extends StatelessWidget {
             initText: pvd.arrangeList[index].teacherList.isEmpty
                 ? null
                 : pvd.arrangeList[index].teacherList.first,
+            inputFormatter: [LengthLimitingTextInputFormatter(10)],
           ),
         ],
       ),
@@ -225,6 +229,7 @@ class InputWidget extends StatelessWidget {
   final String hintText;
   final String? initText;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatter;
 
   InputWidget(
       {required this.onChanged,
@@ -232,12 +237,18 @@ class InputWidget extends StatelessWidget {
       required this.hintText,
       this.initText,
       this.keyboardType,
+      this.inputFormatter,
       this.key})
       : super(key: key) {
-    if (initText != null)
-      _controller = TextEditingController(text: initText);
-    else
+    if (initText != null) {
+      _controller = TextEditingController.fromValue(TextEditingValue(
+        text: initText!,
+        selection:
+            TextSelection.fromPosition(TextPosition(offset: initText!.length)),
+      ));
+    } else {
       _controller = null;
+    }
   }
 
   late final TextEditingController? _controller;
@@ -252,6 +263,7 @@ class InputWidget extends StatelessWidget {
             controller: _controller,
             onChanged: onChanged,
             keyboardType: keyboardType,
+            inputFormatters: inputFormatter,
             textAlign: TextAlign.end,
             style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
             cursorColor: FavorColors.scheduleTitleColor,

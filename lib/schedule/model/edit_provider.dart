@@ -12,7 +12,8 @@ class EditProvider with ChangeNotifier {
 
   /// 编辑课程前初始化
   void load(Course course) {
-    arrangeList = course.arrangeList;
+    arrangeList =
+        course.arrangeList.map((e) => Arrange.fromJson(e.toJson())).toList();
     _totalCount = arrangeList.length;
     _initIndexList = List.generate(_totalCount, (index) => index);
   }
