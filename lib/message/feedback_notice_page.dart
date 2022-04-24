@@ -73,6 +73,7 @@ class FeedbackNoticePage extends StatelessWidget {
           style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
           expand: false,
           buttonIsShown: true,
+          isHTML: false,
         ),
       ),
     );

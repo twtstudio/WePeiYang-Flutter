@@ -301,6 +301,7 @@ class _PostCardState extends State<PostCard> {
                 .h(widget.type == PostCardType.detail ? 1.6 : 1.4),
             expand: false,
             buttonIsShown: widget.type == PostCardType.detail,
+            isHTML: false,
           ),
         ));
 

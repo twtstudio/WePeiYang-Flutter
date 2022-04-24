@@ -321,6 +321,7 @@ class _NCommentCardState extends State<NCommentCard>
             style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
             expand: false,
             buttonIsShown: true,
+            isHTML: false,
           );
 
     var commentImage = Padding(

@@ -354,6 +354,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           style:TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
           expand: false,
           buttonIsShown: true,
+          isHTML: true,
         );
 
         column.addAll([
