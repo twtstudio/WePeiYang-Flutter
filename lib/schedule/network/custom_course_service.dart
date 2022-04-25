@@ -46,7 +46,7 @@ class CustomCourseService with AsyncTimer {
                   'classroom': arrange.location,
                   'this_class_teacher': arrange.teacherList.first,
                   'which_week': _weekList2Str(arrange.weekList),
-                  'which_weekday': arrange.weekday.toString()
+                  'which_weekday': _weekDay2Str(arrange.weekday)
                 })
             .toList()
       };
@@ -78,7 +78,7 @@ class CustomCourseService with AsyncTimer {
                   'classroom': arrange.location,
                   'this_class_teacher': arrange.teacherList.first,
                   'which_week': _weekList2Str(arrange.weekList),
-                  'which_weekday': arrange.weekday.toString()
+                  'which_weekday': _weekDay2Str(arrange.weekday)
                 })
             .toList()
       };
@@ -103,19 +103,19 @@ class CustomCourseService with AsyncTimer {
         var arrangeList = <Arrange>[];
         for (Map<String, dynamic> arrangeJson
             in courseJson['classDetailList']) {
-          var weekList = _weekStr2List(arrangeJson['which_week'].toString());
+          var weekList = _weekStr2List(arrangeJson['which_week']);
           if (minWeek > weekList.first) minWeek = weekList.first;
           if (maxWeek < weekList.last) maxWeek = weekList.last;
 
-          var unitList = _unitStr2List(arrangeJson['class_order'].toString());
+          var unitList = _unitStr2List(arrangeJson['class_order']);
 
-          var teacherStr = arrangeJson['this_class_teacher'].toString();
+          var teacherStr = arrangeJson['this_class_teacher'];
           if (!teacherList.contains(teacherStr)) {
             teacherList.add(teacherStr);
           }
           var arrange = Arrange.empty()
             ..location = arrangeJson['classroom']
-            ..weekday = int.parse(arrangeJson['which_weekday'])
+            ..weekday = _str2WeekDay(arrangeJson['which_weekday'])
             ..weekList = weekList
             ..unitList = unitList
             ..teacherList = [teacherStr];
@@ -140,12 +140,11 @@ class CustomCourseService with AsyncTimer {
       var teacherList = [data['all_teacher'].toString()];
       var arrangeList = <Arrange>[];
       for (Map<String, dynamic> json in data['detailList']) {
-        // TODO 接口还有些问题
         var arrange = Arrange.empty()
           ..location = json['classroom']
-          ..weekday = int.parse(json['which_weekday'])
-          ..weekList = [int.parse(json['which_week'])] // this
-          ..unitList = [0, 0] // this
+          ..weekday = _str2WeekDay(json['which_weekday'])
+          ..weekList = _weekStr2List(json['which_week'])
+          ..unitList = _unitStr2List(json['class_order'])
           ..teacherList = [json['this_class_teacher']];
         arrangeList.add(arrange);
       }
@@ -157,22 +156,49 @@ class CustomCourseService with AsyncTimer {
   }
 }
 
+// 几种格式：
+// 11
+// [1-5]
+// [11-13]单
+// [10-14]双
 List<int> _weekStr2List(String str) {
+  if (!str.contains('[')) return [int.parse(str)];
+  int step = 1;
+  if (str.contains('单') || str.contains('双')) step += 1;
+  List<String> startEnd = str.substring(1, str.length - step).split('-');
   var result = <int>[];
-  for (int i = 0; i < str.length; i++) {
-    if (str[i] == '1') result.add(i);
+  for (int i = int.parse(startEnd[0]); i <= int.parse(startEnd[1]); i += step) {
+    result.add(i);
   }
   return result;
 }
 
 String _weekList2Str(List<int> list) {
-  var result = '';
-  for (int i = 0; i <= list.last; i++) {
-    result += list.contains(i) ? '1' : '0';
-  }
-  return result;
+  if (list.length == 1) return list.first.toString();
+  bool hasOdd = list.any((e) => e.isOdd);
+  bool hasEven = list.any((e) => e.isEven);
+  var suffix = '';
+  if (hasOdd && !hasEven) suffix = '单';
+  if (hasEven && !hasOdd) suffix = '双';
+  return '[${list.first}-${list.last}]$suffix';
 }
 
-List<int> _unitStr2List(String str) => [int.parse(str[0]), int.parse(str[1])];
+List<int> _unitStr2List(String str) =>
+    [int.parse(str.split('-')[0]), int.parse(str.split('-')[1])];
 
-String _unitList2Str(List<int> list) => '${list.first}${list.last}';
+String _unitList2Str(List<int> list) => '${list.first}-${list.last}';
+
+int _str2WeekDay(String weekDayStr) => _weekDays.indexOf(weekDayStr);
+
+String _weekDay2Str(int weekDay) => _weekDays[weekDay];
+
+const _weekDays = [
+  '',
+  '星期一',
+  '星期二',
+  '星期三',
+  '星期四',
+  '星期五',
+  '星期六',
+  '星期日',
+];

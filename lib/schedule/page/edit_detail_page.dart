@@ -49,6 +49,12 @@ class _EditDetailPageState extends State<EditDetailPage> {
     credit = widget.credit;
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   bool _check(BuildContext context) {
     if (name.isEmpty) {
       ToastProvider.error('请填写课程名称');

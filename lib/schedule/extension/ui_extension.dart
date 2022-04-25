@@ -50,8 +50,9 @@ class QuietCourse extends StatelessWidget {
 class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);
   final List<Pair<Course, int>> _pairs;
+  final bool hide;
 
-  AnimatedActiveCourse(this._pairs);
+  AnimatedActiveCourse(this._pairs, this.hide);
 
   final _activeNameStyle = FontManager.YaQiHei.copyWith(
       color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
@@ -79,27 +80,31 @@ class AnimatedActiveCourse extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         splashFactory: InkRipple.splashFactory,
         splashColor: Color.fromRGBO(179, 182, 191, 1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3),
-          child: Column(
-            children: [
-              Spacer(),
-              Text(formatText(_pairs[0].first.name),
-                  style: _activeNameStyle, textAlign: TextAlign.center),
-              SizedBox(height: 2),
-              Text(teacher,
-                  style: _activeTeacherStyle, textAlign: TextAlign.center),
-              if (_pairs[0].arrange.location != "")
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(replaceBuildingWord(_pairs[0].arrange.location),
-                      style: _activeClassroomStyle,
-                      textAlign: TextAlign.center),
+        child: hide
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: Column(
+                  children: [
+                    Spacer(),
+                    Text(formatText(_pairs[0].first.name),
+                        style: _activeNameStyle, textAlign: TextAlign.center),
+                    SizedBox(height: 2),
+                    Text(teacher,
+                        style: _activeTeacherStyle,
+                        textAlign: TextAlign.center),
+                    if (_pairs[0].arrange.location != "")
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                            replaceBuildingWord(_pairs[0].arrange.location),
+                            style: _activeClassroomStyle,
+                            textAlign: TextAlign.center),
+                      ),
+                    Spacer()
+                  ],
                 ),
-              Spacer()
-            ],
-          ),
-        ),
+              ),
       ),
     );
 

@@ -41,25 +41,28 @@ class _WeekDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var selectedWeek =
-        context.select<CourseProvider, int>((p) => p.selectedWeek);
+    context.select<CourseProvider, int>((p) => p.selectedWeek);
     List<String> dates = getWeekDayString(
         CommonPreferences.termStart.value, selectedWeek, _dayNumber);
     var now = DateTime.now();
     var month = now.month.toString();
     var day = now.day.toString();
     var nowDate =
-        "${month.length < 2 ? '0' + month : month}/${day.length < 2 ? '0' + day : day}";
+        "${month.length < 2 ? '0' + month : month}/${day.length < 2
+        ? '0' + day
+        : day}";
     return Row(
       children: dates
           .map((date) =>
-              _getCard(date, nowDate == date, FavorColors.scheduleTitleColor))
+          _getCard(date, nowDate == date, FavorColors.scheduleTitleColor))
           .toList(),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(String date, bool deep, Color titleColor) => Container(
+  Widget _getCard(String date, bool deep, Color titleColor) =>
+      Container(
         height: 28,
         width: _cardWidth,
         decoration: BoxDecoration(
@@ -130,14 +133,16 @@ class _CourseDisplayWidget extends StatelessWidget {
             if (start > 4) top += _middleStep;
             if (start <= 4 && end > 4) height += _middleStep;
             // 是否需要“漂浮”显示
-            if (true == activeList[i][0].arrange.needFloat) top += 6;
+            if (activeList[i][0].arrange.showMode == 1) top += 6;
+            // 是否不显示内容
+            var hide = (activeList[i][0].arrange.showMode == 2);
 
             tempList.add(Positioned(
               top: top,
               left: left,
               height: height,
               width: _cardWidth,
-              child: AnimatedActiveCourse(activeList[i]),
+              child: AnimatedActiveCourse(activeList[i], hide),
             ));
           }
           // 靠后的课需要先加入到stack中，所以需要reverse

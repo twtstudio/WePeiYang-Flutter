@@ -95,7 +95,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     var course = provider.customCourses[i];
     course.index = null; // 这里很坑，需要重置状态
     for (int j = 0; j < course.arrangeList.length; j++) {
-      course.arrangeList[j].needFloat = null; // 重置状态
+      course.arrangeList[j].showMode = 0; // 重置状态
       if (judgeActiveInWeek(
           provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
         course.index = i;
@@ -103,20 +103,20 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
       }
     }
   }
-  // 按照普通课程优先、短课程优先、时间早优先、高学分优先来排序
+  // 按照普通课程优先、长课程优先、时间早优先、高学分优先来排序
   pairList.sort((a, b) {
     // 普通课程优先
     if (a.first.type == 1 && b.first.type == 0) return 1;
     if (a.first.type == 0 && b.first.type == 1) return -1;
 
-    // 短课程优先
+    // 长课程优先
     var aFirst = a.arrange.unitList.first;
     var aLast = a.arrange.unitList.last;
     var bFirst = b.arrange.unitList.first;
     var bLast = b.arrange.unitList.last;
     var aLen = aLast - aFirst;
     var bLen = bLast - bFirst;
-    if (aLen != bLen) return aLen.compareTo(bLen);
+    if (aLen != bLen) return bLen.compareTo(aLen);
 
     // 时间早优先
     if (aFirst != bFirst) return aFirst.compareTo(bFirst);
@@ -155,8 +155,11 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     for (int i = 0; i < mergedList.length; i++) {
       var status = _checkMerged(pair.arrange, mergedList[i][0].arrange);
       switch (status) {
-        case 2: // 如果完全重叠，标记该外显课程需要“漂浮”显示
-          if (needAppend) mergedList[i][0].arrange.needFloat = true;
+        case 2: // 如果完全重叠，标记该外显课程需要“漂浮”显示、此pair不显示内容
+          if (needAppend) {
+            mergedList[i][0].arrange.showMode = 1;
+            pair.arrange.showMode = 2;
+          }
           continue c1;
         c1:
         case 1: // 如果存在重叠，互相添加至冲突列表中
@@ -177,6 +180,33 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     } else {
       notAppendList.add(pair);
     }
+  });
+
+  // 按照普通课程优先、短课程优先、时间早优先、高学分优先再次排序
+  mergedList.sort((aList, bList) {
+    var a = aList.first, b = bList.first;
+    // 普通课程优先
+    if (a.first.type == 1 && b.first.type == 0) return 1;
+    if (a.first.type == 0 && b.first.type == 1) return -1;
+
+    // 短课程优先
+    var aFirst = a.arrange.unitList.first;
+    var aLast = a.arrange.unitList.last;
+    var bFirst = b.arrange.unitList.first;
+    var bLast = b.arrange.unitList.last;
+    var aLen = aLast - aFirst;
+    var bLen = bLast - bFirst;
+    if (aLen != bLen) return aLen.compareTo(bLen);
+
+    // 时间早优先
+    if (aFirst != bFirst) return aFirst.compareTo(bFirst);
+
+    // 学分高优先，null(或不能解析成double的值)排最后
+    double? iA = double.tryParse(a.first.credit);
+    double? iB = double.tryParse(b.first.credit);
+    if (iA == null) return 1;
+    if (iB == null) return -1;
+    return iB.compareTo(iA);
   });
 
   return mergedList;

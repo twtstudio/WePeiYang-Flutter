@@ -87,7 +87,7 @@ class Arrange {
   List<int> unitList = [0, 0]; // 从第几节上到第几节
   List<String> teacherList = []; // 讲这节课的所有老师，带职称
   /// 以下属性不需要缓存，临时存储
-  bool? needFloat; // 是否需要“漂浮”显示
+  int showMode = 0; // 0->正常, 1->“漂浮”显示, 2->不显示内容
 
   /// 爬课表用，构造后需要补上location属性
   Arrange.spider(
