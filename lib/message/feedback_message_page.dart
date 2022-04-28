@@ -17,16 +17,17 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 import 'model/message_model.dart';
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
-enum MessageType { like, floor, reply, notice }
+enum MessageType { like, floor, reply }
 
 extension MessageTypeExtension on MessageType {
-  String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
+  String get name => ['点赞', '评论', '校务回复'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -45,6 +46,8 @@ class FeedbackMessagePage extends StatefulWidget {
 class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     with TickerProviderStateMixin {
   final List<MessageType> types = MessageType.values;
+  List<Widget> wd = [];
+  List<Widget> tb = [];
 
   TabController _tabController;
 
@@ -54,8 +57,10 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   @override
   void initState() {
     super.initState();
+    wd.clear();
+    tb.clear();
     _tabController =
-        TabController(length: types.length, vsync: this, initialIndex: 0)
+        TabController(length: types.length + 1, vsync: this, initialIndex: 0)
           ..addListener(() {
             ///这个if避免点击tab时回调两次
             ///https://blog.csdn.net/u010960265/article/details/104982299
@@ -64,129 +69,131 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               currentIndex.value = _tabController.index;
             }
           });
+    tb = types.map((t) {
+      return MessageTab(type: t);
+    }).toList();
+
+    wd = types.map((t) {
+      switch (t) {
+        case MessageType.like:
+          return LikeMessagesList();
+        case MessageType.floor:
+          return FloorMessagesList();
+        case MessageType.reply:
+          return ReplyMessagesList();
+        default:
+          return Container();
+      }
+    }).toList();
+    wd.add(LakeEmailPage());
+    tb.add(MessageTab(isEmail: true));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff7f7f8),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
-        child: AppBar(
-          titleSpacing: 0,
-          leadingWidth: 50,
-          brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          title:
-              Text('消息中心', style: TextUtil.base.NotoSansSC.black2A.w600.sp(18)),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              color: ColorUtil.bold42TextColor,
-              size: 20.w,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            IconButton(
-                icon: Image.asset(
-                    'assets/images/lake_butt_icons/check-square.png',
-                    width: 15.w),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return LakeDialogWidget(
-                          title: '一键已读：',
-                          titleTextStyle: TextUtil
-                              .base.normal.black2A.NotoSansSC
-                              .sp(18)
-                              .w600,
-                          content: Text('这将清除所有的消息提醒'),
-                          cancelText: "取消",
-                          confirmTextStyle:
-                              TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
-                          cancelTextStyle: TextUtil
-                              .base.normal.black2A.NotoSansSC
-                              .sp(16)
-                              .w400,
-                          confirmText: "确认",
-                          cancelFun: () {
-                            Navigator.pop(context);
-                          },
-                          confirmFun: () async {
-                            await context
-                                .read<MessageProvider>()
-                                .setAllMessageRead();
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          confirmButtonColor: ColorUtil.selectionButtonColor,
-                        );
-                      });
-                })
-          ],
-          bottom: PreferredSize(
-            preferredSize: Size.infinite,
-            child: Theme(
-              data: ThemeData(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+        backgroundColor: Color(0xfff7f7f8),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: AppBar(
+            titleSpacing: 0,
+            leadingWidth: 50,
+            brightness: Brightness.light,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Text('消息中心',
+                style: TextUtil.base.NotoSansSC.black2A.w600.sp(18)),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: ColorUtil.bold42TextColor,
+                size: 20.w,
               ),
-              child: TabBar(
-                indicatorPadding: EdgeInsets.only(bottom: 10),
-                labelPadding: EdgeInsets.zero,
-                isScrollable: false,
-                physics: BouncingScrollPhysics(),
-                controller: _tabController,
-                labelColor: ColorUtil.black2AColor,
-                labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
-                unselectedLabelColor: ColorUtil.greyB2B6Color,
-                unselectedLabelStyle:
-                    TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
-                indicator: CustomIndicator(
-                    borderSide:
-                        BorderSide(color: ColorUtil.mainColor, width: 2)),
-                tabs: types.map((t) {
-                  return MessageTab(type: t);
-                }).toList(),
-                onTap: (index) {
-                  currentIndex.value = _tabController.index;
-                },
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              IconButton(
+                  icon: Image.asset(
+                      'assets/images/lake_butt_icons/check-square.png',
+                      width: 15.w),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return LakeDialogWidget(
+                            title: '一键已读：',
+                            titleTextStyle: TextUtil
+                                .base.normal.black2A.NotoSansSC
+                                .sp(18)
+                                .w600,
+                            content: Text('这将清除所有的消息提醒'),
+                            cancelText: "取消",
+                            confirmTextStyle: TextUtil
+                                .base.normal.white.NotoSansSC
+                                .sp(16)
+                                .w600,
+                            cancelTextStyle: TextUtil
+                                .base.normal.black2A.NotoSansSC
+                                .sp(16)
+                                .w400,
+                            confirmText: "确认",
+                            cancelFun: () {
+                              Navigator.pop(context);
+                            },
+                            confirmFun: () async {
+                              await context
+                                  .read<MessageProvider>()
+                                  .setAllMessageRead();
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                            confirmButtonColor: ColorUtil.selectionButtonColor,
+                          );
+                        });
+                  })
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.infinite,
+              child: Theme(
+                data: ThemeData(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: TabBar(
+                  indicatorPadding: EdgeInsets.only(bottom: 10),
+                  labelPadding: EdgeInsets.zero,
+                  isScrollable: false,
+                  physics: BouncingScrollPhysics(),
+                  controller: _tabController,
+                  labelColor: ColorUtil.black2AColor,
+                  labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
+                  unselectedLabelColor: ColorUtil.greyB2B6Color,
+                  unselectedLabelStyle:
+                      TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
+                  indicator: CustomIndicator(
+                      borderSide:
+                          BorderSide(color: ColorUtil.mainColor, width: 2)),
+                  tabs: tb,
+                  onTap: (index) {
+                    currentIndex.value = _tabController.index;
+                  },
+                ),
               ),
             ),
           ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: types.map((t) {
-          switch (t) {
-            case MessageType.like:
-              return LikeMessagesList();
-            case MessageType.floor:
-              return FloorMessagesList();
-            case MessageType.reply:
-              return ReplyMessagesList();
-            case MessageType.notice:
-              return NoticeMessagesList();
-            default:
-              return Container();
-          }
-        }).toList(),
-      ),
-    );
+        body: TabBarView(controller: _tabController, children: wd));
   }
 }
 
 class MessageTab extends StatefulWidget {
   final MessageType type;
+  final bool isEmail;
 
-  const MessageTab({Key key, this.type}) : super(key: key);
+  const MessageTab({Key key, this.type, this.isEmail}) : super(key: key);
 
   @override
   _MessageTabState createState() => _MessageTabState();
@@ -204,34 +211,46 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
-    _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
-    Widget tab = ValueListenableBuilder(
-      valueListenable: pageState.currentIndex,
-      builder: (_, int current, __) {
-        return Text(
-          widget.type.name,
-        );
-      },
-    );
+    if (widget.isEmail ?? false) {
+      return Tab(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(width: _tabPaddingWidth),
+          Text('湖底通知'),
+          SizedBox(width: _tabPaddingWidth),
+        ],
+      ));
+    } else {
+      _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
+      Widget tab = ValueListenableBuilder(
+        valueListenable: pageState.currentIndex,
+        builder: (_, int current, __) {
+          return Text(
+            widget.type.name,
+          );
+        },
+      );
 
-    int count = context.select((MessageProvider messageProvider) =>
-        messageProvider.getMessageCount(widget.type));
-    return Tab(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(width: _tabPaddingWidth),
-        count == 0
-            ? tab
-            : Badge(
-                child: tab,
-                badgeContent: Text(
-                  count.toString(),
-                  style: TextStyle(color: Colors.white, fontSize: 8),
-                )),
-        SizedBox(width: _tabPaddingWidth),
-      ],
-    ));
+      int count = context.select((MessageProvider messageProvider) =>
+          messageProvider.getMessageCount(widget.type));
+      return Tab(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(width: _tabPaddingWidth),
+          count == 0
+              ? tab
+              : Badge(
+                  child: tab,
+                  badgeContent: Text(
+                    count.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 8),
+                  )),
+          SizedBox(width: _tabPaddingWidth),
+        ],
+      ));
+    }
   }
 }
 
@@ -344,11 +363,10 @@ class _LikeMessagesListState extends State<LikeMessagesList>
             onTapDown: () async {
               await MessageService.setLikeMessageRead(
                   items[i].type == 0 ? items[i].post.id : items[i].floor.id,
-                  items[i].type,
-                  onSuccess: () {
-                    items.removeAt(i);
-                    context.read<MessageProvider>().refreshFeedbackCount();
-                  }, onFailure: (e) {
+                  items[i].type, onSuccess: () {
+                items.removeAt(i);
+                context.read<MessageProvider>().refreshFeedbackCount();
+              }, onFailure: (e) {
                 ToastProvider.error(e.error.toString());
               });
             },
@@ -714,9 +732,9 @@ class _FloorMessagesListState extends State<FloorMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setFloorMessageRead(items[i].floor.id,
                     onSuccess: () {
-                      items[i].isRead = true;
-                      context.read<MessageProvider>().refreshFeedbackCount();
-                    }, onFailure: (e) {
+                  items[i].isRead = true;
+                  context.read<MessageProvider>().refreshFeedbackCount();
+                }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1074,9 +1092,9 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
               if (!items[i].isRead) {
                 await MessageService.setReplyMessageRead(items[i].reply.id,
                     onSuccess: () {
-                      items[i].isRead = true;
-                      context.read<MessageProvider>().refreshFeedbackCount();
-                      }, onFailure: (e) {
+                  items[i].isRead = true;
+                  context.read<MessageProvider>().refreshFeedbackCount();
+                }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
               }
@@ -1275,7 +1293,6 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
-
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
@@ -1299,283 +1316,6 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                 ),
                 SizedBox(height: 8.w),
                 messageWrapper ?? questionItem,
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NoticeMessagesList extends StatefulWidget {
-  NoticeMessagesList({Key key}) : super(key: key);
-
-  @override
-  _NoticeMessagesListState createState() => _NoticeMessagesListState();
-}
-
-class _NoticeMessagesListState extends State<NoticeMessagesList>
-    with AutomaticKeepAliveClientMixin {
-  List<NoticeMessage> items = [];
-  RefreshController _refreshController = RefreshController(
-      initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
-
-  onRefresh({bool refreshCount = true}) async {
-    if (widget == null) return;
-    // monitor network fetch
-    try {
-      await MessageService.getNoticeMessages(
-          page: 1,
-          onSuccess: (list, total) {
-            items.clear();
-            items.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-
-      if (mounted) {
-        if (refreshCount) {
-          context.read<MessageProvider>().refreshFeedbackCount();
-        }
-        setState(() {});
-      }
-      _refreshController.refreshCompleted();
-    } catch (e) {
-      _refreshController.refreshFailed();
-    }
-    // if failed,use refreshFailed()
-    // _refreshController.refreshCompleted();
-  }
-
-  _onLoading() async {
-    try {
-      await MessageService.getNoticeMessages(
-          page: (items.length / 20).ceil() + 1,
-          onSuccess: (list, total) {
-            items.addAll(list);
-            if (list.isEmpty) {
-              _refreshController.loadNoData();
-            } else {
-              _refreshController.loadComplete();
-            }
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      if (mounted) setState(() {});
-    } catch (e) {
-      _refreshController.loadFailed();
-    }
-
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    // items.add((items.length + 1).toString());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
-    Widget child;
-
-    if (_refreshController.isRefresh) {
-      child = Center(
-        child: Loading(),
-      );
-    } else if (items.isEmpty) {
-      child = Center(
-        child: Text("无未读消息"),
-      );
-    } else {
-      child = ListView.builder(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (c, i) {
-          return NoticeMessageItem(
-            data: items[i],
-            onTapDown: () async {
-              if (!items[i].isRead) {
-                await MessageService.setNoticeMessageRead(items[i].id,
-                    onSuccess: () {
-                  items[i].isRead = true;
-                  context.read<MessageProvider>().refreshFeedbackCount();
-                }, onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                });
-              }
-            },
-          );
-        },
-        itemCount: items.length,
-      );
-    }
-
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: WaterDropHeader(),
-      footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
-          Widget body;
-          if (mode == LoadStatus.idle) {
-            body = Text('加载完成:)');
-          } else if (mode == LoadStatus.loading) {
-            body = CupertinoActivityIndicator();
-          } else if (mode == LoadStatus.failed) {
-            body = Text(S.current.load_fail);
-          } else if (mode == LoadStatus.canLoading) {
-            body = Text(S.current.load_more);
-          } else {
-            body = Text(S.current.no_more_data);
-          }
-          return SizedBox(
-            height: 55,
-            child: Center(child: body),
-          );
-        },
-      ),
-      controller: _refreshController,
-      onRefresh: onRefresh,
-      onLoading: _onLoading,
-      child: child,
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-}
-
-class NoticeMessageItem extends StatefulWidget {
-  final NoticeMessage data;
-  final VoidFutureCallBack onTapDown;
-
-  const NoticeMessageItem({Key key, this.data, this.onTapDown})
-      : super(key: key);
-
-  @override
-  _NoticeMessageItemState createState() => _NoticeMessageItemState();
-}
-
-class _NoticeMessageItemState extends State<NoticeMessageItem> {
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
-
-  @override
-  Widget build(BuildContext context) {
-    Widget sender = Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.id}',
-          width: 30,
-          height: 30,
-          fit: BoxFit.cover,
-          placeholderBuilder: defaultPlaceholderBuilder,
-        ),
-        SizedBox(width: 6.w),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  widget.data.sender,
-                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
-                ),
-                Text(
-                  ' 发表了一则通知',
-                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
-                ),
-              ],
-            ),
-            SizedBox(height: 2.w),
-            Text(
-              DateTime.now().difference(widget.data.createdAt).inDays >= 1
-                  ? widget.data.createdAt
-                      .toLocal()
-                      .toIso8601String()
-                      .replaceRange(10, 11, ' ')
-                      .substring(0, 19)
-                  : DateTime.now()
-                      .difference(widget.data.createdAt)
-                      .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
-            ),
-          ],
-        ),
-      ],
-    );
-
-    Widget noticeItem = Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.greyF7F8Color,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(10.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.data.title,
-                  maxLines: 1,
-                  softWrap: true,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
-                ),
-                SizedBox(height: 4.w),
-                Text(
-                  widget.data.content,
-                  maxLines: 2,
-                  softWrap: true,
-                  style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
-                )
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-
-    Widget messageWrapper;
-    if (!widget.data.isRead) {
-      messageWrapper = Badge(
-        position: BadgePosition.topEnd(end: -2, top: -14),
-        padding: const EdgeInsets.all(5),
-        badgeContent: Text(""),
-        child: noticeItem,
-      );
-    }
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
-      child: GestureDetector(
-        onTap: () async {
-          await widget.onTapDown?.call();
-          await Navigator.pushNamed(
-            context,
-            FeedbackRouter.notice,
-            arguments: widget.data,
-          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: ColorUtil.whiteFDFE,
-              borderRadius: BorderRadius.all(Radius.circular(16.w))),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                sender,
-                SizedBox(height: 8.w),
-                messageWrapper ?? noticeItem,
               ],
             ),
           ),

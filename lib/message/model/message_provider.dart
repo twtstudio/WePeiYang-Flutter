@@ -70,8 +70,6 @@ class MessageProvider extends ChangeNotifier {
         return _messageCount?.floor ?? 0;
       case MessageType.reply:
         return _messageCount?.reply ?? 0;
-      case MessageType.notice:
-        return _messageCount?.notice ?? 0;
       default:
         return 0;
     }

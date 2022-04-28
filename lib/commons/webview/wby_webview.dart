@@ -111,6 +111,7 @@ class WbyWebViewState extends State<WbyWebView> {
     );
 
     final body = Stack(
+      fit: StackFit.expand,
       alignment: Alignment.center,
       children: [
         Opacity(
@@ -133,26 +134,14 @@ class WbyWebViewState extends State<WbyWebView> {
           ),
         ),
         top,
-        if (widget.fullPage) Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-              child: Icon(Icons.arrow_back,
-                  color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-              onTap: () => Navigator.pop(context),
-            ),
-          ),
-        ),
       ],
     );
 
-    return Scaffold(
+    return widget.fullPage ? body : Scaffold(
       backgroundColor: widget.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            if (!widget.fullPage)
               appBar,
             Expanded(child: body),
           ],
