@@ -84,6 +84,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   // 先添加普通课程
   provider.schoolCourses.forEach((course) {
     for (int j = 0; j < course.arrangeList.length; j++) {
+      course.arrangeList[j].showMode = 0; // 这里很坑，需要重置状态
       if (judgeActiveInWeek(
           provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
         pairList.add(Pair<Course, int>(course, j));
@@ -93,7 +94,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   // 再添加自定义课程
   for (int i = 0; i < provider.customCourses.length; i++) {
     var course = provider.customCourses[i];
-    course.index = null; // 这里很坑，需要重置状态
+    course.index = null; // 重置状态
     for (int j = 0; j < course.arrangeList.length; j++) {
       course.arrangeList[j].showMode = 0; // 重置状态
       if (judgeActiveInWeek(
