@@ -99,6 +99,7 @@ List<Course> _parseCourseHTML(String data) {
         .match(r'(?<=var teachers)[^]*?(?=fillTable)')
         .split("var teachers");
     arrangeDataList.forEach((item) {
+      if (item.isEmpty) return; // 课程可能没有arrangeData，此时match.split后的值为['']
       var day = int.parse(item.match(r'(?<=index =)\w')) + 1;
       var unitData = item.matches(r'(?<=unitCount\+)\w*');
       var unit = [int.parse(unitData.first) + 1, int.parse(unitData.last) + 1];
@@ -133,6 +134,7 @@ List<Course> _parseCourseHTML(String data) {
     List<String> trList =
         data.match(r'(?<=<tbody)[^]*?(?=</tbody>)').split("</tr><tr>");
     trList.forEach((tr) {
+      if (tr.isEmpty) return;
       List<String> tdList = tr.matches(r'(?<=<td>)[^]*?(?=</td>)');
       if (tdList.isEmpty) return;
       var classId = tdList[1].match(r'(?<=>)[0-9]*');
@@ -146,6 +148,7 @@ List<Course> _parseCourseHTML(String data) {
       courseName = courseName.trim();
 
       if (tdList[4] == '') tdList[4] = '0.0';
+
       /// 整理其余的Course信息，并与Arrange匹配
       var credit = double.parse(tdList[4]).toStringAsFixed(1);
       var teacherList = tdList[5].split(',');

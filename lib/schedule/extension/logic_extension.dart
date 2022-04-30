@@ -60,14 +60,14 @@ List<Pair<Course, int>> getMergedInactiveCourses(
         return;
       bool flag = false;
       for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
-        if (matrix[arrange.weekday - 1][i]) {
+        if (matrix[arrange.weekday - 1][i - 1]) {
           flag = true;
           break;
         }
       }
       if (flag) return;
       for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
-        matrix[arrange.weekday - 1][i] = true;
+        matrix[arrange.weekday - 1][i - 1] = true;
       }
       result.add(Pair<Course, int>(course, index));
     }
