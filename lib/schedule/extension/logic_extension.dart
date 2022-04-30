@@ -48,7 +48,9 @@ List<Pair<Course, int>> getMergedInactiveCourses(
     double? iB = double.tryParse(b.credit);
     if (iA == null) return 1;
     if (iB == null) return -1;
-    return iB.compareTo(iA);
+    if (iA != iB) return iB.compareTo(iA);
+
+    return a.name.compareTo(b.name);
   });
   List<List<bool>> matrix = [];
   List<Pair<Course, int>> result = [];
@@ -57,7 +59,7 @@ List<Pair<Course, int>> getMergedInactiveCourses(
     for (int index = 0; index < course.arrangeList.length; index++) {
       var arrange = course.arrangeList[index];
       if (judgeActiveInWeek(provider.selectedWeek, provider.weekCount, arrange))
-        return;
+        continue;
       bool flag = false;
       for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
         if (matrix[arrange.weekday - 1][i - 1]) {
@@ -65,7 +67,7 @@ List<Pair<Course, int>> getMergedInactiveCourses(
           break;
         }
       }
-      if (flag) return;
+      if (flag) continue;
       for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
         matrix[arrange.weekday - 1][i - 1] = true;
       }
@@ -207,7 +209,9 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     double? iB = double.tryParse(b.first.credit);
     if (iA == null) return 1;
     if (iB == null) return -1;
-    return iB.compareTo(iA);
+    if (iA != iB) return iB.compareTo(iA);
+
+    return a.first.name.compareTo(b.first.name);
   });
 
   return mergedList;
