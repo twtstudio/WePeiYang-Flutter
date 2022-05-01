@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class WbyDialogLayout extends StatelessWidget {
   final Widget child;
-  final bool padding;
+  final bool bottomPadding;
 
   const WbyDialogLayout({
     Key? key,
     required this.child,
-    this.padding = true,
+    this.bottomPadding = true,
   }) : super(key: key);
 
   @override
@@ -21,12 +21,13 @@ class WbyDialogLayout extends StatelessWidget {
         borderRadius: BorderRadius.circular(size.dialogRadius),
         color: Colors.white,
       ),
-      child: padding
-          ? Padding(
-              padding: EdgeInsets.symmetric(vertical: size.verticalPadding),
-              child: child,
-            )
-          : child,
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: size.verticalPadding,
+          bottom: bottomPadding ? size.verticalPadding : 0,
+        ),
+        child: child,
+      ),
     );
   }
 }

@@ -69,11 +69,13 @@ class WbyFixPlugin : WbyPlugin() {
                 HotFixPreference.checkAndSetFixSo(nameWithoutExtension)
                 absolutePath
             }.onSuccess {
-                download.delete()
+                // 如果加载成功，就删除下载文件
+                runCatching { download.delete() }
                 log("move so file success : $it")
                 result.success(it)
             }.onFailure {
-                fix.delete()
+                // 如果加载失败，就不删除下载文件，但删除解压缩后的文件
+                runCatching { fix.delete() }
                 LogUtil.e(TAG, it)
                 result.error("COPY_FILE_ERROR", it.message, "")
             }

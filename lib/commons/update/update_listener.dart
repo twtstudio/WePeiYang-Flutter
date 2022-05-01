@@ -32,6 +32,10 @@ abstract class UpdateStatusListener extends ChangeNotifier {
   setLoad() {
     _status = UpdateStatus.load;
   }
+
+  setError() {
+    _status = UpdateStatus.error;
+  }
 }
 
 /// 检查更新状态
@@ -47,6 +51,9 @@ enum UpdateStatus {
 
   /// 加载最新版
   load,
+
+  /// 下载失败
+  error,
 }
 
 extension UpdateStatusExt on UpdateStatus {
@@ -57,4 +64,6 @@ extension UpdateStatusExt on UpdateStatus {
   bool get isDownload => this == UpdateStatus.download;
 
   bool get isLoad => this == UpdateStatus.load;
+
+  bool get isError => this == UpdateStatus.error;
 }

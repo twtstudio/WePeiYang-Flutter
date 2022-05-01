@@ -29,7 +29,7 @@ class Time {
       return firstDay.next.weekStart;
     } else {
       // 想想办法
-      if (EnvConfig.isDevelop) {
+      if (EnvConfig.isTest) {
         throw Exception('can not get semester start time');
       }
       return DateTime(2021, 8, 16);

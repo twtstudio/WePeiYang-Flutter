@@ -32,22 +32,18 @@ class UpdateMessageDialog extends StatelessWidget {
     Widget buttons;
 
     if (manager.version.isForced) {
-      buttons = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          WbyDialogButton(
-            onTap: ok,
-            text: '立刻更新',
-            type: ButtonType.dark,
-          ),
-        ],
+      buttons = WbyDialogButton(
+        onTap: ok,
+        text: '应用版本过低，立刻更新',
+        type: ButtonType.dark,
+        expand: true,
       );
     } else {
       buttons = WbyDialogStandardTwoButton(
-        cancel: cancel,
-        ok: ok,
-        cancelText: '稍后更新',
-        okText: '立刻更新',
+        first: cancel,
+        second: ok,
+        firstText: '稍后更新',
+        secondText: '立刻更新',
       );
     }
 
@@ -63,7 +59,6 @@ class UpdateMessageDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.verticalPadding),
               UpdateTitle(),
               SizedBox(height: size.verticalPadding),
               UpdateDetail(),
@@ -76,6 +71,6 @@ class UpdateMessageDialog extends StatelessWidget {
       ],
     );
 
-    return WbyDialogLayout(child: column, padding: false);
+    return WbyDialogLayout(child: column, bottomPadding: false);
   }
 }

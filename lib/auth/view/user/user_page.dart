@@ -223,7 +223,7 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.circular(12)),
                     child: InkWell(
                       onLongPress: () {
-                        if (EnvConfig.isDevelop) {
+                        if (EnvConfig.isTest) {
                           Navigator.pushNamed(context, TestRouter.mainPage);
                         }
                       },

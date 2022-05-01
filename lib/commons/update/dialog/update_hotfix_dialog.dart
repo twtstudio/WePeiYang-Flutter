@@ -45,7 +45,7 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
 
     Future<void> ok() async {
       await HotFixManager.restartApp();
-      manager.setIdle();
+      if (!manager.version.isForced) manager.setIdle();
     }
 
     Widget buttons;
@@ -59,10 +59,10 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
       );
     } else {
       buttons = WbyDialogStandardTwoButton(
-        cancel: cancel,
-        ok: ok,
-        cancelText: "稍后重启",
-        okText: "立刻重启",
+        first: cancel,
+        second: ok,
+        firstText: "稍后重启",
+        secondText: "立刻重启",
       );
     }
 
@@ -78,7 +78,6 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.verticalPadding),
               UpdateTitle(),
               SizedBox(height: size.dialogWidth * 0.04),
               messageRow,
@@ -93,6 +92,6 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
       ],
     );
 
-    return WbyDialogLayout(child: column, padding: false);
+    return WbyDialogLayout(child: column, bottomPadding: false);
   }
 }

@@ -23,8 +23,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
 
-  //final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/origin/';
-
   @override
   Widget build(BuildContext context) {
     timeDilation = 0.5;

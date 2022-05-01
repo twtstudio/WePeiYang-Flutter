@@ -56,31 +56,35 @@ class WbyDialogButton extends StatelessWidget {
 }
 
 class WbyDialogStandardTwoButton extends StatelessWidget {
-  final VoidCallback cancel;
-  final VoidCallback ok;
-  final String cancelText;
-  final String okText;
+  final VoidCallback first;
+  final VoidCallback second;
+  final String firstText;
+  final String secondText;
+  final ButtonType firstType;
+  final ButtonType secondType;
 
-  const WbyDialogStandardTwoButton(
-      {Key? key,
-      required this.cancel,
-      required this.ok,
-      required this.cancelText,
-      required this.okText})
-      : super(key: key);
+  const WbyDialogStandardTwoButton({
+    Key? key,
+    required this.first,
+    required this.second,
+    required this.firstText,
+    required this.secondText,
+    this.firstType = ButtonType.light,
+    this.secondType = ButtonType.dark,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final cancelButton = WbyDialogButton(
-      onTap: cancel,
-      text: cancelText,
-      type: ButtonType.light,
+    final firstButton = WbyDialogButton(
+      onTap: first,
+      text: firstText,
+      type: firstType,
     );
 
-    final okButton = WbyDialogButton(
-      onTap: ok,
-      text: okText,
-      type: ButtonType.dark,
+    final secondButton = WbyDialogButton(
+      onTap: second,
+      text: secondText,
+      type: secondType,
     );
 
     return Column(
@@ -88,8 +92,8 @@ class WbyDialogStandardTwoButton extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            cancelButton,
-            okButton,
+            firstButton,
+            secondButton,
           ],
         ),
       ],

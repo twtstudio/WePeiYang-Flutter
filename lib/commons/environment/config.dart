@@ -1,5 +1,7 @@
 ﻿// @dart = 2.12
 
+import 'package:flutter/foundation.dart';
+
 /// 动态打包配置
 class EnvConfig {
   static void init() {
@@ -15,25 +17,27 @@ class EnvConfig {
         : "https://qnhdpic.twt.edu.cn/";
   }
 
-  static bool get isDevelop =>
-      ENVIRONMENT == "DEVELOP";
+  static bool get isDevelop => ENVIRONMENT == "DEVELOP";
 
-  /// 测试版还是正式版 "RELEASE", "DEVELOP"（默认）, "ONLINE_TEST"
+  static bool get isTest =>
+      ENVIRONMENT == "ONLINE_TEST" || isDevelop || kDebugMode;
+
+  /// 测试版还是正式版 "RELEASE", "DEVELOP", "ONLINE_TEST"（默认）
   static const ENVIRONMENT = String.fromEnvironment(
     "ENVIRONMENT",
-    defaultValue: "ONLINE_TEST",
+    defaultValue: "RELEASE",
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSION = String.fromEnvironment(
     "VERSION",
-    defaultValue: "4.3.0",
+    defaultValue: "4.3.5",
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSIONCODE = int.fromEnvironment(
     "VERSIONCODE",
-    defaultValue: 100,
+    defaultValue: 105,
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"

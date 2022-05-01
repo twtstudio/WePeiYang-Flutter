@@ -11,7 +11,7 @@ class Logger {
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
     String line = _getFormatTime() + ' | ' + str;
     // 如果是测试版，就打印方便随时调试
-    if (EnvConfig.isDevelop || kDebugMode) {
+    if (EnvConfig.isTest) {
       parent.print(zone, line);
     }
     checkList();
@@ -31,7 +31,7 @@ class Logger {
       '----------------------------------------------------------------------'
     ];
     // 如果是测试版，就打印方便随时调试
-    if (EnvConfig.isDevelop || kDebugMode) {
+    if (EnvConfig.isTest) {
       for (String line in lines) debugPrint(line);
     }
     checkList();

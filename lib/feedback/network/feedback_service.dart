@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
-  var headers = {};
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -43,9 +42,7 @@ class FeedbackDio extends DioAbstract {
 
 class FeedbackPicPostDio extends DioAbstract {
   @override
-  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
-  //String baseUrl = EnvConfig.QNHDPIC;
-  var headers = {};
+  String baseUrl = EnvConfig.QNHDPIC;
 
   @override
   List<InterceptorsWrapper> interceptors = [

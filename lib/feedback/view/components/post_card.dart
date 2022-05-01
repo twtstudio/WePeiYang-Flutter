@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -70,8 +71,7 @@ class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
 
-  //final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
-  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
+  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
 
   _PostCardState(this.post);
 

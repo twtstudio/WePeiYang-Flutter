@@ -59,7 +59,6 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =

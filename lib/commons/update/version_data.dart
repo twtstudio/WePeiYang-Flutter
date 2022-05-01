@@ -89,9 +89,9 @@ class Version {
         soName;
   }
 
-  String get apkUrl => "${UpdateService.BASEURL}downloadFile/1$path";
+  String get apkUrl => "${UpdateService.BASEURL}downloadFile/$path";
 
-  String get zipUrl => "${UpdateService.BASEURL}downloadFile/1$flutterFixSo";
+  String get zipUrl => "${UpdateService.BASEURL}downloadFile/$flutterFixSo";
 
   bool operator <(Version? other) {
     return this.versionCode < (other?.versionCode ?? 0);

@@ -26,7 +26,7 @@ class UpdateInstallDialog extends StatelessWidget {
 
     void ok() {
       InstallManager.install(manager.version.apkPath);
-      manager.setIdle();
+      if (!manager.version.isForced) manager.setIdle();
     }
 
     Widget buttons;
@@ -40,10 +40,10 @@ class UpdateInstallDialog extends StatelessWidget {
       );
     } else {
       buttons = WbyDialogStandardTwoButton(
-        cancel: cancel,
-        ok: ok,
-        cancelText: "稍后安装",
-        okText: "立刻安装",
+        first: cancel,
+        second: ok,
+        firstText: "稍后安装",
+        secondText: "立刻安装",
       );
     }
 
@@ -59,7 +59,6 @@ class UpdateInstallDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.verticalPadding),
               UpdateTitle(),
               SizedBox(height: size.verticalPadding),
               UpdateDetail(),
@@ -72,6 +71,6 @@ class UpdateInstallDialog extends StatelessWidget {
       ],
     );
 
-    return WbyDialogLayout(child: column, padding: false);
+    return WbyDialogLayout(child: column, bottomPadding: false);
   }
 }

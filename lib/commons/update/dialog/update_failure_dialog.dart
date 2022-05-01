@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
@@ -26,40 +28,83 @@ class UpdateFailureDialog extends StatelessWidget {
     void retry() {
       // 弹出进度对话框
       UpdateDialog.progress.show();
-      context.read<UpdateManager>().setDownload(forced: true);
+      context.read<UpdateManager>().setDownload();
     }
 
     void goToMarket() {
       InstallManager.goToMarket();
     }
 
+    void goToWeb() {
+      launch("https://mobile.twt.edu.cn/wpy/index.html");
+    }
+
     Widget buttons;
 
     if (manager.version.isForced) {
-      buttons = WbyDialogStandardTwoButton(
-        cancel: goToMarket,
-        ok: retry,
-        cancelText: '前往应用市场',
-        okText: '重试',
+      buttons = Column(
+        children: InstallManager.canGoToMarket
+            ? [
+                WbyDialogStandardTwoButton(
+                  first: goToWeb,
+                  second: goToMarket,
+                  firstText: '前往网页下载',
+                  secondText: '前往应用市场',
+                  secondType: ButtonType.light,
+                ),
+                SizedBox(height: size.verticalPadding),
+                WbyDialogButton(
+                  onTap: retry,
+                  text: '重试',
+                  type: ButtonType.dark,
+                  expand: true,
+                ),
+              ]
+            : [
+                WbyDialogStandardTwoButton(
+                  first: goToWeb,
+                  second: retry,
+                  firstText: '前往网页下载',
+                  secondText: '重试',
+                ),
+              ],
       );
     } else {
       // 如果不是强制更新，那么就可以现在不更新
       buttons = Column(
-        children: [
-          WbyDialogStandardTwoButton(
-            cancel: cancel,
-            ok: retry,
-            cancelText: '稍后更新',
-            okText: '重试',
-          ),
-          SizedBox(height: size.verticalPadding),
-          WbyDialogButton(
-            onTap: goToMarket,
-            text: '前往应用市场',
-            type: ButtonType.dark,
-            expand: true,
-          ),
-        ],
+        children: InstallManager.canGoToMarket
+            ? [
+                WbyDialogStandardTwoButton(
+                  first: goToWeb,
+                  second: goToMarket,
+                  firstText: '前往网页下载',
+                  secondText: '前往应用市场',
+                  secondType: ButtonType.light,
+                ),
+                SizedBox(height: size.verticalPadding),
+                WbyDialogStandardTwoButton(
+                  first: cancel,
+                  second: retry,
+                  firstText: '稍后更新',
+                  secondText: '重试',
+                ),
+              ]
+            : [
+                WbyDialogStandardTwoButton(
+                  first: goToWeb,
+                  second: cancel,
+                  firstText: '前往网页下载',
+                  secondText: '稍后更新',
+                  secondType: ButtonType.light,
+                ),
+                SizedBox(height: size.verticalPadding),
+                WbyDialogButton(
+                  onTap: retry,
+                  text: '重试',
+                  type: ButtonType.dark,
+                  expand: true,
+                ),
+              ],
       );
     }
 
@@ -85,7 +130,6 @@ class UpdateFailureDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.verticalPadding),
               UpdateTitle(),
               SizedBox(height: size.verticalPadding),
               UpdateDetail(),
@@ -96,9 +140,10 @@ class UpdateFailureDialog extends StatelessWidget {
             ],
           ),
         ),
+        TodayShowAgainCheck(tap: cancel),
       ],
     );
 
-    return WbyDialogLayout(child: column);
+    return WbyDialogLayout(child: column, bottomPadding: false);
   }
 }

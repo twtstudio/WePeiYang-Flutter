@@ -30,6 +30,7 @@ class UpdateManager extends UpdateStatusListener {
   bool _auto = false;
 
   Future<void> checkUpdate({bool auto = true}) async {
+    // ToastProvider.running("$status");
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
@@ -55,6 +56,8 @@ class UpdateManager extends UpdateStatusListener {
 
         debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
         debugPrint("remoteVersionCode ${v.versionCode}");
+
+        await InstallManager.getCanGoToMarket();
 
         if (v.versionCode <= EnvConfig.VERSIONCODE) {
           // 如果新获取到的版本不高于现在的版本，那么就不更新
@@ -88,6 +91,9 @@ class UpdateManager extends UpdateStatusListener {
         // 正在加载也显示进度
         UpdateDialog.progress.show();
         break;
+      case UpdateStatus.error:
+        UpdateDialog.failure.show();
+        break;
     }
   }
 
@@ -114,8 +120,8 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   @override
-  setDownload({bool forced = false}) {
-    if (status.isDownload && !forced) return;
+  setDownload() {
+    if (status.isDownload) return;
     super.setDownload();
 
     // 设置下载进度为0
@@ -134,7 +140,7 @@ class UpdateManager extends UpdateStatusListener {
   @override
   setIdle() {
     // 如果是强制更新，就不能退出，必须更新完毕
-    if (status.isIdle || version.isForced) return;
+    if (status.isIdle) return;
     super.setIdle();
     // 设置下载进度为0
     progress = 0;
@@ -152,6 +158,7 @@ class UpdateManager extends UpdateStatusListener {
   /// 通过替换libapp.so文件实现热更新
   void _updateByHotfix() {
     void _updateByHotfixError() {
+      setError();
       // TODO: 再考虑下
       // 热修复失败，设置为不能使用热修复更新
       _version.canHotFix = false;
@@ -161,7 +168,7 @@ class UpdateManager extends UpdateStatusListener {
         UpdateDialog.message.show();
       } else {
         // 如果不是自动更新，则此时应该是热修复失败，自动继续使用apk更新
-        setDownload(forced: true);
+        setDownload();
       }
     }
 
@@ -215,8 +222,7 @@ class UpdateManager extends UpdateStatusListener {
   /// 只有人手动选择通过apk更新，才会下载apk，所以如果更新失败，就弹出弹窗
   void _updateByApk() {
     void _updateByApkError() async {
-      // 前往应用市场下载或重试
-      await InstallManager.getCanGoToMarket();
+      setError();
       UpdateDialog.failure.show();
     }
 

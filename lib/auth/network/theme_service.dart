@@ -94,13 +94,15 @@ class ThemeService with AsyncTimer {
       name: '海棠季皮肤',
       description: '是海棠季皮肤喵',
       mainPageImage:
-          'https://qnhdpic.twt.edu.cn/download/origin/0096c030ab5c8948479c0d0e36b9577b.png',
+          'EnvConfig.QNHDPICdownload/origin/0096c030ab5c8948479c0d0e36b9577b.png',
       schedulePageImage:
-          'https://qnhdpic.twt.edu.cn/download/origin/4dc1b6aef63c44c9d1af33ce7311b389.png',
+          'EnvConfig.QNHDPICdownload/origin/4dc1b6aef63c44c9d1af33ce7311b389.png',
       selfPageImage:
-          'https://qnhdpic.twt.edu.cn/download/origin/b7edb6c12ddde1f3156b2a447aa00e2e.png',
-      gpaImageInner: 'https://qnhdpic.twt.edu.cn/download/origin/6034d9dbb59306e57ebf92b665957936.png',
-      gpaImageOuter: 'https://qnhdpic.twt.edu.cn/download/origin/e9e505986880253cace8b9b114353f7b.png',
+          'EnvConfig.QNHDPICdownload/origin/b7edb6c12ddde1f3156b2a447aa00e2e.png',
+      gpaImageInner:
+          'EnvConfig.QNHDPICdownload/origin/6034d9dbb59306e57ebf92b665957936.png',
+      gpaImageOuter:
+          'EnvConfig.QNHDPICdownload/origin/e9e505986880253cace8b9b114353f7b.png',
       colorA: Color.fromRGBO(245, 224, 238, 1.0).value,
       colorB: Color.fromRGBO(221, 182, 190, 1.0).value,
       colorC: Color.fromRGBO(236, 206, 217, 1.0).value,

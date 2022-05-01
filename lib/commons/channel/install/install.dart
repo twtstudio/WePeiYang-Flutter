@@ -4,7 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class InstallManager {
   static const _channel = MethodChannel('com.twt.service/install');
-  static late bool canGoToMarket = false;
+  static bool canGoToMarket = false;
 
   static void install(String apkName) {
     var argument = {'path': apkName};

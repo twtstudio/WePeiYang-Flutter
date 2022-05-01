@@ -7,17 +7,17 @@ import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
 class RequestPushDialog extends StatelessWidget {
-  RequestPushDialog({Key? key}) : super(key: key);
+  const RequestPushDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = DialogSize.getSize(context);
 
     final buttons = WbyDialogStandardTwoButton(
-      cancel: context.read<PushManager>().closeDialogAndTurnOffPush,
-      ok: context.read<PushManager>().closeDialogAndRetryTurnOnPush,
-      cancelText: "取消",
-      okText: "打开",
+      first: context.read<PushManager>().closeDialogAndTurnOffPush,
+      second: context.read<PushManager>().closeDialogAndRetryTurnOnPush,
+      firstText: "取消",
+      secondText: "打开",
     );
 
     final message = Text(

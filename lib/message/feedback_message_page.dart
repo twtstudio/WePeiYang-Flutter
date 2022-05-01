@@ -424,8 +424,7 @@ class LikeMessageItem extends StatefulWidget {
 class _LikeMessageItemState extends State<LikeMessageItem> {
   Post post;
 
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
   @override
   void initState() {
@@ -792,7 +791,7 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
+  final String baseUrl = 'EnvConfig.QNHDPICdownload/thumb/';
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -1152,8 +1151,7 @@ class ReplyMessageItem extends StatefulWidget {
 }
 
 class _ReplyMessageItemState extends State<ReplyMessageItem> {
-  //final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
-  final String baseUrl = 'https://qnhdpic.twt.edu.cn/download/thumb/';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
   @override
   Widget build(BuildContext context) {

@@ -53,14 +53,6 @@ import 'lounge/server/hive_manager.dart';
 /// [UmengSdk.setPageCollectionModeManual]开启埋点
 
 void main() async {
-  debugPrint = (message, {wrapWidth}) {
-    Logger.checkList();
-    Logger.logs.add(message);
-    if (EnvConfig.isDevelop || kDebugMode) {
-      print(message);
-    }
-  };
-
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     // 初始化环境变量
@@ -78,8 +70,17 @@ void main() async {
           .trimRight();
       Zone.current.handleUncaughtError(text, null);
     };
+
+    // 初始化sharePreference
     await CommonPreferences.initPrefs();
+    // 初始化Connectivity
     await NetStatusListener.init();
+    // 修改debugPrint
+    debugPrint = (message, {wrapWidth}) {
+      print(message);
+    };
+
+    // ？
     (DateTime.now().toLocal().isAfter(DateTime(2022, 3, 27)) &&
                 DateTime.now().toLocal().isBefore(DateTime(2022, 3, 28))) ||
             (DateTime.now().toLocal().month == 12 &&

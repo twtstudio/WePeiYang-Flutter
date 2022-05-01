@@ -51,7 +51,7 @@ class _HotCardState extends State<HotCard> {
       //     image: DecorationImage(
       //         alignment: Alignment.centerRight,
       //         image: NetworkImage(
-      //             'https://qnhdpic.twt.edu.cn/download/origin/792172dd53ac79bda86a2859a912cde0.jpeg'),
+      //             'EnvConfig.QNHDPICdownload/origin/792172dd53ac79bda86a2859a912cde0.jpeg'),
       //         fit: BoxFit.contain)),
       // child: Container(
         margin: EdgeInsets.fromLTRB(14, 12, 14, 2),
