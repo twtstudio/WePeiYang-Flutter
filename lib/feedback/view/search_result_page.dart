@@ -51,8 +51,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
   int currentPage = 1, totalPage = 1;
   SearchPageStatus status;
 
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController;
+  ScrollController _sc;
 
   List<Post> _list = [];
 
@@ -109,6 +109,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
   void initState() {
     super.initState();
     status = SearchPageStatus.loading;
+    _refreshController = RefreshController(initialRefresh: false);
+    _sc = ScrollController();
     currentPage = 1;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FeedbackService.getPosts(
@@ -147,12 +149,26 @@ class _SearchResultPageState extends State<SearchResultPage> {
             Navigator.pop(context, true);
           },
         ),
-        title: Text(
-          title,
-          style: FontManager.YaHeiRegular.copyWith(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: ColorUtil.boldTextColor,
+        title: GestureDetector(
+          onTap: () {
+            if (_sc.offset > 1000) {
+              _sc.jumpTo(800);
+              _refreshController.requestRefresh();
+            } else
+              _sc.animateTo(-180,
+                  duration: Duration(milliseconds: 600),
+                  curve: Curves.easeInOut);
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              title,
+              style: FontManager.YaHeiRegular.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorUtil.boldTextColor,
+              ),
+            ),
           ),
         ),
         actions: [
@@ -197,22 +213,30 @@ class _SearchResultPageState extends State<SearchResultPage> {
       case SearchPageStatus.idle:
         if (_list.isNotEmpty) {
           body = SmartRefresher(
-            controller: _refreshController,
-            header: ClassicHeader(),
-            enablePullDown: true,
-            onRefresh: _onRefresh,
-            footer: ClassicFooter(),
-            enablePullUp: true,
-            onLoading: _onLoading,
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                Widget post = PostCard.simple(_list[index]);
-
-                return post;
-              },
-              itemCount: _list.length,
-            ),
-          );
+              controller: _refreshController,
+              header: ClassicHeader(),
+              enablePullDown: true,
+              onRefresh: _onRefresh,
+              footer: ClassicFooter(),
+              enablePullUp: true,
+              onLoading: _onLoading,
+              child: ListView.custom(
+                key: Key('searchResultView'),
+                physics: BouncingScrollPhysics(),
+                controller: _sc,
+                childrenDelegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    Widget post = PostCard.simple(_list[index]);
+                    return post;
+                  },
+                  childCount: _list.length,
+                  findChildIndexCallback: (key) {
+                    final ValueKey<String> valueKey = key;
+                    return _list
+                        .indexWhere((m) => 'srm-${m.id}' == valueKey.value);
+                  },
+                ),
+              ));
         } else {
           body = Center(
             child: Text(

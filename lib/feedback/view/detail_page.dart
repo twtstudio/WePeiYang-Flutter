@@ -68,6 +68,7 @@ class _DetailPageState extends State<DetailPage>
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
+    _commentList.clear();
     _initPostAndComments(
       onSuccess: (comments) {
         _commentList = comments;
@@ -241,88 +242,81 @@ class _DetailPageState extends State<DetailPage>
         );
       }
     } else if (status == DetailPageStatus.idle) {
-      Widget contentList = ListView.custom(
-        key: Key('messageListView'),
-        controller: _controller,
-        childrenDelegate: SliverChildBuilderDelegate(
-          (context, i) {
-            if (i == 0) {
-              return Column(
-                children: [
-                  PostCard.detail(post),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                            '回复 ' + post.commentCount.toString(),
-                            style:
-                                TextUtil.base.ProductSans.black2A.medium.sp(18),
-                          ),
+      Widget contentList = ListView.builder(
+        itemBuilder: (BuildContext context, int i) {
+          if (i == 0) {
+            return Column(
+              children: [
+                PostCard.detail(post),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          '回复 ' + post.commentCount.toString(),
+                          style:
+                              TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
-                      ]),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //topCard,
-                ],
-              );
-            }
-            i--;
+                      ),
+                    ]),
+                SizedBox(
+                  height: 10,
+                ),
+                //topCard,
+              ],
+            );
+          }
+          i--;
 
-            if (i < _officialCommentList.length) {
-              if (i > 2) i--;
-              var data = _officialCommentList[i];
-              var list = _officialCommentList;
-              return i == 0
-                  ? OfficialReplyCard.reply(
-                      tag: post.department.name ?? '',
-                      comment: data,
-                      placeAppeared: i,
-                      ratings: post.rating,
-                      ancestorId: post.uid,
-                      detail: false,
-                      onContentPressed: (refresh) async {
-                        refresh.call(list);
-                      },
-                    )
-                  : i == 1
-              ///楼中楼显示
-                      ? OfficialReplyCard.subFloor(
-                          tag: "",
-                          comment: data,
-                          placeAppeared: i,
-                          ratings: post.rating,
-                          ancestorId: post.uid,
-                          detail: true,
-                          onContentPressed: (refresh) async {
-                            refresh.call(list);
-                          },
-                        )
-                      : SizedBox(width: 0, height: 0);
-            } else {
-              var data = _commentList[i - _officialCommentList.length];
-              return NCommentCard(
-                uid: post.uid,
-                comment: data,
-                ancestorUId: post.id,
-                commentFloor: i + 1,
-                isSubFloor: false,
-                isFullView: false,
-              );
-            }
-          },
-          childCount: _officialCommentList.length + _commentList.length + 1,
-          findChildIndexCallback: (key) {
-            final ValueKey<String> valueKey = key;
-            return _commentList
-                .indexWhere((m) => 'message-${m.id}' == valueKey.value);
-          },
-        ),
+          if (i < _officialCommentList.length) {
+            if (i > 2) i--;
+            var data = _officialCommentList[i];
+            var list = _officialCommentList;
+            return i == 0
+                ? OfficialReplyCard.reply(
+                    tag: post.department.name ?? '',
+                    comment: data,
+                    placeAppeared: i,
+                    ratings: post.rating,
+                    ancestorId: post.uid,
+                    detail: false,
+                    onContentPressed: (refresh) async {
+                      refresh.call(list);
+                    },
+                  )
+                : i == 1
+
+                    ///楼中楼显示
+                    ? OfficialReplyCard.subFloor(
+                        tag: "",
+                        comment: data,
+                        placeAppeared: i,
+                        ratings: post.rating,
+                        ancestorId: post.uid,
+                        detail: true,
+                        onContentPressed: (refresh) async {
+                          refresh.call(list);
+                        },
+                      )
+                    : SizedBox(width: 0, height: 0);
+          } else {
+            var data = _commentList[i - _officialCommentList.length];
+            return NCommentCard(
+              uid: post.uid,
+              comment: data,
+              ancestorUId: post.id,
+              commentFloor: i + 1,
+              isSubFloor: false,
+              isFullView: false,
+            );
+          }
+        },
+        controller: _controller,
+        itemCount: _officialCommentList.length + _commentList.length + 1,
       );
 
       Widget mainList = NotificationListener<ScrollNotification>(
@@ -518,7 +512,8 @@ class _DetailPageState extends State<DetailPage>
                       .read<LakeModel>()
                       .lakeAreas[context
                           .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab].id]
+                          .tabList[context.read<LakeModel>().currentTab]
+                          .id]
                       .refreshController
                       .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);
@@ -566,7 +561,9 @@ class _DetailPageState extends State<DetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor:CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value): ColorUtil.greyF7F8Color,
+      backgroundColor: CommonPreferences().isSkinUsed.value
+          ? Color(CommonPreferences().skinColorB.value)
+          : ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
@@ -593,10 +590,13 @@ class _DetailPageState extends State<DetailPage>
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, post);
+
         return true;
       },
       child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences().isSkinUsed.value
+            ? Color(CommonPreferences().skinColorB.value)
+            : ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),

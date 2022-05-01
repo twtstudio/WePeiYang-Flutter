@@ -59,6 +59,9 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
+  ScrollController _sc;
+
+  //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -439,26 +442,35 @@ class _NCommentCardState extends State<NCommentCard>
 
     var subFloor;
     if (widget.comment.subFloors != null && !widget.isSubFloor) {
-      subFloor = ListView.builder(
+      subFloor = ListView.custom(
+        key: Key('nCommentCardView'),
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: widget.isFullView
-            ? widget.comment.subFloorCnt
-            : widget.comment.subFloorCnt > 4
-                ? 4
-                : min(widget.comment.subFloorCnt,
-                    widget.comment.subFloors.length),
-        itemBuilder: (context, index) {
-          return NCommentCard(
-            uid: widget.uid,
-            ancestorName: widget.comment.nickname,
-            ancestorUId: widget.comment.id,
-            comment: widget.comment.subFloors[index],
-            commentFloor: index + 1,
-            isSubFloor: true,
-            isFullView: widget.isFullView,
-          );
-        },
+        controller: _sc,
+        childrenDelegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return NCommentCard(
+              uid: widget.uid,
+              ancestorName: widget.comment.nickname,
+              ancestorUId: widget.comment.id,
+              comment: widget.comment.subFloors[index],
+              commentFloor: index + 1,
+              isSubFloor: true,
+              isFullView: widget.isFullView,
+            );
+          },
+          childCount: widget.isFullView
+              ? widget.comment.subFloorCnt
+              : widget.comment.subFloorCnt > 4
+                  ? 4
+                  : min(widget.comment.subFloorCnt,
+                      widget.comment.subFloors.length),
+          findChildIndexCallback: (key) {
+            final ValueKey<String> valueKey = key;
+            return widget.comment.subFloors
+                .indexWhere((m) => 'ncm-${m.id}' == valueKey.value);
+          },
+        ),
       );
     }
 
@@ -569,9 +581,11 @@ class _NCommentCardState extends State<NCommentCard>
                     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorE.value):widget.isFullView && widget.isSubFloor
-                          ? Colors.transparent
-                          : Colors.white,
+                      color: CommonPreferences().isSkinUsed.value
+                          ? Color(CommonPreferences().skinColorE.value)
+                          : widget.isFullView && widget.isSubFloor
+                              ? Colors.transparent
+                              : Colors.white,
                       boxShadow: [
                         widget.isFullView && widget.isSubFloor
                             ? BoxShadow(color: Colors.transparent)

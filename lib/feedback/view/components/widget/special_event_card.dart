@@ -2,7 +2,6 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-//北洋热搜
 class SpecialEventCard extends StatefulWidget {
   @override
   _SpecialEventCardState createState() => _SpecialEventCardState();
