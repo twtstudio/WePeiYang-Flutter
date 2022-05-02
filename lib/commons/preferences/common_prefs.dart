@@ -48,6 +48,7 @@ class CommonPreferences {
 
   // 1 -> 按时间排序; 2 -> 按热度排序
   var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
+  var feedbackFloorSortType = PrefsBean<int>("feedbackFloorSortType", 0);
   var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
   var isFirstLogin = PrefsBean<bool>("firstLogin", true);
 

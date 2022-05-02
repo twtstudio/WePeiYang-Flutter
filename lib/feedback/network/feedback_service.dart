@@ -423,6 +423,8 @@ class FeedbackService with AsyncTimer {
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
+    @required order,
+    @required onlyOwner,
     @required void Function(List<Floor> commentList, int totalPage) onSuccess,
     @required OnFailure onFailure,
     @required int page,
@@ -434,6 +436,8 @@ class FeedbackService with AsyncTimer {
           'post_id': '$id',
           'page': '$page',
           'page_size': '10',
+          'order': '$order',
+          'only_owner': '$onlyOwner'
         },
       );
       List<Floor> commentList = [];

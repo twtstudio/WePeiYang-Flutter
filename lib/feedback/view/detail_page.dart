@@ -55,6 +55,8 @@ class _DetailPageState extends State<DetailPage>
   int currentPage = 1;
   int rating = 0;
   Widget topCard;
+  final onlyOwner = ValueNotifier<int>(0);
+  final order = ValueNotifier<int>(CommonPreferences().feedbackFloorSortType.value);
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -140,6 +142,10 @@ class _DetailPageState extends State<DetailPage>
         status = DetailPageStatus.idle;
       }
     });
+    order.addListener(() {
+      _refreshController.requestRefresh();
+      CommonPreferences().feedbackFloorSortType.value = order.value;
+    });
   }
 
   // 逻辑有点问题
@@ -181,6 +187,8 @@ class _DetailPageState extends State<DetailPage>
     FeedbackService.getComments(
       id: post.id,
       page: current ?? currentPage,
+      order: order.value,
+      onlyOwner: onlyOwner.value,
       onSuccess: (comments, totalFloor) {
         onSuccess?.call(comments);
         setState(() {});
@@ -261,6 +269,76 @@ class _DetailPageState extends State<DetailPage>
                           style:
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
+                      ),
+                      SizedBox(width: 100,),
+                      ValueListenableBuilder(
+                        valueListenable: onlyOwner,
+                        builder: (context, value, _) {
+                          return GestureDetector(
+                            onTap: () {
+                              onlyOwner.value = 1 - onlyOwner.value;
+                              _refreshController.requestRefresh();
+                            },
+                            child: value == 1 ? Container(
+                              decoration: BoxDecoration(
+                                color: ColorUtil.boldTag54,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: ColorUtil.boldTag54, //边框颜色
+                                  width: 1, //宽度
+                                ),
+                              ),
+                              child: Text('  只看楼主  ',
+                                  style: TextUtil.base.white.w500.sp(14)),
+                            ) : Container(
+                              decoration: BoxDecoration(
+                                color: ColorUtil.whiteF8Color,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: ColorUtil.boldTag54, //边框颜色
+                                  width: 1, //宽度
+                                ),
+                              ),
+                              child: Text('  只看楼主  ',
+                                  style: TextUtil.base.black2A.w500.sp(14)),
+                            ),
+                          );
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(right: 20),
+                        child: PopupMenuButton(
+                            shape: RacTangle(),
+                            offset: Offset(0, 0),
+                            child: Image.asset(
+                              'assets/images/lake_butt_icons/menu.png',
+                              width: 20,
+                            ),
+                            onSelected: (value) async {
+                              if (value == "时间正序") {
+                                order.value = 1;
+                              } else if (value == '时间倒序') {
+                                order.value = 0;
+                              }
+                            },
+                            itemBuilder: (context) {
+                              return <PopupMenuItem<String>>[
+                                PopupMenuItem<String>(
+                                  value: '时间正序',
+                                  child: Center(
+                                    child: Text('    时间正序',
+                                        style: order.value == 1 ? TextUtil.base.black2A.w700.sp(14) : TextUtil.base.black2A.w500.sp(14)),
+                                  ),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: '时间倒序',
+                                  child: Center(
+                                    child: Text('    时间倒序',
+                                        style: order.value == 0 ? TextUtil.base.black2A.w700.sp(14) : TextUtil.base.black2A.w500.sp(14)),
+                                  ),
+                                ),
+                              ];
+                            }),
                       ),
                     ]),
                 SizedBox(
@@ -590,7 +668,6 @@ class _DetailPageState extends State<DetailPage>
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, post);
-
         return true;
       },
       child: Scaffold(
