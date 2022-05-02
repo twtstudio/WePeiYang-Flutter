@@ -92,17 +92,29 @@ class _NewPostPageState extends State<NewPostPage> {
                           shape: BoxShape.rectangle,
                         )
                       : BoxDecoration(),
-                  margin: widget.args.isFollowing ? const EdgeInsets.only(right: 20, top: 4, bottom: 10) : EdgeInsets.zero,
-                  padding: widget.args.isFollowing ? const EdgeInsets.fromLTRB(22, 10, 22, 10) : EdgeInsets.zero,
+                  margin: widget.args.isFollowing
+                      ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
+                      : EdgeInsets.zero,
+                  padding: widget.args.isFollowing
+                      ? const EdgeInsets.fromLTRB(22, 10, 22, 10)
+                      : EdgeInsets.zero,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.args.isFollowing ? Text('跟帖:', style: TextUtil.base.NotoSansSC.w500.sp(14).black2A) : LakeSelector(),
+                        widget.args.isFollowing
+                            ? Text('跟帖:',
+                                style: TextUtil.base.NotoSansSC.w500
+                                    .sp(14)
+                                    .black2A)
+                            : LakeSelector(),
                         SizedBox(height: 6),
                         Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: widget.args.isFollowing
-                              ? Text('${widget.args.tagName}'.substring(3), style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                              ? Text('${widget.args.tagName}'.substring(3),
+                                  style: TextUtil.base.NotoSansSC.w500
+                                      .sp(14)
+                                      .black2A)
                               : departmentTagView(postTypeNotifier),
                         ),
                       ])),
@@ -196,6 +208,11 @@ class _LakeSelectorState extends State<LakeSelector> {
                                         onTap: () {
                                           notifier.value =
                                               tabList[index + 1].id;
+
+                                          ///在切换发帖区时，要清空department，不然就会导致参数问题
+                                          context
+                                              .read<NewPostProvider>()
+                                              .department = null;
                                         },
                                         child: SizedBox(
                                           height: 58,
@@ -327,8 +344,8 @@ class SubmitButton extends StatelessWidget {
                 tagId: args.isFollowing
                     ? args.tagId
                     : dataModel.tag == null
-                    ? ''
-                    : dataModel.tag.id,
+                        ? ''
+                        : dataModel.tag.id,
                 departmentId:
                     dataModel.department == null ? '' : dataModel.department.id,
                 images: images,

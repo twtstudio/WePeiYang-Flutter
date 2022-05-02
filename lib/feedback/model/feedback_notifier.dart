@@ -11,7 +11,7 @@ class NewPostProvider {
   Tag tag = Tag();
 
   List<File> images = [];
-
+  ///标题非空且内容非空为必要，非校务贴或者校务贴时部门不能为空
   bool get check =>
       title.isNotEmpty &&
       content.isNotEmpty && ((type == 1 && department != null) || (type != 1));

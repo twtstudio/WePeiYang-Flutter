@@ -273,21 +273,27 @@ class _PostCardState extends State<PostCard> {
         },
         onTap: () async {
           if (widget.type == PostCardType.simple) {
-            await FeedbackService.visitPost(
-              id: post.id,
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            );
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: post,
-            ).then((p) {
-              setState(() {
-                post = p;
+            ///不然点击事件的回调根本用不到啊啊啊啊
+            if (widget.onContentPressed == null) {
+              await FeedbackService.visitPost(
+                id: post.id,
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              ).then((p) {
+                setState(() {
+                  post = p;
+                });
               });
-            });
+            } else {
+              ///上面判过空，所以就不做空安全了XD
+              widget.onContentPressed.call();
+            }
           }
         },
         child: SizedBox(

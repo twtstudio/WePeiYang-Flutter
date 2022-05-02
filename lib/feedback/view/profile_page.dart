@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_head
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import '../feedback_router.dart';
 import 'components/post_card.dart';
 import 'components/profile_header.dart';
 
@@ -212,8 +213,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    //这两个被拆出去单写会刷新错误..
-    //postList栏，为空时显示无
+    ///这两个被拆出去单写会刷新错误..
+    ///postList栏，为空时显示无
     var postLists = (ListView.builder(
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
@@ -224,6 +225,15 @@ class _ProfilePageState extends State<ProfilePage> {
           onContentLongPressed: () => _deletePostOnLongPressed(index),
           showBanner: true,
           key: ValueKey(_postList[index].id),
+          onContentPressed: () {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.detail,
+              arguments: _postList[index],
+            ).then((p) {
+              _refreshController.requestRefresh();
+            });
+          },
         );
         return post;
       },
@@ -245,9 +255,9 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       );
     }
-    //收藏List栏，为空时显示无
-    var favLists = (
-        ListView.builder(
+
+    ///收藏List栏，为空时显示无
+    var favLists = (ListView.builder(
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,

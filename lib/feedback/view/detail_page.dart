@@ -522,7 +522,7 @@ class _DetailPageState extends State<DetailPage>
                       .refreshController
                       .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.pop(context);
+                  Navigator.of(context).pop(post);
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
