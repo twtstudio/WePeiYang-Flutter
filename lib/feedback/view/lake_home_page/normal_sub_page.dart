@@ -316,7 +316,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 ind--;
                 if (index == 0 && ind == 0) return HotCard();
                 if (index == 0) ind--;
-                if (ind == 0) return ActivityCard();
+                if (ind == 0 &&
+                    context.read<FestivalProvider>().festivalList.length > 0)
+                  return ActivityCard();
                 ind--;
                 final post = context
                     .read<LakeModel>()

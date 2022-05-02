@@ -166,7 +166,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   indicatorPadding: EdgeInsets.only(bottom: 10),
                   labelPadding: EdgeInsets.zero,
                   isScrollable: false,
-                  physics: BouncingScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   labelColor: ColorUtil.black2AColor,
                   labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
@@ -185,7 +185,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             ),
           ),
         ),
-        body: TabBarView(controller: _tabController, children: wd));
+        body: TabBarView(physics: NeverScrollableScrollPhysics(), controller: _tabController, children: wd));
   }
 }
 

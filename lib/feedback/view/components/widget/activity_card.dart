@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/haitang_page.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import '../../../feedback_router.dart';
 
@@ -70,8 +70,8 @@ class _ActivityCardState extends State<ActivityCard> {
             borderRadius: BorderRadius.all(Radius.circular(16)),
             clipBehavior: Clip.hardEdge,
             child: Swiper(
-              autoplay: true,
-              autoplayDelay: 4000,
+              autoplay: context.read<FestivalProvider>().festivalList.length != 1,
+              autoplayDelay: 5000,
               itemCount:
                   context.read<FestivalProvider>().festivalList.length == 0
                       ? 1

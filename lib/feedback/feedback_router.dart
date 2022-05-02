@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_notice_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/haitang_page.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 
 class FeedbackRouter {
   static String home = 'feedback/home';
