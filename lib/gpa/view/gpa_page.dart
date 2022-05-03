@@ -582,7 +582,7 @@ class _CourseListState extends State<CourseListWidget> {
                                 ),
                               ),
                               SizedBox(width: 10),
-                              Text('${courses[i].score.round()}',
+                              Text('${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
                                   style: FontManager.Montserrat.copyWith(
                                       fontSize: 26,
                                       color: widget.gpaColors[1],
