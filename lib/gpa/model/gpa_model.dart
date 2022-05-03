@@ -59,15 +59,18 @@ class GPACourse {
   String name; // 课程名称
   String classType; // 课程类别 （必修/选修/...）
   double score; // 课程成绩
+  String rawScore;
   double credit; // 课程学分
   double gpa; // 课程绩点
 
-  GPACourse(this.name, this.classType, this.score, this.credit, this.gpa);
+  GPACourse(this.name, this.classType, this.score, this.rawScore, this.credit,
+      this.gpa);
 
   GPACourse.fromJson(Map<String, dynamic> map)
       : name = map['name'],
         classType = map['classType'],
         score = map['score'],
+        rawScore = map['rawScore'],
         credit = map['credit'],
         gpa = map['gpa'];
 
@@ -75,6 +78,7 @@ class GPACourse {
         'name': name,
         'classType': classType,
         'score': score,
+        'rawScore': rawScore,
         'credit': credit,
         'gpa': gpa
       };
