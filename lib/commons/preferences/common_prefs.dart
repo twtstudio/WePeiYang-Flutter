@@ -17,6 +17,9 @@ class CommonPreferences {
     _instance._sharedPref = await SharedPreferences.getInstance();
   }
 
+  /// 第一次登录
+  var isFirstUse = PrefsBean<bool>('sFirstUse', true);
+
   /// 天外天账号系统
   var isLogin = PrefsBean<bool>('login');
   var token = PrefsBean<String>('token');

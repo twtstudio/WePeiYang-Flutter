@@ -60,7 +60,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   ///初次进入湖底的告示
-  firstInLake() async {
+  firstInLake() {
     final checkedNotifier = ValueNotifier(true);
     if (CommonPreferences().isFirstLogin.value) {
       showDialog(

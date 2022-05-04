@@ -108,6 +108,7 @@ flutter:
     - assets/images/account/4.0x/
     - assets/images/lake_butt_icons/
     - assets/images/begonia/
+    - privacy/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

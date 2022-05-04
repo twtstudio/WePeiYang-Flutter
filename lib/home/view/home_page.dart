@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   DateTime _lastPressedAt;
   TabController _tabController;
   final feedbackKey = GlobalKey<FeedbackHomePageState>();
+  final checkedNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -50,23 +53,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           });
         }
       });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // WbyFontLoader.initFonts();
-      context.read<PushManager>().initGeTuiSdk();
-      context.read<UpdateManager>().checkUpdate();
-      var hasReport = await reportDio.getTodayHasReported();
-      if (hasReport) {
-        CommonPreferences().reportTime.value = DateTime.now().toString();
-      } else {
-        CommonPreferences().reportTime.value = "";
-      }
-      // 检查当前是否有未处理的事件
-      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
-      // 友盟统计账号信息
-      UmengCommonSdk.onProfileSignIn(CommonPreferences().account.value);
-      // 刷新自习室数据
-      initLoungeFavourDataAtMainPage(context);
-    });
+
     ///检测愚人节
     if (DateTime.now().month == 4 &&
         DateTime.now().day == 1 &&
@@ -76,6 +63,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFoolGPA.value = true;
       CommonPreferences().isAprilFoolClass.value = true;
       CommonPreferences().isAprilFoolHead.value = true;
+
       ///如果不刷新GPA，就不会显示满绩
       Provider.of<GPANotifier>(context, listen: false)
           .refreshGPA(
@@ -97,6 +85,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences().isAprilFoolGen.value = true;
       CommonPreferences().isAprilFoolHead.value = false;
     }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // WbyFontLoader.initFonts();
+
+      context.read<PushManager>().initGeTuiSdk();
+      context.read<UpdateManager>().checkUpdate();
+      var hasReport = await reportDio.getTodayHasReported();
+      if (hasReport) {
+        CommonPreferences().reportTime.value = DateTime.now().toString();
+      } else {
+        CommonPreferences().reportTime.value = "";
+      }
+      // 检查当前是否有未处理的事件
+      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
+      // 友盟统计账号信息
+      UmengCommonSdk.onProfileSignIn(CommonPreferences().account.value);
+      // 刷新自习室数据
+      initLoungeFavourDataAtMainPage(context);
+    });
   }
 
   @override
