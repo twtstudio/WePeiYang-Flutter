@@ -18,7 +18,7 @@ class CommonPreferences {
   }
 
   /// 第一次登录
-  var isFirstUse = PrefsBean<bool>('sFirstUse', true);
+  var isFirstUse = PrefsBean<bool>('isFirstUse', true);
 
   /// 天外天账号系统
   var isLogin = PrefsBean<bool>('login');

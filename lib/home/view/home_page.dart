@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
@@ -33,7 +31,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   DateTime _lastPressedAt;
   TabController _tabController;
   final feedbackKey = GlobalKey<FeedbackHomePageState>();
-  final checkedNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -87,7 +84,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // WbyFontLoader.initFonts();
-
       context.read<PushManager>().initGeTuiSdk();
       context.read<UpdateManager>().checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
