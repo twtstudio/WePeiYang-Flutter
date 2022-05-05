@@ -4,8 +4,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
 
 import '../../feedback_router.dart';
@@ -24,6 +24,20 @@ class FbDepartmentsProvider {
         ToastProvider.error(e.error.toString());
       },
     );
+  }
+}
+
+///用于在断网情况下过四秒显示重连按钮
+class ChangeHintTextProvider extends ChangeNotifier {
+  bool timeEnded = false;
+
+  void calculateTime() {
+    if (!timeEnded) {
+      Future.delayed(Duration(seconds: 4), () {
+        timeEnded = true;
+        notifyListeners();
+      });
+    }
   }
 }
 

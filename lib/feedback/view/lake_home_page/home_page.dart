@@ -11,11 +11,11 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -72,17 +72,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      firstInLake();
-    });
+  initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(success: () {
       context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
         ToastProvider.error(e.error.toString());
       });
       context.read<FbHotTagsProvider>().initHotTags();
     });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      firstInLake();
+    });
+    initPage();
     context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);
     super.initState();
@@ -204,6 +208,70 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       ),
     );
 
+    var expanded = Expanded(
+      child: status == LakePageStatus.unload
+          ? Align(
+              alignment: Alignment.center,
+              child: Consumer<ChangeHintTextProvider>(
+                builder: (loadingContext, loadingProvider, __) {
+                  loadingProvider.calculateTime();
+                  return loadingProvider.timeEnded
+                      ? GestureDetector(
+                          onTap: () {
+                            var model = context.read<LakeModel>();
+                            model.mainStatus = LakePageStatus.loading;
+                            initPage();
+                          },
+                          child: Text('点我重新加载'))
+                      : Loading();
+                },
+              ),
+            )
+          : status == LakePageStatus.loading
+              ? Align(alignment: Alignment.center, child: Loading())
+              : status == LakePageStatus.idle
+                  ? Builder(builder: (context) {
+                      return TabBar(
+                        indicatorPadding: EdgeInsets.only(bottom: 2),
+                        labelPadding: EdgeInsets.only(bottom: 3),
+                        isScrollable: true,
+                        physics: BouncingScrollPhysics(),
+                        controller: context.read<LakeModel>().tabController,
+                        labelColor: ColorUtil.black2AColor,
+                        labelStyle:
+                            TextUtil.base.black2A.w600.NotoSansSC.sp(18),
+                        unselectedLabelColor: ColorUtil.lightTextColor,
+                        unselectedLabelStyle:
+                            TextUtil.base.greyB2.w600.NotoSansSC.sp(18),
+                        indicator: CustomIndicator(
+                            borderSide: BorderSide(
+                                color: ColorUtil.mainColor, width: 2)),
+                        tabs: List<Widget>.generate(
+                            tabList.length,
+                            (index) => DaTab(
+                                text: tabList[index].shortname,
+                                withDropDownButton:
+                                    tabList[index].name == '校务专区')),
+                        onTap: (index) {
+                          if (tabList[index].id == 1) {
+                            _onFeedbackTapped();
+                          }
+                        },
+                      );
+                    })
+                  : InkWell(
+                      onTap: () =>
+                          context.read<LakeModel>().checkTokenAndGetTabList(),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          '点击重新加载分区',
+                          style: TextUtil.base.mainColor.w400.sp(16),
+                        ),
+                      ),
+                    ),
+    );
+
     return Scaffold(
       backgroundColor: CommonPreferences().isSkinUsed.value
           ? Color(CommonPreferences().skinColorA.value)
@@ -245,12 +313,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           child: Container(
-                              height: 24,
-                              width: 24,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/lake_butt_icons/add_post.png")))),
+                            height: 24,
+                            width: 24,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/lake_butt_icons/add_post.png"),
+                              ),
+                            ),
+                          ),
                           onTap: () {
                             if (tabList.isNotEmpty) {
                               initializeRefresh = true;
@@ -264,88 +335,24 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   ],
                 ),
                 SliverPersistentHeader(
-                    floating: true,
-                    pinned: true,
-                    delegate: HomeHeaderDelegate(
-                        child: Container(
+                  floating: true,
+                  pinned: true,
+                  delegate: HomeHeaderDelegate(
+                    child: Container(
                       color: CommonPreferences().isSkinUsed.value
                           ? Color(CommonPreferences().skinColorA.value)
                           : Colors.white,
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: status == LakePageStatus.unload
-                                  ? Align(
-                                      alignment: Alignment.center,
-                                      child: Loading())
-                                  : status == LakePageStatus.loading
-                                      ? Align(
-                                          alignment: Alignment.center,
-                                          child: Loading())
-                                      : status == LakePageStatus.idle
-                                          ? Builder(builder: (context) {
-                                              return TabBar(
-                                                indicatorPadding:
-                                                    EdgeInsets.only(bottom: 2),
-                                                labelPadding:
-                                                    EdgeInsets.only(bottom: 3),
-                                                isScrollable: true,
-                                                physics:
-                                                    BouncingScrollPhysics(),
-                                                controller: context
-                                                    .read<LakeModel>()
-                                                    .tabController,
-                                                labelColor:
-                                                    ColorUtil.black2AColor,
-                                                labelStyle: TextUtil.base
-                                                    .black2A.w600.NotoSansSC
-                                                    .sp(18),
-                                                unselectedLabelColor:
-                                                    ColorUtil.lightTextColor,
-                                                unselectedLabelStyle: TextUtil
-                                                    .base.greyB2.w600.NotoSansSC
-                                                    .sp(18),
-                                                indicator: CustomIndicator(
-                                                    borderSide: BorderSide(
-                                                        color:
-                                                            ColorUtil.mainColor,
-                                                        width: 2)),
-                                                tabs: List<Widget>.generate(
-                                                    tabList.length,
-                                                    (index) => DaTab(
-                                                        text: tabList[index]
-                                                            .shortname,
-                                                        withDropDownButton:
-                                                            tabList[index]
-                                                                    .name ==
-                                                                '校务专区')),
-                                                onTap: (index) {
-                                                  if (tabList[index].id == 1) {
-                                                    _onFeedbackTapped();
-                                                  }
-                                                },
-                                              );
-                                            })
-                                          : InkWell(
-                                              onTap: () => context
-                                                  .read<LakeModel>()
-                                                  .checkTokenAndGetTabList(),
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '点击重新加载分区',
-                                                  style: TextUtil
-                                                      .base.mainColor.w400
-                                                      .sp(16),
-                                                ),
-                                              ),
-                                            ),
-                            ),
-                            SizedBox(width: 17)
-                          ]),
-                    ))),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 4),
+                          expanded,
+                          SizedBox(width: 17)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ];
             },
             body: Container(
