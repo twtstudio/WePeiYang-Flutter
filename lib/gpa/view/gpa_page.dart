@@ -150,7 +150,8 @@ class _RadarChartState extends State<RadarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var _list = context.select<GPANotifier, List<GPACourse>>((p) => p.courses);
+    var _list = context.select<GPANotifier, List<GPACourse>>(
+        (p) => p.courses.where((e) => e.score != 0.0).toList());
     return GestureDetector(
       onTapDown: (_) {
         setState(() {

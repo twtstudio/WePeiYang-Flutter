@@ -167,8 +167,8 @@ GPAStat _calculateStat(List<GPACourse> courses) {
   var totalScore = 0.0;
   var totalGPA = 0.0;
   courses.forEach((course) {
-    if (course.credit == 0 || course.gpa == 0)
-      return; // gpa为零时代表 F P 等情况(不会有人真能考零分吧)
+    if (course.credit == 0 || course.score == 0)
+      return; // score为零时代表 F P 等情况(不会有人真能考零分吧)
     totalCredit += course.credit;
     totalScore += course.credit * course.score;
     totalGPA += course.credit * course.gpa;
