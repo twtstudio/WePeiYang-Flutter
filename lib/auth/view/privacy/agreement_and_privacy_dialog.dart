@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -8,6 +9,10 @@ class AgreementAndPrivacyDialog extends Dialog {
   String result;
 
   AgreementAndPrivacyDialog(this.result);
+
+  void _doQuit() async {
+    await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +51,41 @@ class AgreementAndPrivacyDialog extends Dialog {
   }
 
   Widget _detail(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        CommonPreferences().isFirstUse.value = false;
-        Navigator.pop(context);
-      },
-      child: Container(
-        decoration: BoxDecoration(), // 加个这个扩大点击事件范围
-        padding: const EdgeInsets.all(16),
-        child: Text('同意',
-            style: FontManager.YaQiHei.copyWith(
-                color: Color.fromRGBO(98, 103, 123, 1),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.none)),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        GestureDetector(
+          onTap: () {
+            _doQuit();
+          },
+          child: Container(
+            decoration: BoxDecoration(), // 加个这个扩大点击事件范围
+            padding: const EdgeInsets.all(16),
+            child: Text('拒绝',
+                style: FontManager.YaQiHei.copyWith(
+                    color: Colors.grey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            CommonPreferences().isFirstUse.value = false;
+            Navigator.pop(context);
+          },
+          child: Container(
+            decoration: BoxDecoration(), // 加个这个扩大点击事件范围
+            padding: const EdgeInsets.all(16),
+            child: Text('同意',
+                style: FontManager.YaQiHei.copyWith(
+                    color: Color.fromRGBO(98, 103, 123, 1),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none)),
+          ),
+        ),
+      ],
     );
   }
 }
