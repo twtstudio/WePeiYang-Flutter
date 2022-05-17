@@ -179,7 +179,7 @@ class MessageDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().feedbackToken.value;
+      options.headers['token'] = CommonPreferences().lakeToken.value;
       return handler.next(options);
     }), ApiInterceptor()
   ];

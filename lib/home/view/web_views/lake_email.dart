@@ -22,6 +22,6 @@ class _FestivalPageState extends WbyWebViewState {
 
   @override
   Future<String> getInitialUrl(BuildContext context) async {
-    return '${EnvConfig.QNHD}message/#/?token=${CommonPreferences().feedbackToken.value}';
+    return '${EnvConfig.QNHD}message/#/?token=${CommonPreferences().lakeToken.value}';
   }
 }

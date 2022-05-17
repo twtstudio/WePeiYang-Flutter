@@ -30,6 +30,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get white => this.copyWith(color: Colors.white);
   TextStyle get whiteFD => this.copyWith(color: const Color(0xFFFDFDFE));
   TextStyle get mainOrange => this.copyWith(color: const Color(0xFFFF6F48));
+  TextStyle get dangerousRed => this.copyWith(color: const Color(0xFFFF0000));
   TextStyle get textButtonBlue => this.copyWith(color: const Color(0xFF2D4E9A));
   TextStyle get begoniaPink => this.copyWith(color: const Color(0xFFF3C9D9));
   TextStyle get biliPink => this.copyWith(color: const Color(0xFFF97198));

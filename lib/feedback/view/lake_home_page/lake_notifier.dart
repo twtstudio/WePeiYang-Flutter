@@ -15,7 +15,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences().feedbackToken.value,
+      CommonPreferences().lakeToken.value,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -272,7 +272,7 @@ class LakeModel extends ChangeNotifier {
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
         if (CommonPreferences().feedbackLastWeCo.value != id &&
-            CommonPreferences().feedbackToken.value != "") {
+            CommonPreferences().lakeToken.value != "") {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {

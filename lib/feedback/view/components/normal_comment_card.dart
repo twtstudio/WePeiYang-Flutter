@@ -71,19 +71,19 @@ class _NCommentCardState extends State<NCommentCard>
             child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
           );
 
-  Future<bool> _showDeleteConfirmDialog() {
+  Future<bool> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return LakeDialogWidget(
-              title: '删除评论',
-              content: Text('您确定要删除这条评论吗？'),
+              title: '$quote评论',
+              content: Text('您确定要$quote这条评论吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-              confirmText: "确认",
+              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+              confirmText: quote == '摧毁' ? 'BOOM' : "确认",
               cancelFun: () {
                 Navigator.of(context).pop();
               },
@@ -260,10 +260,26 @@ class _NCommentCardState extends State<NCommentCard>
                   arguments: ReportPageArgs(widget.ancestorUId, false,
                       floorId: widget.comment.id));
             } else if (value == '删除') {
-              bool confirm = await _showDeleteConfirmDialog();
+              bool confirm = await _showDeleteConfirmDialog('删除');
               if (confirm) {
                 FeedbackService.deleteFloor(
                   id: widget.comment.id,
+                  onSuccess: () {
+                    ToastProvider.success(S.current.feedback_delete_success);
+                    setState(() {
+                      _isDeleted = true;
+                    });
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  },
+                );
+              }
+            } else if (value == '删评') {
+              bool confirm = await _showDeleteConfirmDialog('摧毁');
+              if (confirm) {
+                FeedbackService.adminDeleteReply(
+                  floorId: widget.comment.id,
                   onSuccess: () {
                     ToastProvider.success(S.current.feedback_delete_success);
                     setState(() {
@@ -309,6 +325,18 @@ class _NCommentCardState extends State<NCommentCard>
                         ),
                       ),
                     ),
+              if ((CommonPreferences().isSuper.value ||
+                  CommonPreferences().isStuAdmin.value) ??
+                  false)
+                PopupMenuItem<String>(
+                  value: '删评',
+                  child: Center(
+                    child: Text(
+                      '删评',
+                      style: TextUtil.base.dangerousRed.regular.NotoSansSC.sp(12),
+                    ),
+                  ),
+                ),
             ];
           },
         ),

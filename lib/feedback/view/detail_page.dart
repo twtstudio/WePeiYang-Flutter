@@ -56,7 +56,8 @@ class _DetailPageState extends State<DetailPage>
   int rating = 0;
   Widget topCard;
   final onlyOwner = ValueNotifier<int>(0);
-  final order = ValueNotifier<int>(CommonPreferences().feedbackFloorSortType.value);
+  final order =
+      ValueNotifier<int>(CommonPreferences().feedbackFloorSortType.value);
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -270,7 +271,9 @@ class _DetailPageState extends State<DetailPage>
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
                       ),
-                      SizedBox(width: 100,),
+                      SizedBox(
+                        width: 100,
+                      ),
                       ValueListenableBuilder(
                         valueListenable: onlyOwner,
                         builder: (context, value, _) {
@@ -279,29 +282,32 @@ class _DetailPageState extends State<DetailPage>
                               onlyOwner.value = 1 - onlyOwner.value;
                               _refreshController.requestRefresh();
                             },
-                            child: value == 1 ? Container(
-                              decoration: BoxDecoration(
-                                color: ColorUtil.boldTag54,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: ColorUtil.boldTag54, //边框颜色
-                                  width: 1, //宽度
-                                ),
-                              ),
-                              child: Text('  只看楼主  ',
-                                  style: TextUtil.base.white.w500.sp(14)),
-                            ) : Container(
-                              decoration: BoxDecoration(
-                                color: ColorUtil.whiteF8Color,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: ColorUtil.boldTag54, //边框颜色
-                                  width: 1, //宽度
-                                ),
-                              ),
-                              child: Text('  只看楼主  ',
-                                  style: TextUtil.base.black2A.w500.sp(14)),
-                            ),
+                            child: value == 1
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorUtil.boldTag54,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: ColorUtil.boldTag54, //边框颜色
+                                        width: 1, //宽度
+                                      ),
+                                    ),
+                                    child: Text('  只看楼主  ',
+                                        style: TextUtil.base.white.w500.sp(14)),
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorUtil.whiteF8Color,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: ColorUtil.boldTag54, //边框颜色
+                                        width: 1, //宽度
+                                      ),
+                                    ),
+                                    child: Text('  只看楼主  ',
+                                        style:
+                                            TextUtil.base.black2A.w500.sp(14)),
+                                  ),
                           );
                         },
                       ),
@@ -327,14 +333,20 @@ class _DetailPageState extends State<DetailPage>
                                   value: '时间正序',
                                   child: Center(
                                     child: Text('    时间正序',
-                                        style: order.value == 1 ? TextUtil.base.black2A.w700.sp(14) : TextUtil.base.black2A.w500.sp(14)),
+                                        style: order.value == 1
+                                            ? TextUtil.base.black2A.w700.sp(14)
+                                            : TextUtil.base.black2A.w500
+                                                .sp(14)),
                                   ),
                                 ),
                                 PopupMenuItem<String>(
                                   value: '时间倒序',
                                   child: Center(
                                     child: Text('    时间倒序',
-                                        style: order.value == 0 ? TextUtil.base.black2A.w700.sp(14) : TextUtil.base.black2A.w500.sp(14)),
+                                        style: order.value == 0
+                                            ? TextUtil.base.black2A.w700.sp(14)
+                                            : TextUtil.base.black2A.w500
+                                                .sp(14)),
                                   ),
                                 ),
                               ];
@@ -581,7 +593,7 @@ class _DetailPageState extends State<DetailPage>
             Navigator.pushNamed(context, FeedbackRouter.report,
                 arguments: ReportPageArgs(widget.post.id, true));
           } else if (value == '删除') {
-            bool confirm = await _showDeleteConfirmDialog();
+            bool confirm = await _showDeleteConfirmDialog('删除');
             if (confirm) {
               FeedbackService.deletePost(
                 id: widget.post.id,
@@ -602,6 +614,34 @@ class _DetailPageState extends State<DetailPage>
                 },
               );
             }
+          } else if (value == '删帖') {
+            bool confirm = await _showDeleteConfirmDialog('摧毁');
+            if (confirm) {
+              FeedbackService.adminDeletePost(
+                id: widget.post.id,
+                onSuccess: () {
+                  context
+                      .read<LakeModel>()
+                      .lakeAreas[context
+                          .read<LakeModel>()
+                          .tabList[context.read<LakeModel>().currentTab]
+                          .id]
+                      .refreshController
+                      .requestRefresh();
+                  ToastProvider.success(S.current.feedback_delete_success);
+                  Navigator.of(context).pop(post);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            }
+          } else if (value == '加精') {
+            bool confirm = await _showDeleteConfirmDialog('加精');
+            if (confirm) {
+              bool doubleConfirm = await _showAddNumDialog();
+              if (doubleConfirm) Navigator.of(context).pop(post);
+            }
           }
         },
         itemBuilder: (context) {
@@ -620,6 +660,26 @@ class _DetailPageState extends State<DetailPage>
                 child: Center(
                   child:
                       new Text('删除', style: TextUtil.base.black2A.w500.sp(14)),
+                ),
+              ),
+            if ((CommonPreferences().isSuper.value ||
+                    CommonPreferences().isStuAdmin.value) ??
+                false)
+              PopupMenuItem<String>(
+                value: '删帖',
+                child: Center(
+                  child: new Text('删帖',
+                      style: TextUtil.base.dangerousRed.w600.sp(14)),
+                ),
+              ),
+            if ((CommonPreferences().isSuper.value ||
+                    CommonPreferences().isStuAdmin.value) ??
+                false)
+              PopupMenuItem<String>(
+                value: '加精',
+                child: Center(
+                  child: new Text('加精',
+                      style: TextUtil.base.mainOrange.w600.sp(14)),
                 ),
               ),
           ];
@@ -680,24 +740,74 @@ class _DetailPageState extends State<DetailPage>
     );
   }
 
-  Future<bool> _showDeleteConfirmDialog() {
+  Future<bool> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return LakeDialogWidget(
-              title: '删除冒泡',
-              content: Text('您确定要删除这条冒泡吗？'),
+              title: '$quote冒泡',
+              content: Text('您确定要$quote这条冒泡吗？'),
               cancelText: "取消",
               confirmTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
               confirmText: "确认",
               cancelFun: () {
                 Navigator.of(context).pop();
               },
               confirmFun: () {
                 Navigator.of(context).pop(true);
+              });
+        });
+  }
+
+  Future<bool> _showAddNumDialog() {
+    TextEditingController tc = new TextEditingController();
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return LakeDialogWidget(
+              title: '加精数值',
+              content: Column(
+                children: [
+                  Text('0为取消加精，只能为0~30000'),
+                  TextField(controller: tc, keyboardType: TextInputType.number),
+                ],
+              ),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+              confirmText: "确认",
+              cancelFun: () {
+                Navigator.of(context).pop();
+              },
+              confirmFun: () async {
+                if (tc != null && tc.text != '') {
+                  await FeedbackService.adminTopPost(
+                    id: widget.post.id,
+                    hotIndex: tc.text,
+                    onSuccess: () {
+                      ToastProvider.success('加精成功');
+                      context
+                          .read<LakeModel>()
+                          .lakeAreas[context
+                              .read<LakeModel>()
+                              .tabList[context.read<LakeModel>().currentTab]
+                              .id]
+                          .refreshController
+                          .requestRefresh();
+                      Navigator.of(context).pop(post);
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
+                  );
+                  Navigator.of(context).pop(true);
+                } else
+                  ToastProvider.error('请输入数值！');
               });
         });
   }

@@ -25,7 +25,7 @@ class MessageProvider extends ChangeNotifier {
       (likeMessages?.length ?? 0) == 0;
 
   refreshFeedbackCount() async {
-    if(CommonPreferences().feedbackToken.value != ""){
+    if(CommonPreferences().lakeToken.value != ""){
       await MessageService.getUnreadMessagesCount(
           onResult: (count) {
             _messageCount = count;

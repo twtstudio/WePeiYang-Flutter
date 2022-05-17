@@ -43,9 +43,13 @@ class CommonPreferences {
 
   var themeToken = PrefsBean<String>("themeToken");
 
-  /// 校务专区
-  var feedbackToken = PrefsBean<String>("lakeToken");
-  var feedbackUid = PrefsBean<String>('feedbackUid');
+  /// 用户信息
+  var lakeToken = PrefsBean<String>("lakeToken");
+  var lakeUid = PrefsBean<String>('feedbackUid');
+  var isSuper = PrefsBean<bool>("isSuper", false);
+  var isSchAdmin = PrefsBean<bool>("isSchAdmin", false);
+  var isStuAdmin = PrefsBean<bool>("isStuAdmin", false);
+  var isUser = PrefsBean<bool>("isUser", true);
   var feedbackSearchHistory =
       PrefsBean<List<String>>("feedbackSearchHistory", []);
 
@@ -158,7 +162,12 @@ class CommonPreferences {
     department.clear();
     stuType.clear();
     major.clear();
-    feedbackToken.clear();
+    lakeToken.clear();
+    lakeUid.clear();
+    isSuper.clear();
+    isSchAdmin.clear();
+    isStuAdmin.clear();
+    isUser.clear();
     canPush.clear();
     lastCheckUpdateTime.clear();
     area.clear();
