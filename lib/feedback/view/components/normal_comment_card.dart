@@ -80,9 +80,9 @@ class _NCommentCardState extends State<NCommentCard>
               content: Text('您确定要$quote这条评论吗？'),
               cancelText: "取消",
               confirmTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
               confirmText: quote == '摧毁' ? 'BOOM' : "确认",
               cancelFun: () {
                 Navigator.of(context).pop();
@@ -151,21 +151,22 @@ class _NCommentCardState extends State<NCommentCard>
                     overflow: TextOverflow.clip,
                     style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
                   ),
-                  CommentIdentificationContainer(
-                      widget.comment.isOwner
-                          ? '我的评论'
-                          : widget.comment.uid == widget.uid
-                              ? widget.isSubFloor &&
-                                      widget.comment.nickname ==
-                                          widget.ancestorName
-                                  ? '楼主 层主'
-                                  : '楼主'
-                              : widget.isSubFloor &&
-                                      widget.comment.nickname ==
-                                          widget.ancestorName
-                                  ? '层主'
-                                  : '',
-                      true),
+                  if (widget.comment.isOwner != null)
+                    CommentIdentificationContainer(
+                        widget.comment.isOwner
+                            ? '我的评论'
+                            : widget.comment.uid == widget.uid
+                                ? widget.isSubFloor &&
+                                        widget.comment.nickname ==
+                                            widget.ancestorName
+                                    ? '楼主 层主'
+                                    : '楼主'
+                                : widget.isSubFloor &&
+                                        widget.comment.nickname ==
+                                            widget.ancestorName
+                                    ? '层主'
+                                    : '',
+                        true),
                   //回复自己那条时出现
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorUId)
@@ -192,7 +193,7 @@ class _NCommentCardState extends State<NCommentCard>
                     ),
                   //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
                   //回的是层主但回复的不是这条评论
-                  if (!widget.comment.isOwner &&
+                  if (widget.comment.isOwner != null && !widget.comment.isOwner &&
                       widget.comment.replyToName != widget.comment.nickname)
                     CommentIdentificationContainer(
                         widget.isSubFloor
@@ -326,14 +327,15 @@ class _NCommentCardState extends State<NCommentCard>
                       ),
                     ),
               if ((CommonPreferences().isSuper.value ||
-                  CommonPreferences().isStuAdmin.value) ??
+                      CommonPreferences().isStuAdmin.value) ??
                   false)
                 PopupMenuItem<String>(
                   value: '删评',
                   child: Center(
                     child: Text(
                       '删评',
-                      style: TextUtil.base.dangerousRed.regular.NotoSansSC.sp(12),
+                      style:
+                          TextUtil.base.dangerousRed.regular.NotoSansSC.sp(12),
                     ),
                   ),
                 ),
@@ -521,11 +523,11 @@ class _NCommentCardState extends State<NCommentCard>
           failure.call();
         },
       );
-    }, isLike: widget.comment.isLike);
+    }, isLike: widget.comment.isLike ?? false);
 
     var dislikeWidget = DislikeWidget(
       size: 15.w,
-      isDislike: widget.comment.isDis,
+      isDislike: widget.comment.isDis ?? false,
       onDislikePressed: (dislikeNotifier) async {
         await FeedbackService.commentHitDislike(
           id: widget.comment.id,

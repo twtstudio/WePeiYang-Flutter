@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
@@ -732,6 +733,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
                 await MessageService.setFloorMessageRead(items[i].floor.id,
                     onSuccess: () {
                   items[i].isRead = true;
+                  setState(() {});
                   context.read<MessageProvider>().refreshFeedbackCount();
                 }, onFailure: (e) {
                   ToastProvider.error(e.error.toString());
@@ -880,43 +882,55 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       ],
     );
 
-    Widget questionItem = Container(
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-        color: widget.data.type == 0
-            ? ColorUtil.greyF7F8Color
-            : ColorUtil.whiteFDFE,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.data.post.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
-                ),
-                SizedBox(height: 6.w),
-                likeFloorFav,
-              ],
+    Widget questionItem = GestureDetector(
+      onTap: () async {
+        await Navigator.pushNamed(
+          context,
+          FeedbackRouter.detail,
+          arguments: widget.data.post,
+        ).then((_) {
+          MessageService.setPostFloorMessageRead(widget.data.post.id);
+          context.read<MessageProvider>().refreshFeedbackCount();
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(10.w),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+          color: widget.data.type == 0
+              ? ColorUtil.greyF7F8Color
+              : ColorUtil.whiteFDFE,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.data.post.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                  ),
+                  SizedBox(height: 6.w),
+                  likeFloorFav,
+                ],
+              ),
             ),
-          ),
-          if (widget.data.post.imageUrls.length != 0)
-            Image.network(
-              baseUrl + widget.data.post.imageUrls[0],
-              fit: BoxFit.cover,
-              height: 50,
-              width: 70,
-            ),
-        ],
+            if (widget.data.post.imageUrls.length != 0)
+              Image.network(
+                baseUrl + widget.data.post.imageUrls[0],
+                fit: BoxFit.cover,
+                height: 50,
+                width: 70,
+              ),
+          ],
+        ),
       ),
     );
 
@@ -960,24 +974,23 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       child: GestureDetector(
         onTap: () async {
           await widget.onTapDown?.call();
-
-          ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
-          // if (widget.data.type == 0) {
+          if (widget.data.type == 0) {
           await Navigator.pushNamed(
             context,
-            FeedbackRouter.detail,
-            arguments: widget.data.post,
-          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
-          // }
-          // else {
-          //   await Navigator.pushNamed(
-          //     context,
-          //     FeedbackRouter.commentDetail,
-          //     arguments: widget.data.floor,
-          //   ).then((_) => context
-          //       .findAncestorStateOfType<_FeedbackMessagePageState>()
-          //       .onRefresh());
-          // }
+            FeedbackRouter.commentDetail,
+            arguments: ReplyDetailPageArgs(widget.data.floor, widget.data.post.uid, isMessage: true),
+          ).then((_) {
+            context.read<MessageProvider>().refreshFeedbackCount();
+          });
+          } else {
+            await Navigator.pushNamed(
+              context,
+              FeedbackRouter.commentDetail,
+              arguments: ReplyDetailPageArgs(widget.data.toFloor, widget.data.post.uid, isMessage: true),
+            ).then((_) {
+              context.read<MessageProvider>().refreshFeedbackCount();
+            });
+          }
         },
         child: Container(
           decoration: BoxDecoration(

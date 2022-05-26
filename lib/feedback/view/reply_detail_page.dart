@@ -16,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class ReplyDetailPage extends StatefulWidget {
   final ReplyDetailPageArgs args;
@@ -30,8 +32,9 @@ class ReplyDetailPage extends StatefulWidget {
 class ReplyDetailPageArgs {
   final Floor floor;
   final int uid;
+  final bool isMessage;
 
-  ReplyDetailPageArgs(this.floor, this.uid);
+  ReplyDetailPageArgs(this.floor, this.uid, {this.isMessage = false});
 }
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
@@ -296,6 +299,30 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ],
     );
 
+    var postButton = GestureDetector(
+      child: Center(
+          child: Text(
+        '查看原帖',
+        style: TextUtil.base.black2A.bold,
+      )),
+      onTap: () async {
+        await FeedbackService.getPostById(
+            id: widget.args.floor.postId,
+            onResult: (post) {
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              );
+              MessageService.setPostFloorMessageRead(post.id);
+              context.read<MessageProvider>().refreshFeedbackCount();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.message);
+            });
+      },
+    );
+
     var menuButton = IconButton(
       icon:
           SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
@@ -330,12 +357,14 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.greyF7F8Color,
+      backgroundColor: CommonPreferences().isSkinUsed.value
+          ? Color(CommonPreferences().skinColorB.value)
+          : ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
       ),
-      actions: [menuButton],
+      actions: [if (widget.args.isMessage) postButton, menuButton],
       title: InkWell(
         onTap: () => _refreshController.requestRefresh(),
         child: SizedBox(
@@ -361,7 +390,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences().isSkinUsed.value
+            ? Color(CommonPreferences().skinColorB.value)
+            : ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),

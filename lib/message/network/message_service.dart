@@ -144,6 +144,17 @@ class MessageService {
     //     .invokeMethod<String>("cancelNotification", {"id": questionId});
   }
 
+  static setPostFloorMessageRead(int postId,
+      {OnSuccess onSuccess, OnFailure onFailure}) async {
+    try {
+      await messageDio.post("floor/read_in_post",
+          formData: FormData.fromMap({"post_id": postId}));
+      onSuccess();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static setNoticeMessageRead(int id,
       {OnSuccess onSuccess, OnFailure onFailure}) async {
     try {
