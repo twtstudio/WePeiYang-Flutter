@@ -339,8 +339,9 @@ class _PostCardState extends State<PostCard> {
           if (widget.type == PostCardType.detail)
             Row(
               children: [
-                if (post.eTag != '')
-                  Center(child: ETagWidget(entry: widget.post.eTag, full: true)),
+                if (post.eTag != '' && post.eTag != null)
+                  Center(
+                      child: ETagWidget(entry: widget.post.eTag, full: true)),
                 Expanded(
                   child: InkWell(
                     onLongPress: () {
@@ -441,7 +442,7 @@ class _PostCardState extends State<PostCard> {
                       width: WePeiYangApp.screenWidth - 164,
                       child: Row(
                         children: [
-                          if (post.eTag != '')
+                          if (post.eTag != '' && post.eTag != null)
                             ETagWidget(entry: widget.post.eTag, full: false),
                           Expanded(child: title),
                         ],
@@ -450,8 +451,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(width: 10),
                 if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
-                if (post.type == 1 &&
-                    widget.type == PostCardType.simple)
+                if (post.type == 1 && widget.type == PostCardType.simple)
                   SolveOrNotWidget(post.solved),
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
@@ -503,14 +503,52 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           );
 
-    var commentWidget = Row(
+    var visitWidget = Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
+            color: ColorUtil.mainColor, width: 14.6.w),
+        SizedBox(
+          width: 2.w,
+        ),
+        Text(
+          post.visitCount == null
+              ? '0   '
+              : post.visitCount < 1000
+                  ? post.visitCount.toString() +
+                      (post.visitCount < 100 ? '   ' : ' ')
+                  : post.visitCount < 10000
+                      ? (post.visitCount.toDouble() / 1000)
+                              .toStringAsFixed(1)
+                              .toString() +
+                          'k '
+                      : post.visitCount < 100000
+                          ? (post.visitCount.toDouble() / 10000)
+                                  .toStringAsFixed(1)
+                                  .toString() +
+                              'w '
+                          : (post.visitCount.toDouble() / 10000)
+                                  .toStringAsFixed(1)
+                                  .toString() +
+                              'w',
+          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+        ),
+        SizedBox(
+          width: 1.w,
+        ),
+      ],
+    );
+
+    var commentAndWatchedWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        visitWidget,
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
             width: 11.67.w),
         SizedBox(
-          width: 5.17.w,
+          width: 3.w,
         ),
         Text(
           post.commentCount.toString() +
@@ -614,7 +652,7 @@ class _PostCardState extends State<PostCard> {
           );
 
     var commentAndLike = [
-      if (widget.type == PostCardType.simple) commentWidget,
+      if (widget.type == PostCardType.simple) commentAndWatchedWidget,
       likeWidget,
       if (widget.type == PostCardType.outSide) favoriteWidget,
       dislikeWidget,
@@ -715,6 +753,13 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
+                if (widget.type == PostCardType.detail)
+                  Row(
+                    children: [
+                      Spacer(),
+                      visitWidget,
+                    ],
+                  )
               ],
             ),
             decoration: decoration,

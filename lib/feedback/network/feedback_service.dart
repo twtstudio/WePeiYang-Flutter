@@ -821,8 +821,8 @@ class FeedbackService with AsyncTimer {
 
   static adminDeleteReply(
       {@required floorId,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminDeleteReply', () async {
       try {
         await feedbackAdminPostDio.get(

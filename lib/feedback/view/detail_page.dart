@@ -544,7 +544,7 @@ class _DetailPageState extends State<DetailPage>
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
-                                        child: post.type != true ? Text('校务帖子为实名发言!!!',
+                                        child: post.type == 1 ? Text('校务帖子为实名发言!!!',
                                             style: TextUtil
                                                 .base.NotoSansSC.w500.dangerousRed
                                                 .sp(12)) : Text('友善回复，真诚沟通',
@@ -718,7 +718,7 @@ class _DetailPageState extends State<DetailPage>
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              post.type != true ? '校务提问：实名' :
+              post.type == 1 ? '校务提问：实名' :
               '冒泡',
               style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
             ),
