@@ -337,32 +337,39 @@ class _PostCardState extends State<PostCard> {
           ]),
           SizedBox(height: 6),
           if (widget.type == PostCardType.detail)
-            InkWell(
-              onLongPress: () {
-                Clipboard.setData(ClipboardData(
-                    text: '【' + post.title + '】 ' + post.content));
-                ToastProvider.success('复制提问成功');
-              },
-              onTap: () async {
-                if (widget.type == PostCardType.simple) {
-                  await FeedbackService.visitPost(
-                    id: post.id,
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
+            Row(
+              children: [
+                  Center(child: ETagWidget(entry: widget.post.eTag, full: true)),
+                Expanded(
+                  child: InkWell(
+                    onLongPress: () {
+                      Clipboard.setData(ClipboardData(
+                          text: '【' + post.title + '】 ' + post.content));
+                      ToastProvider.success('复制提问成功');
                     },
-                  );
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.detail,
-                    arguments: post,
-                  ).then((p) {
-                    setState(() {
-                      post = p;
-                    });
-                  });
-                }
-              },
-              child: title,
+                    onTap: () async {
+                      if (widget.type == PostCardType.simple) {
+                        await FeedbackService.visitPost(
+                          id: post.id,
+                          onFailure: (e) {
+                            ToastProvider.error(e.error.toString());
+                          },
+                        );
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.detail,
+                          arguments: post,
+                        ).then((p) {
+                          setState(() {
+                            post = p;
+                          });
+                        });
+                      }
+                    },
+                    child: title,
+                  ),
+                ),
+              ],
             ),
           if (widget.type == PostCardType.detail) SizedBox(height: 8),
           content,
@@ -429,23 +436,22 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 if (widget.type == PostCardType.simple)
-                  SizedBox(width: WePeiYangApp.screenWidth - 164, child: title),
+                  SizedBox(
+                      width: WePeiYangApp.screenWidth - 164,
+                      child: Row(
+                        children: [
+                          if (post.eTag != '')
+                            ETagWidget(entry: widget.post.eTag, full: false),
+                          Expanded(child: title),
+                        ],
+                      )),
                 Spacer(),
                 SizedBox(width: 10),
                 if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
-                if (post.solved == 0 &&
-                    post.type == 1 &&
+                if (post.type == 1 &&
                     widget.type == PostCardType.simple)
-                  QuestionedWidget(),
-                if (post.solved == 1 &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  ResponseWidget(),
-                if (post.solved == 2 &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  SolvedWidget(),
+                  SolveOrNotWidget(post.solved),
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),

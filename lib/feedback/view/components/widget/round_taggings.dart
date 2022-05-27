@@ -1,9 +1,10 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:provider/provider.dart';
 
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
@@ -31,6 +32,74 @@ class CommentIdentificationContainer extends StatelessWidget {
   }
 }
 
+class ETagUtil {
+  final Color colorA, colorB;
+  final String text, fullName;
+
+  ETagUtil._(this.colorA, this.colorB, this.text, this.fullName);
+
+  factory ETagUtil.empty() {
+    return ETagUtil._(Colors.white, Colors.white, '', '');
+  }
+}
+
+class ETagWidget extends StatefulWidget {
+  @required
+  final String entry;
+  final bool full;
+
+  @required
+  const ETagWidget({Key key, this.entry, this.full}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ETagWidgetState();
+  }
+}
+
+class _ETagWidgetState extends State<ETagWidget> {
+  _ETagWidgetState();
+
+  bool colorState = false;
+  Timer timer;
+  Duration timeDuration = Duration(milliseconds: 1900);
+  Map<String, ETagUtil> tagUtils = {
+    'recommend': new ETagUtil._(Color.fromRGBO(232, 178, 27, 1.0),
+        Color.fromRGBO(236, 120, 57, 1.0), '精', '精华帖'),
+    'theme': new ETagUtil._(Color.fromRGBO(66, 161, 225, 1.0),
+        Color.fromRGBO(57, 90, 236, 1.0), '活动', '活动帖'),
+    'top': new ETagUtil._(Color.fromRGBO(223, 108, 171, 1.0),
+        Color.fromRGBO(243, 16, 73, 1.0), '置顶', '置顶帖')
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(3, 0.4, 2.8, 2.0),
+      margin: EdgeInsets.only(right: 5),
+      child: Text(
+        widget.full
+            ? tagUtils[widget.entry].fullName
+            : tagUtils[widget.entry].text ?? '',
+        style: TextUtil.base.NotoSansSC.w800.sp(12).white,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment(0.4, 1.6),
+          colors: [
+            tagUtils[widget.entry].colorA,
+            tagUtils[widget.entry].colorB
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MPWidget extends StatelessWidget {
   final String text;
 
@@ -43,37 +112,41 @@ class MPWidget extends StatelessWidget {
   }
 }
 
-class SolvedWidget extends StatelessWidget {
+class SolveOrNotWidget extends StatelessWidget {
+  final int index;
+
+  SolveOrNotWidget(this.index);
+
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/solved_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
+    switch (index) {
+      // 未分发
+      case 0:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagNotProcessed.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+        // 已分发未解决
+      case 3:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagProcessed.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+        // 已解决
+      case 2:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagSolved.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+      default:
+        return SizedBox();
+    }
   }
 }
 
-class ResponseWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/responsed_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
-  }
-}
-class QuestionedWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/questioned_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
-  }
-}
 class TagShowWidget extends StatelessWidget {
   final String tag;
   final double width;
@@ -84,7 +157,8 @@ class TagShowWidget extends StatelessWidget {
   final int tar;
   final int lakeType;
 
-  TagShowWidget(this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
+  TagShowWidget(
+      this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
 
   @override
   Widget build(BuildContext context) {
@@ -94,34 +168,30 @@ class TagShowWidget extends StatelessWidget {
             ? Navigator.pushNamed(
                 context,
                 FeedbackRouter.searchResult,
-                arguments: SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
+                arguments:
+                    SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
               )
             : type == 0
                 ? {
                     Navigator.pushNamed(
                       context,
                       FeedbackRouter.searchResult,
-                      arguments: SearchResultPageArgs(
-                        '',
-                        '',
-                        '',
-                        '$tag 分区详情',
-                        tar, 0
-                      ),
+                      arguments:
+                          SearchResultPageArgs('', '', '', '$tag 分区详情', tar, 0),
                     )
                   }
                 : type == 1
                     ? Navigator.pushNamed(
                         context,
                         FeedbackRouter.searchResult,
-                        arguments:
-                            SearchResultPageArgs('', '', '$id', '部门 #$tag', 1, 0),
+                        arguments: SearchResultPageArgs(
+                            '', '', '$id', '部门 #$tag', 1, 0),
                       )
                     : Navigator.pushNamed(
                         context,
                         FeedbackRouter.searchResult,
-                        arguments:
-                            SearchResultPageArgs('', '$id', '', '标签 #$tag', 0, lakeType),
+                        arguments: SearchResultPageArgs(
+                            '', '$id', '', '标签 #$tag', 0, lakeType),
                       );
       },
       child: Container(

@@ -310,13 +310,11 @@ class FestivalProvider extends ChangeNotifier {
   Future<void> initFestivalList() async {
     await FeedbackService.getFestCards(
       onSuccess: (list) {
-        //print(list.first);
         festivalList.clear();
         festivalList.addAll(list);
         notifyListeners();
       },
       onFailure: (e) {
-        ToastProvider.error(e.error.toString());
         notifyListeners();
       },
     );

@@ -30,6 +30,8 @@ class Post {
     this.isOwner,
     this.imageUrls,
     this.department,
+    this.visitCount,
+    this.eTag,
   });
 
   int id;
@@ -52,6 +54,8 @@ class Post {
   bool isOwner;
   List<String> imageUrls;
   Department department;
+  int visitCount;
+  String eTag;
 
   bool operator ==(Object other) => other is Post && other.id == id;
 
@@ -84,6 +88,8 @@ class Post {
         department: json["department"] == null
             ? null
             : Department.fromJson(json["department"]),
+        visitCount: json["visit_count"],
+        eTag: json["e_tag"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -107,6 +113,8 @@ class Post {
         "is_owner": isOwner,
         "image_urls": List<dynamic>.from(imageUrls.map((x) => x)),
         "department": department.toJson(),
+        "visit_count": visitCount,
+        "e_tag": eTag,
       };
 
   Post.nullExceptId(int questionId) {
