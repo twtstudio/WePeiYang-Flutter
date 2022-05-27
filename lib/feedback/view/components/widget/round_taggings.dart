@@ -120,21 +120,28 @@ class SolveOrNotWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (index) {
-      // 未分发
+      //未分发
       case 0:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagNotProcessed.svg',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        // 已分发未解决
+        //已分发未解决
       case 3:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagProcessed.svg',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        // 已解决
+        //未解决
+      case 1:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagNotSolved.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+        //已解决
       case 2:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagSolved.svg',

@@ -339,6 +339,7 @@ class _PostCardState extends State<PostCard> {
           if (widget.type == PostCardType.detail)
             Row(
               children: [
+                if (post.eTag != '')
                   Center(child: ETagWidget(entry: widget.post.eTag, full: true)),
                 Expanded(
                   child: InkWell(
