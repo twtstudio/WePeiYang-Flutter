@@ -542,6 +542,48 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static Future<void> changeNickname({
+    @required String nickName,
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    AsyncTimer.runRepeatChecked('changeNickname', () async {
+      try {
+        await feedbackDio.post('user/name',
+            formData: FormData.fromMap({
+              'name': '$nickName',
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static getUserInfo({
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('user');
+      CommonPreferences().lakeUid.value =
+          response.data['data']['user']['id'].toString();
+      CommonPreferences().lakeNickname.value =
+          response.data['data']['user']['nickname'];
+      CommonPreferences().isSuper.value =
+          response.data['data']['user']['is_super'];
+      CommonPreferences().isSchAdmin.value =
+          response.data['data']['user']['is_sch_admin'];
+      CommonPreferences().isStuAdmin.value =
+          response.data['data']['user']['is_stu_admin'];
+      CommonPreferences().isUser.value =
+          response.data['data']['user']['is_user'];
+      onSuccess?.call();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static Future<void> commentHitLike(
       {@required id,
       @required bool isLike,

@@ -78,6 +78,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   //刷新
   _onRefresh() {
+    FeedbackService.getUserInfo(onSuccess: () {
+      setState(() {});
+    }, onFailure: (e) {
+      ToastProvider.error(e.error.toString());
+    });
     currentPage = 1;
     _refreshController.resetNoData();
     switch (_currentTab.value) {

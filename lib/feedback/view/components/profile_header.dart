@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import 'change_nickname_dialog.dart';
+
 class ProfileHeader extends StatelessWidget {
   final Widget child;
 
@@ -49,9 +51,14 @@ class ProfileHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      decoration: CommonPreferences().isAprilFoolHead.value?BoxDecoration(
-                        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
-                      ):BoxDecoration(),
+                      decoration: CommonPreferences().isAprilFoolHead.value
+                          ? BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/lake_butt_icons/jokers.png'),
+                                  fit: BoxFit.contain),
+                            )
+                          : BoxDecoration(),
                       child: Padding(
                         padding: EdgeInsets.all((_width - 80) / 6),
                         child: UserAvatarImage(
@@ -64,11 +71,30 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(CommonPreferences().nickname.value,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.ProductSans.black2A.w700
-                                  .sp(22)),
+                          Row(
+                            children: [
+                              Text(CommonPreferences().lakeNickname.value,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextUtil.base.ProductSans.black2A.w700
+                                      .sp(22)),
+                              InkWell(
+                                onTap: () => showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) => ChangeNicknameDialog()
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: SvgPicture.asset(
+                                    'assets/svg_pics/lake_butt_icons/edit.svg',
+                                    width: 18.w,
+                                    color: ColorUtil.mainColor,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(CommonPreferences().userNumber.value,

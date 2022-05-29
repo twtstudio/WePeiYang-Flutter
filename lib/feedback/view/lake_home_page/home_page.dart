@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
@@ -78,6 +79,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         ToastProvider.error(e.error.toString());
       });
       context.read<FbHotTagsProvider>().initHotTags();
+      FeedbackService.getUserInfo(
+          onSuccess: () {},
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
     });
   }
 

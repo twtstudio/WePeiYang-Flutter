@@ -24,6 +24,7 @@ class CommonPreferences {
   var isLogin = PrefsBean<bool>('login');
   var token = PrefsBean<String>('token');
   var nickname = PrefsBean<String>('nickname', '未登录');
+  var lakeNickname = PrefsBean<String>('lakeNickname', '无昵称');
   var userNumber = PrefsBean<String>('userNumber');
   var phone = PrefsBean<String>('phone');
   var email = PrefsBean<String>('email');

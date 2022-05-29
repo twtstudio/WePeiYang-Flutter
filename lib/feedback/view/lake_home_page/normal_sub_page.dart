@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -227,9 +228,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                           SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              '   ${_getGreetText}, 微友',
+                              '   ${_getGreetText}, ${CommonPreferences().lakeNickname.value == '' ? '微友' : CommonPreferences().lakeNickname.value}',
                               style:
                                   TextUtil.base.grey6C.w600.NotoSansSC.sp(16),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(

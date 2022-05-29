@@ -112,16 +112,7 @@ class _NCommentCardState extends State<NCommentCard>
                 : const EdgeInsets.all(0),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              child:
-                  // Image.asset(
-                  //   'assets/images/lake_butt_icons/monkie.png',
-                  //   //'${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-                  //   width: 30,
-                  //   height: 24,
-                  //   fit: BoxFit.fitHeight,
-                  //   //placeholderBuilder: defaultPlaceholderBuilder,
-                  // ),
-                  SvgPicture.network(
+              child: SvgPicture.network(
                 //'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
                 '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
                 width: DateTime.now().month == 4 && DateTime.now().day == 1
@@ -605,7 +596,7 @@ class _NCommentCardState extends State<NCommentCard>
                 // 这个padding其实起到的是margin的效果，因为Ink没有margin属性
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
                   // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
                   child: Container(
                     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -632,7 +623,7 @@ class _NCommentCardState extends State<NCommentCard>
               ),
               if (!widget.isSubFloor && !widget.isFullView && subFloor != null)
                 Padding(
-                    padding: EdgeInsets.only(left: 24),
+                    padding: EdgeInsets.only(left: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -32,6 +32,7 @@ class Post {
     this.department,
     this.visitCount,
     this.eTag,
+    this.nickname,
   });
 
   int id;
@@ -56,6 +57,7 @@ class Post {
   Department department;
   int visitCount;
   String eTag;
+  String nickname;
 
   bool operator ==(Object other) => other is Post && other.id == id;
 
@@ -90,6 +92,7 @@ class Post {
             : Department.fromJson(json["department"]),
         visitCount: json["visit_count"],
         eTag: json["e_tag"],
+        nickname: json["nickname"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +118,7 @@ class Post {
         "department": department.toJson(),
         "visit_count": visitCount,
         "e_tag": eTag,
+        "nickname": nickname,
       };
 
   Post.nullExceptId(int questionId) {

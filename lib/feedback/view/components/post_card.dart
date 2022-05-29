@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -72,6 +73,13 @@ class _PostCardState extends State<PostCard> {
   Post post;
 
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => SizedBox(
+            width: 24,
+            height: 24,
+            child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
+          );
 
   _PostCardState(this.post);
 
@@ -316,15 +324,101 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(children: [
+          if (widget.type == PostCardType.detail) SizedBox(height: 8.w),
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            if (widget.type == PostCardType.detail)
+              Expanded(
+                child: InkWell(
+                  onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment(0, -0.2),
+                          child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: WePeiYangApp.screenWidth - 40.w),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
+                              child: Text(
+                                '${post.type == 1 ? '用户真名：' : '用户昵称：'}\n${post.nickname == '' ? '没名字的微友' : post.nickname}',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(16)
+                                    .black2A
+                                    .h(2),
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                        ),
+                        Align(
+                          alignment: Alignment(0, -0.2),
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 120.w),
+                            child: SvgPicture.network(
+                              '${EnvConfig.QNHD}avatar/beam/20/${post.id}+${post.nickname}',
+                              width: DateTime.now().month == 4 &&
+                                      DateTime.now().day == 1
+                                  ? 36.w
+                                  : 48.w,
+                              height: DateTime.now().month == 4 &&
+                                      DateTime.now().day == 1
+                                  ? 36.w
+                                  : 48.w,
+                              fit: BoxFit.contain,
+                              placeholderBuilder: defaultPlaceholderBuilder,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          child: SvgPicture.network(
+                            '${EnvConfig.QNHD}avatar/beam/20/${post.id}+${post.nickname}',
+                            width: DateTime.now().month == 4 &&
+                                    DateTime.now().day == 1
+                                ? 18.w
+                                : 24.w,
+                            height: DateTime.now().month == 4 &&
+                                    DateTime.now().day == 1
+                                ? 18.w
+                                : 24.w,
+                            fit: BoxFit.contain,
+                            placeholderBuilder: defaultPlaceholderBuilder,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: (WePeiYangApp.screenWidth - 24.w) / 2 - 66.w,
+                        child: Text(
+                          post.nickname == '' ? '没名字的微友' : post.nickname,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextUtil.base.w500.NotoSansSC.sp(16).black2A,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             if (tag != '')
               TagShowWidget(
                   tag,
-                  WePeiYangApp.screenWidth -
-                      (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 140 : 114) -
-                      (widget.post.imageUrls.isEmpty ? 0 : 84),
+                  widget.type == PostCardType.simple
+                      ? WePeiYangApp.screenWidth -
+                          (post.campus > 0 ? 40.w : 0) -
+                          (widget.post.imageUrls.isEmpty ? 140.w : 224.w)
+                      : (WePeiYangApp.screenWidth - 24.w) / 2 -
+                          (post.campus > 0 ? 100.w : 60.w),
                   post.type,
                   id,
                   0,
@@ -332,10 +426,10 @@ class _PostCardState extends State<PostCard> {
             if (tag != '') SizedBox(width: 8),
             TagShowWidget(
                 getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
-            SizedBox(width: 8),
+            if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
             campus
           ]),
-          SizedBox(height: 6),
+          SizedBox(height: 8.w),
           if (widget.type == PostCardType.detail)
             Row(
               children: [
@@ -373,10 +467,10 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
-          if (widget.type == PostCardType.detail) SizedBox(height: 8),
+          if (widget.type == PostCardType.detail) SizedBox(height: 6.w),
           content,
+          if (widget.type == PostCardType.simple) SizedBox(height: 2.w),
         ],
-        crossAxisAlignment: CrossAxisAlignment.start,
       ),
     ));
 
@@ -456,7 +550,7 @@ class _PostCardState extends State<PostCard> {
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 6.h),
             middleWidget,
           ],
         );
@@ -504,7 +598,7 @@ class _PostCardState extends State<PostCard> {
           );
 
     var visitWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
@@ -514,7 +608,7 @@ class _PostCardState extends State<PostCard> {
         ),
         Text(
           post.visitCount == null
-              ? '0   '
+              ? '0'
               : post.visitCount < 1000
                   ? post.visitCount.toString() +
                       (post.visitCount < 100 ? '   ' : ' ')
@@ -522,20 +616,12 @@ class _PostCardState extends State<PostCard> {
                       ? (post.visitCount.toDouble() / 1000)
                               .toStringAsFixed(1)
                               .toString() +
-                          'k '
-                      : post.visitCount < 100000
-                          ? (post.visitCount.toDouble() / 10000)
-                                  .toStringAsFixed(1)
-                                  .toString() +
-                              'w '
-                          : (post.visitCount.toDouble() / 10000)
-                                  .toStringAsFixed(1)
-                                  .toString() +
-                              'w',
+                          'k'
+                      : (post.visitCount.toDouble() / 10000)
+                              .toStringAsFixed(1)
+                              .toString() +
+                          'w',
           style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
-        ),
-        SizedBox(
-          width: 1.w,
         ),
       ],
     );
@@ -753,13 +839,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
-                if (widget.type == PostCardType.detail)
-                  Row(
-                    children: [
-                      Spacer(),
-                      visitWidget,
-                    ],
-                  )
+                if (widget.type == PostCardType.detail) visitWidget
               ],
             ),
             decoration: decoration,
@@ -767,7 +847,7 @@ class _PostCardState extends State<PostCard> {
         ));
     return widget.type != PostCardType.outSide
         ? Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
+            padding: EdgeInsets.fromLTRB(12.w, 12.w, 12.w, 2.w),
             child: body,
           )
         : Row(
