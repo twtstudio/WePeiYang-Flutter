@@ -114,7 +114,7 @@ class _NCommentCardState extends State<NCommentCard>
               borderRadius: BorderRadius.all(Radius.circular(15)),
               child: SvgPicture.network(
                 //'https://qnhd.twt.edu.cn/avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
-                '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.postId}+${widget.comment.nickname}',
+                '${EnvConfig.QNHD}avatar/beam/20/${widget.comment.nickname}',
                 width: DateTime.now().month == 4 && DateTime.now().day == 1
                     ? 18
                     : 24,
