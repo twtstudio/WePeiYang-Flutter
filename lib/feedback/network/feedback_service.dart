@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
+import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
@@ -231,6 +232,24 @@ class FeedbackService with AsyncTimer {
         list.add(Festival.fromJson(json));
       }
       onSuccess(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getNotices({
+    @required OnResult<List<Notice>> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'message/notices/department',
+      );
+      List<Notice> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Notice.fromJson(json));
+      }
+      onResult(list);
     } on DioError catch (e) {
       onFailure(e);
     }

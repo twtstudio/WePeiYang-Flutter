@@ -268,6 +268,41 @@ class Floor {
   }
 }
 
+class Notice {
+  Notice(
+      {this.id,
+      this.content,
+      this.title,
+      this.is_read,
+      this.sender,
+      this.createdAt});
+
+  int id;
+  String sender;
+  String title;
+  String content;
+  int is_read;
+  String createdAt;
+
+  factory Notice.fromJson(Map<String, dynamic> json) => Notice(
+        id: json["id"],
+        sender: json["sender"],
+        title: json["title"],
+        is_read: json["is_read"],
+        content: json["content"],
+        createdAt: json["create_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "sender": sender,
+        "title": title,
+        "is_read": is_read,
+        "content": content,
+        "created_at": createdAt
+      };
+}
+
 class Festival {
   Festival(
       {this.id,

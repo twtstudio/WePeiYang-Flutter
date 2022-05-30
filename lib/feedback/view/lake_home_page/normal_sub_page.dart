@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -114,6 +115,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             .refreshFailed();
       });
       context.read<FestivalProvider>().initFestivalList();
+      context.read<NoticeProvider>().initNotices();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
@@ -161,6 +163,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<FestivalProvider>().initFestivalList();
+    context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
@@ -217,7 +220,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0)
                   return Container(
                     height: 35,
-                    margin: EdgeInsets.only(top: 12, left: 14, right: 14),
+                    margin: EdgeInsets.only(top: 12, left: 5, right: 14),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -225,14 +228,45 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              '   ${_getGreetText}, ${CommonPreferences().lakeNickname.value == '' ? '微友' : CommonPreferences().lakeNickname.value}',
-                              style:
-                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(16),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          SizedBox(width: 0),
+                          context.read<NoticeProvider>().noticeList.length > 0
+                              ? InkWell(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/svg_pics/lake_butt_icons/notice.svg",
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        '${context.read<NoticeProvider>().noticeList[0].content}',
+                                        style: TextUtil
+                                            .base.grey6C.w600.NotoSansSC
+                                            .sp(16),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () => Navigator.pushNamed(
+                                      context, HomeRouter.notice),
+                                )
+                              : InkWell(
+                                  child: Expanded(
+                                    child: Text(
+                                      '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '' ? '微友' : CommonPreferences().lakeNickname.value}',
+                                      style: TextUtil
+                                          .base.grey6C.w600.NotoSansSC
+                                          .sp(16),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  onTap: () => Navigator.pushNamed(
+                                      context, HomeRouter.notice),
+                                ),
+                          SizedBox(
+                            width: 10,
                           ),
                           Text(
                             '排序  ',

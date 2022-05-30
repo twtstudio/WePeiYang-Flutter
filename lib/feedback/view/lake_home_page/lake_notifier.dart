@@ -116,8 +116,7 @@ class LakeModel extends ChangeNotifier {
       tabList.add(oTab);
       tabList.addAll(list);
       lakeAreas.addAll({0: LakeArea.empty()});
-      initLakeArea(
-          0, oTab, RefreshController(), ScrollController());
+      initLakeArea(0, oTab, RefreshController(), ScrollController());
       list.forEach((element) {
         lakeAreas.addAll({element.id: LakeArea.empty()});
         initLakeArea(
@@ -312,6 +311,23 @@ class FestivalProvider extends ChangeNotifier {
       onSuccess: (list) {
         festivalList.clear();
         festivalList.addAll(list);
+        notifyListeners();
+      },
+      onFailure: (e) {
+        notifyListeners();
+      },
+    );
+  }
+}
+
+class NoticeProvider extends ChangeNotifier {
+  List<Notice> noticeList = [];
+
+  Future<void> initNotices() async {
+    await FeedbackService.getNotices(
+      onResult: (notices) {
+        noticeList.clear();
+        noticeList.addAll(notices);
         notifyListeners();
       },
       onFailure: (e) {
