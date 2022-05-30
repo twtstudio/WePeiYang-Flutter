@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 class NoticesPage extends WbyWebView {
   NoticesPage({Key key})
       : super(
-      page: '公告',
+      page: '通知',
       backgroundColor: Colors.white,
       fullPage: false,
       key: key);

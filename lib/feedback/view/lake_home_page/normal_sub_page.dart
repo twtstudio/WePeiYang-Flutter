@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
 class NSubPage extends StatefulWidget {
   final int index;
@@ -240,12 +241,20 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                         "assets/svg_pics/lake_butt_icons/notice.svg",
                                         width: 20,
                                       ),
-                                      Text(
-                                        '${context.read<NoticeProvider>().noticeList[0].content}',
-                                        style: TextUtil
-                                            .base.grey6C.w600.NotoSansSC
-                                            .sp(16),
-                                        overflow: TextOverflow.ellipsis,
+                                      SizedBox(width: 10,),
+                                      SizedBox(
+                                        height: 22,
+                                        width: 100,
+                                        child: TextScroller(
+                                          stepOffset: 200.0,
+                                          duration: Duration(seconds: 5),
+                                          paddingLeft: 0.0,
+                                          children: [
+                                            Text(
+                                                '${context.read<NoticeProvider>().noticeList[0].content}'),
+                                            SizedBox(width: 10),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
