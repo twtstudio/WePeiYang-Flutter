@@ -221,15 +221,16 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0)
                   return Container(
                     height: 35,
-                    margin: EdgeInsets.only(top: 12, left: 5, right: 14),
+                    margin: EdgeInsets.only(top: 12, left: 14, right: 14),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
                         color: Colors.white),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(width: 0),
+                          SizedBox(width: 12),
                           context.read<NoticeProvider>().noticeList.length > 0
                               ? InkWell(
                                   child: Row(
@@ -241,18 +242,21 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                         "assets/svg_pics/lake_butt_icons/notice.svg",
                                         width: 20,
                                       ),
-                                      SizedBox(width: 10,),
+                                      SizedBox(width: 6),
                                       SizedBox(
-                                        height: 22,
-                                        width: 100,
+                                        height: 24,
+                                        width: WePeiYangApp.screenWidth - 170,
                                         child: TextScroller(
                                           stepOffset: 200.0,
                                           duration: Duration(seconds: 5),
                                           paddingLeft: 0.0,
                                           children: [
                                             Text(
-                                                '${context.read<NoticeProvider>().noticeList[0].content}'),
-                                            SizedBox(width: 10),
+                                                '${context.read<NoticeProvider>().noticeList[0].content}',
+                                                style: TextUtil.base.mainColor
+                                                    .w800.NotoSansSC
+                                                    .sp(15)),
+                                            SizedBox(width: 30),
                                           ],
                                         ),
                                       ),
@@ -263,22 +267,15 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                 )
                               : InkWell(
                                   child: Text(
-                                    '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '' ? '微友' : CommonPreferences().lakeNickname.value}',
-                                    style: TextUtil
-                                        .base.grey6C.w600.NotoSansSC
+                                    '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '无昵称' ? '微友' : CommonPreferences().lakeNickname.value}',
+                                    style: TextUtil.base.grey6C.w600.NotoSansSC
                                         .sp(16),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   onTap: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            '排序  ',
-                            style: TextUtil.base.grey6C.w600.NotoSansSC.sp(12),
-                          ),
+                          Spacer(),
                           Container(
                             height: double.infinity,
                             width: 90,
@@ -299,7 +296,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                           context.read<LakeModel>().sortSeq != 0
                                               ? 2
                                               : 40),
-                                  width: 48,
+                                  width: 46,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(100)),

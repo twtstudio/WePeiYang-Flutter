@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
-import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
@@ -12,8 +11,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  // String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -65,8 +64,8 @@ class FeedbackPicPostDio extends DioAbstract {
 
 class FeedbackAdminPostDio extends DioAbstract {
   @override
-  // String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
