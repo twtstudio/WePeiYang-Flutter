@@ -46,19 +46,34 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     });
   }
 
+  // String getNotices() {
+  //   ///仅返回当日公告
+  //   context.read<NoticeProvider>().initNotices();
+  //   List<Notice> notice = context.read<NoticeProvider>().noticeList;
+  //   String res = "";
+  //   String now =DateTime.now().toString().substring(0,10);
+  //   for (int i = 0; i < notice.length; i++) {
+  //     String time = notice[i].createdAt.substring(0,10);
+  //     if(time == now) {
+  //       res += notice[i].title.replaceAll('\n', ' ');
+  //       res += "              ";
+  //       ///空位符
+  //     }
+  //   }
+  //   return res;
+  // }
   String getNotices() {
+    ///返回所有公告
     context.read<NoticeProvider>().initNotices();
     List<Notice> notice = context.read<NoticeProvider>().noticeList;
     String res = "";
     for (int i = 0; i < notice.length; i++) {
       res += notice[i].title.replaceAll('\n', ' ');
       res += "              ";
-
-      ///空位符
+        ///空位符
     }
     return res;
   }
-
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context
             .read<LakeModel>()

@@ -290,7 +290,7 @@ class Notice {
         title: json["title"],
         is_read: json["is_read"],
         content: json["content"],
-        createdAt: json["create_at"],
+        createdAt: json["created_at"],
       );
 
   Map<String, dynamic> toJson() => {
