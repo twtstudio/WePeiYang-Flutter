@@ -130,7 +130,7 @@ class _SelfInformationState extends State<SelfInformation> {
 }
 
 //https://www.cnblogs.com/qqcc1388/p/12405548.html
-///跑马灯哗哗哗
+/// 跑马灯哗哗哗
 class TextScroller extends StatefulWidget {
   final Duration duration; // 轮播时间
   final double stepOffset; // 偏移量

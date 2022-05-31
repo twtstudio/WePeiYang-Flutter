@@ -46,40 +46,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     });
   }
 
-  // String getNotices() {
-  //   ///仅返回当日公告
-  //   context.read<NoticeProvider>().initNotices();
-  //   List<Notice> notice = context.read<NoticeProvider>().noticeList;
-  //   String res = "";
-  //   String now =DateTime.now().toString().substring(0,10);
-  //   for (int i = 0; i < notice.length; i++) {
-  //     String time = notice[i].createdAt.substring(0,10);
-  //     if(time == now) {
-  //       res += notice[i].title.replaceAll('\n', ' ');
-  //       res += "              ";
-  //       ///空位符
-  //     }
-  //   }
-  //   return res;
-  // }
-  String getNotices() {
-    ///返回所有公告
-    context.read<NoticeProvider>().initNotices();
-    List<Notice> notice = context.read<NoticeProvider>().noticeList;
-    String res = "";
-    for (int i = 0; i < notice.length; i++) {
-      res += notice[i].title.replaceAll('\n', ' ');
-      res += "              ";
-        ///空位符
-    }
-    return res;
-  }
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context
-            .read<LakeModel>()
-            .lakeAreas[index]
-            .refreshController
-            .isRefresh &&
+        .read<LakeModel>()
+        .lakeAreas[index]
+        .refreshController
+        .isRefresh &&
         scrollInfo.metrics.pixels >= 2)
       context
           .read<LakeModel>()
@@ -101,7 +73,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   String get _getGreetText {
-    int hour = DateTime.now().hour;
+    int hour = DateTime
+        .now()
+        .hour;
     if (hour < 5)
       return '晚上好';
     else if (hour >= 5 && hour < 12)
@@ -178,10 +152,16 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   void listToTop() {
-    if (context.read<LakeModel>().lakeAreas[index].controller.offset > 1500) {
-      context.read<LakeModel>().lakeAreas[index].controller.jumpTo(1500);
+    if (context
+        .read<LakeModel>()
+        .lakeAreas[index].controller.offset > 1500) {
+      context
+          .read<LakeModel>()
+          .lakeAreas[index].controller.jumpTo(1500);
     }
-    context.read<LakeModel>().lakeAreas[index].controller.animateTo(-85,
+    context
+        .read<LakeModel>()
+        .lakeAreas[index].controller.animateTo(-85,
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
@@ -197,7 +177,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
-        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 1,
+        _departmentsProvider, index, context
+        .read<LakeModel>()
+        .sortSeq ?? 1,
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
@@ -212,14 +194,16 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     final status =
-        context.select((LakeModel model) => model.lakeAreas[index].status);
+    context.select((LakeModel model) => model.lakeAreas[index].status);
 
     if (status == LakePageStatus.idle)
       return NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller:
-              context.read<LakeModel>().lakeAreas[index].refreshController,
+          context
+              .read<LakeModel>()
+              .lakeAreas[index].refreshController,
           header: ClassicHeader(
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
@@ -240,11 +224,15 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           enablePullUp: true,
           onLoading: _onLoading,
           child: ListView.builder(
-            controller: context.read<LakeModel>().lakeAreas[index].controller,
+            controller: context
+                .read<LakeModel>()
+                .lakeAreas[index].controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: context.select((LakeModel model) =>
-                model.lakeAreas[index].dataList.values.toList().length + 2),
+            model.lakeAreas[index].dataList.values
+                .toList()
+                .length + 2),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
                 if (ind == 0)
@@ -260,71 +248,86 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(width: 12),
-                          context.read<NoticeProvider>().noticeList.length > 0
+                          context
+                              .read<NoticeProvider>()
+                              .noticeList
+                              .length > 0
                               ? InkWell(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/svg_pics/lake_butt_icons/notice.svg",
-                                        width: 20,
-                                      ),
-                                      SizedBox(width: 6),
-                                      SizedBox(
-                                        height: 20,
-                                        width: WePeiYangApp.screenWidth - 170,
-                                        child: context
-                                                        .read<NoticeProvider>()
-                                                        .noticeList[0]
-                                                        .title
-                                                        .length >
-                                                    14 ||
-                                                context
-                                                        .read<NoticeProvider>()
-                                                        .noticeList
-                                                        .length >
-                                                    1
-
-                                            ///有且仅有一条，并且长度较小
-                                            ? TextScroller(
-                                                stepOffset: 200.0,
-                                                duration: Duration(seconds: 5),
-                                                paddingLeft: 0.0,
-                                                children: [
-                                                  Text(getNotices(),
-                                                      style: TextUtil
-                                                          .base
-                                                          .mainColor
-                                                          .w800
-                                                          .NotoSansSC
-                                                          .sp(15)),
-                                                  SizedBox(width: 40),
-                                                ],
-                                              )
-                                            : Text(
-                                                '${context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextUtil.base.mainColor
-                                                    .w800.NotoSansSC
-                                                    .sp(15)),
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () => Navigator.pushNamed(
-                                      context, HomeRouter.notice),
-                                )
-                              : InkWell(
-                                  child: Text(
-                                    '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '无昵称' ? '微友' : CommonPreferences().lakeNickname.value}',
-                                    style: TextUtil.base.grey6C.w600.NotoSansSC
-                                        .sp(16),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  onTap: () => Navigator.pushNamed(
-                                      context, HomeRouter.notice),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/svg_pics/lake_butt_icons/notice.svg",
+                                  width: 20,
                                 ),
+                                SizedBox(width: 6),
+                                SizedBox(
+                                    height: 20,
+                                    width: WePeiYangApp.screenWidth - 170,
+                                    child: context.read<NoticeProvider>().noticeList.length > 1 ? TextScroller(
+                                      stepOffset: 500,
+                                      duration: Duration(seconds: 20),
+                                      paddingLeft: 0.0,
+                                      children: List.generate(context
+                                          .read<NoticeProvider>()
+                                          .noticeList
+                                          .length, (index) =>
+                                          Text(
+                                              '· ${context
+                                                  .read<NoticeProvider>().noticeList[index].title.length > 16 ? context
+                                                  .read<NoticeProvider>()
+                                                  .noticeList[index].title
+                                                  .replaceAll('\n', ' ')
+                                                  .substring(0, 15) + '...' : context
+                                                  .read<NoticeProvider>()
+                                                  .noticeList[index].title
+                                                  .replaceAll('\n', ' ')}           ',
+                                              style: TextUtil
+                                                  .base
+                                                  .mainColor
+                                                  .w800
+                                                  .NotoSansSC
+                                                  .sp(15)),),
+                                    ) : Text(
+                                        '${context
+                                            .read<NoticeProvider>().noticeList[0].title.length > 16 ? context
+                                            .read<NoticeProvider>()
+                                            .noticeList[0].title
+                                            .replaceAll('\n', ' ')
+                                            .substring(0, 15) + '...' : context
+                                            .read<NoticeProvider>()
+                                            .noticeList[0].title
+                                            .replaceAll('\n', ' ')}',
+                                        style: TextUtil
+                                            .base
+                                            .mainColor
+                                            .w800
+                                            .NotoSansSC
+                                            .sp(15))
+                                ),
+                              ],
+                            ),
+                            onTap: () =>
+                                Navigator.pushNamed(
+                                    context, HomeRouter.notice),
+                          )
+                              : InkWell(
+                            child: Text(
+                              '${_getGreetText}, ${CommonPreferences()
+                                  .lakeNickname.value == '无昵称'
+                                  ? '微友'
+                                  : CommonPreferences()
+                                  .lakeNickname.value}',
+                              style: TextUtil.base.grey6C.w600.NotoSansSC
+                                  .sp(16),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () =>
+                                Navigator.pushNamed(
+                                    context, HomeRouter.notice),
+                          ),
                           Spacer(),
                           Container(
                             height: double.infinity,
@@ -334,7 +337,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             decoration: BoxDecoration(
                               color: ColorUtil.greyF7F8Color,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
+                              BorderRadius.all(Radius.circular(100)),
                             ),
                             child: Stack(
                               children: [
@@ -343,9 +346,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   curve: Curves.easeInOutCubic,
                                   margin: EdgeInsets.only(
                                       left:
-                                          context.read<LakeModel>().sortSeq != 0
-                                              ? 2
-                                              : 40),
+                                      context
+                                          .read<LakeModel>()
+                                          .sortSeq != 0
+                                          ? 2
+                                          : 40),
                                   width: 46,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
@@ -354,46 +359,50 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                 ),
                                 Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                     children: [
                                       InkWell(
                                         onTap: () {
                                           setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                1;
+                                            context
+                                                .read<LakeModel>()
+                                                .sortSeq =
+                                            1;
                                             listToTop();
                                           });
                                         },
                                         child: Center(
                                           child: Text('默认',
                                               style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
+                                                  .read<LakeModel>()
+                                                  .sortSeq !=
+                                                  0
                                                   ? TextUtil.base.white.w900
-                                                      .sp(12)
+                                                  .sp(12)
                                                   : TextUtil.base.black2A.w500
-                                                      .sp(12)),
+                                                  .sp(12)),
                                         ),
                                       ),
                                       InkWell(
                                         onTap: () {
                                           setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                0;
+                                            context
+                                                .read<LakeModel>()
+                                                .sortSeq =
+                                            0;
                                             listToTop();
                                           });
                                         },
                                         child: Center(
                                           child: Text('最新',
                                               style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
+                                                  .read<LakeModel>()
+                                                  .sortSeq !=
+                                                  0
                                                   ? TextUtil.base.black2A.w500
-                                                      .sp(12)
+                                                  .sp(12)
                                                   : TextUtil.base.white.w900
-                                                      .sp(12)),
+                                                  .sp(12)),
                                         ),
                                       ),
                                     ]),
@@ -407,7 +416,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (index == 0 && ind == 0) return HotCard();
                 if (index == 0) ind--;
                 if (ind == 0 &&
-                    context.read<FestivalProvider>().festivalList.length > 0)
+                    context
+                        .read<FestivalProvider>()
+                        .festivalList
+                        .length > 0)
                   return ActivityCard();
                 ind--;
                 final post = context
