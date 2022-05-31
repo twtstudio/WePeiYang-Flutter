@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,19 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
       ToastProvider.error(e.error.toString());
     });
+  }
+
+  String getNotices() {
+    context.read<NoticeProvider>().initNotices();
+    List<Notice> notice = context.read<NoticeProvider>().noticeList;
+    String res = "";
+    for (int i = 0; i < notice.length; i++) {
+      res += notice[i].title.replaceAll('\n', ' ');
+      res += "              ";
+
+      ///空位符
+    }
+    return res;
   }
 
   _onScrollNotification(ScrollNotification scrollInfo) {
@@ -247,25 +261,31 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                         height: 20,
                                         width: WePeiYangApp.screenWidth - 170,
                                         child: context
-                                                    .read<NoticeProvider>()
-                                                    .noticeList[0]
-                                                    .title
-                                                    .length >
-                                                14
+                                                        .read<NoticeProvider>()
+                                                        .noticeList[0]
+                                                        .title
+                                                        .length >
+                                                    14 ||
+                                                context
+                                                        .read<NoticeProvider>()
+                                                        .noticeList
+                                                        .length >
+                                                    1
+
+                                            ///有且仅有一条，并且长度较小
                                             ? TextScroller(
                                                 stepOffset: 200.0,
                                                 duration: Duration(seconds: 5),
                                                 paddingLeft: 0.0,
                                                 children: [
-                                                  Text(
-                                                      '${context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                  Text(getNotices(),
                                                       style: TextUtil
                                                           .base
                                                           .mainColor
                                                           .w800
                                                           .NotoSansSC
                                                           .sp(15)),
-                                                  SizedBox(width: 30),
+                                                  SizedBox(width: 40),
                                                 ],
                                               )
                                             : Text(
