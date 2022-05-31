@@ -244,21 +244,36 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                       ),
                                       SizedBox(width: 6),
                                       SizedBox(
-                                        height: 24,
+                                        height: 20,
                                         width: WePeiYangApp.screenWidth - 170,
-                                        child: TextScroller(
-                                          stepOffset: 200.0,
-                                          duration: Duration(seconds: 5),
-                                          paddingLeft: 0.0,
-                                          children: [
-                                            Text(
-                                                '${context.read<NoticeProvider>().noticeList[0].content}',
+                                        child: context
+                                                    .read<NoticeProvider>()
+                                                    .noticeList[0]
+                                                    .title
+                                                    .length >
+                                                14
+                                            ? TextScroller(
+                                                stepOffset: 200.0,
+                                                duration: Duration(seconds: 5),
+                                                paddingLeft: 0.0,
+                                                children: [
+                                                  Text(
+                                                      '${context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                      style: TextUtil
+                                                          .base
+                                                          .mainColor
+                                                          .w800
+                                                          .NotoSansSC
+                                                          .sp(15)),
+                                                  SizedBox(width: 30),
+                                                ],
+                                              )
+                                            : Text(
+                                                '${context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextUtil.base.mainColor
                                                     .w800.NotoSansSC
                                                     .sp(15)),
-                                            SizedBox(width: 30),
-                                          ],
-                                        ),
                                       ),
                                     ],
                                   ),

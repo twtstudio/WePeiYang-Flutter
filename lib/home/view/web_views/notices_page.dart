@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class NoticesPage extends WbyWebView {
   NoticesPage({Key key})
       : super(
-      page: '通知',
-      backgroundColor: Colors.white,
+      page: '部门通知',
+      backgroundColor: ColorUtil.mainColor,
       fullPage: false,
       key: key);
 
