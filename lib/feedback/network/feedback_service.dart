@@ -35,7 +35,7 @@ class FeedbackDio extends DioAbstract {
         //                   .toString()),
         //       true);
         default: // 其他错误
-          return handler.reject(WpyDioError(error: response.data['msg']), true);
+          return handler.reject(WpyDioError(error: response.data['data']['error']), true);
       }
     })
   ];

@@ -10,7 +10,7 @@ class HomeRouter {
   static String wiki = 'home/wiki';
   static String hz = 'home/52hz';
   static String restartGame = 'home/restartGame';
-  static String notice = 'home/restartGame';
+  static String notice = 'home/notice';
   static final Map<String, Widget Function(Object arguments)> routers = {
     home: (_) => HomePage(),
     wiki: (_) => WikiPage(),

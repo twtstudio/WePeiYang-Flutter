@@ -608,19 +608,19 @@ class _PostCardState extends State<PostCard> {
         ),
         Text(
           post.visitCount == null
-              ? '0'
+              ? '0  '
               : post.visitCount < 1000
                   ? post.visitCount.toString() +
-                      (post.visitCount < 100 ? '   ' : ' ')
+                      (post.visitCount < 100 ? '   ' : '  ')
                   : post.visitCount < 10000
                       ? (post.visitCount.toDouble() / 1000)
                               .toStringAsFixed(1)
                               .toString() +
-                          'k'
+                          'k  '
                       : (post.visitCount.toDouble() / 10000)
                               .toStringAsFixed(1)
                               .toString() +
-                          'w',
+                          'w  ',
           style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
         ),
       ],

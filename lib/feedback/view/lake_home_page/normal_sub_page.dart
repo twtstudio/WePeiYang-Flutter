@@ -314,15 +314,18 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     context, HomeRouter.notice),
                           )
                               : InkWell(
-                            child: Text(
-                              '${_getGreetText}, ${CommonPreferences()
-                                  .lakeNickname.value == '无昵称'
-                                  ? '微友'
-                                  : CommonPreferences()
-                                  .lakeNickname.value}',
-                              style: TextUtil.base.grey6C.w600.NotoSansSC
-                                  .sp(16),
-                              overflow: TextOverflow.ellipsis,
+                            child: SizedBox(
+                              width: WePeiYangApp.screenWidth * 0.56,
+                              child: Text(
+                                '${_getGreetText}, ${CommonPreferences()
+                                    .lakeNickname.value == '无昵称'
+                                    ? '微友'
+                                    : CommonPreferences()
+                                    .lakeNickname.value.toString()}',
+                                style: TextUtil.base.grey6C.w600.NotoSansSC
+                                    .sp(16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             onTap: () =>
                                 Navigator.pushNamed(

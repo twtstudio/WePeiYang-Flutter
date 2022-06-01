@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
@@ -73,17 +74,22 @@ class ProfileHeader extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Text(CommonPreferences().lakeNickname.value,
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextUtil.base.ProductSans.black2A.w700
-                                      .sp(22)),
+                              SizedBox(
+                                  width: WePeiYangApp.screenWidth / 3,
+                                  child: Text(
+                                      CommonPreferences().lakeNickname.value,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 4,
+                                      style: TextUtil
+                                          .base.ProductSans.black2A.w700
+                                          .sp(20))),
                               InkWell(
                                 onTap: () => showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (BuildContext context) => ChangeNicknameDialog()
-                                ),
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context) =>
+                                        ChangeNicknameDialog()),
                                 child: Padding(
                                   padding: EdgeInsets.all(4.w),
                                   child: SvgPicture.asset(
