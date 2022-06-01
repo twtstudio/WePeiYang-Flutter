@@ -458,7 +458,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.type == 0 ? widget.data.post.id : widget.data.floor.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,
@@ -805,7 +805,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.post.id}+${widget.data.floor.nickname}',
+          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
           width: 30,
           height: 30,
           fit: BoxFit.cover,

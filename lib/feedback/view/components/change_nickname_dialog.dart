@@ -17,7 +17,7 @@ class ChangeNicknameDialog extends StatefulWidget {
 
 class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
   var _textEditingController = TextEditingController();
-  String _commentLengthIndicator = '0/200';
+  String _commentLengthIndicator = '0/20';
 
   @override
   void dispose() {

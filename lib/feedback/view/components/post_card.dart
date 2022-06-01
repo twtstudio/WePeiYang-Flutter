@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -359,7 +358,7 @@ class _PostCardState extends State<PostCard> {
                           child: Padding(
                             padding: EdgeInsets.only(bottom: 120.w),
                             child: SvgPicture.network(
-                              '${EnvConfig.QNHD}avatar/beam/20/${post.id}+${post.nickname}',
+                              '${EnvConfig.QNHD}avatar/beam/20/${post.nickname}',
                               width: DateTime.now().month == 4 &&
                                       DateTime.now().day == 1
                                   ? 36.w
@@ -383,7 +382,7 @@ class _PostCardState extends State<PostCard> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                           child: SvgPicture.network(
-                            '${EnvConfig.QNHD}avatar/beam/20/${post.id}+${post.nickname}',
+                            '${EnvConfig.QNHD}avatar/beam/20/${post.nickname}',
                             width: DateTime.now().month == 4 &&
                                     DateTime.now().day == 1
                                 ? 18.w
