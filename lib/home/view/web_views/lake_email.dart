@@ -23,6 +23,6 @@ class _FestivalPageState extends WbyWebViewState {
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     ///测试qpi，正式为https://www.qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences().lakeToken.value}
-    return 'pamaforce.xyz:12000/#/?type=default&token=${CommonPreferences().lakeToken.value}';
+    return 'https://qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences().lakeToken.value}';
   }
 }
