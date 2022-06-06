@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
@@ -45,9 +44,6 @@ class WpyExamWidget extends StatelessWidget {
   }
 
   Widget _detail(ExamNotifier notifier, BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    Gradient gradient = LinearGradient(colors: [Colors.blueAccent, Colors.redAccent]);
-    Shader shader = gradient.createShader(Rect.fromLTWH(0,0,size.width, size.height));
     if (notifier.unscheduled.length == 0) {
       var msg = CommonPreferences().isAprilFool.value
           ? '您最近有新的考试哦，打开考表查看详情'
@@ -63,30 +59,29 @@ class WpyExamWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(msg,
-                  style:  FontManager.YaHeiLight.copyWith(
-                          color: Color.fromRGBO(207, 208, 212, 1),
-                          fontSize: 14,
-                          letterSpacing: 0.5)),
+                  style: FontManager.YaHeiLight.copyWith(
+                      color: Color.fromRGBO(207, 208, 212, 1),
+                      fontSize: 14,
+                      letterSpacing: 0.5)),
             )),
       );
     } else if (notifier.unscheduled.length > 1) {
       return Container(
         constraints: BoxConstraints(
-          maxHeight: 105,
+          maxHeight: 110,
         ),
         child: ListView(
           scrollDirection: Axis.horizontal,
           physics: BouncingScrollPhysics(),
           children: notifier.unscheduled
-              .map((e) => examCard(context, e, true, wpy: true))
+              .map((e) => SizedBox(
+                  width: 300,
+                  child: examCard(context, e, false, wpy: true)))
               .toList(),
         ),
       );
     } else
-      return Row(
-        children: notifier.unscheduled
-            .map((e) => examCard(context, e, true, wpy: true))
-            .toList(),
-      );
+      return notifier.unscheduled
+            .map((e) => examCard(context, e, false, wpy: true)).first;
   }
 }

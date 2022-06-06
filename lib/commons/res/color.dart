@@ -170,7 +170,6 @@ class FavorColors {
     Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
     Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
     Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
-    Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
     Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
   ];
 }

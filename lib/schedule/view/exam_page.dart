@@ -147,7 +147,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
   var seat = exam.seat;
   if (seat != '地点未安排') seat = '座位' + seat;
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
+    padding: const EdgeInsets.fromLTRB(0, 4, 14, 4),
     child: ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
