@@ -186,7 +186,10 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             ),
           ),
         ),
-        body: TabBarView(physics: NeverScrollableScrollPhysics(), controller: _tabController, children: wd));
+        body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: wd));
   }
 }
 
@@ -213,12 +216,21 @@ class _MessageTabState extends State<MessageTab> {
   @override
   Widget build(BuildContext context) {
     if (widget.isEmail ?? false) {
+      int count = context.select((MessageProvider messageProvider) =>
+          messageProvider.getMessageCount(isEmail: true));
       return Tab(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(width: _tabPaddingWidth),
-          Text('湖底通知'),
+          count == 0
+              ? Text('湖底通知')
+              : Badge(
+                  child: Text('湖底通知'),
+                  badgeContent: Text(
+                    count.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 8),
+                  )),
           SizedBox(width: _tabPaddingWidth),
         ],
       ));
@@ -234,7 +246,7 @@ class _MessageTabState extends State<MessageTab> {
       );
 
       int count = context.select((MessageProvider messageProvider) =>
-          messageProvider.getMessageCount(widget.type));
+          messageProvider.getMessageCount(type: widget.type));
       return Tab(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -472,7 +484,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
             Row(
               children: [
                 Text(
-                  '${S.current.anonymous_user} ',
+                  '匿名用户 ',
                   style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
                 ),
                 Text(
@@ -605,7 +617,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         onTap: () async {
           await widget.onTapDown?.call();
 
-          ///因为跳转到评论页面其实感觉不太舒服...就先都跳转到帖子了
+          ///点内部的帖子区域块跳转到帖子
           if (post.id != -1) {
             await Navigator.pushNamed(
               context,
@@ -613,15 +625,6 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               arguments: post,
             );
           }
-          // else {
-          //   await Navigator.pushNamed(
-          //     context,
-          //     FeedbackRouter.commentDetail,
-          //     arguments: widget.data.floor,
-          //   ).then((_) => context
-          //       .findAncestorStateOfType<_FeedbackMessagePageState>()
-          //       .onRefresh());
-          // }
         },
         child: Container(
           decoration: BoxDecoration(
@@ -793,7 +796,7 @@ class FloorMessageItem extends StatefulWidget {
 }
 
 class _FloorMessageItemState extends State<FloorMessageItem> {
-  final String baseUrl = 'EnvConfig.QNHDPICdownload/thumb/';
+  final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => Loading();
@@ -818,9 +821,13 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           children: [
             Row(
               children: [
-                Text(
-                  widget.data.floor.nickname + ' ',
-                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 0.3.sw),
+                  child: Text(
+                    widget.data.floor.nickname + ' ',
+                    style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Text(
                   widget.data.type == 0 ? '回复了你的冒泡' : '回复了你的评论',
@@ -975,21 +982,49 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         onTap: () async {
           await widget.onTapDown?.call();
           if (widget.data.type == 0) {
-          await Navigator.pushNamed(
-            context,
-            FeedbackRouter.commentDetail,
-            arguments: ReplyDetailPageArgs(widget.data.floor, widget.data.post.uid, isMessage: true),
-          ).then((_) {
-            context.read<MessageProvider>().refreshFeedbackCount();
-          });
-          } else {
             await Navigator.pushNamed(
               context,
               FeedbackRouter.commentDetail,
-              arguments: ReplyDetailPageArgs(widget.data.toFloor, widget.data.post.uid, isMessage: true),
+              arguments: ReplyDetailPageArgs(
+                  widget.data.floor, widget.data.post.uid,
+                  isMessage: true),
             ).then((_) {
               context.read<MessageProvider>().refreshFeedbackCount();
             });
+          } else {
+            widget.data.floor.subTo == 0
+                ? await FeedbackService.getFloorById(
+                    id: widget.data.floor.id,
+                    onResult: (subToFloor) {
+                      Navigator.pushNamed(
+                        context,
+                        FeedbackRouter.commentDetail,
+                        arguments: ReplyDetailPageArgs(
+                            subToFloor, widget.data.post.uid,
+                            isMessage: true),
+                      ).then((_) {
+                        context.read<MessageProvider>().refreshFeedbackCount();
+                      });
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    })
+                : await FeedbackService.getFloorById(
+                    id: widget.data.floor.subTo,
+                    onResult: (subToFloor) {
+                      Navigator.pushNamed(
+                        context,
+                        FeedbackRouter.commentDetail,
+                        arguments: ReplyDetailPageArgs(
+                            subToFloor, widget.data.post.uid,
+                            isMessage: true),
+                      ).then((_) {
+                        context.read<MessageProvider>().refreshFeedbackCount();
+                      });
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    });
           }
         },
         child: Container(
@@ -1003,10 +1038,16 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
               children: [
                 sender,
                 SizedBox(height: 7.w),
-                Text(
+                if (widget.data.floor.content != '')
+                  Text(
                   widget.data.floor.content,
                   style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
                 ),
+                if (widget.data.floor.imageUrl != '')
+                  Text(
+                    '[图片]',
+                    style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
+                  ),
                 SizedBox(height: 8.w),
                 messageWrapper ?? questionItem,
               ],

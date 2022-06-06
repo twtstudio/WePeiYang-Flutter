@@ -62,7 +62,8 @@ class MessageProvider extends ChangeNotifier {
     _likeMessages.clear();
   }
 
-  int getMessageCount(MessageType type) {
+  int getMessageCount({MessageType type, bool isEmail = false}) {
+    if(isEmail) return _messageCount?.notice ?? 0;
     switch (type) {
       case MessageType.like:
         return _messageCount?.like ?? 0;

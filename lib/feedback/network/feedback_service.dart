@@ -470,6 +470,25 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getFloorById({
+    @required int id,
+    @required OnResult<Floor> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'floor',
+        queryParameters: {
+          'floor_id': '$id',
+        },
+      );
+      var floor = Floor.fromJson(response.data['data']['floor']);
+      onResult(floor);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
