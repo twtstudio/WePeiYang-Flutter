@@ -127,7 +127,7 @@ class SolveOrNotWidget extends StatelessWidget {
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        //已分发未解决
+        //已分发
       case 3:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagProcessed.svg',

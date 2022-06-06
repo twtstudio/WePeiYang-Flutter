@@ -515,6 +515,45 @@ class _DetailPageState extends State<DetailPage>
                                                     imageSelectionKey
                                                         .currentState
                                                         .shotPic()),
+                                          IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/lake_butt_icons/paste.png',
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.contain,
+                                              ),
+                                              onPressed: () => launchKey
+                                                  .currentState
+                                                  .getClipboardData()),
+                                          IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/lake_butt_icons/x.png',
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                              onPressed: () {
+                                                if (launchKey
+                                                    .currentState
+                                                    .textEditingController
+                                                    .text
+                                                    .isNotEmpty) {
+                                                  launchKey.currentState
+                                                      .textEditingController
+                                                      .clear();
+                                                  launchKey.currentState
+                                                      .setState(() {
+                                                    launchKey.currentState
+                                                            .commentLengthIndicator =
+                                                        '清空成功';
+                                                  });
+                                                } else {
+                                                  Provider.of<NewFloorProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .clearAndClose();
+                                                }
+                                              }),
                                           Spacer(),
                                           checkButton,
                                           SizedBox(width: 16),
@@ -544,13 +583,15 @@ class _DetailPageState extends State<DetailPage>
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
-                                        child: post.type == 1 ? Text('校务帖子为实名发言!!!',
-                                            style: TextUtil
-                                                .base.NotoSansSC.w500.dangerousRed
-                                                .sp(12)) : Text('友善回复，真诚沟通',
-                                            style: TextUtil
-                                                .base.NotoSansSC.w500.grey97
-                                                .sp(12)),
+                                        child: post.type == 1
+                                            ? Text('校务帖子为实名发言!!!',
+                                                style: TextUtil.base.NotoSansSC
+                                                    .w500.dangerousRed
+                                                    .sp(12))
+                                            : Text('友善回复，真诚沟通',
+                                                style: TextUtil
+                                                    .base.NotoSansSC.w500.grey97
+                                                    .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(11),
@@ -718,8 +759,7 @@ class _DetailPageState extends State<DetailPage>
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              post.type == 1 ? '校务提问：实名' :
-              '冒泡',
+              post.type == 1 ? '校务提问：实名' : '冒泡',
               style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
             ),
           ),
@@ -827,26 +867,26 @@ class CommentInputField extends StatefulWidget {
 }
 
 class CommentInputFieldState extends State<CommentInputField> {
-  var _textEditingController = TextEditingController();
+  var textEditingController = TextEditingController();
   FocusNode _commentFocus = FocusNode();
-  String _commentLengthIndicator = '0/200';
+  String commentLengthIndicator = '0/200';
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    textEditingController.dispose();
     super.dispose();
   }
 
   void send(bool isOfficial) {
-    if (_textEditingController.text.isNotEmpty ||
-        (_textEditingController.text.isEmpty &&
+    if (textEditingController.text.isNotEmpty ||
+        (textEditingController.text.isEmpty &&
             context.read<NewFloorProvider>().images.isNotEmpty)) {
       if (context.read<NewFloorProvider>().images.isNotEmpty) {
         FeedbackService.postPic(
             images: context.read<NewFloorProvider>().images,
             onResult: (images) {
               context.read<NewFloorProvider>().floorSentContent =
-                  _textEditingController.text;
+                  textEditingController.text;
               context.read<NewFloorProvider>().images.clear();
               if (context.read<NewFloorProvider>().replyTo == 0) {
                 _sendFloor(images);
@@ -875,7 +915,7 @@ class CommentInputFieldState extends State<CommentInputField> {
       return TextField(
         style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
         focusNode: _commentFocus,
-        controller: _textEditingController,
+        controller: textEditingController,
         maxLength: 200,
         textInputAction: TextInputAction.newline,
         decoration: InputDecoration(
@@ -883,7 +923,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           hintText:
               data.replyTo == 0 ? '回复冒泡：' : '回复楼层：' + data.replyTo.toString(),
           suffix: Text(
-            _commentLengthIndicator,
+            commentLengthIndicator,
             style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
           ),
           border: OutlineInputBorder(
@@ -895,7 +935,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           isDense: true,
         ),
         onChanged: (text) {
-          _commentLengthIndicator = '${text.characters.length}/200';
+          commentLengthIndicator = '${text.characters.length}/200';
           setState(() {});
         },
         minLines: 1,
@@ -909,17 +949,28 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
+  getClipboardData() async {
+    var clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null) {
+      ///将获取的粘贴板的内容进行展示
+      textEditingController.text += clipboardData.text;
+      setState(() {
+        commentLengthIndicator = '${clipboardData.text.length}/200';
+      });
+    }
+  }
+
   _sendFloor(List<String> list) {
     ToastProvider.running('创建楼层中 q(≧▽≦q)');
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
-      content: _textEditingController.text,
+      content: textEditingController.text,
       images: list == [] ? '' : list,
       onSuccess: () {
-        setState(() => _commentLengthIndicator = '0/200');
+        setState(() => commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus.unfocus();
         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-        _textEditingController.text = '';
+        textEditingController.text = '';
         ToastProvider.success("评论成功 (❁´◡`❁)");
       },
       onFailure: (e) => ToastProvider.error(
@@ -933,13 +984,13 @@ class CommentInputFieldState extends State<CommentInputField> {
     if (isOfficial == false) {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
-        content: _textEditingController.text,
+        content: textEditingController.text,
         images: list == [] ? '' : list,
         onSuccess: () {
-          setState(() => _commentLengthIndicator = '0/200');
+          setState(() => commentLengthIndicator = '0/200');
           FocusManager.instance.primaryFocus.unfocus();
           Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-          _textEditingController.text = '';
+          textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
         },
         onFailure: (e) => ToastProvider.error(
@@ -949,13 +1000,13 @@ class CommentInputFieldState extends State<CommentInputField> {
     } else {
       FeedbackService.replyOfficialFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
-        content: _textEditingController.text,
+        content: textEditingController.text,
         images: list == [] ? '' : list,
         onSuccess: () {
-          setState(() => _commentLengthIndicator = '0/200');
+          setState(() => commentLengthIndicator = '0/200');
           FocusManager.instance.primaryFocus.unfocus();
           Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-          _textEditingController.text = '';
+          textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
         },
         onFailure: (e) => ToastProvider.error(

@@ -265,8 +265,10 @@ class _PostCardState extends State<PostCard> {
                 color: ColorUtil.backgroundColor,
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: ColorUtil.mainColor)),
-            padding: const EdgeInsets.fromLTRB(2, 2, 2, 1),
-            child: Text(const ['', '卫津路', '北洋园'][post.campus],
+            padding: widget.type == PostCardType.simple
+                ? const EdgeInsets.fromLTRB(2, 2, 2, 1) : const EdgeInsets.fromLTRB(4, 2, 4, 1),
+            child: Text(widget.type == PostCardType.simple
+                ? const ['', '卫津路', '北洋园'][post.campus] :  const ['', '卫', '北'][post.campus],
                 style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 10, color: ColorUtil.mainColor)),
           )
@@ -397,7 +399,7 @@ class _PostCardState extends State<PostCard> {
                         ),
                       ),
                       SizedBox(
-                        width: (WePeiYangApp.screenWidth - 24.w) / 2 - 66.w,
+                        width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
                         child: Text(
                           post.nickname == '' ? '没名字的微友' : post.nickname,
                           maxLines: 1,
@@ -414,8 +416,8 @@ class _PostCardState extends State<PostCard> {
                   tag,
                   widget.type == PostCardType.simple
                       ? WePeiYangApp.screenWidth -
-                          (post.campus > 0 ? 40.w : 0) -
-                          (widget.post.imageUrls.isEmpty ? 140.w : 224.w)
+                          (post.campus > 0 ? 50.w : 0) -
+                          (widget.post.imageUrls.isEmpty ? 140.w : 240.w)
                       : (WePeiYangApp.screenWidth - 24.w) / 2 -
                           (post.campus > 0 ? 100.w : 60.w),
                   post.type,

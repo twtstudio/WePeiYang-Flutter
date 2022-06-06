@@ -256,6 +256,40 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                   onPressed: () => imageSelectionKey
                                       .currentState
                                       .loadAssets()),
+                              if (context
+                                      .read<NewFloorProvider>()
+                                      .images
+                                      .length ==
+                                  0)
+                              IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/lake_butt_icons/paste.png',
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  onPressed: () => launchKey.currentState
+                                      .getClipboardData()),
+                              IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/lake_butt_icons/x.png',
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  onPressed: () {
+                                    if (launchKey.currentState.textEditingController.text.isNotEmpty) {
+                                      launchKey
+                                          .currentState.textEditingController
+                                          .clear();
+                                      launchKey.currentState.setState(() {
+                                        launchKey.currentState
+                                            .commentLengthIndicator = '清空成功';
+                                      });
+                                    } else {
+                                      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+                                    }
+                                  }),
                               Spacer(),
                               checkButton,
                               SizedBox(width: 16),

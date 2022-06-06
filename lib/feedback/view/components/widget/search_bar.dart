@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 
-import '../../../feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import '../../search_result_page.dart';
 
 List<SearchTag> tagUtil = [];
@@ -49,6 +49,7 @@ class _SearchBarState extends State<SearchBar>
     super.initState();
     initSearchTag();
     _controller.addListener(() {
+      setState(() {});
       _controller.text.startsWith('#')
           ? _showSearch = true
           : _showSearch = false;
@@ -110,16 +111,18 @@ class _SearchBarState extends State<SearchBar>
   }
 
   refreshSearchTag(String text) {
-    FeedbackService.searchTags(
-        name: text,
-        onResult: (list) {
-          setState(() {
-            _searchTags(list);
+    if (_controller.text != '#MP' && (!_controller.text.startsWith('#MP') ||
+        !RegExp(r'^-?[0-9]+').hasMatch(_controller.text.substring(3))))
+      FeedbackService.searchTags(
+          name: text,
+          onResult: (list) {
+            setState(() {
+              _searchTags(list);
+            });
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
           });
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-        });
   }
 
   @override
@@ -169,7 +172,8 @@ class _SearchBarState extends State<SearchBar>
                               '${data.recTag.tagId}',
                               '',
                               '推荐：#${data.recTag.name}',
-                              0, 0),
+                              0,
+                              0),
                         );
                       }
                     },
@@ -184,32 +188,34 @@ class _SearchBarState extends State<SearchBar>
               ),
               SizedBox(width: 6),
               SizedBox(
-                width: 24,
+                  width: 24,
                   child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    if (!_fNode.hasFocus)
-                    FocusScope.of(context).requestFocus(_fNode);
-                    if (_controller.text == '') {
-                      _controller.text = '#';
-                    }
-                            else _controller.clear();
+                    onPressed: () {
+                      setState(() {
+                        if (!_fNode.hasFocus)
+                          FocusScope.of(context).requestFocus(_fNode);
+                        if (_controller.text == '') {
+                          _controller.text = '#';
+                        } else
+                          _controller.clear();
                       });
-                },
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                  visualDensity: VisualDensity.compact,
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-                  elevation: MaterialStateProperty.all(2),
-                ),
-                child: _controller.text == ''
-                    ? SvgPicture.asset(
-                  "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                  width: 12,
-                ) : Icon(Icons.clear, size: 14, color: ColorUtil.mainColor),
-              ))
+                    },
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                      elevation: MaterialStateProperty.all(2),
+                    ),
+                    child: _controller.text == ''
+                        ? SvgPicture.asset(
+                            "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                            width: 12,
+                          )
+                        : Icon(Icons.clear,
+                            size: 14, color: ColorUtil.mainColor),
+                  ))
             ],
           )),
     );
@@ -253,8 +259,64 @@ class _SearchBarState extends State<SearchBar>
                               )
                         ]),
                     child: Column(
-                        children:
-                            tagList ?? [SizedBox(width: double.infinity)]))
+                      children: [
+                        if (_controller.text.startsWith('#MP') || _controller.text.startsWith('#'))
+                        GestureDetector(
+                          onTap: () {
+                            if (_controller.text.startsWith('#MP') &&
+                                RegExp(r'^-?[0-9]+')
+                                    .hasMatch(_controller.text.substring(3))) {
+                              FeedbackService.getPostById(
+                                id: int.parse(_controller.text.substring(3)),
+                                onResult: (post) {
+                                  Navigator.popAndPushNamed(
+                                    context,
+                                    FeedbackRouter.detail,
+                                    arguments: post,
+                                  );
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error(
+                                      '无法找到对应帖子，报错信息：${e.error}');
+                                  return;
+                                },
+                              );
+                            } else {
+                              _controller.text = '#MP';
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/svg_pics/lake_butt_icons/send.svg",
+                                  width: 14,
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                    child: Text(
+                                  _controller.text.length < 3
+                                      ? '按照MP号跳转'
+                                      : '跳转至：${_controller.text}',
+                                  style: TextUtil.base.w500.NotoSansSC
+                                      .sp(16)
+                                      .grey6C,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                                SizedBox(width: 4),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (_controller.text != '#MP' && (!_controller.text.startsWith('#MP') ||
+                                !RegExp(r'^-?[0-9]+')
+                                    .hasMatch(_controller.text.substring(3))))
+                          Column(
+                              children: tagList ??
+                                  [SizedBox(width: double.infinity)]),
+                      ],
+                    ))
                 : SizedBox(),
           ),
         ),
