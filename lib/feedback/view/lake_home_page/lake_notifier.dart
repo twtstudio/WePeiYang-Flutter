@@ -111,7 +111,7 @@ class LakeModel extends ChangeNotifier {
       mainStatus = LakePageStatus.loading;
     notifyListeners();
     await FeedbackService.getTabList().then((list) {
-      WPYTab oTab = WPYTab(id: 0, shortname: '全部', name: '全部');
+      WPYTab oTab = WPYTab(id: 0, shortname: '精华', name: '精华');
       tabList.clear();
       tabList.add(oTab);
       tabList.addAll(list);
@@ -192,7 +192,8 @@ class LakeModel extends ChangeNotifier {
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${index}',
-      mode: sortSeq,
+      searchMode: sortSeq,
+      valueMode: index == 0 ? 2 : 1,
       page: lakeAreas[index].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, index);
@@ -242,8 +243,9 @@ class LakeModel extends ChangeNotifier {
     }
     await FeedbackService.getPosts(
       type: '$index',
-      mode: sortSeq,
+      searchMode: sortSeq,
       page: '1',
+      valueMode: index == 0 ? 2 : 1,
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
         if (lakeAreas[index].dataList != null)

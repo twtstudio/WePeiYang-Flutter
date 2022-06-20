@@ -73,13 +73,6 @@ class _PostCardState extends State<PostCard> {
 
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
 
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => SizedBox(
-            width: 24,
-            height: 24,
-            child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
-          );
-
   _PostCardState(this.post);
 
   @override
@@ -266,9 +259,12 @@ class _PostCardState extends State<PostCard> {
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: ColorUtil.mainColor)),
             padding: widget.type == PostCardType.simple
-                ? const EdgeInsets.fromLTRB(2, 2, 2, 1) : const EdgeInsets.fromLTRB(4, 2, 4, 1),
-            child: Text(widget.type == PostCardType.simple
-                ? const ['', '卫津路', '北洋园'][post.campus] :  const ['', '卫', '北'][post.campus],
+                ? const EdgeInsets.fromLTRB(2, 2, 2, 1)
+                : const EdgeInsets.fromLTRB(4, 2, 4, 1),
+            child: Text(
+                widget.type == PostCardType.simple
+                    ? const ['', '卫津路', '北洋园'][post.campus]
+                    : const ['', '卫', '北'][post.campus],
                 style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 10, color: ColorUtil.mainColor)),
           )
@@ -330,87 +326,18 @@ class _PostCardState extends State<PostCard> {
           if (widget.type == PostCardType.detail) SizedBox(height: 8.w),
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             if (widget.type == PostCardType.detail)
-              Expanded(
-                child: InkWell(
-                  onTap: () => showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment(0, -0.2),
-                          child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: WePeiYangApp.screenWidth - 40.w),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15)),
-                              padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
-                              child: Text(
-                                '${post.type == 1 ? '用户真名：' : '用户昵称：'}\n${post.nickname == '' ? '没名字的微友' : post.nickname}',
-                                style: TextUtil.base.w600.NotoSansSC
-                                    .sp(16)
-                                    .black2A
-                                    .h(2),
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                        ),
-                        Align(
-                          alignment: Alignment(0, -0.2),
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 120.w),
-                            child: SvgPicture.network(
-                              '${EnvConfig.QNHD}avatar/beam/20/${post.nickname}',
-                              width: DateTime.now().month == 4 &&
-                                      DateTime.now().day == 1
-                                  ? 36.w
-                                  : 48.w,
-                              height: DateTime.now().month == 4 &&
-                                      DateTime.now().day == 1
-                                  ? 36.w
-                                  : 48.w,
-                              fit: BoxFit.contain,
-                              placeholderBuilder: defaultPlaceholderBuilder,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          child: SvgPicture.network(
-                            '${EnvConfig.QNHD}avatar/beam/20/${post.nickname}',
-                            width: DateTime.now().month == 4 &&
-                                    DateTime.now().day == 1
-                                ? 18.w
-                                : 24.w,
-                            height: DateTime.now().month == 4 &&
-                                    DateTime.now().day == 1
-                                ? 18.w
-                                : 24.w,
-                            fit: BoxFit.contain,
-                            placeholderBuilder: defaultPlaceholderBuilder,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
-                        child: Text(
-                          post.nickname == '' ? '没名字的微友' : post.nickname,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.w500.NotoSansSC.sp(16).black2A,
-                        ),
-                      ),
-                    ],
-                  ),
+              ProfileImageWithDetailedPopup(post.type, post.nickname, post.uid),
+            if (widget.type == PostCardType.detail)
+              SizedBox(
+                width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
+                child: Text(
+                  post.nickname == '' ? '没名字的微友' : post.nickname,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).black2A,
                 ),
               ),
+            if (widget.type == PostCardType.detail) Spacer(),
             if (tag != '')
               TagShowWidget(
                   tag,

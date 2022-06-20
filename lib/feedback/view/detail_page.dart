@@ -402,6 +402,7 @@ class _DetailPageState extends State<DetailPage>
               commentFloor: i + 1,
               isSubFloor: false,
               isFullView: false,
+              type: post.type,
             );
           }
         },

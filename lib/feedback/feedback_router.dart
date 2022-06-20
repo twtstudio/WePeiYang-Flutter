@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_reply_detail_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/open_the_box.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/summary_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
@@ -33,6 +34,7 @@ class FeedbackRouter {
   static String notice = 'feedback/notice';
   static String summary = 'feedback/summary';
   static String haitang = 'feedback/haitang';
+  static String openBox = 'feedback/openbox';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     home: (_) => HomePage(),
@@ -50,5 +52,6 @@ class FeedbackRouter {
     notice: (args) => FeedbackNoticePage(args),
     summary:(_) => FeedbackSummaryPage(),
     haitang:(args) => FestivalPage(args),
+    openBox:(args) => OpenBox(args),
   };
 }

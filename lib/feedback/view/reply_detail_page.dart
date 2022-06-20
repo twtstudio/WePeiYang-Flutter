@@ -164,6 +164,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: true,
+            // 这里不好传我就先置0了
+            type: 0,
           );
         }
         index--;
@@ -179,6 +181,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: true,
+              // 这里不好传我就先置0了
+              type: 0,
             ),
             Container(
                 width: WePeiYangApp.screenWidth - 60,

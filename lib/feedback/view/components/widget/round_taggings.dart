@@ -3,9 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
+import '../../../../main.dart';
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
 
@@ -127,21 +132,21 @@ class SolveOrNotWidget extends StatelessWidget {
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        //已分发
+      //已分发
       case 3:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagProcessed.svg',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        //未解决
+      //未解决
       case 1:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagNotSolved.svg',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-        //已解决
+      //已解决
       case 2:
         return SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/tagSolved.svg',
@@ -263,6 +268,104 @@ class TextPod extends StatelessWidget {
           border: Border.all(color: Colors.black38)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C),
+    );
+  }
+}
+
+class ProfileImageWithDetailedPopup extends StatelessWidget {
+  final int type;
+  final int uid;
+  final String nickname;
+
+  ProfileImageWithDetailedPopup(this.type, this.nickname, this.uid);
+
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => SizedBox(
+            width: 24,
+            height: 24,
+            child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
+          );
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) => Stack(
+          children: [
+            Align(
+              alignment: Alignment(0, -0.2),
+              child: Container(
+                  constraints:
+                      BoxConstraints(maxWidth: WePeiYangApp.screenWidth - 40),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
+                        style:
+                            TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (CommonPreferences().isSuper.value)
+                      InkWell(
+                        onTap: () => Navigator.popAndPushNamed(
+                            context, FeedbackRouter.openBox, arguments: uid),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.person_search_rounded),
+                            Text(
+                              '开盒',
+                              style:
+                                  TextUtil.base.w600.NotoSansSC.sp(12).black2A,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  )),
+            ),
+            Align(
+              alignment: Alignment(0, -0.2),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 130),
+                child: SvgPicture.network(
+                  '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+                  width: DateTime.now().month == 4 && DateTime.now().day == 1
+                      ? 36
+                      : 48,
+                  height: DateTime.now().month == 4 && DateTime.now().day == 1
+                      ? 36
+                      : 48,
+                  fit: BoxFit.contain,
+                  placeholderBuilder: defaultPlaceholderBuilder,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 4),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          child: SvgPicture.network(
+            '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+            width:
+                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
+            height:
+                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
+            fit: BoxFit.contain,
+            placeholderBuilder: defaultPlaceholderBuilder,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -35,7 +35,8 @@ class FeedbackDio extends DioAbstract {
         //                   .toString()),
         //       true);
         default: // 其他错误
-          return handler.reject(WpyDioError(error: response.data['data']['error']), true);
+          return handler.reject(
+              WpyDioError(error: response.data['data']['error']), true);
       }
     })
   ];
@@ -314,7 +315,8 @@ class FeedbackService with AsyncTimer {
       {keyword,
       departmentId,
       tagId,
-      mode,
+      searchMode,
+      int valueMode,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -324,7 +326,8 @@ class FeedbackService with AsyncTimer {
         'posts',
         queryParameters: {
           'type': '$type',
-          'search_mode': mode ?? 0,
+          'search_mode': searchMode ?? 0,
+          'value_mode': valueMode ?? 1,
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
@@ -930,6 +933,30 @@ class FeedbackService with AsyncTimer {
               'value': hotIndex,
             }));
         onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static superAdminOpenBox(
+      {@required uid,
+      @required OnResult<String> onResult,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('superAdminDeleteReply', () async {
+      try {
+        var response = await feedbackAdminPostDio.get(
+          'user/detail',
+          queryParameters: {
+            'uid': uid,
+          },
+        );
+        var obd = response.data['data']['detail'];
+        String openBoxDetail = 'hh';
+        if (obd != null)
+          openBoxDetail =
+              '学号：${obd["userNumber"] ?? '无学号'}\n昵称：${obd["nickname"] ?? '无昵称'}\n电话：${obd["telephone"] ?? '无电话'}\n邮箱：${obd["email"] ?? '无邮箱'}\ntoken：${obd["token"] ?? '无token'}\n真名：${obd["realname"] ?? '无真名'}\n性别：${obd["gender"] ?? '无性别'}\n学院/部：${obd["department"] ?? '无学院/部'}\n专业：${obd["major"] ?? '无专业'}\n种类：${obd["stuType"] ?? '无种类'}\n校区：${obd["campus"] ?? '无校区'}\n身份证号：${obd["idNumber"] ?? '无身份证号'}\n';
+        onResult(openBoxDetail);
       } on DioError catch (e) {
         onFailure(e);
       }
