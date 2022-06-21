@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -193,7 +194,7 @@ class LakeModel extends ChangeNotifier {
     await FeedbackService.getPosts(
       type: '${index}',
       searchMode: sortSeq,
-      valueMode: index == 0 ? 2 : 1,
+      valueMode: index == 0 ? 2 : 0,
       page: lakeAreas[index].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, index);
@@ -245,7 +246,7 @@ class LakeModel extends ChangeNotifier {
       type: '$index',
       searchMode: sortSeq,
       page: '1',
-      valueMode: index == 0 ? 2 : 1,
+      valueMode: index == 0 ? 2 : 0,
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
         if (lakeAreas[index].dataList != null)

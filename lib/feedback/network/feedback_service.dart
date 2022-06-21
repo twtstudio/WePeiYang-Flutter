@@ -327,7 +327,7 @@ class FeedbackService with AsyncTimer {
         queryParameters: {
           'type': '$type',
           'search_mode': searchMode ?? 0,
-          'value_mode': valueMode ?? 1,
+          'value_mode': valueMode ?? 0,
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
