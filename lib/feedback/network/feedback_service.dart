@@ -316,7 +316,7 @@ class FeedbackService with AsyncTimer {
       departmentId,
       tagId,
       searchMode,
-      int valueMode,
+      etag,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -327,7 +327,7 @@ class FeedbackService with AsyncTimer {
         queryParameters: {
           'type': '$type',
           'search_mode': searchMode ?? 0,
-          'value_mode': valueMode ?? 0,
+          'etag': etag ?? '',
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',

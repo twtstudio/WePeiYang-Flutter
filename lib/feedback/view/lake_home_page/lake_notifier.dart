@@ -194,7 +194,7 @@ class LakeModel extends ChangeNotifier {
     await FeedbackService.getPosts(
       type: '${index}',
       searchMode: sortSeq,
-      valueMode: index == 0 ? 2 : 0,
+      etag: index == 0 ? 'recommend' : '',
       page: lakeAreas[index].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, index);
@@ -246,7 +246,7 @@ class LakeModel extends ChangeNotifier {
       type: '$index',
       searchMode: sortSeq,
       page: '1',
-      valueMode: index == 0 ? 2 : 0,
+      etag: index == 0 ? 'recommend' : '',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
         if (lakeAreas[index].dataList != null)
