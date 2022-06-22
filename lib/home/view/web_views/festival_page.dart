@@ -13,6 +13,7 @@ class FestivalArgs {
 
 class FestivalPage extends WbyWebView {
   final FestivalArgs args;
+
   FestivalPage(this.args, {Key? key})
       : super(
             page: args.name,
@@ -26,11 +27,14 @@ class FestivalPage extends WbyWebView {
 
 class _FestivalPageState extends WbyWebViewState {
   FestivalArgs args;
+
   _FestivalPageState(this.args);
 
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     print(CommonPreferences().token.value);
-    return args.url.replaceAll('<token>', '${CommonPreferences().token.value}');
+    return args.url
+        .replaceAll('<token>', '${CommonPreferences().token.value}')
+        .replaceAll('<laketoken>', '${CommonPreferences().lakeToken.value}');
   }
 }

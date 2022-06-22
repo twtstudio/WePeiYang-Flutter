@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
@@ -17,6 +18,7 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard> {
   _ActivityCardState();
+
   SwiperController sp = SwiperController();
   bool offstage = true;
   bool dark = false;
@@ -56,16 +58,27 @@ class _ActivityCardState extends State<ActivityCard> {
                     .url
                     .startsWith('https://photograph.twt.edu.cn/')
                 ? await launch('https://photograph.twt.edu.cn/')
-                : Navigator.pushNamed(context, FeedbackRouter.haitang,
-                    arguments: FestivalArgs(
-                        context
-                            .read<FestivalProvider>()
-                            .festivalList[index]
-                            .url,
-                        context
-                            .read<FestivalProvider>()
-                            .festivalList[index]
-                            .title));
+                : context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .url
+                        .startsWith('https://graduation.twt.edu.cn/')
+                    ? await launch(context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .url
+                        .replaceAll(
+                            '<token>', '${CommonPreferences().token.value}'))
+                    : Navigator.pushNamed(context, FeedbackRouter.haitang,
+                        arguments: FestivalArgs(
+                            context
+                                .read<FestivalProvider>()
+                                .festivalList[index]
+                                .url,
+                            context
+                                .read<FestivalProvider>()
+                                .festivalList[index]
+                                .title));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.0),
@@ -162,7 +175,9 @@ class _ActivityCardState extends State<ActivityCard> {
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 400),
                     color: dark ? Colors.black38 : Colors.transparent,
-                    child: Center(child: Text('是未知领域！\n没有可跳转的网页喵(っ °Д °;)っ', style: TextUtil.base.white.w700.sp(17))),
+                    child: Center(
+                        child: Text('是未知领域！\n没有可跳转的网页喵(っ °Д °;)っ',
+                            style: TextUtil.base.white.w700.sp(17))),
                   ),
                 )
               ],
