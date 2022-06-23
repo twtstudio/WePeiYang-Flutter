@@ -21,8 +21,8 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'components/widget/pop_menu_shape.dart';
@@ -659,34 +659,6 @@ class _DetailPageState extends State<DetailPage>
                 },
               );
             }
-          } else if (value == '删帖') {
-            bool confirm = await _showDeleteConfirmDialog('摧毁');
-            if (confirm) {
-              FeedbackService.adminDeletePost(
-                id: widget.post.id,
-                onSuccess: () {
-                  context
-                      .read<LakeModel>()
-                      .lakeAreas[context
-                          .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab]
-                          .id]
-                      .refreshController
-                      .requestRefresh();
-                  ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.of(context).pop(post);
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            }
-          } else if (value == '加精') {
-            bool confirm = await _showDeleteConfirmDialog('加精');
-            if (confirm) {
-              bool doubleConfirm = await _showAddNumDialog();
-              if (doubleConfirm) Navigator.of(context).pop(post);
-            }
           }
         },
         itemBuilder: (context) {
@@ -707,26 +679,6 @@ class _DetailPageState extends State<DetailPage>
                       new Text('删除', style: TextUtil.base.black2A.w500.sp(14)),
                 ),
               ),
-            if ((CommonPreferences().isSuper.value ||
-                    CommonPreferences().isStuAdmin.value) ??
-                false)
-              PopupMenuItem<String>(
-                value: '删帖',
-                child: Center(
-                  child: new Text('删帖',
-                      style: TextUtil.base.dangerousRed.w600.sp(14)),
-                ),
-              ),
-            if ((CommonPreferences().isSuper.value ||
-                    CommonPreferences().isStuAdmin.value) ??
-                false)
-              PopupMenuItem<String>(
-                value: '加精',
-                child: Center(
-                  child: new Text('加精',
-                      style: TextUtil.base.mainOrange.w600.sp(14)),
-                ),
-              ),
           ];
         });
     var shareButton = IconButton(
@@ -742,7 +694,13 @@ class _DetailPageState extends State<DetailPage>
           }
         });
 
+    var manageButton = IconButton(
+        icon: Icon(Icons.admin_panel_settings,
+            size: 23, color: ColorUtil.black2AColor),
+        onPressed: () => _showManageDialog());
+
     var appBar = AppBar(
+      toolbarHeight: 40,
       titleSpacing: 0,
       backgroundColor: CommonPreferences().isSkinUsed.value
           ? Color(CommonPreferences().skinColorB.value)
@@ -751,7 +709,15 @@ class _DetailPageState extends State<DetailPage>
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
-      actions: [shareButton, menuButton],
+      actions: [
+        if ((CommonPreferences().isSuper.value ||
+                CommonPreferences().isSchAdmin.value) ??
+            false)
+          manageButton,
+        shareButton,
+        menuButton,
+        SizedBox(width: 10)
+      ],
       title: InkWell(
         onTap: () => _refreshController.requestRefresh(),
         child: SizedBox(
@@ -785,6 +751,18 @@ class _DetailPageState extends State<DetailPage>
     );
   }
 
+  Future<bool> _showManageDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return Stack(
+            children: [
+              ManagerPopUp(post: post),
+            ],
+          );
+        });
+  }
+
   Future<bool> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
         context: context,
@@ -803,56 +781,6 @@ class _DetailPageState extends State<DetailPage>
               },
               confirmFun: () {
                 Navigator.of(context).pop(true);
-              });
-        });
-  }
-
-  Future<bool> _showAddNumDialog() {
-    TextEditingController tc = new TextEditingController();
-    return showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return LakeDialogWidget(
-              title: '加精数值',
-              content: Column(
-                children: [
-                  Text('0为取消加精，只能为0~30000'),
-                  TextField(controller: tc, keyboardType: TextInputType.number),
-                ],
-              ),
-              cancelText: "取消",
-              confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-              cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
-              confirmText: "确认",
-              cancelFun: () {
-                Navigator.of(context).pop();
-              },
-              confirmFun: () async {
-                if (tc != null && tc.text != '') {
-                  await FeedbackService.adminTopPost(
-                    id: widget.post.id,
-                    hotIndex: tc.text,
-                    onSuccess: () {
-                      ToastProvider.success('加精成功');
-                      context
-                          .read<LakeModel>()
-                          .lakeAreas[context
-                              .read<LakeModel>()
-                              .tabList[context.read<LakeModel>().currentTab]
-                              .id]
-                          .refreshController
-                          .requestRefresh();
-                      Navigator.of(context).pop(post);
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    },
-                  );
-                  Navigator.of(context).pop(true);
-                } else
-                  ToastProvider.error('请输入数值！');
               });
         });
   }
@@ -1156,5 +1084,308 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
               ),
       ),
     );
+  }
+}
+
+class ManagerPopUp extends StatefulWidget {
+  @required
+  final Post post;
+
+  @required
+  const ManagerPopUp({Key key, this.post}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ManagerPopUpState();
+  }
+}
+
+class _ManagerPopUpState extends State<ManagerPopUp>
+    with SingleTickerProviderStateMixin {
+  _ManagerPopUpState();
+
+  int originTag;
+
+  @override
+  void initState() {
+    originTag = widget.post.eTag == 'recommend'
+        ? 1
+        : widget.post.eTag == 'theme'
+            ? 2
+            : widget.post.eTag == 'top'
+                ? 0
+                : 3;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        context
+            .read<LakeModel>()
+            .lakeAreas[context
+                .read<LakeModel>()
+                .tabList[context.read<LakeModel>().currentTab]
+                .id]
+            .refreshController
+            .requestRefresh();
+        return true;
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(height: 4),
+              Text(
+                ' 帖子：' + widget.post.title,
+                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+              ),
+              Text(
+                ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
+                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+              ),
+              if (CommonPreferences().isSuper.value)
+                AnimatedOption(
+                    origin: false,
+                    id: widget.post.uid,
+                    color1: Color.fromRGBO(95, 127, 0, 1.0),
+                    color2: Color.fromRGBO(8, 96, 0, 1.0),
+                    title: '开盒楼主',
+                    action: 200),
+              if (originTag != 3)
+                AnimatedOption(
+                    origin: false,
+                    id: widget.post.id,
+                    color1: Color.fromRGBO(159, 159, 159, 1.0),
+                    color2: Color.fromRGBO(107, 107, 107, 1.0),
+                    title: '恢复正常帖子',
+                    action: 0),
+              AnimatedOption(
+                  origin: originTag == 0,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(223, 108, 171, 1.0),
+                  color2: Color.fromRGBO(243, 16, 73, 1.0),
+                  title: originTag == 0 ? '× 已置顶' : '将此帖置顶'),
+              AnimatedOption(
+                  origin: originTag == 1,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(232, 178, 27, 1.0),
+                  color2: Color.fromRGBO(236, 120, 57, 1.0),
+                  title: originTag == 1 ? '× 已加精' : '加入精华帖',
+                  action: 1),
+              AnimatedOption(
+                  origin: originTag == 2,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(66, 161, 225, 1.0),
+                  color2: Color.fromRGBO(57, 90, 236, 1.0),
+                  title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
+                  action: 2),
+              AnimatedOption(
+                  origin: false,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(127, 0, 0, 1.0),
+                  color2: Color.fromRGBO(66, 0, 96, 1.0),
+                  title: '⚠ 删帖',
+                  action: 100),
+            ]),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24), color: Colors.white),
+      ),
+    );
+  }
+}
+
+class AnimatedOption extends StatefulWidget {
+  @required
+  final bool origin;
+  final Color color1;
+  final Color color2;
+  final String title;
+  final int id;
+  final int action;
+
+  @required
+  const AnimatedOption(
+      {Key key,
+      this.origin,
+      this.action,
+      this.color1,
+      this.color2,
+      this.title,
+      this.id})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _AnimatedOptionState(origin);
+  }
+}
+
+class _AnimatedOptionState extends State<AnimatedOption>
+    with SingleTickerProviderStateMixin {
+  bool isSelected = false;
+  bool origin;
+  TextEditingController tc;
+
+  _AnimatedOptionState(this.origin);
+
+  @override
+  void initState() {
+    tc = new TextEditingController();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () {
+          if (!origin)
+            setState(() {
+              isSelected = !isSelected;
+            });
+        },
+        child: AnimatedSize(
+          vsync: this,
+          duration: Duration(milliseconds: 400),
+          curve: Curves.easeOutQuad,
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+                horizontal: 20, vertical: isSelected ? 12 : 20),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment(0.4, 1.6),
+                colors: [widget.color1, widget.color2],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: TextUtil.base.white.medium.sp(20),
+                ),
+                if (isSelected && widget.title == '将此帖置顶')
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '0为取消置顶，只能为0~30000',
+                      style: TextUtil.base.white.medium.sp(10),
+                    ),
+                  ),
+                if (isSelected && widget.title == '将此帖置顶')
+                  TextField(
+                    controller: tc,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle().white.NotoSansSC.w400.sp(16),
+                      hintStyle: TextStyle().white.NotoSansSC.w800.sp(16),
+                      hintText: '置顶数值',
+                      contentPadding: const EdgeInsets.all(0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    style: TextUtil.base.white.medium.sp(16),
+                  ),
+                if (isSelected && widget.title == '将此帖置顶')
+                  Container(
+                      height: 1.5, width: double.infinity, color: Colors.white),
+                if (isSelected)
+                  InkWell(
+                      onTap: widget.action == null
+                          ? () async {
+                              if (tc != null && tc.text != '') {
+                                await FeedbackService.adminTopPost(
+                                  id: widget.id,
+                                  hotIndex: tc.text,
+                                  onSuccess: () {
+                                    ToastProvider.success('加精成功');
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.error.toString());
+                                  },
+                                );
+                                Navigator.of(context).pop(true);
+                              } else
+                                ToastProvider.error('请输入数值！');
+                            }
+                          : widget.action == 100
+                              ? () async {
+                                  FeedbackService.adminDeletePost(
+                                    id: widget.id.toString(),
+                                    onSuccess: () {
+                                      context
+                                          .read<LakeModel>()
+                                          .lakeAreas[context
+                                              .read<LakeModel>()
+                                              .tabList[context
+                                                  .read<LakeModel>()
+                                                  .currentTab]
+                                              .id]
+                                          .refreshController
+                                          .requestRefresh();
+                                      ToastProvider.success(
+                                          S.current.feedback_delete_success);
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                    onFailure: (e) {
+                                      Navigator.of(context).pop();
+                                      ToastProvider.error(e.error.toString());
+                                    },
+                                  );
+                                }
+                              : widget.action == 200
+                                  ? () => Navigator.popAndPushNamed(
+                                      context, FeedbackRouter.openBox,
+                                      arguments: widget.id)
+                                  : () async {
+                                      FeedbackService.adminChangeETag(
+                                          id: widget.id.toString(),
+                                          value: widget.action.toString(),
+                                          onSuccess: () => setState(() {
+                                                isSelected = false;
+                                                context
+                                                    .read<LakeModel>()
+                                                    .lakeAreas[context
+                                                        .read<LakeModel>()
+                                                        .tabList[context
+                                                            .read<LakeModel>()
+                                                            .currentTab]
+                                                        .id]
+                                                    .refreshController
+                                                    .requestRefresh();
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                                ToastProvider.running('成功');
+                                              }),
+                                          onFailure: (e) =>
+                                              ToastProvider.error(e.message));
+                                    },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Text(
+                              '确认',
+                              style: TextUtil.base.white.medium.sp(18),
+                            ),
+                          ],
+                        ),
+                      ))
+              ],
+            ),
+          ),
+        ));
   }
 }

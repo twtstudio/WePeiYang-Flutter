@@ -11,8 +11,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+   String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -65,8 +65,8 @@ class FeedbackPicPostDio extends DioAbstract {
 
 class FeedbackAdminPostDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
+  //String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
+   String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -931,6 +931,25 @@ class FeedbackService with AsyncTimer {
             formData: FormData.fromMap({
               'post_id': id,
               'value': hotIndex,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static adminChangeETag(
+      {@required id,
+        @required value,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminChangeETag', () async {
+      try {
+        await feedbackAdminPostDio.post('post/etag',
+            formData: FormData.fromMap({
+              'post_id': id,
+              'value': value,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
