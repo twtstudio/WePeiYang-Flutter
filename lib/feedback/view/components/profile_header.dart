@@ -16,8 +16,9 @@ import 'change_nickname_dialog.dart';
 
 class ProfileHeader extends StatelessWidget {
   final Widget child;
+  final String date;
+  const ProfileHeader({this.child,this.date});
 
-  const ProfileHeader({this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +119,7 @@ class ProfileHeader extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Text('已经潜水 好几天 了。',
+                            child: Text('已经潜水 ${date}。',
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),

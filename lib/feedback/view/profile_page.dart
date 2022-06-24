@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/time_handler.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -318,6 +319,8 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SliverToBoxAdapter(
           child: tabs,
         ),
+        date: _postList.isEmpty?"好久":
+        TimeHandler().timeHandler(_postList[0].createAt),
       ),
     );
 
