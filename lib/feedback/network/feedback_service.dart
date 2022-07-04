@@ -962,4 +962,22 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  static adminResetName(
+      {@required id,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminResetName', () async {
+      try {
+        await feedbackAdminPostDio.post('user/nickname/reset',
+            formData: FormData.fromMap({
+              'uid': id,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
 }

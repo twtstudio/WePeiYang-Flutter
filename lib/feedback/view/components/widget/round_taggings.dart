@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import '../../../../main.dart';
@@ -142,7 +144,7 @@ class SolveOrNotWidget extends StatelessWidget {
       //未解决
       case 1:
         return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tagNotSolved.svg',
+          'assets/svg_pics/lake_butt_icons/tagReplied.svg',
           width: 60,
           fit: BoxFit.fitWidth,
         );
@@ -287,10 +289,10 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
           );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     return InkWell(
       onTap: () => showDialog(
-        context: context,
+        context: ctx,
         barrierDismissible: true,
         builder: (BuildContext context) => Stack(
           children: [
@@ -306,28 +308,61 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      SizedBox(height: 15),
                       Text(
                         '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
                         style:
                             TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (CommonPreferences().isSuper.value)
-                      InkWell(
-                        onTap: () => Navigator.popAndPushNamed(
-                            context, FeedbackRouter.openBox, arguments: uid),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.person_search_rounded),
-                            Text(
-                              '开盒',
-                              style:
-                                  TextUtil.base.w600.NotoSansSC.sp(12).black2A,
-                            ),
-                          ],
+                      if (CommonPreferences().isSuper.value ||
+                          CommonPreferences().isStuAdmin.value)
+                        InkWell(
+                          onTap: () =>
+                              _showResetConfirmDialog(context).then((value) {
+                            if (value)
+                              FeedbackService.adminResetName(
+                                  id: uid,
+                                  onSuccess: () {
+                                    ToastProvider.success('重置成功');
+                                    Navigator.pop(ctx);
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.message);
+                                  });
+                          }),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.refresh, size: 18,),
+                              Text(
+                                '重置昵称',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
                         ),
-                      )
+                      if (CommonPreferences().isSuper.value)
+                        InkWell(
+                          onTap: () => Navigator.popAndPushNamed(
+                              context, FeedbackRouter.openBox,
+                              arguments: uid),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.person_search_rounded),
+                              Text(
+                                '开盒',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: 5),
                     ],
                   )),
             ),
@@ -367,5 +402,27 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _showResetConfirmDialog(BuildContext context) {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return LakeDialogWidget(
+              title: '重置昵称',
+              content: Text('您确定要重置该用户昵称吗？'),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+              confirmText: '确认',
+              cancelFun: () {
+                Navigator.of(context).pop();
+              },
+              confirmFun: () {
+                Navigator.of(context).pop(true);
+              });
+        });
   }
 }
