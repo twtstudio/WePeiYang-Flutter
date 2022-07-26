@@ -167,7 +167,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         ),
-        child: Row(children: <Widget>[homePage, feedbackPage, selfPage]));
+        /// 适配iOS底部安全区
+        child: SafeArea(
+          child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
+        ),
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
@@ -177,7 +181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               .copyWith(systemNavigationBarColor: Colors.white),
       child: Scaffold(
         extendBody: true,
-        bottomNavigationBar: bottomNavigationBar,
+        bottomNavigationBar:  bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {
             if (_tabController.index == 0) {

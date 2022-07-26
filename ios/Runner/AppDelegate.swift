@@ -7,6 +7,11 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+      
+//      let userDefaults = UserDefaults.init(suiteName: "group.com.weipeiyang")
+//      userDefaults!.setValue("defaultID", forKey: "id")
+//      userDefaults!.setValue("defauleName", forKey: "name")
+      
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
