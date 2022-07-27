@@ -75,15 +75,16 @@ class WeekDisplayWidget extends StatelessWidget {
             color: deepColor
                 ? CommonPreferences().isAprilFoolClass.value
                     ? ColorUtil.aprilFoolColor[Random().nextInt(4)]
-                    : titleColor
-                : Color.fromRGBO(236, 238, 237, 1),
+                    // : titleColor
+                    : Color.fromRGBO(255, 255, 255, 1)
+                : Color.fromRGBO(246, 246, 246, 0.2),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
               style: FontManager.Aspira.copyWith(
                   color: deepColor
-                      ? Colors.white
-                      : Color.fromRGBO(200, 200, 200, 1),
+                      ? Color.fromRGBO(44, 126, 223, 1)
+                      : Color.fromRGBO(202, 202, 202, 1),
                   fontSize: 10,
                   fontWeight: FontWeight.bold)),
         ),
@@ -113,16 +114,18 @@ class CourseDisplayWidget extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            left: 0,
+            left: 15,
             top: 4 * singleCourseHeight + 3 * cardStep,
-            width: width,
-            height: middleStep,
+            width: 360,
+            height: 30,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Expanded(child: Divider()),
-              Text("午休",
+              Text("LUNCH BREAK",
                   style: FontManager.YaQiHei.copyWith(
-                      color: titleColor.withAlpha(70), fontSize: 13)),
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                    fontSize: 10,
+                  )),
               Expanded(child: Divider()),
             ]),
           ),

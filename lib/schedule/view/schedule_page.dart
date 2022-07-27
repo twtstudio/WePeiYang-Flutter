@@ -50,28 +50,84 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleColor = CommonPreferences().isSkinUsed.value?Color(CommonPreferences().skinColorB.value):FavorColors.scheduleTitleColor();
+    var titleColor = CommonPreferences().isSkinUsed.value
+        ? Color(CommonPreferences().skinColorB.value)
+        : FavorColors.scheduleTitleColor();
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: ScheduleAppBar(titleColor),
-      backgroundColor: Colors.white,
-      body: ListView(
-        physics: BouncingScrollPhysics(),
-        children: [
-          TitleWidget(titleColor),
-          WeekSelectWidget(),
-          Container(
-            decoration: CommonPreferences().isSkinUsed.value?BoxDecoration(
-              image: DecorationImage(image: NetworkImage(CommonPreferences().skinClass.value),fit: BoxFit.cover),
-            ):BoxDecoration(),
-            child: Column(
-              children: [
-                ClassTableWidget(titleColor),
-                HoursCounterWidget(titleColor),
-              ],
-            ),
-          )
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            colors: [
+              Colors.blue,
+              Colors.blueGrey,
+            ],
+          ),
+        ),
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            TitleWidget(titleColor),
+            WeekSelectWidget(),
+            Container(
+              decoration: CommonPreferences().isSkinUsed.value
+                  ? BoxDecoration(
+                      image: DecorationImage(
+                          image:
+                              NetworkImage(CommonPreferences().skinClass.value),
+                          fit: BoxFit.cover),
+                    )
+                  : BoxDecoration(),
+              // decoration: BoxDecoration(
+              //   gradient: LinearGradient(
+              //     colors: [
+              //       Colors.blue,
+              //       Colors.white,
+              //     ],
+              //   ),
+              // ),
+              child: Column(
+                children: [
+                  ClassTableWidget(titleColor),
+                  HoursCounterWidget(titleColor),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
+      // body: ListView(
+      //   physics: BouncingScrollPhysics(),
+      //   children: [
+      //     TitleWidget(titleColor),
+      //     WeekSelectWidget(),
+      //     Container(
+      //       decoration: CommonPreferences().isSkinUsed.value
+      //           ? BoxDecoration(
+      //               image: DecorationImage(
+      //                   image:
+      //                       NetworkImage(CommonPreferences().skinClass.value),
+      //                   fit: BoxFit.cover),
+      //             )
+      //           : BoxDecoration(),
+      //       // decoration: BoxDecoration(
+      //       //   gradient: LinearGradient(
+      //       //     colors: [
+      //       //       Colors.blue,
+      //       //       Colors.white,
+      //       //     ],
+      //       //   ),
+      //       // ),
+      //       child: Column(
+      //         children: [
+      //           ClassTableWidget(titleColor),
+      //           HoursCounterWidget(titleColor),
+      //         ],
+      //       ),
+      //     )
+      //   ],
+      // ),
     );
   }
 }
@@ -84,7 +140,9 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
+      backgroundColor: Color.fromRGBO(255, 255, 255, 0),
+
       brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
@@ -113,7 +171,9 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.autorenew, color: titleColor, size: 28),
           onPressed: () {
-            if(CommonPreferences().isAprilFoolClass.value&&DateTime.now().day==1&&DateTime.now().month==4){
+            if (CommonPreferences().isAprilFoolClass.value &&
+                DateTime.now().day == 1 &&
+                DateTime.now().month == 4) {
               showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -122,7 +182,7 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
                       content: "愚人节快乐呀！",
                       confirmText: "返回真实课表",
                       cancelText: "保留多色",
-                      confirmFun: (){
+                      confirmFun: () {
                         CommonPreferences().isAprilFoolClass.value = false;
                         Navigator.pop(context);
                         Navigator.popAndPushNamed(context, HomeRouter.home);
@@ -171,15 +231,18 @@ class TitleWidget extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
               child: Row(
                 children: [
-                  Text('课程表',
+                  Text('Schedule',
                       style: FontManager.YaQiHei.copyWith(
-                          color: titleColor, fontSize: 30)),
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900)),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8, top: 12),
+                    padding: const EdgeInsets.only(left: 8, top: 4),
                     child: Text('WEEK ${notifier.currentWeek}',
                         style: FontManager.Texta.copyWith(
-                            color: Color.fromRGBO(114, 113, 113, 1),
-                            fontSize: 16)),
+                            //color: Color.fromRGBO(114, 113, 113, 1),
+                            color: Color.fromRGBO(202, 202, 202, 1),
+                            fontSize: 12)),
                   )
                 ],
               ),
@@ -214,6 +277,7 @@ class HoursCounterWidget extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
                   style: FontManager.Aspira.copyWith(
+                      // color: Color.fromRGBO(205, 206, 211, 1),
                       color: Color.fromRGBO(205, 206, 211, 1),
                       fontSize: 14,
                       fontWeight: FontWeight.bold))),
