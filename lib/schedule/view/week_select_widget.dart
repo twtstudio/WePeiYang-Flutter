@@ -128,6 +128,7 @@ class _WeekSelectPainter extends CustomPainter {
         if (list[j][k]) {
           /// 深色cube，代表该点有课
           final Paint cubePaint = Paint()
+            // 简单的修改了色块颜色，之后会在上面加上不同透明度的蒙版
             // ..color = CommonPreferences().isAprilFoolClass.value
             //     ? ColorUtil.aprilFoolColor[
             //         Random().nextInt(ColorUtil.aprilFoolColor.length)]
