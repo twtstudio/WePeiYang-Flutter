@@ -75,15 +75,16 @@ class WeekDisplayWidget extends StatelessWidget {
             color: deepColor
                 ? CommonPreferences().isAprilFoolClass.value
                     ? ColorUtil.aprilFoolColor[Random().nextInt(4)]
-                    : titleColor
-                : Color.fromRGBO(236, 238, 237, 1),
+                    // : titleColor
+                    : Color.fromRGBO(255, 255, 255, 1)
+                : Color.fromRGBO(246, 246, 246, 0.2),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
               style: FontManager.Aspira.copyWith(
                   color: deepColor
-                      ? Colors.white
-                      : Color.fromRGBO(200, 200, 200, 1),
+                      ? Color.fromRGBO(44, 126, 223, 1)
+                      : Color.fromRGBO(202, 202, 202, 1),
                   fontSize: 10,
                   fontWeight: FontWeight.bold)),
         ),
@@ -112,18 +113,31 @@ class CourseDisplayWidget extends StatelessWidget {
       height: singleCourseHeight * 12 + cardStep * 11 + middleStep,
       child: Stack(
         children: [
+          Container(
+            width: 360,
+            height: 30,
+            margin: EdgeInsetsDirectional.only(
+                start: 10, top: 4 * singleCourseHeight + 3 * cardStep),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, 0.2),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+          ),
           Positioned(
-            left: 0,
+            left: 10,
             top: 4 * singleCourseHeight + 3 * cardStep,
-            width: width,
-            height: middleStep,
+            width: 360,
+            height: 30,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Expanded(child: Divider()),
-              Text("午休",
+              // Expanded(child: Divider()),
+              Text("LUNCH BREAK",
                   style: FontManager.YaQiHei.copyWith(
-                      color: titleColor.withAlpha(70), fontSize: 13)),
-              Expanded(child: Divider()),
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                  )),
+              // Expanded(child: Divider()),
             ]),
           ),
           ..._generatePositioned(context),
