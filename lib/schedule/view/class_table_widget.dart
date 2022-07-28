@@ -113,20 +113,31 @@ class CourseDisplayWidget extends StatelessWidget {
       height: singleCourseHeight * 12 + cardStep * 11 + middleStep,
       child: Stack(
         children: [
+          Container(
+            width: 360,
+            height: 30,
+            margin: EdgeInsetsDirectional.only(
+                start: 10, top: 4 * singleCourseHeight + 3 * cardStep),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 255, 255, 0.2),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+          ),
           Positioned(
-            left: 15,
+            left: 10,
             top: 4 * singleCourseHeight + 3 * cardStep,
             width: 360,
             height: 30,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Expanded(child: Divider()),
+              // Expanded(child: Divider()),
               Text("LUNCH BREAK",
                   style: FontManager.YaQiHei.copyWith(
                     color: Color.fromRGBO(255, 255, 255, 1),
                     fontSize: 10,
+                    fontWeight: FontWeight.w900,
                   )),
-              Expanded(child: Divider()),
+              // Expanded(child: Divider()),
             ]),
           ),
           ..._generatePositioned(context),

@@ -60,8 +60,8 @@ class _SchedulePageState extends State<SchedulePage> {
         decoration: BoxDecoration(
           gradient: RadialGradient(
             colors: [
-              Colors.blue,
-              Colors.blueGrey,
+              Color.fromRGBO(44, 126, 223, 0.5),
+              Color.fromRGBO(129, 187, 255, 1),
             ],
           ),
         ),
@@ -79,14 +79,6 @@ class _SchedulePageState extends State<SchedulePage> {
                           fit: BoxFit.cover),
                     )
                   : BoxDecoration(),
-              // decoration: BoxDecoration(
-              //   gradient: LinearGradient(
-              //     colors: [
-              //       Colors.blue,
-              //       Colors.white,
-              //     ],
-              //   ),
-              // ),
               child: Column(
                 children: [
                   ClassTableWidget(titleColor),
@@ -97,37 +89,6 @@ class _SchedulePageState extends State<SchedulePage> {
           ],
         ),
       ),
-      // body: ListView(
-      //   physics: BouncingScrollPhysics(),
-      //   children: [
-      //     TitleWidget(titleColor),
-      //     WeekSelectWidget(),
-      //     Container(
-      //       decoration: CommonPreferences().isSkinUsed.value
-      //           ? BoxDecoration(
-      //               image: DecorationImage(
-      //                   image:
-      //                       NetworkImage(CommonPreferences().skinClass.value),
-      //                   fit: BoxFit.cover),
-      //             )
-      //           : BoxDecoration(),
-      //       // decoration: BoxDecoration(
-      //       //   gradient: LinearGradient(
-      //       //     colors: [
-      //       //       Colors.blue,
-      //       //       Colors.white,
-      //       //     ],
-      //       //   ),
-      //       // ),
-      //       child: Column(
-      //         children: [
-      //           ClassTableWidget(titleColor),
-      //           HoursCounterWidget(titleColor),
-      //         ],
-      //       ),
-      //     )
-      //   ],
-      // ),
     );
   }
 }
@@ -140,9 +101,16 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      //backgroundColor: Colors.white,
+      //appbar背景取消
+      titleSpacing: 0,
       backgroundColor: Color.fromRGBO(255, 255, 255, 0),
-
+      title: Text(
+        "HELLO,Apricity",
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 18,
+        ),
+      ),
       brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(

@@ -60,7 +60,7 @@ class WeekSelectWidget extends StatelessWidget {
                                 child: InkWell(
                                   radius: 5000,
                                   splashColor:
-                                      Color.fromARGB(212, 184, 182, 182),
+                                      Color.fromRGBO(246, 246, 246, 0.5),
                                   highlightColor: Colors.transparent,
                                   onTap: () =>
                                       notifier.selectedWeekWithNotify = i + 1,
@@ -77,8 +77,6 @@ class WeekSelectWidget extends StatelessWidget {
     );
   }
 
-  void _changeColor() {}
-
   Widget getContent(BuildContext context, ScheduleNotifier notifier, int i) {
     return Column(
       children: [
@@ -88,7 +86,7 @@ class WeekSelectWidget extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
               color: i + 1 == notifier.selectedWeekWithNotify
-                  ? Color.fromRGBO(255, 234, 25, 0)
+                  ? Color.fromRGBO(255, 255, 255, 0.2)
                   : null,
               borderRadius: BorderRadius.circular(5)),
           child: CustomPaint(
@@ -128,7 +126,7 @@ class _WeekSelectPainter extends CustomPainter {
         if (list[j][k]) {
           /// 深色cube，代表该点有课
           final Paint cubePaint = Paint()
-            // 简单的修改了色块颜色，之后会在上面加上不同透明度的蒙版
+            // 简单的修改了色块颜色，之后会在上面加上不同透明度的蒙版，下面注释掉的代码先不要删除
             // ..color = CommonPreferences().isAprilFoolClass.value
             //     ? ColorUtil.aprilFoolColor[
             //         Random().nextInt(ColorUtil.aprilFoolColor.length)]
@@ -141,7 +139,7 @@ class _WeekSelectPainter extends CustomPainter {
         } else {
           /// 浅色cube，代表该点没课
           final Paint spacePaint = Paint()
-            ..color = Color.fromRGBO(255, 255, 255, 0.5)
+            ..color = Color.fromRGBO(255, 255, 255, 1)
             ..style = PaintingStyle.fill;
           canvas.drawRRect(rRect, spacePaint);
         }
