@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/commons/channels/location.dart';
+import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -814,7 +814,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   TextEditingController _controller = TextEditingController();
 
   _allowLocationPermission() async {
-    switch (await LocationPermissions().requestPermissions()) {
+    final status = await LocationPermissions().requestPermissions(
+      permissionLevel: LocationPermissionLevel.locationWhenInUse,
+    );
+    switch (status) {
       case PermissionStatus.granted:
         return true;
       default:
@@ -829,7 +832,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   }
 
   _checkLocationPermissions() async {
-    switch (await LocationPermissions().checkPermissionStatus()) {
+    final status = await LocationPermissions().checkPermissionStatus(
+      level: LocationPermissionLevel.locationWhenInUse,
+    );
+    switch (status) {
       case PermissionStatus.denied:
         if (!await _allowLocationPermission()) return;
         break;
@@ -847,7 +853,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
         break;
       case ServiceStatus.enabled:
         try {
-          final location = await getLocation();
+          final location = await LocationManager.getLocation();
           _reportLocation(location);
           _setLocation(location.address);
         } catch (_) {

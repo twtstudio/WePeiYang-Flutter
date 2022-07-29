@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -144,6 +145,37 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 ],
               ),
             ),
+          ),
+          //湖底规范
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //先与上面对齐
+              SizedBox(width: 25,),
+              TextButton(
+                  style: ButtonStyle(
+                    minimumSize:
+                    MaterialStateProperty.all(Size(1, 1)),
+                    padding:
+                    MaterialStateProperty.all(EdgeInsets.zero),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) =>
+                            LakePrivacyDialog());
+                  },
+                  child: Text(
+                    '查看《求实论坛社区规范》',
+                    style: TextUtil.base.normal.NotoSansSC
+                        .sp(16)
+                        .w400
+                        .textButtonBlue,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+            ],
           ),
           Align(
             alignment: Alignment.centerRight,

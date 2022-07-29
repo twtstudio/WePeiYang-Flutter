@@ -4,7 +4,7 @@ library wpy_dio;
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 export 'package:dio/dio.dart';

@@ -12,6 +12,7 @@
         android:layout_marginTop="20.3dp"
         android:layout_marginStart="19.33dp"
         android:text="今日无课 :)             做点有意义的事吧"
+        android:ellipsize="end"
         android:textColor="#ff000000"
         android:textStyle="bold"
         android:textSize="16.0sp" />

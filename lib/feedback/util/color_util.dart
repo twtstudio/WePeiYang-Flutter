@@ -27,4 +27,5 @@ class ColorUtil {
   static const greyB2B6Color = Color(0xFFB2B6BB);
   static const blue363CColor = Color(0xFF363C54);
   static const biliPink = Color(0xFFF97198);
+  static const  List<Color> aprilFoolColor = [Color(0xFFF1B53B), Color(0xF033BB8F),Color(0xF0E1403A),Color(0xFF5B96F2),Color(0xFF6A63E1)];
 }

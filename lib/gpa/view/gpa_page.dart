@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
+import 'package:we_pei_yang_flutter/home/home_router.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
@@ -33,7 +35,14 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 /// * 注：雷达图的成绩区域填充色、放射线条、绩点区域颜色均固定，设计也没给55555
 
 class GPAPage extends StatefulWidget {
-  final List<Color> _gpaColors = FavorColors.gpaColor;
+  static List<Color> get skinList => [
+        Color(CommonPreferences.skinColorB.value),
+        Color(CommonPreferences.skinColorE.value),
+        Color(CommonPreferences.skinColorD.value),
+        Color(CommonPreferences.skinColorF.value),
+      ];
+  final List<Color> _gpaColors =
+      CommonPreferences.isSkinUsed.value ? skinList : FavorColors.gpaColor;
 
   @override
   _GPAPageState createState() => _GPAPageState();
@@ -69,16 +78,26 @@ class _GPAPageState extends State<GPAPage> {
       child: Scaffold(
         appBar: GPAppBar(widget._gpaColors),
         backgroundColor: widget._gpaColors[0],
-        body: Theme(
-          /// 修改scrollView滚动至头/尾时溢出的颜色
-          data: ThemeData(accentColor: Colors.white),
-          child: ListView(
-            children: [
-              RadarChartWidget(widget._gpaColors),
-              GPAStatsWidget(widget._gpaColors),
-              GPACurve(widget._gpaColors, isPreview: false),
-              CourseListWidget(widget._gpaColors)
-            ],
+        body: Container(
+          decoration: CommonPreferences.isSkinUsed.value
+              ? BoxDecoration(
+                  gradient: new LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [widget._gpaColors[0], widget._gpaColors[3]]),
+                )
+              : BoxDecoration(),
+          child: Theme(
+            /// 修改scrollView滚动至头/尾时溢出的颜色
+            data: ThemeData(accentColor: Colors.white),
+            child: ListView(
+              children: [
+                RadarChartWidget(widget._gpaColors),
+                GPAStatsWidget(widget._gpaColors),
+                GPACurve(widget._gpaColors, isPreview: false),
+                CourseListWidget(widget._gpaColors)
+              ],
+            ),
           ),
         ),
       ),
@@ -111,6 +130,23 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
               child: Icon(Icons.loop, color: gpaColors[1], size: 25),
               onTap: () {
+                if (CommonPreferences.isAprilFoolGPA.value) {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AprilFoolDialog(
+                          content: "不满绩的你一样完美",
+                          confirmText: "返回真实绩点",
+                          cancelText: "保留满绩",
+                          confirmFun: () {
+                            CommonPreferences.isAprilFoolGPA.value = false;
+                            Navigator.pop(context);
+                            Navigator.popAndPushNamed(context, HomeRouter.home);
+                          },
+                        );
+                      });
+                }
                 Provider.of<GPANotifier>(context, listen: false).refreshGPA(
                     hint: true,
                     onFailure: (e) {
@@ -209,9 +245,7 @@ class _RadarChartPainter extends CustomPainter {
   final List<GPACourse> courses;
   final List<Color> gpaColors;
 
-  _RadarChartPainter(this.courses, this.gpaColors) {
-    _outLinePaint.color = gpaColors[1];
-  }
+  _RadarChartPainter(this.courses, this.gpaColors);
 
   /// 用这个控制雷达图大小,不能低于2
   static const double radarChartRatio = 2.15;
@@ -228,7 +262,9 @@ class _RadarChartPainter extends CustomPainter {
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
   final Paint _creditPaint = Paint()
-    ..color = Color.fromRGBO(178, 178, 158, 0.2)
+    ..color = CommonPreferences.isSkinUsed.value
+        ? Color.fromRGBO(255, 251, 240, 0.111)
+        : Color.fromRGBO(178, 178, 158, 0.2)
     ..style = PaintingStyle.fill;
 
   _drawCredit(Canvas canvas, Size size) {
@@ -276,7 +312,9 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _linePaint = Paint()
-    ..color = Color.fromRGBO(158, 158, 138, 0.45)
+    ..color = CommonPreferences.isSkinUsed.value
+        ? Color.fromRGBO(255, 251, 240, 0.45)
+        : Color.fromRGBO(158, 158, 138, 0.45)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.5;
 
@@ -290,12 +328,14 @@ class _RadarChartPainter extends CustomPainter {
     canvas.drawPath(linePath, _linePaint);
   }
 
-  final Paint _outLinePaint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 3.0
-    ..strokeJoin = StrokeJoin.round;
-
   _drawScoreOutLine(Canvas canvas) {
+    final Paint _outLinePaint = Paint()
+      ..color = CommonPreferences.isSkinUsed.value
+          ? Color.fromRGBO(255, 251, 240, 0.9)
+          : gpaColors[1]
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..strokeJoin = StrokeJoin.round;
     final Path outLinePath = Path()..moveTo(centerX, centerY);
     for (var x = 0; x <= courses.length; x++) {
       var i = x % courses.length;

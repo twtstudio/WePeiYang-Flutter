@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -24,7 +25,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
-import 'components/widget/PopMenuShape.dart';
+import 'components/widget/pop_menu_shape.dart';
+import 'lake_home_page/lake_notifier.dart';
 
 enum DetailPageStatus {
   loading,
@@ -53,18 +55,23 @@ class _DetailPageState extends State<DetailPage>
   int currentPage = 1;
   int rating = 0;
   Widget topCard;
+  final onlyOwner = ValueNotifier<int>(0);
+  final order =
+      ValueNotifier<int>(CommonPreferences.feedbackFloorSortType.value);
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
   final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
+  var _controller = ScrollController();
 
   _DetailPageState(this.post);
 
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
+    _commentList.clear();
     _initPostAndComments(
       onSuccess: (comments) {
         _commentList = comments;
@@ -114,7 +121,7 @@ class _DetailPageState extends State<DetailPage>
     _commentList = [];
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
-      if (post == null || post.isLike == null) {
+      if (post == null || post.isLike == null || post.isOwner == null) {
         _initPostAndComments(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
@@ -135,6 +142,10 @@ class _DetailPageState extends State<DetailPage>
             current: currentPage);
         status = DetailPageStatus.idle;
       }
+    });
+    order.addListener(() {
+      _refreshController.requestRefresh();
+      CommonPreferences.feedbackFloorSortType.value = order.value;
     });
   }
 
@@ -177,6 +188,8 @@ class _DetailPageState extends State<DetailPage>
     FeedbackService.getComments(
       id: post.id,
       page: current ?? currentPage,
+      order: order.value,
+      onlyOwner: onlyOwner.value,
       onSuccess: (comments, totalFloor) {
         onSuccess?.call(comments);
         setState(() {});
@@ -217,55 +230,7 @@ class _DetailPageState extends State<DetailPage>
     Widget checkButton = InkWell(
       onTap: () {
         launchKey.currentState.send(false);
-        setState(() {
-          // topCard = Container(
-          //     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-          //     decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(16),
-          //       color: Colors.white,
-          //       boxShadow: [
-          //         BoxShadow(
-          //             blurRadius: 5,
-          //             color: Color.fromARGB(64, 236, 237, 239),
-          //             offset: Offset(0, 0),
-          //             spreadRadius: 3),
-          //       ],
-          //     ),
-          //     child: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         SizedBox(height: 6),
-          //         topWidget,
-          //         SizedBox(height: 10),
-          //         ExpandableText(
-          //           text: context.read<NewFloorProvider>().floorSentContent,
-          //           maxLines: 3,
-          //           style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
-          //           expand: false,
-          //           buttonIsShown: true,
-          //         ),
-          //         InkWell(
-          //           onTap: () {
-          //             Navigator.pushNamed(
-          //                 context, FeedbackRouter.localImageView,
-          //                 arguments: {
-          //                   "uriList": [
-          //                     context.read<NewFloorProvider>().images
-          //                   ],
-          //                   "uriListLength": 1,
-          //                   "indexNow": 0
-          //                 });
-          //           },
-          //           child: Image.file(
-          //             context.read<NewFloorProvider>().images[0],
-          //           ),
-          //         ),
-          //         bottomWidget,
-          //         SizedBox(height: 4)
-          //       ],
-          //     ));
-        });
+        setState(() {});
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
           width: 20),
@@ -279,7 +244,7 @@ class _DetailPageState extends State<DetailPage>
           children: [
             PostCard.detail(post),
             SizedBox(
-              height: 100,
+              height: 120,
               child: Center(child: Loading()),
             )
           ],
@@ -287,9 +252,8 @@ class _DetailPageState extends State<DetailPage>
       }
     } else if (status == DetailPageStatus.idle) {
       Widget contentList = ListView.builder(
-        itemCount: _officialCommentList.length + _commentList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
+        itemBuilder: (BuildContext context, int i) {
+          if (i == 0) {
             return Column(
               children: [
                 PostCard.detail(post),
@@ -307,6 +271,87 @@ class _DetailPageState extends State<DetailPage>
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
                       ),
+                      SizedBox(
+                        width: 100,
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: onlyOwner,
+                        builder: (context, value, _) {
+                          return GestureDetector(
+                            onTap: () {
+                              onlyOwner.value = 1 - onlyOwner.value;
+                              _refreshController.requestRefresh();
+                            },
+                            child: value == 1
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorUtil.boldTag54,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: ColorUtil.boldTag54, //边框颜色
+                                        width: 1, //宽度
+                                      ),
+                                    ),
+                                    child: Text('  只看楼主  ',
+                                        style: TextUtil.base.white.w500.sp(14)),
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorUtil.whiteF8Color,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: ColorUtil.boldTag54, //边框颜色
+                                        width: 1, //宽度
+                                      ),
+                                    ),
+                                    child: Text('  只看楼主  ',
+                                        style:
+                                            TextUtil.base.black2A.w500.sp(14)),
+                                  ),
+                          );
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(right: 20),
+                        child: PopupMenuButton(
+                            shape: RacTangle(),
+                            offset: Offset(0, 0),
+                            child: Image.asset(
+                              'assets/images/lake_butt_icons/menu.png',
+                              width: 20,
+                            ),
+                            onSelected: (value) async {
+                              if (value == "时间正序") {
+                                order.value = 1;
+                              } else if (value == '时间倒序') {
+                                order.value = 0;
+                              }
+                            },
+                            itemBuilder: (context) {
+                              return <PopupMenuItem<String>>[
+                                PopupMenuItem<String>(
+                                  value: '时间正序',
+                                  child: Center(
+                                    child: Text('    时间正序',
+                                        style: order.value == 1
+                                            ? TextUtil.base.black2A.w700.sp(14)
+                                            : TextUtil.base.black2A.w500
+                                                .sp(14)),
+                                  ),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: '时间倒序',
+                                  child: Center(
+                                    child: Text('    时间倒序',
+                                        style: order.value == 0
+                                            ? TextUtil.base.black2A.w700.sp(14)
+                                            : TextUtil.base.black2A.w500
+                                                .sp(14)),
+                                  ),
+                                ),
+                              ];
+                            }),
+                      ),
                     ]),
                 SizedBox(
                   height: 10,
@@ -315,166 +360,222 @@ class _DetailPageState extends State<DetailPage>
               ],
             );
           }
-          index--;
+          i--;
 
-          if (index < _officialCommentList.length) {
-            var data = _officialCommentList[index];
+          if (i < _officialCommentList.length) {
+            if (i > 2) i--;
+            var data = _officialCommentList[i];
             var list = _officialCommentList;
-            return _officialCommentList[index].sender == 1
+            return i == 0
                 ? OfficialReplyCard.reply(
                     tag: post.department.name ?? '',
                     comment: data,
-                    placeAppeared: index,
+                    placeAppeared: i,
                     ratings: post.rating,
                     ancestorId: post.uid,
+                    detail: false,
                     onContentPressed: (refresh) async {
                       refresh.call(list);
                     },
                   )
-                : SizedBox(width: 0, height: 0);
-          }
+                : i == 1
 
-          ///_officialCommentList,点赞注释了
-          else {
-            var data = _commentList[index - _officialCommentList.length];
+                    ///楼中楼显示
+                    ? OfficialReplyCard.subFloor(
+                        tag: "",
+                        comment: data,
+                        placeAppeared: i,
+                        ratings: post.rating,
+                        ancestorId: post.uid,
+                        detail: true,
+                        onContentPressed: (refresh) async {
+                          refresh.call(list);
+                        },
+                      )
+                    : SizedBox(width: 0, height: 0);
+          } else {
+            var data = _commentList[i - _officialCommentList.length];
             return NCommentCard(
               uid: post.uid,
               comment: data,
               ancestorUId: post.id,
-              commentFloor: index + 1,
+              commentFloor: i + 1,
               isSubFloor: false,
               isFullView: false,
             );
           }
         },
+        controller: _controller,
+        itemCount: _officialCommentList.length + _commentList.length + 1,
       );
 
-      Widget mainList = Expanded(
-        child: NotificationListener<ScrollNotification>(
-          child: SmartRefresher(
-            physics: BouncingScrollPhysics(),
-            controller: _refreshController,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            enablePullDown: true,
-            onRefresh: _onRefresh,
-            enablePullUp: true,
-            onLoading: _onLoading,
-            child: contentList,
+      Widget mainList = NotificationListener<ScrollNotification>(
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController,
+          header: ClassicHeader(
+            completeDuration: Duration(milliseconds: 300),
+            idleText: '下拉以刷新 (乀*･ω･)乀',
+            releaseText: '下拉以刷新',
+            refreshingText: '正在刷新中，请稍等 (*￣3￣)/',
+            completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+            failedText: '刷新失败（；´д｀）ゞ',
           ),
-          onNotification: (ScrollNotification scrollInfo) =>
-              _onScrollNotification(scrollInfo),
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          footer: ClassicFooter(
+            idleText: '下拉以刷新',
+            noDataText: '这个冒泡到底啦 (*･ω･)',
+            loadingText: '加载中，请稍等  ;P',
+            failedText: '加载失败（；´д｀）ゞ',
+          ),
+          enablePullUp: true,
+          onLoading: _onLoading,
+          child: contentList,
         ),
+        onNotification: (ScrollNotification scrollInfo) =>
+            _onScrollNotification(scrollInfo),
       );
 
       var inputField = CommentInputField(postId: post.id, key: launchKey);
 
-      bottomInput = Consumer<NewFloorProvider>(
-          builder: (BuildContext context, value, Widget child) {
-        return AnimatedSize(
-          clipBehavior: Clip.antiAlias,
-          vsync: this,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOutSine,
-          child: Container(
-            margin: EdgeInsets.only(top: 4),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, -1),
-                      blurRadius: 2,
-                      spreadRadius: 3),
-                ],
-                color: ColorUtil.whiteF8Color),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      bottomInput = Column(
+        children: [
+          Spacer(),
+          Consumer<NewFloorProvider>(
+              builder: (BuildContext context, value, Widget child) {
+            return AnimatedSize(
+              clipBehavior: Clip.antiAlias,
+              vsync: this,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeOutSine,
+              child: Container(
+                margin: EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 1),
+                          blurRadius: 6,
+                          spreadRadius: 0),
+                    ],
+                    color: ColorUtil.whiteF8Color),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Offstage(
-                              offstage: !value.inputFieldEnabled,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  inputField,
-                                  ImageSelectAndView(key: imageSelectionKey),
-                                  SizedBox(height: 4),
-                                  Row(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Offstage(
+                                  offstage: !value.inputFieldEnabled,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(width: 4),
-                                      if (context
-                                              .read<NewFloorProvider>()
-                                              .images
-                                              .length ==
-                                          0)
-                                        IconButton(
-                                            icon: Image.asset(
-                                              'assets/images/lake_butt_icons/image.png',
-                                              width: 24,
-                                              height: 24,
-                                            ),
-                                            onPressed: () => imageSelectionKey
-                                                .currentState
-                                                .loadAssets()),
-                                      Spacer(),
-                                      checkButton,
-                                      SizedBox(width: 16),
+                                      inputField,
+                                      ImageSelectAndView(
+                                          key: imageSelectionKey),
+                                      SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          SizedBox(width: 4),
+                                          if (context
+                                                  .read<NewFloorProvider>()
+                                                  .images
+                                                  .length ==
+                                              0)
+                                            IconButton(
+                                                icon: Image.asset(
+                                                  'assets/images/lake_butt_icons/image.png',
+                                                  width: 24,
+                                                  height: 24,
+                                                ),
+                                                onPressed: () =>
+                                                    imageSelectionKey
+                                                        .currentState
+                                                        .loadAssets()),
+                                          if (context
+                                                  .read<NewFloorProvider>()
+                                                  .images
+                                                  .length ==
+                                              0)
+                                            IconButton(
+                                                icon: Image.asset(
+                                                  'assets/images/lake_butt_icons/camera.png',
+                                                  width: 24,
+                                                  height: 24,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                                onPressed: () =>
+                                                    imageSelectionKey
+                                                        .currentState
+                                                        .shotPic()),
+                                          Spacer(),
+                                          checkButton,
+                                          SizedBox(width: 16),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10)
                                     ],
-                                  ),
-                                  SizedBox(height: 10)
-                                ],
-                              )),
-                          Offstage(
-                            offstage: value.inputFieldEnabled,
-                            child: InkWell(
-                              onTap: () {
-                                _bottomIsOpen = true;
-                                Provider.of<NewFloorProvider>(context,
-                                        listen: false)
-                                    .inputFieldOpenAndReplyTo(0);
-                                FocusScope.of(context).requestFocus(
+                                  )),
+                              Offstage(
+                                offstage: value.inputFieldEnabled,
+                                child: InkWell(
+                                  onTap: () {
+                                    _bottomIsOpen = true;
                                     Provider.of<NewFloorProvider>(context,
                                             listen: false)
-                                        .focusNode);
-                              },
-                              child: Container(
-                                  height: 22,
-                                  margin: EdgeInsets.fromLTRB(16, 20, 0, 20),
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text('友善回复，真诚沟通',
-                                        style: TextUtil
-                                            .base.NotoSansSC.w500.grey97
-                                            .sp(12)),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(11),
-                                    color: Colors.white,
-                                  )),
-                            ),
+                                        .inputFieldOpenAndReplyTo(0);
+                                    FocusScope.of(context).requestFocus(
+                                        Provider.of<NewFloorProvider>(context,
+                                                listen: false)
+                                            .focusNode);
+                                  },
+                                  child: Container(
+                                      height: 22,
+                                      margin:
+                                          EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text('友善回复，真诚沟通',
+                                            style: TextUtil
+                                                .base.NotoSansSC.w500.grey97
+                                                .sp(12)),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(11),
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        if (!context.read<NewFloorProvider>().inputFieldEnabled)
+                          PostCard.outSide(post),
+                      ],
                     ),
-                    if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                      PostCard.outSide(post),
                   ],
                 ),
-              ],
-            ),
+              ),
+            );
+          }),
+        ],
+      );
+      body = Stack(
+        children: [
+          Column(
+            children: [Expanded(child: mainList), SizedBox(height: 60)],
           ),
-        );
-      });
-      body = Column(
-        children: [mainList, bottomInput],
+          bottomInput
+        ],
       );
     } else {
       body = Center(child: Text("error!"));
@@ -499,12 +600,14 @@ class _DetailPageState extends State<DetailPage>
                 onSuccess: () {
                   context
                       .read<LakeModel>()
-                      .lakeAreas[context.read<LakeModel>().lakeTabList[
-                          context.read<LakeModel>().tabController.index]]
+                      .lakeAreas[context
+                          .read<LakeModel>()
+                          .tabList[context.read<LakeModel>().currentTab]
+                          .id]
                       .refreshController
                       .requestRefresh();
                   ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.pop(context);
+                  Navigator.of(context).pop(post);
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
@@ -515,13 +618,15 @@ class _DetailPageState extends State<DetailPage>
         },
         itemBuilder: (context) {
           return <PopupMenuItem<String>>[
-            PopupMenuItem<String>(
-              value: '举报',
-              child: Center(
-                child: new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
+            if (!(widget.post.isOwner ?? false))
+              PopupMenuItem<String>(
+                value: '举报',
+                child: Center(
+                  child:
+                      new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
+                ),
               ),
-            ),
-            if (widget.post.isOwner)
+            if (widget.post.isOwner ?? false)
               PopupMenuItem<String>(
                 value: '删除',
                 child: Center(
@@ -545,7 +650,10 @@ class _DetailPageState extends State<DetailPage>
         });
 
     var appBar = AppBar(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      titleSpacing: 0,
+      backgroundColor: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorB.value)
+          : ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
@@ -556,10 +664,11 @@ class _DetailPageState extends State<DetailPage>
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
-          child: Center(
+          child: Align(
+            alignment: Alignment.centerLeft,
             child: Text(
-              S.current.feedback_detail,
-              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+              '冒泡',
+              style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
             ),
           ),
         ),
@@ -574,7 +683,9 @@ class _DetailPageState extends State<DetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.backgroundColor,
+        backgroundColor: CommonPreferences.isSkinUsed.value
+            ? Color(CommonPreferences.skinColorB.value)
+            : ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
       ),
@@ -585,7 +696,7 @@ class _DetailPageState extends State<DetailPage>
     return showDialog<bool>(
         context: context,
         builder: (context) {
-          return DialogWidget(
+          return LakeDialogWidget(
               title: '删除冒泡',
               content: Text('您确定要删除这条冒泡吗？'),
               cancelText: "取消",
@@ -715,9 +826,9 @@ class CommentInputFieldState extends State<CommentInputField> {
     );
   }
 
-  _replyFloor(List<String> list, bool isOffcial) {
+  _replyFloor(List<String> list, bool isOfficial) {
     ToastProvider.running('回复中 q(≧▽≦)/');
-    if (isOffcial == false) {
+    if (isOfficial == false) {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: _textEditingController.text,
@@ -734,7 +845,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         ),
       );
     } else {
-      FeedbackService.replyOffcialFloor(
+      FeedbackService.replyOfficialFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: _textEditingController.text,
         images: list == [] ? '' : list,
@@ -761,6 +872,21 @@ class ImageSelectAndView extends StatefulWidget {
 }
 
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
+  shotPic() async {
+    final asset = await ImagePicker().pickImage(source: ImageSource.camera);
+    File file = await File(asset.path);
+    for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+      if (j == 10) {
+        ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
+        return;
+      }
+    }
+    Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+    if (!mounted) return 0;
+    setState(() {});
+  }
+
   loadAssets() async {
     final List<AssetEntity> assets = await AssetPicker.pickAssets(
       context,

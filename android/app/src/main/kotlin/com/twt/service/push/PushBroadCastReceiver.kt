@@ -8,49 +8,46 @@ import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
-import com.google.gson.Gson
 import com.twt.service.MainActivity
 import com.twt.service.R
-import com.twt.service.push.model.Event
 import com.twt.service.push.model.FeedbackMessage
 import com.twt.service.push.model.MailBoxMessage
 import com.twt.service.push.model.MessageData
 import com.twt.service.push.server.PushCIdWorker
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.MethodChannel
 
 // TODO: 当应用与个推服务器连接，且处于后台时，若发送透传，需要转换成notification
 class PushBroadCastReceiver(
-        private val binding: ActivityPluginBinding,
-        private val channel: MethodChannel
+    private val binding: ActivityPluginBinding,
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         kotlin.runCatching {
-            WbyPushPlugin.log("PushBroadCastReceiver receive intent :" + intent?.extras.toString()
-                    ?: "no data")
+            WbyPushPlugin.log("PushBroadCastReceiver receive intent :  ${intent?.extras}")
+
             when (intent?.action) {
-                WbyPushPlugin.DATA -> {
-                    intent.getStringExtra("data")?.let {
-                        val eventData = Gson().toJson(Gson().fromJson(it, Event::class.java).data)
-                        WbyPushPlugin.log(eventData)
-                        val formData = Gson().fromJson(eventData, MailBoxMessage::class.java)
-                        WbyPushPlugin.log(formData.toString())
-                        showNotification(formData)
-                    }
-                }
+                // 透传消息收到后发送通知，现在不走透传了，所以暂时没用
+//                WbyPushPlugin.DATA -> {
+//                    intent.getStringExtra("data")?.let {
+//                        val eventData = Gson().toJson(Gson().fromJson(it, Event::class.java).data)
+//                        WbyPushPlugin.log(eventData)
+//                        val formData = Gson().fromJson(eventData, MailBoxMessage::class.java)
+//                        WbyPushPlugin.log(formData.toString())
+//                        showNotification(formData)
+//                    }
+//                }
                 WbyPushPlugin.CID -> {
                     val cId = intent.getStringExtra("cid")
                     WbyPushPlugin.log("PushBroadCastReceiver receive cid :" + (cId ?: "no data"))
                     val workManager = WorkManager.getInstance(binding.activity.applicationContext)
                     val constraints = Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .setRequiresStorageNotLow(true)
-                            .build()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .setRequiresStorageNotLow(true)
+                        .build()
                     val task = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
-                            .addTag("1")
-                            .setInputData(workDataOf("cid" to cId))
-                            .setConstraints(constraints)
-                            .build()
+                        .addTag("1")
+                        .setInputData(workDataOf("cid" to cId))
+                        .setConstraints(constraints)
+                        .build()
                     workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
                 }
                 else -> {}
@@ -58,25 +55,29 @@ class PushBroadCastReceiver(
         }
     }
 
+    /**
+     * 发送通知
+     */
+    @Suppress("unused")
     private fun showNotification(data: MessageData) {
         val notificationManager = NotificationManagerCompat.from(binding.activity)
         fun send(id: Int, title: String, content: String, intent: Intent) {
             val pendingIntent = PendingIntent.getActivity(binding.activity, 0, intent, 0)
             val builder = NotificationCompat.Builder(binding.activity, "1")
-                    .setSmallIcon(R.drawable.push_small)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .setContentIntent(pendingIntent)
-                    .setWhen(System.currentTimeMillis())
-                    .setAutoCancel(true)
+                .setSmallIcon(R.drawable.push_small)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)
 
             WbyPushPlugin.log("Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP")
             val intent2 = Intent(binding.activity, MainActivity::class.java)
             val pIntent = PendingIntent.getActivity(
-                    binding.activity.applicationContext,
-                    1,
-                    intent2,
-                    PendingIntent.FLAG_IMMUTABLE
+                binding.activity.applicationContext,
+                1,
+                intent2,
+                PendingIntent.FLAG_IMMUTABLE
             )
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setFullScreenIntent(pIntent, false)

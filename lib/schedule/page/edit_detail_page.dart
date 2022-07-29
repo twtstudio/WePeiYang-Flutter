@@ -103,7 +103,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
     SmartDialog.show(
       clickBgDismissTemp: false,
       widget: WbyDialogLayout(
-        padding: true,
+        bottomPadding: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,16 +116,16 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
             SizedBox(height: 30),
             WbyDialogStandardTwoButton(
-              cancel: () {
+              first: () {
                 SmartDialog.dismiss();
                 if (cancel != null) cancel();
               },
-              ok: () {
+              second: () {
                 SmartDialog.dismiss();
                 if (ok != null) ok();
               },
-              cancelText: '取消',
-              okText: '确定',
+              firstText: '取消',
+              secondText: '确定',
             ),
           ],
         ),

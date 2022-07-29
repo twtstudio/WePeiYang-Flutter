@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -58,8 +59,18 @@ class _CoursePageState extends State<CoursePage> {
         children: [
           _TitleWidget(),
           WeekSelectWidget(),
-          CourseDetailWidget(),
-          _HoursCounterWidget()
+          Container(
+            decoration: CommonPreferences.isSkinUsed.value
+                ? BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(CommonPreferences.skinClass.value),
+                        fit: BoxFit.cover),
+                  )
+                : BoxDecoration(),
+            child: Column(
+              children: [CourseDetailWidget(), _HoursCounterWidget()],
+            ),
+          ),
         ],
       ),
     );
@@ -93,6 +104,25 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
+          if (CommonPreferences.isAprilFoolClass.value &&
+              DateTime.now().day == 1 &&
+              DateTime.now().month == 4) {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AprilFoolDialog(
+                    content: "愚人节快乐呀！",
+                    confirmText: "返回真实课表",
+                    cancelText: "保留多色",
+                    confirmFun: () {
+                      CommonPreferences.isAprilFoolClass.value = false;
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, HomeRouter.home);
+                    },
+                  );
+                });
+          }
           if (!CommonPreferences.isBindTju.value) {
             ToastProvider.error("请绑定办公网");
             Navigator.pushNamed(context, AuthRouter.tjuBind);

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -10,9 +11,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/';
-  var headers = {};
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -43,9 +42,7 @@ class FeedbackDio extends DioAbstract {
 
 class FeedbackPicPostDio extends DioAbstract {
   @override
-  // String baseUrl = 'https://areas.twt.edu.cn/api/user/';
-  String baseUrl = 'https://qnhdpic.twt.edu.cn/';
-  var headers = {};
+  String baseUrl = EnvConfig.QNHDPIC;
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -188,6 +185,23 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getFestCards({
+    @required OnResult<List<Festival>> onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('banners');
+      List<Festival> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Festival.fromJson(json));
+      }
+      print(list);
+      onSuccess(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getRecTag({
     @required OnResult<Tag> onSuccess,
     @required OnFailure onFailure,
@@ -221,7 +235,6 @@ class FeedbackService with AsyncTimer {
       }
       onResult(list);
     } on DioError catch (e) {
-      ToastProvider.running('搜索速度过快，请稍等片刻再输入');
       onFailure(e);
     }
   }
@@ -350,6 +363,20 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static visitPost({
+    @required int id,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      await feedbackDio.post('post/visit',
+          formData: FormData.fromMap({
+            'post_id': '$id',
+          }));
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getPostById({
     @required int id,
     @required OnResult<Post> onResult,
@@ -394,6 +421,8 @@ class FeedbackService with AsyncTimer {
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
+    @required order,
+    @required onlyOwner,
     @required void Function(List<Floor> commentList, int totalPage) onSuccess,
     @required OnFailure onFailure,
     @required int page,
@@ -405,6 +434,8 @@ class FeedbackService with AsyncTimer {
           'post_id': '$id',
           'page': '$page',
           'page_size': '10',
+          'order': '$order',
+          'only_owner': '$onlyOwner'
         },
       );
       List<Floor> commentList = [];
@@ -583,13 +614,13 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static replyOffcialFloor(
+  static replyOfficialFloor(
       {@required id,
       @required content,
       @required List<String> images,
       @required OnSuccess onSuccess,
       @required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('replyOffcialFloor', () async {
+    AsyncTimer.runRepeatChecked('replyOfficialFloor', () async {
       try {
         var formData = FormData.fromMap({
           'post_id': id,

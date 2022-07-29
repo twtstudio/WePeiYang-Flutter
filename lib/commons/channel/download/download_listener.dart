@@ -1,0 +1,69 @@
+// @dart = 2.12
+import 'download_item.dart';
+
+typedef PendingCallback = void Function(DownloadTask task);
+typedef RunningCallback = void Function(DownloadTask task, double progress);
+typedef PausedCallback = void Function(DownloadTask task, double progress);
+typedef FailedCallback = void Function(
+    DownloadTask task, double progress, String reason);
+typedef SuccessCallback = void Function(DownloadTask task);
+typedef AllSuccessCallback = void Function(List<String>);
+
+class DownloadListener {
+  final String listenerId;
+  final Map<String, DownloadTask> tasks;
+  final PendingCallback? pending;
+  final RunningCallback? running;
+  final PausedCallback? paused;
+  final FailedCallback failed;
+  final SuccessCallback success;
+  final AllSuccessCallback? allSuccess;
+  final Set<String> downloadList = Set();
+
+  DownloadListener._(
+    this.listenerId,
+    this.tasks,
+    this.pending,
+    this.running,
+    this.paused,
+    this.failed,
+    this.success,
+    this.allSuccess,
+  );
+
+  factory DownloadListener({
+    required List<DownloadTask> list,
+    PendingCallback? pending,
+    RunningCallback? running,
+    PausedCallback? paused,
+    required FailedCallback failed,
+    required SuccessCallback success,
+    AllSuccessCallback? allSuccess,
+  }) {
+    final id = "${DateTime.now().millisecondsSinceEpoch}+${list.length}";
+
+    final tasks = Map.fromIterables(
+      list.map((e) {
+        e.listenerId = id;
+        return e.id;
+      }).toList(),
+      list,
+    );
+
+    return DownloadListener._(
+      id,
+      tasks,
+      pending,
+      running,
+      paused,
+      failed,
+      success,
+      allSuccess,
+    );
+  }
+
+  @override
+  String toString() {
+    return "id: $listenerId ,tasks: $tasks";
+  }
+}

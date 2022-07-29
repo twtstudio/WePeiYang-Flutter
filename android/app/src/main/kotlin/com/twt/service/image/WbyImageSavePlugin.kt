@@ -1,9 +1,8 @@
 package com.twt.service.image
 
-import android.content.Context
 import android.os.Environment
 import com.twt.service.common.LogUtil
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.WbyPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -16,20 +15,12 @@ import java.io.IOException
 
 // 1. 通过 url 保存图片
 // 2. 通过 path 保存图片
-class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var context: Context
-    private lateinit var imgSaveChannel: MethodChannel
+class WbyImageSavePlugin : WbyPlugin() {
+
+    override val name: String
+        get() = "com.twt.service/saveImg"
+
     private val imgDir by lazy { context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) }
-
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        imgSaveChannel = MethodChannel(binding.binaryMessenger, "com.twt.service/saveImg")
-        imgSaveChannel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        imgSaveChannel.setMethodCallHandler(null)
-    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -93,7 +84,7 @@ class WbyImageSavePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
 
     companion object {
-        const val TAG = "WBY_SAVE_IMAGE"
+        const val TAG = "SAVE_IMAGE"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

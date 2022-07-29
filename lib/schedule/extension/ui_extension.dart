@@ -1,4 +1,5 @@
 // @dart = 2.12
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -57,9 +58,20 @@ class AnimatedActiveCourse extends StatelessWidget {
   final _activeNameStyle = FontManager.YaQiHei.copyWith(
       color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
   final _activeTeacherStyle =
-      FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
+  FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
   final _activeClassroomStyle =
-      FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
+  FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
+  final _activeNameAlterStyle = FontManager.YaQiHei.copyWith(
+      color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
+  final _activeTeacherAlterStyle =
+  FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
+  final _activeClassroomAlterStyle =
+  FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
+
+
+  bool get _alter {
+    return generateColor(_pairs[0].first.name).value == Color.fromRGBO(221, 182, 190, 1.0).value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,17 +100,17 @@ class AnimatedActiveCourse extends StatelessWidget {
                   children: [
                     Spacer(),
                     Text(formatText(_pairs[0].first.name),
-                        style: _activeNameStyle, textAlign: TextAlign.center),
+                        style: _alter ? _activeNameAlterStyle : _activeNameStyle, textAlign: TextAlign.center),
                     SizedBox(height: 2),
                     Text(teacher,
-                        style: _activeTeacherStyle,
+                        style: _alter ? _activeTeacherAlterStyle : _activeTeacherStyle,
                         textAlign: TextAlign.center),
                     if (_pairs[0].arrange.location != "")
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
                             replaceBuildingWord(_pairs[0].arrange.location),
-                            style: _activeClassroomStyle,
+                            style: _alter ? _activeClassroomAlterStyle : _activeClassroomStyle,
                             textAlign: TextAlign.center),
                       ),
                     Spacer()

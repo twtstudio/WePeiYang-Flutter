@@ -2,15 +2,14 @@ package com.twt.service.install
 
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
@@ -18,44 +17,70 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.File
 
-class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-    PluginRegistry.ActivityResultListener {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResultListener {
+
+    override val name: String
+        get() = "com.twt.service/install"
+
     private lateinit var activityBinding: ActivityPluginBinding
     private lateinit var resultFile: File
     private lateinit var methodCall: MethodChannel.Result
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/install")
-        channel.setMethodCallHandler(this)
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
-
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            "install" -> {
-                val apkName = call.argument<String>("apkName")
-                if (apkName == null) {
-                    result.error(NO_PATH_ERROR, "no path", "")
-                } else {
+        LogUtil.d(TAG, "onMethodCall + ${call.method}")
+
+        kotlin.runCatching {
+            when (call.method) {
+                "install" -> {
+                    val path = call.argument<String>("path")!!
                     methodCall = result
-                    installAPK(apkName)
+                    installAPK(path)
                 }
+                "goToMarket" -> goToMarket(result)
+                "canGoToMarket" -> canGoToMarket(result)
+                else -> result.notImplemented()
             }
-            else -> result.notImplemented()
+        }.onFailure {
+            LogUtil.e(TAG, it)
+            result.error("", "$it", "")
         }
     }
 
-    private fun installAPK(apkName: String) {
+    private fun canGoToMarket(result: MethodChannel.Result) {
+        if (marketIntent.resolveActivity(context.packageManager) != null) {
+            result.success(true)
+        } else {
+            result.success(false)
+        }
+    }
+
+    /**
+     * 跳转到应用市场的intent
+     */
+    private val marketIntent
+        get() = Intent(Intent.ACTION_VIEW).apply {
+            // 现在只上架了 HUAWEI,XIAOMI,OPPO,VIVO
+            `package` = when (Build.BRAND.lowercase()) {
+                "huawei", "honor" -> "com.huawei.appmarket"
+                "xiaomi" -> "com.xiaomi.market"
+                "oppo" -> "com.oppo.market"
+                "vivo" -> "com.bbk.appstore"
+                else -> null
+            }
+            // 去掉后缀
+            val packageName = context.packageName.split(".").subList(0, 3).joinToString(".")
+            data = Uri.parse("market://details?id=$packageName")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+    private fun goToMarket(result: MethodChannel.Result) {
+        context.startActivity(marketIntent)
+        result.success(true)
+    }
+
+    private fun installAPK(path: String) {
         try {
-            val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                ?: throw Exception("can't find download dir")
-            resultFile = File(dir.path + File.separator + "apk" + File.separator + apkName)
+            resultFile = File(path)
             activityBinding.addActivityResultListener(this)
             installApkWithSdkVersion()
         } catch (e: Exception) {
@@ -95,7 +120,7 @@ class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activit
             //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
             val apkUri = FileProvider.getUriForFile(
                 context,
-                "com.twt.service.apkprovider",
+                "${context.packageName}.ApkProvider",
                 resultFile,
             )
             //添加这一句表示对目标应用临时授权该Uri所代表的文件
@@ -110,18 +135,20 @@ class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activit
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
+        LogUtil.d(TAG, "onAttachedToActivity")
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        //
+        LogUtil.d(TAG, "onDetachedFromActivityForConfigChanges")
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        //
+        LogUtil.d(TAG, "onReattachedToActivityForConfigChanges")
     }
 
     override fun onDetachedFromActivity() {
-        //
+        LogUtil.d(TAG, "onDetachedFromActivity")
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -142,7 +169,7 @@ class WbyInstallPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activit
     }
 
     companion object {
-        const val TAG = "WBY_INSTALL"
+        const val TAG = "INSTALL"
         const val REQUEST_PERMISSION = 101
         const val INSTALL_APK = 202
         const val NO_PERMISSION = ""

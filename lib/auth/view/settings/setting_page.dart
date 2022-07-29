@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -82,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
                     borderRadius: BorderRadius.circular(15)),
                 child: InkWell(
                   onTap: () =>
-                      Navigator.pushNamed(context, AuthRouter.colorSetting)
+                      Navigator.pushNamed(context, AuthRouter.themeSetting)
                           .then((_) {
                     /// 使用pop返回此页面时进行rebuild
                     this.setState(() {});
@@ -99,11 +97,9 @@ class _SettingPageState extends State<SettingPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(S.current.setting_color,
-                                  style: mainTextStyle),
+                              Text('主题', style: mainTextStyle),
                               SizedBox(height: 3),
-                              Text(S.current.setting_color_hint,
-                                  style: hintTextStyle)
+                              Text('联网获取全部已获得主题', style: hintTextStyle)
                             ],
                           ),
                         ),
@@ -352,68 +348,59 @@ class _SettingPageState extends State<SettingPage> {
                   child: Text('消息通知', style: titleTextStyle)),
               Padding(
                 padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-                child: GestureDetector(
-                  onLongPress: () {
-                    if (kDebugMode) {
-                      Navigator.pushNamed(context, TestRouter.pushTest);
-                    }
-                  },
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: descriptionMaxWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('青年湖底和信箱消息通知', style: mainTextStyle),
-                                SizedBox(height: 3),
-                                Text('应用消息通知', style: hintTextStyle)
-                              ],
-                            ),
+                child: Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: descriptionMaxWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('青年湖底和信箱消息通知', style: mainTextStyle),
+                              SizedBox(height: 3),
+                              Text('应用消息通知', style: hintTextStyle)
+                            ],
                           ),
-                          Spacer(),
-                          Builder(builder: (context) {
-                            return Switch(
-                              value: context.select(
-                                  (PushManager manger) => manger.openPush),
-                              onChanged: (value) {
-                                if (value) {
-                                  context.read<PushManager>().turnOnPushService(
-                                      () {
-                                    ToastProvider.success("开启推送成功");
-                                  }, () {
-                                    ToastProvider.success("开启推送需要通知权限");
-                                  }, () {
-                                    ToastProvider.error("打开失败");
-                                  });
-                                } else {
-                                  context
-                                      .read<PushManager>()
-                                      .turnOffPushService(() {
-                                    ToastProvider.success("关闭推送成功");
-                                  }, () {
-                                    ToastProvider.error("关闭失败");
-                                  });
-                                }
-                              },
-                              activeColor: Color.fromRGBO(105, 109, 127, 1),
-                              inactiveThumbColor:
-                                  Color.fromRGBO(205, 206, 212, 1),
-                              activeTrackColor:
-                                  Color.fromRGBO(240, 241, 242, 1),
-                              inactiveTrackColor:
-                                  Color.fromRGBO(240, 241, 242, 1),
-                            );
-                          }),
-                        ],
-                      ),
+                        ),
+                        Spacer(),
+                        Builder(builder: (context) {
+                          return Switch(
+                            value: context.select(
+                                (PushManager manger) => manger.openPush),
+                            onChanged: (value) {
+                              if (value) {
+                                context.read<PushManager>().turnOnPushService(
+                                    () {
+                                  ToastProvider.success("开启推送成功");
+                                }, () {
+                                  ToastProvider.success("开启推送需要通知权限");
+                                }, () {
+                                  ToastProvider.error("打开失败");
+                                });
+                              } else {
+                                context.read<PushManager>().turnOffPushService(
+                                    () {
+                                  ToastProvider.success("关闭推送成功");
+                                }, () {
+                                  ToastProvider.error("关闭失败");
+                                });
+                              }
+                            },
+                            activeColor: Color.fromRGBO(105, 109, 127, 1),
+                            inactiveThumbColor:
+                                Color.fromRGBO(205, 206, 212, 1),
+                            activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                            inactiveTrackColor:
+                                Color.fromRGBO(240, 241, 242, 1),
+                          );
+                        }),
+                      ],
                     ),
                   ),
                 ),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
@@ -64,6 +67,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
     });
+
+    ///检测愚人节
+    if (DateTime.now().month == 4 &&
+        DateTime.now().day == 1 &&
+        CommonPreferences.isAprilFoolGen.value) {
+      CommonPreferences.isAprilFool.value = true;
+      CommonPreferences.isAprilFoolLike.value = true;
+      CommonPreferences.isAprilFoolGPA.value = true;
+      CommonPreferences.isAprilFoolClass.value = true;
+      CommonPreferences.isAprilFoolHead.value = true;
+
+      ///如果不刷新GPA，就不会显示满绩
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+          hint: true,
+          onFailure: (e) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) => TjuRebindDialog(
+                  reason: e is WpyDioError ? e.error.toString() : null),
+            );
+          });
+      CommonPreferences.isAprilFoolGen.value = false;
+    } else {
+      CommonPreferences.isAprilFool.value = false;
+      CommonPreferences.isAprilFoolLike.value = false;
+      CommonPreferences.isAprilFoolGPA.value = false;
+      CommonPreferences.isAprilFoolGen.value = true;
+      CommonPreferences.isAprilFoolHead.value = false;
+    }
   }
 
   @override
@@ -126,7 +159,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var bottomNavigationBar = Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.95),
-          boxShadow: [BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)],
+          boxShadow: [
+            BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)
+          ],
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         ),

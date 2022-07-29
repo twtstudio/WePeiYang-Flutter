@@ -7,6 +7,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -20,12 +21,26 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 
 import '../feedback_router.dart';
-import 'components/widget/PopMenuShape.dart';
+import 'components/widget/pop_menu_shape.dart';
 import 'components/widget/tag_search_card.dart';
+import 'lake_home_page/lake_notifier.dart';
 
 class NewPostPage extends StatefulWidget {
+  final NewPostArgs args;
+
+  const NewPostPage(this.args);
+
   @override
   _NewPostPageState createState() => _NewPostPageState();
+}
+
+class NewPostArgs {
+  final bool isFollowing;
+  final String tagId;
+  final String tagName;
+  final int type;
+
+  NewPostArgs(this.isFollowing, this.tagId, this.type, this.tagName);
 }
 
 class _NewPostPageState extends State<NewPostPage> {
@@ -39,7 +54,7 @@ class _NewPostPageState extends State<NewPostPage> {
       centerTitle: true,
       title: Text(
         S.current.feedback_new_post,
-        style: TextUtil.base.NotoSansSC.w500.sp(18).black2A,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).black2A,
       ),
       brightness: Brightness.light,
       elevation: 0,
@@ -67,18 +82,49 @@ class _NewPostPageState extends State<NewPostPage> {
         body: ListView(
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.only(left: 20),
             children: [
-              LakeSelector(),
-              SizedBox(height: 10),
-              departmentTagView(postTypeNotifier),
+              Container(
+                  decoration: widget.args.isFollowing
+                      ? BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          shape: BoxShape.rectangle,
+                        )
+                      : BoxDecoration(),
+                  margin: widget.args.isFollowing
+                      ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
+                      : EdgeInsets.zero,
+                  padding: widget.args.isFollowing
+                      ? const EdgeInsets.fromLTRB(22, 10, 22, 10)
+                      : EdgeInsets.zero,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        widget.args.isFollowing
+                            ? Text('跟帖:',
+                                style: TextUtil.base.NotoSansSC.w500
+                                    .sp(14)
+                                    .black2A)
+                            : LakeSelector(),
+                        SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: widget.args.isFollowing
+                              ? Text('${widget.args.tagName}'.substring(3),
+                                  style: TextUtil.base.NotoSansSC.w500
+                                      .sp(14)
+                                      .black2A)
+                              : departmentTagView(postTypeNotifier),
+                        ),
+                      ])),
               Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     shape: BoxShape.rectangle,
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  margin: const EdgeInsets.only(right: 20, top: 4),
                   padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +137,8 @@ class _NewPostPageState extends State<NewPostPage> {
                           children: [
                             Spacer(),
                             CampusSelector(campusNotifier),
-                            SubmitButton(campusNotifier, postTypeNotifier),
+                            SubmitButton(campusNotifier, postTypeNotifier,
+                                args: widget.args),
                           ],
                         ),
                       ]))
@@ -105,110 +152,185 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
-
-  List<WPYTab> postType = [];
+  ScrollController controller = new ScrollController();
 
   @override
   void initState() {
     super.initState();
-    if(context.read<LakeModel>().newPostTabList == []){
-      context.read<LakeModel>().initTabList();
-    }
-    postType = context.read<LakeModel>().newPostTabList;
   }
 
   @override
   Widget build(BuildContext context) {
     final notifier =
         context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
-    return postType == [] ?
-      Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16)
-        ),
-        child: Center(
-          child: Text('Loading...φ(゜▽゜*)♪'),
-        ),
-      )
-        : ValueListenableBuilder<int>(
-            valueListenable: notifier,
-            builder: (context, type, _) {
-              return SizedBox(
-                height: 60,
-                child: ListView.builder(
-                  itemCount: postType.length,
-                  scrollDirection: Axis.horizontal,
-                  physics: ScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      height: 58,
-                      width: (WePeiYangApp.screenWidth - 40) / postType.length,
-                      child: ElevatedButton(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              postType[index].shortname,
-                              style: type == index
-                                  ? TextUtil.base.NotoSansSC.w500
-                                      .sp(18)
-                                      .black2A
-                                  : TextUtil.base.NotoSansSC.w400
-                                      .sp(18)
-                                      .grey6C,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: type == index
-                                      ? ColorUtil.mainColor
-                                      : Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16))),
-                              width: 30,
-                              height: 4,
-                            ),
-                          ],
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: _judgeBorder(index)),
-                          primary: Colors.white,
-                          elevation: 0,
-                        ),
-                        onPressed: () {
-                          notifier.value = index;
-                        },
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          );
-  }
+    final status = context.select((LakeModel model) => model.mainStatus);
+    final tabList = context.select((LakeModel model) => model.tabList);
+    notifier.value = tabList[1].id;
 
-  BorderRadius _judgeBorder(int index) {
-    if (index == 0)
-      return BorderRadius.horizontal(left: Radius.circular(16));
-    else if (index == postType.length - 1)
-      return BorderRadius.horizontal(right: Radius.circular(16));
-    else
-      return BorderRadius.horizontal();
+    return status == LakePageStatus.unload
+        ? SizedBox()
+        : status == LakePageStatus.loading
+            ? Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16)),
+                child: Center(
+                  child: Loading(),
+                ),
+              )
+            : status == LakePageStatus.idle
+                ? Container(
+                    padding: EdgeInsets.only(left: 8),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(16)),
+                      color: Colors.white,
+                    ),
+                    height: 60,
+                    width: double.infinity,
+                    child: Stack(
+                      alignment: Alignment.centerLeft,
+                      children: [
+                        ValueListenableBuilder<int>(
+                          valueListenable: notifier,
+                          builder: (context, type, _) {
+                            return Padding(
+                                padding: const EdgeInsets.only(right: 40.0),
+                                child: Builder(builder: (context) {
+                                  return ListView.builder(
+                                    controller: controller,
+                                    itemCount: tabList.length - 1,
+                                    scrollDirection: Axis.horizontal,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          notifier.value =
+                                              tabList[index + 1].id;
+
+                                          ///在切换发帖区时，要清空department，不然就会导致参数问题
+                                          context
+                                              .read<NewPostProvider>()
+                                              .department = null;
+                                        },
+                                        child: SizedBox(
+                                          height: 58,
+                                          width: 100,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(tabList[index + 1].name,
+                                                    style: type ==
+                                                            tabList[index + 1]
+                                                                .id
+                                                        ? TextUtil.base
+                                                            .NotoSansSC.w600
+                                                            .sp(18)
+                                                            .black2A
+                                                        : TextUtil.base.w400
+                                                            .sp(18)
+                                                            .greyA6),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 2),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          color: type ==
+                                                                  tabList[index +
+                                                                          1]
+                                                                      .id
+                                                              ? ColorUtil
+                                                                  .mainColor
+                                                              : Colors.white,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  16))),
+                                                  width: 24,
+                                                  height: 3,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }));
+                          },
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ShaderMask(
+                            shaderCallback: (rect) {
+                              return LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.center,
+                                colors: [
+                                  Colors.transparent,
+                                  ColorUtil.backgroundColor
+                                ],
+                              ).createShader(
+                                  Rect.fromLTRB(0, 0, rect.width, rect.height));
+                            },
+                            blendMode: BlendMode.dstIn,
+                            child: InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                controller.offset <= 100 * (tabList.length - 2)
+                                    ? controller.animateTo(
+                                        controller.offset + 100,
+                                        duration: Duration(milliseconds: 400),
+                                        curve: Curves.fastOutSlowIn)
+                                    : controller.animateTo(
+                                        100 * (tabList.length - 2).toDouble(),
+                                        duration: Duration(milliseconds: 800),
+                                        curve: Curves.slowMiddle);
+                              },
+                              child: Container(
+                                height: 90,
+                                width: 70,
+                                child: Icon(Icons.arrow_forward_ios_sharp,
+                                    color: Color.fromRGBO(98, 103, 124, 1.0),
+                                    size: 25),
+                                color: ColorUtil.backgroundColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ))
+                : Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Center(
+                      child: Text('点击刷新'),
+                    ),
+                  );
   }
 }
 
 class SubmitButton extends StatelessWidget {
   final ValueNotifier campusNotifier, postTypeNotifier;
+  final NewPostArgs args;
 
-  const SubmitButton(this.campusNotifier, this.postTypeNotifier, {Key key})
+  const SubmitButton(this.campusNotifier, this.postTypeNotifier,
+      {Key key, this.args})
       : super(key: key);
 
   void submit(BuildContext context) {
     var dataModel = context.read<NewPostProvider>();
-    dataModel.type = postTypeNotifier.value + 1;
+    dataModel.type = postTypeNotifier.value;
     if (dataModel.images.isNotEmpty && dataModel.check) {
       FeedbackService.postPic(
           images: dataModel.images,
@@ -216,11 +338,16 @@ class SubmitButton extends StatelessWidget {
             dataModel.images.clear();
             if (dataModel.check) {
               FeedbackService.sendPost(
-                type: dataModel.type,
+                type: args.isFollowing ? args.type : dataModel.type,
                 title: dataModel.title,
                 content: dataModel.content,
-                tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-                departmentId: dataModel.department == null ? '' : dataModel.department.id,
+                tagId: args.isFollowing
+                    ? args.tagId
+                    : dataModel.tag == null
+                        ? ''
+                        : dataModel.tag.id,
+                departmentId:
+                    dataModel.department == null ? '' : dataModel.department.id,
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -228,6 +355,7 @@ class SubmitButton extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 onFailure: (e) {
+                  dataModel.clear();
                   ToastProvider.error(e.error.toString());
                 },
               );
@@ -239,16 +367,22 @@ class SubmitButton extends StatelessWidget {
             }
           },
           onFailure: (e) {
+            dataModel.clear();
             ToastProvider.error(e.error.toString());
           });
     } else {
       if (dataModel.check) {
         FeedbackService.sendPost(
-          type: dataModel.type,
+          type: args.isFollowing ? args.type : dataModel.type,
           title: dataModel.title,
           content: dataModel.content,
-          tagId: dataModel.tag == null ? '' : dataModel.tag.id,
-          departmentId: dataModel.department == null ? '' : dataModel.department.id,
+          tagId: args.isFollowing
+              ? args.tagId
+              : dataModel.tag == null
+                  ? ''
+                  : dataModel.tag.id,
+          departmentId:
+              dataModel.department == null ? '' : dataModel.department.id,
           images: [],
           campus: campusNotifier.value,
           onSuccess: () {
@@ -256,6 +390,7 @@ class SubmitButton extends StatelessWidget {
             Navigator.pop(context);
           },
           onFailure: (e) {
+            dataModel.clear();
             ToastProvider.error(e.error.toString());
           },
         );
@@ -327,7 +462,7 @@ class _departmentTagViewState extends State<departmentTagView> {
             ),
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
-            child: notifier.value == 0
+            child: notifier.value == 1
                 ? TabGridView(
                     department: department.value,
                   )

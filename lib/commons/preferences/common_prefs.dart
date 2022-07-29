@@ -26,6 +26,12 @@ class CommonPreferences {
   static final major = PrefsBean<String>('major');
   static final stuType = PrefsBean<String>('stuType');
   static final avatar = PrefsBean<String>('avatar');
+  static final area = PrefsBean<String>('area');
+  static final building = PrefsBean<String>('building');
+  static final floor = PrefsBean<String>('floor');
+  static final room = PrefsBean<String>('room');
+  static final bed = PrefsBean<String>('bed');
+  static final themeToken = PrefsBean<String>("themeToken");
 
   /// 校务专区
   static final feedbackToken = PrefsBean<String>('lakeToken');
@@ -36,8 +42,31 @@ class CommonPreferences {
   // 1 -> 按时间排序; 2 -> 按热度排序
   static final feedbackSearchType =
       PrefsBean<String>('feedbackSearchType', '1');
+  static final feedbackFloorSortType = PrefsBean<int>('feedbackFloorSortType', 0);
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
   static final isFirstLogin = PrefsBean<bool>('firstLogin', true);
+
+  /// 愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
+  static final isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
+  static final isAprilFool = PrefsBean<bool>("aprilFool", false);
+  static final isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
+  static final isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
+  static final isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
+  static final isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
+
+  /// 海棠节用->皮肤用
+  static final isSkinUsed = PrefsBean<bool>("skin", false);
+  static final isDarkMode = PrefsBean<bool>("isDarkMode", false);
+  static final skinProfile = PrefsBean<String>("skinProfile", "");
+  static final skinClass = PrefsBean<String>("skinClass", "");
+  static final skinMain = PrefsBean<String>("skinMain", "");
+  static final skinColorA = PrefsBean<int>("skinColorA", 1);
+  static final skinColorB = PrefsBean<int>("skinColorB", 1);
+  static final skinColorC = PrefsBean<int>("skinColorC", 1);
+  static final skinColorD = PrefsBean<int>("skinColorD", 1);
+  static final skinColorE = PrefsBean<int>("skinColorE", 1);
+  static final skinColorF = PrefsBean<int>("skinColorF", 1);
+  static final skinColorG = PrefsBean<int>("skinColorG", 1);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
@@ -83,6 +112,7 @@ class CommonPreferences {
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final otherWeekSchedule =
       PrefsBean<bool>('otherWeekSchedule', true); // 课表显示非本周课程
+  static final skinNow = PrefsBean<int>("skinNow", 0); // 当前皮肤编号
 
   /// 自习室
   static final  loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
@@ -103,7 +133,7 @@ class CommonPreferences {
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
-  static final todayShowUpdateAgain = PrefsBean<String>('todayShowUpdateAgain');
+  static final lastCheckUpdateTime = PrefsBean('lastCheckUpdateTime');
   static final canPush = PrefsBean<bool>('can_push', false);
 
   /// 清除天外天账号系统缓存
@@ -124,7 +154,23 @@ class CommonPreferences {
     avatar.clear();
     feedbackToken.clear();
     canPush.clear();
-    todayShowUpdateAgain.clear();
+    lastCheckUpdateTime.clear();
+    area.clear();
+    building.clear();
+    floor.clear();
+    room.clear();
+    bed.clear();
+    isSkinUsed.clear();
+    isDarkMode.clear();
+    skinProfile.clear();
+    skinClass.clear();
+    skinMain.clear();
+    skinColorA.clear();
+    skinColorB.clear();
+    skinColorC.clear();
+    skinColorD.clear();
+    skinColorE.clear();
+    skinColorF.clear();
   }
 
   /// 清除办公网缓存

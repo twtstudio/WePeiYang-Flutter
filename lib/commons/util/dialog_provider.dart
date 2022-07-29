@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
-class DialogWidget extends Dialog {
+class LakeDialogWidget extends Dialog {
   final String title; //标题
   final Widget content; //内容
   final String cancelText; //是否需要"取消"按钮
@@ -14,11 +14,11 @@ class DialogWidget extends Dialog {
   final String confirmText; //是否需要"确定"按钮
   final void Function() cancelFun; //取消回调
   final void Function() confirmFun; //确定回调
-
+  final Color? cancelButtonColor;
   final Color? confirmButtonColor;
   final TextStyle? titleTextStyle;
 
-  DialogWidget(
+  LakeDialogWidget(
       {required this.title,
       required this.content,
       required this.cancelText,
@@ -27,6 +27,7 @@ class DialogWidget extends Dialog {
       required this.confirmText,
       required this.cancelFun,
       required this.confirmFun,
+      this.cancelButtonColor,
       this.confirmButtonColor,
       this.titleTextStyle});
 
@@ -42,14 +43,29 @@ class DialogWidget extends Dialog {
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(28.w),
-              decoration: ShapeDecoration(
-                color: Color(0xfff2f2f2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
+
+              ///节日用处理
+              decoration: DateTime.now().month == 4 && DateTime.now().day == 1
+                  ? ShapeDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                              'assets/images/lake_butt_icons/mask_group.png'),
+                          fit: BoxFit.cover),
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    )
+                  : ShapeDecoration(
+                      color: Color(0xfff2f2f2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -107,13 +123,16 @@ class DialogWidget extends Dialog {
         onPressed: this.cancelFun,
         child: Text(cancelText, style: cancelTextStyle),
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3),
+          elevation: DateTime.now().month == 4 && DateTime.now().day == 1
+              ? MaterialStateProperty.all(0)
+              : MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);
             return ColorUtil.backgroundColor;
           }),
-          backgroundColor: MaterialStateProperty.all(ColorUtil.backgroundColor),
+          backgroundColor: MaterialStateProperty.all(
+              cancelButtonColor ?? ColorUtil.backgroundColor),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
@@ -129,7 +148,9 @@ class DialogWidget extends Dialog {
         onPressed: this.confirmFun,
         child: Text(confirmText, style: confirmTextStyle),
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3),
+          elevation: DateTime.now().month == 4 && DateTime.now().day == 1
+              ? MaterialStateProperty.all(0)
+              : MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);

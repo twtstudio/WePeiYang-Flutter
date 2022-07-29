@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -10,7 +11,25 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-class TodayCoursesWidget extends StatelessWidget {
+class TodayCoursesWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => TodayCoursesWidgetState();
+}
+
+class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
+  List<Color> skinList =[];
+  @override
+  void initState() {
+    super.initState();
+    if(CommonPreferences.isSkinUsed.value) {
+      skinList.add(Color(CommonPreferences.skinColorA.value));
+      skinList.add(Color(CommonPreferences.skinColorB.value));
+      skinList.add(Color(CommonPreferences.skinColorC.value));
+      skinList.add(Color(CommonPreferences.skinColorD.value));
+      skinList.add(Color(CommonPreferences.skinColorE.value));
+      skinList.add(Color(CommonPreferences.skinColorF.value));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<CourseProvider>(builder: (context, provider, _) {
@@ -92,7 +111,7 @@ class TodayCoursesWidget extends StatelessWidget {
     if (todayPairs.length == 0) {
       // 如果今天没有课，就返回文字框
       return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
+        onTap: () => Navigator.pushNamed(context, ScheduleRouter.course).then((_) => setState(() {})),
         child: Container(
             height: 60,
             margin: const EdgeInsets.symmetric(horizontal: 22),
@@ -128,8 +147,8 @@ class TodayCoursesWidget extends StatelessWidget {
               width: 140,
               padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
               child: Material(
-                color: FavorColors
-                    .homeSchedule[i % FavorColors.homeSchedule.length],
+                color: CommonPreferences.isSkinUsed.value?skinList[i %4]:FavorColors
+                    .defaultHomeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
                 elevation: 2,
                 child: InkWell(
@@ -148,7 +167,11 @@ class TodayCoursesWidget extends StatelessWidget {
                           child: Text(formatText(todayPairs[i].first.name),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
-                                  color: Colors.white,
+                                  color: CommonPreferences.isSkinUsed.value?(skinList[i % 4].value ==
+                                      Color
+                                          .fromRGBO(221, 182, 190, 1.0)
+                                          .value) ? Color(0xfff1dce0):Colors.white
+                                      : Colors.white,
                                   fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 5),

@@ -2,13 +2,16 @@ package com.twt.service
 
 import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
+import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
-import com.twt.service.common.WbySharePreference
 import com.twt.service.download.WbyDownloadPlugin
+import com.twt.service.hot_fix.HotFixPreference
 import com.twt.service.hot_fix.WbyFixPlugin
 import com.twt.service.image.WbyImageSavePlugin
 import com.twt.service.install.WbyInstallPlugin
+import com.twt.service.local_setting.WbyLocalSettingPlugin
 import com.twt.service.location.WbyLocationPlugin
 import com.twt.service.message.WbyMessagePlugin
 import com.twt.service.push.WbyPushPlugin
@@ -18,6 +21,7 @@ import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
+
 
 class MainActivity : FlutterActivity() {
 
@@ -47,8 +51,15 @@ class MainActivity : FlutterActivity() {
                     WbyFixPlugin(),
                     // 友盟统计
                     WbyStatisticsPlugin(),
+                    // 友盟云参数
+                    WbyCloudConfigPlugin(),
+                    // 本地设置
+                    WbyLocalSettingPlugin(),
                 )
             )
+        }.onFailure {
+            Toast.makeText(this, "不该出现的错误：$it", Toast.LENGTH_LONG).show()
+            LogUtil.e(TAG, it)
         }
     }
 
@@ -61,7 +72,7 @@ class MainActivity : FlutterActivity() {
         val shellArgs = super.getFlutterShellArgs()
         takeIf { !BuildConfig.DEBUG }?.let {
             WbyFixPlugin.log("getFlutterShellArgs")
-            WbySharePreference.fixSo?.let {
+            HotFixPreference.getCanUseFixSo()?.let {
                 WbyFixPlugin.log("load .so file : $it")
                 shellArgs.add("--aot-shared-library-name=$it")
             }
@@ -81,23 +92,23 @@ class MainActivity : FlutterActivity() {
 
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()
-        WbySharePreference.setCurrentUseSoFileCanUse()
+        HotFixPreference.setCurrentUseSoFileCanUse()
     }
 
-    // 禁用显示大小改变和文字大小改变
+    // 禁用文字大小改变
     override fun attachBaseContext(newBase: Context) {
         ChangeDisplay.changeConfig(newBase)
         super.attachBaseContext(newBase)
     }
 
-    // 更改字体或显示大小后，自动重启activity（参考了高德地图）
+    // 更改字体大小后，自动重启activity（参考了高德地图）
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         ChangeDisplay.recreateWhenConfigChange(newConfig, this)
     }
 
     companion object {
-        const val TAG = "WBY_MainActivity"
+        const val TAG = "MainActivity"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

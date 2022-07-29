@@ -1,7 +1,10 @@
 // @dart = 2.12
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -17,6 +20,7 @@ double get _canvasWidth {
   var count = CommonPreferences.dayNumber.value;
   return _cubeSideLength * count + _spacingLength * (count - 1);
 }
+
 const double _canvasHeight = _cubeSideLength * 5 + _spacingLength * 4;
 
 /// 星期切换栏
@@ -105,7 +109,7 @@ class WeekSelectWidget extends StatelessWidget {
         Text('WEEK ${i + 1}',
             style: FontManager.Aspira.copyWith(
                 color: (provider.selectedWeek == i + 1)
-                    ? Colors.black
+                    ? MyColors.deepBlue
                     : Color.fromRGBO(200, 200, 200, 1),
                 fontSize: 11,
                 fontWeight: FontWeight.bold))
@@ -121,7 +125,12 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 深色cube，代表该点有课
   final Paint _cubePaint = Paint()
-    ..color = FavorColors.scheduleColor.first
+    ..color = CommonPreferences.isAprilFoolClass.value
+        ? ColorUtil
+            .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]
+        : CommonPreferences.isSkinUsed.value
+            ? Color(CommonPreferences.skinColorA.value)
+            : FavorColors.scheduleColor.first
     ..style = PaintingStyle.fill;
 
   /// 浅色cube，代表该点没课

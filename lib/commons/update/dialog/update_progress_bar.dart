@@ -25,14 +25,17 @@ class GradientLinearProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: MediaQuery.of(context).size,
-      painter: _GradientLinearProgressPainter(
-          strokeWidth: strokeWidth,
-          strokeCapRound: strokeCapRound,
-          backgroundColor: backgroundColor,
-          value: value,
-          colors: colors
+    // very very very very very important : [RepaintBoundary]
+    // to avoid repaint and confused bugs
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: MediaQuery.of(context).size,
+        painter: _GradientLinearProgressPainter(
+            strokeWidth: strokeWidth,
+            strokeCapRound: strokeCapRound,
+            backgroundColor: backgroundColor,
+            value: value,
+            colors: colors),
       ),
     );
   }
@@ -77,11 +80,14 @@ class _GradientLinearProgressPainter extends CustomPainter{
     }
 
     if (value > 0) {
-      var valueEnd = Offset(value * size.width + _offset, _offset);//计算进度的长度
+      var valueEnd = Offset(value * size.width + _offset, _offset); //计算进度的长度
       Rect rect = Rect.fromPoints(start, valueEnd);
-      p.shader = LinearGradient(colors: colors, stops: stops).createShader(rect);
+      p.shader =
+          LinearGradient(colors: colors, stops: stops).createShader(rect);
       p.color = Colors.amber;
       canvas.drawLine(start, valueEnd, p);
+      debugPrint("$start,$valueEnd");
+      debugPrint("$size");
     }
   }
 

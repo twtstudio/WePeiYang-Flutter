@@ -237,9 +237,6 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
-        // if (!kDebugMode) {
-        //   UmengCommonSdk.setPageCollectionModeManual();
-        // }
         var result = await authDio.postRst("auth/common",
             queryParameters: {"account": account, "password": password});
         CommonPreferences.token.value = result['token'] ?? "";
@@ -259,6 +256,11 @@ class AuthService with AsyncTimer {
         CommonPreferences.major.value = result['major'] ?? "";
         CommonPreferences.stuType.value = result['stuType'] ?? "";
         CommonPreferences.avatar.value = result['avatar'] ?? "";
+        CommonPreferences.area.value = result['area'] ?? "";
+        CommonPreferences.building.value = result['building'] ?? "";
+        CommonPreferences.floor.value = result['floor'] ?? "";
+        CommonPreferences.room.value = result['room'] ?? "";
+        CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
         onResult(result);
 
@@ -293,9 +295,6 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('codeLogin', () async {
       try {
-        // if (!kDebugMode) {
-        //   UmengCommonSdk.setPageCollectionModeManual();
-        // }
         var result = await authDio.postRst("auth/phone",
             queryParameters: {"phone": phone, "code": code});
         CommonPreferences.token.value = result['token'] ?? "";
@@ -313,6 +312,11 @@ class AuthService with AsyncTimer {
         CommonPreferences.major.value = result['major'] ?? "";
         CommonPreferences.stuType.value = result['stuType'] ?? "";
         CommonPreferences.avatar.value = result['avatar'] ?? "";
+        CommonPreferences.area.value = result['area'] ?? "";
+        CommonPreferences.building.value = result['building'] ?? "";
+        CommonPreferences.floor.value = result['floor'] ?? "";
+        CommonPreferences.room.value = result['room'] ?? "";
+        CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
         onResult(result);
 

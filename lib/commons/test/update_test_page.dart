@@ -23,18 +23,12 @@ class _UpdateTestPageState extends State<UpdateTestPage> {
       body: ListView(
         children: [
           TextButton(onPressed: _deleteAllApk, child: Text('删除所有安装包')),
-          TextButton(
-            onPressed: () {
-              context.read<UpdateManager>().forceUpdateApk(80);
-            },
-            child: Text('强制更新apk'),
-          ),
           TextButton(onPressed: _deleteAllSo, child: Text('删除所有so')),
           TextButton(
             onPressed: () {
-              context.read<UpdateManager>().forceUpdateSo();
+              context.read<UpdateManager>().checkUpdate(auto: false);
             },
-            child: Text('强制更新so'),
+            child: Text('检查更新'),
           ),
         ],
       ),

@@ -2,6 +2,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -66,51 +67,62 @@ class _GPAIntro extends StatelessWidget {
     var grade = "知";
     var credit = "道";
     if (total != null) {
-      weighted = total.weighted.toString();
-      grade = total.gpa.toString();
-      credit = total.credits.toString();
+      if (CommonPreferences.isAprilFoolGPA.value) {
+        weighted = 100.toString();
+        grade = 4.0.toString();
+        credit = 114514.toString();
+      } else {
+        weighted = total.weighted.toString();
+        grade = total.gpa.toString();
+        credit = total.credits.toString();
+      }
     }
     var quietPvd = context.read<GPANotifier>();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        InkResponse(
-          onTap: () => quietPvd.type = 0,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总加权', style: _textStyle),
-              SizedBox(height: 8),
-              Text(weighted, style: _numStyle)
-            ],
+    return Container(
+      decoration: CommonPreferences.isSkinUsed.value
+          ? BoxDecoration(color: Colors.white10)
+          : BoxDecoration(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          InkResponse(
+            onTap: () => quietPvd.type = 0,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总加权', style: _textStyle),
+                SizedBox(height: 8),
+                Text(weighted, style: _numStyle)
+              ],
+            ),
           ),
-        ),
-        InkResponse(
-          onTap: () => quietPvd.type = 1,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总绩点', style: _textStyle),
-              SizedBox(height: 8),
-              Text(grade, style: _numStyle)
-            ],
+          InkResponse(
+            onTap: () => quietPvd.type = 1,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总绩点', style: _textStyle),
+                SizedBox(height: 8),
+                Text(grade, style: _numStyle)
+              ],
+            ),
           ),
-        ),
-        InkResponse(
-          onTap: () => quietPvd.type = 2,
-          radius: 45,
-          splashFactory: InkRipple.splashFactory,
-          child: Column(
-            children: <Widget>[
-              Text('总学分', style: _textStyle),
-              SizedBox(height: 8),
-              Text(credit, style: _numStyle)
-            ],
-          ),
-        )
-      ],
+          InkResponse(
+            onTap: () => quietPvd.type = 2,
+            radius: 45,
+            splashFactory: InkRipple.splashFactory,
+            child: Column(
+              children: <Widget>[
+                Text('总学分', style: _textStyle),
+                SizedBox(height: 8),
+                Text(credit, style: _numStyle)
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -136,7 +148,6 @@ class _GPACurveState extends State<GPACurve>
   static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
   static late Color _popupCardColor;
   static late Color _popupTextColor;
-
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
 
   /// 上次 / 本次选中的点
@@ -162,7 +173,6 @@ class _GPACurveState extends State<GPACurve>
     List<double> curveData = notifier.curveData;
     _initPoints(points, curveData);
     return GestureDetector(
-
         /// 点击监听
         onTapDown: (TapDownDetails detail) {
           var renderBox = context.findRenderObject() as RenderBox;
@@ -173,70 +183,92 @@ class _GPACurveState extends State<GPACurve>
             notifier.index = result - 1;
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Stack(
-            children: <Widget>[
-              /// Stack底层
-              CustomPaint(
-                painter: _GPACurvePainter(widget._gpaColors,
-                    isPreview: widget.isPreview,
-                    points: points,
-                    taped: _newTaped),
-                size: Size(double.maxFinite, _canvasHeight),
-              ),
+        child: Container(
+          decoration: (widget.isPreview && CommonPreferences.isSkinUsed.value)
+              ? BoxDecoration(color: Colors.white10)
+              : BoxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: Stack(
+              children: <Widget>[
+                /// Stack底层
+                CustomPaint(
+                  painter: _GPACurvePainter(widget._gpaColors,
+                      isPreview: widget.isPreview,
+                      points: points,
+                      taped: _newTaped),
+                  size: Size(double.maxFinite, _canvasHeight),
+                ),
 
-              /// Stack顶层
-              TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 500),
-                tween: Tween(
-                    begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
-                onEnd: () => setState(() => _lastTaped = _newTaped),
-                curve: Curves.easeInOutSine,
-                builder: (context, value, child) {
-                  var lT = points[_lastTaped], nT = points[_newTaped];
-                  return Transform.translate(
-                    /// 计算两次点击之间的偏移量Offset
-                    /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
-                    offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                        lT.y - 60 + (nT.y - lT.y) * value),
-                    child: SizedBox(
-                      width: 80,
-                      height: 75,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 80,
-                            height: 45,
-                            child: Card(
-                              color: widget.isPreview
-                                  ? _popupCardPreview
-                                  : _popupCardColor,
-                              elevation: widget.isPreview ? 1 : 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Center(
-                                child: Text('${curveData[_newTaped - 1]}',
-                                    style: FontManager.Montserrat.copyWith(
-                                        fontSize: 16,
-                                        color: widget.isPreview
-                                            ? _popupTextPreview
-                                            : _popupTextColor)),
+                /// Stack顶层
+                TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 500),
+                  tween: Tween(
+                      begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
+                  onEnd: () => setState(() => _lastTaped = _newTaped),
+                  curve: Curves.easeInOutSine,
+                  builder: (BuildContext context, value, _) {
+                    var lT = points[_lastTaped], nT = points[_newTaped];
+                    return Transform.translate(
+                      /// 计算两次点击之间的偏移量Offset
+                      /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
+                      offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                          lT.y - 60 + (nT.y - lT.y) * value),
+                      child: SizedBox(
+                        width: 80,
+                        height: 75,
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 80,
+                              height: 45,
+                              child: Card(
+                                color: widget.isPreview
+                                    ? _popupCardPreview
+                                    : _popupCardColor,
+                                elevation: widget.isPreview ? 1 : 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Center(
+                                  child: Text('${curveData[_newTaped - 1]}',
+                                      style: FontManager.Montserrat.copyWith(
+                                          fontSize: 16,
+                                          color: widget.isPreview
+                                              ? _popupTextPreview
+                                              : _popupTextColor)),
+                                ),
                               ),
                             ),
-                          ),
-                          CustomPaint(
-                            painter: _GPAPopupPainter(widget._gpaColors,
-                                isPreview: widget.isPreview),
-                            size: const Size(80, 30),
-                          )
-                        ],
+                            Container(
+                              decoration: CommonPreferences.isSkinUsed.value
+                                  ? BoxDecoration(
+                                image: widget.isPreview
+                                    ? DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/begonia/flower_grey.png'),
+                                  fit: BoxFit.contain,
+                                )
+                                    : DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/lake_butt_icons/flower.png'),
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              )
+                                  : BoxDecoration(),
+                              child: CustomPaint(
+                                painter: _GPAPopupPainter(widget._gpaColors,
+                                    isPreview: widget.isPreview),
+                                size: const Size(80, 30),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -285,7 +317,7 @@ class _GPAPopupPainter extends CustomPainter {
   final bool isPreview;
 
   /// 在wpy_page显示的颜色
-  static const Color _outerPreview = Color.fromRGBO(53, 59, 84, 1);
+  static const Color _outerPreview = Colors.white10;
   static const Color _innerPreview = Colors.white;
 
   static const _outerWidth = 4.0;

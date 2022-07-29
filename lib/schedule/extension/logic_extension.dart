@@ -1,7 +1,10 @@
 // @dart = 2.12
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
@@ -301,12 +304,32 @@ int getTotalHours(List<Course> courses) {
   return totalHour;
 }
 
+List<Color> _skinColors = [
+  Color(CommonPreferences.skinColorA.value),
+  Color(CommonPreferences.skinColorB.value),
+  Color(CommonPreferences.skinColorC.value),
+  Color(CommonPreferences.skinColorD.value),
+  Color(CommonPreferences.skinColorE.value),
+  Color(CommonPreferences.skinColorF.value)
+];
+
 final _today = DateTime.now().day;
 
 /// 根据课程名生成对应颜色
 Color generateColor(String courseName) {
   int hashCode = courseName.hashCode + _today; // 加点随机元素，以防一学期都是一个颜色
-  return FavorColors.scheduleColor[hashCode % FavorColors.scheduleColor.length];
+  if (CommonPreferences.isAprilFoolClass.value)
+    return ColorUtil
+        .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
+  else if (CommonPreferences.isSkinUsed.value) {
+    int idx = hashCode % _skinColors.length;
+    if (idx == 4) idx--;
+    return _skinColors[idx];
+  } else {
+    int idx = hashCode % FavorColors.scheduleColor.length;
+    if (idx == 4) idx--; // 1435
+    return FavorColors.scheduleColor[idx];
+  }
 }
 
 /// 防止首页今日课程、课程表课程名称过长

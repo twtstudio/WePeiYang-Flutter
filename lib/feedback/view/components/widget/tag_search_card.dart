@@ -14,6 +14,9 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 List<SearchTag> tagUtil = [];
 
 class SearchTagCard extends StatefulWidget {
+  final String name;
+
+  const SearchTagCard({Key key, this.name}) : super(key: key);
   @override
   _SearchTagCardState createState() => _SearchTagCardState();
 }

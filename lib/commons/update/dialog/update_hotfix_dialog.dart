@@ -6,20 +6,19 @@ import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.da
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
-import '../hotfix_util.dart';
+import '../../channel/install/hotfix.dart';
 
 // 下载安装apk时的dialog
 class UpdateHotfixFinishDialog extends StatelessWidget {
-  final Version version;
-
-  const UpdateHotfixFinishDialog(this.version, {Key? key}) : super(key: key);
+  const UpdateHotfixFinishDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final manager = context.read<UpdateManager>();
+
     final size = DialogSize.getSize(context);
     final messageRow = Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -40,16 +39,32 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
       ],
     );
 
-    final buttons = WbyDialogStandardTwoButton(
-      cancel: () {
-        context.read<UpdateManager>().cancelDialog(DialogTag.hotfix);
-      },
-      ok: () {
-        restartApp();
-      },
-      cancelText: "稍后重启",
-      okText: "立刻重启",
-    );
+    void cancel() {
+      manager.setIdle();
+    }
+
+    Future<void> ok() async {
+      await HotFixManager.restartApp();
+      if (!manager.version.isForced) manager.setIdle();
+    }
+
+    Widget buttons;
+
+    if (manager.version.isForced) {
+      buttons = WbyDialogButton(
+        onTap: ok,
+        text: '立刻重启',
+        type: ButtonType.dark,
+        expand: true,
+      );
+    } else {
+      buttons = WbyDialogStandardTwoButton(
+        first: cancel,
+        second: ok,
+        firstText: "稍后重启",
+        secondText: "立刻重启",
+      );
+    }
 
     final column = Column(
       mainAxisSize: MainAxisSize.min,
@@ -63,21 +78,20 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: size.verticalPadding),
-              UpdateTitle(version),
+              UpdateTitle(),
               SizedBox(height: size.dialogWidth * 0.04),
               messageRow,
               SizedBox(height: size.dialogWidth * 0.04),
-              UpdateDetail(version),
+              UpdateDetail(),
               SizedBox(height: size.dialogWidth * 0.04),
               buttons,
             ],
           ),
         ),
-        TodayShowAgainCheck(),
+        TodayShowAgainCheck(tap: cancel),
       ],
     );
 
-    return WbyDialogLayout(child: column, padding: false);
+    return WbyDialogLayout(child: column, bottomPadding: false);
   }
 }

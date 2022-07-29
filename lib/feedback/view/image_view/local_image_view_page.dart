@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'dart:io';
 
 import 'package:photo_view/photo_view_gallery.dart';
@@ -17,6 +18,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    timeDilation = 0.5;
     dynamic obj = ModalRoute.of(context).settings.arguments;
     uriList = obj['uriList'];
     uriListLength = obj['uriListLength'];

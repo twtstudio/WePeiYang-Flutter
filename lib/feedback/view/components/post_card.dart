@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -18,6 +21,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
@@ -66,7 +70,8 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool _picFullView;
   Post post;
-  final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
+
+  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
 
   _PostCardState(this.post);
 
@@ -74,8 +79,8 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     var singlePictureLoader;
     var longPicOutsideLook;
-
-    if (post.imageUrls != null && post.imageUrls.length == 1) {
+    if (post.imageUrls.isNotEmpty) if (post.imageUrls != null &&
+        post.imageUrls.length == 1) {
       Image image = new Image.network(
         widget.type == PostCardType.detail
             ? picBaseUrl + 'origin/' + post.imageUrls[0]
@@ -268,15 +273,27 @@ class _PostCardState extends State<PostCard> {
         },
         onTap: () async {
           if (widget.type == PostCardType.simple) {
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: post,
-            ).then((p) {
-              setState(() {
-                post = p;
+            ///不然点击事件的回调根本用不到啊啊啊啊
+            if (widget.onContentPressed == null) {
+              await FeedbackService.visitPost(
+                id: post.id,
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              ).then((p) {
+                setState(() {
+                  post = p;
+                });
               });
-            });
+            } else {
+              ///上面判过空，所以就不做空安全了XD
+              widget.onContentPressed.call();
+            }
           }
         },
         child: SizedBox(
@@ -287,9 +304,10 @@ class _PostCardState extends State<PostCard> {
             style: TextUtil.base.NotoSansSC.w400
                 .sp(16)
                 .black2A
-                .h(widget.type == PostCardType.detail ? 1.2 : 1.4),
+                .h(widget.type == PostCardType.detail ? 1.6 : 1.4),
             expand: false,
             buttonIsShown: widget.type == PostCardType.detail,
+            isHTML: false,
           ),
         ));
 
@@ -305,9 +323,15 @@ class _PostCardState extends State<PostCard> {
                   tag,
                   WePeiYangApp.screenWidth -
                       (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 180 : 0),
-                  post.type != 1,
-                  id),
+                      (widget.type == PostCardType.simple ? 140 : 114) -
+                      (widget.post.imageUrls.isEmpty ? 0 : 84),
+                  post.type,
+                  id,
+                  0,
+                  post.type),
+            if (tag != '') SizedBox(width: 8),
+            TagShowWidget(
+                getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
             SizedBox(width: 8),
             campus
           ]),
@@ -321,6 +345,12 @@ class _PostCardState extends State<PostCard> {
               },
               onTap: () async {
                 if (widget.type == PostCardType.simple) {
+                  await FeedbackService.visitPost(
+                    id: post.id,
+                    onFailure: (e) {
+                      ToastProvider.error(e.error.toString());
+                    },
+                  );
                   Navigator.pushNamed(
                     context,
                     FeedbackRouter.detail,
@@ -404,14 +434,18 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(width: 10),
                 if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
-                if (post.solved == true &&
+                if (post.solved == 0 &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  QuestionedWidget(),
+                if (post.solved == 1 &&
+                    post.type == 1 &&
+                    widget.type == PostCardType.simple)
+                  ResponseWidget(),
+                if (post.solved == 2 &&
                     post.type == 1 &&
                     widget.type == PostCardType.simple)
                   SolvedWidget(),
-                if (post.solved == false &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  UnSolvedWidget(),
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),
@@ -630,7 +664,9 @@ class _PostCardState extends State<PostCard> {
 
     var decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(15),
-      color: Colors.white,
+      color: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorE.value)
+          : Colors.white,
       boxShadow: [
         BoxShadow(
             blurRadius: 1.6,
@@ -642,6 +678,12 @@ class _PostCardState extends State<PostCard> {
 
     var body = GestureDetector(
         onTap: () async {
+          await FeedbackService.visitPost(
+            id: post.id,
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
+          );
           if (widget.type == PostCardType.simple) {
             Navigator.pushNamed(
               context,
@@ -744,5 +786,13 @@ class _PostCardState extends State<PostCard> {
         ),
       ),
     );
+  }
+
+  String getTypeName(int type) {
+    Map<int, String> typeName = {};
+    context.read<LakeModel>().tabList.forEach((e) {
+      typeName.addAll({e.id: e.shortname});
+    });
+    return typeName[type];
   }
 }

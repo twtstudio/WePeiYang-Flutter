@@ -11,8 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
-import 'package:we_pei_yang_flutter/commons/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show NetStatusListener;
@@ -22,20 +23,23 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/schedule_providers.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
-import 'commons/statistics/umeng_statistics.dart';
+import 'commons/channel/local_setting/local_setting.dart';
+import 'commons/channel/push/push_manager.dart';
+import 'commons/channel/remote_config/remote_config_manager.dart';
+import 'commons/channel/statistics/umeng_statistics.dart';
+import 'commons/environment/config.dart';
 import 'commons/util/text_util.dart';
+import 'feedback/network/feedback_service.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
 
@@ -51,6 +55,9 @@ import 'lounge/server/hive_manager.dart';
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    // 初始化环境变量
+    EnvConfig.init();
+    PathUtil.init();
 
     /// 程序中的同步（sync）错误也交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
@@ -63,9 +70,25 @@ void main() async {
           .trimRight();
       Zone.current.handleUncaughtError(text, null);
     };
+
+    // 初始化sharePreference
     await CommonPreferences.initPrefs();
+    // 初始化Connectivity
     await NetStatusListener.init();
-    runApp(WePeiYangApp());
+    // 修改debugPrint
+    debugPrint = (message, {wrapWidth}) {
+      print(message);
+    };
+
+    // ？
+    (DateTime.now().toLocal().isAfter(DateTime(2022, 3, 27)) &&
+                DateTime.now().toLocal().isBefore(DateTime(2022, 3, 28))) ||
+            (DateTime.now().toLocal().month == 12 &&
+                DateTime.now().toLocal().day == 13)
+        ? runApp(ColorFiltered(
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+            child: WePeiYangApp()))
+        : runApp(WePeiYangApp());
     if (Platform.isAndroid) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -77,7 +100,7 @@ void main() async {
     Logger.reportError(error, stack);
   }, zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-    /// 覆盖zone中的所有[print]和[debugPrint]，统一日志格式
+    /// 覆盖zone中的所有[print]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
 }
@@ -99,6 +122,7 @@ final pushChannel = MethodChannel('com.twt.service/push');
 
 class IntentEvent {
   static const FeedbackPostPage = 1;
+  static const FeedbackSummaryPage = 2;
   static const WBYMailBox = 3;
   static const SchedulePage = 4;
   static const UpdateDialog = 5;
@@ -126,7 +150,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      FeedbackService.getToken();
+      if (CommonPreferences.token != null && CommonPreferences.token != "") {
+        FeedbackService.getToken(forceRefresh: true);
+      }
       if (CommonPreferences.token != '') {
         CustomCourseService.getToken();
       }
@@ -151,6 +177,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
             FeedbackRouter.detail,
             arguments: Post.nullExceptId(eventMap['data']),
           );
+          break;
+        case IntentEvent.FeedbackSummaryPage:
+          Navigator.pushNamed(baseContext, FeedbackRouter.summary);
           break;
         case IntentEvent.WBYMailBox:
           final data = eventMap['data'] as Map;
@@ -193,10 +222,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => GPANotifier()),
-        ChangeNotifierProvider(create: (context) => LocaleModel()),
-        ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ChangeNotifierProvider(create: (_) => RemoteConfig()),
+        ChangeNotifierProvider(create: (_) => LocaleModel()),
+        ChangeNotifierProvider(create: (_) => GPANotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
+        ChangeNotifierProvider(create: (_) => UpdateManager()),
         ...scheduleProviders,
         ...loungeProviders,
         ...feedbackProviders,
@@ -221,12 +251,14 @@ class WePeiYangAppState extends State<WePeiYangApp>
         Provider.value(value: ReportDataModel()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
+        // 获取友盟在线参数
+        context.read<RemoteConfig>().getRemoteConfig();
+
         return MaterialApp(
-          // theme: ThemeData(
-          //   splashColor: Colors.transparent,
-          //   highlightColor: Colors.transparent,
-          // ),
-          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
           title: '微北洋',
           navigatorKey: WePeiYangApp.navigatorState,
           onGenerateRoute: RouterManager.create,
@@ -317,6 +349,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     // 初始化友盟
     UmengCommonSdk.initCommon();
 
+    // 恢复截屏和亮度默认值
+    LocalSetting.changeBrightness(-1);
+    LocalSetting.changeSecurity(false);
+
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
     if (CommonPreferences.updateTime.value != "20220414") {
       CommonPreferences.updateTime.value = "20220414";
@@ -355,7 +391,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
           },
           onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
+                context, HomeRouter.home, (route) => false);
           },
         ),
       );

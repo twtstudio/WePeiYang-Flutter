@@ -1,18 +1,24 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart' show Widget;
-import 'package:we_pei_yang_flutter/commons/test/push_test_page.dart';
-import 'package:we_pei_yang_flutter/commons/test/qnhd_test_page.dart';
-import 'package:we_pei_yang_flutter/commons/test/update_test_page.dart';
+import 'font_test_page.dart';
+import 'push_test_page.dart';
+import 'qnhd_test_page.dart';
+import 'test_main_page.dart';
+import 'update_test_page.dart';
 
 class TestRouter {
-  static String pushTest = 'common/pushTest';
-  static String updateTest = 'common/updateTest';
-  static String qnhdTest = 'common/qnhdTest';
+  static final String pushTest = 'test/push';
+  static final String updateTest = 'test/update';
+  static final String qsltTest = 'test/qslt';
+  static final String fontTest = 'test/font';
+  static final String mainPage = 'test/main';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
     pushTest: (_) => const PushTestPage(),
-    updateTest:(_) => const UpdateTestPage(),
-    qnhdTest:(_) => const QNHDTestPage(),
+    updateTest: (_) => const UpdateTestPage(),
+    qsltTest: (_) => const QsltTestPage(),
+    fontTest: (_) => const FontTestPage(),
+    mainPage: (_) => const TestMainPage(),
   };
 }

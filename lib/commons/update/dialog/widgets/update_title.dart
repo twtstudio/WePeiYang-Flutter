@@ -1,16 +1,17 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
-import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 
 class UpdateTitle extends StatelessWidget {
-  final Version version;
-
-  const UpdateTitle(this.version, {Key? key}) : super(key: key);
+  const UpdateTitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final version = context.read<UpdateManager>().version;
+
     final title = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -19,20 +20,9 @@ class UpdateTitle extends StatelessWidget {
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 3),
-        FutureBuilder(
-          future: UpdateUtil.getVersion(),
-          builder: (_, snapshot) {
-            String versionChange;
-            if (snapshot.hasData) {
-              versionChange = '${snapshot.data} -> ${version.version}';
-            } else {
-              versionChange = '将更新到${version.version}';
-            }
-            return Text(
-              versionChange,
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-            );
-          },
+        Text(
+          '${EnvConfig.VERSION} -> ${version.version}',
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
         ),
       ],
     );

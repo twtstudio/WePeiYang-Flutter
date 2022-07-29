@@ -2,219 +2,140 @@ package com.twt.service.download
 
 import android.app.Activity
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.database.ContentObserver
-import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import com.google.gson.Gson
+import com.twt.service.common.FileUtil
 import com.twt.service.common.LogUtil
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.WbyPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import java.io.File
 
-class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+/**
+ * 微北洋下载器
+ *
+ * 注：在flutter端就要对已经下载了的文件进行过滤
+ */
+class WbyDownloadPlugin : WbyPlugin() {
+    override val name: String
+        get() = "com.twt.service/download"
+
+    /**
+     * [DownloadManager] instance
+     */
+    val manager: DownloadManager by lazy {
+        context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
+    }
+
+    /**
+     * 用于下载进度检查
+     */
+    private var listenJob: Job? = null
+
+    /**
+     * 在主线程中通过协程的方式循环查询下载状态
+     */
     private val mainScope = CoroutineScope(Dispatchers.Main)
-    private val downloadProgress = MutableStateFlow(Progress(0, "unknown", Status.BEGIN, 0.0, ""))
-    private lateinit var manager: DownloadManager
-    private var flowJob: Job? = null
-    private var observer: ContentObserver? = null
-    private var receiver: BroadcastReceiver? = null
-    private var downloadList = mutableMapOf<Long, DownloadItem>()
-    private val downloadDirectory by lazy {
-        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-    }
-    private val handler = CoroutineExceptionHandler { _, throwable ->
-        reportError(
-                DOWNLOAD_ERROR,
-                "all",
-                "handle error when emit stateFlow : ${throwable.message}"
-        )
-    }
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        context = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/download")
-        channel.setMethodCallHandler(this)
-        manager = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
-//        clearFontsDownloadFile()
-    }
-
+    /**
+     * 获取下载基本目录，如果获取失败则报错
+     *
+     * @param action 获取到下载目录后的操作
+     */
     @Suppress("unused")
-    private fun clearFontsDownloadFile() {
-        log("clearFontsDownloadFile")
-        downloadDirectory?.let {
-            File(it.path + File.separator + "font").listFiles()?.forEach { file ->
-                log("clear last time download font file : ${file.path}")
-                file.delete()
-            }
+    private fun getDownloadDir(action: (File) -> Unit) {
+        val downloadDir = FileUtil.downloadDirectory(context)
+        if (downloadDir == null) {
+            LogUtil.e(TAG, NullPointerException("downloadDir == null"))
+        } else {
+            action(downloadDir)
         }
     }
 
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
+    /**
+     * 下载列表，添加到[DownloadManager]中后，以返回的 downloadId 为 key，下载项为 value
+     */
+    val downloadList = mutableMapOf<Long, DownloadTask>()
 
-    private fun updateProgress(report: Map<*, *>) {
-        log(report.toString())
-        channel.invokeMethod("updateProgress", report)
-    }
-
-    private fun reportError(listenerId: String, code: String, message: String?) {
-        val report = mapOf(
-                "listenerId" to listenerId,
-                "state" to "ERROR",
-                "code" to code,
-                "message" to message
-        )
-        updateProgress(report)
-    }
-
-    private fun reportSuccess(task: DownloadItem) {
-        downloadDirectory?.let {
-            val report = mapOf(
-                    "listenerId" to task.listenerId,
-                    "state" to "SUCCESS",
-                    "taskId" to task.id,
-                    "path" to it.path + File.separator + task.path()
-            )
-            updateProgress(report)
-        }
-    }
-
-    private fun reportSuccess(task: Progress) {
-        val report = mapOf(
-                "listenerId" to task.listenerId,
-                "state" to "SUCCESS",
-                "taskId" to task.taskId,
-                "path" to task.path,
-        )
-        updateProgress(report)
-    }
-
-    private fun reportAllSuccess(listenerId: String) {
-        val allSuccess = mapOf(
-                "listenerId" to listenerId,
-                "state" to "ALL_SUCCESS",
-        )
-        updateProgress(allSuccess)
-    }
-
-    private fun reportRunning(task: Progress) {
-        val report = mapOf(
-                "listenerId" to task.listenerId,
-                "state" to "RUNNING",
-                "taskId" to task.taskId,
-                "progress" to task.progress
-        )
-        updateProgress(report)
-    }
-
-    private fun stopAllAndRemoveRegister() {
-        downloadList.forEach {
-            manager.remove(it.key)
-        }
-        downloadList.clear()
-
-        observer?.let {
-            context.contentResolver.unregisterContentObserver(it)
-            observer = null
-        }
-        receiver?.let {
-            context.unregisterReceiver(it)
-            receiver = null
-        }
-        flowJob?.cancel()
-        flowJob = null
-    }
+    /**
+     * 实现[DownloadListener]，对应每个状态应该上报flutter端什么内容
+     *
+     * @see DownloadListener
+     */
+    private val listener = DownloadListener(this)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            "addDownloadTask" -> {
-                log("addDownloadTask")
-                if (checkRegister(result)) {
-                    kotlin.runCatching {
-                        val data = call.argument<String>("downloadList")
-                        Gson().fromJson(data, DownloadList::class.java).list
-                    }.onSuccess {
-                        log("base list : $it")
-                        log("current download list : $downloadList")
-                        filterFiles(it.toMutableList(), result)
-                    }.onFailure {
-                        result.error(PARSE_ARGUMENT_ERROR, "parse argument error ${it.message}", "")
-                    }
-                }
-            }
-            "forceDispose" -> {
-                kotlin.runCatching {
-                    stopAllAndRemoveRegister()
-                }.onFailure {
-                    result.error("", "", "")
-                }.onSuccess {
-                    result.success("")
-                }
-            }
-            else -> result.notImplemented()
-        }
-    }
-
-    private fun filterFiles(list: List<DownloadItem>, result: MethodChannel.Result) {
-        kotlin.runCatching {
-            filterDownloadFiles(list).apply {
-                if (isEmpty() && list.isNotEmpty()) {
-                    reportAllSuccess(list.first().listenerId)
-                    return@runCatching
-                }
-                addDownloadTask(this)
+        runCatching {
+            when (call.method) {
+                "addDownloadTask" -> addDownloadTask(call, result)
+                "cancelDownloadTask" -> cancelDownloadTask(call, result)
+                else -> result.notImplemented()
             }
         }.onFailure {
-            result.error(ADD_TASKS_ERROR, "add task error ${it.message}", "")
-        }.onSuccess {
-            result.success("add download tasks success")
+            result.error("", "${it.message}", "")
         }
     }
 
-    private fun addDownloadTask(list: List<DownloadItem>) {
-        val downloads = mutableListOf<Long>()
-        kotlin.runCatching {
-            // 下载列表中有的任务就更新一下进度
-            downloadList.filter { downloading ->
-                list.map { it.path() }.contains(downloading.value.path())
-            }.forEach {
-                log("${it.value} has been in the downloadList")
-                getProgress(it.key)
-            }
+    private fun cancelDownloadTask(call: MethodCall, result: MethodChannel.Result) {
+        // TODO
+    }
 
-            // 清除临时文件：没有在下载列表中
-            // 只添加下载列表中没有的任务
-            list.filterNot { task ->
-                downloadList.values.map {
-                    it.path()
-                }.contains(task.path())
-            }.apply {
-                if (isEmpty()) {
-                    return@runCatching
-                }
-                log("not in downloadList list : $this")
-                clearTemporaryFiles(this)
-            }.forEach {
+    private fun addDownloadTask(call: MethodCall, result: MethodChannel.Result) {
+        log("addDownloadTask")
+        // 获取下载列表
+        val data = call.argument<String>("downloadList")
+        val list = Gson().fromJson(data, DownloadList::class.java).list
+        log("base list : $list")
+        log("current download list : $downloadList")
+        // 先过滤掉正在下载的内容
+        val unStartList = filterDownloadingFiles(list)
+        // 再下载没有下载的内容
+        download(unStartList, result)
+    }
+
+    /**
+     * 过滤掉正在下载的任务，对于正在下载的任务更新进度
+     *
+     * @param list 准备进行下载的任务列表
+     * @return 未开始下载的任务列表
+     */
+    private fun filterDownloadingFiles(list: List<DownloadTask>): List<DownloadTask> {
+        // 下载列表中有的任务就更新一下进度
+        downloadList.filter { downloading ->
+            list.map { it.path }.contains(downloading.value.path)
+        }.keys.forEach {
+            listener.updateStatus(it)
+        }
+
+        // 清除临时文件：没有在下载列表中
+        // 只添加下载列表中没有的任务
+        return list.filterNot { task ->
+            downloadList.values.map {
+                it.path
+            }.contains(task.path)
+        }.apply(::clearTemporaryFiles)
+    }
+
+    /**
+     * 添加到 [DownloadManager] 进行下载
+     *
+     * @param list 将开始下载的任务
+     * @return 是否成功全部添加进下载器
+     */
+    private fun download(list: List<DownloadTask>, result: MethodChannel.Result) {
+        // 本次加入到下载中的任务
+        val startList = mutableListOf<Long>()
+        runCatching {
+            list.forEach {
+                // 创建请求
                 val request = DownloadManager.Request(Uri.parse(it.url)).apply {
+                    log(it.temporarySubPath())
                     setDestinationInExternalFilesDir(
-                            context,
-                            Environment.DIRECTORY_DOWNLOADS,
-                            it.temporaryPath(),
+                        context,
+                        Environment.DIRECTORY_DOWNLOADS,
+                        it.temporarySubPath(),
                     )
                     if (it.showNotification) {
                         setTitle(it.title)
@@ -224,354 +145,136 @@ class WbyDownloadPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                     }
                 }
+                // 加入到下载并返回 downloadId
                 val downloadId = manager.enqueue(request)
-                downloads.add(downloadId)
-                log("add $it into queue , id : $downloadId")
+                // 临时存一下 id，如果出现错误，根据这个id来取消任务
+                startList.add(downloadId)
+                // 将任务加入到下载列表
                 downloadList[downloadId] = it
+                log("add $it into queue , id : $downloadId")
             }
         }.onFailure {
+            // 如果创建任务出现错误，就取消本次下载任务
             log("error occur in download method : ${it.message}")
-            downloads.forEach { id ->
+            startList.forEach { id ->
                 manager.remove(id)
             }
-            throw it
+            result.error("", "", "")
+        }.onSuccess {
+            configDownload()
+            result.success("add download tasks success")
         }
     }
 
-    private fun getProgress(id: Long) {
-        val query = DownloadManager.Query().setFilterById(id)
-        val cursor = manager.query(query)
-        val task = downloadList[id]!!
-        if (cursor.moveToFirst()) {
-            cursor.use {
-                log("id : ${task.fileName} state : ${it.statusString()}")
-                if (it.status() == DownloadManager.STATUS_RUNNING) {
-                    log("id : $id downloading : ${it.progress()}")
-                    running(
-                            id,
-                            task.listenerId,
-                            it.progress(),
-                            downloadList[id]?.id ?: "unknown"
-                    )
-                }
+    /**
+     * 配置下载监听器，并保存异步任务[listenJob]，防止重复创建
+     */
+    private fun configDownload() {
+        if (listenJob != null) return
+        listenJob = mainScope.launch {
+            val progressList = mutableMapOf<Long, Pair<Int, Double>>()
+            while (true) {
+                // 每两秒获取一次状态
+                log("circle + $progressList")
+                if (getDownloadStatus(progressList)) break
+                delay(2000)
             }
+            // 下载列表为空后就 cancel 任务，并将 listenJob 设为 null
+            cancel()
+            listenJob = null
         }
     }
 
-    private fun checkRegister(result: MethodChannel.Result): Boolean {
-        return if (flowJob == null && receiver == null && observer == null) {
-            configDownload(result)
-        } else if (flowJob != null && receiver != null && observer != null) {
-            true
-        } else {
-            kotlin.runCatching {
-                stopAllAndRemoveRegister()
-                if (flowJob == null && receiver == null && observer == null && configDownload(result)) {
-                    true
-                } else {
-                    throw Exception("refresh registers failure")
+    /**
+     * 获取下载列表中的任务的状态
+     *
+     * @return
+     * true [downloadList]为空，结束循环
+     *
+     * false [downloadList]不为空，继续循环
+     */
+    private fun getDownloadStatus(progressList: MutableMap<Long, Pair<Int, Double>>): Boolean {
+        try {
+            val iterator = downloadList.iterator()
+            while (iterator.hasNext()) {
+                val item = iterator.next()
+                val id = item.key
+                val task = item.value
+
+                val query = DownloadManager.Query().setFilterById(id)
+                val cursor = manager.query(query)
+                if (!cursor.moveToFirst()) {
+                    // This method will return false if the cursor is empty.
+                    // 所以就删除这条任务
+                    iterator.remove()
+                    progressList.remove(id)
+                    // 并上报错误
+                    listener.taskDisappear(task)
+                    log("path : ${task.fileName} don't find")
+                    continue
                 }
-            }.onFailure {
-                result.error(REGISTER_OBSERVER_ERROR, "retry register error : ${it.message}", "")
-            }.isSuccess
-        }
-    }
+                // 获取下载进度
+                val progress = cursor.progress()
+                // 获取下载状态
+                val status = cursor.status()
+                // 保证不会重复汇报
+                if (progressList[id]?.second == progress && progressList[id]?.first == status) continue
+                // 将现在的进度和状态记录到列表中，防止重复上报
+                progressList[id] = status to progress
+                log("id : $id downloading : $progress path : ${task.fileName} state : $status")
 
-    private fun configDownload(result: MethodChannel.Result): Boolean {
-        return kotlin.runCatching {
-            flowJob = mainScope.launch(handler) {
-                downloadProgress.collect { task ->
-                    when (task.status) {
-                        Status.BEGIN -> {
-                            takeIf { downloadList.isNotEmpty() }?.let {
-                                val report =
-                                        mapOf("listenerId" to task.listenerId, "state" to "BEGIN")
-                                updateProgress(report)
-                            }
-                        }
-                        Status.SUCCESS -> {
-                            reportSuccess(task)
-                            downloadList.remove(task.id)
-                            if (downloadList.filter { it.value.listenerId == task.listenerId }
-                                            .isEmpty()) {
-                                // 所有的都下载完了就清除注册的接收器
-                                reportAllSuccess(task.listenerId)
-                                try {
-                                    stopAllAndRemoveRegister()
-                                } catch (e: Throwable) {
-                                    reportError(
-                                            task.listenerId,
-                                            REMOVE_REGISTER_ERROR,
-                                            "remove register error when complete download :${e.message}"
-                                    )
-                                }
-                            }
-                        }
-                        Status.RUNNING -> {
-                            reportRunning(task)
-                        }
-                        Status.FAILURE -> {
-                            // 清除临时文件，保留下载好的文件
-                            kotlin.runCatching {
-                                downloadList[task.id]?.let {
-                                    clearTemporaryFiles(listOf(it))
-                                }
-                            }.onFailure { throwable ->
-                                log("delete apk error when get failure state: ${throwable.message}")
-                            }
-                            downloadList.remove(task.id)
-                            reportError(
-                                    task.listenerId,
-                                    DOWNLOAD_ERROR,
-                                    "download ${task.taskId} error: ${task.message}"
-                            )
-                        }
+                // https://www.cxyzjd.com/article/lonewolf521125/41477023
+                // 根据不同的状态进行不同处理
+                when (status) {
+                    DownloadManager.STATUS_FAILED, DownloadManager.STATUS_SUCCESSFUL -> {
+                        iterator.remove()
+                        progressList.remove(id)
                     }
                 }
+
+                if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                    val from = File(task.temporaryPath())
+                    val to = File(task.path)
+                    if (!from.renameTo(to)) {
+                        listener.updateStatus(
+                            task,
+                            DownloadManager.STATUS_FAILED,
+                            progress,
+                            "can't rename temporary file"
+                        )
+                    }
+                }
+
+                // 向消息列表中加入任务
+                listener.updateStatus(task, status, progress, "${cursor.reason()}")
             }
-            receiver = CompleteReceiver().also {
-                context.registerReceiver(
-                        it,
-                        IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                )
-            }
-            observer = DownloadChangeObserver(Handler(Looper.getMainLooper())).also {
-                context.contentResolver?.registerContentObserver(
-                        Uri.parse("content://downloads/my_downloads"),
-                        true,
-                        it
-                )
+        } catch (e: Throwable) {
+            LogUtil.e(TAG, e, "throw at getDownloadStatus")
+        }
+        // 每次循环结束后将任务一起发送到 flutter 端
+        listener.apply()
+        return downloadList.isEmpty()
+    }
+
+    /**
+     * 删除下载列表中的临时文件
+     *
+     * 如果出现错误，则静默处理
+     *
+     * @param list 任务列表
+     */
+    private fun clearTemporaryFiles(list: List<DownloadTask>) {
+        runCatching {
+            list.forEach { task ->
+                File(task.temporaryPath()).takeIf { it.exists() }?.delete()
             }
         }.onFailure {
-            stopAllAndRemoveRegister()
-            result.error(CONFIG_DOWNLOAD_ERROR, "config download error : ${it.message}", "")
-        }.onSuccess {
-            log("configDownload success")
-        }.isSuccess
-    }
-
-    // 下载完成接收器  每次下载完都会接收到一次，所以接收到之后从列表中删除对应项
-    inner class CompleteReceiver : BroadcastReceiver() {
-        override fun onReceive(
-                context: Context,
-                intent: Intent
-        ) {
-            val completeId =
-                    intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
-            if (downloadList.containsKey(completeId)) {
-                val item = downloadList[completeId]!!
-                kotlin.runCatching {
-                    val downloadQuery = DownloadManager.Query()
-                    downloadQuery.setFilterById(completeId)
-                    manager.query(downloadQuery)?.let {
-                        // warning： 万万不能在任务结束后获取任务的大小，会直接崩溃
-                        if (it.moveToFirst()) {
-                            when (it.status()) {
-                                DownloadManager.STATUS_SUCCESSFUL -> {
-                                    downloadDirectory?.let { directory ->
-                                        val from = File(directory, item.temporaryPath())
-                                        val to = File(directory, item.path())
-                                        if (from.renameTo(to)) {
-                                            // 文件下载完后发送信息并从下载列表中删除
-                                            success(
-                                                    completeId,
-                                                    item.listenerId,
-                                                    to.path,
-                                                    item.id
-                                            )
-                                        }
-                                    }
-                                }
-                                else -> {
-                                    failure(
-                                            completeId,
-                                            item.listenerId,
-                                            1.0,
-                                            "download apk fail , progress : 1.0 , state : ${it.status()}",
-                                            item.id
-                                    )
-                                }
-                            }
-                        }
-                        it.close()
-                    }
-                }.onFailure {
-                    failure(
-                            completeId,
-                            item.listenerId,
-                            1.0,
-                            "handling error on receive broadcast : ${it.message}",
-                            item.id
-                    )
-                }
-            }
+            log("delete apk error when get failure state: ${it.message}")
         }
-    }
-
-    inner class DownloadChangeObserver(handler: Handler?) : ContentObserver(handler) {
-        private var onChangeCount = 0
-
-        private val progressList = mutableMapOf<Long, Double>()
-
-        override fun onChange(selfChange: Boolean) {
-            kotlin.runCatching {
-                downloadList.forEach { task ->
-                    manager.query(DownloadManager.Query().setFilterById(task.key))
-                            .takeIf { it.moveToFirst() }?.let {
-                                if (it.status() == DownloadManager.STATUS_RUNNING && progressList[task.key] != it.progress()) {
-                                    progressList[task.key] = it.progress()
-                                    log("id : ${task.key} downloading : ${it.progress()} onChangeCount : $onChangeCount")
-                                    if (it.progress() == 0.0) {
-                                        begin(task.key, task.value.listenerId, task.value.id)
-                                    } else {
-                                        running(
-                                                task.key,
-                                                task.value.listenerId,
-                                                it.progress(),
-                                                task.value.id
-                                        )
-                                    }
-                                } else {
-                                    log("id : ${task.value.fileName} downloading : ${it.progress()} state : ${it.statusString()}")
-                                }
-                            }
-                }
-                onChangeCount++
-            }.onFailure {
-                log("DownloadChangeObserver onChange : $it")
-                failure(0, "all", 0.0, "onChange error : ${it.message}", "all")
-            }
-        }
-    }
-
-    @Suppress("unused")
-    private fun begin(id: Long, listenerId: String, taskId: String) {
-        mainScope.launch(handler) {
-            downloadProgress.emit(Progress(id = id, listenerId, Status.BEGIN, 0.0, taskId))
-        }
-    }
-
-    private fun success(id: Long, listenerId: String, path: String, taskId: String) {
-        mainScope.launch(handler) {
-            downloadProgress.emit(
-                    Progress(
-                            id,
-                            listenerId,
-                            Status.SUCCESS,
-                            1.0,
-                            taskId,
-                            path = path
-                    )
-            )
-        }
-    }
-
-    private fun running(id: Long, listenerId: String, progress: Double, taskId: String) {
-        mainScope.launch(handler) {
-            downloadProgress.emit(Progress(id, listenerId, Status.RUNNING, progress, taskId))
-        }
-    }
-
-    private fun failure(
-            id: Long,
-            listenerId: String,
-            progress: Double,
-            errorDetail: String,
-            taskId: String
-    ) {
-        mainScope.launch(handler) {
-            downloadProgress.emit(
-                    Progress(
-                            id,
-                            listenerId,
-                            Status.FAILURE,
-                            progress,
-                            taskId = taskId,
-                            message = errorDetail
-                    )
-            )
-        }
-    }
-
-    /// 默认删除下载列表中的临时文件
-    private fun clearTemporaryFiles(list: List<DownloadItem>) {
-        downloadDirectory?.let { directory ->
-            list.forEach { task ->
-                val path = directory.path + File.separator + task.temporaryPath()
-                File(path).takeIf { it.exists() }?.delete()
-            }
-        }
-    }
-
-    // 只要不存在这个文件，就当成没有下载，然后将剩下的文件加入到下载列表中，在加入下载列表时过滤
-    private fun filterDownloadFiles(list: List<DownloadItem>): List<DownloadItem> {
-        val finishList = mutableListOf<DownloadItem>()
-        val notFinishList = mutableListOf<DownloadItem>()
-        downloadDirectory?.let { directory ->
-            list.forEach {
-                val path = directory.path + File.separator + it.path()
-                if (File(path).exists()) {
-                    finishList.add(it)
-                    log("item has download : $it   path : $path")
-                } else {
-                    notFinishList.add(it)
-                }
-            }
-
-            for (task in finishList) {
-                reportSuccess(task)
-            }
-
-            if (notFinishList.isEmpty()) {
-                log("all files download : $list")
-            }
-        }
-        log("finish list : $finishList")
-        log("not finish list : $notFinishList")
-        return notFinishList
     }
 
     companion object {
-        const val TAG = "WBY_DOWNLOAD"
+        const val TAG = "DOWNLOAD"
         fun log(message: String) = LogUtil.d(TAG, message)
-
-        // 添加下载任务时会出现的错误
-        const val PARSE_ARGUMENT_ERROR = "PARSE_ARGUMENT_ERROR"
-        const val CONFIG_DOWNLOAD_ERROR = "CONFIG_DOWNLOAD_ERROR"
-        const val REGISTER_OBSERVER_ERROR = "REGISTER_OBSERVER_ERROR"
-        const val ADD_TASKS_ERROR = "ADD_TASKS_ERROR"
-
-        // 下载过程中可能出现的错误
-        const val REMOVE_REGISTER_ERROR = "REMOVE_REGISTER_ERROR"
-        const val DOWNLOAD_ERROR = "DOWNLOAD_ERROR"
     }
-}
-
-fun Cursor.status(): Int {
-    return getInt(getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
-}
-
-fun Cursor.statusString(): String {
-    return when (status()) {
-        DownloadManager.STATUS_RUNNING -> "STATUS_RUNNING"
-        DownloadManager.STATUS_PAUSED -> "STATUS_PAUSED"
-        DownloadManager.STATUS_FAILED -> "STATUS_FAILED"
-        DownloadManager.STATUS_SUCCESSFUL -> "STATUS_SUCCESSFUL"
-        DownloadManager.STATUS_PENDING -> "STATUS_PENDING"
-        else -> "unknown status"
-    }
-}
-
-fun Cursor.currentSize(): Double {
-    return getInt(getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-            .toDouble()
-}
-
-fun Cursor.totalSize(): Double {
-    return getInt(getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-            .toDouble()
-}
-
-fun Cursor.progress(): Double {
-    return currentSize() / totalSize()
 }

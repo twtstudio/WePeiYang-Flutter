@@ -71,12 +71,6 @@ android {
 
                 OPPO_APP_KEY   : "7cuaXvykA58gkOW4c4oGkG8o0",
                 OPPO_APP_SECRET: "f7098A23C18d4B504deCB0caaF1d6064",
-
-                // project
-                GETUI_APPID    : "43HGFmIKsnAmjrjDLr60X4",
-
-                // develop
-//                GETUI_APPID     : "bj16oBtQ3VAvqPbGtEHB69",
         ]
     }
 
@@ -96,35 +90,134 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.config
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            shrinkResources true // 删除无用资源
 
-            buildConfigField("Boolean", "LOG_OUTPUT", "false")
+            // applicationIdSuffix
+            // http://www.androidchina.net/10565.html
 
-            // 谷歌规定 Google Play 多个安装包不能 versionCode一样
-            // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
+            // package和applicationId的区别
+            // https://blog.csdn.net/he_xiang_/article/details/81080507
+            // 询问了个推技术人员，只要包名不变，就行
+            // 高德需要包名和applicationId一致
+            // https://lbs.amap.com/faq/android/map-sdk/create-project/46723
+            // 华为需要在网站注册所用的包名，已注册
+            // 所以测试包不能使用厂商推送
+            // QQ sdk也是只需要包名（经测试）
+
+            // 动态配置string.xml
+            // https://blog.csdn.net/jerycoupter/article/details/70159410
+
+            // buildConfigField
+            // https://www.jianshu.com/p/a614aca9d191
+
+            // 版本：
+            //    RELEASE :            微北洋              无Log     com.twt.service           getui.product  正式服务器
+            //    ONLINE_TEST :        微北洋ONLINE_TEST   有Log     com.twt.service           getui.product  正式服务器
+            //    DEVELOP (default) :  微北洋DEVELOP       有Log     com.twt.service.develop   getui.develop  测试服务器
+            def environment = "DEVELOP"
+
+            // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
+            // flutter 1.20 ~ 2.2 的读取方式
+            if (project.hasProperty('dart-defines')) {
+                // 如果是通过 package.ps1 打包的话就解析固定参数
+                def dartEnvironmentVariables = getDartDefines()
+                environment = dartEnvironmentVariables.ENVIRONMENT
+                if (environment == null) {
+                    environment = "RELEASE"
+                }
+            } else {
+                environment = "RELEASE"
+            }
+
+            switch (environment) {
+                case "ONLINE_TEST":
+                    // 个推 product
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    // 输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "true")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋${environment}")
+
+                    minifyEnabled false
+                    shrinkResources false
+
+                    break
+                case "DEVELOP":
+                    // 个推 develop
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
+                    // 不覆盖正式版安装
+                    applicationIdSuffix ".develop"
+                    // 输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "true")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋${environment}")
+
+                    minifyEnabled false
+                    shrinkResources false
+
+                    break
+                default:  // RELEASE
+                    environment = "RELEASE"
+                    // 个推 product
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    // 不输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "false")
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋")
+
+                    minifyEnabled true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    shrinkResources true // 删除无用资源
+
+                    break
+            }
+
+
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
+                    // 更改输出的安装包的名字 如 4.2.1-RELEASE-app-arm64-v8a-release.apk
+                    output.outputFileName = environment + "-" + android.defaultConfig.versionName + "-" + output.outputFileName
+
+                    // 谷歌规定 Google Play 多个安装包不能 versionCode一样
+                    // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
+                    // 所以将所有 Apk 的版本号重置
+                    // https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions
                     output.versionCodeOverride = android.defaultConfig.versionCode
                 }
             }
-
-            // 消除安装包内的二进制文件
-//            packagingOptions {
-//                exclude 'lib/armeabi-v7a/libapp.so'
-//                exclude 'lib/armeabi-v7a/libflutter.so'
-//                exclude 'lib/arm64-v8a/libapp.so'
-//                exclude 'lib/arm64-v8a/libflutter.so'
-//            }
         }
 
         debug {
             signingConfig signingConfigs.config
-            minifyEnabled false//删除无用代码
-            shrinkResources false//删除无用资源
-
+            minifyEnabled false
+            shrinkResources false
+            // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
+
+            def environment = "DEVELOP"
+            if (project.hasProperty('dart-defines')) {
+                def dartEnvironmentVariables = getDartDefines()
+                if (dartEnvironmentVariables.ENVIRONMENT == "RELEASE") {
+                    environment = "RELEASE"
+                }
+            }
+
+            switch (environment) {
+                case "RELEASE":
+                    // 如果要测试厂商推送的话，就不更改包名
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋DEBUG_RELEASE")
+                    // 个推 product
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    break
+                default:
+                    // 不覆盖正式版安装
+                    applicationIdSuffix ".develop"
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋DEBUG_DEVELOP")
+                    // 个推 develop
+                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
+                    break
+            }
         }
     }
 }
@@ -134,7 +227,6 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
@@ -145,19 +237,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
 
-    def work_version = "2.7.1"
-    implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
 
     implementation "androidx.core:core-ktx:1.7.0"
 
-    def lifecycle_version = "2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-
-    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 
     // 高德 sdk
     // https://lbs.amap.com/api/android-location-sdk/changelog
@@ -180,12 +266,26 @@ dependencies {
     implementation 'com.assist-v3:vivo:3.1.0'
     implementation 'com.getui.opt:mzp:3.2.0'
     implementation 'com.huawei.hms:push:6.1.0.300'
+    // 华为多版本
+    // https://developer.huawei.com/consumer/cn/doc/development/AppGallery-connect-Guides/agc-config-flavor-android-0000001057944603
 
     // QQ sdk
     implementation fileTree(dir: 'libs', include: '*.jar')
 
     // 友盟 sdk
-    implementation 'com.umeng.umsdk:common:9.4.4'// 必选
-    implementation 'com.umeng.umsdk:asms:1.4.1'// 必选
-    implementation 'com.umeng.umsdk:apm:1.5.2' // 错误分析
+    implementation 'com.umeng.umsdk:common:9.4.7'// 必选
+    implementation 'com.umeng.umsdk:asms:1.5.0'// 必选
+    implementation 'com.umeng.umsdk:apm:1.6.2' // 错误分析
+    implementation 'com.umeng.umsdk:abtest:1.0.0'//U-App中ABTest能力
+}
+
+def getDartDefines() {
+    def arguments = URLDecoder.decode(project.property('dart-defines'))
+            .split(',')
+            .collectEntries { entry ->
+                def pair = entry.split('=')
+                [(pair.first()): pair.last()]
+            }
+    println(arguments)
+    return arguments
 }

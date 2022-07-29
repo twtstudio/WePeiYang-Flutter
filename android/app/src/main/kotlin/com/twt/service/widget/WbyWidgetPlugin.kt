@@ -1,33 +1,22 @@
 package com.twt.service.widget
 
-import android.content.Context
 import android.content.Intent
 import com.twt.service.WBYApplication
-import com.twt.service.push.IntentEvent
 import com.twt.service.common.LogUtil
+import com.twt.service.common.WbyPlugin
+import com.twt.service.push.IntentEvent
 import com.twt.service.push.model.Event
-import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 
-class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware,
-    PluginRegistry.NewIntentListener {
-    private lateinit var context: Context
-    private lateinit var channel: MethodChannel
+class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentListener {
     private lateinit var binding: ActivityPluginBinding
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/widget")
-        channel.setMethodCallHandler(this)
-        context = binding.applicationContext
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
+    override val name: String
+        get() = "com.twt.service/widget"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -52,7 +41,7 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
         return false
     }
 
-    private fun handleIntent(intent: Intent) : Boolean {
+    private fun handleIntent(intent: Intent): Boolean {
         log("WbyWidgetPlugin handle intent :" + intent.dataString)
         if (intent.data?.host?.equals("weipeiyang.app") == true) {
             intent.data?.let {
@@ -90,7 +79,7 @@ class WbyWidgetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activity
     override fun onDetachedFromActivity() {}
 
     companion object {
-        const val TAG = "WBY_WIDGET"
+        const val TAG = "WIDGET"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }

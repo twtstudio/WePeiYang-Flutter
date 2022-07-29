@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/lake_privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -23,7 +23,7 @@ class FirstInLakeDialogState extends State<FirstInLakeDialog>{
 
   @override
   Widget build(BuildContext context) {
-   return DialogWidget(
+   return LakeDialogWidget(
        confirmButtonColor: ColorUtil.selectionButtonColor,
        title: '同学你好：',
        content: Column(
@@ -141,7 +141,7 @@ class FirstInLakeDialogState extends State<FirstInLakeDialog>{
            Navigator.pop(context);
            CommonPreferences.isFirstLogin.value = false;
          } else {
-           ToastProvider.error('请同意《青年湖底社区规范》');
+           ToastProvider.error('请同意《求实论坛社区规范》');
          }
        });
   }

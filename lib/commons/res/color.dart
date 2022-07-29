@@ -62,6 +62,11 @@ class FavorColors {
     gpaType.value = 'light';
   }
 
+  static setBegoniaGPA() {
+    _gpaColor.value = _begoniaGPA;
+    gpaType.value = 'begonia';
+  }
+
   static final List<String> _greenGPA = [
     Color.fromRGBO(127, 139, 89, 1).value.toString(),
     Color.fromRGBO(255, 255, 255, 1).value.toString(),
@@ -85,9 +90,16 @@ class FavorColors {
 
   static final List<String> _lightGPA = [
     Color.fromRGBO(245, 237, 237, 1.0).value.toString(),
-    Color.fromRGBO(157, 123, 131, 1).value.toString(),
+    Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
     Color.fromRGBO(184, 162, 167, 1).value.toString(),
     Color.fromRGBO(227, 222, 222, 1).value.toString(),
+  ];
+
+  static final List<String> _begoniaGPA = [
+    Color.fromRGBO(228, 181, 189, 1.0).value.toString(),
+    Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
+    Color.fromRGBO(221, 172, 179, 1.0).value.toString(),
+    Color.fromRGBO(217, 162, 169, 1.0).value.toString(),
   ];
 
   /// 这个是课程表默认颜色哦
@@ -106,20 +118,35 @@ class FavorColors {
     scheduleType.value = 'brown';
   }
 
+  static setBegoniaSchedule() {
+    _scheduleColor.value = _begoniaSchedule;
+    scheduleType.value = 'begonia';
+  }
+
+  static setAprilFoolSchedule() {
+    scheduleType.value = 'april';
+  }
+
   static Color get scheduleTitleColor {
+    if (CommonPreferences.isSkinUsed.value) {
+      return Color(CommonPreferences.skinColorB.value);
+    }
     var type = scheduleType.value;
     if (type == 'green')
       return Color.fromRGBO(115, 124, 105, 1);
     else if (type == 'brown')
       return Color.fromRGBO(128, 95, 78, 1);
-    else
+    else if (type == 'blue')
+      return Color.fromRGBO(98, 103, 123, 1);
+    else if (type == 'april')
       return Color.fromRGBO(98, 103, 123, 1);
   }
 
   /// 这套配色暴露出来给主页使用
   static final List<Color> homeSchedule =
+      _begoniaSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
+  static final List<Color> defaultHomeSchedule =
       _blueSchedule.map((e) => Color(int.parse(e, radix: 10))).toList();
-
   static final List<String> _blueSchedule = [
     Color.fromRGBO(114, 117, 136, 1).value.toString(), // #727588
     Color.fromRGBO(143, 146, 165, 1).value.toString(), // #8F92A5
@@ -144,5 +171,13 @@ class FavorColors {
     Color.fromRGBO(128, 95, 78, 1).value.toString(),
     Color.fromRGBO(201, 169, 148, 1).value.toString(),
     Color.fromRGBO(102, 88, 82, 1).value.toString(),
+  ];
+  static final List<String> _begoniaSchedule = [
+    Color.fromRGBO(245, 224, 238, 1.0).value.toString(),
+    Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
+    Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
+    Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
+    Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
+    Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
   ];
 }

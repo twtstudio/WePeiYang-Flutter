@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/home/home_router.dart';
+
+import 'april_fool_dialog.dart';
 
 typedef WithCountNotifierCallback = Future<void> Function(
     bool, int, Function onSuccess, Function onFailure);
@@ -96,15 +100,38 @@ class _IconWidgetState extends State<IconWidget> {
             },
             onTap: (value) async {
               if (value) {
+                ///愚人节临时处理
+                if(CommonPreferences.isAprilFoolLike.value){
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AprilFoolDialog(
+                          content: " 今天点赞似乎反了捏~~",
+                          confirmText: "返回正常点赞",
+                          cancelText: "保留整蛊",
+                          confirmFun: (){
+                            CommonPreferences.isAprilFoolLike.value = false;
+                            Navigator.popAndPushNamed(context, HomeRouter.home);
+                          },
+                        );
+                      });
+                  widget.countNotifier.value = widget.countNotifier.value + 1;
+                }
+                else
                 widget.countNotifier.value = widget.countNotifier.value - 1;
               } else {
+                if(CommonPreferences.isAprilFoolLike.value) {
+                  widget.countNotifier.value = widget.countNotifier.value - 1;
+                }
+                else
                 widget.countNotifier.value = widget.countNotifier.value + 1;
               }
               widget.onLikePressed(value, widget.countNotifier.value, () {
                 widget.isLikedNotifier.value = !value;
               }, () {
                 if (value) {
-                  widget.countNotifier.value ++;
+                    widget.countNotifier.value++;
                 } else {
                   widget.countNotifier.value --;
                 }

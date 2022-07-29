@@ -3,11 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
-import 'package:we_pei_yang_flutter/message/feedback_set_read_all.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 class ProfileHeader extends StatelessWidget {
   final Widget child;
@@ -16,6 +18,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double _width = ScreenUtil.defaultSize.width;
     return Stack(
       children: <Widget>[
         CustomScrollView(
@@ -34,23 +37,29 @@ class ProfileHeader extends StatelessWidget {
               ),
               title: Text(
                 "我的湖底",
-                style: TextUtil.base.NotoSansSC.black2A.sp(18).w500,
+                style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
               ),
               centerTitle: true,
-              actions: [FeedbackReadAllButton(), FeedbackMailbox()],
+              actions: [FeedbackMailbox()],
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    UserAvatarImage(
-                        size: (ScreenUtil.defaultSize.width - 60) / 3,
-                        iconColor: Colors.white),
-                    SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
-                    SizedBox(
-                      width: (ScreenUtil.defaultSize.width - 60) / 2,
+                    Container(
+                      decoration: CommonPreferences.isAprilFoolHead.value?BoxDecoration(
+                        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
+                      ):BoxDecoration(),
+                      child: Padding(
+                        padding: EdgeInsets.all((_width - 80) / 6),
+                        child: UserAvatarImage(
+                            size: (_width - 80) / 3, iconColor: Colors.white),
+                      ),
+                    ),
+                    // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
+                    Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,11 +117,36 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(right: 10),
-      child: SizedBox(
-        width: 45,
-        child: InkResponse(
-          onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
-          radius: 25,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
+        onLongPress: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return LakeDialogWidget(
+                title: '一键已读：',
+                titleTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                content: Text('这将清除所有的消息提醒'),
+                cancelText: "取消",
+                confirmTextStyle:
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                cancelTextStyle:
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                confirmText: "确认",
+                cancelFun: () {
+                  Navigator.pop(context);
+                },
+                confirmFun: () async {
+                  await context.read<MessageProvider>().setAllMessageRead();
+                  Navigator.pop(context);
+                },
+                confirmButtonColor: ColorUtil.selectionButtonColor,
+              );
+            }),
+        child: SizedBox(
+          height: 45,
+          width: 45,
           child: Center(
             child: FeedbackBadgeWidget(
               child: SvgPicture.asset(

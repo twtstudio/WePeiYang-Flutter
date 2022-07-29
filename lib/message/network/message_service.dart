@@ -3,6 +3,7 @@ import 'dart:convert' show jsonDecode;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
@@ -25,8 +26,8 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("likes", queryParameters: {
-        "page_size": 10,
-        "page": page,
+        "page_size": '20',
+        "page": '$page',
       });
       List<LikeMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -44,8 +45,8 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("floors", queryParameters: {
-        "page_size": 10,
-        "page": page,
+        "page_size": '20',
+        "page": '$page',
       });
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -63,8 +64,8 @@ class MessageService {
       @required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("replys", queryParameters: {
-        "page_size": 10,
-        "page": page,
+        "page_size": '20',
+        "page": '$page',
       });
       List<ReplyMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -85,8 +86,8 @@ class MessageService {
           OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("notices", queryParameters: {
-        "page_size": 10,
-        "page": page,
+        "page_size": '20',
+        "page": '$page',
       });
       List<NoticeMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
@@ -173,7 +174,7 @@ final messageDio = MessageDio();
 class MessageDio extends DioAbstract {
 
   @override
-  String baseUrl = 'https://qnhd.twt.edu.cn/api/v1/f/message/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/message/';
 
   @override
   List<InterceptorsWrapper> interceptors = [

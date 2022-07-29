@@ -17,7 +17,7 @@ class FeedbackNoticePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appBar = PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(60),
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,
@@ -28,8 +28,8 @@ class FeedbackNoticePage extends StatelessWidget {
         title:
             Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
         leading: IconButton(
-          icon: Image.asset('assets/images/lake_butt_icons/back.png',
-              width: 14),
+          icon:
+              Image.asset('assets/images/lake_butt_icons/back.png', width: 14),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -60,21 +60,23 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     var content = InkWell(
-        onLongPress: () {
-          Clipboard.setData(
-              ClipboardData(text: '【' + notice.title + '】 ' + notice.content));
-          ToastProvider.success('复制通知内容成功');
-        },
-        child: SizedBox(
-          width: double.infinity,
-          child: ExpandableText(
-            text: notice.content,
-            maxLines: 8,
-            style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
-            expand: false,
-            buttonIsShown: true,
-          ),
-        ));
+      onLongPress: () {
+        Clipboard.setData(
+            ClipboardData(text: '【' + notice.title + '】 ' + notice.content));
+        ToastProvider.success('复制通知内容成功');
+      },
+      child: SizedBox(
+        width: double.infinity,
+        child: ExpandableText(
+          text: notice.content,
+          maxLines: 8,
+          style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
+          expand: false,
+          buttonIsShown: true,
+          isHTML: false,
+        ),
+      ),
+    );
 
     var middleWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,

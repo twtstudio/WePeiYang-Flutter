@@ -84,7 +84,7 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
           context: context,
           removeLeft: true,
           child: Center(
-            child: Text('同步数据失败', style: TextUtil.base.greyAA.sp(14)),
+            child: Text('暂无收藏', style: TextUtil.base.greyAA.sp(14)),
           ),
         ),
       );

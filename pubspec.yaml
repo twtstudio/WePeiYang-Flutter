@@ -1,4 +1,4 @@
-name: we_pei_yang_flutter
+﻿name: we_pei_yang_flutter
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -16,11 +16,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-# 请保证 'package:we_pei_yang_flutter/commons/update/update_util.dart'
-# 中的 _flutterCodeVersion 与加号后面的数字保持一致，方便热更新时对比版本
-version: 4.2.0+94
+# 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
+# 中的 version 和 versionCode 保持一致
+version: 4.2.8+104
 
 # 打包代码 flutter build apk --split-per-abi
+# flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -38,8 +39,10 @@ dependencies:
   dotted_border: ^2.0.0+1
   fluttertoast: ^8.0.8
   flutter_html: ^2.0.0
+  flutter_markdown: ^0.6.9+1
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
+  flutter_swiper: ^1.1.6
   flutter_screenutil: ^4.0.4
   simple_url_preview: ^3.0.0
   hive: ^2.0.4
@@ -65,6 +68,7 @@ dependencies:
   url_launcher: ^6.0.10
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0
+  weathers: ^1.0.2
   extended_tabs: ^2.3.0
   extended_image: ^4.0.0
   flutter_native_image: ^0.0.6+1
@@ -104,7 +108,7 @@ flutter:
     - assets/images/account/3.0x/
     - assets/images/account/4.0x/
     - assets/images/lake_butt_icons/
-
+    - assets/images/begonia/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

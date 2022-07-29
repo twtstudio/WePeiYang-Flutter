@@ -1,6 +1,6 @@
 // @dart = 2.12
 
-import 'package:flutter/foundation.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class Time {
@@ -29,7 +29,7 @@ class Time {
       return firstDay.next.weekStart;
     } else {
       // 想想办法
-      if (kDebugMode) {
+      if (EnvConfig.isTest) {
         throw Exception('can not get semester start time');
       }
       return DateTime(2021, 8, 16);
@@ -71,9 +71,6 @@ class Time {
 
   static DateTime checkDateTimeAvailable(DateTime dateTime) {
     if (dateTime.isBefore(Time.semesterStart())) {
-      // if (kDebugMode) {
-      //   throw Exception('can not chose time before semester start time');
-      // }
       return Time.semesterStart();
     }
     return dateTime;

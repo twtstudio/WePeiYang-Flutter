@@ -166,8 +166,6 @@ class RoomFavour extends LoadStateChangeNotifier with LoungeDataStateMixin {
       });
     }
 
-    ;
-
     // 如果同步成功，则在本地保留
     await LoungeLoginApi.collect(room.id, current)
         .then(writeInDB)

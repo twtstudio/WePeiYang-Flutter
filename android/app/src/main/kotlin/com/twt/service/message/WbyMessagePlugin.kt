@@ -1,27 +1,16 @@
 package com.twt.service.message
 
-import android.content.Context
-import android.util.Log
 import com.twt.service.WBYApplication
 import com.twt.service.common.LogUtil
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import com.twt.service.common.WbyPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 // 由于 flutter 引擎初始化有延迟，所以选择在进入微北洋主页后主动查看 eventList 中是否由未处理事件
-class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
-    private lateinit var channel: MethodChannel
-    private lateinit var context: Context
+class WbyMessagePlugin : WbyPlugin() {
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "com.twt.service/message")
-        channel.setMethodCallHandler(this)
-        context = binding.applicationContext
-    }
-
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
+    override val name: String
+        get() = "com.twt.service/message"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
@@ -35,10 +24,10 @@ class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                     if (event.type != -1) {
                         log(event.toString())
                         result.success(
-                                mapOf(
-                                        "event" to event.type,
-                                        "data" to event.data
-                                )
+                            mapOf(
+                                "event" to event.type,
+                                "data" to event.data
+                            )
                         )
                     }
                 }
@@ -48,7 +37,7 @@ class WbyMessagePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
     companion object {
-        const val TAG = "WBY_MESSAGE"
+        const val TAG = "MESSAGE"
         fun log(message: String) = LogUtil.d(TAG, message)
     }
 }
