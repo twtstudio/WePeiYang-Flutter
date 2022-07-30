@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -67,92 +69,161 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-          elevation: 0,
-          brightness: Brightness.light,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
-                onTap: () => Navigator.pop(context)),
-          )),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+      body: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromARGB(255, 44, 126, 223),
+            Color.fromARGB(255, 166, 207, 255),
+          ],
+        )),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Text("${S.current.WBY}4.0",
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(98, 103, 123, 1),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16)),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
+              child: Text.rich(TextSpan(children: [
+                TextSpan(
+                    text: "Welcome\n\n",
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+              ])),
             ),
-            SizedBox(height: 30),
-            CommonPreferences().usePwLogin.value ? _pwWidget : _codeWidget,
-            SizedBox(height: 25),
-            SizedBox(
-                height: 50,
-                width: 400,
-                child: ElevatedButton(
-                  onPressed: _login,
-                  child: Text(S.current.login,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          color: Colors.white, fontSize: 13)),
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(5),
-                    overlayColor:
-                        MaterialStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(MaterialState.pressed))
-                        return Color.fromRGBO(103, 110, 150, 1);
-                      return Color.fromRGBO(53, 59, 84, 1);
-                    }),
-                    backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(53, 59, 84, 1)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30))),
-                  ),
-                )),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: checkNotifier,
-                  builder: (context, value, _) {
-                    return Checkbox(
-                      value: value,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                      activeColor: Color.fromRGBO(98, 103, 123, 1),
-                      onChanged: (_) {
-                        checkNotifier.value = !checkNotifier.value;
-                      },
-                    );
-                  },
-                ),
-                Text(S.current.register_hint1, style: _normalStyle),
-                GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) =>
-                          UserAgreementDialog(check: checkNotifier)),
-                  child: Text('《用户协议》', style: _highlightStyle),
-                ),
-                Text('与', style: _normalStyle),
-                GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) =>
-                          PrivacyDialog(check: checkNotifier)),
-                  child: Text('《隐私政策》', style: _highlightStyle),
-                ),
-              ],
+            Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 50),
+                      CommonPreferences().usePwLogin.value
+                          ? _pwWidget
+                          : _codeWidget,
+                      SizedBox(height: 40),
+                      SizedBox(
+                          height: 48,
+                          //这样的地方改了，便于屏幕适配
+                          width: width-60,
+                          child: ElevatedButton(
+                            onPressed: _login,
+                            child: Text.rich(TextSpan(
+                              text: "登录",
+                              style: TextUtil.base.normal.NotoSansSC.w400.sp(16).themeBlue
+                            )),
+                            style: ButtonStyle(
+
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color.fromRGBO(
+                                      255, 255, 255, 0.1);
+                                return Color.fromRGBO(255, 255, 255, 1);
+                              }),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.white),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24))),
+                            ),
+                          )),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Spacer(),
+                          SizedBox(width: 16),
+                          GestureDetector(
+                            child: Text.rich(TextSpan(
+                                text: "短信登录",
+                                style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white
+                            )),
+                            onTap: () {
+                              if (CommonPreferences().usePwLogin.value) {
+                                _accountFocus.unfocus();
+                                _passwordFocus.unfocus();
+                                password = '';
+                                CommonPreferences().usePwLogin.value = false;
+                              } else {
+                                code = '';
+                                CommonPreferences().usePwLogin.value = true;
+                              }
+                              setState(() {});
+                            },
+                          ),
+                          SizedBox(width: 16),
+                          GestureDetector(
+                            child: Text.rich(TextSpan(
+                                text: "忘记密码?",
+                                style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white
+                            )),
+                            onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
+                          ),
+                          SizedBox(width: 10),
+                        ],
+                      ),
+                      Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: checkNotifier,
+                            builder: (context, value, _) {
+                              return Checkbox(
+                                value: value,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
+                                activeColor: Color.fromARGB(255, 44, 126, 223),
+                                onChanged: (_) {
+                                  checkNotifier.value = !checkNotifier.value;
+                                },
+                              );
+                            },
+                          ),
+                          Text.rich(TextSpan(
+                            text: "我已阅读并同意",
+                            style: TextUtil.base.normal.NotoSansSC.w400.sp(10).mainText
+                          )),
+                          GestureDetector(
+                            onTap: () => showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) =>
+                                    UserAgreementDialog(check: checkNotifier)),
+                            child: Text.rich(TextSpan(
+                                text: "《用户协议》",
+                                style: TextUtil.base.normal.NotoSansSC.w400.sp(10).underLine
+                            )),
+                          ),
+                          Text.rich(TextSpan(
+                              text: "与",
+                              style: TextUtil.base.normal.NotoSansSC.w400.sp(10).mainText
+                          )),
+                          GestureDetector(
+                            onTap: () => showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) =>
+                                    PrivacyDialog(check: checkNotifier)),
+                            child: Text.rich(TextSpan(
+                                text: "《隐私政策》",
+                                style: TextUtil.base.normal.NotoSansSC.w400.sp(10).underLine
+                            )),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30,)
+                    ],
+                  )),
             ),
           ],
         ),
@@ -172,22 +243,36 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
 
   Widget get _pwWidget {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text.rich(TextSpan(
+            text: "账号",
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
+            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
+            cursorColor: Colors.white,
             textInputAction: TextInputAction.next,
             focusNode: _accountFocus,
             decoration: InputDecoration(
-                hintText: S.current.account,
-                hintStyle: _hintStyle,
-                filled: true,
-                fillColor: Color.fromRGBO(235, 238, 243, 1),
-                isCollapsed: true,
-                contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none)),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white,
+                  width: 1.0,
+                ),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white,
+                  width: 1.0,
+                ),
+              ),
+              hintText: "学号/手机号/邮箱/用户名",
+              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+              isCollapsed: true,
+              contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
+            ),
             onChanged: (input) => setState(() => account = input),
             onEditingComplete: () {
               _accountFocus.unfocus();
@@ -196,6 +281,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
         ),
         SizedBox(height: 20),
+        Text.rich(TextSpan(
+            text: "密码",
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: ValueListenableBuilder(
@@ -205,25 +293,36 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 data: Theme.of(context)
                     .copyWith(primaryColor: Color.fromRGBO(53, 59, 84, 1)),
                 child: TextField(
+                  style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
+                  cursorColor: Colors.white,
                   keyboardType: TextInputType.visiblePassword,
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
-                    hintText: S.current.password,
-                    hintStyle: _hintStyle,
-                    filled: true,
-                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
+                    hintText: "请输入密码",
+                    hintStyle: TextUtil.base.normal.sp(14).w400.white,
                     isCollapsed: true,
-                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
                     suffixIcon: GestureDetector(
-                      child:
-                          Icon(value ? Icons.visibility_off : Icons.visibility),
-                      onTap: () {
+                      onTap: (){
                         visNotifier.value = !visNotifier.value;
                       },
-                    ),
+                      child: Icon(
+                          value ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.white,
+                      ),
+                    )
                   ),
                   obscureText: value,
                   onChanged: (input) => setState(() => password = input),
@@ -232,33 +331,65 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             },
           ),
         ),
-        SizedBox(height: 15),
-        Row(
-          children: [
-            SizedBox(width: 10),
-            GestureDetector(
-              child: Text(S.current.forget_password, style: _highlightStyle),
-              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
-            ),
-            Spacer(),
-            GestureDetector(
-              child: Text('短信登陆→', style: _normalStyle),
-              onTap: () {
-                if (CommonPreferences().usePwLogin.value) {
-                  _accountFocus.unfocus();
-                  _passwordFocus.unfocus();
-                  password = '';
-                  CommonPreferences().usePwLogin.value = false;
-                } else {
-                  code = '';
-                  CommonPreferences().usePwLogin.value = true;
-                }
-                setState(() {});
-              },
-            ),
-            SizedBox(width: 10),
-          ],
+        SizedBox(height: 20),
+        ///下面的验证码部分暂时没有实现，仍需更改，目前没有功能
+        Text.rich(TextSpan(
+            text: "验证码",
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 55),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
+                  cursorColor: Colors.white,
+                  //textInputAction: TextInputAction.next,
+                  //focusNode: _accountFocus,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
+                    hintText: "请输入验证码",
+                    hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                    isCollapsed: true,
+                    contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                  ),
+                  /**先注释掉，以后实现功能了再改
+                  onChanged: (input) => setState(() => account = input),
+                  onEditingComplete: () {
+                    _accountFocus.unfocus();
+                    FocusScope.of(context).requestFocus(_passwordFocus);
+                  },
+                   */
+                ),
+              ),
+              //这里的嵌套是为了预留出来一定的空间，该填入验证码的部分是里面的Container,替换成图片就可以获取验证码
+              SizedBox(width: 140, height: 48, child: Center(
+                  child: Container(
+                    width: 120,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 144, 144, 144),
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+
+
       ],
     );
   }

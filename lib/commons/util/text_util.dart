@@ -52,10 +52,17 @@ extension TextStyleAttr on TextStyle {
   TextStyle get green1B => this.copyWith(color: const Color(0xFF1B7457));
   TextStyle get yellowD9 => this.copyWith(color: const Color(0xFFD9621F));
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
+  TextStyle get themeBlue => this.copyWith(color: const Color(0xFF2C7EDF));
+  TextStyle get mainText => this.copyWith(color: const Color(0xFF2A2A2A));
 
   /// 字体
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
+
+  /// 删除线,上划线,下划线
+  TextStyle get lineThrough => this.copyWith(decoration: TextDecoration.lineThrough);
+  TextStyle get overLine => this.copyWith(decoration: TextDecoration.overline);
+  TextStyle get underLine => this.copyWith(decoration: TextDecoration.underline);
 
   /// 以下为非枚举属性
   TextStyle sp(double s) => this.copyWith(fontSize: s.sp);
