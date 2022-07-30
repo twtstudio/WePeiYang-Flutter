@@ -1,10 +1,20 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../main.dart';
+import '../../../feedback_router.dart';
+import '../../search_result_page.dart';
 
 class CommentIdentificationContainer extends StatelessWidget {
   final String text;
@@ -29,6 +39,74 @@ class CommentIdentificationContainer extends StatelessWidget {
   }
 }
 
+class ETagUtil {
+  final Color colorA, colorB;
+  final String text, fullName;
+
+  ETagUtil._(this.colorA, this.colorB, this.text, this.fullName);
+
+  factory ETagUtil.empty() {
+    return ETagUtil._(Colors.white, Colors.white, '', '');
+  }
+}
+
+class ETagWidget extends StatefulWidget {
+  @required
+  final String entry;
+  final bool full;
+
+  @required
+  const ETagWidget({Key key, this.entry, this.full}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ETagWidgetState();
+  }
+}
+
+class _ETagWidgetState extends State<ETagWidget> {
+  _ETagWidgetState();
+
+  bool colorState = false;
+  Timer timer;
+  Duration timeDuration = Duration(milliseconds: 1900);
+  Map<String, ETagUtil> tagUtils = {
+    'recommend': new ETagUtil._(Color.fromRGBO(232, 178, 27, 1.0),
+        Color.fromRGBO(236, 120, 57, 1.0), '精', '精华帖'),
+    'theme': new ETagUtil._(Color.fromRGBO(66, 161, 225, 1.0),
+        Color.fromRGBO(57, 90, 236, 1.0), '活动', '活动帖'),
+    'top': new ETagUtil._(Color.fromRGBO(223, 108, 171, 1.0),
+        Color.fromRGBO(243, 16, 73, 1.0), '置顶', '置顶帖')
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(3, 0.4, 2.8, 2.0),
+      margin: EdgeInsets.only(right: 5),
+      child: Text(
+        widget.full
+            ? tagUtils[widget.entry].fullName
+            : tagUtils[widget.entry].text ?? '',
+        style: TextUtil.base.NotoSansSC.w800.sp(12).white,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(7),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment(0.4, 1.6),
+          colors: [
+            tagUtils[widget.entry].colorA,
+            tagUtils[widget.entry].colorB
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MPWidget extends StatelessWidget {
   final String text;
 
@@ -41,37 +119,48 @@ class MPWidget extends StatelessWidget {
   }
 }
 
-class SolvedWidget extends StatelessWidget {
+class SolveOrNotWidget extends StatelessWidget {
+  final int index;
+
+  SolveOrNotWidget(this.index);
+
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/solved_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
+    switch (index) {
+      //未分发
+      case 0:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagNotProcessed.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+      //已分发
+      case 3:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagProcessed.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+      //未解决
+      case 1:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagReplied.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+      //已解决
+      case 2:
+        return SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/tagSolved.svg',
+          width: 60,
+          fit: BoxFit.fitWidth,
+        );
+      default:
+        return SizedBox();
+    }
   }
 }
 
-class ResponseWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/responsed_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
-  }
-}
-class QuestionedWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/svg_pics/lake_butt_icons/questioned_tag.svg',
-      width: 60,
-      fit: BoxFit.fitWidth,
-    );
-  }
-}
 class TagShowWidget extends StatelessWidget {
   final String tag;
   final double width;
@@ -82,7 +171,8 @@ class TagShowWidget extends StatelessWidget {
   final int tar;
   final int lakeType;
 
-  TagShowWidget(this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
+  TagShowWidget(
+      this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
 
   @override
   Widget build(BuildContext context) {
@@ -92,34 +182,30 @@ class TagShowWidget extends StatelessWidget {
             ? Navigator.pushNamed(
                 context,
                 FeedbackRouter.searchResult,
-                arguments: SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
+                arguments:
+                    SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
               )
             : type == 0
                 ? {
                     Navigator.pushNamed(
                       context,
                       FeedbackRouter.searchResult,
-                      arguments: SearchResultPageArgs(
-                        '',
-                        '',
-                        '',
-                        '$tag 分区详情',
-                        tar, 0
-                      ),
+                      arguments:
+                          SearchResultPageArgs('', '', '', '$tag 分区详情', tar, 0),
                     )
                   }
                 : type == 1
                     ? Navigator.pushNamed(
                         context,
                         FeedbackRouter.searchResult,
-                        arguments:
-                            SearchResultPageArgs('', '', '$id', '部门 #$tag', 1, 0),
+                        arguments: SearchResultPageArgs(
+                            '', '', '$id', '部门 #$tag', 1, 0),
                       )
                     : Navigator.pushNamed(
                         context,
                         FeedbackRouter.searchResult,
-                        arguments:
-                            SearchResultPageArgs('', '$id', '', '标签 #$tag', 0, lakeType),
+                        arguments: SearchResultPageArgs(
+                            '', '$id', '', '标签 #$tag', 0, lakeType),
                       );
       },
       child: Container(
@@ -185,5 +271,158 @@ class TextPod extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C),
     );
+  }
+}
+
+class ProfileImageWithDetailedPopup extends StatelessWidget {
+  final int type;
+  final int uid;
+  final String nickname;
+
+  ProfileImageWithDetailedPopup(this.type, this.nickname, this.uid);
+
+  static WidgetBuilder defaultPlaceholderBuilder =
+      (BuildContext ctx) => SizedBox(
+            width: 24,
+            height: 24,
+            child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
+          );
+
+  @override
+  Widget build(BuildContext ctx) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: ctx,
+        barrierDismissible: true,
+        builder: (BuildContext context) => Stack(
+          children: [
+            Align(
+              alignment: Alignment(0, -0.2),
+              child: Container(
+                  constraints:
+                      BoxConstraints(maxWidth: WePeiYangApp.screenWidth - 40),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 15),
+                      Text(
+                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
+                        style:
+                            TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value)
+                        InkWell(
+                          onTap: () =>
+                              _showResetConfirmDialog(context).then((value) {
+                            if (value)
+                              FeedbackService.adminResetName(
+                                  id: uid,
+                                  onSuccess: () {
+                                    ToastProvider.success('重置成功');
+                                    Navigator.pop(ctx);
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.message);
+                                  });
+                          }),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.refresh, size: 18,),
+                              Text(
+                                '重置昵称',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (CommonPreferences.isSuper.value)
+                        InkWell(
+                          onTap: () => Navigator.popAndPushNamed(
+                              context, FeedbackRouter.openBox,
+                              arguments: uid),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.person_search_rounded),
+                              Text(
+                                '开盒',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: 5),
+                    ],
+                  )),
+            ),
+            Align(
+              alignment: Alignment(0, -0.2),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 130),
+                child: SvgPicture.network(
+                  '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+                  width: DateTime.now().month == 4 && DateTime.now().day == 1
+                      ? 36
+                      : 48,
+                  height: DateTime.now().month == 4 && DateTime.now().day == 1
+                      ? 36
+                      : 48,
+                  fit: BoxFit.contain,
+                  placeholderBuilder: defaultPlaceholderBuilder,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(right: 4),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          child: SvgPicture.network(
+            '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+            width:
+                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
+            height:
+                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
+            fit: BoxFit.contain,
+            placeholderBuilder: defaultPlaceholderBuilder,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _showResetConfirmDialog(BuildContext context) {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return LakeDialogWidget(
+              title: '重置昵称',
+              content: Text('您确定要重置该用户昵称吗？'),
+              cancelText: "取消",
+              confirmTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              cancelTextStyle:
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+              confirmText: '确认',
+              cancelFun: () {
+                Navigator.of(context).pop();
+              },
+              confirmFun: () {
+                Navigator.of(context).pop(true);
+              });
+        });
   }
 }

@@ -47,9 +47,6 @@ class WpyExamWidget extends StatelessWidget {
   }
 
   Widget _detail(ExamProvider provider, BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    Gradient gradient = LinearGradient(colors: [Colors.blueAccent, Colors.redAccent]);
-    Shader shader = gradient.createShader(Rect.fromLTWH(0,0,size.width, size.height));
     if (provider.unscheduled.length == 0) {
       var msg = CommonPreferences.isAprilFool.value
           ? '您最近有新的考试哦，打开考表查看详情'
@@ -65,29 +62,27 @@ class WpyExamWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(msg,
-                  style:  FontManager.YaHeiLight.copyWith(
-                          color: Color.fromRGBO(207, 208, 212, 1),
-                          fontSize: 14,
-                          letterSpacing: 0.5)),
+                  style: FontManager.YaHeiLight.copyWith(
+                      color: Color.fromRGBO(207, 208, 212, 1),
+                      fontSize: 14,
+                      letterSpacing: 0.5)),
             )),
       );
     } else if (provider.unscheduled.length > 1) {
       return Container(
-        constraints: BoxConstraints(maxHeight: 105),
+        constraints: BoxConstraints(maxHeight: 110),
         child: ListView(
           scrollDirection: Axis.horizontal,
           physics: BouncingScrollPhysics(),
           children: provider.unscheduled
-              .map((e) => examCard(context, e, true, wpy: true))
+              .map((e) => SizedBox(
+                  width: 300,
+                  child: examCard(context, e, false, wpy: true)))
               .toList(),
         ),
       );
-    } else {
-      return Row(
-        children: provider.unscheduled
-            .map((e) => examCard(context, e, true, wpy: true))
-            .toList(),
-      );
-    }
+    } else
+      return provider.unscheduled
+            .map((e) => examCard(context, e, false, wpy: true)).first;
   }
 }

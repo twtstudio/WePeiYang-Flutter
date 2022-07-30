@@ -28,7 +28,7 @@ class MessageProvider extends ChangeNotifier {
   bool get isEmpty => (likeMessages?.length ?? 0) == 0;
 
   refreshFeedbackCount() async {
-    if (CommonPreferences.feedbackToken.value != "") {
+    if (CommonPreferences.lakeToken.value != "") {
       await MessageService.getUnreadMessagesCount(onResult: (count) {
         _messageCount = count;
       }, onFailure: (e) {
@@ -65,7 +65,8 @@ class MessageProvider extends ChangeNotifier {
     _likeMessages.clear();
   }
 
-  int getMessageCount(MessageType type) {
+  int getMessageCount({MessageType type, bool isEmail = false}) {
+    if (isEmail) return _messageCount?.notice ?? 0;
     switch (type) {
       case MessageType.like:
         return _messageCount?.like ?? 0;

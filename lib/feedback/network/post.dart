@@ -30,6 +30,9 @@ class Post {
     this.isOwner,
     this.imageUrls,
     this.department,
+    this.visitCount,
+    this.eTag,
+    this.nickname,
   });
 
   int id;
@@ -52,6 +55,9 @@ class Post {
   bool isOwner;
   List<String> imageUrls;
   Department department;
+  int visitCount;
+  String eTag;
+  String nickname;
 
   bool operator ==(Object other) => other is Post && other.id == id;
 
@@ -84,6 +90,9 @@ class Post {
         department: json["department"] == null
             ? null
             : Department.fromJson(json["department"]),
+        visitCount: json["visit_count"],
+        eTag: json["e_tag"],
+        nickname: json["nickname"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -107,6 +116,9 @@ class Post {
         "is_owner": isOwner,
         "image_urls": List<dynamic>.from(imageUrls.map((x) => x)),
         "department": department.toJson(),
+        "visit_count": visitCount,
+        "e_tag": eTag,
+        "nickname": nickname,
       };
 
   Post.nullExceptId(int questionId) {
@@ -254,6 +266,41 @@ class Floor {
     // TODO: implement toString
     return toJson().toString();
   }
+}
+
+class Notice {
+  Notice(
+      {this.id,
+      this.content,
+      this.title,
+      this.is_read,
+      this.sender,
+      this.createdAt});
+
+  int id;
+  String sender;
+  String title;
+  String content;
+  int is_read;
+  String createdAt;
+
+  factory Notice.fromJson(Map<String, dynamic> json) => Notice(
+        id: json["id"],
+        sender: json["sender"],
+        title: json["title"],
+        is_read: json["is_read"],
+        content: json["content"],
+        createdAt: json["created_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "sender": sender,
+        "title": title,
+        "is_read": is_read,
+        "content": content,
+        "created_at": createdAt
+      };
 }
 
 class Festival {

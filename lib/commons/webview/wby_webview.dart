@@ -1,5 +1,7 @@
 // @dart = 2.12
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
@@ -33,6 +35,9 @@ class WbyWebViewState extends State<WbyWebView> {
   @override
   void initState() {
     super.initState();
+    if (Platform.isAndroid) {
+      WebView.platform = SurfaceAndroidWebView();
+    }
     UmengCommonSdk.onPageStart('webview/${widget.page}');
   }
 
@@ -122,6 +127,7 @@ class WbyWebViewState extends State<WbyWebView> {
               WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
             },
             javascriptMode: JavascriptMode.unrestricted,
+            gestureNavigationEnabled: true,
             onPageStarted: (_) {
               setState(() {
                 state = _PageState.showWebView;

@@ -179,6 +179,34 @@ class _UserInfoPageState extends State<UserInfoPage> {
             elevation: 0,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+            child: SizedBox(
+              height: 70,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, FeedbackRouter.profile)
+                        .then((_) => this.setState(() {}));
+                },
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(9)),
+                splashFactory: InkRipple.splashFactory,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: <Widget>[
+                      Text('更改求实论坛相关', style: mainTextStyle),
+                      Spacer(),
+                      arrow,
+                      SizedBox(width: 11)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Card(
+            margin: const EdgeInsets.fromLTRB(20, 15, 20, 5),
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
             child: Column(
               children: <Widget>[
                 SizedBox(

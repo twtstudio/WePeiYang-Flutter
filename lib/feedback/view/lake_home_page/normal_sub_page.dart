@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -15,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
 class NSubPage extends StatefulWidget {
   final int index;
@@ -113,6 +116,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             .refreshFailed();
       });
       context.read<FestivalProvider>().initFestivalList();
+      context.read<NoticeProvider>().initNotices();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
       controller?.stop();
@@ -160,6 +164,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<FestivalProvider>().initFestivalList();
+    context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
     context.read<LakeModel>().checkTokenAndGetPostList(
@@ -209,8 +214,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             controller: context.read<LakeModel>().lakeAreas[index].controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: context.select((LakeModel model) =>
-                model.lakeAreas[index].dataList.values.toList().length + 2),
+            itemCount: context.select((LakeModel model) => index == 0
+                ? model.lakeAreas[index].dataList.values.toList().length + 3
+                : model.lakeAreas[index].dataList.values.toList().length + 2),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
                 if (ind == 0)
@@ -219,23 +225,78 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     margin: EdgeInsets.only(top: 12, left: 14, right: 14),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
                         color: Colors.white),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              '   ${_getGreetText}, 微友',
-                              style:
-                                  TextUtil.base.grey6C.w600.NotoSansSC.sp(16),
-                            ),
-                          ),
-                          Text(
-                            '排序  ',
-                            style: TextUtil.base.grey6C.w600.NotoSansSC.sp(12),
-                          ),
+                          SizedBox(width: 12),
+                          context.read<NoticeProvider>().noticeList.length > 0
+                              ? InkWell(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        "assets/svg_pics/lake_butt_icons/notice.svg",
+                                        width: 20,
+                                      ),
+                                      SizedBox(width: 6),
+                                      SizedBox(
+                                          height: 20,
+                                          width: WePeiYangApp.screenWidth - 170,
+                                          child: context
+                                                      .read<NoticeProvider>()
+                                                      .noticeList
+                                                      .length >
+                                                  1
+                                              ? TextScroller(
+                                                  stepOffset: 500,
+                                                  duration:
+                                                      Duration(seconds: 20),
+                                                  paddingLeft: 0.0,
+                                                  children: List.generate(
+                                                    context
+                                                        .read<NoticeProvider>()
+                                                        .noticeList
+                                                        .length,
+                                                    (index) => Text(
+                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 16 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
+                                                        style: TextUtil
+                                                            .base
+                                                            .mainColor
+                                                            .w800
+                                                            .NotoSansSC
+                                                            .sp(15)),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 16 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                  style: TextUtil.base.mainColor
+                                                      .w800.NotoSansSC
+                                                      .sp(15))),
+                                    ],
+                                  ),
+                                  onTap: () => Navigator.pushNamed(
+                                      context, HomeRouter.notice),
+                                )
+                              : InkWell(
+                                  child: SizedBox(
+                                    width: WePeiYangApp.screenWidth * 0.56,
+                                    child: Text(
+                                      '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
+                                      style: TextUtil
+                                          .base.grey6C.w600.NotoSansSC
+                                          .sp(16),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  onTap: () => Navigator.pushNamed(
+                                      context, HomeRouter.notice),
+                                ),
+                          Spacer(),
                           Container(
                             height: double.infinity,
                             width: 90,
@@ -256,7 +317,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                           context.read<LakeModel>().sortSeq != 0
                                               ? 2
                                               : 40),
-                                  width: 48,
+                                  width: 46,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(100)),

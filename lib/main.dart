@@ -80,9 +80,9 @@ void main() async {
       print(message);
     };
 
-    // ？
-    (DateTime.now().toLocal().isAfter(DateTime(2022, 3, 27)) &&
-                DateTime.now().toLocal().isBefore(DateTime(2022, 3, 28))) ||
+    // 设置哪天微北洋全部变灰
+    (DateTime.now().toLocal().month == 5 &&
+        DateTime.now().toLocal().day == 12) ||
             (DateTime.now().toLocal().month == 12 &&
                 DateTime.now().toLocal().day == 13)
         ? runApp(ColorFiltered(

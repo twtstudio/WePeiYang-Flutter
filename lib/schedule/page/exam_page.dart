@@ -129,7 +129,10 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
   var unfinishedColor = CommonPreferences.isAprilFool.value
       ? ColorUtil.aprilFoolColor[code % ColorUtil.aprilFoolColor.length]
       : wpy
-          ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
+          ? CommonPreferences.isSkinUsed.value
+              ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
+              : FavorColors.defaultHomeSchedule[
+                  code % FavorColors.defaultHomeSchedule.length]
           : FavorColors.scheduleColor[code % FavorColors.scheduleColor.length];
   var name = exam.name;
   if (name.length >= 10) name = name.substring(0, 10) + '...';
@@ -148,7 +151,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
   var seat = exam.seat;
   if (seat != '地点未安排') seat = '座位' + seat;
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
+    padding: const EdgeInsets.fromLTRB(0, 4, 14, 4),
     child: ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(

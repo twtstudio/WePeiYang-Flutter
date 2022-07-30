@@ -76,6 +76,8 @@ android {
 
     signingConfigs {
         config {
+            v1SigningEnabled true
+            v2SigningEnabled true
             try {
                 storeFile file(pro.getProperty('jksPath'))
                 storePassword pro.getProperty('storePassword')

@@ -2,6 +2,8 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,10 @@ class ActivityCard extends StatefulWidget {
 class _ActivityCardState extends State<ActivityCard> {
   _ActivityCardState();
 
+  SwiperController sp = SwiperController();
+  bool offstage = true;
+  bool dark = false;
+
   @override
   void initState() {
     super.initState();
@@ -27,12 +33,52 @@ class _ActivityCardState extends State<ActivityCard> {
     Widget card(BuildContext context, int index) {
       return InkWell(
         onTap: () async {
-          context.read<FestivalProvider>().festivalList[index].url.startsWith('https://photograph.twt.edu.cn/') ?
-            await launch('https://photograph.twt.edu.cn/') :
-          Navigator.pushNamed(context, FeedbackRouter.haitang,
-              arguments: FestivalArgs(
-                  context.read<FestivalProvider>().festivalList[index].url,
-                  context.read<FestivalProvider>().festivalList[index].title));
+          if (context.read<FestivalProvider>().festivalList[index].url.length ==
+              0) {
+            sp.stopAutoplay();
+            setState(() {
+              dark = true;
+              offstage = false;
+            });
+            Future.delayed(Duration(milliseconds: 1000)).then((value) {
+              setState(() {
+                dark = false;
+              });
+              Future.delayed(Duration(milliseconds: 400)).then((value) {
+                setState(() {
+                  offstage = true;
+                });
+                sp.startAutoplay();
+              });
+            });
+          } else
+            context
+                    .read<FestivalProvider>()
+                    .festivalList[index]
+                    .url
+                    .startsWith('https://photograph.twt.edu.cn/')
+                ? await launch('https://photograph.twt.edu.cn/')
+                : context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .url
+                        .startsWith('https://graduation.twt.edu.cn/')
+                    ? await launch(context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .url
+                        .replaceAll(
+                            '<token>', '${CommonPreferences.token.value}'))
+                    : Navigator.pushNamed(context, FeedbackRouter.haitang,
+                        arguments: FestivalArgs(
+                            context
+                                .read<FestivalProvider>()
+                                .festivalList[index]
+                                .url,
+                            context
+                                .read<FestivalProvider>()
+                                .festivalList[index]
+                                .title));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.0),
@@ -69,46 +115,72 @@ class _ActivityCardState extends State<ActivityCard> {
         return ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(16)),
             clipBehavior: Clip.hardEdge,
-            child: Swiper(
-              autoplay: context.read<FestivalProvider>().festivalList.length != 1,
-              autoplayDelay: 5000,
-              itemCount:
-                  context.read<FestivalProvider>().festivalList.length == 0
-                      ? 1
-                      : context.read<FestivalProvider>().festivalList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return context.read<FestivalProvider>().festivalList.length == 0
-                    ? SizedBox()
-                    : card(context, index);
-              },
-              fade: 0.3,
-              viewportFraction: 1,
-              scale: 1,
-              pagination: SwiperCustomPagination(
-                builder: (context, config) {
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(config.itemCount, (index) {
-                            return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
-                                child: Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                      color: index == config.activeIndex
-                                          ? Colors.white
-                                          : Color.fromRGBO(0, 0, 25, 0.22),
-                                      borderRadius: BorderRadius.circular(100)),
-                                ));
-                          })),
-                    ),
-                  );
-                },
-              ),
+            child: Stack(
+              children: [
+                Swiper(
+                  controller: sp,
+                  autoplay:
+                      context.read<FestivalProvider>().festivalList.length != 1,
+                  autoplayDelay: 5000,
+                  itemCount:
+                      context.read<FestivalProvider>().festivalList.length == 0
+                          ? 1
+                          : context
+                              .read<FestivalProvider>()
+                              .festivalList
+                              .length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return context
+                                .read<FestivalProvider>()
+                                .festivalList
+                                .length ==
+                            0
+                        ? SizedBox()
+                        : card(context, index);
+                  },
+                  fade: 0.3,
+                  viewportFraction: 1,
+                  scale: 1,
+                  pagination: SwiperCustomPagination(
+                    builder: (context, config) {
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children:
+                                  List.generate(config.itemCount, (index) {
+                                return Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                          color: index == config.activeIndex
+                                              ? Colors.white
+                                              : Color.fromRGBO(0, 0, 25, 0.22),
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                    ));
+                              })),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Offstage(
+                  offstage: offstage,
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 400),
+                    color: dark ? Colors.black38 : Colors.transparent,
+                    child: Center(
+                        child: Text('是未知领域！\n没有可跳转的网页喵(っ °Д °;)っ',
+                            style: TextUtil.base.white.w700.sp(17))),
+                  ),
+                )
+              ],
             ));
       }),
     );

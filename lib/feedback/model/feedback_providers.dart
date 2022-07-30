@@ -11,4 +11,5 @@ List<SingleChildWidget> feedbackProviders = [
   ChangeNotifierProvider.value(value: NewFloorProvider()),
   ChangeNotifierProvider.value(value: LakeModel()),
   ChangeNotifierProvider.value(value: FestivalProvider()),
+  ChangeNotifierProvider.value(value: NoticeProvider()),
 ];

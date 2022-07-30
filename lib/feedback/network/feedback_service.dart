@@ -12,11 +12,12 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.feedbackToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -34,7 +35,8 @@ class FeedbackDio extends DioAbstract {
         //                   .toString()),
         //       true);
         default: // 其他错误
-          return handler.reject(WpyDioError(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioError(error: response.data['data']['error']), true);
       }
     })
   ];
@@ -47,7 +49,29 @@ class FeedbackPicPostDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.feedbackToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      var code = response?.data['code'] ?? 0;
+      switch (code) {
+        case 200: // 成功
+          return handler.next(response);
+        default: // 其他错误
+          return handler.reject(WpyDioError(error: response.data['msg']), true);
+      }
+    })
+  ];
+}
+
+class FeedbackAdminPostDio extends DioAbstract {
+  @override
+  String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
+
+  @override
+  List<InterceptorsWrapper> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -63,6 +87,7 @@ class FeedbackPicPostDio extends DioAbstract {
 
 final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
+final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
   static getToken(
@@ -71,10 +96,11 @@ class FeedbackService with AsyncTimer {
       bool forceRefresh = false}) async {
     try {
       var response;
-      if (CommonPreferences.feedbackToken.value != null &&
-          CommonPreferences.feedbackToken.value != "" && !forceRefresh) {
+      if (CommonPreferences.lakeToken.value != null &&
+          CommonPreferences.lakeToken.value != "" &&
+          !forceRefresh) {
         response = await feedbackDio
-            .get('auth/${CommonPreferences.feedbackToken.value}');
+            .get('auth/${CommonPreferences.lakeToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
           'token': CommonPreferences.token.value,
@@ -82,9 +108,19 @@ class FeedbackService with AsyncTimer {
       }
       if (response.data['data'] != null &&
           response.data['data']['token'] != null) {
-        CommonPreferences.feedbackToken.value = response.data['data']['token'];
-        CommonPreferences.feedbackUid.value =
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+        CommonPreferences.lakeUid.value =
             response.data['data']['uid'].toString();
+        if (response.data['data']['user'] != null) {
+          CommonPreferences.isSuper.value =
+              response.data['data']['user']['is_super'];
+          CommonPreferences.isSchAdmin.value =
+              response.data['data']['user']['is_sch_admin'];
+          CommonPreferences.isStuAdmin.value =
+              response.data['data']['user']['is_stu_admin'];
+          CommonPreferences.isUser.value =
+              response.data['data']['user']['is_user'];
+        }
         if (onResult != null) onResult(response.data['data']['token']);
       } else {
         ToastProvider.error('校务专区登录失败, 请刷新');
@@ -195,8 +231,25 @@ class FeedbackService with AsyncTimer {
       for (Map<String, dynamic> json in response.data['data']['list']) {
         list.add(Festival.fromJson(json));
       }
-      print(list);
       onSuccess(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getNotices({
+    @required OnResult<List<Notice>> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'message/notices/department',
+      );
+      List<Notice> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Notice.fromJson(json));
+      }
+      onResult(list);
     } on DioError catch (e) {
       onFailure(e);
     }
@@ -262,7 +315,8 @@ class FeedbackService with AsyncTimer {
       {keyword,
       departmentId,
       tagId,
-      mode,
+      searchMode,
+      etag,
       @required type,
       @required page,
       @required void Function(List<Post> list, int totalPage) onSuccess,
@@ -272,7 +326,8 @@ class FeedbackService with AsyncTimer {
         'posts',
         queryParameters: {
           'type': '$type',
-          'search_mode': mode ?? 0,
+          'search_mode': searchMode ?? 0,
+          'etag': etag ?? '',
           'content': keyword ?? '',
           'tag_id': tagId ?? '',
           'department_id': departmentId ?? '',
@@ -418,6 +473,25 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getFloorById({
+    @required int id,
+    @required OnResult<Floor> onResult,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'floor',
+        queryParameters: {
+          'floor_id': '$id',
+        },
+      );
+      var floor = Floor.fromJson(response.data['data']['floor']);
+      onResult(floor);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   ///comments改成了floors，需要点赞字段
   static getComments({
     @required id,
@@ -508,6 +582,48 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static Future<void> changeNickname({
+    @required String nickName,
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    AsyncTimer.runRepeatChecked('changeNickname', () async {
+      try {
+        await feedbackDio.post('user/name',
+            formData: FormData.fromMap({
+              'name': '$nickName',
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static getUserInfo({
+    @required OnSuccess onSuccess,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('user');
+      CommonPreferences.lakeUid.value =
+          response.data['data']['user']['id'].toString();
+      CommonPreferences.lakeNickname.value =
+          response.data['data']['user']['nickname'];
+      CommonPreferences.isSuper.value =
+          response.data['data']['user']['is_super'];
+      CommonPreferences.isSchAdmin.value =
+          response.data['data']['user']['is_sch_admin'];
+      CommonPreferences.isStuAdmin.value =
+          response.data['data']['user']['is_stu_admin'];
+      CommonPreferences.isUser.value =
+          response.data['data']['user']['is_user'];
+      onSuccess?.call();
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static Future<void> commentHitLike(
       {@required id,
       @required bool isLike,
@@ -557,7 +673,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
-              'token': CommonPreferences.feedbackToken.value,
+              'token': CommonPreferences.lakeToken.value,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
@@ -765,4 +881,103 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  static adminDeletePost(
+      {@required id,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminDeletePost', () async {
+      try {
+        await feedbackAdminPostDio.get(
+          'post/delete',
+          queryParameters: {
+            'id': id,
+          },
+        );
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static adminDeleteReply(
+      {@required floorId,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminDeleteReply', () async {
+      try {
+        await feedbackAdminPostDio.get(
+          'floor/delete',
+          queryParameters: {
+            'floor_id': floorId,
+          },
+        );
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static adminTopPost(
+      {@required id,
+      @required hotIndex,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminTopPost', () async {
+      try {
+        await feedbackAdminPostDio.post('post/value',
+            formData: FormData.fromMap({
+              'post_id': id,
+              'value': hotIndex,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static superAdminOpenBox(
+      {@required uid,
+      @required OnResult<String> onResult,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('superAdminDeleteReply', () async {
+      try {
+        var response = await feedbackAdminPostDio.get(
+          'user/detail',
+          queryParameters: {
+            'uid': uid,
+          },
+        );
+        var obd = response.data['data']['detail'];
+        String openBoxDetail = 'hh';
+        if (obd != null)
+          openBoxDetail =
+              '学号：${obd["userNumber"] ?? '无学号'}\n昵称：${obd["nickname"] ?? '无昵称'}\n电话：${obd["telephone"] ?? '无电话'}\n邮箱：${obd["email"] ?? '无邮箱'}\ntoken：${obd["token"] ?? '无token'}\n真名：${obd["realname"] ?? '无真名'}\n性别：${obd["gender"] ?? '无性别'}\n学院/部：${obd["department"] ?? '无学院/部'}\n专业：${obd["major"] ?? '无专业'}\n种类：${obd["stuType"] ?? '无种类'}\n校区：${obd["campus"] ?? '无校区'}\n身份证号：${obd["idNumber"] ?? '无身份证号'}\n';
+        onResult(openBoxDetail);
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static adminResetName(
+      {@required id,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminResetName', () async {
+      try {
+        await feedbackAdminPostDio.post('user/nickname/reset',
+            formData: FormData.fromMap({
+              'uid': id,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
 }

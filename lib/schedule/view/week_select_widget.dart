@@ -1,12 +1,10 @@
 // @dart = 2.12
-import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -57,7 +55,7 @@ class WeekSelectWidget extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           radius: 5000,
-                          splashColor: Color.fromRGBO(255, 255, 255, 0.85),
+                          splashColor: Color.fromRGBO(246, 246, 246, 0.5),
                           highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
                         ),
@@ -95,7 +93,7 @@ class WeekSelectWidget extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: i + 1 == provider.selectedWeek
-                ? Color.fromRGBO(245, 245, 245, 1)
+                ? Color.fromRGBO(255, 255, 255, 0.2)
                 : null,
             borderRadius: BorderRadius.circular(5),
           ),
@@ -109,10 +107,10 @@ class WeekSelectWidget extends StatelessWidget {
         Text('WEEK ${i + 1}',
             style: FontManager.Aspira.copyWith(
                 color: (provider.selectedWeek == i + 1)
-                    ? MyColors.deepBlue
-                    : Color.fromRGBO(200, 200, 200, 1),
-                fontSize: 11,
-                fontWeight: FontWeight.bold))
+                    ? Color.fromRGBO(255, 255, 255, 1)
+                    : Color.fromRGBO(255, 255, 255, 0.5),
+                fontSize: 10,
+                fontWeight: FontWeight.w900))
       ],
     );
   }
@@ -125,17 +123,19 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 深色cube，代表该点有课
   final Paint _cubePaint = Paint()
-    ..color = CommonPreferences.isAprilFoolClass.value
-        ? ColorUtil
-            .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]
-        : CommonPreferences.isSkinUsed.value
-            ? Color(CommonPreferences.skinColorA.value)
-            : FavorColors.scheduleColor.first
+    // 简单的修改了色块颜色，之后会在上面加上不同透明度的蒙版，下面注释掉的代码先不要删除
+    // ..color = CommonPreferences.isAprilFoolClass.value
+    //     ? ColorUtil
+    //         .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]
+    //     : CommonPreferences.isSkinUsed.value
+    //         ? Color(CommonPreferences.skinColorA.value)
+    //         : FavorColors.scheduleColor.first
+    ..color = Color.fromRGBO(255, 188, 107, 1)
     ..style = PaintingStyle.fill;
 
   /// 浅色cube，代表该点没课
   final Paint _spacePaint = Paint()
-    ..color = Color.fromRGBO(230, 230, 230, 1)
+    ..color = Color.fromRGBO(255, 255, 255, 1)
     ..style = PaintingStyle.fill;
 
   @override

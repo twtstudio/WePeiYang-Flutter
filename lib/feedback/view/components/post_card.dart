@@ -258,8 +258,13 @@ class _PostCardState extends State<PostCard> {
                 color: ColorUtil.backgroundColor,
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: ColorUtil.mainColor)),
-            padding: const EdgeInsets.fromLTRB(2, 2, 2, 1),
-            child: Text(const ['', '卫津路', '北洋园'][post.campus],
+            padding: widget.type == PostCardType.simple
+                ? const EdgeInsets.fromLTRB(2, 2, 2, 1)
+                : const EdgeInsets.fromLTRB(4, 2, 4, 1),
+            child: Text(
+                widget.type == PostCardType.simple
+                    ? const ['', '卫津路', '北洋园'][post.campus]
+                    : const ['', '卫', '北'][post.campus],
                 style: FontManager.YaHeiRegular.copyWith(
                     fontSize: 10, color: ColorUtil.mainColor)),
           )
@@ -316,15 +321,32 @@ class _PostCardState extends State<PostCard> {
     rowList.add(Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(children: [
+          if (widget.type == PostCardType.detail) SizedBox(height: 8.w),
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            if (widget.type == PostCardType.detail)
+              ProfileImageWithDetailedPopup(post.type, post.nickname, post.uid),
+            if (widget.type == PostCardType.detail)
+              SizedBox(
+                width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
+                child: Text(
+                  post.nickname == '' ? '没名字的微友' : post.nickname,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).black2A,
+                ),
+              ),
+            if (widget.type == PostCardType.detail) Spacer(),
             if (tag != '')
               TagShowWidget(
                   tag,
-                  WePeiYangApp.screenWidth -
-                      (post.campus > 0 ? 40 : 0) -
-                      (widget.type == PostCardType.simple ? 140 : 114) -
-                      (widget.post.imageUrls.isEmpty ? 0 : 84),
+                  widget.type == PostCardType.simple
+                      ? WePeiYangApp.screenWidth -
+                          (post.campus > 0 ? 50.w : 0) -
+                          (widget.post.imageUrls.isEmpty ? 140.w : 240.w)
+                      : (WePeiYangApp.screenWidth - 24.w) / 2 -
+                          (post.campus > 0 ? 100.w : 60.w),
                   post.type,
                   id,
                   0,
@@ -332,42 +354,51 @@ class _PostCardState extends State<PostCard> {
             if (tag != '') SizedBox(width: 8),
             TagShowWidget(
                 getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
-            SizedBox(width: 8),
+            if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
             campus
           ]),
-          SizedBox(height: 6),
+          SizedBox(height: 8.w),
           if (widget.type == PostCardType.detail)
-            InkWell(
-              onLongPress: () {
-                Clipboard.setData(ClipboardData(
-                    text: '【' + post.title + '】 ' + post.content));
-                ToastProvider.success('复制提问成功');
-              },
-              onTap: () async {
-                if (widget.type == PostCardType.simple) {
-                  await FeedbackService.visitPost(
-                    id: post.id,
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
+            Row(
+              children: [
+                if (post.eTag != '' && post.eTag != null)
+                  Center(
+                      child: ETagWidget(entry: widget.post.eTag, full: true)),
+                Expanded(
+                  child: InkWell(
+                    onLongPress: () {
+                      Clipboard.setData(ClipboardData(
+                          text: '【' + post.title + '】 ' + post.content));
+                      ToastProvider.success('复制提问成功');
                     },
-                  );
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.detail,
-                    arguments: post,
-                  ).then((p) {
-                    setState(() {
-                      post = p;
-                    });
-                  });
-                }
-              },
-              child: title,
+                    onTap: () async {
+                      if (widget.type == PostCardType.simple) {
+                        await FeedbackService.visitPost(
+                          id: post.id,
+                          onFailure: (e) {
+                            ToastProvider.error(e.error.toString());
+                          },
+                        );
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.detail,
+                          arguments: post,
+                        ).then((p) {
+                          setState(() {
+                            post = p;
+                          });
+                        });
+                      }
+                    },
+                    child: title,
+                  ),
+                ),
+              ],
             ),
-          if (widget.type == PostCardType.detail) SizedBox(height: 8),
+          if (widget.type == PostCardType.detail) SizedBox(height: 6.w),
           content,
+          if (widget.type == PostCardType.simple) SizedBox(height: 2.w),
         ],
-        crossAxisAlignment: CrossAxisAlignment.start,
       ),
     ));
 
@@ -429,27 +460,25 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 if (widget.type == PostCardType.simple)
-                  SizedBox(width: WePeiYangApp.screenWidth - 164, child: title),
+                  SizedBox(
+                      width: WePeiYangApp.screenWidth - 164,
+                      child: Row(
+                        children: [
+                          if (post.eTag != '' && post.eTag != null)
+                            ETagWidget(entry: widget.post.eTag, full: false),
+                          Expanded(child: title),
+                        ],
+                      )),
                 Spacer(),
                 SizedBox(width: 10),
                 if (post.type != 1 && widget.type == PostCardType.simple)
                   MPWidget(post.id.toString().padLeft(6, '0')),
-                if (post.solved == 0 &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  QuestionedWidget(),
-                if (post.solved == 1 &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  ResponseWidget(),
-                if (post.solved == 2 &&
-                    post.type == 1 &&
-                    widget.type == PostCardType.simple)
-                  SolvedWidget(),
+                if (post.type == 1 && widget.type == PostCardType.simple)
+                  SolveOrNotWidget(post.solved),
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 6.h),
             middleWidget,
           ],
         );
@@ -496,14 +525,44 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           );
 
-    var commentWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
+    var visitWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
+            color: ColorUtil.mainColor, width: 14.6.w),
+        SizedBox(
+          width: 2.w,
+        ),
+        Text(
+          post.visitCount == null
+              ? '0  '
+              : post.visitCount < 1000
+                  ? post.visitCount.toString() +
+                      (post.visitCount < 100 ? '   ' : '  ')
+                  : post.visitCount < 10000
+                      ? (post.visitCount.toDouble() / 1000)
+                              .toStringAsFixed(1)
+                              .toString() +
+                          'k  '
+                      : (post.visitCount.toDouble() / 10000)
+                              .toStringAsFixed(1)
+                              .toString() +
+                          'w  ',
+          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+        ),
+      ],
+    );
+
+    var commentAndWatchedWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        visitWidget,
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
             width: 11.67.w),
         SizedBox(
-          width: 5.17.w,
+          width: 3.w,
         ),
         Text(
           post.commentCount.toString() +
@@ -607,7 +666,7 @@ class _PostCardState extends State<PostCard> {
           );
 
     var commentAndLike = [
-      if (widget.type == PostCardType.simple) commentWidget,
+      if (widget.type == PostCardType.simple) commentAndWatchedWidget,
       likeWidget,
       if (widget.type == PostCardType.outSide) favoriteWidget,
       dislikeWidget,
@@ -708,6 +767,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
+                if (widget.type == PostCardType.detail) visitWidget
               ],
             ),
             decoration: decoration,
@@ -715,7 +775,7 @@ class _PostCardState extends State<PostCard> {
         ));
     return widget.type != PostCardType.outSide
         ? Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.w, 16.w, 2.w),
+            padding: EdgeInsets.fromLTRB(12.w, 12.w, 12.w, 2.w),
             child: body,
           )
         : Row(

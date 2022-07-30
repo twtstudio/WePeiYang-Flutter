@@ -1,7 +1,9 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
+import 'package:flutter/services.dart'
+    show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -35,42 +37,69 @@ class WPYPageState extends State<WPYPage> {
 
   ScrollController customScrollViewController = ScrollController();
   List<CardBean> cards;
+  var md = "";
+  dynamic result;
+
+  Future<String> _loadFromAssets() async {
+    String filePath = 'privacy/privacy_content.md';
+    String fileContents = await rootBundle.loadString(filePath);
+    return fileContents;
+  }
+
+  void setAsserts() async {
+    result = await _loadFromAssets();
+    setState(() {
+      md = result.toString();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    cards = []
-      ..add(DateTime.now().month == 4 && DateTime.now().day == 1
-          ? CardBean(
-              Image.asset(
-                'assets/images/lake_butt_icons/joker_stamp.png',
-                width: 30,
-              ),
-              '愚人节模式？')
-          : null)
-      ..add(CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
-          '楼宇牌', ReportRouter.pass))
-      ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
-          S.current.report, ReportRouter.main))
-      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
-          'GPA', GPARouter.gpa))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
-          'Wiki',
-          'https://wiki.tjubot.cn/'))
-      ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/exam.png'),
-              color: MyColors.darkGrey, size: 25),
-          '考表',
-          ScheduleRouter.exam))
-      ..add(CardBean(
-          ImageIcon(AssetImage(Images.building),
-              color: Color(0xffcecfd4), size: 20),
-          S.current.lounge,
-          LoungeRouter.main))
-      ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
-          "重开模拟器", HomeRouter.restartGame));
+    if (CommonPreferences.isFirstUse.value == true) setAsserts();
+    cards = []..add(DateTime
+        .now()
+        .month == 4 && DateTime
+        .now()
+        .day == 1
+        ? CardBean(
+        Image.asset(
+          'assets/images/lake_butt_icons/joker_stamp.png',
+          width: 30,
+        ),
+        '愚人节模式？')
+        : null)..add(
+        CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
+            '楼宇牌', ReportRouter.pass))..add(
+        CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
+            S.current.report, ReportRouter.main))..add(
+        CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
+            'GPA', GPARouter.gpa))..add(CardBean(
+        ImageIcon(AssetImage('assets/images/wiki.png'),
+            color: MyColors.darkGrey, size: 25),
+        'Wiki',
+        'https://wiki.tjubot.cn/'))..add(CardBean(
+        ImageIcon(AssetImage('assets/images/exam.png'),
+            color: MyColors.darkGrey, size: 25),
+        '考表',
+        ScheduleRouter.exam))..add(CardBean(
+        ImageIcon(AssetImage(Images.building),
+            color: Color(0xffcecfd4), size: 20),
+        S.current.lounge,
+        LoungeRouter.main))..add(
+        CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
+            "重开模拟器", HomeRouter.restartGame));
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (CommonPreferences.isFirstUse.value == true) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AgreementAndPrivacyDialog(md);
+            });
+      }
+    });
   }
 
   double _getWidgetHeight(context) {
@@ -97,13 +126,15 @@ class WPYPageState extends State<WPYPage> {
       fit: StackFit.expand,
       children: [
         if (CommonPreferences.isSkinUsed.value)
-          Image.network(CommonPreferences.skinMain.value, fit: BoxFit.fitWidth),
+          Image.network(
+              CommonPreferences.skinMain.value, fit: BoxFit.fitWidth),
         SafeArea(
           child: ScrollConfiguration(
             behavior: WPYScrollBehavior(),
             child: CustomScrollView(
               controller: customScrollViewController,
               slivers: <Widget>[
+
                 /// 自定义标题栏
                 SliverPadding(
                   padding: const EdgeInsets.only(top: 12),
@@ -120,28 +151,32 @@ class WPYPageState extends State<WPYPage> {
                 /// 当天课程
                 SliverToBoxAdapter(
                     child: GestureDetector(
-                  onLongPress: () => Navigator.pushNamed(
-                      context, AuthRouter.setting,
-                      arguments: SettingPageArgs(true)),
-                  child: Column(
-                    key: majorColumnHeightKey,
-                    children: [
-                      toolCards[0],
-                      toolCards[1],
-                      toolCards[2],
-                      toolCards[3],
-                    ], //以后可以写排序
-                  ),
-                )),
+                      onLongPress: () =>
+                          Navigator.pushNamed(
+                              context, AuthRouter.setting,
+                              arguments: SettingPageArgs(true)),
+                      child: Column(
+                        key: majorColumnHeightKey,
+                        children: [
+                          toolCards[0],
+                          toolCards[1],
+                          toolCards[2],
+                          toolCards[3],
+                        ], //以后可以写排序
+                      ),
+                    )),
 
                 !CommonPreferences.showPosterGirl.value
                     ? SliverToBoxAdapter()
                     : SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          width: 1,
-                        ),
-                      )
+                  child: SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height,
+                    width: 1,
+                  ),
+                )
               ],
             ),
           ),
@@ -167,8 +202,8 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   const _WPYHeader({this.onChanged});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset,
+      bool overlapsContent) {
     DateTime now = DateTime.now();
     double distance = maxExtent - minExtent;
     if (shrinkOffset > distance) shrinkOffset = distance;
@@ -188,26 +223,26 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               SizedBox(width: 5),
               Expanded(
                   child: Text(
-                CommonPreferences.nickname.value,
-                style: hintStyle,
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
-              )),
+                    CommonPreferences.nickname.value,
+                    style: hintStyle,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  )),
               GestureDetector(
                 onTap: () =>
                     Navigator.pushNamed(context, AuthRouter.userInfo).then((_) {
-                  onChanged(null);
-                }),
+                      onChanged(null);
+                    }),
                 child: Container(
                   margin: const EdgeInsets.only(left: 7, right: 10),
                   decoration: CommonPreferences.isAprilFoolHead.value
                       ? BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/lake_butt_icons/jokers.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        )
+                    image: DecorationImage(
+                      image: AssetImage(
+                          'assets/images/lake_butt_icons/jokers.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )
                       : BoxDecoration(),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -242,7 +277,9 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 
   String get _getGreetText {
-    int hour = DateTime.now().hour;
+    int hour = DateTime
+        .now()
+        .hour;
     if (hour < 5)
       return '晚上好!';
     else if (hour >= 5 && hour < 12)
@@ -365,11 +402,11 @@ class SliverCardsWidget extends StatelessWidget {
                   onTap: () {
                     controller.offset <= 130 * (itemCount - 1)
                         ? controller.animateTo(controller.offset + 130,
-                            duration: Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn)
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.fastOutSlowIn)
                         : controller.animateTo(140 * (itemCount - 1).toDouble(),
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.slowMiddle);
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.slowMiddle);
                   },
                   child: Container(
                     height: 90,
@@ -424,8 +461,8 @@ class CardBean {
 
 class WPYScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(BuildContext context, Widget child,
+      AxisDirection axisDirection) {
     return GlowingOverscrollIndicator(
       child: child,
       showLeading: false,

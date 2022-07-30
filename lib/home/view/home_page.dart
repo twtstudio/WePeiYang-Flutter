@@ -50,23 +50,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           });
         }
       });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // WbyFontLoader.initFonts();
-      context.read<PushManager>().initGeTuiSdk();
-      context.read<UpdateManager>().checkUpdate();
-      var hasReport = await reportDio.getTodayHasReported();
-      if (hasReport) {
-        CommonPreferences.reportTime.value = DateTime.now().toString();
-      } else {
-        CommonPreferences.reportTime.value = "";
-      }
-      // 检查当前是否有未处理的事件
-      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
-      // 友盟统计账号信息
-      UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
-      // 刷新自习室数据
-      initLoungeFavourDataAtMainPage(context);
-    });
 
     ///检测愚人节
     if (DateTime.now().month == 4 &&
@@ -97,6 +80,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences.isAprilFoolGen.value = true;
       CommonPreferences.isAprilFoolHead.value = false;
     }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // WbyFontLoader.initFonts();
+      context.read<PushManager>().initGeTuiSdk();
+      context.read<UpdateManager>().checkUpdate();
+      var hasReport = await reportDio.getTodayHasReported();
+      if (hasReport) {
+        CommonPreferences.reportTime.value = DateTime.now().toString();
+      } else {
+        CommonPreferences.reportTime.value = "";
+      }
+      // 检查当前是否有未处理的事件
+      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
+      // 友盟统计账号信息
+      UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
+      // 刷新自习室数据
+      initLoungeFavourDataAtMainPage(context);
+    });
   }
 
   @override
@@ -165,7 +165,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         ),
-        child: Row(children: <Widget>[homePage, feedbackPage, selfPage]));
+        /// 适配iOS底部安全区
+        child: SafeArea(
+          child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
+        ),
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
@@ -175,7 +179,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               .copyWith(systemNavigationBarColor: Colors.white),
       child: Scaffold(
         extendBody: true,
-        bottomNavigationBar: bottomNavigationBar,
+        bottomNavigationBar:  bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {
             if (_tabController.index == 0) {

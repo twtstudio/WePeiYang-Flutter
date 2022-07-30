@@ -16,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
+import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 class ReplyDetailPage extends StatefulWidget {
   final ReplyDetailPageArgs args;
@@ -30,8 +32,9 @@ class ReplyDetailPage extends StatefulWidget {
 class ReplyDetailPageArgs {
   final Floor floor;
   final int uid;
+  final bool isMessage;
 
-  ReplyDetailPageArgs(this.floor, this.uid);
+  ReplyDetailPageArgs(this.floor, this.uid, {this.isMessage = false});
 }
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
@@ -161,6 +164,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             commentFloor: index + 1,
             isSubFloor: false,
             isFullView: true,
+            // 这里不好传我就先置0了
+            type: 0,
           );
         }
         index--;
@@ -176,6 +181,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: true,
+              // 这里不好传我就先置0了
+              type: 0,
             ),
             Container(
                 width: WePeiYangApp.screenWidth - 60,
@@ -253,6 +260,40 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                   onPressed: () => imageSelectionKey
                                       .currentState
                                       .loadAssets()),
+                              if (context
+                                      .read<NewFloorProvider>()
+                                      .images
+                                      .length ==
+                                  0)
+                              IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/lake_butt_icons/paste.png',
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  onPressed: () => launchKey.currentState
+                                      .getClipboardData()),
+                              IconButton(
+                                  icon: Image.asset(
+                                    'assets/images/lake_butt_icons/x.png',
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  onPressed: () {
+                                    if (launchKey.currentState.textEditingController.text.isNotEmpty) {
+                                      launchKey
+                                          .currentState.textEditingController
+                                          .clear();
+                                      launchKey.currentState.setState(() {
+                                        launchKey.currentState
+                                            .commentLengthIndicator = '清空成功';
+                                      });
+                                    } else {
+                                      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+                                    }
+                                  }),
                               Spacer(),
                               checkButton,
                               SizedBox(width: 16),
@@ -296,6 +337,30 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ],
     );
 
+    var postButton = GestureDetector(
+      child: Center(
+          child: Text(
+        '查看原帖',
+        style: TextUtil.base.black2A.bold,
+      )),
+      onTap: () async {
+        await FeedbackService.getPostById(
+            id: widget.args.floor.postId,
+            onResult: (post) {
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              );
+              MessageService.setPostFloorMessageRead(post.id);
+              context.read<MessageProvider>().refreshFeedbackCount();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.message);
+            });
+      },
+    );
+
     var menuButton = IconButton(
       icon:
           SvgPicture.asset('assets/svg_pics/lake_butt_icons/more_vertical.svg'),
@@ -337,7 +402,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
       ),
-      actions: [menuButton],
+      actions: [if (widget.args.isMessage) postButton, menuButton],
       title: InkWell(
         onTap: () => _refreshController.requestRefresh(),
         child: SizedBox(

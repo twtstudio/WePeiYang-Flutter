@@ -53,25 +53,36 @@ class _CoursePageState extends State<CoursePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _CourseAppBar(),
-      backgroundColor: Colors.white,
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          _TitleWidget(),
-          WeekSelectWidget(),
-          Container(
-            decoration: CommonPreferences.isSkinUsed.value
-                ? BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(CommonPreferences.skinClass.value),
-                        fit: BoxFit.cover),
-                  )
-                : BoxDecoration(),
-            child: Column(
-              children: [CourseDetailWidget(), _HoursCounterWidget()],
-            ),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            colors: [
+              Color.fromRGBO(44, 126, 223, 0.5),
+              Color.fromRGBO(129, 187, 255, 1),
+            ],
           ),
-        ],
+        ),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            _TitleWidget(),
+            WeekSelectWidget(),
+            Container(
+              decoration: CommonPreferences.isSkinUsed.value
+                  ? BoxDecoration(
+                      image: DecorationImage(
+                          image:
+                              NetworkImage(CommonPreferences.skinClass.value),
+                          fit: BoxFit.cover),
+                    )
+                  : BoxDecoration(),
+              child: Column(
+                children: [CourseDetailWidget(), _HoursCounterWidget()],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -196,7 +207,16 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     ];
 
     return AppBar(
-      backgroundColor: Colors.white,
+      //appbar背景取消
+      titleSpacing: 0,
+      backgroundColor: Color.fromRGBO(255, 255, 255, 0),
+      title: Text(
+        "HELLO,Apricity",
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 18,
+        ),
+      ),
       brightness: Brightness.light,
       elevation: 0,
       leading: leading,
@@ -218,17 +238,19 @@ class _TitleWidget extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
       child: Row(
         children: [
-          Text('课程表',
+          Text('Schedule',
               style: FontManager.YaQiHei.copyWith(
-                  color: FavorColors.scheduleTitleColor, fontSize: 30)),
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900)),
           Padding(
-            padding: const EdgeInsets.only(left: 8, top: 12),
+            padding: const EdgeInsets.only(left: 8, top: 4),
             child: Builder(builder: (context) {
               var currentWeek =
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
                   style: FontManager.Texta.copyWith(
-                      color: Color.fromRGBO(114, 113, 113, 1), fontSize: 16));
+                      color: Color.fromRGBO(202, 202, 202, 1), fontSize: 12));
             }),
           ),
           Builder(builder: (context) {

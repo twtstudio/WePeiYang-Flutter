@@ -140,6 +140,8 @@ class FavorColors {
       return Color.fromRGBO(98, 103, 123, 1);
     else if (type == 'april')
       return Color.fromRGBO(98, 103, 123, 1);
+    else
+      return Color.fromRGBO(115, 124, 105, 1);
   }
 
   /// 这套配色暴露出来给主页使用
@@ -177,7 +179,6 @@ class FavorColors {
     Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
     Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
     Color.fromRGBO(236, 206, 217, 1.0).value.toString(),
-    Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
     Color.fromRGBO(221, 182, 190, 1.0).value.toString(),
   ];
 }

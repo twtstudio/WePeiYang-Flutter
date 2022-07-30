@@ -7,14 +7,18 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import 'change_nickname_dialog.dart';
+
 class ProfileHeader extends StatelessWidget {
   final Widget child;
+  final String date;
+  const ProfileHeader({this.child,this.date});
 
-  const ProfileHeader({this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +53,14 @@ class ProfileHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      decoration: CommonPreferences.isAprilFoolHead.value?BoxDecoration(
-                        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/jokers.png'),fit: BoxFit.contain),
-                      ):BoxDecoration(),
+                      decoration: CommonPreferences.isAprilFoolHead.value
+                          ? BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/lake_butt_icons/jokers.png'),
+                                  fit: BoxFit.contain),
+                            )
+                          : BoxDecoration(),
                       child: Padding(
                         padding: EdgeInsets.all((_width - 80) / 6),
                         child: UserAvatarImage(
@@ -64,11 +73,35 @@ class ProfileHeader extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(CommonPreferences.nickname.value,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.ProductSans.black2A.w700
-                                  .sp(22)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: WePeiYangApp.screenWidth / 3,
+                                  child: Text(
+                                      CommonPreferences.lakeNickname.value,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 4,
+                                      style: TextUtil
+                                          .base.ProductSans.black2A.w700
+                                          .sp(20))),
+                              InkWell(
+                                onTap: () => showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context) =>
+                                        ChangeNicknameDialog()),
+                                child: Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: SvgPicture.asset(
+                                    'assets/svg_pics/lake_butt_icons/edit.svg',
+                                    width: 18.w,
+                                    color: ColorUtil.mainColor,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(CommonPreferences.userNumber.value,
@@ -79,14 +112,14 @@ class ProfileHeader extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 7.0),
                             child: Text(
-                                "MPID: ${CommonPreferences.feedbackUid.value.toString().padLeft(6, '0')}",
+                                "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Text('已经潜水 好几天 了。',
+                            child: Text('已经潜水 ${date}。',
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),

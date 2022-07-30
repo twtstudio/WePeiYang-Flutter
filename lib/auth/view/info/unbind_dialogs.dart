@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -223,9 +224,9 @@ class LogoffDialog extends Dialog {
               child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
                   textAlign: TextAlign.center,
                   style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 11,
-                      fontWeight: FontWeight.normal,
+                      color: Color.fromRGBO(255, 0, 0, 1.0),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
                       decoration: TextDecoration.none)),
             ),
             Row(
@@ -235,7 +236,7 @@ class LogoffDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
+                    child: Text(S.current.cancel, style: TextUtil.base.w900.mainColor.sp(20)),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -243,7 +244,7 @@ class LogoffDialog extends Dialog {
                   onTap: _logoff,
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
+                    child: Text(S.current.ok, style: TextUtil.base.w400.dangerousRed.sp(15)),
                   ),
                 )
               ],

@@ -69,13 +69,15 @@ class _WeekDisplayWidget extends StatelessWidget {
             color: deep
                 ? CommonPreferences.isAprilFoolClass.value
                     ? ColorUtil.aprilFoolColor[Random().nextInt(4)]
-                    : titleColor
-                : Color.fromRGBO(236, 238, 237, 1),
+                    : Color.fromRGBO(255, 255, 255, 1)
+                : Color.fromRGBO(246, 246, 246, 0.2),
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: Text(date,
               style: FontManager.Aspira.copyWith(
-                  color: deep ? Colors.white : Color.fromRGBO(200, 200, 200, 1),
+                  color: deep
+                      ? Color.fromRGBO(44, 126, 223, 1)
+                      : Color.fromRGBO(202, 202, 202, 1),
                   fontSize: 10,
                   fontWeight: FontWeight.bold)),
         ),
@@ -154,27 +156,32 @@ class _CourseDisplayWidget extends StatelessWidget {
 
           return Stack(
             children: [
+              Container(
+                width: 360,
+                height: 30,
+                margin: EdgeInsetsDirectional.only(
+                    start: 10, top: 4 * _singleCourseHeight + 3 * _verStep),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0.2),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
               child!,
               ...positionedList,
             ],
           );
         },
         child: Positioned(
-          left: 0,
+          left: 10,
           top: 4 * _singleCourseHeight + 3 * _verStep,
-          width: _width,
-          height: _middleStep,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: Divider()),
-              Text("午休",
-                  style: FontManager.YaQiHei.copyWith(
-                      color: FavorColors.scheduleTitleColor.withAlpha(70),
-                      fontSize: 13)),
-              Expanded(child: Divider()),
-            ],
-          ),
+          width: 360,
+          height: 30,
+          child: Text("LUNCH BREAK",
+              style: FontManager.YaQiHei.copyWith(
+                color: Color.fromRGBO(255, 255, 255, 1),
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+              )),
         ),
       ),
     );

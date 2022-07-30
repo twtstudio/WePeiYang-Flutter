@@ -15,7 +15,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences.feedbackToken.value,
+      CommonPreferences.lakeToken.value,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -111,7 +111,7 @@ class LakeModel extends ChangeNotifier {
       mainStatus = LakePageStatus.loading;
     notifyListeners();
     await FeedbackService.getTabList().then((list) {
-      WPYTab oTab = WPYTab(id: 0, shortname: '全部', name: '全部');
+      WPYTab oTab = WPYTab(id: 0, shortname: '精华', name: '精华');
       tabList.clear();
       tabList.add(oTab);
       tabList.addAll(list);
@@ -192,7 +192,8 @@ class LakeModel extends ChangeNotifier {
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${index}',
-      mode: sortSeq,
+      searchMode: sortSeq,
+      etag: index == 0 ? 'recommend' : '',
       page: lakeAreas[index].currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, index);
@@ -242,8 +243,9 @@ class LakeModel extends ChangeNotifier {
     }
     await FeedbackService.getPosts(
       type: '$index',
-      mode: sortSeq,
+      searchMode: sortSeq,
       page: '1',
+      etag: index == 0 ? 'recommend' : '',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
         if (lakeAreas[index].dataList != null)
@@ -271,7 +273,7 @@ class LakeModel extends ChangeNotifier {
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
         if (CommonPreferences.feedbackLastWeCo.value != id &&
-            CommonPreferences.feedbackToken.value != "") {
+            CommonPreferences.lakeToken.value != "") {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -314,7 +316,23 @@ class FestivalProvider extends ChangeNotifier {
         notifyListeners();
       },
       onFailure: (e) {
-        ToastProvider.error(e.error.toString());
+        notifyListeners();
+      },
+    );
+  }
+}
+
+class NoticeProvider extends ChangeNotifier {
+  List<Notice> noticeList = [];
+
+  Future<void> initNotices() async {
+    await FeedbackService.getNotices(
+      onResult: (notices) {
+        noticeList.clear();
+        noticeList.addAll(notices);
+        notifyListeners();
+      },
+      onFailure: (e) {
         notifyListeners();
       },
     );

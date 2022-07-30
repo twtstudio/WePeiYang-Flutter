@@ -11,10 +11,14 @@ class CommonPreferences {
     sharedPref = await SharedPreferences.getInstance();
   }
 
+  /// 第一次登录
+  static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
+
   /// 天外天账号系统
   static final isLogin = PrefsBean<bool>('login');
   static final token = PrefsBean<String>('token');
   static final nickname = PrefsBean<String>('nickname', '未登录');
+  static final lakeNickname = PrefsBean<String>('lakeNickname', '无昵称');
   static final userNumber = PrefsBean<String>('userNumber');
   static final phone = PrefsBean<String>('phone');
   static final email = PrefsBean<String>('email');
@@ -33,9 +37,13 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
   static final themeToken = PrefsBean<String>("themeToken");
 
-  /// 校务专区
-  static final feedbackToken = PrefsBean<String>('lakeToken');
-  static final feedbackUid = PrefsBean<String>('feedbackUid');
+  /// 用户信息
+  static final lakeToken = PrefsBean<String>('lakeToken');
+  static final lakeUid = PrefsBean<String>('feedbackUid');
+  static final isSuper = PrefsBean<bool>('isSuper', false);
+  static final isSchAdmin = PrefsBean<bool>('isSchAdmin', false);
+  static final isStuAdmin = PrefsBean<bool>('isStuAdmin', false);
+  static final isUser = PrefsBean<bool>('isUser', true);
   static final feedbackSearchHistory =
       PrefsBean<List<String>>('feedbackSearchHistory');
 
@@ -152,7 +160,12 @@ class CommonPreferences {
     major.clear();
     stuType.clear();
     avatar.clear();
-    feedbackToken.clear();
+    lakeToken.clear();
+    lakeUid.clear();
+    isSuper.clear();
+    isSchAdmin.clear();
+    isStuAdmin.clear();
+    isUser.clear();
     canPush.clear();
     lastCheckUpdateTime.clear();
     area.clear();
