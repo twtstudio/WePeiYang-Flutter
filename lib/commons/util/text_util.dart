@@ -54,7 +54,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
   TextStyle get themeBlue => this.copyWith(color: const Color(0xFF2C7EDF));
   TextStyle get mainText => this.copyWith(color: const Color(0xFF2A2A2A));
-
+  TextStyle get blue2C7EDF => this.copyWith(color: const Color(0xFF2C7EDF));
   /// 字体
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
