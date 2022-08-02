@@ -27,8 +27,8 @@ class QuietCourse extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!CommonPreferences.otherWeekSchedule.value) return Container();
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: horStep / 2, vertical: verStep / 2),
+      margin:
+          EdgeInsets.symmetric(horizontal: horStep / 2, vertical: verStep / 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: _quietBackColor,
@@ -55,9 +55,10 @@ class QuietCourse extends StatelessWidget {
 class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);
   final List<Pair<Course, int>> _pairs;
-  final bool hide;
+  final bool _hide;
+  final bool _warning;
 
-  AnimatedActiveCourse(this._pairs, this.hide);
+  AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
   final _activeNameStyle = FontManager.YaQiHei.copyWith(
       color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
@@ -89,8 +90,8 @@ class AnimatedActiveCourse extends StatelessWidget {
     });
 
     var detail = Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: horStep / 2, vertical: verStep / 2),
+      margin:
+          EdgeInsets.symmetric(horizontal: horStep / 2, vertical: verStep / 2),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -118,7 +119,7 @@ class AnimatedActiveCourse extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           splashFactory: InkRipple.splashFactory,
           splashColor: Color.fromRGBO(199, 216, 235, 1),
-          child: hide
+          child: _hide
               ? Container()
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -126,8 +127,7 @@ class AnimatedActiveCourse extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(formatText(_pairs[0].first.name),
-                          style: _activeNameStyle,
-                          textAlign: TextAlign.center),
+                          style: _activeNameStyle, textAlign: TextAlign.center),
                       SizedBox(height: 2),
                       Text(teacher,
                           style: _activeTeacherStyle,
@@ -139,6 +139,13 @@ class AnimatedActiveCourse extends StatelessWidget {
                               replaceBuildingWord(_pairs[0].arrange.location),
                               style: _activeClassroomStyle,
                               textAlign: TextAlign.center),
+                        ),
+                      SizedBox(height: 2),
+                      if (_warning)
+                        Image.asset(
+                          'assets/images/schedule/warning.png',
+                          width: 20,
+                          height: 20,
                         ),
                       Spacer()
                     ],

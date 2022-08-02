@@ -143,12 +143,41 @@ class _CourseDisplayWidget extends StatelessWidget {
             // 是否不显示内容
             var hide = (activeList[i][0].arrange.showMode == 2);
 
+            var warning = false;
+            if (activeList[i].length > 1) {
+              List<Pair<Course, int>> copy = []..addAll(activeList[i]);
+              // 按照短课程优先、时间晚优先、高学分优先来排序
+              copy.sort((a, b) {
+                // 短课程优先
+                var aFirst = a.arrange.unitList.first;
+                var aLast = a.arrange.unitList.last;
+                var bFirst = b.arrange.unitList.first;
+                var bLast = b.arrange.unitList.last;
+                var aLen = aLast - aFirst;
+                var bLen = bLast - bFirst;
+                if (aLen != bLen) return aLen.compareTo(bLen);
+
+                // 时间晚优先
+                if (aFirst != bFirst) return bFirst.compareTo(aFirst);
+
+                // 学分高优先，null(或不能解析成double的值)排最后
+                double? iA = double.tryParse(a.first.credit);
+                double? iB = double.tryParse(b.first.credit);
+                if (iA == null) return 1;
+                if (iB == null) return -1;
+                return iB.compareTo(iA);
+              });
+              if (activeList[i][0].first.name == copy[0].first.name) {
+                warning = true;
+              }
+            }
+
             tempList.add(Positioned(
               top: top - verStep / 2,
               left: left - verStep / 2,
               height: height + verStep,
               width: _cardWidth + horStep,
-              child: AnimatedActiveCourse(activeList[i], hide),
+              child: AnimatedActiveCourse(activeList[i], hide, warning),
             ));
           }
           // 靠后的课需要先加入到stack中，所以需要reverse
