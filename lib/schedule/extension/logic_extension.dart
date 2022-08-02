@@ -304,33 +304,33 @@ int getTotalHours(List<Course> courses) {
   return totalHour;
 }
 
-List<Color> _skinColors = [
-  Color(CommonPreferences.skinColorA.value),
-  Color(CommonPreferences.skinColorB.value),
-  Color(CommonPreferences.skinColorC.value),
-  Color(CommonPreferences.skinColorD.value),
-  Color(CommonPreferences.skinColorE.value),
-  Color(CommonPreferences.skinColorF.value)
-];
-
-final _today = DateTime.now().day;
-
-/// 根据课程名生成对应颜色
-Color generateColor(String courseName) {
-  int hashCode = courseName.hashCode + _today; // 加点随机元素，以防一学期都是一个颜色
-  if (CommonPreferences.isAprilFoolClass.value)
-    return ColorUtil
-        .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
-  else if (CommonPreferences.isSkinUsed.value) {
-    int idx = hashCode % _skinColors.length;
-    if (idx == 4) idx--;
-    return _skinColors[idx];
-  } else {
-    int idx = hashCode % FavorColors.scheduleColor.length;
-    if (idx == 4) idx--; // 1435
-    return FavorColors.scheduleColor[idx];
-  }
-}
+// List<Color> _skinColors = [
+//   Color(CommonPreferences.skinColorA.value),
+//   Color(CommonPreferences.skinColorB.value),
+//   Color(CommonPreferences.skinColorC.value),
+//   Color(CommonPreferences.skinColorD.value),
+//   Color(CommonPreferences.skinColorE.value),
+//   Color(CommonPreferences.skinColorF.value)
+// ];
+//
+// final _today = DateTime.now().day;
+//
+// /// 根据课程名生成对应颜色
+// Color generateColor(String courseName) {
+//   int hashCode = courseName.hashCode + _today; // 加点随机元素，以防一学期都是一个颜色
+//   if (CommonPreferences.isAprilFoolClass.value)
+//     return ColorUtil
+//         .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
+//   else if (CommonPreferences.isSkinUsed.value) {
+//     int idx = hashCode % _skinColors.length;
+//     if (idx == 4) idx--;
+//     return _skinColors[idx];
+//   } else {
+//     int idx = hashCode % FavorColors.scheduleColor.length;
+//     if (idx == 4) idx--; // 1435
+//     return FavorColors.scheduleColor[idx];
+//   }
+// }
 
 /// 防止首页今日课程、课程表课程名称过长
 String formatText(String text) {

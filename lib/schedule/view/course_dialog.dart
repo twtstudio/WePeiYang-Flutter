@@ -14,7 +14,7 @@ void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Color.fromRGBO(255, 255, 255, 0.7),
+        barrierColor: Colors.black26,
         builder: (BuildContext context) => CourseDialog(pairs));
 
 class CourseDialog extends Dialog {
@@ -49,7 +49,7 @@ class CourseDialog extends Dialog {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        height: 340,
+        height: 330,
         child: _pairs.length == 1
             ? _getSingleCard(context, _pairs[0])
             : Theme(
@@ -76,11 +76,30 @@ class CourseDialog extends Dialog {
       width: _width,
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/icon_peiyang.png'),
-              fit: BoxFit.cover,
-              alignment: Alignment.bottomRight),
+            image: AssetImage('assets/images/icon_peiyang.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.centerRight,
+          ),
           borderRadius: BorderRadius.circular(15),
-          color: generateColor(pair.first.name)),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromRGBO(44, 126, 223, 1),
+              Color.fromRGBO(166, 207, 255, 1),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.05),
+            ),
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.white10,
+            ),
+          ]),
       child: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Padding(

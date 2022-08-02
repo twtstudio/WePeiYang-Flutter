@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -83,7 +82,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var titleColor = FavorColors.scheduleTitleColor;
+    var mainColor = Color.fromRGBO(44, 126, 223, 1);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -110,15 +109,16 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
       },
       child: Container(
         height: WePeiYangApp.screenHeight * 0.6,
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(246, 246, 246, 1.0),
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
           children: [
             Row(
               children: [
+                SizedBox(width: 12),
                 Text('新建课程',
                     style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
                 Spacer(),
@@ -127,14 +127,15 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     _saveAndQuit(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: titleColor,
+                    primary: mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Text('保存',
                       style: TextUtil.base.PingFangSC.regular.white.sp(12)),
-                )
+                ),
+                SizedBox(width: 12),
               ],
             ),
             Expanded(
@@ -142,17 +143,19 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                 data: ThemeData(accentColor: Colors.white),
                 child: ListView(
                   controller: _scrollController,
+                  padding: EdgeInsets.symmetric(horizontal: 12),
                   children: [
+                    SizedBox(height: 5),
                     CardWidget(
                       onTap: () {},
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add_circle, color: titleColor),
+                          Icon(Icons.add_circle, color: mainColor),
                           SizedBox(width: 5),
                           Text('输入逻辑班号导入课程',
                               style: TextUtil.base.PingFangSC.medium
-                                  .customColor(titleColor)
+                                  .customColor(mainColor)
                                   .sp(12)),
                         ],
                       ),
@@ -198,11 +201,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add_circle, color: titleColor),
+                          Icon(Icons.add_circle, color: mainColor),
                           SizedBox(width: 5),
                           Text('新增时段',
                               style: TextUtil.base.PingFangSC.medium
-                                  .customColor(titleColor)
+                                  .customColor(mainColor)
                                   .sp(12)),
                         ],
                       ),

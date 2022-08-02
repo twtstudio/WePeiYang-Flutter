@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
+import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 
 class QuietCourse extends StatelessWidget {
   final String _courseName;
@@ -26,6 +27,9 @@ class QuietCourse extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!CommonPreferences.otherWeekSchedule.value) return Container();
     return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: horStep / 2, vertical: verStep / 2),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: _quietBackColor,
         borderRadius: BorderRadius.circular(5),
@@ -58,20 +62,20 @@ class AnimatedActiveCourse extends StatelessWidget {
   final _activeNameStyle = FontManager.YaQiHei.copyWith(
       color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
   final _activeTeacherStyle =
-  FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
+      FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
   final _activeClassroomStyle =
-  FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
-  final _activeNameAlterStyle = FontManager.YaQiHei.copyWith(
-      color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
-  final _activeTeacherAlterStyle =
-  FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
-  final _activeClassroomAlterStyle =
-  FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
+      FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
 
+  // final _activeNameAlterStyle = FontManager.YaQiHei.copyWith(
+  //     color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
+  // final _activeTeacherAlterStyle =
+  //     FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
+  // final _activeClassroomAlterStyle =
+  //     FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
 
-  bool get _alter {
-    return generateColor(_pairs[0].first.name).value == Color.fromRGBO(221, 182, 190, 1.0).value;
-  }
+  // bool get _alter {
+  //   return generateColor(_pairs[0].first.name).value == Color.fromRGBO(221, 182, 190, 1.0).value;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,39 +88,63 @@ class AnimatedActiveCourse extends StatelessWidget {
       teacher += removeParentheses(str);
     });
 
-    var detail = Material(
-      color: generateColor(_pairs[0].first.name),
-      borderRadius: BorderRadius.circular(5),
-      child: InkWell(
-        onTap: () => showCourseDialog(context, _pairs),
+    var detail = Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: horStep / 2, vertical: verStep / 2),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(255, 255, 255, 0.4),
+            Color.fromRGBO(255, 255, 255, 0.15),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 2),
+            blurRadius: 3,
+            color: Colors.black.withOpacity(0.08),
+          ),
+        ],
         borderRadius: BorderRadius.circular(5),
-        splashFactory: InkRipple.splashFactory,
-        splashColor: Color.fromRGBO(179, 182, 191, 1),
-        child: hide
-            ? Container()
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: Column(
-                  children: [
-                    Spacer(),
-                    Text(formatText(_pairs[0].first.name),
-                        style: _alter ? _activeNameAlterStyle : _activeNameStyle, textAlign: TextAlign.center),
-                    SizedBox(height: 2),
-                    Text(teacher,
-                        style: _alter ? _activeTeacherAlterStyle : _activeTeacherStyle,
-                        textAlign: TextAlign.center),
-                    if (_pairs[0].arrange.location != "")
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(
-                            replaceBuildingWord(_pairs[0].arrange.location),
-                            style: _alter ? _activeClassroomAlterStyle : _activeClassroomStyle,
-                            textAlign: TextAlign.center),
-                      ),
-                    Spacer()
-                  ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        // color: generateColor(_pairs[0].first.name),
+        child: InkWell(
+          onTap: () => showCourseDialog(context, _pairs),
+          borderRadius: BorderRadius.circular(5),
+          splashFactory: InkRipple.splashFactory,
+          splashColor: Color.fromRGBO(199, 216, 235, 1),
+          child: hide
+              ? Container()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                  child: Column(
+                    children: [
+                      Spacer(),
+                      Text(formatText(_pairs[0].first.name),
+                          style: _activeNameStyle,
+                          textAlign: TextAlign.center),
+                      SizedBox(height: 2),
+                      Text(teacher,
+                          style: _activeTeacherStyle,
+                          textAlign: TextAlign.center),
+                      if (_pairs[0].arrange.location != "")
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                              replaceBuildingWord(_pairs[0].arrange.location),
+                              style: _activeClassroomStyle,
+                              textAlign: TextAlign.center),
+                        ),
+                      Spacer()
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
 

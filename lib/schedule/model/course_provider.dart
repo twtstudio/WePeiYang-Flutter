@@ -105,7 +105,7 @@ class CourseProvider with ChangeNotifier {
   }
 
   void refreshCustomCourse() {
-    // TODO 暂时的逻辑是，只要本地有缓存就不获取远程的
+    /// 只要本地有缓存就不获取远程的
     if (_customCourses.isNotEmpty) return;
 
     CustomCourseService.getToken().then((success) {

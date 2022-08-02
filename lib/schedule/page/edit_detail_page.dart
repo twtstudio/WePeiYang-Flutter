@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -104,30 +102,37 @@ class _EditDetailPageState extends State<EditDetailPage> {
       clickBgDismissTemp: false,
       widget: WbyDialogLayout(
         bottomPadding: true,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image.asset('assets/images/schedule/notify.png',
-                  color: FavorColors.scheduleTitleColor, height: 30, width: 30),
-            ),
-            SizedBox(height: 25),
-            Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
-            SizedBox(height: 30),
-            WbyDialogStandardTwoButton(
-              first: () {
-                SmartDialog.dismiss();
-                if (cancel != null) cancel();
-              },
-              second: () {
-                SmartDialog.dismiss();
-                if (ok != null) ok();
-              },
-              firstText: '取消',
-              secondText: '确定',
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/images/schedule/notify.png',
+                  height: 30,
+                  width: 30,
+                ),
+              ),
+              SizedBox(height: 25),
+              Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
+              SizedBox(height: 30),
+              WbyDialogStandardTwoButton(
+                first: () {
+                  SmartDialog.dismiss();
+                  if (cancel != null) cancel();
+                },
+                second: () {
+                  SmartDialog.dismiss();
+                  if (ok != null) ok();
+                },
+                firstText: '取消',
+                secondText: '确定',
+                secondType: ButtonType.blue,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -135,7 +140,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleColor = FavorColors.scheduleTitleColor;
+    var mainColor = Color.fromRGBO(44, 126, 223, 1);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -165,10 +170,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+        backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+          backgroundColor: Colors.white,
           brightness: Brightness.light,
           leading: Center(
             child: GestureDetector(
@@ -177,12 +182,11 @@ class _EditDetailPageState extends State<EditDetailPage> {
               },
               child: Container(
                 decoration: BoxDecoration(),
-                padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+                padding: const EdgeInsets.fromLTRB(10, 9, 8, 8),
                 child: Image.asset(
                   'assets/images/schedule/back.png',
                   height: 20,
                   width: 20,
-                  color: ColorUtil.black2AColor,
                 ),
               ),
             ),
@@ -199,7 +203,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 child: ElevatedButton(
                   onPressed: () => _saveAndQuit(context),
                   style: ElevatedButton.styleFrom(
-                    primary: titleColor,
+                    primary: mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -222,6 +226,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   controller: _scrollController,
                   children: [
+                    SizedBox(height: 5),
                     CardWidget(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -263,11 +268,11 @@ class _EditDetailPageState extends State<EditDetailPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add_circle, color: titleColor),
+                          Icon(Icons.add_circle, color: mainColor),
                           SizedBox(width: 5),
                           Text('新增时段',
                               style: TextUtil.base.PingFangSC.medium
-                                  .customColor(titleColor)
+                                  .customColor(mainColor)
                                   .sp(12)),
                         ],
                       ),

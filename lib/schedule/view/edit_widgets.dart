@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show TextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -72,7 +71,7 @@ class TimeFrameWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
-                          ? FavorColors.scheduleTitleColor
+                          ? Color.fromRGBO(44, 126, 223, 1)
                           : Colors.white),
                 ),
               ),
@@ -192,12 +191,22 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (onTap != null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
-        child: Material(
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 2),
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.06),
+            ),
+          ],
+        ),
+        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
+        child: Material(
+          color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
             splashFactory: InkRipple.splashFactory,
@@ -216,6 +225,13 @@ class CardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 2),
+            blurRadius: 10,
+            color: Colors.black.withOpacity(0.08),
+          ),
+        ],
       ),
       child: Center(child: child),
     );
@@ -266,7 +282,7 @@ class InputWidget extends StatelessWidget {
             inputFormatters: inputFormatter,
             textAlign: TextAlign.end,
             style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-            cursorColor: FavorColors.scheduleTitleColor,
+            cursorColor: Color.fromRGBO(44, 126, 223, 1),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -521,7 +537,7 @@ class WeekPicker extends Dialog {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             primary: index == _weekTypes.indexOf(type)
-                                ? FavorColors.scheduleTitleColor
+                                ? Color.fromRGBO(44, 126, 223, 1)
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

@@ -11,7 +11,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 /// 用这两个变量绘制点阵图
 const double _cubeSideLength = 6;
-const double _spacingLength = 4;
+const double _spacingLength = 2;
 
 /// 点阵图的宽高
 double get _canvasWidth {
@@ -49,12 +49,13 @@ class WeekSelectWidget extends StatelessWidget {
 
                     /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
                     SizedBox(
-                      height: _canvasHeight + 25,
+                      height: _canvasHeight + 20,
                       width: _canvasWidth + 25,
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           radius: 5000,
+                          borderRadius: BorderRadius.circular(5),
                           splashColor: Color.fromRGBO(246, 246, 246, 0.5),
                           highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
@@ -91,15 +92,11 @@ class WeekSelectWidget extends StatelessWidget {
           height: _canvasHeight + 20,
           width: _canvasWidth + 25,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: i + 1 == provider.selectedWeek
-                ? Color.fromRGBO(255, 255, 255, 0.2)
-                : null,
-            borderRadius: BorderRadius.circular(5),
-          ),
           child: CustomPaint(
-            painter: _WeekSelectPainter(getBoolMatrix(
-                i + 1, provider.weekCount, provider.totalCourses)),
+            painter: _WeekSelectPainter(
+              getBoolMatrix(i + 1, provider.weekCount, provider.totalCourses),
+              i + 1 == provider.selectedWeek,
+            ),
             size: Size(_canvasWidth, _canvasHeight),
           ),
         ),
@@ -108,7 +105,7 @@ class WeekSelectWidget extends StatelessWidget {
             style: FontManager.Aspira.copyWith(
                 color: (provider.selectedWeek == i + 1)
                     ? Color.fromRGBO(255, 255, 255, 1)
-                    : Color.fromRGBO(255, 255, 255, 0.5),
+                    : Color.fromRGBO(255, 255, 255, 0.4),
                 fontSize: 10,
                 fontWeight: FontWeight.w900))
       ],
@@ -118,22 +115,21 @@ class WeekSelectWidget extends StatelessWidget {
 
 class _WeekSelectPainter extends CustomPainter {
   final List<List<bool>> _list;
+  final bool _selected;
 
-  _WeekSelectPainter(this._list);
+  _WeekSelectPainter(this._list, this._selected) {
+    if (!_selected) {
+      _cubePaint.color = _cubePaint.color.withOpacity(0.4);
+      _spacePaint.color = _spacePaint.color.withOpacity(0.4);
+    }
+  }
 
   /// 深色cube，代表该点有课
   final Paint _cubePaint = Paint()
-    // 简单的修改了色块颜色，之后会在上面加上不同透明度的蒙版，下面注释掉的代码先不要删除
-    // ..color = CommonPreferences.isAprilFoolClass.value
-    //     ? ColorUtil
-    //         .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)]
-    //     : CommonPreferences.isSkinUsed.value
-    //         ? Color(CommonPreferences.skinColorA.value)
-    //         : FavorColors.scheduleColor.first
     ..color = Color.fromRGBO(255, 188, 107, 1)
     ..style = PaintingStyle.fill;
 
-  /// 浅色cube，代表该点没课
+  /// 白色cube，代表该点没课
   final Paint _spacePaint = Paint()
     ..color = Color.fromRGBO(255, 255, 255, 1)
     ..style = PaintingStyle.fill;
@@ -149,6 +145,13 @@ class _WeekSelectPainter extends CustomPainter {
         Rect rect = Rect.fromCircle(
             center: Offset(centerX, centerY), radius: _cubeSideLength / 2);
         RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(2));
+
+        if ((j == 0 && k == 0) ||
+            (j == 1 && k == 0) ||
+            (j == 1 && k == 1) ||
+            (j == 2 && k == 2) ||
+            (j == 3 && k == 2)) _list[j][k] = true;
+
         if (_list[j][k]) {
           canvas.drawRRect(rRect, _cubePaint);
         } else {

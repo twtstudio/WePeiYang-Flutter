@@ -1,7 +1,8 @@
 // @dart = 2.12
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
@@ -51,39 +52,90 @@ class _CoursePageState extends State<CoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _CourseAppBar(),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: [
-              Color.fromRGBO(44, 126, 223, 0.5),
-              Color.fromRGBO(129, 187, 255, 1),
+    return Stack(
+      children: [
+        Container(
+          width: WePeiYangApp.screenWidth,
+          height: WePeiYangApp.screenHeight,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(44, 126, 223, 1),
+                Color.fromRGBO(166, 207, 255, 1),
+                Color.fromRGBO(166, 207, 255, 1),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          left: WePeiYangApp.screenWidth - 518,
+          top: -42,
+          height: 500,
+          width: 500,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10000),
+            child: Container(
+              color: Color.fromRGBO(44, 126, 223, 0.5),
+            ),
+          ),
+        ),
+        Positioned(
+          left: WePeiYangApp.screenWidth - 481,
+          top: WePeiYangApp.screenHeight * 0.65,
+          height: 512,
+          width: 434,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10000),
+            child: Container(
+              color: Color.fromRGBO(199, 213, 235, 1),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 37,
+          top: WePeiYangApp.screenHeight * 0.5,
+          height: 436,
+          width: 436,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10000),
+            child: Container(
+              color: Color.fromRGBO(129, 187, 255, 0.5),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+            child: Container(color: Colors.transparent),
+          ),
+        ),
+        Scaffold(
+          appBar: _CourseAppBar(),
+          backgroundColor: Colors.transparent,
+          body: ListView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _TitleWidget(),
+              WeekSelectWidget(),
+              Container(
+                decoration: CommonPreferences.isSkinUsed.value
+                    ? BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                NetworkImage(CommonPreferences.skinClass.value),
+                            fit: BoxFit.cover),
+                      )
+                    : BoxDecoration(),
+                child: Column(
+                  children: [CourseDetailWidget(), _HoursCounterWidget()],
+                ),
+              ),
             ],
           ),
         ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            _TitleWidget(),
-            WeekSelectWidget(),
-            Container(
-              decoration: CommonPreferences.isSkinUsed.value
-                  ? BoxDecoration(
-                      image: DecorationImage(
-                          image:
-                              NetworkImage(CommonPreferences.skinClass.value),
-                          fit: BoxFit.cover),
-                    )
-                  : BoxDecoration(),
-              child: Column(
-                children: [CourseDetailWidget(), _HoursCounterWidget()],
-              ),
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
@@ -92,9 +144,8 @@ class _CoursePageState extends State<CoursePage> {
 class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    var titleColor = FavorColors.scheduleTitleColor;
-
-    var leading = Center(
+    var leading = Align(
+      alignment: Alignment.centerRight,
       child: GestureDetector(
         onTap: () {
           Navigator.pop(context);
@@ -104,9 +155,9 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: Image.asset(
             'assets/images/schedule/back.png',
-            height: 22,
-            width: 22,
-            color: titleColor,
+            height: 18,
+            width: 18,
+            color: Colors.white,
           ),
         ),
       ),
@@ -156,9 +207,8 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.all(10),
           child: Image.asset(
             'assets/images/schedule/refresh.png',
-            height: 25,
-            width: 25,
-            color: titleColor,
+            height: 20,
+            width: 20,
           ),
         ),
       ),
@@ -171,9 +221,8 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.all(10),
           child: Image.asset(
             'assets/images/schedule/list.png',
-            height: 25,
-            width: 25,
-            color: titleColor,
+            height: 20,
+            width: 20,
           ),
         ),
       ),
@@ -198,31 +247,26 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.all(10),
           child: Image.asset(
             'assets/images/schedule/add.png',
-            height: 25,
-            width: 25,
-            color: titleColor,
+            height: 20,
+            width: 20,
           ),
         ),
       ),
+      SizedBox(width: 5),
     ];
 
     return AppBar(
-      //appbar背景取消
-      titleSpacing: 0,
-      backgroundColor: Color.fromRGBO(255, 255, 255, 0),
-      title: Text(
-        "HELLO,Apricity",
-        style: TextStyle(
-          fontWeight: FontWeight.w900,
-          fontSize: 18,
-        ),
-      ),
+      backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       elevation: 0,
       leading: leading,
+      leadingWidth: 40,
       actions: actions,
-      iconTheme: IconThemeData(color: titleColor, size: 28),
-      leadingWidth: 60,
+      title: Text(
+        "HELLO, ${CommonPreferences.nickname.value}",
+        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+      ),
+      titleSpacing: 0,
     );
   }
 
@@ -250,7 +294,9 @@ class _TitleWidget extends StatelessWidget {
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
                   style: FontManager.Texta.copyWith(
-                      color: Color.fromRGBO(202, 202, 202, 1), fontSize: 12));
+                      color: Color.fromRGBO(202, 202, 202, 1),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold));
             }),
           ),
           Builder(builder: (context) {
@@ -266,9 +312,9 @@ class _TitleWidget extends StatelessWidget {
                       provider.shrink
                           ? 'assets/images/schedule/up.png'
                           : 'assets/images/schedule/down.png',
-                      color: FavorColors.scheduleTitleColor,
-                      height: 20,
-                      width: 20),
+                      color: Colors.white,
+                      height: 18,
+                      width: 18),
                 ));
           })
         ],
@@ -281,11 +327,15 @@ class _TitleWidget extends StatelessWidget {
 class _HoursCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var provider = context.watch<CourseProvider>();
-    if (provider.schoolCourses.length == 0) return Container();
-    int currentHours = getCurrentHours(
-        provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
-    int totalHours = getTotalHours(provider.schoolCourses);
+    // var provider = context.watch<CourseProvider>();
+    // if (provider.schoolCourses.length == 0) return Container();
+    // int currentHours = getCurrentHours(
+    //     provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
+    // int totalHours = getTotalHours(provider.schoolCourses);
+
+    int currentHours = 35;
+    int totalHours = 100;
+
     double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;
@@ -301,25 +351,29 @@ class _HoursCounterWidget extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
                   style: FontManager.Aspira.copyWith(
-                      color: Color.fromRGBO(205, 206, 211, 1),
-                      fontSize: 14,
+                      color: Colors.white,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold))),
           Stack(
+            alignment: Alignment.centerLeft,
             children: [
               Container(
                 height: 12,
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: Color.fromRGBO(236, 238, 237, 1)),
+                    color: Colors.black12),
               ),
               Container(
-                height: 12,
+                height: 8,
                 width: leftWidth,
+                margin: EdgeInsets.only(left: 2),
                 decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.horizontal(left: Radius.circular(15)),
-                    color: FavorColors.scheduleTitleColor),
+                  borderRadius: BorderRadius.circular(15),
+                  gradient: LinearGradient(
+                    colors: [Colors.white, Colors.white54],
+                  ),
+                ),
               )
             ],
           ),

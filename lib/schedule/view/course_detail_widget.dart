@@ -14,14 +14,14 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 /// 课程表每个item之间的垂直、水平间距
-const double _verStep = 12;
-const double _horStep = 6;
+const double verStep = 6;
+const double horStep = 6;
 
 int get _dayNumber => CommonPreferences.dayNumber.value;
 
 double get _width => WePeiYangApp.screenWidth - 15 * 2;
 
-double get _cardWidth => (_width - (_dayNumber - 1) * _horStep) / _dayNumber;
+double get _cardWidth => (_width - (_dayNumber - 1) * horStep) / _dayNumber;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class CourseDetailWidget extends StatelessWidget {
@@ -89,12 +89,12 @@ class _CourseDisplayWidget extends StatelessWidget {
   static const double _singleCourseHeight = 65;
 
   /// "午休"提示栏的高度
-  static const double _middleStep = 40;
+  static const double _middleStep = 30;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: _singleCourseHeight * 12 + _verStep * 11 + _middleStep,
+      height: _singleCourseHeight * 12 + verStep * 11 + _middleStep,
       child: Consumer<CourseProvider>(
         builder: (context, provider, child) {
           if (provider.totalCourses.length == 0) {
@@ -102,27 +102,27 @@ class _CourseDisplayWidget extends StatelessWidget {
           }
           var positionedList = <Widget>[];
 
-          var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
-          // 先添加非本周课程
-          inactiveList.forEach((pair) {
-            int start = pair.arrange.unitList.first;
-            int end = pair.arrange.unitList.last;
-            int day = pair.arrange.weekday;
-            double top = (start - 1) * (_singleCourseHeight + _verStep);
-            double left = (day - 1) * (_cardWidth + _horStep);
-            double height = (end - start + 1) * _singleCourseHeight +
-                (end - start) * _verStep;
-            // 绕开"午休"栏
-            if (start > 4) top += _middleStep;
-            if (start <= 4 && end > 4) height += _middleStep;
-            positionedList.add(Positioned(
-              top: top,
-              left: left,
-              height: height,
-              width: _cardWidth,
-              child: QuietCourse(pair.first.name),
-            ));
-          });
+          // var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
+          // // 先添加非本周课程
+          // inactiveList.forEach((pair) {
+          //   int start = pair.arrange.unitList.first;
+          //   int end = pair.arrange.unitList.last;
+          //   int day = pair.arrange.weekday;
+          //   double top = (start - 1) * (_singleCourseHeight + verStep);
+          //   double left = (day - 1) * (_cardWidth + horStep);
+          //   double height = (end - start + 1) * _singleCourseHeight +
+          //       (end - start) * verStep;
+          //   // 绕开"午休"栏
+          //   if (start > 4) top += _middleStep;
+          //   if (start <= 4 && end > 4) height += _middleStep;
+          //   positionedList.add(Positioned(
+          //     top: top - verStep / 2,
+          //     left: left - horStep / 2,
+          //     height: height + verStep,
+          //     width: _cardWidth + horStep,
+          //     child: QuietCourse(pair.first.name),
+          //   ));
+          // });
 
           var activeList = getMergedActiveCourses(provider, _dayNumber);
           var tempList = <Widget>[];
@@ -131,10 +131,10 @@ class _CourseDisplayWidget extends StatelessWidget {
             int start = activeList[i][0].arrange.unitList.first;
             int end = activeList[i][0].arrange.unitList.last;
             int day = activeList[i][0].arrange.weekday;
-            double top = (start - 1) * (_singleCourseHeight + _verStep);
-            double left = (day - 1) * (_cardWidth + _horStep);
+            double top = (start - 1) * (_singleCourseHeight + verStep);
+            double left = (day - 1) * (_cardWidth + horStep);
             double height = (end - start + 1) * _singleCourseHeight +
-                (end - start) * _verStep;
+                (end - start) * verStep;
             // 绕开"午休"栏
             if (start > 4) top += _middleStep;
             if (start <= 4 && end > 4) height += _middleStep;
@@ -144,10 +144,10 @@ class _CourseDisplayWidget extends StatelessWidget {
             var hide = (activeList[i][0].arrange.showMode == 2);
 
             tempList.add(Positioned(
-              top: top,
-              left: left,
-              height: height,
-              width: _cardWidth,
+              top: top - verStep / 2,
+              left: left - verStep / 2,
+              height: height + verStep,
+              width: _cardWidth + horStep,
               child: AnimatedActiveCourse(activeList[i], hide),
             ));
           }
@@ -156,32 +156,29 @@ class _CourseDisplayWidget extends StatelessWidget {
 
           return Stack(
             children: [
-              Container(
-                width: 360,
-                height: 30,
-                margin: EdgeInsetsDirectional.only(
-                    start: 10, top: 4 * _singleCourseHeight + 3 * _verStep),
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.2),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
               child!,
               ...positionedList,
             ],
           );
         },
         child: Positioned(
-          left: 10,
-          top: 4 * _singleCourseHeight + 3 * _verStep,
-          width: 360,
-          height: 30,
-          child: Text("LUNCH BREAK",
-              style: FontManager.YaQiHei.copyWith(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-              )),
+          left: 0,
+          top: 4 * (_singleCourseHeight + verStep),
+          height: _middleStep,
+          width: WePeiYangApp.screenWidth - 30,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text("LUNCH BREAK",
+                style: FontManager.YaQiHei.copyWith(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                )),
+          ),
         ),
       ),
     );
