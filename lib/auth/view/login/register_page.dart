@@ -617,11 +617,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       SizedBox(height: 20),
                       Row(
                         children: [
-                          Text.rich(TextSpan(
-                              text: "收不到短信?",
-                              style: TextUtil.base.normal.NotoSansSC.w400
-                                  .sp(14)
-                                  .white)),
                           Spacer(),
                           GestureDetector(
                             child: isPress
