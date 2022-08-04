@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show FilteringTextInputFormatter;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
@@ -359,12 +359,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   }
 
   _toNextPage() async {
-    code = codeController1.text +
-        codeController2.text +
-        codeController3.text +
-        codeController4.text +
-        codeController5.text +
-        codeController6.text;
     if (phone == "")
       ToastProvider.error("手机号码不能为空");
     else if (code == "")
@@ -493,53 +487,103 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                             TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
                       )),
                       SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 22, 0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CodeBox(
-                                  codeController1, _codeFocus1, _codeFocus2),
-                              CodeBox(
-                                  codeController2, _codeFocus2, _codeFocus3),
-                              CodeBox(
-                                  codeController3, _codeFocus3, _codeFocus4),
-                              CodeBox(
-                                  codeController4, _codeFocus4, _codeFocus5),
-                              CodeBox(
-                                  codeController5, _codeFocus5, _codeFocus6),
-                              ConstrainedBox(
-                                constraints:
-                                    BoxConstraints(maxHeight: 40, maxWidth: 40),
-                                child: TextField(
-                                    style: TextUtil.base.normal.w400
-                                        .sp(16)
-                                        .NotoSansSC
-                                        .themeBlue,
-                                    focusNode: _codeFocus6,
-                                    keyboardType: TextInputType.number,
-                                    controller: codeController6,
-                                    cursorColor: Colors.white,
-                                    maxLength: 1,
-                                    decoration: InputDecoration(
-                                        counterText: '',
-                                        contentPadding:
-                                            const EdgeInsets.fromLTRB(
-                                                15, 9, 15, 9),
-                                        filled: true,
-                                        fillColor: Color(0x66FFFFFF),
-                                        isCollapsed: true,
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide.none)),
-                                    onChanged: (input) {
-                                      if (input.length == 1) {
-                                        _codeFocus6.unfocus();
-                                      }
-                                    }),
+                      Stack(
+                        children: [
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ]),
+                              child: Text(
+                                code.length > 0 ? code.substring(0, 1) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                code.length > 1 ? code.substring(1, 2) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                code.length > 2 ? code.substring(2, 3) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                code.length > 3 ? code.substring(3, 4) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                code.length > 4 ? code.substring(4, 5) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                            Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(255, 255, 255, 0.4),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                code.length > 5 ? code.substring(5, 6) : "",
+                                style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                              ),
+                            ),
+                          ]),
+                          TextField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(6),
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            style: TextUtil.base.normal.w400.sp(16).NotoSansSC.transParent,
+                            showCursor: false,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) => setState(() => code = input),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 39),
                       //"下一步"按钮
@@ -933,45 +977,3 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
   }
 }
 
-class CodeBox extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode focus;
-  final FocusNode nextFocus;
-
-  const CodeBox(this.controller, this.focus, this.nextFocus, {Key key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 40, maxWidth: 40),
-      child: TextField(
-        style: TextUtil.base.normal.w400.sp(16).NotoSansSC.themeBlue,
-        focusNode: focus,
-        keyboardType: TextInputType.number,
-        controller: controller,
-        cursorColor: Colors.white,
-        maxLength: 1,
-        decoration: InputDecoration(
-            counterText: '',
-            contentPadding: const EdgeInsets.fromLTRB(15, 9, 15, 9),
-            filled: true,
-            fillColor: Color(0x66FFFFFF),
-            isCollapsed: true,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none)),
-        onChanged: (input) {
-          if (input.length == 1) {
-            focus.unfocus();
-            FocusScope.of(context).requestFocus(nextFocus);
-          }
-        },
-        onEditingComplete: () {
-          focus.unfocus();
-          FocusScope.of(context).requestFocus(nextFocus);
-        },
-      ),
-    );
-  }
-}
