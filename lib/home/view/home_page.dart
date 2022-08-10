@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/parser.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -110,12 +112,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: IconButton(
         splashRadius: 1,
-        icon: Image.asset(
-          'assets/images/home_logo.png',
-          color: _currentIndex == 0
-              ? Color.fromRGBO(38, 56, 95, 1.0)
-              : ColorUtil.searchBarIconColor,
-        ),
+        icon: _currentIndex == 0
+            ? SvgPicture.asset(
+                'assets/svg_pics/home.svg',
+              )
+            : SvgPicture.asset(
+                'assets/svg_pics/home.svg',
+                color: ColorUtil.grey144,
+              ),
         color: Colors.white,
         onPressed: () => _tabController.animateTo(0),
       ),
@@ -126,12 +130,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: IconButton(
         splashRadius: 1,
-        icon: Image.asset(
-          'assets/images/lake_logo.png',
-          color: _currentIndex == 1
-              ? Color.fromRGBO(38, 56, 95, 1.0)
-              : ColorUtil.searchBarIconColor,
-        ),
+        icon: _currentIndex == 1
+            ? SvgPicture.asset(
+                'assets/svg_pics/lake.svg',
+              )
+            : SvgPicture.asset(
+                'assets/svg_pics/lake_grey.svg',
+              ),
         color: Colors.white,
         onPressed: () {
           if (_currentIndex == 1) {
@@ -147,12 +152,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: width,
       child: IconButton(
         splashRadius: 1,
-        icon: Image.asset(
-          'assets/images/myself_logo.png',
-          color: _currentIndex == 2
-              ? Color.fromRGBO(38, 56, 95, 1.0)
-              : ColorUtil.searchBarIconColor,
-        ),
+        icon: _currentIndex == 2
+            ? SvgPicture.asset(
+                'assets/svg_pics/my.svg',
+              )
+            : SvgPicture.asset(
+                'assets/svg_pics/my.svg',
+                color: ColorUtil.grey144,
+              ),
         color: Colors.white,
         onPressed: () => _tabController.animateTo(2),
       ),
@@ -162,7 +169,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 0.95),
           boxShadow: [
-            BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 3)
+            BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
           ],
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
