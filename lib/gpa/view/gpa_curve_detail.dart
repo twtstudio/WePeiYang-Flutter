@@ -45,7 +45,7 @@ class CurveText extends StatelessWidget {
             child: Text("${notifier.typeName()}${S.current.curve}",
                 style: FontManager.YaQiHei.copyWith(
                     fontSize: 16,
-                    color: Color.fromRGBO(100, 103, 122, 1),
+                    color: Colors.black,
                     fontWeight: FontWeight.bold))),
       );
 }
@@ -60,7 +60,7 @@ class GPAIntro extends StatelessWidget {
       FontManager.YaHeiLight.copyWith(color: Color(0xffcdcdd3), fontSize: 14);
 
   static final numStyle = FontManager.Montserrat.copyWith(
-      color: Color(0xff686c7e), fontWeight: FontWeight.bold, fontSize: 22);
+      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22);
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class GPAIntro extends StatelessWidget {
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('总加权', style: textStyle),
+                Text('Total Weighted', style: textStyle),
                 SizedBox(height: 8),
                 Text(weighted, style: numStyle)
               ],
@@ -103,7 +103,7 @@ class GPAIntro extends StatelessWidget {
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('总绩点', style: textStyle),
+                Text('Total GPA', style: textStyle),
                 SizedBox(height: 8),
                 Text(grade, style: numStyle)
               ],
@@ -115,7 +115,7 @@ class GPAIntro extends StatelessWidget {
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('总学分', style: textStyle),
+                Text('Credits Earned', style: textStyle),
                 SizedBox(height: 8),
                 Text(credit, style: numStyle)
               ],

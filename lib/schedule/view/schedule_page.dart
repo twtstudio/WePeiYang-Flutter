@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -54,7 +56,6 @@ class _SchedulePageState extends State<SchedulePage> {
         ? Color(CommonPreferences().skinColorB.value)
         : FavorColors.scheduleTitleColor();
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: ScheduleAppBar(titleColor),
       body: Container(
         decoration: BoxDecoration(
@@ -114,7 +115,20 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
       brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
-          child: Icon(Icons.arrow_back, color: titleColor, size: 32),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 15.w,
+              ),
+              SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/back.svg",
+                color: titleColor,
+                width: 20.w,
+                height: 20.h,
+                fit: BoxFit.fitWidth,
+              ),
+            ],
+          ),
           onTap: () => Navigator.pop(context)),
       actions: [
         ValueListenableBuilder(
@@ -137,7 +151,12 @@ class ScheduleAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         ),
         IconButton(
-          icon: Icon(Icons.autorenew, color: titleColor, size: 28),
+          icon: SvgPicture.asset(
+            "assets/svg_pics/lake_butt_icons/refreash.svg",
+            color: titleColor,
+            width: 28.w,
+            height: 28.h,
+          ),
           onPressed: () {
             if (CommonPreferences().isAprilFoolClass.value &&
                 DateTime.now().day == 1 &&

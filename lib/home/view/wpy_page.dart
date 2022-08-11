@@ -1,27 +1,31 @@
 import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
+
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/poster_girl/poster_girl_based_widget.dart';
-import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
+
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
-import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
+
+import '../../commons/util/text_util.dart';
+import '../../message/feedback_message_page.dart';
 
 final hintStyle = const TextStyle(
     fontSize: 16,
@@ -72,31 +76,41 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 'assets/images/lake_butt_icons/joker_stamp.png',
                 width: 30,
               ),
-              '愚人节模式？')
+              '愚人节模式？',
+              "fool")
           : null)
-      ..add(CardBean(Icon(Icons.domain, color: MyColors.darkGrey, size: 25),
-          '楼宇牌', ReportRouter.pass))
-      ..add(CardBean(Icon(Icons.report, color: MyColors.darkGrey, size: 25),
-          S.current.report, ReportRouter.main))
-      ..add(CardBean(Icon(Icons.timeline, color: MyColors.darkGrey, size: 25),
-          'GPA', GPARouter.gpa))
+      ..add(CardBean(Icon(Icons.domain, size: 25), '楼宇牌', "building card",
+          ReportRouter.pass))
+      ..add(CardBean(Icon(Icons.report, size: 25), S.current.report, "health",
+          ReportRouter.main))
+      ..add(
+          CardBean(Icon(Icons.timeline, size: 25), 'GPA', "GPA", GPARouter.gpa))
       ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/wiki.png'),
-              color: MyColors.darkGrey, size: 25),
+          Image.asset(
+            "assets/svg_pics/lake_butt_icons/wiki.png",
+            width: 24.w,
+          ),
+          "北洋维基",
           'Wiki',
           'https://wiki.tjubot.cn/'))
       ..add(CardBean(
-          ImageIcon(AssetImage('assets/images/exam.png'),
-              color: MyColors.darkGrey, size: 25),
-          '考表',
-          ScheduleRouter.exam))
+          Image.asset(
+            "assets/svg_pics/lake_butt_icons/daily.png",
+            width: 24.w,
+          ),
+          '课程表',
+          "exam",
+          ScheduleRouter.schedule))
       ..add(CardBean(
-          ImageIcon(AssetImage(Images.building),
-              color: Color(0xffcecfd4), size: 20),
+          Image.asset(
+            "assets/svg_pics/lake_butt_icons/self_study.png",
+            width: 24.w,
+          ),
           S.current.lounge,
+          "Study",
           LoungeRouter.main))
-      ..add(CardBean(Icon(Icons.refresh, color: MyColors.darkGrey, size: 25),
-          "重开模拟器", HomeRouter.restartGame));
+      ..add(CardBean(Icon(Icons.refresh, size: 25), "重开模拟器", "restart game",
+          HomeRouter.restartGame));
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (CommonPreferences().isFirstUse.value == true) {
@@ -273,17 +287,15 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           child: TabBarView(controller: _tc, children: [
             Container(
               padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-              color: Colors.black12,
               width: 1.sw - 60.w,
               height: 300.h,
-              child: Text('GPA'),
+              child: GPAPreview(),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-              color: Colors.black12,
               width: 1.sw - 60.w,
               height: 300.h,
-              child: Text('考表'),
+              child: WpyExamWidget(),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
@@ -520,9 +532,8 @@ class SliverCardsWidget extends StatelessWidget {
                 child: Container(
                   height: 90,
                   width: 70,
-                  child: Icon(Icons.arrow_forward_ios_sharp,
-                      color: Color.fromRGBO(98, 103, 124, 1.0), size: 25),
-                  color: Colors.white,
+                  child: SizedBox(),
+                  color: Colors.transparent,
                 ),
               ),
             ),
@@ -534,23 +545,43 @@ class SliverCardsWidget extends StatelessWidget {
 
   Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
     return SizedBox(
-      width: 125,
-      height: 90,
+      width: 150.w,
+      height: 80.h,
       child: Card(
         elevation: 1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            bean.icon,
-            SizedBox(height: 5),
-            Center(
-              child: Text(bean.label,
-                  style: FontManager.YaQiHei.copyWith(
-                      color: textColor ?? MyColors.darkGrey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold)),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Opacity(
+                  opacity: 0.2,
+                  child: Container(
+                    width: 48.w,
+                    height: 48.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xFF80B7F9),
+                    ),
+                  ),
+                ),
+                bean.icon
+              ],
+            ),
+            SizedBox(width: 14.w),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(bean.eng,
+                    maxLines: 2, style: TextUtil.base.w500.black2A.sp(12).bold),
+                Text(bean.label,
+                    maxLines: 2,
+                    style: TextUtil.base.w400.black2A.sp(12).medium),
+              ],
             )
           ],
         ),
@@ -562,9 +593,10 @@ class SliverCardsWidget extends StatelessWidget {
 class CardBean {
   Widget icon;
   String label;
+  String eng;
   String route;
 
-  CardBean(this.icon, this.label, [this.route]);
+  CardBean(this.icon, this.label, this.eng, [this.route]);
 }
 
 class WPYScrollBehavior extends ScrollBehavior {
