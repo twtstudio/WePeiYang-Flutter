@@ -38,7 +38,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   final fbKey = new GlobalKey<FbTagsWrapState>();
 
   ///根据tab的index得到对应type
-  ///
+
   final postTypeNotifier = ValueNotifier(int);
 
   bool scroll = false;

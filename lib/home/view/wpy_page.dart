@@ -79,12 +79,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               '愚人节模式？',
               "fool")
           : null)
-      ..add(CardBean(Icon(Icons.domain, size: 25), '楼宇牌', "building card",
-          ReportRouter.pass))
-      ..add(CardBean(Icon(Icons.report, size: 25), S.current.report, "health",
-          ReportRouter.main))
-      ..add(
-          CardBean(Icon(Icons.timeline, size: 25), 'GPA', "GPA", GPARouter.gpa))
+      ..add(CardBean(
+          Image.asset(
+            "assets/svg_pics/lake_butt_icons/daily.png",
+            width: 24.w,
+          ),
+          '课程表',
+          "Exam",
+          ScheduleRouter.schedule))
       ..add(CardBean(
           Image.asset(
             "assets/svg_pics/lake_butt_icons/wiki.png",
@@ -93,14 +95,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           "北洋维基",
           'Wiki',
           'https://wiki.tjubot.cn/'))
-      ..add(CardBean(
-          Image.asset(
-            "assets/svg_pics/lake_butt_icons/daily.png",
-            width: 24.w,
-          ),
-          '课程表',
-          "exam",
-          ScheduleRouter.schedule))
+      ..add(
+          CardBean(Icon(Icons.timeline, size: 25), 'GPA', "GPA", GPARouter.gpa))
       ..add(CardBean(
           Image.asset(
             "assets/svg_pics/lake_butt_icons/self_study.png",
@@ -109,7 +105,11 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           S.current.lounge,
           "Study",
           LoungeRouter.main))
-      ..add(CardBean(Icon(Icons.refresh, size: 25), "重开模拟器", "restart game",
+      ..add(CardBean(Icon(Icons.domain, size: 25), '楼宇牌', "BuildingCard",
+          ReportRouter.pass))
+      ..add(CardBean(Icon(Icons.report, size: 25), S.current.report, "Health",
+          ReportRouter.main))
+      ..add(CardBean(Icon(Icons.refresh, size: 25), "重开模拟器", "RestartGame",
           HomeRouter.restartGame));
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -286,7 +286,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           width: 1.sw - 60.w,
           child: TabBarView(controller: _tc, children: [
             Container(
-              padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
               width: 1.sw - 60.w,
               height: 300.h,
               child: GPAPreview(),
@@ -298,11 +297,15 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               child: WpyExamWidget(),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-              color: Colors.black12,
+              padding: EdgeInsets.fromLTRB(8.w, 0, 0, 0),
               width: 1.sw - 60.w,
               height: 300.h,
-              child: Text('自习室'),
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.all(Radius.circular(30.sp)),
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/chouniuzi.jpg'), fit: BoxFit.cover)),
+              child: Text('臭牛子快点给我写完写不完我要鲨了你啊啊啊啊啊啊啊啊啊啊啊啊啊', style: TextUtil.base.white.w900.sp(60)),
             ),
           ]),
         ),
