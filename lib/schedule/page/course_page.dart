@@ -327,14 +327,11 @@ class _TitleWidget extends StatelessWidget {
 class _HoursCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // var provider = context.watch<CourseProvider>();
-    // if (provider.schoolCourses.length == 0) return Container();
-    // int currentHours = getCurrentHours(
-    //     provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
-    // int totalHours = getTotalHours(provider.schoolCourses);
-
-    int currentHours = 35;
-    int totalHours = 100;
+    var provider = context.watch<CourseProvider>();
+    if (provider.schoolCourses.length == 0) return Container();
+    int currentHours = getCurrentHours(
+        provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
+    int totalHours = getTotalHours(provider.schoolCourses);
 
     double totalWidth = WePeiYangApp.screenWidth - 2 * 15;
     double leftWidth = totalWidth * currentHours / totalHours;
@@ -347,7 +344,7 @@ class _HoursCounterWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.only(bottom: 8),
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
                   style: FontManager.Aspira.copyWith(

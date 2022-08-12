@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
 class EditBottomSheet extends StatefulWidget {
@@ -22,17 +23,23 @@ class EditBottomSheet extends StatefulWidget {
 
 class _EditBottomSheetState extends State<EditBottomSheet> {
   final _scrollController = ScrollController();
+  final _inputSerial = ValueNotifier<bool>(false);
+  final _focusNode = FocusNode();
+  var _needFocus = false; // 防止弹出输入框时rebuild，导致多次请求focus
 
   var name = '';
   var credit = '';
+  var serial = '';
 
   @override
   void initState() {
     super.initState();
     name = widget.name;
     credit = widget.credit;
+    _inputSerial.addListener(() {
+      _needFocus = _inputSerial.value;
+    });
   }
-
 
   @override
   void dispose() {
@@ -94,8 +101,114 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
               index,
               !(provider.arrangeList.length == 1 && index == 0),
               _scrollController,
+              delCb: () async {
+                if (index != provider.arrangeList.length - 1) {
+                  /// 删除非最后一个frame时，稍微移动一下，可以在setState后动画滑动
+                  await _scrollController.animateTo(
+                    _scrollController.offset + 1,
+                    duration: Duration(milliseconds: 10),
+                    curve: Curves.linear,
+                  );
+                } else {
+                  /// 删除最后一个frame时，向上滑动再setState
+                  var offset = _scrollController.position.maxScrollExtent -
+                      _scrollController.offset -
+                      200;
+                  if (offset > 0) offset = 0;
+                  await _scrollController.animateTo(
+                    _scrollController.offset + offset,
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.linear,
+                  );
+                }
+              },
               key: ValueKey(provider.initIndex(index)),
             ),
+          ),
+        );
+      },
+    );
+
+    var inputSerialWidget = ValueListenableBuilder<bool>(
+      valueListenable: _inputSerial,
+      builder: (context, value, _) {
+        if (value) {
+          if (_needFocus) {
+            FocusManager.instance.primaryFocus?.unfocus(); // 需要先移除其他焦点
+            Future.delayed(const Duration(milliseconds: 10), () {
+              _focusNode.requestFocus(); // 这里加个delay保证输入框build出来
+            });
+            _needFocus = false;
+          }
+          return CardWidget(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: InputWidget(
+                    onChanged: (text) => serial = text,
+                    hintText: '请输入逻辑班号',
+                    focusNode: _focusNode,
+                    inputFormatter: [LengthLimitingTextInputFormatter(20)],
+                  ),
+                ),
+                SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    // TODO(cj): 之后删
+                    if (serial == 'abc') {
+                      var courses =
+                          context.read<CourseProvider>().customCourses;
+                      if (courses.isEmpty) return;
+                      var course = courses.first;
+                      context.read<EditProvider>().load(course);
+                      ToastProvider.success('导入课程成功');
+                      setState(() {
+                        _inputSerial.value = false;
+                        name = course.name;
+                        credit = course.credit;
+                      });
+                      return;
+                    }
+
+                    CustomCourseService.getClassBySerial(serial).then((course) {
+                      if (course == null) return;
+                      context.read<EditProvider>().load(course);
+                      ToastProvider.success('导入课程成功');
+                      setState(() {
+                        _inputSerial.value = false;
+                        name = course.name;
+                        credit = course.credit;
+                      });
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(),
+                    child: Icon(
+                      Icons.check,
+                      color: Color.fromRGBO(44, 126, 223, 1),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }
+        return CardWidget(
+          onTap: () {
+            if (!value) _inputSerial.value = true;
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add_circle, color: mainColor),
+              SizedBox(width: 5),
+              Text('输入逻辑班号导入课程',
+                  style: TextUtil.base.PingFangSC.medium
+                      .customColor(mainColor)
+                      .sp(12)),
+            ],
           ),
         );
       },
@@ -146,20 +259,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   children: [
                     SizedBox(height: 5),
-                    CardWidget(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add_circle, color: mainColor),
-                          SizedBox(width: 5),
-                          Text('输入逻辑班号导入课程',
-                              style: TextUtil.base.PingFangSC.medium
-                                  .customColor(mainColor)
-                                  .sp(12)),
-                        ],
-                      ),
-                    ),
+                    inputSerialWidget,
                     CardWidget(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

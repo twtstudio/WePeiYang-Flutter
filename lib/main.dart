@@ -150,11 +150,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      if (CommonPreferences.token != null && CommonPreferences.token != "") {
+      if (CommonPreferences.token != "") {
         FeedbackService.getToken(forceRefresh: true);
-      }
-      if (CommonPreferences.token != '') {
-        CustomCourseService.getToken();
       }
     });
   }

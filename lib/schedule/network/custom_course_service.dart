@@ -1,4 +1,6 @@
 // @dart = 2.12
+import 'dart:convert';
+
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -26,7 +28,7 @@ class CustomCourseService with AsyncTimer {
           .post('api/v1/user/auth/fromClient/login', queryParameters: {
         'token': CommonPreferences.token.value,
       });
-      CommonPreferences.customCourseToken.value = response.data['data'];
+      CommonPreferences.customCourseToken.value = response.data['result'];
       return true;
     } catch (e) {
       if (!quiet) ToastProvider.error('自定义课表服务加载失败');
@@ -44,14 +46,16 @@ class CustomCourseService with AsyncTimer {
             .map((arrange) => {
                   'class_order': _unitList2Str(arrange.unitList),
                   'classroom': arrange.location,
-                  'this_class_teacher': arrange.teacherList.first,
+                  'this_class_teacher': arrange.teacherList.isEmpty
+                      ? ''
+                      : arrange.teacherList.first,
                   'which_week': _weekList2Str(arrange.weekList),
                   'which_weekday': _weekDay2Str(arrange.weekday)
                 })
             .toList()
       };
       await customCourseDio.post('customClassTable/update',
-          queryParameters: map);
+          data: json.encode(map));
     } catch (e) {
       // ToastProvider.error('更新自定义课程失败');
     }
@@ -76,14 +80,16 @@ class CustomCourseService with AsyncTimer {
             .map((arrange) => {
                   'class_order': _unitList2Str(arrange.unitList),
                   'classroom': arrange.location,
-                  'this_class_teacher': arrange.teacherList.first,
+                  'this_class_teacher': arrange.teacherList.isEmpty
+                      ? ''
+                      : arrange.teacherList.first,
                   'which_week': _weekList2Str(arrange.weekList),
                   'which_weekday': _weekDay2Str(arrange.weekday)
                 })
             .toList()
       };
       await customCourseDio.post('customClassTable/addCustomClass',
-          queryParameters: map);
+          data: json.encode(map));
     } catch (e) {
       // ToastProvider.error('添加自定义课程失败');
     }
@@ -94,8 +100,8 @@ class CustomCourseService with AsyncTimer {
       var response =
           await customCourseDio.get('customClassTable/getCustomTable');
       var courseList = <Course>[];
-      for (Map<String, dynamic> courseJson in response.data['data']
-          ['customClassTable']) {
+      var list = response.data['result']['customClassTable'];
+      for (Map<String, dynamic> courseJson in list) {
         var name = courseJson['class_name'];
         var credit = courseJson['credit'];
         var minWeek = 100, maxWeek = 0;
@@ -132,14 +138,25 @@ class CustomCourseService with AsyncTimer {
 
   static Future<Course?> getClassBySerial(String serial) async {
     try {
-      var response = await customCourseDio.get('customClassTable/${serial}');
-      var data = response.data['data'];
+      var response = await customCourseDio
+          .get('/customClassTable/{Serial}?serial=${serial}');
+      var data = response.data['result'];
+      if (data == null) {
+        ToastProvider.error('查找不到此课程');
+        return null;
+      }
       var name = data['class_name'];
       var credit = data['credit'];
       var weeks = data['total_start_end_week'];
       var teacherList = [data['all_teacher'].toString()];
       var arrangeList = <Arrange>[];
       for (Map<String, dynamic> json in data['detailList']) {
+        if (json['which_weekday'] == '' ||
+            json['which_week'] == '' ||
+            json['class_order'] == '') {
+          ToastProvider.error('$name: 该课程无法显示在课表上');
+          return null;
+        }
         var arrange = Arrange.empty()
           ..location = json['classroom']
           ..weekday = _str2WeekDay(json['which_weekday'])

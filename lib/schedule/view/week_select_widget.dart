@@ -146,12 +146,6 @@ class _WeekSelectPainter extends CustomPainter {
             center: Offset(centerX, centerY), radius: _cubeSideLength / 2);
         RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(2));
 
-        if ((j == 0 && k == 0) ||
-            (j == 1 && k == 0) ||
-            (j == 1 && k == 1) ||
-            (j == 2 && k == 2) ||
-            (j == 3 && k == 2)) _list[j][k] = true;
-
         if (_list[j][k]) {
           canvas.drawRRect(rRect, _cubePaint);
         } else {

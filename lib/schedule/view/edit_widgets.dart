@@ -16,8 +16,10 @@ class TimeFrameWidget extends StatelessWidget {
   final int index;
   final bool canDelete;
   final ScrollController parentController;
+  final Future<void> Function()? delCb;
 
-  TimeFrameWidget(this.index, this.canDelete, this.parentController, {Key? key})
+  TimeFrameWidget(this.index, this.canDelete, this.parentController,
+      {this.delCb, Key? key})
       : super(key: key);
 
   static const _weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
@@ -63,8 +65,13 @@ class TimeFrameWidget extends StatelessWidget {
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
               GestureDetector(
-                onTap: () {
-                  if (canDelete) pvd.remove(index);
+                onTap: () async {
+                  if (canDelete) {
+                    if (delCb != null) {
+                      await delCb!();
+                    }
+                    pvd.remove(index);
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.all(5),
@@ -241,19 +248,21 @@ class CardWidget extends StatelessWidget {
 class InputWidget extends StatelessWidget {
   final Key? key;
   final ValueChanged<String> onChanged;
-  final String title;
+  final String? title;
   final String hintText;
   final String? initText;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatter;
+  final FocusNode? focusNode;
 
   InputWidget(
       {required this.onChanged,
-      required this.title,
+      this.title,
       required this.hintText,
       this.initText,
       this.keyboardType,
       this.inputFormatter,
+      this.focusNode,
       this.key})
       : super(key: key) {
     if (initText != null) {
@@ -273,9 +282,11 @@ class InputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('$title：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+        if (title != null)
+          Text('$title：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
         Expanded(
           child: TextField(
+            focusNode: focusNode,
             controller: _controller,
             onChanged: onChanged,
             keyboardType: keyboardType,

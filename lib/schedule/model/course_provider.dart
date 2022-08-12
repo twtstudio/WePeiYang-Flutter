@@ -105,18 +105,22 @@ class CourseProvider with ChangeNotifier {
   }
 
   void refreshCustomCourse() {
-    /// 只要本地有缓存就不获取远程的
-    if (_customCourses.isNotEmpty) return;
-
+    /// 如果本地有缓存就覆盖远程，否则从远程获取
     CustomCourseService.getToken().then((success) {
       if (!success) return;
-      CustomCourseService.getCustomTable().then((courseList) {
-        if (courseList == null) return;
-        _customCourses = courseList;
-        CommonPreferences.courseData.value =
-            json.encode(CourseTable(_schoolCourses, _customCourses));
-        _widgetChannel.invokeMethod("refreshScheduleWidget");
-      });
+      if (_customCourses.isNotEmpty) {
+        for (int i = 0; i < _customCourses.length; i++) {
+          CustomCourseService.updateCustomClass(_customCourses[i], i);
+        }
+      } else {
+        CustomCourseService.getCustomTable().then((courseList) {
+          if (courseList == null) return;
+          _customCourses = courseList;
+          CommonPreferences.courseData.value =
+              json.encode(CourseTable(_schoolCourses, _customCourses));
+          _widgetChannel.invokeMethod("refreshScheduleWidget");
+        });
+      }
     });
   }
 

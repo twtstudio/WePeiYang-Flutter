@@ -89,125 +89,129 @@ class _CourseDisplayWidget extends StatelessWidget {
   static const double _singleCourseHeight = 65;
 
   /// "午休"提示栏的高度
-  static const double _middleStep = 30;
+  static const double _middleStep = 40;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: _singleCourseHeight * 12 + verStep * 11 + _middleStep,
-      child: Consumer<CourseProvider>(
-        builder: (context, provider, child) {
-          if (provider.totalCourses.length == 0) {
-            return Stack(children: [child!]);
-          }
-          var positionedList = <Widget>[];
+    return Consumer<CourseProvider>(
+      builder: (context, provider, child) {
+        var verNum = 8; // 显示每天第1-verNum节课，verNum取值范围为[8, 12]
+        if (provider.totalCourses.length == 0) {
+          return SizedBox(
+            height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+            child: Stack(children: [child!]),
+          );
+        }
+        var positionedList = <Widget>[];
 
-          // var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
-          // // 先添加非本周课程
-          // inactiveList.forEach((pair) {
-          //   int start = pair.arrange.unitList.first;
-          //   int end = pair.arrange.unitList.last;
-          //   int day = pair.arrange.weekday;
-          //   double top = (start - 1) * (_singleCourseHeight + verStep);
-          //   double left = (day - 1) * (_cardWidth + horStep);
-          //   double height = (end - start + 1) * _singleCourseHeight +
-          //       (end - start) * verStep;
-          //   // 绕开"午休"栏
-          //   if (start > 4) top += _middleStep;
-          //   if (start <= 4 && end > 4) height += _middleStep;
-          //   positionedList.add(Positioned(
-          //     top: top - verStep / 2,
-          //     left: left - horStep / 2,
-          //     height: height + verStep,
-          //     width: _cardWidth + horStep,
-          //     child: QuietCourse(pair.first.name),
-          //   ));
-          // });
+        // var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
+        // // 先添加非本周课程
+        // inactiveList.forEach((pair) {
+        //   int start = pair.arrange.unitList.first;
+        //   int end = pair.arrange.unitList.last;
+        //   int day = pair.arrange.weekday;
+        //   double top = (start - 1) * (_singleCourseHeight + verStep);
+        //   double left = (day - 1) * (_cardWidth + horStep);
+        //   double height = (end - start + 1) * _singleCourseHeight +
+        //       (end - start) * verStep;
+        //   // 绕开"午休"栏
+        //   if (start > 4) top += _middleStep;
+        //   if (start <= 4 && end > 4) height += _middleStep;
+        //   positionedList.add(Positioned(
+        //     top: top - verStep / 2,
+        //     left: left - horStep / 2,
+        //     height: height + verStep,
+        //     width: _cardWidth + horStep,
+        //     child: QuietCourse(pair.first.name),
+        //   ));
+        // });
 
-          var activeList = getMergedActiveCourses(provider, _dayNumber);
-          var tempList = <Widget>[];
-          // 添加本周课程
-          for (int i = 0; i < activeList.length; i++) {
-            int start = activeList[i][0].arrange.unitList.first;
-            int end = activeList[i][0].arrange.unitList.last;
-            int day = activeList[i][0].arrange.weekday;
-            double top = (start - 1) * (_singleCourseHeight + verStep);
-            double left = (day - 1) * (_cardWidth + horStep);
-            double height = (end - start + 1) * _singleCourseHeight +
-                (end - start) * verStep;
-            // 绕开"午休"栏
-            if (start > 4) top += _middleStep;
-            if (start <= 4 && end > 4) height += _middleStep;
-            // 是否需要“漂浮”显示
-            if (activeList[i][0].arrange.showMode == 1) top += 6;
-            // 是否不显示内容
-            var hide = (activeList[i][0].arrange.showMode == 2);
+        var activeList = getMergedActiveCourses(provider, _dayNumber);
+        var tempList = <Widget>[];
+        // 添加本周课程
+        for (int i = 0; i < activeList.length; i++) {
+          // 更新verNum
+          activeList.forEach((pairs) {
+            pairs.forEach((pair) {
+              verNum = max(verNum, pair.arrange.unitList.last);
+            });
+          });
+          int start = activeList[i][0].arrange.unitList.first;
+          int end = activeList[i][0].arrange.unitList.last;
+          int day = activeList[i][0].arrange.weekday;
+          double top = (start - 1) * (_singleCourseHeight + verStep);
+          double left = (day - 1) * (_cardWidth + horStep);
+          double height = (end - start + 1) * _singleCourseHeight +
+              (end - start) * verStep;
+          // 绕开"午休"栏
+          if (start > 4) top += _middleStep;
+          if (start <= 4 && end > 4) height += _middleStep;
+          // 是否需要“漂浮”显示
+          if (activeList[i][0].arrange.showMode == 1) top += 6;
+          // 是否不显示内容
+          var hide = (activeList[i][0].arrange.showMode == 2);
 
-            var warning = false;
-            if (activeList[i].length > 1) {
-              List<Pair<Course, int>> copy = []..addAll(activeList[i]);
-              // 按照短课程优先、时间晚优先、高学分优先来排序
-              copy.sort((a, b) {
-                // 短课程优先
-                var aFirst = a.arrange.unitList.first;
-                var aLast = a.arrange.unitList.last;
-                var bFirst = b.arrange.unitList.first;
-                var bLast = b.arrange.unitList.last;
-                var aLen = aLast - aFirst;
-                var bLen = bLast - bFirst;
-                if (aLen != bLen) return aLen.compareTo(bLen);
+          var warning = activeList[i][0].arrange.showMode == 1;
+          if (activeList[i].length > 1) {
+            List<Pair<Course, int>> copy = []..addAll(activeList[i]);
+            // 按照短课程优先、时间晚优先、高学分优先来排序
+            copy.sort((a, b) {
+              // 短课程优先
+              var aFirst = a.arrange.unitList.first;
+              var aLast = a.arrange.unitList.last;
+              var bFirst = b.arrange.unitList.first;
+              var bLast = b.arrange.unitList.last;
+              var aLen = aLast - aFirst;
+              var bLen = bLast - bFirst;
+              if (aLen != bLen) return aLen.compareTo(bLen);
 
-                // 时间晚优先
-                if (aFirst != bFirst) return bFirst.compareTo(aFirst);
-
-                // 学分高优先，null(或不能解析成double的值)排最后
-                double? iA = double.tryParse(a.first.credit);
-                double? iB = double.tryParse(b.first.credit);
-                if (iA == null) return 1;
-                if (iB == null) return -1;
-                return iB.compareTo(iA);
-              });
-              if (activeList[i][0].first.name == copy[0].first.name) {
-                warning = true;
-              }
+              // 时间晚优先
+              return bFirst.compareTo(aFirst);
+            });
+            if (activeList[i][0].first.name == copy[0].first.name) {
+              warning = true;
             }
-
-            tempList.add(Positioned(
-              top: top - verStep / 2,
-              left: left - verStep / 2,
-              height: height + verStep,
-              width: _cardWidth + horStep,
-              child: AnimatedActiveCourse(activeList[i], hide, warning),
-            ));
           }
-          // 靠后的课需要先加入到stack中，所以需要reverse
-          positionedList.addAll(tempList.reversed);
 
-          return Stack(
+          tempList.add(Positioned(
+            top: top - verStep / 2,
+            left: left - verStep / 2,
+            height: height + verStep,
+            width: _cardWidth + horStep,
+            child: AnimatedActiveCourse(activeList[i], hide, warning),
+          ));
+        }
+        // 靠后的课需要先加入到stack中，所以需要reverse
+        positionedList.addAll(tempList.reversed);
+
+        return SizedBox(
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+          child: Stack(
             children: [
               child!,
               ...positionedList,
             ],
-          );
-        },
-        child: Positioned(
-          left: 0,
-          top: 4 * (_singleCourseHeight + verStep),
-          height: _middleStep,
-          width: WePeiYangApp.screenWidth - 30,
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text("LUNCH BREAK",
-                style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                )),
           ),
+        );
+      },
+      child: Positioned(
+        left: 0,
+        top: 4 * (_singleCourseHeight + verStep),
+        height: _middleStep,
+        width: WePeiYangApp.screenWidth - 30,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 5),
+          child: Text("LUNCH BREAK",
+              style: FontManager.YaQiHei.copyWith(
+                color: Color.fromRGBO(255, 255, 255, 1),
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+              )),
         ),
       ),
     );

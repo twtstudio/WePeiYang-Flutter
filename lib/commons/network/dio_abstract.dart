@@ -70,10 +70,13 @@ extension DioRequests on DioAbstract {
   Future<Response<dynamic>> post(String path,
       {Map<String, dynamic>? queryParameters,
       FormData? formData,
+      data,
       Options? options}) {
     return dio
         .post(path,
-            queryParameters: queryParameters, data: formData, options: options)
+            queryParameters: queryParameters,
+            data: formData ?? data,
+            options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;
