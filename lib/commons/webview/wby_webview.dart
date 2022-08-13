@@ -143,16 +143,18 @@ class WbyWebViewState extends State<WbyWebView> {
       ],
     );
 
-    return widget.fullPage ? body : Scaffold(
-      backgroundColor: widget.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-              appBar,
-            Expanded(child: body),
-          ],
-        ),
-      ),
-    );
+    return widget.fullPage
+        ? body
+        : Scaffold(
+            backgroundColor: widget.backgroundColor,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  appBar,
+                  Expanded(child: body),
+                ],
+              ),
+            ),
+          );
   }
 }

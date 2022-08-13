@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class AgreementAndPrivacyDialog extends Dialog {
-  String result;
+  final String result;
 
   AgreementAndPrivacyDialog(this.result);
 

@@ -66,7 +66,7 @@ class AuthRouter {
     register1: (_) => RegisterPageOne(),
     register2: (arg) {
       var map = arg as Map;
-      return RegisterPageTwo(map['userNum'], map['nickname']);
+      return RegisterPageTwo(map['userNum'], map['nickname'],map['idNum'], map['email']);
     },
     register3: (arg) {
       var map = arg as Map;

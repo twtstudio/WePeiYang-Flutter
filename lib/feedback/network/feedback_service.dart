@@ -939,6 +939,25 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static adminChangeETag(
+      {@required id,
+        @required value,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminChangeETag', () async {
+      try {
+        await feedbackAdminPostDio.post('post/etag',
+            formData: FormData.fromMap({
+              'post_id': id,
+              'value': value,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   static superAdminOpenBox(
       {@required uid,
       @required OnResult<String> onResult,

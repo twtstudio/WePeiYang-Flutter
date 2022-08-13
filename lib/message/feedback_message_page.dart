@@ -1040,9 +1040,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 SizedBox(height: 7.w),
                 if (widget.data.floor.content != '')
                   Text(
-                  widget.data.floor.content,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
-                ),
+                    widget.data.floor.content,
+                    style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
+                  ),
                 if (widget.data.floor.imageUrl != '')
                   Text(
                     '[图片]',
@@ -1389,10 +1389,13 @@ extension StringExtension on String {
 
 class CustomIndicator extends Decoration {
   const CustomIndicator({
+    this.left = false,
     this.borderSide = const BorderSide(width: 2, color: Colors.white),
     this.insets = EdgeInsets.zero,
   })  : assert(borderSide != null),
         assert(insets != null);
+
+  final bool left;
 
   final BorderSide borderSide;
 
@@ -1429,12 +1432,12 @@ class CustomIndicator extends Decoration {
     assert(rect != null);
     assert(textDirection != null);
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
-    double wantWidth = 14;
+    double wantWidth = left ? 30 : 14;
     double cw = (indicator.left + indicator.right) / 2;
 
     return Rect.fromLTWH(
-      cw - wantWidth / 2,
-      indicator.bottom - borderSide.width,
+      left ? indicator.left : cw - wantWidth / 2,
+      left ? indicator.bottom - borderSide.width - 4 : indicator.bottom - borderSide.width,
       wantWidth,
       borderSide.width,
     );

@@ -14,11 +14,13 @@ class UserAvatarImage extends StatelessWidget {
     var avatar = CommonPreferences.avatar.value;
     return avatar == ''
         ? Icon(Icons.account_circle_rounded, size: size, color: iconColor)
-        : CircleAvatar(
-            radius: size / 2,
-            backgroundColor: Color.fromRGBO(98, 103, 124, 1),
-            backgroundImage: NetworkImage('https://api.twt.edu.cn' + avatar),
-            child: SizedBox(width: size, height: size),
+        : ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            child: SizedBox(
+                width: size,
+                height: size,
+                child: Image.network('https://api.twt.edu.cn' + avatar),
+            ),
           );
   }
 }

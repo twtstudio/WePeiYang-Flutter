@@ -91,7 +91,7 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
 
             // applicationIdSuffix
             // http://www.androidchina.net/10565.html
@@ -144,7 +144,7 @@ android {
 
                     break
                 case "DEVELOP":
-                    // 个推 develop
+                    // 个推 develop+
                     manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
                     // 不覆盖正式版安装
                     applicationIdSuffix ".develop"
@@ -189,7 +189,7 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
             // 输出调试信息

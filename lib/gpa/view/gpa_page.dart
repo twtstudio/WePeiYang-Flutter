@@ -3,6 +3,8 @@ import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
@@ -18,6 +20,8 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
+
+import '../../commons/util/text_util.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
@@ -118,17 +122,37 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
       brightness: FavorColors.gpaType.value == 'light'
           ? Brightness.light
           : Brightness.dark,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 15),
-        child: GestureDetector(
-            child: Icon(Icons.arrow_back, color: gpaColors[1], size: 28),
-            onTap: () => Navigator.pop(context)),
+      leading: Row(
+        children: [
+          SizedBox(
+            width: 15.w,
+          ),
+          GestureDetector(
+              child: SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/back.svg",
+                color: gpaColors[1],
+                width: 20.w,
+                height: 20.h,
+                fit: BoxFit.fitWidth,
+              ),
+              onTap: () => Navigator.pop(context)),
+          SizedBox(
+            width: 6.6.w,
+          ),
+          Text('HELLO, ${CommonPreferences.nickname.value}',
+              style: TextUtil.base.white.w900.sp(22)),
+        ],
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 18),
           child: GestureDetector(
-              child: Icon(Icons.loop, color: gpaColors[1], size: 25),
+              child: SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/refreash.svg",
+                color: gpaColors[1],
+                width: 28.w,
+                height: 28.h,
+              ),
               onTap: () {
                 if (CommonPreferences.isAprilFoolGPA.value) {
                   showDialog(
