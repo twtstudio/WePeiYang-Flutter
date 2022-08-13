@@ -96,11 +96,11 @@ class CommonPreferences {
   var scheduleShrink = PrefsBean<bool>('scheduleShrink');
 
   /// 学期信息
-  /// 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
-  /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SharedPreferences.kt中的默认值
-  var termStart = PrefsBean<int>('termStart', 1645372800);
-  var termName = PrefsBean<String>('termName', '21222');
-  var termStartDate = PrefsBean<String>('termStartDate', '2022-02-21');
+  /// 由于好奇心搜了一下，这个时间戳大概2038年才会int32范围溢出，懒得改了哈哈
+  /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
+  var termStart = PrefsBean<int>('termStart', 1660492800);
+  var termName = PrefsBean<String>('termName', '22231');
+  var termStartDate = PrefsBean<String>('termStartDate', '2022-08-15');
 
   /// cookies in classes.tju.edu.cn
   var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
