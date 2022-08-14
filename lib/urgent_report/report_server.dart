@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/urgent_report/main_page.dart';
 
@@ -43,8 +43,8 @@ class ReportDio extends DioAbstract with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked("report", () async {
       try {
-        var token = CommonPreferences().token.value;
-        var id = CommonPreferences().userNumber.value;
+        var token = CommonPreferences.token.value;
+        var id = CommonPreferences.userNumber.value;
         var location = data[ReportPart.currentLocation] as LocationData;
         var state = data[ReportPart.currentState] as LocationState;
         final travelCode = MultipartFile.fromFileSync(
@@ -96,7 +96,7 @@ class ReportDio extends DioAbstract with AsyncTimer {
 
   Future<List<ReportItem>> getReportHistoryList() async {
     try {
-      var token = CommonPreferences().token.value;
+      var token = CommonPreferences.token.value;
       var response = await dio.get(
         "record",
         options: Options(
@@ -116,7 +116,7 @@ class ReportDio extends DioAbstract with AsyncTimer {
 
   Future<bool> getTodayHasReported() async {
     try {
-      var token = CommonPreferences().token.value;
+      var token = CommonPreferences.token.value;
       var response = await dio.get(
         "status",
         options: Options(

@@ -92,7 +92,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   bool _checkTodayHasReportedOrNot() {
     try {
-      var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
+      var lastTime = DateTime.parse(CommonPreferences.reportTime.value);
       var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
       var difference = lastDay.difference(DateTime.now()).inDays;
       return difference == 0;
@@ -120,7 +120,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       reportDio.report(
           data: model.data,
           onResult: () async {
-            CommonPreferences().reportTime.value = DateTime.now().toString();
+            CommonPreferences.reportTime.value = DateTime.now().toString();
             Navigator.pop(context);
             ToastProvider.success('上传成功');
             clearAll.value = !clearAll.value;
@@ -203,7 +203,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
             GestureDetector(
               onTap: () async {
                 var url =
-                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
+                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

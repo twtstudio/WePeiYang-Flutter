@@ -19,6 +19,13 @@ import 'version_data.dart';
 
 part 'update_listener.dart';
 
+enum UpdateState {
+  nothing,
+  checkUpdate,
+  download,
+  load,
+}
+
 /// 版本更新管理
 class UpdateManager extends UpdateStatusListener {
   /// 新版信息

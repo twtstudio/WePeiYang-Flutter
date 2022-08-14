@@ -26,7 +26,8 @@ class OfficialReplyDetailPage extends StatefulWidget {
   OfficialReplyDetailPage(this.floor);
 
   @override
-  _OfficialReplyDetailPageState createState() => _OfficialReplyDetailPageState();
+  _OfficialReplyDetailPageState createState() =>
+      _OfficialReplyDetailPageState();
 }
 
 class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
@@ -153,12 +154,12 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        if(CommonPreferences().lakeUid.value.toString() != post.uid.toString())
+        if(CommonPreferences.lakeUid.value.toString() != post.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
-        launchKey.currentState.send(true);
+          launchKey.currentState.send(true);
         setState(() {
-         _refreshController.requestRefresh();
+          _refreshController.requestRefresh();
         });
       },
       child: Padding(
@@ -223,7 +224,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     );
 
     var inputField =
-        CommentInputField(postId:  floors[0].postId, key: launchKey);
+        CommentInputField(postId: floors[0].postId, key: launchKey);
 
     body = Column(
       children: [

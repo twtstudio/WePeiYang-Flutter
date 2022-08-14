@@ -1,8 +1,7 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -16,7 +15,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences().lakeToken.value,
+      CommonPreferences.lakeToken.value,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -273,8 +272,8 @@ class LakeModel extends ChangeNotifier {
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if (CommonPreferences().feedbackLastWeCo.value != id &&
-            CommonPreferences().lakeToken.value != "") {
+        if (CommonPreferences.feedbackLastWeCo.value != id &&
+            CommonPreferences.lakeToken.value != "") {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -291,9 +290,9 @@ class LakeModel extends ChangeNotifier {
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(context, FeedbackRouter.detail,
                         arguments: post);
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   } else {
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   }
                 });
               },

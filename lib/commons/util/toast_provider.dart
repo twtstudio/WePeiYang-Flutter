@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart' show Color, Colors;
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:we_pei_yang_flutter/commons/network/async_timer.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show AsyncTimer;
 
 /// WePeiYangApp统一使用的toast，共有三种类型
 class ToastProvider with AsyncTimer {

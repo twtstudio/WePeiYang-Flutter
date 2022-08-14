@@ -7,8 +7,8 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class SettingPageArgs {
   final bool showBrief;
@@ -39,7 +39,6 @@ class _SettingPageState extends State<SettingPage> {
   static final arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
-  var pref = CommonPreferences();
   double descriptionMaxWidth;
 
   @override
@@ -129,9 +128,9 @@ class _SettingPageState extends State<SettingPage> {
                             Text(S.current.setting_gpa, style: mainTextStyle)),
                     Spacer(),
                     Switch(
-                      value: pref.hideGPA.value,
+                      value: CommonPreferences.hideGPA.value,
                       onChanged: (value) {
-                        setState(() => pref.hideGPA.value = value);
+                        setState(() => CommonPreferences.hideGPA.value = value);
                         Provider.of<GPANotifier>(context, listen: false)
                             .hideGPA = value;
                       },
@@ -162,10 +161,11 @@ class _SettingPageState extends State<SettingPage> {
                             Text(S.current.setting_exam, style: mainTextStyle)),
                     Spacer(),
                     Switch(
-                      value: pref.hideExam.value,
+                      value: CommonPreferences.hideExam.value,
                       onChanged: (value) {
-                        setState(() => pref.hideExam.value = value);
-                        Provider.of<ExamNotifier>(context, listen: false)
+                        setState(
+                            () => CommonPreferences.hideExam.value = value);
+                        Provider.of<ExamProvider>(context, listen: false)
                             .hideExam = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
@@ -236,10 +236,12 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     Spacer(),
                     Switch(
-                      value: pref.nightMode.value,
+                      value: CommonPreferences.nightMode.value,
                       onChanged: (value) {
-                        setState(() => pref.nightMode.value = value);
-                        Provider.of<ScheduleNotifier>(context, listen: false)
+                        setState(
+                            () => CommonPreferences.nightMode.value = value);
+                        Provider.of<CourseDisplayProvider>(context,
+                                listen: false)
                             .nightMode = value;
                       },
                       activeColor: Color.fromRGBO(105, 109, 127, 1),
@@ -286,7 +288,7 @@ class _SettingPageState extends State<SettingPage> {
                                 Text(S.current.setting_day_number,
                                     style: mainTextStyle),
                                 SizedBox(height: 3),
-                                Text('${pref.dayNumber.value}',
+                                Text('${CommonPreferences.dayNumber.value}',
                                     style: hintTextStyle)
                               ],
                             ),
@@ -325,10 +327,10 @@ class _SettingPageState extends State<SettingPage> {
                         ),
                         Spacer(),
                         Switch(
-                          value: pref.otherWeekSchedule.value,
+                          value: CommonPreferences.otherWeekSchedule.value,
                           onChanged: (value) {
-                            setState(
-                                () => pref.otherWeekSchedule.value = value);
+                            setState(() => CommonPreferences
+                                .otherWeekSchedule.value = value);
                           },
                           activeColor: Color.fromRGBO(105, 109, 127, 1),
                           inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),

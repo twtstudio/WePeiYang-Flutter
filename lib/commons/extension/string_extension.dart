@@ -20,4 +20,17 @@ extension StringExtension on String {
         .size;
     return size;
   }
+
+  /// 获取[单个]正则表达式匹配结果，若未匹配到则返回空字符串
+  String match(String form) => RegExp(form).firstMatch(this)?.group(0) ?? '';
+
+  /// 获取[多个]正则表达式匹配结果，若未匹配到则返回空列表
+  List<String> matches(String form) {
+    var list = <String>[];
+    RegExp(form).allMatches(this).toList().forEach((e) {
+      String? str = e.group(0);
+      if (str != null) list.add(str);
+    });
+    return list;
+  }
 }

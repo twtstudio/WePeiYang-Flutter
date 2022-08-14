@@ -4,7 +4,7 @@ import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -17,7 +17,7 @@ class FeedbackDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -49,7 +49,7 @@ class FeedbackPicPostDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -71,7 +71,7 @@ class FeedbackAdminPostDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -96,29 +96,29 @@ class FeedbackService with AsyncTimer {
       bool forceRefresh = false}) async {
     try {
       var response;
-      if (CommonPreferences().lakeToken.value != null &&
-          CommonPreferences().lakeToken.value != "" &&
+      if (CommonPreferences.lakeToken.value != null &&
+          CommonPreferences.lakeToken.value != "" &&
           !forceRefresh) {
         response = await feedbackDio
-            .get('auth/${CommonPreferences().lakeToken.value}');
+            .get('auth/${CommonPreferences.lakeToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
-          'token': CommonPreferences().token.value,
+          'token': CommonPreferences.token.value,
         });
       }
       if (response.data['data'] != null &&
           response.data['data']['token'] != null) {
-        CommonPreferences().lakeToken.value = response.data['data']['token'];
-        CommonPreferences().lakeUid.value =
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+        CommonPreferences.lakeUid.value =
             response.data['data']['uid'].toString();
         if (response.data['data']['user'] != null) {
-          CommonPreferences().isSuper.value =
+          CommonPreferences.isSuper.value =
               response.data['data']['user']['is_super'];
-          CommonPreferences().isSchAdmin.value =
+          CommonPreferences.isSchAdmin.value =
               response.data['data']['user']['is_sch_admin'];
-          CommonPreferences().isStuAdmin.value =
+          CommonPreferences.isStuAdmin.value =
               response.data['data']['user']['is_stu_admin'];
-          CommonPreferences().isUser.value =
+          CommonPreferences.isUser.value =
               response.data['data']['user']['is_user'];
         }
         if (onResult != null) onResult(response.data['data']['token']);
@@ -606,17 +606,17 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var response = await feedbackDio.get('user');
-      CommonPreferences().lakeUid.value =
+      CommonPreferences.lakeUid.value =
           response.data['data']['user']['id'].toString();
-      CommonPreferences().lakeNickname.value =
+      CommonPreferences.lakeNickname.value =
           response.data['data']['user']['nickname'];
-      CommonPreferences().isSuper.value =
+      CommonPreferences.isSuper.value =
           response.data['data']['user']['is_super'];
-      CommonPreferences().isSchAdmin.value =
+      CommonPreferences.isSchAdmin.value =
           response.data['data']['user']['is_sch_admin'];
-      CommonPreferences().isStuAdmin.value =
+      CommonPreferences.isStuAdmin.value =
           response.data['data']['user']['is_stu_admin'];
-      CommonPreferences().isUser.value =
+      CommonPreferences.isUser.value =
           response.data['data']['user']['is_user'];
       onSuccess?.call();
     } on DioError catch (e) {
@@ -673,7 +673,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
-              'token': CommonPreferences().lakeToken.value,
+              'token': CommonPreferences.lakeToken.value,
             }));
         onSuccess?.call();
       } on DioError catch (e) {

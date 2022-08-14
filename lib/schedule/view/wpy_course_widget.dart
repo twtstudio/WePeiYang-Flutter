@@ -1,13 +1,15 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class TodayCoursesWidget extends StatefulWidget {
   @override
@@ -19,28 +21,29 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
   @override
   void initState() {
     super.initState();
-    if(CommonPreferences().isSkinUsed.value) {
-      skinList.add(Color(CommonPreferences().skinColorA.value));
-      skinList.add(Color(CommonPreferences().skinColorB.value));
-      skinList.add(Color(CommonPreferences().skinColorC.value));
-      skinList.add(Color(CommonPreferences().skinColorD.value));
-      skinList.add(Color(CommonPreferences().skinColorE.value));
-      skinList.add(Color(CommonPreferences().skinColorF.value));
+    if(CommonPreferences.isSkinUsed.value) {
+      skinList.add(Color(CommonPreferences.skinColorA.value));
+      skinList.add(Color(CommonPreferences.skinColorB.value));
+      skinList.add(Color(CommonPreferences.skinColorC.value));
+      skinList.add(Color(CommonPreferences.skinColorD.value));
+      skinList.add(Color(CommonPreferences.skinColorE.value));
+      skinList.add(Color(CommonPreferences.skinColorF.value));
     }
   }
   @override
   Widget build(BuildContext context) {
-    return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      List<ScheduleCourse> todayCourses = _getTodayCourses(notifier);
+    return Consumer<CourseProvider>(builder: (context, provider, _) {
+      var nightMode =
+          context.select<CourseDisplayProvider, bool>((p) => p.nightMode);
+      var todayPairs = _getTodayPairs(provider, nightMode);
       return Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, ScheduleRouter.schedule),
+            onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
+              padding: const EdgeInsets.fromLTRB(22, 20, 22, 10),
               alignment: Alignment.centerLeft,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(S.current.schedule,
                       style: FontManager.YaQiHei.copyWith(
@@ -48,78 +51,67 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                           color: Color.fromRGBO(100, 103, 122, 1),
                           fontWeight: FontWeight.bold)),
                   Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25, top: 2),
-                    child: (todayCourses.length == 0)
-                        ? Container()
-                        : DefaultTextStyle(
+                  if (todayPairs.length != 0)
+                    DefaultTextStyle(
                       style: FontManager.YaHeiRegular.copyWith(
                           fontSize: 12,
                           color: Color.fromRGBO(100, 103, 122, 1)),
                       child: Text.rich(TextSpan(children: [
                         TextSpan(
-                            text: (notifier.nightMode &&
-                                DateTime
-                                    .now()
-                                    .hour >= 21)
+                            text: (nightMode && DateTime.now().hour >= 21)
                                 ? "明天 "
                                 : "今天 "),
                         TextSpan(
-                            text: todayCourses.length.toString(),
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: " 节课 "),
-                        TextSpan(
-                            text: "> ", style: TextStyle(fontSize: 15))
+                            text: todayPairs.length.toString(),
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: " 节课"),
                       ])),
                     ),
-                  )
+                  Icon(Icons.keyboard_arrow_right,
+                      color: ColorUtil.lightTextColor),
+                  SizedBox(width: 5),
                 ],
               ),
             ),
           ),
-          _getDisplayWidget(notifier, todayCourses, context)
+          _getDisplayWidget(context, todayPairs, nightMode)
         ],
       );
     });
   }
 
   /// 获取今天（夜猫子则是明天）的课程列表
-  List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
+  List<Pair<Course, int>> _getTodayPairs(
+      CourseProvider provider, bool nightMode) {
     /// 如果学期还没开始，则不显示
-    if (notifier.isOneDayBeforeTermStart) return [];
-    List<ScheduleCourse> todayCourses = [];
-    int today = DateTime
-        .now()
-        .weekday;
-    bool nightMode = notifier.nightMode;
-    if (DateTime
-        .now()
-        .hour < 21) nightMode = false;
+    if (isOneDayBeforeTermStart) return [];
+    List<Pair<Course, int>> todayPairs = [];
+    int today = DateTime.now().weekday;
+    bool readNightMode = nightMode;
+    if (DateTime.now().hour < 21) readNightMode = false;
     bool flag;
-    notifier.coursesWithNotify.forEach((course) {
-      if (nightMode)
-        flag = judgeActiveTomorrow(
-            notifier.currentWeek, today, notifier.weekCount, course);
-      else
-        flag = judgeActiveInDay(
-            notifier.currentWeek, today, notifier.weekCount, course);
-      if (flag) todayCourses.add(course);
+    provider.totalCourses.forEach((course) {
+      for (int i = 0; i < course.arrangeList.length; i++) {
+        if (readNightMode) {
+          flag = judgeActiveTomorrow(provider.currentWeek, today,
+              provider.weekCount, course.arrangeList[i]);
+        } else {
+          flag = judgeActiveInDay(provider.currentWeek, today,
+              provider.weekCount, course.arrangeList[i]);
+        }
+        if (flag) todayPairs.add(Pair(course, i));
+      }
     });
-    return todayCourses;
+    return todayPairs;
   }
 
   /// 返回首页显示课程的widget
-  Widget _getDisplayWidget(ScheduleNotifier notifier,
-      List<ScheduleCourse> todayCourses, BuildContext context) {
-    if (todayCourses.length == 0) {
+  Widget _getDisplayWidget(BuildContext context,
+      List<Pair<Course, int>> todayPairs, bool nightMode) {
+    if (todayPairs.length == 0) {
       // 如果今天没有课，就返回文字框
       return GestureDetector(
-        onTap: () =>
-            Navigator.pushNamed(context, ScheduleRouter.schedule).then((
-                value) =>
-                this.setState(() {
-                })),
+        onTap: () => Navigator.pushNamed(context, ScheduleRouter.course).then((_) => setState(() {})),
         child: Container(
             height: 60,
             margin: const EdgeInsets.symmetric(horizontal: 22),
@@ -128,9 +120,7 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                 borderRadius: BorderRadius.circular(15)),
             child: Center(
               child: Text(
-                  (notifier.nightMode && DateTime
-                      .now()
-                      .hour >= 21)
+                  (nightMode && DateTime.now().hour >= 21)
                       ? "明天没有课哦"
                       : "今天没有课哦",
                   style: FontManager.YaHeiLight.copyWith(
@@ -142,28 +132,28 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
     }
 
     /// 给本日课程排序
-    todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
+    todayPairs.sort(
+        (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
     return SizedBox(
       height: 185,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          itemCount: todayCourses.length,
+          itemCount: todayPairs.length,
           itemBuilder: (context, i) {
             return Container(
               height: 185,
               width: 140,
               padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
               child: Material(
-                color: CommonPreferences().isSkinUsed.value?skinList
-                    [i %4]:FavorColors
+                color: CommonPreferences.isSkinUsed.value?skinList[i %4]:FavorColors
                     .defaultHomeSchedule[i % FavorColors.homeSchedule.length],
                 borderRadius: BorderRadius.circular(15),
                 elevation: 2,
                 child: InkWell(
                   onTap: () =>
-                      Navigator.pushNamed(context, ScheduleRouter.schedule),
+                      Navigator.pushNamed(context, ScheduleRouter.course),
                   borderRadius: BorderRadius.circular(15),
                   splashFactory: InkRipple.splashFactory,
                   splashColor: Color.fromRGBO(179, 182, 191, 1),
@@ -174,11 +164,10 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                         Container(
                           height: 95,
                           alignment: Alignment.centerLeft,
-                          child: Text(formatText(todayCourses[i].courseName),
+                          child: Text(formatText(todayPairs[i].first.name),
                               style: FontManager.YaHeiBold.copyWith(
                                   fontSize: 15,
-                                  color: CommonPreferences().isSkinUsed.value?(skinList[i %
-                                      4].value ==
+                                  color: CommonPreferences.isSkinUsed.value?(skinList[i % 4].value ==
                                       Color
                                           .fromRGBO(221, 182, 190, 1.0)
                                           .value) ? Color(0xfff1dce0):Colors.white
@@ -189,8 +178,7 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                              getCourseTime(todayCourses[i].arrange.start,
-                                  todayCourses[i].arrange.end),
+                              getCourseTime(todayPairs[i].arrange.unitList),
                               style: FontManager.Aspira.copyWith(
                                   fontSize: 11.5, color: Colors.white)),
                         ),
@@ -198,7 +186,8 @@ class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                              replaceBuildingWord(todayCourses[i].arrange.room),
+                              replaceBuildingWord(
+                                  todayPairs[i].arrange.location),
                               style: FontManager.Aspira.copyWith(
                                   fontSize: 12.5,
                                   color: Colors.white,

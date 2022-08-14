@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/image_without_auth.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override

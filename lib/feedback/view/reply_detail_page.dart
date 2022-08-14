@@ -395,8 +395,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorB.value)
+      backgroundColor: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorB.value)
           : ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
@@ -428,8 +428,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value
-            ? Color(CommonPreferences().skinColorB.value)
+        backgroundColor: CommonPreferences.isSkinUsed.value
+            ? Color(CommonPreferences.skinColorB.value)
             : ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,

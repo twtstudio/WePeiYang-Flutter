@@ -44,11 +44,11 @@ extension CampusExtension on Campus {
 
   Campus get change {
     var next = (index + 1) % 2;
-    CommonPreferences().lastChoseCampus.value = next;
+    CommonPreferences.lastChoseCampus.value = next;
     return campuses[next];
   }
 
-  Campus get init => Campus.values[CommonPreferences().lastChoseCampus.value];
+  Campus get init => Campus.values[CommonPreferences.lastChoseCampus.value];
 
   String get id => ['1', '2'][index];
 

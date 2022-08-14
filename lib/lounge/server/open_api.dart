@@ -1,6 +1,6 @@
 // @dart = 2.12
 
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/lounge/model/building.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
@@ -54,7 +54,7 @@ class OpenApi {
   /// 获取一周的教室使用数据
   static Stream<MapEntry<int, List<Building>>> getWeekClassPlan(DateTime t) {
     final thatWeek = t.convertedWeekAndDay;
-    final term = CommonPreferences().termName.value;
+    final term = CommonPreferences.termName.value;
     return Stream.fromFutures(
       thatWeek.map((weekday) => getClassroomPlanOfDay(weekday, term)),
     );

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
 
-enum ButtonType { light, dark }
+enum ButtonType { light, dark, blue }
 
 class WbyDialogButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -17,6 +17,22 @@ class WbyDialogButton extends StatelessWidget {
     required this.type,
     this.expand = false,
   }) : super(key: key);
+
+  Color get _buttonColor {
+    if (type == ButtonType.blue)
+      return Color.fromRGBO(44, 126, 223, 1);
+    else if (type == ButtonType.dark)
+      return Color(0xff62677b);
+    else
+      return Colors.white;
+  }
+
+  Color get _textColor {
+    if (type == ButtonType.dark || type == ButtonType.blue)
+      return Colors.white;
+    else
+      return Colors.black;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +49,7 @@ class WbyDialogButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(buttonRadius),
-          color: type == ButtonType.dark ? Color(0xff62677b) : Colors.white,
+          color: _buttonColor,
           boxShadow: const [
             BoxShadow(
               color: Color(0x19000000),
@@ -47,7 +63,7 @@ class WbyDialogButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: type == ButtonType.dark ? Colors.white : Colors.black,
+            color: _textColor,
           ),
         ),
       ),

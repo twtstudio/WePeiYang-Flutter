@@ -68,7 +68,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
 
-    if (CommonPreferences().isFirstUse.value == true) setAsserts();
+    if (CommonPreferences.isFirstUse.value == true) setAsserts();
     cards = []
       ..add(DateTime.now().month == 4 && DateTime.now().day == 1
           ? CardBean(
@@ -86,7 +86,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           ),
           '课程表',
           "Exam",
-          ScheduleRouter.schedule))
+          ScheduleRouter.course))
       ..add(CardBean(
           Image.asset(
             "assets/svg_pics/lake_butt_icons/wiki.png",
@@ -113,7 +113,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           HomeRouter.restartGame));
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (CommonPreferences().isFirstUse.value == true) {
+      if (CommonPreferences.isFirstUse.value == true) {
         showDialog(
             context: context,
             barrierDismissible: false,
@@ -168,8 +168,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                         // 在0.7停止同理
                         stops: [0, 0.53, 0.7])
                     : LinearGradient(colors: [Colors.white, Colors.white]))),
-        if (CommonPreferences().isSkinUsed.value)
-          Image.network(CommonPreferences().skinMain.value,
+        if (CommonPreferences.isSkinUsed.value)
+          Image.network(CommonPreferences.skinMain.value,
               fit: BoxFit.fitWidth),
         SafeArea(
           child: Stack(
@@ -222,7 +222,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       curve: Curves.easeIn,
                       onEnd: () => setState(() => useRound = showSchedule),
                       child: Text(
-                          'HELLO, ${CommonPreferences().nickname.value}',
+                          'HELLO, ${CommonPreferences.nickname.value}',
                           style: TextUtil.base.white.w900.sp(22)),
                     ),
                   ),
@@ -240,7 +240,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       duration: Duration(milliseconds: 800),
                       curve: Curves.easeIn,
                       child: Text(
-                          'HELLO, ${CommonPreferences().nickname.value}',
+                          'HELLO, ${CommonPreferences.nickname.value}',
                           style: TextUtil.base.black00.w900.sp(22)),
                     ),
                   ),
@@ -350,7 +350,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
               SizedBox(width: 5),
               Expanded(
                   child: Text(
-                CommonPreferences().nickname.value,
+                CommonPreferences.nickname.value,
                 style: hintStyle,
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
@@ -362,7 +362,7 @@ class _WPYHeader extends SliverPersistentHeaderDelegate {
                 }),
                 child: Container(
                   margin: const EdgeInsets.only(left: 7, right: 10),
-                  decoration: CommonPreferences().isAprilFoolHead.value
+                  decoration: CommonPreferences.isAprilFoolHead.value
                       ? BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
@@ -481,11 +481,11 @@ class SliverCardsWidget extends StatelessWidget {
                       confirmText: "好耶",
                       cancelText: "坏耶",
                       confirmFun: () {
-                        CommonPreferences().isAprilFool.value = true;
-                        CommonPreferences().isAprilFoolLike.value = true;
-                        CommonPreferences().isAprilFoolGPA.value = true;
-                        CommonPreferences().isAprilFoolClass.value = true;
-                        CommonPreferences().isAprilFoolHead.value = true;
+                        CommonPreferences.isAprilFool.value = true;
+                        CommonPreferences.isAprilFoolLike.value = true;
+                        CommonPreferences.isAprilFoolGPA.value = true;
+                        CommonPreferences.isAprilFoolClass.value = true;
+                        CommonPreferences.isAprilFoolHead.value = true;
                         Navigator.popAndPushNamed(context, HomeRouter.home);
                       },
                     );

@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class AgreementAndPrivacyDialog extends Dialog {
-  String result;
+  final String result;
 
   AgreementAndPrivacyDialog(this.result);
 
@@ -71,7 +71,7 @@ class AgreementAndPrivacyDialog extends Dialog {
         ),
         GestureDetector(
           onTap: () {
-            CommonPreferences().isFirstUse.value = false;
+            CommonPreferences.isFirstUse.value = false;
             Navigator.pop(context);
           },
           child: Container(

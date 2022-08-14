@@ -1,7 +1,9 @@
+// @dart = 2.12
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
@@ -14,110 +16,108 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<GPANotifier>(builder: (context, notifier, _) {
-      if (notifier.hideGPA) return Container();
-      return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-        behavior: HitTestBehavior.opaque,
-        child: Column(children: <Widget>[
-          CurveText(notifier),
-          // wpy中的gpa曲线并不共用gpa的配色，所以在这里传color没有意义
-          GPACurve(notifier, FavorColors.gpaColor, isPreview: true),
-          GPAIntro(notifier)
-        ]),
-      );
-    });
+    var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
+    if (hideGPA) return Container();
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+      behavior: HitTestBehavior.opaque,
+      child: Column(children: <Widget>[
+        _CurveText(),
+        GPACurve(FavorColors.gpaColor, isPreview: true),
+        _GPAIntro()
+      ]),
+    );
   }
 }
 
 /// 曲线上面的文字，说明当前曲线的内容
-class CurveText extends StatelessWidget {
-  final GPANotifier notifier;
-
-  CurveText(this.notifier);
-
+class _CurveText extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-        child: Container(
-            padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
-            alignment: Alignment.centerLeft,
-            child: Text("${notifier.typeName()}${S.current.curve}",
-                style: FontManager.YaQiHei.copyWith(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold))),
-      );
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
+        alignment: Alignment.centerLeft,
+        child: Builder(builder: (context) {
+          var typeName = context.select<GPANotifier, String>((p) => p.typeName);
+          return Text("$typeName${S.current.curve}",
+              style: FontManager.YaQiHei.copyWith(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold));
+        }),
+      ),
+    );
+  }
 }
 
 /// wpy_page中显示数值信息
-class GPAIntro extends StatelessWidget {
-  final GPANotifier notifier;
-
-  GPAIntro(this.notifier);
-
-  static final textStyle =
+class _GPAIntro extends StatelessWidget {
+  static final _textStyle =
       FontManager.YaHeiLight.copyWith(color: Color(0xffcdcdd3), fontSize: 14);
 
-  static final numStyle = FontManager.Montserrat.copyWith(
+  static final _numStyle = FontManager.Montserrat.copyWith(
       color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22);
 
   @override
   Widget build(BuildContext context) {
+    var total = context.select<GPANotifier, Total?>((p) => p.total);
     var weighted = "不";
     var grade = "知";
     var credit = "道";
-    if (notifier.total != null) {
-      if (CommonPreferences().isAprilFoolGPA.value) {
+    if (total != null) {
+      if (CommonPreferences.isAprilFoolGPA.value) {
         weighted = 100.toString();
         grade = 4.0.toString();
         credit = 114514.toString();
       } else {
-        weighted = notifier.total.weighted.toString();
-        grade = notifier.total.gpa.toString();
-        credit = notifier.total.credits.toString();
+        weighted = total.weighted.toString();
+        grade = total.gpa.toString();
+        credit = total.credits.toString();
       }
     }
+    var quietPvd = context.read<GPANotifier>();
     return Container(
-      decoration: CommonPreferences().isSkinUsed.value
+      decoration: CommonPreferences.isSkinUsed.value
           ? BoxDecoration(color: Colors.white10)
           : BoxDecoration(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 0,
+            onTap: () => quietPvd.type = 0,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('Total Weighted', style: textStyle),
+                Text('Total Weighted', style: _textStyle),
                 SizedBox(height: 8),
-                Text(weighted, style: numStyle)
+                Text(weighted, style: _numStyle)
               ],
             ),
           ),
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 1,
+            onTap: () => quietPvd.type = 1,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('Total GPA', style: textStyle),
+                Text('Total GPA', style: _textStyle),
                 SizedBox(height: 8),
-                Text(grade, style: numStyle)
+                Text(grade, style: _numStyle)
               ],
             ),
           ),
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 2,
+            onTap: () => quietPvd.type = 2,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('Credits Earned', style: textStyle),
+                Text('Credits Earned', style: _textStyle),
                 SizedBox(height: 8),
-                Text(credit, style: numStyle)
+                Text(credit, style: _numStyle)
               ],
             ),
           )
@@ -131,13 +131,12 @@ class GPAIntro extends StatelessWidget {
 /// Stack的底层为静态的[_GPACurvePainter],由cubic曲线和黑点构成
 /// Stack的顶层为动态的[_GPAPopupPainter],用补间动画控制移动
 class GPACurve extends StatefulWidget {
-  final GPANotifier notifier;
-  final List<Color> gpaColors;
+  final List<Color> _gpaColors;
 
   /// 是否在wpy_page中显示（false的话就是在gpa_page中呗）
   final bool isPreview;
 
-  GPACurve(this.notifier, this.gpaColors, {@required this.isPreview});
+  GPACurve(this._gpaColors, {required this.isPreview});
 
   @override
   _GPACurveState createState() => _GPACurveState();
@@ -147,49 +146,45 @@ class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
   static const Color _popupCardPreview = Colors.white;
   static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
-  static Color _popupCardColor;
-  static Color _popupTextColor;
+  static late Color _popupCardColor;
+  static late Color _popupTextColor;
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
 
   /// 上次 / 本次选中的点
   int _lastTaped = 1;
   int _newTaped = 1;
 
-  // _getAssetImage() async{
-  ///自定义绘制图片
-  ImageInfo flowerPicture;
-
   @override
   void initState() {
     super.initState();
-    _popupCardColor = widget.gpaColors[3];
-    _popupTextColor = widget.gpaColors[1];
+    _popupCardColor = widget._gpaColors[3];
+    _popupTextColor = widget._gpaColors[1];
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.notifier.currentDataWithNotify == null)
-      return SizedBox(height: 10);
+    var notifier = context.watch<GPANotifier>();
+    if (notifier.statsData.isEmpty) return SizedBox(height: 10);
     if (_lastTaped == _newTaped) {
-      _lastTaped = widget.notifier.indexWithNotify + 1;
+      _lastTaped = notifier.index + 1;
       _newTaped = _lastTaped;
     }
     List<Point<double>> points = [];
-    List<double> curveData = widget.notifier.curveDataWithNotify;
+    List<double> curveData = notifier.curveData;
     _initPoints(points, curveData);
     return GestureDetector(
         /// 点击监听
         onTapDown: (TapDownDetails detail) {
-          RenderBox renderBox = context.findRenderObject();
+          var renderBox = context.findRenderObject() as RenderBox;
           var localOffset = renderBox.globalToLocal(detail.globalPosition);
           var result = _judgeTaped(localOffset, points, r: 50);
           if (result != 0) {
             setState(() => _newTaped = result);
-            widget.notifier.indexWithNotify = result - 1;
+            notifier.index = result - 1;
           }
         },
         child: Container(
-          decoration: (widget.isPreview && CommonPreferences().isSkinUsed.value)
+          decoration: (widget.isPreview && CommonPreferences.isSkinUsed.value)
               ? BoxDecoration(color: Colors.white10)
               : BoxDecoration(),
           child: Padding(
@@ -198,23 +193,21 @@ class _GPACurveState extends State<GPACurve>
               children: <Widget>[
                 /// Stack底层
                 CustomPaint(
-                  painter: _GPACurvePainter(
-                    widget.gpaColors,
-                    isPreview: widget.isPreview,
-                    points: points,
-                    taped: _newTaped,
-                  ),
+                  painter: _GPACurvePainter(widget._gpaColors,
+                      isPreview: widget.isPreview,
+                      points: points,
+                      taped: _newTaped),
                   size: Size(double.maxFinite, _canvasHeight),
                 ),
 
                 /// Stack顶层
-                TweenAnimationBuilder(
+                TweenAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 500),
                   tween: Tween(
                       begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
                   onEnd: () => setState(() => _lastTaped = _newTaped),
                   curve: Curves.easeInOutSine,
-                  builder: (BuildContext context, value, Widget child) {
+                  builder: (BuildContext context, value, _) {
                     var lT = points[_lastTaped], nT = points[_newTaped];
                     return Transform.translate(
                       /// 计算两次点击之间的偏移量Offset
@@ -247,23 +240,23 @@ class _GPACurveState extends State<GPACurve>
                               ),
                             ),
                             Container(
-                              decoration: CommonPreferences().isSkinUsed.value
+                              decoration: CommonPreferences.isSkinUsed.value
                                   ? BoxDecoration(
-                                      image: widget.isPreview
-                                          ? DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/begonia/flower_grey.png'),
-                                              fit: BoxFit.contain,
-                                            )
-                                          : DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/lake_butt_icons/flower.png'),
-                                              fit: BoxFit.scaleDown,
-                                            ),
-                                    )
+                                image: widget.isPreview
+                                    ? DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/begonia/flower_grey.png'),
+                                  fit: BoxFit.contain,
+                                )
+                                    : DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/lake_butt_icons/flower.png'),
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              )
                                   : BoxDecoration(),
                               child: CustomPaint(
-                                painter: _GPAPopupPainter(widget.gpaColors,
+                                painter: _GPAPopupPainter(widget._gpaColors,
                                     isPreview: widget.isPreview),
                                 size: const Size(80, 30),
                               ),
@@ -281,7 +274,6 @@ class _GPACurveState extends State<GPACurve>
   }
 
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
-
   _initPoints(List<Point<double>> points, List<double> list) {
     var width = WePeiYangApp.screenWidth;
     var step = width / (list.length + 1);
@@ -321,36 +313,33 @@ class _GPACurveState extends State<GPACurve>
 
 /// 绘制GPACurve栈上层的可移动点
 class _GPAPopupPainter extends CustomPainter {
+  /// 是否在wpy中显示
+  final bool isPreview;
+
   /// 在wpy_page显示的颜色
   static const Color _outerPreview = Colors.white10;
   static const Color _innerPreview = Colors.white;
-
-  /// 在gpa_page显示的颜色
-  static Color _outerColor;
-  static Color _innerColor;
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
   static const _outerRadius = 7.0;
 
-  final bool isPreview;
+  final Paint _innerPaint;
+  final Paint _outerPaint;
 
-  _GPAPopupPainter(List<Color> gpaColors, {@required this.isPreview}) {
-    _outerColor = gpaColors[1];
-    _innerColor = gpaColors[0];
-  }
+  _GPAPopupPainter(List<Color> gpaColors, {required this.isPreview})
+      : _innerPaint = Paint()
+          ..color = isPreview ? _innerPreview : gpaColors[0]
+          ..style = PaintingStyle.fill,
+        _outerPaint = Paint()
+          ..color = isPreview ? _outerPreview : gpaColors[1]
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = _outerWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint innerPaint = Paint()
-      ..color = isPreview ? _innerPreview : _innerColor
-      ..style = PaintingStyle.fill;
-    final Paint outerPaint = Paint()
-      ..color = isPreview ? _outerPreview : _outerColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _outerWidth;
-    canvas.drawCircle(size.center(Offset.zero), _innerRadius, innerPaint);
-    canvas.drawCircle(size.center(Offset.zero), _outerRadius, outerPaint);
+    canvas.drawCircle(size.center(Offset.zero), _innerRadius, _innerPaint);
+    canvas.drawCircle(size.center(Offset.zero), _outerRadius, _outerPaint);
   }
 
   @override
@@ -362,45 +351,45 @@ class _GPAPopupPainter extends CustomPainter {
 
 /// 绘制GPACurve栈底层的曲线、黑点
 class _GPACurvePainter extends CustomPainter {
+  /// 是否在wpy中显示
   final bool isPreview;
   final List<Point<double>> points;
   final int taped;
 
-  _GPACurvePainter(List<Color> gpaColors,
-      {@required this.isPreview, @required this.points, @required this.taped}) {
-    _lineColor = gpaColors[3];
-    _pointColor = gpaColors[1];
-  }
-
+  /// 在wpy_page显示的颜色
   static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1);
   static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1);
 
-  static Color _lineColor;
-  static Color _pointColor;
+  final Paint _linePaint;
+  final Paint _pointPaint;
+
+  _GPACurvePainter(List<Color> gpaColors,
+      {required this.isPreview, required this.points, required this.taped})
+      : _linePaint = Paint()
+          ..color = isPreview ? _linePreview : gpaColors[3]
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0,
+        _pointPaint = Paint()
+          ..color = isPreview ? _pointPreview : gpaColors[1]
+          ..style = PaintingStyle.fill;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
-    final Paint paint = Paint()
-      ..color = isPreview ? _linePreview : _lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0;
-    final Path path = Path()
+    var path = Path()
       ..moveTo(0, points[0].y)
       ..cubicThrough(points);
-    canvas.drawPath(path, paint);
+    canvas.drawPath(path, _linePaint);
   }
 
   /// 默认黑点半径为6.0，选中后为8.0
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
-    final Paint paint = Paint()
-      ..color = isPreview ? _pointPreview : _pointColor
-      ..style = PaintingStyle.fill;
     for (var i = 1; i < points.length - 1; i++) {
       if (i == selected)
         canvas.drawCircle(
-            Offset(points[i].x, points[i].y), radius + 2.0, paint);
+            Offset(points[i].x, points[i].y), radius + 2.0, _pointPaint);
       else
-        canvas.drawCircle(Offset(points[i].x, points[i].y), radius, paint);
+        canvas.drawCircle(
+            Offset(points[i].x, points[i].y), radius, _pointPaint);
     }
   }
 

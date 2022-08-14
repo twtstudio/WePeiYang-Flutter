@@ -23,7 +23,6 @@ class ThemeChangePage extends StatefulWidget {
 
 class _ThemeChangePageState extends State<ThemeChangePage>
     with SingleTickerProviderStateMixin {
-  var pref = CommonPreferences();
   List<Skin> skins = [];
   bool isReady = false;
   int selected;
@@ -35,10 +34,11 @@ class _ThemeChangePageState extends State<ThemeChangePage>
   @override
   void initState() {
     _textEditingController = new TextEditingController();
-    if (pref.skinNow.value == 0 || pref.skinNow.value == null)
-      pref.skinNow.value = -1;
-    selected = pref.skinNow.value;
-    pref.themeToken.clear();
+    if (CommonPreferences.skinNow.value == 0 ||
+        CommonPreferences.skinNow.value == null)
+      CommonPreferences.skinNow.value = -1;
+    selected = CommonPreferences.skinNow.value;
+    CommonPreferences.themeToken.clear();
     ThemeService.loginFromClient(onSuccess: () async {
       await ThemeService.getSkins().then((list) {
         skins.clear();
@@ -205,17 +205,17 @@ class _ThemeChangePageState extends State<ThemeChangePage>
       onTap: () {
         setState(() {
           selected = skins[index].id;
-          CommonPreferences().isSkinUsed.value = true;
-          CommonPreferences().isAprilFoolClass.value = false;
-          CommonPreferences().skinMain.value = skins[index].mainPageImage;
-          CommonPreferences().skinClass.value = skins[index].schedulePageImage;
-          CommonPreferences().skinProfile.value = skins[index].selfPageImage;
-          CommonPreferences().skinColorA.value = skins[index].colorA;
-          CommonPreferences().skinColorB.value = skins[index].colorB;
-          CommonPreferences().skinColorC.value = skins[index].colorC;
-          CommonPreferences().skinColorD.value = skins[index].colorD;
-          CommonPreferences().skinColorE.value = skins[index].colorE;
-          CommonPreferences().skinColorF.value = skins[index].colorF;
+          CommonPreferences.isSkinUsed.value = true;
+          CommonPreferences.isAprilFoolClass.value = false;
+          CommonPreferences.skinMain.value = skins[index].mainPageImage;
+          CommonPreferences.skinClass.value = skins[index].schedulePageImage;
+          CommonPreferences.skinProfile.value = skins[index].selfPageImage;
+          CommonPreferences.skinColorA.value = skins[index].colorA;
+          CommonPreferences.skinColorB.value = skins[index].colorB;
+          CommonPreferences.skinColorC.value = skins[index].colorC;
+          CommonPreferences.skinColorD.value = skins[index].colorD;
+          CommonPreferences.skinColorE.value = skins[index].colorE;
+          CommonPreferences.skinColorF.value = skins[index].colorF;
         });
       },
       child: AnimatedContainer(
@@ -270,9 +270,9 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     return InkWell(
       onTap: () => setState(() {
         selected = ind;
-        pref.skinNow.value = ind;
-        pref.isSkinUsed.value = false;
-        pref.isDarkMode.value = ind == -1 ? false : true;
+        CommonPreferences.skinNow.value = ind;
+        CommonPreferences.isSkinUsed.value = false;
+        CommonPreferences.isDarkMode.value = ind == -1 ? false : true;
       }),
       child: AnimatedContainer(
         height: selected == ind
@@ -397,10 +397,11 @@ class _ThemeChangePageState extends State<ThemeChangePage>
                         setState(() {
                           canRefresh = false;
                         });
-                        if (pref.skinNow.value == 0 ||
-                            pref.skinNow.value == null) pref.skinNow.value = -1;
-                        selected = pref.skinNow.value;
-                        pref.themeToken.clear();
+                        if (CommonPreferences.skinNow.value == 0 ||
+                            CommonPreferences.skinNow.value == null)
+                          CommonPreferences.skinNow.value = -1;
+                        selected = CommonPreferences.skinNow.value;
+                        CommonPreferences.themeToken.clear();
                         ThemeService.loginFromClient(onSuccess: () async {
                           await ThemeService.getSkins().then((list) {
                             skins.clear();

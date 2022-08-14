@@ -1,7 +1,6 @@
 // @dart = 2.12
-
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';

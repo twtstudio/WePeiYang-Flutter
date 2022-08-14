@@ -17,7 +17,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   final checkNotifier = ValueNotifier<bool>(false); // 是否勾选隐私政策
 
   _login() async {
-    if (CommonPreferences().usePwLogin.value) {
+    if (CommonPreferences.usePwLogin.value) {
       _passwordFocus.unfocus();
       if (account == "" || password == "")
         ToastProvider.error("账号密码不能为空");
@@ -93,7 +93,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 50),
-                      CommonPreferences().usePwLogin.value
+                      CommonPreferences.usePwLogin.value
                           ? _pwWidget
                           : _codeWidget,
                       Spacer(),
@@ -297,14 +297,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   text: "短信登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
               onTap: () {
-                if (CommonPreferences().usePwLogin.value) {
+                if (CommonPreferences.usePwLogin.value) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences().usePwLogin.value = false;
+                  CommonPreferences.usePwLogin.value = false;
                 } else {
                   code = '';
-                  CommonPreferences().usePwLogin.value = true;
+                  CommonPreferences.usePwLogin.value = true;
                 }
                 setState(() {});
               },
@@ -545,14 +545,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   text: "密码登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
               onTap: () {
-                if (CommonPreferences().usePwLogin.value) {
+                if (CommonPreferences.usePwLogin.value) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences().usePwLogin.value = false;
+                  CommonPreferences.usePwLogin.value = false;
                 } else {
                   code = '';
-                  CommonPreferences().usePwLogin.value = true;
+                  CommonPreferences.usePwLogin.value = true;
                 }
                 setState(() {});
               },

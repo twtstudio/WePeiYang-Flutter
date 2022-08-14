@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -10,7 +11,8 @@ import 'package:we_pei_yang_flutter/home/home_router.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -23,7 +25,7 @@ import '../../commons/util/text_util.dart';
 
 /// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
 ///
-/// 首先，gpa配色[gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
+/// 首先，gpa配色[_gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
 /// 每套配色均由四种颜色：[背景色]、[颜色一]、[颜色二]、[颜色三]组成（在List中顺序排列，具体名字我懒得取了）
 /// * 背景色：页面背景颜色、曲线上被选中的点的内圆
 ///
@@ -38,13 +40,13 @@ import '../../commons/util/text_util.dart';
 
 class GPAPage extends StatefulWidget {
   static List<Color> get skinList => [
-        Color(CommonPreferences().skinColorB.value),
-        Color(CommonPreferences().skinColorE.value),
-        Color(CommonPreferences().skinColorD.value),
-        Color(CommonPreferences().skinColorF.value),
+        Color(CommonPreferences.skinColorB.value),
+        Color(CommonPreferences.skinColorE.value),
+        Color(CommonPreferences.skinColorD.value),
+        Color(CommonPreferences.skinColorF.value),
       ];
-  final List<Color> gpaColors =
-      CommonPreferences().isSkinUsed.value ? skinList : FavorColors.gpaColor;
+  final List<Color> _gpaColors =
+      CommonPreferences.isSkinUsed.value ? skinList : FavorColors.gpaColor;
 
   @override
   _GPAPageState createState() => _GPAPageState();
@@ -53,18 +55,17 @@ class GPAPage extends StatefulWidget {
 class _GPAPageState extends State<GPAPage> {
   /// 进入gpa页面后自动刷新数据
   _GPAPageState() {
-    Provider.of<GPANotifier>(WePeiYangApp.navigatorState.currentContext,
-            listen: false)
-        .refreshGPA()
-        .call();
+    WePeiYangApp.navigatorState.currentContext!
+        .read<GPANotifier>()
+        .refreshGPA();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (CommonPreferences().firstUse.value) {
-        CommonPreferences().firstUse.value = false;
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (CommonPreferences.firstUse.value) {
+        CommonPreferences.firstUse.value = false;
         showDialog(
             context: context,
             barrierDismissible: true,
@@ -77,37 +78,33 @@ class _GPAPageState extends State<GPAPage> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark
-          .copyWith(systemNavigationBarColor: widget.gpaColors[0]),
-      child: Consumer<GPANotifier>(
-          builder: (context, notifier, _) => Scaffold(
-                appBar: GPAppBar(widget.gpaColors),
-                backgroundColor: widget.gpaColors[0],
-                body: Container(
-                  decoration: CommonPreferences().isSkinUsed.value
-                      ? BoxDecoration(
-                          gradient: new LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                widget.gpaColors[0],
-                                widget.gpaColors[3]
-                              ]),
-                        )
-                      : BoxDecoration(),
-                  child: Theme(
-                    /// 修改scrollView滚动至头/尾时溢出的颜色
-                    data: ThemeData(accentColor: Colors.white),
-                    child: ListView(
-                      children: [
-                        RadarChartWidget(notifier, widget.gpaColors),
-                        GPAStatsWidget(notifier, widget.gpaColors),
-                        GPACurve(notifier, widget.gpaColors, isPreview: false),
-                        CourseListWidget(notifier, widget.gpaColors)
-                      ],
-                    ),
-                  ),
-                ),
-              )),
+          .copyWith(systemNavigationBarColor: widget._gpaColors[0]),
+      child: Scaffold(
+        appBar: GPAppBar(widget._gpaColors),
+        backgroundColor: widget._gpaColors[0],
+        body: Container(
+          decoration: CommonPreferences.isSkinUsed.value
+              ? BoxDecoration(
+                  gradient: new LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [widget._gpaColors[0], widget._gpaColors[3]]),
+                )
+              : BoxDecoration(),
+          child: Theme(
+            /// 修改scrollView滚动至头/尾时溢出的颜色
+            data: ThemeData(accentColor: Colors.white),
+            child: ListView(
+              children: [
+                RadarChartWidget(widget._gpaColors),
+                GPAStatsWidget(widget._gpaColors),
+                GPACurve(widget._gpaColors, isPreview: false),
+                CourseListWidget(widget._gpaColors)
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -142,7 +139,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           SizedBox(
             width: 6.6.w,
           ),
-          Text('HELLO, ${CommonPreferences().nickname.value}',
+          Text('HELLO, ${CommonPreferences.nickname.value}',
               style: TextUtil.base.white.w900.sp(22)),
         ],
       ),
@@ -157,7 +154,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                 height: 28.h,
               ),
               onTap: () {
-                if (CommonPreferences().isAprilFoolGPA.value) {
+                if (CommonPreferences.isAprilFoolGPA.value) {
                   showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -167,27 +164,24 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                           confirmText: "返回真实绩点",
                           cancelText: "保留满绩",
                           confirmFun: () {
-                            CommonPreferences().isAprilFoolGPA.value = false;
+                            CommonPreferences.isAprilFoolGPA.value = false;
                             Navigator.pop(context);
                             Navigator.popAndPushNamed(context, HomeRouter.home);
                           },
                         );
                       });
                 }
-                Provider.of<GPANotifier>(context, listen: false)
-                    .refreshGPA(
-                        hint: true,
-                        onFailure: (e) {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) => TjuRebindDialog(
-                                reason: e is WpyDioError
-                                    ? e.error.toString()
-                                    : null),
-                          );
-                        })
-                    .call();
+                Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+                    hint: true,
+                    onFailure: (e) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) => TjuRebindDialog(
+                            reason:
+                                e is WpyDioError ? e.error.toString() : null),
+                      );
+                    });
               }),
         ),
       ],
@@ -200,10 +194,9 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class RadarChartWidget extends StatefulWidget {
-  final GPANotifier notifier;
   final List<Color> gpaColors;
 
-  RadarChartWidget(this.notifier, this.gpaColors);
+  RadarChartWidget(this.gpaColors);
 
   @override
   _RadarChartState createState() => _RadarChartState();
@@ -213,12 +206,12 @@ class _RadarChartState extends State<RadarChartWidget> {
   /// isTaped为true时雷达图有透明度
   bool _isTaped = false;
 
-  static Timer _timer;
+  static Timer? _timer;
 
   @override
   Widget build(BuildContext context) {
-    var _list =
-        widget.notifier.coursesWithNotify.where((e) => e.score != 0.0).toList();
+    var _list = context.select<GPANotifier, List<GPACourse>>(
+        (p) => p.courses.where((e) => e.score != 0.0).toList());
     return GestureDetector(
       onTapDown: (_) {
         setState(() {
@@ -227,7 +220,7 @@ class _RadarChartState extends State<RadarChartWidget> {
         });
 
         /// 重复点击雷达图时，timer重新计时
-        if (_timer != null && _timer.isActive) _timer.cancel();
+        if (_timer != null && _timer!.isActive) _timer!.cancel();
         _timer = Timer(Duration(milliseconds: 300), () {
           setState(() => _isTaped = false);
         });
@@ -279,29 +272,30 @@ class _RadarChartPainter extends CustomPainter {
   _RadarChartPainter(this.courses, this.gpaColors);
 
   /// 用这个控制雷达图大小,不能低于2
-  double radarChartRatio = 2.15;
-  double centerX;
-  double centerY;
-  double outer;
-  double inner;
-  double middle;
-  double slice;
+  static const double radarChartRatio = 2.15;
+  late double centerX;
+  late double centerY;
+  late double outer;
+  late double inner;
+  late double middle;
+  late double slice;
   List<Offset> outerPoints = [];
   List<Offset> innerPoints = [];
   List<Offset> middlePoints = [];
 
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
+  final Paint _creditPaint = Paint()
+    ..color = CommonPreferences.isSkinUsed.value
+        ? Color.fromRGBO(255, 251, 240, 0.111)
+        : Color.fromRGBO(178, 178, 158, 0.2)
+    ..style = PaintingStyle.fill;
+
   _drawCredit(Canvas canvas, Size size) {
     double maxCredit = 0;
     courses.forEach((element) {
       if (element.credit > maxCredit) maxCredit = element.credit;
     });
-    final Paint creditPaint = Paint()
-      ..color = CommonPreferences().isSkinUsed.value
-          ? Color.fromRGBO(255, 251, 240, 0.111)
-          : Color.fromRGBO(178, 178, 158, 0.2)
-      ..style = PaintingStyle.fill;
     final Path creditPath = Path();
     for (var i = 0; i < courses.length; i++) {
       var ratio = courses[(i + 1) % courses.length].credit / maxCredit;
@@ -319,13 +313,14 @@ class _RadarChartPainter extends CustomPainter {
         ..lineTo(centerX, centerY)
         ..close();
     }
-    canvas.drawPath(creditPath, creditPaint);
+    canvas.drawPath(creditPath, _creditPaint);
   }
 
+  final Paint _fillPaint = Paint()
+    ..color = Color.fromRGBO(230, 230, 230, 0.25)
+    ..style = PaintingStyle.fill;
+
   _drawScoreFill(Canvas canvas) {
-    final Paint fillPaint = Paint()
-      ..color = Color.fromRGBO(230, 230, 230, 0.25)
-      ..style = PaintingStyle.fill;
     final Path fillPath = Path()..moveTo(centerX, centerY);
     for (var x = 0; x <= courses.length; x++) {
       var i = x % courses.length;
@@ -337,28 +332,29 @@ class _RadarChartPainter extends CustomPainter {
       else
         fillPath.lineTo(centerX + biasX, centerY + biasY);
     }
-    canvas.drawPath(fillPath, fillPaint);
+    canvas.drawPath(fillPath, _fillPaint);
   }
 
+  final Paint _linePaint = Paint()
+    ..color = CommonPreferences.isSkinUsed.value
+        ? Color.fromRGBO(255, 251, 240, 0.45)
+        : Color.fromRGBO(158, 158, 138, 0.45)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5;
+
   _drawLine(Canvas canvas) {
-    final Paint linePaint = Paint()
-      ..color = CommonPreferences().isSkinUsed.value
-          ? Color.fromRGBO(255, 251, 240, 0.45)
-          : Color.fromRGBO(158, 158, 138, 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
     final Path linePath = Path();
     for (var i = 0; i < courses.length; i++) {
       linePath
         ..moveTo(centerX, centerY)
         ..lineTo(innerPoints[i].dx, innerPoints[i].dy);
     }
-    canvas.drawPath(linePath, linePaint);
+    canvas.drawPath(linePath, _linePaint);
   }
 
   _drawScoreOutLine(Canvas canvas) {
-    final Paint outLinePaint = Paint()
-      ..color = CommonPreferences().isSkinUsed.value
+    final Paint _outLinePaint = Paint()
+      ..color = CommonPreferences.isSkinUsed.value
           ? Color.fromRGBO(255, 251, 240, 0.9)
           : gpaColors[1]
       ..style = PaintingStyle.stroke
@@ -375,7 +371,7 @@ class _RadarChartPainter extends CustomPainter {
       else
         outLinePath.lineTo(centerX + biasX, centerY + biasY);
     }
-    canvas.drawPath(outLinePath, outLinePaint);
+    canvas.drawPath(outLinePath, _outLinePaint);
   }
 
   _drawText(Canvas canvas) {
@@ -450,27 +446,28 @@ class _RadarChartPainter extends CustomPainter {
 }
 
 class GPAStatsWidget extends StatelessWidget {
-  final GPANotifier notifier;
-  static var textStyle;
-  static var numStyle;
+  final TextStyle _textStyle;
+  final TextStyle _numStyle;
 
-  GPAStatsWidget(this.notifier, List<Color> gpaColors) {
-    textStyle = FontManager.Aspira.copyWith(
-        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 13);
-    numStyle = FontManager.Montserrat.copyWith(
-        color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
-  }
+  GPAStatsWidget(List<Color> gpaColors)
+      : _textStyle = FontManager.Aspira.copyWith(
+            color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13),
+        _numStyle = FontManager.Montserrat.copyWith(
+            color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
 
   @override
   Widget build(BuildContext context) {
+    var statsData =
+        context.select<GPANotifier, List<double>>((p) => p.statsData);
     var weighted = "不";
     var gpa = "知";
     var credits = "道";
-    if (notifier.currentDataWithNotify != null) {
-      weighted = notifier.currentDataWithNotify[0].toString();
-      gpa = notifier.currentDataWithNotify[1].toString();
-      credits = notifier.currentDataWithNotify[2].toString();
+    if (statsData.isNotEmpty) {
+      weighted = statsData[0].toString();
+      gpa = statsData[1].toString();
+      credits = statsData[2].toString();
     }
+    var quietPvd = context.read<GPANotifier>();
     return Padding(
       padding: const EdgeInsets.all(30),
       child: Row(
@@ -478,41 +475,45 @@ class GPAStatsWidget extends StatelessWidget {
         children: <Widget>[
           /// "InkResponse provides splashes which can extend outside its bounds"
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 0,
+            onTap: () => quietPvd.type = 0,
             radius: 45,
 
             /// "defines a splash that spreads out more aggressively than the default"
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                Text('Weighted', style: textStyle),
+                Text('Weighted', style: _textStyle),
                 SizedBox(height: 8),
-                Text(weighted, style: numStyle)
+                Text(weighted, style: _numStyle)
               ],
             ),
           ),
+
+          /// 这里加个padding，让UI分布更均匀
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: InkResponse(
+              onTap: () => quietPvd.type = 1,
+              radius: 45,
+              splashFactory: InkRipple.splashFactory,
+              child: Column(
+                children: <Widget>[
+                  Text('GPA', style: _textStyle),
+                  SizedBox(height: 8),
+                  Text(gpa, style: _numStyle)
+                ],
+              ),
+            ),
+          ),
           InkResponse(
-            onTap: () => notifier.typeWithNotify = 1,
+            onTap: () => quietPvd.type = 2,
             radius: 45,
             splashFactory: InkRipple.splashFactory,
             child: Column(
               children: <Widget>[
-                /// 这里两边加上空格，让UI分布更均匀
-                Text(' GPA  ', style: textStyle),
+                Text('Credits', style: _textStyle),
                 SizedBox(height: 8),
-                Text(gpa, style: numStyle)
-              ],
-            ),
-          ),
-          InkResponse(
-            onTap: () => notifier.typeWithNotify = 2,
-            radius: 45,
-            splashFactory: InkRipple.splashFactory,
-            child: Column(
-              children: <Widget>[
-                Text('Credits', style: textStyle),
-                SizedBox(height: 8),
-                Text(credits, style: numStyle)
+                Text(credits, style: _numStyle)
               ],
             ),
           ),
@@ -523,32 +524,107 @@ class GPAStatsWidget extends StatelessWidget {
 }
 
 class CourseListWidget extends StatefulWidget {
-  final GPANotifier notifier;
   final List<Color> gpaColors;
 
-  CourseListWidget(this.notifier, this.gpaColors);
+  CourseListWidget(this.gpaColors);
 
   @override
   _CourseListState createState() => _CourseListState();
 }
 
 class _CourseListState extends State<CourseListWidget> {
-  static final double cardHeight = 82;
+  static const double _cardHeight = 82;
 
   @override
   Widget build(BuildContext context) {
-    var courses = widget.notifier.coursesWithNotify;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              widget.notifier.reSort();
-            },
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: RichText(
+    return Selector<GPANotifier, List<GPACourse>>(
+      selector: (BuildContext, provider) => provider.courses,
+      builder: (BuildContext context, courses, Widget? child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              child!,
+              SizedBox(
+                height: _cardHeight * courses.length,
+                child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: courses.length,
+                    itemBuilder: (context, i) => Container(
+                          height: _cardHeight,
+                          padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
+                          child: Card(
+                            color: widget.gpaColors[3],
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: InkWell(
+                              onTap: () {},
+                              splashFactory: InkRipple.splashFactory,
+                              borderRadius: BorderRadius.circular(12),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 15),
+                                  Icon(Icons.assignment_turned_in,
+                                      color: widget.gpaColors[2], size: 25),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              _formatText(courses[i].name),
+                                              style: FontManager.YaHeiRegular
+                                                  .copyWith(
+                                                      fontSize: 14,
+                                                      color:
+                                                          widget.gpaColors[1])),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              "${courses[i].classType} / ${courses[i].credit} Credits",
+                                              style: FontManager.YaHeiLight
+                                                  .copyWith(
+                                                      fontSize: 11,
+                                                      color:
+                                                          widget.gpaColors[2])),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                      '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
+                                      style: FontManager.Montserrat.copyWith(
+                                          fontSize: 26,
+                                          color: widget.gpaColors[1],
+                                          fontWeight: FontWeight.bold)),
+                                  SizedBox(width: 18)
+                                ],
+                              ),
+                            ),
+                          ),
+                        )),
+              )
+            ],
+          ),
+        );
+      },
+      child: GestureDetector(
+        onTap: () => context.read<GPANotifier>().reSort(),
+        child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Builder(
+              builder: (context) {
+                var sortType = context
+                    .select<GPANotifier, String>((p) => p.sortType)
+                    .toUpperCase();
+                return RichText(
                     text: TextSpan(
                         text: 'ORDERED\tBY\t',
                         style: FontManager.Texta.copyWith(
@@ -557,76 +633,15 @@ class _CourseListState extends State<CourseListWidget> {
                             color: widget.gpaColors[2]),
                         children: <TextSpan>[
                       TextSpan(
-                          text: widget.notifier.sortType.toUpperCase(),
+                          text: sortType,
                           style: FontManager.Texta.copyWith(
                               fontSize: 14,
                               letterSpacing: 4,
                               color: widget.gpaColors[1],
                               fontWeight: FontWeight.bold))
-                    ]))),
-          ),
-          SizedBox(
-            height: cardHeight * courses.length,
-            child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: courses.length,
-                itemBuilder: (context, i) => Container(
-                      height: cardHeight,
-                      padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
-                      child: Card(
-                        color: widget.gpaColors[3],
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        child: InkWell(
-                          splashFactory: InkRipple.splashFactory,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 15),
-                              Icon(Icons.assignment_turned_in,
-                                  color: widget.gpaColors[2], size: 25),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(_formatText(courses[i].name),
-                                          style:
-                                              FontManager.YaHeiRegular.copyWith(
-                                                  fontSize: 14,
-                                                  color: widget.gpaColors[1])),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "${courses[i].classType} / ${courses[i].credit} Credits",
-                                          style:
-                                              FontManager.YaHeiLight.copyWith(
-                                                  fontSize: 11,
-                                                  color: widget.gpaColors[1])),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                  '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
-                                  style: FontManager.Montserrat.copyWith(
-                                      fontSize: 26,
-                                      color: widget.gpaColors[1],
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(width: 18)
-                            ],
-                          ),
-                        ),
-                      ),
-                    )),
-          )
-        ],
+                    ]));
+              },
+            )),
       ),
     );
   }

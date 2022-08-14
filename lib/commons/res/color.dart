@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart' show Color;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
@@ -21,22 +22,24 @@ class MyColors {
 }
 
 class FavorColors {
+  FavorColors._();
+
   /// gpa主色调，缓存类型是List<String>哦
-  static var _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
+  static final _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
 
   static List<Color> get gpaColor =>
       _gpaColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
   /// 单独用个变量存种类
-  static var gpaType = PrefsBean<String>("gpaColorType", 'green');
+  static final gpaType = PrefsBean<String>("gpaColorType", 'green');
 
   /// 课程表主色调，缓存类型是List<String>哦
-  static var _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
+  static final _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
 
   static List<Color> get scheduleColor =>
       _scheduleColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
-  static var scheduleType = PrefsBean<String>("scheduleColorType", 'blue');
+  static final scheduleType = PrefsBean<String>("scheduleColorType", 'blue');
 
   /// 这个是GPA默认颜色哦
   static setGreenRelatedGPA() {
@@ -91,6 +94,7 @@ class FavorColors {
     Color.fromRGBO(184, 162, 167, 1).value.toString(),
     Color.fromRGBO(227, 222, 222, 1).value.toString(),
   ];
+
   static final List<String> _begoniaGPA = [
     Color.fromRGBO(228, 181, 189, 1.0).value.toString(),
     Color.fromRGBO(253, 253, 254, 1.0).value.toString(),
@@ -123,7 +127,10 @@ class FavorColors {
     scheduleType.value = 'april';
   }
 
-  static Color scheduleTitleColor() {
+  static Color get scheduleTitleColor {
+    if (CommonPreferences.isSkinUsed.value) {
+      return Color(CommonPreferences.skinColorB.value);
+    }
     var type = scheduleType.value;
     if (type == 'green')
       return Color.fromRGBO(115, 124, 105, 1);
@@ -133,6 +140,8 @@ class FavorColors {
       return Color.fromRGBO(98, 103, 123, 1);
     else if (type == 'april')
       return Color.fromRGBO(98, 103, 123, 1);
+    else
+      return Color.fromRGBO(115, 124, 105, 1);
   }
 
   /// 这套配色暴露出来给主页使用

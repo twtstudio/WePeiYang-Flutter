@@ -23,7 +23,7 @@ class Time {
   ];
 
   static DateTime semesterStart() {
-    var firstDay = DateTime.tryParse(CommonPreferences().termStartDate.value);
+    var firstDay = DateTime.tryParse(CommonPreferences.termStartDate.value);
     if (firstDay != null) {
       // 防止错误
       return firstDay.next.weekStart;

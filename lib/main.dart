@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart'
-    show
-        DiagnosticsTreeStyle,
-        TextTreeRenderer;
+    show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +15,8 @@ import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
-import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
+    show NetStatusListener;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
@@ -28,8 +27,9 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/schedule_providers.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import 'commons/channel/local_setting/local_setting.dart';
@@ -80,10 +80,8 @@ void main() async {
     };
 
     // 设置哪天微北洋全部变灰
-    (DateTime.now().toLocal().month == 5 &&
-        DateTime.now().toLocal().day == 12) ||
-            (DateTime.now().toLocal().month == 12 &&
-                DateTime.now().toLocal().day == 13)
+    var date = DateTime.now().toLocal();
+    (date.month == 5 && date.day == 12) || (date.month == 12 && date.day == 13)
         ? runApp(ColorFiltered(
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
             child: WePeiYangApp()))
@@ -99,7 +97,7 @@ void main() async {
     Logger.reportError(error, stack);
   }, zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-        /// 覆盖zone中的所有[print]，统一日志格式
+    /// 覆盖zone中的所有[print]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
 }
@@ -149,8 +147,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      if (CommonPreferences().token != null &&
-          CommonPreferences().token != "") {
+      if (CommonPreferences.token != "") {
         FeedbackService.getToken(forceRefresh: true);
       }
     });
@@ -187,8 +184,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
           );
           break;
         case IntentEvent.SchedulePage:
-          if (!PageStackObserver.pageStack.contains(ScheduleRouter.schedule)) {
-            Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
+          if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
+            Navigator.pushNamed(baseContext, ScheduleRouter.course);
           }
           break;
         case IntentEvent.UpdateDialog:
@@ -222,10 +219,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (_) => RemoteConfig()),
         ChangeNotifierProvider(create: (_) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => GPANotifier()),
-        ChangeNotifierProvider(create: (_) => ScheduleNotifier()),
-        ChangeNotifierProvider(create: (_) => ExamNotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ...scheduleProviders,
         ...loungeProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
@@ -347,38 +343,39 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     // 初始化友盟
     UmengCommonSdk.initCommon();
 
-    var prefs = CommonPreferences();
-
     // 恢复截屏和亮度默认值
     LocalSetting.changeBrightness(-1);
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (prefs.updateTime.value != "20210906") {
-      prefs.updateTime.value = "20210906";
-      prefs.clearTjuPrefs();
-      prefs.clearUserPrefs();
+    if (CommonPreferences.updateTime.value != "20220414") {
+      CommonPreferences.updateTime.value = "20220414";
+      CommonPreferences.clearTjuPrefs();
+      CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
 
-    /// 读取gpa和课程表的缓存
-    Provider.of<ScheduleNotifier>(context, listen: false).readPref();
-    Provider.of<ExamNotifier>(context, listen: false).readPref();
-    Provider.of<GPANotifier>(context, listen: false).readPref();
+    /// 读取gpa、考表、课程表的缓存
+    context.read<CourseProvider>().readPref();
+    context.read<ExamProvider>().readPref();
+    context.read<GPANotifier>().readPref();
 
     /// 如果存过账号密码，优先用账密刷新token
-    if (prefs.account.value != '' && prefs.password.value != '') {
+    if (CommonPreferences.account.value != '' &&
+        CommonPreferences.password.value != '') {
       Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          AuthService.pwLogin(prefs.account.value, prefs.password.value,
+          AuthService.pwLogin(
+              CommonPreferences.account.value, CommonPreferences.password.value,
               onResult: (_) {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           }, onFailure: (_) {
             Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+                context, AuthRouter.login, (route) => false);
           }));
-    } else if (prefs.isLogin.value && prefs.token.value != '') {
+    } else if (CommonPreferences.isLogin.value &&
+        CommonPreferences.token.value != '') {
       /// 如果是短信登陆的，尝试用token刷新
       Future.delayed(Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(

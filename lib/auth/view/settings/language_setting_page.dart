@@ -87,7 +87,7 @@ class LanguageSettingPage extends StatelessWidget {
                             ],
                           ),
                           Spacer(),
-                          if (CommonPreferences().language.value == index)
+                          if (CommonPreferences.language.value == index)
                             _judgeLanguage(LocaleModel.localeName(index))
                         ],
                       ),

@@ -241,7 +241,7 @@ class ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wholeWidth = MediaQuery.of(context).size.width - schedulePadding * 2;
-    final dayCount = CommonPreferences().dayNumber.value;
+    final dayCount = CommonPreferences.dayNumber.value;
     final cardWidth =
         (wholeWidth - countTabWidth - dayCount * cardStep) / dayCount;
     final tabHeight = cardWidth * 136 / 96;

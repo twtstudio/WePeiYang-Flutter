@@ -227,7 +227,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String>>[
-          CommonPreferences().lakeUid.value.toString() ==
+          CommonPreferences.lakeUid.value.toString() ==
                   widget.comment.postId
               ? PopupMenuItem<String>(
                   value: '删除',
@@ -262,7 +262,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     );
     ///评分系统，只有楼主可评分
     Widget starWidget;
-    if (CommonPreferences().lakeUid.value.toString() ==
+    if (CommonPreferences.lakeUid.value.toString() ==
         widget.ancestorId.toString()) {
       starWidget = GestureDetector(
         onTap: () async {

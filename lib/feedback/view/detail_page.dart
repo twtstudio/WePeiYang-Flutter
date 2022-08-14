@@ -57,7 +57,7 @@ class _DetailPageState extends State<DetailPage>
   Widget topCard;
   final onlyOwner = ValueNotifier<int>(0);
   final order =
-      ValueNotifier<int>(CommonPreferences().feedbackFloorSortType.value);
+      ValueNotifier<int>(CommonPreferences.feedbackFloorSortType.value);
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -145,7 +145,7 @@ class _DetailPageState extends State<DetailPage>
     });
     order.addListener(() {
       _refreshController.requestRefresh();
-      CommonPreferences().feedbackFloorSortType.value = order.value;
+      CommonPreferences.feedbackFloorSortType.value = order.value;
     });
   }
 
@@ -271,9 +271,7 @@ class _DetailPageState extends State<DetailPage>
                               TextUtil.base.ProductSans.black2A.medium.sp(18),
                         ),
                       ),
-                      SizedBox(
-                        width: 100,
-                      ),
+                      SizedBox(width: 100),
                       ValueListenableBuilder(
                         valueListenable: onlyOwner,
                         builder: (context, value, _) {
@@ -689,7 +687,7 @@ class _DetailPageState extends State<DetailPage>
                 '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
             ClipboardData data = ClipboardData(text: weCo);
             Clipboard.setData(data);
-            CommonPreferences().feedbackLastWeCo.value = post.id.toString();
+            CommonPreferences.feedbackLastWeCo.value = post.id.toString();
             ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
           }
         });
@@ -702,16 +700,16 @@ class _DetailPageState extends State<DetailPage>
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
-      backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorB.value)
+      backgroundColor: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorB.value)
           : ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context, post),
       ),
       actions: [
-        if ((CommonPreferences().isSuper.value ||
-                CommonPreferences().isSchAdmin.value) ??
+        if ((CommonPreferences.isSuper.value ||
+                CommonPreferences.isSchAdmin.value) ??
             false)
           manageButton,
         shareButton,
@@ -742,8 +740,8 @@ class _DetailPageState extends State<DetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value
-            ? Color(CommonPreferences().skinColorB.value)
+        backgroundColor: CommonPreferences.isSkinUsed.value
+            ? Color(CommonPreferences.skinColorB.value)
             : ColorUtil.backgroundColor,
         appBar: appBar,
         body: body,
@@ -1149,7 +1147,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                 ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
                 style: TextUtil.base.ProductSans.black2A.medium.sp(18),
               ),
-              if (CommonPreferences().isSuper.value)
+              if (CommonPreferences.isSuper.value)
                 AnimatedOption(
                     origin: false,
                     id: widget.post.uid,

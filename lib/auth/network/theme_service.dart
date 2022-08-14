@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show Color, required;
 import 'package:we_pei_yang_flutter/auth/skin_utils.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -15,8 +15,8 @@ class ThemeDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      if (CommonPreferences().themeToken != null)
-      options.headers['token'] = CommonPreferences().themeToken.value;
+      if (CommonPreferences.themeToken != null)
+      options.headers['token'] = CommonPreferences.themeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['error_code'] ?? 0;
@@ -37,14 +37,14 @@ class ThemeService with AsyncTimer {
   static Future<void> loginFromClient({
     @required void Function() onSuccess,
   }) async {
-    CommonPreferences().themeToken.clear();
+    CommonPreferences.themeToken.clear();
     AsyncTimer.runRepeatChecked('theme_login', () async {
       try {
         var response = await themeDio.post('auth/client',
             formData: FormData.fromMap({
-              'token': CommonPreferences().token.value.toString(),
+              'token': CommonPreferences.token.value.toString(),
             }));
-        CommonPreferences().themeToken.value = response.data['result'];
+        CommonPreferences.themeToken.value = response.data['result'];
         onSuccess?.call();
       } on DioError catch (_) {
         ToastProvider.error('主题加载失败');
@@ -61,9 +61,9 @@ class ThemeService with AsyncTimer {
       try {
         var response = await themeDio.post('auth/client',
             formData: FormData.fromMap({
-              'token': '${CommonPreferences().token.value}',
+              'token': '${CommonPreferences.token.value}',
             }));
-        CommonPreferences().themeToken.value = response.data['result'];
+        CommonPreferences.themeToken.value = response.data['result'];
         onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
@@ -72,10 +72,9 @@ class ThemeService with AsyncTimer {
   }
 
   static Future<List<Skin>> getSkins() async {
-    //addSkin();
     try {
       var response = await themeDio
-          .get('skin/user?token=${CommonPreferences().themeToken.value}');
+          .get('skin/user?token=${CommonPreferences.themeToken.value}');
       List<Skin> list = [];
       for (Map<String, dynamic> json in response.data['result']) {
         if (json != null)
@@ -111,7 +110,6 @@ class ThemeService with AsyncTimer {
       colorF: Color.fromRGBO(221, 182, 190, 1.0).value,
       colorG: Color.fromRGBO(241, 220, 224, 1.0).value,
     );
-    print(haiTangSkin.toJson().toString());
     AsyncTimer.runRepeatChecked('uploadSkin', () async {
       try {
         await themeDio.post('skin',
@@ -133,7 +131,7 @@ class ThemeService with AsyncTimer {
         await themeDio.post('skin/user',
             formData: FormData.fromMap({
               'skinId': '${skinId}',
-              'token': '${CommonPreferences().themeToken.value}',
+              'token': '${CommonPreferences.themeToken.value}',
             }));
         onSuccess?.call();
       } on DioError catch (e) {

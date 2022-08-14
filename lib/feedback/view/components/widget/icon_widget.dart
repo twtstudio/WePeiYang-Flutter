@@ -101,7 +101,7 @@ class _IconWidgetState extends State<IconWidget> {
             onTap: (value) async {
               if (value) {
                 ///愚人节临时处理
-                if(CommonPreferences().isAprilFoolLike.value){
+                if(CommonPreferences.isAprilFoolLike.value){
                   showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -111,7 +111,7 @@ class _IconWidgetState extends State<IconWidget> {
                           confirmText: "返回正常点赞",
                           cancelText: "保留整蛊",
                           confirmFun: (){
-                            CommonPreferences().isAprilFoolLike.value = false;
+                            CommonPreferences.isAprilFoolLike.value = false;
                             Navigator.popAndPushNamed(context, HomeRouter.home);
                           },
                         );
@@ -121,7 +121,7 @@ class _IconWidgetState extends State<IconWidget> {
                 else
                 widget.countNotifier.value = widget.countNotifier.value - 1;
               } else {
-                if(CommonPreferences().isAprilFoolLike.value) {
+                if(CommonPreferences.isAprilFoolLike.value) {
                   widget.countNotifier.value = widget.countNotifier.value - 1;
                 }
                 else

@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
@@ -55,33 +55,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ///检测愚人节
     if (DateTime.now().month == 4 &&
         DateTime.now().day == 1 &&
-        CommonPreferences().isAprilFoolGen.value) {
-      CommonPreferences().isAprilFool.value = true;
-      CommonPreferences().isAprilFoolLike.value = true;
-      CommonPreferences().isAprilFoolGPA.value = true;
-      CommonPreferences().isAprilFoolClass.value = true;
-      CommonPreferences().isAprilFoolHead.value = true;
+        CommonPreferences.isAprilFoolGen.value) {
+      CommonPreferences.isAprilFool.value = true;
+      CommonPreferences.isAprilFoolLike.value = true;
+      CommonPreferences.isAprilFoolGPA.value = true;
+      CommonPreferences.isAprilFoolClass.value = true;
+      CommonPreferences.isAprilFoolHead.value = true;
 
       ///如果不刷新GPA，就不会显示满绩
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(
-              hint: true,
-              onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                      reason: e is WpyDioError ? e.error.toString() : null),
-                );
-              })
-          .call();
-      CommonPreferences().isAprilFoolGen.value = false;
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+          hint: true,
+          onFailure: (e) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) => TjuRebindDialog(
+                  reason: e is WpyDioError ? e.error.toString() : null),
+            );
+          });
+      CommonPreferences.isAprilFoolGen.value = false;
     } else {
-      CommonPreferences().isAprilFool.value = false;
-      CommonPreferences().isAprilFoolLike.value = false;
-      CommonPreferences().isAprilFoolGPA.value = false;
-      CommonPreferences().isAprilFoolGen.value = true;
-      CommonPreferences().isAprilFoolHead.value = false;
+      CommonPreferences.isAprilFool.value = false;
+      CommonPreferences.isAprilFoolLike.value = false;
+      CommonPreferences.isAprilFoolGPA.value = false;
+      CommonPreferences.isAprilFoolGen.value = true;
+      CommonPreferences.isAprilFoolHead.value = false;
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       // WbyFontLoader.initFonts();
@@ -89,14 +87,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       context.read<UpdateManager>().checkUpdate();
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {
-        CommonPreferences().reportTime.value = DateTime.now().toString();
+        CommonPreferences.reportTime.value = DateTime.now().toString();
       } else {
-        CommonPreferences().reportTime.value = "";
+        CommonPreferences.reportTime.value = "";
       }
       // 检查当前是否有未处理的事件
       context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
       // 友盟统计账号信息
-      UmengCommonSdk.onProfileSignIn(CommonPreferences().account.value);
+      UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
     });

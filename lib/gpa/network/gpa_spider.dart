@@ -1,46 +1,43 @@
-import 'package:dio/dio.dart' show DioError;
-import 'package:flutter/material.dart' show required;
+// @dart = 2.12
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 /// 发送请求，获取html中的gpa数据
 void getGPABean(
-    {@required OnResult<GPABean> onResult, OnFailure onFailure}) async {
-  var pref = CommonPreferences();
-
+    {required OnResult<GPABean> onResult, required OnFailure onFailure}) async {
   try {
     var info = await fetch("http://classes.tju.edu.cn/eams/stdDetail.action",
-        cookieList: pref.getCookies());
+        cookieList: CommonPreferences.cookies);
 
-    var infoDetail =
-        getRegExpStr(r'(?<=项目：</td>)[\s\S]*?</td>', info.data.toString());
+    var infoDetail = info.data.toString().match(r'(?<=项目：</td>)[\s\S]*?</td>');
 
     /// 判断是否为硕士研究生
     bool isMaster = false;
 
-    if (infoDetail != null && infoDetail.contains('研究')) isMaster = true;
+    if (infoDetail != '' && infoDetail.contains('研究')) isMaster = true;
 
     if (isMaster) {
       /// 如果是研究生，切换至研究生成绩
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-          cookieList: pref.getCookies(),
+          cookieList: CommonPreferences.cookies,
           params: {'projectId': '22'});
-    } else if (pref.ids.value == "useless") {
+    } else if (CommonPreferences.ids.value == "useless") {
       /// 如果有辅修，切换至主修成绩（其实是总成绩）
       await fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-          cookieList: pref.getCookies(),
+          cookieList: CommonPreferences.cookies,
           params: {'projectId': '1'});
     }
     var response = await fetch(
         "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR",
-        cookieList: pref.getCookies());
+        cookieList: CommonPreferences.cookies);
     onResult(_data2GPABean(response.data.toString(), isMaster));
   } on DioError catch (e) {
-    if (onFailure != null) onFailure(e);
+    onFailure(e);
   }
 }
 
@@ -57,12 +54,13 @@ GPABean _data2GPABean(String data, bool isMaster) {
   try {
     /// 匹配总加权/绩点/学分: 本科生的数据在“总计”中；而研究生的数据在“在校汇总”中
     var totalData = isMaster
-        ? getRegExpStr(r'(?<=在校汇总</th>)[\s\S]*?(?=</tr)', data)
-        : getRegExpStr(r'(?<=总计</th>)[\s\S]*?(?=</tr)', data);
+        ? data.match(r'(?<=在校汇总</th>)[\s\S]*?(?=</tr)')
+        : data.match(r'(?<=总计</th>)[\s\S]*?(?=</tr)');
 
     List<double> thList = [];
-    getRegExpList(r'(?<=<th>)[0-9.]*', totalData)
-        .forEach((e) => thList.add(double.parse(e)));
+    totalData.matches(r'(?<=<th>)[0-9.]*').forEach((e) {
+      if (e != '') thList.add(double.parse(e));
+    });
 
     /// 下标321是因为html数据的顺序和数据类的顺序不一样
     var total = Total(
@@ -71,11 +69,11 @@ GPABean _data2GPABean(String data, bool isMaster) {
       thList.length > 1 ? thList[1] : 0.0,
     );
 
-    var tables = getRegExpList(r'(?<=gridtable)[\s\S]*?(?=</table)', data);
-    var gridHead = getRegExpStr(r'(?<=gridhead)[\s\S]*(?=</thead)', tables[1]);
+    var tables = data.matches(r'(?<=gridtable)[\s\S]*?(?=</table)');
+    var gridHead = tables[1].match(r'(?<=gridhead)[\s\S]*(?=</thead)');
 
     /// ["学年学期", "课程代码", "课程序号", "课程名称", "课程类别", "学分", "考试情况", "期末成绩", "平时成绩", "总评成绩", "最终", "绩点"]
-    var headList = getRegExpList(r'(?<=<th.*>)[\s\S][^<]*?(?=</th)', gridHead);
+    var headList = gridHead.matches(r'(?<=<th.*>)[\s\S][^<]*?(?=</th)');
     Map<String, int> indexMap = {};
     for (int i = 0; i < headList.length; i++) {
       switch (headList[i]) {
@@ -114,18 +112,18 @@ GPABean _data2GPABean(String data, bool isMaster) {
     }
 
     /// 课程数据存储在了第二个table的tbody中
-    var filterStr = getRegExpStr(r'(?<=<tbody>)[\s\S]*(?=</tbody>)', tables[1]);
+    var filterStr = tables[1].match(r'(?<=<tbody>)[\s\S]*(?=</tbody>)');
 
     /// 所有的课程数据
-    var courseDataList = getRegExpList(r'(?<=<tr)[\s\S]*?(?=</tr)', filterStr);
+    var courseDataList = filterStr.matches(r'(?<=<tr)[\s\S]*?(?=</tr)');
 
     var semesterMap = Map<String, List<GPACourse>>();
     for (int i = 0; i < courseDataList.length; i++) {
       /// 这里的[ =":a-z]*?的作用是适配重修课的红色span
-      var courseData =
-          getRegExpList(r'(?<=<td[ =":a-z]*?>)[\s\S]*?(?=<)', courseDataList[i])
-              .map((e) => e.replaceAll(RegExp(r'\s'), ''))
-              .toList(); // 这里去掉了数据中的转义符
+      var courseData = courseDataList[i]
+          .matches(r'(?<=<td[ =":a-z]*?>)[\s\S]*?(?=<)')
+          .map((e) => e.replaceAll(RegExp(r'\s'), ''))
+          .toList(); // 这里去掉了数据中的转义符
       var semester = courseData[0];
 
       var gpaCourse =
@@ -150,7 +148,7 @@ GPABean _data2GPABean(String data, bool isMaster) {
 }
 
 /// 对课程数据进行整理后生成gpaCourse对象
-GPACourse _data2GPACourse(Map<String, String> data) {
+GPACourse? _data2GPACourse(Map<String, String> data) {
   if (data['score'] != null) {
     if (data['score'] == '缓考' || data['score'] == '--') return null; // 忽略缓考课
   }
@@ -160,7 +158,7 @@ GPACourse _data2GPACourse(Map<String, String> data) {
   double gpa = double.tryParse(data['gpa'] ?? '0.0') ?? 0.0;
 
   /// 愚人节措施
-  if (CommonPreferences().isAprilFoolGPA.value) {
+  if (CommonPreferences.isAprilFoolGPA.value) {
     score = 100.0;
     credit = 7157.125;
     gpa = 4.0;

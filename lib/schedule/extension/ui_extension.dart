@@ -1,112 +1,162 @@
-import 'dart:math';
+// @dart = 2.12
 
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
+import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 
-final activeNameStyle = FontManager.YaQiHei.copyWith(
-    color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
-final activeTeacherStyle =
-    FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
-final activeClassroomStyle =
-    FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
-final activeNameAlterStyle = FontManager.YaQiHei.copyWith(
-    color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
-final activeTeacherAlterStyle =
-FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
-final activeClassroomAlterStyle =
-FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
+class QuietCourse extends StatelessWidget {
+  final String _courseName;
 
-const Color quietBackColor = Color.fromRGBO(236, 238, 237, 1);
-const Color quiteFrontColor = Color.fromRGBO(205, 206, 210, 1);
+  QuietCourse(this._courseName);
 
-final quietNameStyle = FontManager.YaQiHei.copyWith(
-    color: quiteFrontColor, fontSize: 10, fontWeight: FontWeight.bold);
-final quietHintStyle =
-    FontManager.YaHeiRegular.copyWith(color: quiteFrontColor, fontSize: 9);
-List<Color> skinColor = [
-Color(CommonPreferences().skinColorA.value),
-Color(CommonPreferences().skinColorB.value),
-Color(CommonPreferences().skinColorC.value),
-Color(CommonPreferences().skinColorD.value),
-Color(CommonPreferences().skinColorE.value),
-Color(CommonPreferences().skinColorF.value)
-];
-/// 为ActiveCourse生成随机颜色
-Color generateColor(ScheduleCourse course) {
-  var now = DateTime.now(); // 加点随机元素，以防一学期都是一个颜色
-  int hashCode = course.courseName.hashCode + now.day;
-  if(CommonPreferences().isAprilFoolClass.value)
-  return ColorUtil.aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
-  else if(CommonPreferences().isSkinUsed.value){
-    int  idx =  hashCode % skinColor.length;
-    if(idx==4)
-      idx--;
-    return skinColor[idx];
-}
-  else {
-    int  idx =  hashCode % FavorColors.scheduleColor.length;
-    ///1435
-    if(idx==4)
-      idx--;
-    return FavorColors
-        .scheduleColor[idx];
-  }
-}
+  static const _quietBackColor = Color.fromRGBO(236, 238, 237, 1);
+  static const _quiteFrontColor = Color.fromRGBO(205, 206, 210, 1);
 
-/// 返回本周无需上的课（灰色）
-Widget getQuietCourse(double height, double width, ScheduleCourse course) {
-  return (CommonPreferences().otherWeekSchedule.value)
-      ? Container(
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5), color: quietBackColor),
-          padding: const EdgeInsets.symmetric(horizontal: 3),
-          child: Column(
-            children: [
-              Spacer(),
-              Icon(Icons.lock, color: quiteFrontColor, size: 15),
-              SizedBox(height: 2),
-              Text(formatText(course.courseName),
-                  style: quietNameStyle, textAlign: TextAlign.center),
-              SizedBox(height: 2),
-              Text(S.current.not_this_week,
-                  style: quietHintStyle, textAlign: TextAlign.center),
-              Spacer()
-            ],
-          ),
-        )
-      : Container();
-}
+  final _quietNameStyle = FontManager.YaQiHei.copyWith(
+      color: _quiteFrontColor, fontSize: 10, fontWeight: FontWeight.bold);
+  final _quietHintStyle =
+      FontManager.YaHeiRegular.copyWith(color: _quiteFrontColor, fontSize: 9);
 
-/// 返回本周需要上的课（亮色）
-class AnimatedActiveCourse extends StatelessWidget {
-  static const duration = const Duration(milliseconds: 375);
-  final List<ScheduleCourse> courses;
-  final double width;
-  final double height;
-
-  AnimatedActiveCourse(this.courses, this.width, this.height);
-  bool colorAlter(){
-    if((generateColor(courses[0]).value== Color.fromRGBO(221, 182, 190, 1.0).value))
-      return true;
-    else
-      return false;
-  }
   @override
   Widget build(BuildContext context) {
-    var start = int.parse(courses[0].arrange.start) - 1;
-    var day = int.parse(courses[0].arrange.day) - 1;
+    if (!CommonPreferences.otherWeekSchedule.value) return Container();
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: horStep / 2, vertical: verStep / 2),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: _quietBackColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Column(
+        children: [
+          Spacer(),
+          Icon(Icons.lock, color: _quiteFrontColor, size: 15),
+          SizedBox(height: 2),
+          Text(formatText(_courseName),
+              style: _quietNameStyle, textAlign: TextAlign.center),
+          SizedBox(height: 2),
+          Text(S.current.not_this_week,
+              style: _quietHintStyle, textAlign: TextAlign.center),
+          Spacer()
+        ],
+      ),
+    );
+  }
+}
+
+class AnimatedActiveCourse extends StatelessWidget {
+  static const _duration = const Duration(milliseconds: 375);
+  final List<Pair<Course, int>> _pairs;
+  final bool _hide;
+  final bool _warning;
+
+  AnimatedActiveCourse(this._pairs, this._hide, this._warning);
+
+  final _activeNameStyle = FontManager.YaQiHei.copyWith(
+      color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold);
+  final _activeTeacherStyle =
+      FontManager.YaHeiLight.copyWith(color: Colors.white, fontSize: 8);
+  final _activeClassroomStyle =
+      FontManager.Texta.copyWith(color: Colors.white, fontSize: 11);
+
+  // final _activeNameAlterStyle = FontManager.YaQiHei.copyWith(
+  //     color: Color(0xfff1dce0), fontSize: 11, fontWeight: FontWeight.bold);
+  // final _activeTeacherAlterStyle =
+  //     FontManager.YaHeiLight.copyWith(color: Color(0xfff1dce0), fontSize: 8);
+  // final _activeClassroomAlterStyle =
+  //     FontManager.Texta.copyWith(color: Color(0xfff1dce0), fontSize: 11);
+
+  // bool get _alter {
+  //   return generateColor(_pairs[0].first.name).value == Color.fromRGBO(221, 182, 190, 1.0).value;
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    var start = _pairs[0].arrange.unitList.first;
+    var day = _pairs[0].arrange.weekday;
+
+    var teacher = '';
+    _pairs[0].arrange.teacherList.forEach((str) {
+      if (teacher != '') teacher += ', ';
+      teacher += removeParentheses(str);
+    });
+
+    var detail = Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: horStep / 2, vertical: verStep / 2),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(255, 255, 255, 0.4),
+            Color.fromRGBO(255, 255, 255, 0.15),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 2),
+            blurRadius: 3,
+            color: Colors.black.withOpacity(0.08),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        // color: generateColor(_pairs[0].first.name),
+        child: InkWell(
+          onTap: () => showCourseDialog(context, _pairs),
+          borderRadius: BorderRadius.circular(5),
+          splashFactory: InkRipple.splashFactory,
+          splashColor: Color.fromRGBO(199, 216, 235, 1),
+          child: _hide
+              ? Container()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3),
+                  child: Column(
+                    children: [
+                      Spacer(),
+                      Text(formatText(_pairs[0].first.name),
+                          style: _activeNameStyle, textAlign: TextAlign.center),
+                      SizedBox(height: 2),
+                      Text(teacher,
+                          style: _activeTeacherStyle,
+                          textAlign: TextAlign.center),
+                      if (_pairs[0].arrange.location != "")
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                              replaceBuildingWord(_pairs[0].arrange.location),
+                              style: _activeClassroomStyle,
+                              textAlign: TextAlign.center),
+                        ),
+                      SizedBox(height: 2),
+                      if (_warning)
+                        Image.asset(
+                          'assets/images/schedule/warning.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                      Spacer()
+                    ],
+                  ),
+                ),
+        ),
+      ),
+    );
+
     return AnimationExecutor(
-      duration: duration,
+      duration: _duration,
       delay: _stagger(start, day),
       builder: (BuildContext context, Animation<double> animation) {
         var curvedAnimation = CurvedAnimation(
@@ -119,63 +169,16 @@ class AnimatedActiveCourse extends StatelessWidget {
               .animate(curvedAnimation)
               .value,
           child: Opacity(
-            opacity: Tween<double>(begin: 0.0, end: 1.0)
+            opacity: Tween<double>(begin: 0.0, end: 0.8)
                 .animate(curvedAnimation)
                 .value,
-            child: getCourseDetail(context),
+            child: detail,
           ),
         );
       },
     );
   }
 
-  Widget getCourseDetail(BuildContext context) {
-    return SizedBox(
-      height: height,
-      width: width,
-      child: Material(
-        color: generateColor(courses[0]),
-        borderRadius: BorderRadius.circular(5),
-        child: InkWell(
-          onTap: () => showCourseDialog(context, courses),
-          borderRadius: BorderRadius.circular(5),
-          splashFactory: InkRipple.splashFactory,
-          splashColor: Color.fromRGBO(179, 182, 191, 1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3),
-            child: Column(
-              children: [
-                Spacer(),
-                Text(formatText(courses[0].courseName),
-                    style:colorAlter()?activeNameAlterStyle: activeNameStyle, textAlign: TextAlign.center),
-                SizedBox(height: 2),
-                Text(removeParentheses(courses[0].teacher),
-                    style:colorAlter()?activeTeacherAlterStyle:  activeTeacherStyle, textAlign: TextAlign.center),
-                courses[0].arrange.room == ""
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(
-                            replaceBuildingWord(courses[0].arrange.room),
-                            style: colorAlter()?activeClassroomAlterStyle: activeClassroomStyle,
-                            textAlign: TextAlign.center),
-                      ),
-                courses.length == 1
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 3),
-                        child: Image.asset('assets/images/schedule_warn.png',
-                            width: 20, height: 20),
-                      ),
-                Spacer()
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Duration _stagger(int start, int day) => Duration(
-      milliseconds: (start * 3 + day * 2) * duration.inMilliseconds ~/ 18);
+      milliseconds: (start * 3 + day * 2) * _duration.inMilliseconds ~/ 18);
 }

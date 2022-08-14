@@ -53,7 +53,7 @@ class ProfileHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      decoration: CommonPreferences().isAprilFoolHead.value
+                      decoration: CommonPreferences.isAprilFoolHead.value
                           ? BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
@@ -78,7 +78,7 @@ class ProfileHeader extends StatelessWidget {
                               SizedBox(
                                   width: WePeiYangApp.screenWidth / 3,
                                   child: Text(
-                                      CommonPreferences().lakeNickname.value,
+                                      CommonPreferences.lakeNickname.value,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 4,
@@ -104,7 +104,7 @@ class ProfileHeader extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
-                            child: Text(CommonPreferences().userNumber.value,
+                            child: Text(CommonPreferences.userNumber.value,
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),
@@ -112,7 +112,7 @@ class ProfileHeader extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 7.0),
                             child: Text(
-                                "MPID: ${CommonPreferences().lakeUid.value.toString().padLeft(6, '0')}",
+                                "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                 textAlign: TextAlign.start,
                                 style: TextUtil.base.ProductSans.grey6C.w700
                                     .sp(14)),

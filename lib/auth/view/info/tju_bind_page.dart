@@ -11,8 +11,8 @@ import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -35,13 +35,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
     captchaKey = GlobalKey();
     captchaWidget = CaptchaWidget(captchaKey);
     codeController = TextEditingController();
-    var pref = CommonPreferences();
-    if (pref.isBindTju.value) {
+    if (CommonPreferences.isBindTju.value) {
       super.initState();
       return;
     }
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -72,21 +71,15 @@ class _TjuBindPageState extends State<TjuBindPage> {
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ExamNotifier>(context, listen: false)
-          .refreshExam(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
+      Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
+      Provider.of<ExamProvider>(context, listen: false).refreshExam(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
       setState(() {
         tjuuname = "";
         tjupasswd = "";
@@ -107,13 +100,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
 
-  Widget _detail(BuildContext context, CommonPreferences pref) {
+  Widget _detail(BuildContext context) {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    if (pref.isBindTju.value)
+    if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
-        Text("${S.current.bind_account}: ${pref.tjuuname.value}",
+        Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
             style: FontManager.YaHeiRegular.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
@@ -333,7 +326,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
-    var pref = CommonPreferences();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
@@ -364,7 +356,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                   child: Text(
-                      pref.isBindTju.value
+                      CommonPreferences.isBindTju.value
                           ? S.current.is_bind
                           : S.current.not_bind,
                       style: TextStyle(
@@ -376,7 +368,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
 
             /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-            SizedBox(height: pref.isBindTju.value ? 20 : 0),
+            SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -389,7 +381,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     height: 50, width: 50),
               ],
             ),
-            _detail(context, pref)
+            _detail(context)
           ],
         ),
       ),
@@ -406,16 +398,16 @@ class CaptchaWidget extends StatefulWidget {
   CaptchaWidgetState createState() => CaptchaWidgetState();
 }
 
-var index = 0;
+var _index = 0;
 
 class CaptchaWidgetState extends State<CaptchaWidget> {
   refresh() {
-    setState(() => index++);
+    setState(() => _index++);
   }
 
   @override
   void dispose() {
-    index++;
+    _index++;
     super.dispose();
   }
 
@@ -432,8 +424,8 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
           return InkWell(
             onTap: refresh,
             child: Image.network(
-                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                key: ValueKey(index),
+                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$_index",
+                key: ValueKey(_index),
                 headers: {"Cookie": map['session']},
                 fit: BoxFit.fill),
           );

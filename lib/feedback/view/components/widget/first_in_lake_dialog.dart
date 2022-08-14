@@ -139,7 +139,7 @@ class FirstInLakeDialogState extends State<FirstInLakeDialog>{
        confirmFun: () {
          if (widget.checkedNotifier.value == false) {
            Navigator.pop(context);
-           CommonPreferences().isFirstLogin.value = false;
+           CommonPreferences.isFirstLogin.value = false;
          } else {
            ToastProvider.error('请同意《求实论坛社区规范》');
          }

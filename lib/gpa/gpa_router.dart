@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/gpa/view/gpa_page.dart';
 

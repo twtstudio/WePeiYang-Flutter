@@ -1,3 +1,4 @@
+// @dart = 2.12
 class GPABean {
   Total total;
   List<GPAStat> stats;
@@ -6,8 +7,8 @@ class GPABean {
 
   GPABean.fromJson(Map<String, dynamic> map)
       : total = Total.fromJson(map['total']),
-        stats = []..addAll(
-            (map['stats'] as List ?? []).map((e) => GPAStat.fromJson(e)));
+        stats = []
+          ..addAll((map['stats'] as List).map((e) => GPAStat.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'total': total.toJson(),
@@ -43,8 +44,8 @@ class GPAStat {
       : weighted = map['weighted'],
         gpa = map['gpa'],
         credits = map['credits'],
-        courses = []..addAll(
-            (map['courses'] as List ?? []).map((e) => GPACourse.fromJson(e)));
+        courses = []
+          ..addAll((map['courses'] as List).map((e) => GPACourse.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'weighted': weighted,

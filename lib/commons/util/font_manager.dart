@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 
 class FontManager {
@@ -12,12 +13,4 @@ class FontManager {
 
   static const Gilroy = TextStyle(fontFamily: 'Gilroy');
   static const Bauhaus = TextStyle(fontFamily: 'Bauhaus');
-
-
-  static const NotoSansSCMedium = TextStyle(fontFamily: 'NotoSansSC', fontWeight: FontWeight.w500);
-  static const NotoSansSCRegular = TextStyle(fontFamily: 'NotoSansSC', fontWeight: FontWeight.w400);
-
-  static const ProductSansBold = TextStyle(fontFamily: 'ProductSans', fontWeight: FontWeight.bold);
-  static const ProductSansRegular = TextStyle(fontFamily: 'ProductSans', fontWeight: FontWeight.w400);
-
 }

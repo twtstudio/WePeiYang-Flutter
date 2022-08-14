@@ -56,7 +56,7 @@ mixin LoungeDataStateMixin {
   void dataUpdated({DateTime? time}) {
     _dataState = LoungeDataState.updated();
     if (time != null){
-      CommonPreferences().loungeUpdateTime.value = time.toString();
+      CommonPreferences.loungeUpdateTime.value = time.toString();
       _updateTime = time;
     }
   }
@@ -70,7 +70,7 @@ mixin LoungeDataStateMixin {
 
   // 数据刷新时间
   DateTime? _updateTime =
-      DateTime.tryParse(CommonPreferences().loungeUpdateTime.value);
+      DateTime.tryParse(CommonPreferences.loungeUpdateTime.value);
 
   DateTime? get updateTime => _updateTime;
 }

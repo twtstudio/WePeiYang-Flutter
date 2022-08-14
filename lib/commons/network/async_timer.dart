@@ -1,4 +1,5 @@
 // @dart = 2.12
+part of 'wpy_dio.dart';
 
 mixin AsyncTimer {
   static Map<String, bool> _map = {};

@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';

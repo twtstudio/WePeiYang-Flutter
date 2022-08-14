@@ -1,10 +1,7 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart' show required, BuildContext;
-
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart'
-    show OnSuccess, OnFailure;
+// @dart = 2.12
+import 'package:flutter/material.dart' show BuildContext;
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录获取tgc -> 获取classes.tju.edu的cookie
@@ -12,104 +9,89 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 ///                  而是会返回“主修”、“辅修”字样。
 void login(BuildContext context, String name, String pw, String captcha,
     Map<String, String> map,
-    {@required OnSuccess onSuccess, OnFailure onFailure}) async {
+    {required OnSuccess onSuccess, required OnFailure onFailure}) async {
   try {
-    var pref = CommonPreferences();
-
     /// 登录sso
-    var ssoRsp = await ssoLogin(name, pw, captcha, map);
-
-    /// 这里的tgc是一个登录后给的cookie，只会使用一次所以不存了
-    var tgc =
-        getRegExpStr(r'TGC=\S+(?=\;)', ssoRsp.headers.map['set-cookie'][0]);
-    pref.tjuuname.value = name;
-    pref.tjupasswd.value = pw;
+    var tgc = await _ssoLogin(name, pw, captcha, map);
 
     /// 获取classes的cookies
-    var cookieRsp = await getClassesCookies(tgc);
-    cookieRsp.headers.map['set-cookie'].forEach((string) {
-      if (string.contains('GSESSIONID'))
-        pref.gSessionId.value = getRegExpStr(r'GSESSIONID=\w+\.\w+', string);
-      if (string.contains('UqZBpD3n3iXPAw1X'))
-        pref.garbled.value = getRegExpStr(r'UqZBpD3n3iXPAw1X=\w+', string);
-      if (string.contains('semester'))
-        pref.semesterId.value = getRegExpStr(r'semester\.id=\w+', string);
-    });
+    await _getClassesCookies(tgc);
 
-    /// 这里如果是null的话则证明学生有辅修
-    var idsValue =
-        getRegExpStr(r'(?<=ids\"\,\")\w*', cookieRsp.data.toString());
-    pref.ids.value = (idsValue == null) ? "useless" : idsValue;
-    pref.isBindTju.value = true;
+    CommonPreferences.tjuuname.value = name;
+    CommonPreferences.tjupasswd.value = pw;
+    CommonPreferences.isBindTju.value = true;
     onSuccess();
   } on DioError catch (e) {
-    if (onFailure != null) onFailure(e);
+    onFailure(e);
   }
 }
 
 /// 获取包含 session、execution 的 map
-Future<Map> getExecAndSession() =>
-    fetch("https://sso.tju.edu.cn/cas/login").then((response) {
-      var map = Map<String, String>();
-      response.headers.map['set-cookie'].forEach((string) {
-        if (string.contains('SESSION'))
-          map['session'] = getRegExpStr(r'SESSION=\w+', string);
-      });
-      map['execution'] =
-          getRegExpStr(r'(?<=execution" value=")\w+', response.data.toString());
-      return map;
-    });
+Future<Map> getExecAndSession() async {
+  var response = await fetch("https://sso.tju.edu.cn/cas/login");
+  var map = Map<String, String>();
+  response.headers.map['set-cookie']!.forEach((string) {
+    if (string.contains('SESSION'))
+      map['session'] = string.match(r'SESSION=\w+');
+  });
+  map['execution'] =
+      response.data.toString().match(r'(?<=execution" value=")\w+');
+  return map;
+}
 
-/// 进行sso登录
-Future<Response> ssoLogin(String name, String pw, String captcha, Map map) =>
-    fetch("https://sso.tju.edu.cn/cas/login",
-        params: {
-          "username": name,
-          "password": pw,
-          "captcha": captcha,
-          "execution": map['execution'],
-          "_eventId": "submit"
-        },
-        cookie: map['session']);
+/// 进行sso登录，并返回tgc(只会使用一次的cookie，所以不用存了)
+Future<String> _ssoLogin(
+    String name, String pw, String captcha, Map map) async {
+  var response = await fetch("https://sso.tju.edu.cn/cas/login",
+      params: {
+        "username": name,
+        "password": pw,
+        "captcha": captcha,
+        "execution": map['execution'],
+        "_eventId": "submit"
+      },
+      cookie: map['session']);
+  return response.headers.map['set-cookie']![0].match(r'TGC=\S+(?=\;)');
+}
 
 /// 获取 GSESSIONID 、semester.id 、UqZBpD3n3iXPAw1X 、ids 等cookie
-Future<Response> getClassesCookies(String tgc) =>
-    fetch("http://classes.tju.edu.cn/eams/courseTableForStd.action",
-        cookie: tgc);
+Future<void> _getClassesCookies(String tgc) async {
+  var response = await fetch(
+      "http://classes.tju.edu.cn/eams/courseTableForStd.action",
+      cookie: tgc);
+  response.headers.map['set-cookie']!.forEach((str) {
+    if (str.contains('GSESSIONID'))
+      CommonPreferences.gSessionId.value = str.match(r'GSESSIONID=\w+\.\w+');
+    if (str.contains('UqZBpD3n3iXPAw1X'))
+      CommonPreferences.garbled.value = str.match(r'UqZBpD3n3iXPAw1X=\w+');
+    if (str.contains('semester'))
+      CommonPreferences.semesterId.value = str.match(r'semester\.id=\w+');
+  });
+
+  /// 这里如果是null的话则证明学生有辅修
+  var idsValue = response.data.toString().match(r'(?<=ids\"\,\")\w*');
+  CommonPreferences.ids.value = (idsValue == '') ? "useless" : idsValue;
+}
+
+class _SpiderDio extends DioAbstract {}
+
+final _spiderDio = _SpiderDio();
 
 /// 负责爬虫请求的方法
 Future<Response<dynamic>> fetch(String url,
-    {String cookie,
-    List<String> cookieList,
-    Map<String, dynamic> params,
+    {String? cookie,
+    List<String>? cookieList,
+    Map<String, dynamic>? params,
     bool isPost = false}) {
-  var cookieTmp = cookie ?? "";
+  var cookieTmp = cookie ?? '';
   cookieList?.forEach((string) {
-    if (cookieTmp != "") cookieTmp += '; ';
+    if (cookieTmp != '') cookieTmp += '; ';
     cookieTmp += string;
   });
-  var options = BaseOptions(
-      connectTimeout: 10000,
-      receiveTimeout: 10000,
-      headers: {"Cookie": cookieTmp});
-  var dio = Dio()
-    ..options = options
-    ..interceptors.add(NetCheckInterceptor())
-    ..interceptors.add(ErrorInterceptor())
-    ..interceptors.add(LogInterceptor());
+  Options? option;
+  if (cookieTmp != '') option = Options(headers: {"Cookie": cookieTmp});
   if (isPost)
-    return dio.post(url, queryParameters: params);
+    return _spiderDio.post(url, queryParameters: params, options: option);
   else
-    return dio.get(url, queryParameters: params);
-}
-
-/// 获取[单个]正则匹配结果，input为待匹配串，form为匹配格式
-String getRegExpStr(String form, String input) =>
-    RegExp(form).firstMatch(input)?.group(0);
-
-/// 获取[多个]正则匹配结果，input为待匹配串，form为匹配格式
-List<String> getRegExpList(String form, String input) {
-  List<String> list = [];
-  RegExp(form).allMatches(input).toList().forEach((e) => list.add(e?.group(0)));
-  return list;
+    return _spiderDio.get(url, queryParameters: params, options: option);
 }

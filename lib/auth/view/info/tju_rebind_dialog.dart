@@ -8,8 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 class TjuRebindDialog extends Dialog {
   final String reason;
@@ -58,9 +58,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   void initState() {
     super.initState();
     captchaWidget = CaptchaWidget(captchaKey);
-    var pref = CommonPreferences();
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -90,21 +89,15 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
         onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ExamNotifier>(context, listen: false)
-          .refreshExam(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
+      Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
+      Provider.of<ExamProvider>(context, listen: false).refreshExam(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
       Navigator.pop(context);
     }, onFailure: (e) {
       if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';

@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -9,7 +10,7 @@ class LocaleModel extends ChangeNotifier {
 
   final key = 'language';
 
-  int _localeIndex;
+  late int _localeIndex;
 
   int get localeIndex => _localeIndex;
 
@@ -26,7 +27,7 @@ class LocaleModel extends ChangeNotifier {
 
   switchLocale(int index) async {
     _localeIndex = index;
-    await CommonPreferences.getPref().setInt(key, index);
+    await CommonPreferences.sharedPref.setInt(key, index);
     await S.load(locale());
     notifyListeners();
   }

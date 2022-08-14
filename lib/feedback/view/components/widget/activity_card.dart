@@ -68,7 +68,7 @@ class _ActivityCardState extends State<ActivityCard> {
                         .festivalList[index]
                         .url
                         .replaceAll(
-                            '<token>', '${CommonPreferences().token.value}'))
+                            '<token>', '${CommonPreferences.token.value}'))
                     : Navigator.pushNamed(context, FeedbackRouter.haitang,
                         arguments: FestivalArgs(
                             context

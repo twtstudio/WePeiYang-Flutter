@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
@@ -190,7 +190,7 @@ class MessageDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }), ApiInterceptor()
   ];

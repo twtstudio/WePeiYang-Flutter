@@ -1,13 +1,20 @@
+// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
-import 'package:we_pei_yang_flutter/schedule/view/exam_page.dart';
-import 'package:we_pei_yang_flutter/schedule/view/schedule_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/course_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/custom_courses_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
+import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 class ScheduleRouter {
-  static String schedule = 'schedule/home';
+  static String course = 'schedule/course';
   static String exam = 'schedule/exam';
+  static String customCourse = 'schedule/customCourse';
+  static String editDetail = 'schedule/editDetail';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
-    schedule: (_) => SchedulePage(),
+    course: (_) => CoursePage(),
     exam: (_) => ExamPage(),
+    customCourse: (_) => CustomCoursesPage(),
+    editDetail: (args) => EditDetailPage(args as EditDetailPageArgs),
   };
 }

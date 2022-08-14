@@ -723,8 +723,8 @@ class _PostCardState extends State<PostCard> {
 
     var decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(15),
-      color: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorE.value)
+      color: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorE.value)
           : Colors.white,
       boxShadow: [
         BoxShadow(

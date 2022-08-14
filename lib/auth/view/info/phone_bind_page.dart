@@ -15,7 +15,6 @@ class PhoneBindPage extends StatefulWidget {
 }
 
 class _PhoneBindPageState extends State<PhoneBindPage> {
-  var pref = CommonPreferences();
   String phone = "";
   String code = "";
   bool isPress = false;
@@ -52,11 +51,12 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
     var hintStyle = FontManager.YaHeiRegular.copyWith(
         color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
     double width = WePeiYangApp.screenWidth - 80;
-    if (pref.phone.value != "")
+    if (CommonPreferences.phone.value != "")
       return Column(children: [
         SizedBox(height: 70),
         Center(
-          child: Text("${S.current.bind_phone}: ${pref.phone.value}",
+          child: Text(
+              "${S.current.bind_phone}: ${CommonPreferences.phone.value}",
               style: FontManager.YaHeiRegular.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -257,7 +257,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
                 child: Text(
-                    (pref.phone.value != "")
+                    (CommonPreferences.phone.value != "")
                         ? S.current.is_bind
                         : S.current.not_bind,
                     style: FontManager.YaHeiRegular.copyWith(

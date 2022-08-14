@@ -286,7 +286,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   child: SizedBox(
                                     width: WePeiYangApp.screenWidth * 0.56,
                                     child: Text(
-                                      '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '无昵称' ? '微友' : CommonPreferences().lakeNickname.value.toString()}',
+                                      '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
                                       style: TextUtil
                                           .base.grey6C.w600.NotoSansSC
                                           .sp(16),

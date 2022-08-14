@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -14,8 +14,6 @@ class ColorSettingPage extends StatefulWidget {
 }
 
 class _ColorSettingPageState extends State<ColorSettingPage> {
-  var pref = CommonPreferences();
-
   /// 获取显示16位颜色值的文本
   /// @param [target] 此文本对应的gpa/schedule配色种类
   /// @param [index] index: 0 -> gpa, 1 -> schedule
@@ -27,12 +25,14 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
         style: FontManager.Aspira.copyWith(
             color: color, fontSize: 14, fontWeight: FontWeight.bold));
   }
+
   ///判断活动皮肤用
-   changeSkin(){
-    if(CommonPreferences().isAprilFoolClass.value){
-      CommonPreferences().isAprilFoolClass.value = false;
+  changeSkin() {
+    if (CommonPreferences.isAprilFoolClass.value) {
+      CommonPreferences.isAprilFoolClass.value = false;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     var titleTextStyle = FontManager.YaHeiBold.copyWith(
@@ -230,7 +230,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                 child: InkWell(
                     onTap: () {
                       FavorColors.setAprilFoolSchedule();
-                      CommonPreferences().isAprilFoolClass.value  =true;
+                      CommonPreferences.isAprilFoolClass.value = true;
                       setState(() {});
                     },
                     splashFactory: InkRipple.splashFactory,

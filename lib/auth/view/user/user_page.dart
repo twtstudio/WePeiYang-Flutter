@@ -1,22 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
-import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 class UserPage extends StatefulWidget {
@@ -25,17 +14,10 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  var pref = CommonPreferences();
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(systemNavigationBarColor: Colors.white));
-    final textStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 13,
-        fontWeight: FontWeight.bold,
-        color: Color.fromRGBO(98, 103, 122, 1));
-    const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -76,7 +58,7 @@ class _UserPageState extends State<UserPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(pref.nickname.value,
+                              Text(CommonPreferences.nickname.value,
                                   textAlign: TextAlign.left,
                                   style: FontManager.YaHeiRegular.copyWith(
                                     color: Colors.white,
@@ -85,7 +67,7 @@ class _UserPageState extends State<UserPage> {
                                   )),
                               SizedBox(height: 15),
                               Row(children: <Widget>[
-                                Text(CommonPreferences().userNumber.value,
+                                Text(CommonPreferences.userNumber.value,
                                     textAlign: TextAlign.center,
                                     style: FontManager.YaHeiRegular.copyWith(
                                       color: Colors.black,
@@ -93,7 +75,7 @@ class _UserPageState extends State<UserPage> {
                                       fontWeight: FontWeight.bold,
                                     )),
                                 SizedBox(width: 10),
-                                Text(CommonPreferences().userNumber.value,
+                                Text('MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
                                     textAlign: TextAlign.center,
                                     style: FontManager.YaHeiRegular.copyWith(
                                       color: Colors.black,
@@ -118,7 +100,7 @@ class _UserPageState extends State<UserPage> {
                       //                 ? Colors.white
                       //                 : MyColors.deepDust,
                       //             fontSize: 15))),
-                      if (CommonPreferences().isSkinUsed.value)
+                      if (CommonPreferences.isSkinUsed.value)
                         Container(
                             height: 50,
                             margin: const EdgeInsets.symmetric(horizontal: 20),

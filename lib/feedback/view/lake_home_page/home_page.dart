@@ -63,7 +63,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   ///初次进入湖底的告示
   firstInLake() {
     final checkedNotifier = ValueNotifier(true);
-    if (CommonPreferences().isFirstLogin.value) {
+    if (CommonPreferences.isFirstLogin.value) {
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -279,8 +279,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorA.value)
+      backgroundColor: CommonPreferences.isSkinUsed.value
+          ? Color(CommonPreferences.skinColorA.value)
           : Colors.white,
       body: SafeArea(
         child: NestedScrollView(
@@ -293,8 +293,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               return <Widget>[
                 SliverAppBar(
                   toolbarHeight: 48,
-                  backgroundColor: CommonPreferences().isSkinUsed.value
-                      ? Color(CommonPreferences().skinColorA.value)
+                  backgroundColor: CommonPreferences.isSkinUsed.value
+                      ? Color(CommonPreferences.skinColorA.value)
                       : Colors.white,
                   titleSpacing: 0,
                   leading: InkWell(
@@ -345,8 +345,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   pinned: true,
                   delegate: HomeHeaderDelegate(
                     child: Container(
-                      color: CommonPreferences().isSkinUsed.value
-                          ? Color(CommonPreferences().skinColorA.value)
+                      color: CommonPreferences.isSkinUsed.value
+                          ? Color(CommonPreferences.skinColorA.value)
                           : Colors.white,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -363,8 +363,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             },
             body: Container(
               decoration: BoxDecoration(
-                  color: CommonPreferences().isSkinUsed.value
-                      ? Color(CommonPreferences().skinColorA.value)
+                  color: CommonPreferences.isSkinUsed.value
+                      ? Color(CommonPreferences.skinColorA.value)
                       : ColorUtil.backgroundColor),
               child: Stack(
                 children: [

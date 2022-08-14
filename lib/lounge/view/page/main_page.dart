@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/lounge/view/widget/building_grid_view.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/campus_text_button.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/favor_list.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/search_bar.dart';
-import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 
 class MainPageState extends ChangeNotifier {
   final RefreshController _refreshController;

@@ -315,8 +315,8 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                             TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (CommonPreferences().isSuper.value ||
-                          CommonPreferences().isStuAdmin.value)
+                      if (CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value)
                         InkWell(
                           onTap: () =>
                               _showResetConfirmDialog(context).then((value) {
@@ -344,7 +344,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                             ],
                           ),
                         ),
-                      if (CommonPreferences().isSuper.value)
+                      if (CommonPreferences.isSuper.value)
                         InkWell(
                           onTap: () => Navigator.popAndPushNamed(
                               context, FeedbackRouter.openBox,

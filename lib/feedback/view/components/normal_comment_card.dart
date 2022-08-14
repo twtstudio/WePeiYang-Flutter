@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -217,7 +216,7 @@ class _NCommentCardState extends State<NCommentCard>
                   .comment.postId}\n【${widget.comment.content}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
-              CommonPreferences().feedbackLastWeCo.value =
+              CommonPreferences.feedbackLastWeCo.value =
                   widget.ancestorUId.toString();
               ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
             }
@@ -291,8 +290,8 @@ class _NCommentCardState extends State<NCommentCard>
                   ),
                 ),
               ),
-              if ((CommonPreferences().isSuper.value ||
-                  CommonPreferences().isStuAdmin.value) ??
+              if ((CommonPreferences.isSuper.value ||
+                  CommonPreferences.isStuAdmin.value) ??
                   false)
                 PopupMenuItem<String>(
                   value: '删评',
@@ -580,8 +579,8 @@ class _NCommentCardState extends State<NCommentCard>
               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: CommonPreferences().isSkinUsed.value
-                    ? Color(CommonPreferences().skinColorE.value)
+                color: CommonPreferences.isSkinUsed.value
+                    ? Color(CommonPreferences.skinColorE.value)
                     : widget.isFullView && widget.isSubFloor
                     ? Colors.transparent
                     : Colors.white,

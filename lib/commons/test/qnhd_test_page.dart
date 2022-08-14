@@ -2,7 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 
@@ -34,8 +34,8 @@ class _QsltTestPageState extends State<QsltTestPage> {
           onPressed: () async {
             final response = await _dio.post("user/login",
                 formData: FormData.fromMap({
-                  "username": CommonPreferences().account.value,
-                  "password": CommonPreferences().password.value,
+                  "username": CommonPreferences.account.value,
+                  "password": CommonPreferences.password.value,
                 }));
             setState(() {
               token = response.data['data']['token'] ?? "null";
