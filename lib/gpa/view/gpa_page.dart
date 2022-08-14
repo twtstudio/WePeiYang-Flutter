@@ -523,17 +523,11 @@ class GPAStatsWidget extends StatelessWidget {
   }
 }
 
-class CourseListWidget extends StatefulWidget {
-  final List<Color> gpaColors;
-
-  CourseListWidget(this.gpaColors);
-
-  @override
-  _CourseListState createState() => _CourseListState();
-}
-
-class _CourseListState extends State<CourseListWidget> {
+class CourseListWidget extends StatelessWidget {
+  final List<Color> _gpaColors;
   static const double _cardHeight = 82;
+
+  CourseListWidget(this._gpaColors);
 
   @override
   Widget build(BuildContext context) {
@@ -554,7 +548,7 @@ class _CourseListState extends State<CourseListWidget> {
                           height: _cardHeight,
                           padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
                           child: Card(
-                            color: widget.gpaColors[3],
+                            color: _gpaColors[3],
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -566,7 +560,7 @@ class _CourseListState extends State<CourseListWidget> {
                                 children: [
                                   SizedBox(width: 15),
                                   Icon(Icons.assignment_turned_in,
-                                      color: widget.gpaColors[2], size: 25),
+                                      color: _gpaColors[2], size: 25),
                                   SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
@@ -580,8 +574,7 @@ class _CourseListState extends State<CourseListWidget> {
                                               style: FontManager.YaHeiRegular
                                                   .copyWith(
                                                       fontSize: 14,
-                                                      color:
-                                                          widget.gpaColors[1])),
+                                                      color: _gpaColors[1])),
                                         ),
                                         SizedBox(height: 2),
                                         Container(
@@ -591,8 +584,7 @@ class _CourseListState extends State<CourseListWidget> {
                                               style: FontManager.YaHeiLight
                                                   .copyWith(
                                                       fontSize: 11,
-                                                      color:
-                                                          widget.gpaColors[2])),
+                                                      color: _gpaColors[2])),
                                         )
                                       ],
                                     ),
@@ -602,7 +594,7 @@ class _CourseListState extends State<CourseListWidget> {
                                       '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
                                       style: FontManager.Montserrat.copyWith(
                                           fontSize: 26,
-                                          color: widget.gpaColors[1],
+                                          color: _gpaColors[1],
                                           fontWeight: FontWeight.bold)),
                                   SizedBox(width: 18)
                                 ],
@@ -630,14 +622,14 @@ class _CourseListState extends State<CourseListWidget> {
                         style: FontManager.Texta.copyWith(
                             fontSize: 14,
                             letterSpacing: 4,
-                            color: widget.gpaColors[2]),
+                            color: _gpaColors[2]),
                         children: <TextSpan>[
                       TextSpan(
                           text: sortType,
                           style: FontManager.Texta.copyWith(
                               fontSize: 14,
                               letterSpacing: 4,
-                              color: widget.gpaColors[1],
+                              color: _gpaColors[1],
                               fontWeight: FontWeight.bold))
                     ]));
               },
@@ -646,10 +638,6 @@ class _CourseListState extends State<CourseListWidget> {
     );
   }
 
-  String _formatText(String text) {
-    if (text.length >= 12)
-      return text.substring(0, 11) + "...";
-    else
-      return text;
-  }
+  String _formatText(String text) =>
+      text.length >= 12 ? '${text.substring(0, 11)}...' : text;
 }

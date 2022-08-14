@@ -121,18 +121,14 @@ class _ExamPageState extends State<ExamPage> {
   }
 }
 
-Widget examCard(BuildContext context, Exam exam, bool finished,
-    {bool wpy = false}) {
+Widget examCard(BuildContext context, Exam exam, bool finished) {
   int code = exam.name.hashCode + DateTime.now().day;
 
   ///愚人节配色
   var unfinishedColor = CommonPreferences.isAprilFool.value
       ? ColorUtil.aprilFoolColor[code % ColorUtil.aprilFoolColor.length]
-      : wpy
-          ? CommonPreferences.isSkinUsed.value
-              ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
-              : FavorColors.defaultHomeSchedule[
-                  code % FavorColors.defaultHomeSchedule.length]
+      : CommonPreferences.isSkinUsed.value
+          ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
           : FavorColors.scheduleColor[code % FavorColors.scheduleColor.length];
   var name = exam.name;
   if (name.length >= 10) name = name.substring(0, 10) + '...';
@@ -162,39 +158,39 @@ Widget examCard(BuildContext context, Exam exam, bool finished,
           onTap: () {
             if (CommonPreferences.isAprilFool.value) {
               showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return AprilFoolDialog(
-                      content: '${exam.name}, \n第二天将自动回到正常考表',
-                      confirmText: "返回真实考表",
-                      cancelText: "这样也挺好",
-                      confirmFun: () {
-                        CommonPreferences.isAprilFool.value = false;
-                        if (CommonPreferences.isBindTju.value) {
-                          Provider.of<ExamProvider>(context, listen: false)
-                              .refreshExam(
-                                  hint: true,
-                                  onFailure: (e) {
-                                    showDialog(
-                                        context: context,
-                                        barrierDismissible: true,
-                                        builder: (BuildContext context) =>
-                                            TjuRebindDialog(
-                                                reason: e is WpyDioError
-                                                    ? e.error.toString()
-                                                    : null));
-                                  });
-                        } else {
-                          ToastProvider.error("请绑定办公网");
-                          Navigator.pushNamed(context, AuthRouter.tjuBind);
-                        }
-                        Navigator.popAndPushNamed(context, HomeRouter.home);
-                      },
-                    );
-                  });
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AprilFoolDialog(
+                    content: '${exam.name}, \n第二天将自动回到正常考表',
+                    confirmText: "返回真实考表",
+                    cancelText: "这样也挺好",
+                    confirmFun: () {
+                      CommonPreferences.isAprilFool.value = false;
+                      if (CommonPreferences.isBindTju.value) {
+                        Provider.of<ExamProvider>(context, listen: false)
+                            .refreshExam(
+                                hint: true,
+                                onFailure: (e) {
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      builder: (BuildContext context) =>
+                                          TjuRebindDialog(
+                                              reason: e is WpyDioError
+                                                  ? e.error.toString()
+                                                  : null));
+                                });
+                      } else {
+                        ToastProvider.error("请绑定办公网");
+                        Navigator.pushNamed(context, AuthRouter.tjuBind);
+                      }
+                      Navigator.popAndPushNamed(context, HomeRouter.home);
+                    },
+                  );
+                },
+              );
             }
-            if (wpy) Navigator.pushNamed(context, ScheduleRouter.exam);
           },
           borderRadius: BorderRadius.circular(10),
           splashFactory: InkRipple.splashFactory,

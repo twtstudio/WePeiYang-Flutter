@@ -2,22 +2,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
 
 class WpyExamWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(22, 30, 22, 5),
-        child: Consumer<ExamProvider>(
-          builder: (context, provider, child) {
-            if (provider.hideExam) return Container();
-            return _detail(provider, context);
-          },
-        ));
+    return Consumer<ExamProvider>(
+      builder: (context, provider, child) {
+        if (provider.hideExam) return Container();
+        return _detail(provider, context);
+      },
+    );
   }
 
   Widget _detail(ExamProvider provider, BuildContext context) {
@@ -30,31 +27,99 @@ class WpyExamWidget extends StatelessWidget {
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            child: Center(
-              child: Text(msg,
-                  style: FontManager.YaHeiLight.copyWith(
-                      color: Color.fromRGBO(207, 208, 212, 1),
-                      fontSize: 14,
-                      letterSpacing: 0.5)),
-            )),
-      );
-    } else if (provider.unscheduled.length > 1) {
-      return Container(
-        constraints: BoxConstraints(maxHeight: 110),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
-          children: provider.unscheduled
-              .map((e) => SizedBox(
-                  width: 300, child: examCard(context, e, false, wpy: true)))
-              .toList(),
+          height: 430,
+          alignment: Alignment.center,
+          child: Text(msg),
         ),
       );
-    } else
-      return provider.unscheduled
-            .map((e) => examCard(context, e, false, wpy: true)).first;
+    }
+    return SizedBox(
+      height: 430,
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 35),
+        itemCount: provider.unscheduled.length,
+        itemBuilder: (context, i) {
+          var exam = provider.unscheduled[i];
+          var seat = exam.seat;
+          if (seat != '地点未安排') seat = '座位' + seat;
+          return Container(
+            height: 80,
+            width: 330,
+            margin: const EdgeInsets.symmetric(vertical: 7.5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, 4),
+                  blurRadius: 20,
+                  color: Colors.black.withOpacity(0.05),
+                )
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
+                borderRadius: BorderRadius.circular(15),
+                splashFactory: InkRipple.splashFactory,
+                splashColor: Color.fromRGBO(228, 232, 234, 1.0),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            exam.name,
+                            style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Image.asset('assets/images/schedule/location.png',
+                                  width: 13, height: 13),
+                              SizedBox(width: 8),
+                              Text(
+                                '${exam.location}-$seat',
+                                style: TextUtil.base.PingFangSC.normal.black2A
+                                    .sp(12),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            exam.arrange,
+                            style: TextUtil.base.PingFangSC.normal
+                                .sp(12)
+                                .customColor(Color(0xFF2C7EDF)),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            exam.date,
+                            style: TextUtil.base.PingFangSC.normal
+                                .sp(12)
+                                .customColor(Color(0xFF2C7EDF)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

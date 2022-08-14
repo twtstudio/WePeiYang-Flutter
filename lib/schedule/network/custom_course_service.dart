@@ -36,106 +36,6 @@ class CustomCourseService with AsyncTimer {
     }
   }
 
-  static Future<void> updateCustomClass(Course course, int index) async {
-    try {
-      Map<String, dynamic> map = {
-        'index': index,
-        'credit': course.credit,
-        'class_name': course.name,
-        'classDetailList': course.arrangeList
-            .map((arrange) => {
-                  'class_order': _unitList2Str(arrange.unitList),
-                  'classroom': arrange.location,
-                  'this_class_teacher': arrange.teacherList.isEmpty
-                      ? ''
-                      : arrange.teacherList.first,
-                  'which_week': _weekList2Str(arrange.weekList),
-                  'which_weekday': _weekDay2Str(arrange.weekday)
-                })
-            .toList()
-      };
-      await customCourseDio.post('customClassTable/update',
-          data: json.encode(map));
-    } catch (e) {
-      // ToastProvider.error('更新自定义课程失败');
-    }
-  }
-
-  static Future<void> deleteCustomClass(int index) async {
-    try {
-      await customCourseDio.post('customClassTable/deleteClass',
-          queryParameters: {'index': index});
-    } catch (e) {
-      // ToastProvider.error('删除自定义课程失败');
-    }
-  }
-
-  static Future<void> addCustomClass(Course course, int index) async {
-    try {
-      Map<String, dynamic> map = {
-        'index': index,
-        'credit': course.credit,
-        'class_name': course.name,
-        'classDetailList': course.arrangeList
-            .map((arrange) => {
-                  'class_order': _unitList2Str(arrange.unitList),
-                  'classroom': arrange.location,
-                  'this_class_teacher': arrange.teacherList.isEmpty
-                      ? ''
-                      : arrange.teacherList.first,
-                  'which_week': _weekList2Str(arrange.weekList),
-                  'which_weekday': _weekDay2Str(arrange.weekday)
-                })
-            .toList()
-      };
-      await customCourseDio.post('customClassTable/addCustomClass',
-          data: json.encode(map));
-    } catch (e) {
-      // ToastProvider.error('添加自定义课程失败');
-    }
-  }
-
-  static Future<List<Course>?> getCustomTable() async {
-    try {
-      var response =
-          await customCourseDio.get('customClassTable/getCustomTable');
-      var courseList = <Course>[];
-      var list = response.data['result']['customClassTable'];
-      for (Map<String, dynamic> courseJson in list) {
-        var name = courseJson['class_name'];
-        var credit = courseJson['credit'];
-        var minWeek = 100, maxWeek = 0;
-        var teacherList = <String>[];
-        var arrangeList = <Arrange>[];
-        for (Map<String, dynamic> arrangeJson
-            in courseJson['classDetailList']) {
-          var weekList = _weekStr2List(arrangeJson['which_week']);
-          if (minWeek > weekList.first) minWeek = weekList.first;
-          if (maxWeek < weekList.last) maxWeek = weekList.last;
-
-          var unitList = _unitStr2List(arrangeJson['class_order']);
-
-          var teacherStr = arrangeJson['this_class_teacher'];
-          if (!teacherList.contains(teacherStr)) {
-            teacherList.add(teacherStr);
-          }
-          var arrange = Arrange.empty()
-            ..location = arrangeJson['classroom']
-            ..weekday = _str2WeekDay(arrangeJson['which_weekday'])
-            ..weekList = weekList
-            ..unitList = unitList
-            ..teacherList = [teacherStr];
-          arrangeList.add(arrange);
-        }
-        var weeks = '$minWeek-$maxWeek';
-        courseList
-            .add(Course.custom(name, credit, weeks, teacherList, arrangeList));
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
   static Future<Course?> getClassBySerial(String serial) async {
     try {
       var response = await customCourseDio
@@ -169,6 +69,85 @@ class CustomCourseService with AsyncTimer {
     } catch (e) {
       ToastProvider.error('导入课程失败，请重试');
       return null;
+    }
+  }
+
+  /// 获取成功时判断customUpdatedAt, 如果比本地的新就更新这个时间，并返回list，否则返回null
+  /// 返回null时紧接着调用[postCustomTable]接口更新远程端
+  static Future<List<Course>?> getCustomTable() async {
+    try {
+      var response =
+          await customCourseDio.get('customClassTable');
+      int local = CommonPreferences.customUpdatedAt.value;
+      int remote = response.data['result']['customUpdatedAt'] ?? 0;
+
+      if (remote < local) return null; // 本地的新就直接返回
+      CommonPreferences.customUpdatedAt.value = remote; // 否则更新本地
+
+      var courseList = <Course>[];
+      var list = response.data['result']['customClassTable'];
+      for (Map<String, dynamic> courseJson in list) {
+        var name = courseJson['class_name'];
+        var credit = courseJson['credit'];
+        var minWeek = 100, maxWeek = 0;
+        var teacherList = <String>[];
+        var arrangeList = <Arrange>[];
+        for (Map<String, dynamic> arrangeJson
+            in courseJson['classDetailList']) {
+          var weekList = _weekStr2List(arrangeJson['which_week']);
+          if (minWeek > weekList.first) minWeek = weekList.first;
+          if (maxWeek < weekList.last) maxWeek = weekList.last;
+
+          var unitList = _unitStr2List(arrangeJson['class_order']);
+
+          var teacherStr = arrangeJson['this_class_teacher'];
+          if (!teacherList.contains(teacherStr)) {
+            teacherList.add(teacherStr);
+          }
+          var arrange = Arrange.empty()
+            ..location = arrangeJson['classroom']
+            ..weekday = _str2WeekDay(arrangeJson['which_weekday'])
+            ..weekList = weekList
+            ..unitList = unitList
+            ..teacherList = [teacherStr];
+          arrangeList.add(arrange);
+        }
+        var weeks = '$minWeek-$maxWeek';
+        courseList
+            .add(Course.custom(name, credit, weeks, teacherList, arrangeList));
+      }
+      return courseList;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<void> postCustomTable(List<Course> courses, int time) async {
+    try {
+      Map<String, dynamic> map = {
+        'customUpdatedAt': time,
+        'customClassTable': courses
+            .map((course) => {
+                  'class_name': course.name,
+                  'credit': course.credit,
+                  'classDetailList': course.arrangeList
+                      .map((arrange) => {
+                            'class_order': _unitList2Str(arrange.unitList),
+                            'classroom': arrange.location,
+                            'this_class_teacher': arrange.teacherList.isEmpty
+                                ? ''
+                                : arrange.teacherList.first,
+                            'which_week': _weekList2Str(arrange.weekList),
+                            'which_weekday': _weekDay2Str(arrange.weekday)
+                          })
+                      .toList()
+                })
+            .toList()
+      };
+      await customCourseDio.post('customClassTable',
+          data: json.encode(map));
+    } catch (e) {
+      // ToastProvider.error('上传自定义课表失败');
     }
   }
 }
