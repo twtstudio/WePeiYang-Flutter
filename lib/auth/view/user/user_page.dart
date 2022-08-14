@@ -75,7 +75,7 @@ class _UserPageState extends State<UserPage> {
                                       fontWeight: FontWeight.bold,
                                     )),
                                 SizedBox(width: 10),
-                                Text(CommonPreferences.userNumber.value,
+                                Text('MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
                                     textAlign: TextAlign.center,
                                     style: FontManager.YaHeiRegular.copyWith(
                                       color: Colors.black,

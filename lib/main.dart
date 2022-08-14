@@ -80,10 +80,8 @@ void main() async {
     };
 
     // 设置哪天微北洋全部变灰
-    (DateTime.now().toLocal().month == 5 &&
-        DateTime.now().toLocal().day == 12) ||
-            (DateTime.now().toLocal().month == 12 &&
-                DateTime.now().toLocal().day == 13)
+    var date = DateTime.now().toLocal();
+    (date.month == 5 && date.day == 12) || (date.month == 12 && date.day == 13)
         ? runApp(ColorFiltered(
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
             child: WePeiYangApp()))

@@ -10,9 +10,11 @@ class PathUtil {
   static late Directory filesDir;
 
   static Future<void> init() async {
-    downloadDir =
-        (await getExternalStorageDirectories(type: StorageDirectory.downloads))!
-            .first;
+    downloadDir = Platform.isAndroid
+        ? (await getExternalStorageDirectories(
+                type: StorageDirectory.downloads))!
+            .first
+        : await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
   }
 }
