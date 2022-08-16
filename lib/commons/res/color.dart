@@ -1,5 +1,5 @@
 // @dart = 2.12
-import 'package:flutter/material.dart' show Color;
+import 'package:flutter/material.dart' show Color, Colors;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class MyColors {
@@ -25,13 +25,13 @@ class FavorColors {
   FavorColors._();
 
   /// gpa主色调，缓存类型是List<String>哦
-  static final _gpaColor = PrefsBean<List>("gpaColor", _greenGPA);
+  static final _gpaColor = PrefsBean<List>("gpaColor", _blueGPA);
 
   static List<Color> get gpaColor =>
       _gpaColor.value.map((e) => Color(int.parse(e, radix: 10))).toList();
 
   /// 单独用个变量存种类
-  static final gpaType = PrefsBean<String>("gpaColorType", 'green');
+  static final gpaType = PrefsBean<String>("gpaColorType", 'blue');
 
   /// 课程表主色调，缓存类型是List<String>哦
   static final _scheduleColor = PrefsBean<List>("scheduleColor", _blueSchedule);
@@ -75,10 +75,10 @@ class FavorColors {
   ];
 
   static final List<String> _blueGPA = [
-    Color.fromRGBO(71, 83, 95, 1).value.toString(),
-    Color.fromRGBO(206, 198, 185, 1).value.toString(),
-    Color.fromRGBO(195, 191, 185, 1).value.toString(),
-    Color.fromRGBO(87, 97, 108, 1).value.toString(),
+    Color(0xFF2C7EDF).value.toString(),
+    Colors.white.value.toString(),
+    Color(0xFFA6CFFF).value.toString(),
+    Colors.white.value.toString(),
   ];
 
   static final List<String> _pinkGPA = [

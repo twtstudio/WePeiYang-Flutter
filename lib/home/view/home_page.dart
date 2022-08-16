@@ -7,11 +7,11 @@ import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pages
       ..add(WPYPage())
       ..add(FeedbackHomePage(key: feedbackKey))
-      ..add(UserPage());
+      ..add(ProfilePage());
     _tabController = TabController(
       length: pages.length,
       vsync: this,
@@ -163,18 +163,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     var bottomNavigationBar = Container(
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 0.95),
-          boxShadow: [
-            BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
-          ],
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        ),
-        /// 适配iOS底部安全区
-        child: SafeArea(
-          child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
-        ),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(255, 255, 255, 0.95),
+        boxShadow: [
+          BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
+        ],
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
+      ),
+
+      /// 适配iOS底部安全区
+      child: SafeArea(
+        child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
+      ),
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -185,7 +186,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               .copyWith(systemNavigationBarColor: Colors.white),
       child: Scaffold(
         extendBody: true,
-        bottomNavigationBar:  bottomNavigationBar,
+        bottomNavigationBar: bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {
             if (_tabController.index == 0) {

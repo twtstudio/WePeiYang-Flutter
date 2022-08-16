@@ -1,15 +1,15 @@
 // @dart = 2.12
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 构建wpy_page中的gpa部分
@@ -22,35 +22,39 @@ class GPAPreview extends StatelessWidget {
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
       child: Column(children: <Widget>[
-        _CurveText(),
+        //_CurveText(),
+        SizedBox(
+          height: 45.h,
+        ),
+        _GPAIntro(),
         GPACurve(FavorColors.gpaColor, isPreview: true),
-        _GPAIntro()
       ]),
     );
   }
 }
 
 /// 曲线上面的文字，说明当前曲线的内容
-class _CurveText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
-        alignment: Alignment.centerLeft,
-        child: Builder(builder: (context) {
-          var typeName = context.select<GPANotifier, String>((p) => p.typeName);
-          return Text("$typeName${S.current.curve}",
-              style: FontManager.YaQiHei.copyWith(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold));
-        }),
-      ),
-    );
-  }
-}
+/// 设计图上没有，先注释，确认没用再删
+// class _CurveText extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+//       child: Container(
+//         padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
+//         alignment: Alignment.centerLeft,
+//         child: Builder(builder: (context) {
+//           var typeName = context.select<GPANotifier, String>((p) => p.typeName);
+//           return Text("$typeName${S.current.curve}",
+//               style: FontManager.YaQiHei.copyWith(
+//                   fontSize: 16,
+//                   color: Colors.black,
+//                   fontWeight: FontWeight.bold));
+//         }),
+//       ),
+//     );
+//   }
+// }
 
 /// wpy_page中显示数值信息
 class _GPAIntro extends StatelessWidget {
@@ -158,124 +162,177 @@ class _GPACurveState extends State<GPACurve>
   void initState() {
     super.initState();
     _popupCardColor = widget._gpaColors[3];
-    _popupTextColor = widget._gpaColors[1];
+    _popupTextColor = widget._gpaColors[0];
   }
 
   @override
   Widget build(BuildContext context) {
-    var notifier = context.watch<GPANotifier>();
-    if (notifier.statsData.isEmpty) return SizedBox(height: 10);
-    if (_lastTaped == _newTaped) {
-      _lastTaped = notifier.index + 1;
-      _newTaped = _lastTaped;
-    }
-    List<Point<double>> points = [];
-    List<double> curveData = notifier.curveData;
-    _initPoints(points, curveData);
-    return GestureDetector(
-        /// 点击监听
-        onTapDown: (TapDownDetails detail) {
-          var renderBox = context.findRenderObject() as RenderBox;
-          var localOffset = renderBox.globalToLocal(detail.globalPosition);
-          var result = _judgeTaped(localOffset, points, r: 50);
-          if (result != 0) {
-            setState(() => _newTaped = result);
-            notifier.index = result - 1;
-          }
-        },
-        child: Container(
-          decoration: (widget.isPreview && CommonPreferences.isSkinUsed.value)
-              ? BoxDecoration(color: Colors.white10)
-              : BoxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Stack(
-              children: <Widget>[
-                /// Stack底层
-                CustomPaint(
-                  painter: _GPACurvePainter(widget._gpaColors,
-                      isPreview: widget.isPreview,
-                      points: points,
-                      taped: _newTaped),
-                  size: Size(double.maxFinite, _canvasHeight),
-                ),
+    return LayoutBuilder(builder: (context, constraints) {
+      var notifier = context.watch<GPANotifier>();
+      if (notifier.statsData.isEmpty) return SizedBox(height: 10);
+      if (_lastTaped == _newTaped) {
+        _lastTaped = notifier.index + 1;
+        _newTaped = _lastTaped;
+      }
+      List<Point<double>> points = [];
+      List<double> curveData = notifier.curveData;
+      _initPoints(points, curveData, constraints.maxWidth);
+      return GestureDetector(
 
-                /// Stack顶层
-                TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 500),
-                  tween: Tween(
-                      begin: 0.0, end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
-                  onEnd: () => setState(() => _lastTaped = _newTaped),
-                  curve: Curves.easeInOutSine,
-                  builder: (BuildContext context, value, _) {
-                    var lT = points[_lastTaped], nT = points[_newTaped];
-                    return Transform.translate(
-                      /// 计算两次点击之间的偏移量Offset
-                      /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
-                      offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                          lT.y - 60 + (nT.y - lT.y) * value),
-                      child: SizedBox(
-                        width: 80,
-                        height: 75,
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
+          /// 点击监听
+          onTapDown: (TapDownDetails detail) {
+            var renderBox = context.findRenderObject() as RenderBox;
+            var localOffset = renderBox.globalToLocal(detail.globalPosition);
+            var result = _judgeTaped(localOffset, points, r: 50);
+            if (result != 0) {
+              setState(() => _newTaped = result);
+              notifier.index = result - 1;
+            }
+          },
+          child: Column(
+            children: [
+              Container(
+                decoration:
+                    (widget.isPreview && CommonPreferences.isSkinUsed.value)
+                        ? BoxDecoration(color: Colors.white10)
+                        : BoxDecoration(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: Stack(
+                    children: <Widget>[
+                      /// Stack底层
+                      CustomPaint(
+                        painter: _GPACurvePainter(widget._gpaColors,
+                            isPreview: widget.isPreview,
+                            points: points,
+                            taped: _newTaped),
+                        size: Size(double.maxFinite, _canvasHeight),
+                      ),
+
+                      /// Stack顶层
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 500),
+                        tween: Tween(
+                            begin: 0.0,
+                            end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
+                        onEnd: () => setState(() => _lastTaped = _newTaped),
+                        curve: Curves.easeInOutSine,
+                        builder: (BuildContext context, value, _) {
+                          var lT = points[_lastTaped], nT = points[_newTaped];
+                          return Transform.translate(
+                            /// 计算两次点击之间的偏移量Offset
+                            /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
+                            offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                                lT.y - 60 + (nT.y - lT.y) * value),
+                            child: SizedBox(
                               width: 80,
-                              height: 45,
-                              child: Card(
-                                color: widget.isPreview
-                                    ? _popupCardPreview
-                                    : _popupCardColor,
-                                elevation: widget.isPreview ? 1 : 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Center(
-                                  child: Text('${curveData[_newTaped - 1]}',
-                                      style: FontManager.Montserrat.copyWith(
-                                          fontSize: 16,
-                                          color: widget.isPreview
-                                              ? _popupTextPreview
-                                              : _popupTextColor)),
-                                ),
+                              height: 75,
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 80,
+                                    height: 45,
+                                    child: Card(
+                                      color: widget.isPreview
+                                          ? _popupCardPreview
+                                          : _popupCardColor,
+                                      elevation: widget.isPreview ? 1 : 0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Center(
+                                        child: Text(
+                                            '${curveData[_newTaped - 1]}',
+                                            style:
+                                                FontManager.Montserrat.copyWith(
+                                                    fontSize: 16,
+                                                    color: widget.isPreview
+                                                        ? _popupTextPreview
+                                                        : _popupTextColor)),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration:
+                                        CommonPreferences.isSkinUsed.value
+                                            ? BoxDecoration(
+                                                image: widget.isPreview
+                                                    ? DecorationImage(
+                                                        image: AssetImage(
+                                                            'assets/images/begonia/flower_grey.png'),
+                                                        fit: BoxFit.contain,
+                                                      )
+                                                    : DecorationImage(
+                                                        image: AssetImage(
+                                                            'assets/images/lake_butt_icons/flower.png'),
+                                                        fit: BoxFit.scaleDown,
+                                                      ),
+                                              )
+                                            : BoxDecoration(),
+                                    child: CustomPaint(
+                                      painter: _GPAPopupPainter(
+                                          widget._gpaColors,
+                                          isPreview: widget.isPreview),
+                                      size: const Size(80, 30),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Container(
-                              decoration: CommonPreferences.isSkinUsed.value
-                                  ? BoxDecoration(
-                                image: widget.isPreview
-                                    ? DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/begonia/flower_grey.png'),
-                                  fit: BoxFit.contain,
-                                )
-                                    : DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/lake_butt_icons/flower.png'),
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              )
-                                  : BoxDecoration(),
-                              child: CustomPaint(
-                                painter: _GPAPopupPainter(widget._gpaColors,
-                                    isPreview: widget.isPreview),
-                                size: const Size(80, 30),
-                              ),
-                            )
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-        ));
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 40, right: 20, top: 80),
+                child: Container(
+                  height: 40.h,
+                  width: 300.w,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          Container(
+                            width: 48.w,
+                            height: 27.h,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: notifier.index == index
+                                    ? Color(0xFF2C7EDF)
+                                    : Colors.white),
+                            child: Center(
+                              child: Text(
+                                index.toString() + "H20",
+                                style: notifier.index == index
+                                    ? TextUtil.base.white.bold.w700.sp(11)
+                                    : TextUtil.base.greyA6.bold.w700.sp(11),
+                              ),
+                            ),
+                          ),
+                          if (index < 3)
+                            SizedBox(
+                              width:
+                                  points[index + 1].x - points[index].x - 48.w,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              )
+            ],
+          ));
+    });
   }
 
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
-  _initPoints(List<Point<double>> points, List<double> list) {
-    var width = WePeiYangApp.screenWidth;
+  _initPoints(List<Point<double>> points, List<double> list, double maxWidth) {
+    var width = maxWidth;
     var step = width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
@@ -318,7 +375,7 @@ class _GPAPopupPainter extends CustomPainter {
 
   /// 在wpy_page显示的颜色
   static const Color _outerPreview = Colors.white10;
-  static const Color _innerPreview = Colors.white;
+  static const Color _innerPreview = Color(0xFF2C7EDF);
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
@@ -357,39 +414,48 @@ class _GPACurvePainter extends CustomPainter {
   final int taped;
 
   /// 在wpy_page显示的颜色
-  static const Color _linePreview = Color.fromRGBO(230, 230, 230, 1);
-  static const Color _pointPreview = Color.fromRGBO(116, 119, 138, 1);
+  static const Color _linePreview = Color(0xFF2C7EDF);
+  static const Color _pointPreview = Colors.white;
 
   final Paint _linePaint;
   final Paint _pointPaint;
+  final Paint _downPaint;
 
   _GPACurvePainter(List<Color> gpaColors,
       {required this.isPreview, required this.points, required this.taped})
       : _linePaint = Paint()
           ..color = isPreview ? _linePreview : gpaColors[3]
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 3.0,
+          ..strokeWidth = 5.0,
         _pointPaint = Paint()
           ..color = isPreview ? _pointPreview : gpaColors[1]
-          ..style = PaintingStyle.fill;
+          ..style = PaintingStyle.fill,
+        _downPaint = Paint()
+          ..color = isPreview ? _linePreview : gpaColors[3]
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     var path = Path()
       ..moveTo(0, points[0].y)
       ..cubicThrough(points);
+    var shadowPath = Path()
+      ..moveTo(0, points[0].y)
+      ..shadowThrough(points);
     canvas.drawPath(path, _linePaint);
+    canvas.drawShadow(shadowPath, Colors.blueAccent, 40, true);
   }
 
   /// 默认黑点半径为6.0，选中后为8.0
   _drawPoint(Canvas canvas, List<Point<double>> points, int selected,
       {double radius = 6.0}) {
     for (var i = 1; i < points.length - 1; i++) {
-      if (i == selected)
+      if (i == selected) {
         canvas.drawCircle(
             Offset(points[i].x, points[i].y), radius + 2.0, _pointPaint);
-      else
-        canvas.drawCircle(
-            Offset(points[i].x, points[i].y), radius, _pointPaint);
+        canvas.drawLine(Offset(points[i].x, points[i].y),
+            Offset(points[i].x, 230), _downPaint);
+      }
     }
   }
 
@@ -418,6 +484,20 @@ extension Cubic on Path {
       var biasX = (point2.x - point1.x) * 0.3;
       var biasY = (point1.y == point2.y) ? 2 : 0;
       var cp1 = Point(point1.x + biasX, point1.y - biasY);
+      var cp2 = Point(point2.x - biasX, point2.y + biasY);
+      cubicTo(cp1.x, cp1.y, cp2.x, cp2.y, point2.x, point2.y);
+    }
+  }
+
+  shadowThrough(List<Point<double>> list) {
+    ///绘制阴影用曲线
+    for (var i = 0; i < list.length - 1; i++) {
+      var point1 = list[i];
+      var point2 = list[i + 1];
+
+      var biasX = (point2.x - point1.x) * 0.3;
+      var biasY = (point1.y == point2.y) ? 2 : 0;
+      var cp1 = Point(point1.x + biasX, point1.y + biasY);
       var cp2 = Point(point2.x - biasX, point2.y + biasY);
       cubicTo(cp1.x, cp1.y, cp2.x, cp2.y, point2.x, point2.y);
     }

@@ -36,16 +36,27 @@ class _UserPageState extends State<UserPage> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     // 在0.7停止同理
-                    stops: [0, 0.22, 0.22]))),
+                    stops: [0, 0.22, 0.7]))),
         SafeArea(
           child: Stack(
             children: [
               Padding(
+                padding: EdgeInsets.only(top: 140.h),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.r),
+                      topRight: Radius.circular(20.r)),
+                  child: Container(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
                 padding: EdgeInsets.only(top: 87.h),
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.r),
-                      topRight: Radius.circular(10.r)),
+                      topLeft: Radius.circular(20.r),
+                      topRight: Radius.circular(20.r)),
                   child: ListView(
                     physics: BouncingScrollPhysics(),
                     controller: ScrollController(),
@@ -115,7 +126,7 @@ class _UserPageState extends State<UserPage> {
                                 )
                               ],
                             )),
-                      SizedBox(height: 40),
+                      SizedBox(height: 20.h),
                       //NavigationWidget(),
 
                       Row(

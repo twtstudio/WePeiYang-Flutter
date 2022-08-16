@@ -4,11 +4,9 @@ import 'package:flutter/material.dart'
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/time_handler.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
@@ -30,12 +28,12 @@ enum _CurrentTab {
   myCollect,
 }
 
-extension _CurrentTabb on _CurrentTab {
-  _CurrentTab get change {
-    var next = (this.index + 1) % 2;
-    return _CurrentTab.values[next];
-  }
-}
+// extension _CurrentTabb on _CurrentTab {
+//   _CurrentTab get change {
+//     var next = (this.index + 1) % 2;
+//     return _CurrentTab.values[next];
+//   }
+// }
 
 class _ProfilePageState extends State<ProfilePage> {
   ValueNotifier<_CurrentTab> _currentTab = ValueNotifier(_CurrentTab.myPosts);
@@ -294,39 +292,35 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       );
     }
-    var myPost = ProfileTabButton(
-      type: _CurrentTab.myPosts,
-      text: S.current.feedback_my_post,
-    );
-
-    var myFavor = ProfileTabButton(
-      type: _CurrentTab.myCollect,
-      text: S.current.feedback_my_favorite,
-    );
+    // var myPost = ProfileTabButton(
+    //   type: _CurrentTab.myPosts,
+    //   text: S.current.feedback_my_post,
+    // );
+    //
+    // var myFavor = ProfileTabButton(
+    //   type: _CurrentTab.myCollect,
+    //   text: S.current.feedback_my_favorite,
+    // );
 //选择栏
-    Widget tabs = Container(
-      height: 36,
-      child: Card(
-        color: Color.fromRGBO(246, 246, 247, 1.0),
-        elevation: 0,
-        child: Row(
-          children: [myPost, myFavor],
-        ),
-      ),
-    );
+//     Widget tabs = Container(
+//       height: 36,
+//       child: Card(
+//         color: Color.fromRGBO(246, 246, 247, 1.0),
+//         elevation: 0,
+//         child: Row(
+//           children: [myPost, myFavor],
+//         ),
+//       ),
+//     );
 //静态header，头像和资料以及appbar
     Widget appBar = SliverToBoxAdapter(
       child: ProfileHeader(
-        child: SliverToBoxAdapter(
-          child: tabs,
-        ),
-        date: _postList.isEmpty?"好久":
-        TimeHandler().timeHandler(_postList[0].createAt),
+        child: SliverToBoxAdapter(),
+        date: _postList.isEmpty
+            ? "好久"
+            : TimeHandler().timeHandler(_postList[0].createAt),
       ),
     );
-
-
-
 
     var list = ExpandablePageView(
       controller: _tabController,
@@ -341,14 +335,35 @@ class _ProfilePageState extends State<ProfilePage> {
     Widget body = CustomScrollView(
       slivers: [
         appBar,
-        SliverToBoxAdapter(child: SizedBox(height: 5)),
-        SliverToBoxAdapter(child: list),
+        SliverToBoxAdapter(
+          child: Stack(
+            children: [
+              Container(
+                color: Colors.white,
+                child: list,
+              ),
+            ],
+          ),
+        )
+        // SliverToBoxAdapter(child: SizedBox(height: 5)),
+        // SliverToBoxAdapter(child: list),
       ],
     );
 
     return Container(
       //改背景色用
-      decoration: BoxDecoration(color: ColorUtil.backgroundColor),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [
+                Color(0xFF2C7EDF),
+                Color(0xFFA6CFFF),
+                // 用来挡下面圆角左右的空
+                Colors.white
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              // 在0.7停止同理
+              stops: [0, 0.23, 0.7])),
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
@@ -367,69 +382,69 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class ProfileTabButton extends StatefulWidget {
-  final _CurrentTab type;
-  final VoidCallback onTap;
-  final String text;
-
-  const ProfileTabButton({
-    Key key,
-    this.type,
-    this.onTap,
-    this.text,
-  }) : super(key: key);
-
-  @override
-  _ProfileTabButtonState createState() => _ProfileTabButtonState();
-}
-
-class _ProfileTabButtonState extends State<ProfileTabButton> {
-  @override
-  Widget build(BuildContext context) {
-    var currentType =
-        context.findAncestorStateOfType<_ProfilePageState>()._currentTab;
-
-    return Expanded(
-      flex: 1,
-      child: ValueListenableBuilder(
-        valueListenable: currentType,
-        builder: (_, value, __) => InkWell(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 2,
-              ),
-              Text(
-                widget.text,
-                style: FontManager.YaHeiRegular.copyWith(
-                    height: 1, color: ColorUtil.bold42TextColor),
-              ),
-              SizedBox(height: 5),
-              Container(
-                decoration: BoxDecoration(
-                    color: value == widget.type
-                        ? ColorUtil.mainColor
-                        : ColorUtil.tagBackgroundColor,
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                width: 30,
-                height: 4,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-          onTap: () {
-            if (value == widget.type.change) {
-              currentType.value = widget.type;
-              widget.onTap?.call();
-            }
-          },
-        ),
-      ),
-    );
-  }
-}
+// class ProfileTabButton extends StatefulWidget {
+//   final _CurrentTab type;
+//   final VoidCallback onTap;
+//   final String text;
+//
+//   const ProfileTabButton({
+//     Key key,
+//     this.type,
+//     this.onTap,
+//     this.text,
+//   }) : super(key: key);
+//
+//   @override
+//   _ProfileTabButtonState createState() => _ProfileTabButtonState();
+// }
+//
+// class _ProfileTabButtonState extends State<ProfileTabButton> {
+//   @override
+//   Widget build(BuildContext context) {
+//     var currentType =
+//         context.findAncestorStateOfType<_ProfilePageState>()._currentTab;
+//
+//     return Expanded(
+//       flex: 1,
+//       child: ValueListenableBuilder(
+//         valueListenable: currentType,
+//         builder: (_, value, __) => InkWell(
+//           splashColor: Colors.transparent,
+//           highlightColor: Colors.transparent,
+//           child: Column(
+//             children: [
+//               SizedBox(
+//                 height: 2,
+//               ),
+//               Text(
+//                 widget.text,
+//                 style: FontManager.YaHeiRegular.copyWith(
+//                     height: 1, color: ColorUtil.bold42TextColor),
+//               ),
+//               SizedBox(height: 5),
+//               Container(
+//                 decoration: BoxDecoration(
+//                     color: value == widget.type
+//                         ? ColorUtil.mainColor
+//                         : ColorUtil.tagBackgroundColor,
+//                     borderRadius: BorderRadius.all(Radius.circular(30))),
+//                 width: 30,
+//                 height: 4,
+//               ),
+//             ],
+//             mainAxisAlignment: MainAxisAlignment.center,
+//           ),
+//           onTap: () {
+//             if (value == widget.type.change) {
+//               currentType.value = widget.type;
+//               widget.onTap?.call();
+//             }
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class CustomScrollBehavior extends ScrollBehavior {
   @override

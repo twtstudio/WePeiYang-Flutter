@@ -83,14 +83,35 @@ class _GPAPageState extends State<GPAPage> {
         appBar: GPAppBar(widget._gpaColors),
         backgroundColor: widget._gpaColors[0],
         body: Container(
-          decoration: CommonPreferences.isSkinUsed.value
-              ? BoxDecoration(
+          decoration:
+          // CommonPreferences.isSkinUsed.value
+          //     ? BoxDecoration(
+          //         gradient: new LinearGradient(
+          //             begin: Alignment.topCenter,
+          //             end: Alignment.bottomCenter,
+          //             stops: [
+          //               0,
+          //               0.8
+          //             ],
+          //             colors: [
+          //               widget._gpaColors[0],
+          //               widget._gpaColors[3],
+          //             ]),
+          //       )
+          //     :
+          BoxDecoration(
                   gradient: new LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [widget._gpaColors[0], widget._gpaColors[3]]),
-                )
-              : BoxDecoration(),
+                      stops: [
+                        0,
+                        0.8
+                      ],
+                      colors: [
+                        widget._gpaColors[0],
+                        widget._gpaColors[2],
+                      ]),
+                ),
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data: ThemeData(accentColor: Colors.white),
@@ -125,7 +146,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: Row(
         children: [
           SizedBox(
-            width: 15.w,
+            width: 16.6.w,
           ),
           GestureDetector(
               child: SvgPicture.asset(
@@ -136,9 +157,12 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                 fit: BoxFit.fitWidth,
               ),
               onTap: () => Navigator.pop(context)),
-          SizedBox(
-            width: 6.6.w,
-          ),
+        ],
+      ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text('HELLO, ${CommonPreferences.nickname.value}',
               style: TextUtil.base.white.w900.sp(22)),
         ],
@@ -547,59 +571,76 @@ class CourseListWidget extends StatelessWidget {
                     itemBuilder: (context, i) => Container(
                           height: _cardHeight,
                           padding: const EdgeInsets.fromLTRB(30, 2, 30, 2),
-                          child: Card(
-                            color: _gpaColors[3],
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            child: InkWell(
-                              onTap: () {},
-                              splashFactory: InkRipple.splashFactory,
-                              borderRadius: BorderRadius.circular(12),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 15),
-                                  Icon(Icons.assignment_turned_in,
-                                      color: _gpaColors[2], size: 25),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                              _formatText(courses[i].name),
-                                              style: FontManager.YaHeiRegular
-                                                  .copyWith(
-                                                      fontSize: 14,
-                                                      color: _gpaColors[1])),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                              "${courses[i].classType} / ${courses[i].credit} Credits",
-                                              style: FontManager.YaHeiLight
-                                                  .copyWith(
-                                                      fontSize: 11,
-                                                      color: _gpaColors[2])),
-                                        )
-                                      ],
-                                    ),
+                          child: Stack(
+                            children: [
+                              Opacity(
+                                opacity: 0.2,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: _gpaColors[3],
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                      '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
-                                      style: FontManager.Montserrat.copyWith(
-                                          fontSize: 26,
-                                          color: _gpaColors[1],
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(width: 18)
-                                ],
+                                ),
                               ),
-                            ),
+                              Card(
+                                color: Colors.transparent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: InkWell(
+                                  onTap: () {},
+                                  splashFactory: InkRipple.splashFactory,
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 15),
+                                      Icon(Icons.assignment_turned_in,
+                                          color: _gpaColors[1], size: 25),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  _formatText(courses[i].name),
+                                                  style: FontManager
+                                                          .YaHeiRegular
+                                                      .copyWith(
+                                                          fontSize: 14,
+                                                          color:
+                                                              _gpaColors[1])),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  "${courses[i].classType} / ${courses[i].credit} 学分",
+                                                  style: FontManager.YaHeiLight
+                                                      .copyWith(
+                                                          fontSize: 11,
+                                                          color:
+                                                              _gpaColors[1])),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                          '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
+                                          style:
+                                              FontManager.Montserrat.copyWith(
+                                                  fontSize: 26,
+                                                  color: _gpaColors[1],
+                                                  fontWeight: FontWeight.bold)),
+                                      SizedBox(width: 18)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         )),
               )

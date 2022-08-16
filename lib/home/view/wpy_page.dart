@@ -16,7 +16,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
-import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -176,7 +175,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                           margin: EdgeInsets.only(top: 30.h),
                           padding: EdgeInsets.only(top: 50.h),
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color(0xFFF1F4FB),
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(40.r),
                                   topRight: Radius.circular(40.r))),
@@ -256,27 +255,37 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               ]),
         ),
         SizedBox(
-          height: 0.6.sh,
-          child: TabBarView(
-              controller: _tc,
-              physics: BouncingScrollPhysics(),
-              children: [
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: GPAPreview(),
-                ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: WpyExamWidget(),
-                ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: MainPageLoungeWidget(),
-                ),
-              ]),
+          height: 0.5.sh,
+          width: 1.sw - 60.w,
+          child: TabBarView(controller: _tc, children: [
+            Container(
+              width: 1.sw - 70.w,
+              height: 250.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                // border: Border.all(),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                    color: Colors.black.withOpacity(0.05),
+                  ),
+                ],
+              ),
+              child: GPAPreview(),
+            ),
+            Container(
+              width: 1.sw - 60.w,
+              height: 300.h,
+              child: WpyExamWidget(),
+            ),
+            Container(
+              width: 1.sw - 60.w,
+              height: 300.h,
+              child: MainPageLoungeWidget(),
+            ),
+          ]),
         ),
       ],
     );

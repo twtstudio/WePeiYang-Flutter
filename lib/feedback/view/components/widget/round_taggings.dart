@@ -210,46 +210,48 @@ class TagShowWidget extends StatelessWidget {
       },
       child: Container(
         height: 20,
-        child: Row(
-          children: [
-            Container(
-              height: 14,
-              width: 14,
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-              padding: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: type == 0
-                    ? Color(0xffeaeaea)
-                    : type == 1
-                        ? ColorUtil.mainColor
-                        : Colors.white,
-              ),
-              child: SvgPicture.asset(
-                type == 0
-                    ? "assets/svg_pics/lake_butt_icons/districts.svg"
-                    : type == 1
-                        ? "assets/svg_pics/lake_butt_icons/flag.svg"
-                        : "assets/svg_pics/lake_butt_icons/hashtag.svg",
-              ),
-            ),
-            SizedBox(width: type == 0 ? 0 : 2),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: width - 30),
-              child: Text(
-                tag,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(width: 8)
-          ],
-        ),
+        child: (tag != null && tag != "")
+            ? Row(
+                children: [
+                  Container(
+                    height: 14,
+                    width: 14,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: type == 0
+                          ? Color(0xffeaeaea)
+                          : type == 1
+                              ? ColorUtil.mainColor
+                              : Colors.white,
+                    ),
+                    child: SvgPicture.asset(
+                      type == 0
+                          ? "assets/svg_pics/lake_butt_icons/districts.svg"
+                          : type == 1
+                              ? "assets/svg_pics/lake_butt_icons/flag.svg"
+                              : "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                    ),
+                  ),
+                  SizedBox(width: type == 0 ? 0 : 2),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: width - 30),
+                    child: Text(
+                      tag ?? "",
+                      style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(width: 8)
+                ],
+              )
+            : SizedBox(),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1080),
-          color: Color(0xffeaeaea),
+          color: (tag != null && tag != "") ? Color(0xffeaeaea) : Colors.white,
         ),
       ),
     );
@@ -334,7 +336,10 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh, size: 18,),
+                              Icon(
+                                Icons.refresh,
+                                size: 18,
+                              ),
                               Text(
                                 '重置昵称',
                                 style: TextUtil.base.w600.NotoSansSC

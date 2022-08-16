@@ -139,7 +139,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             child: Card(
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 elevation: 0,
-                color: Color.fromRGBO(71, 83, 95, 1),
+                color: Color(0xFFA6CFFF),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(9)),
                 child: InkWell(
@@ -151,8 +151,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
                     splashFactory: InkRipple.splashFactory,
                     borderRadius: BorderRadius.circular(9),
                     child: Center(
-                        child: getText("#47535f",
-                            Color.fromRGBO(206, 198, 185, 1), 'blue', 0)))),
+                        child: getText("twt默认蓝", Colors.white, 'blue', 0)))),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),
