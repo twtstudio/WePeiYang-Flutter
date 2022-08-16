@@ -39,7 +39,7 @@ class OfficialReplyCard extends StatefulWidget {
   final bool detail;
   final int placeAppeared;
   ///评分数
-  int ratings;
+  final int ratings;
   OfficialReplyCard.reply({
     this.tag,
     this.comment,

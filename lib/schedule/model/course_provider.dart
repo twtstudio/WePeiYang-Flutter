@@ -23,34 +23,34 @@ class CourseProvider with ChangeNotifier {
   List<Course> get customCourses => _customCourses; // 用于自定义课程编辑页
 
   void addCustomCourse(Course course) {
-    CustomCourseService.addCustomClass(course, _customCourses.length);
     _customCourses.add(course);
-    notifyListeners();
-    saveCustomCourse();
+    saveCustomCourseTable();
   }
 
   void modifyCustomCourse(Course course, int index) {
     if (_customCourses.length >= index + 1) {
-      CustomCourseService.updateCustomClass(course, index);
       _customCourses[index] = course;
-      notifyListeners();
-      saveCustomCourse();
+      saveCustomCourseTable();
     }
   }
 
   void deleteCustomCourse(int index) {
     if (_customCourses.length >= index + 1) {
-      CustomCourseService.deleteCustomClass(index);
       _customCourses.removeAt(index);
-      notifyListeners();
-      saveCustomCourse();
+      saveCustomCourseTable();
     }
   }
 
-  void saveCustomCourse() {
+  void saveCustomCourseTable() {
+    notifyListeners();
+    var time = DateTime.now().millisecondsSinceEpoch;
+    // local
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
+    CommonPreferences.customUpdatedAt.value = time;
     _widgetChannel.invokeMethod("refreshScheduleWidget");
+    // remote
+    CustomCourseService.postCustomTable(_customCourses, time);
   }
 
   /// 全部课程
@@ -105,22 +105,22 @@ class CourseProvider with ChangeNotifier {
   }
 
   void refreshCustomCourse() {
-    /// 如果本地有缓存就覆盖远程，否则从远程获取
     CustomCourseService.getToken().then((success) {
       if (!success) return;
-      if (_customCourses.isNotEmpty) {
-        for (int i = 0; i < _customCourses.length; i++) {
-          CustomCourseService.updateCustomClass(_customCourses[i], i);
-        }
-      } else {
-        CustomCourseService.getCustomTable().then((courseList) {
-          if (courseList == null) return;
+      CustomCourseService.getCustomTable().then((courseList) {
+        if (courseList == null) {
+          // 本地比较新
+          var time = CommonPreferences.customUpdatedAt.value;
+          CustomCourseService.postCustomTable(_customCourses, time);
+        } else {
+          // 远程端比较新，[CommonPreferences.customUpdatedAt]已经在[getCustomTable]中更新过了
           _customCourses = courseList;
+          notifyListeners();
           CommonPreferences.courseData.value =
               json.encode(CourseTable(_schoolCourses, _customCourses));
           _widgetChannel.invokeMethod("refreshScheduleWidget");
-        });
-      }
+        }
+      });
     });
   }
 

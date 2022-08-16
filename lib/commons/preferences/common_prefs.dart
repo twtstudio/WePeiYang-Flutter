@@ -35,7 +35,7 @@ class CommonPreferences {
   static final floor = PrefsBean<String>('floor');
   static final room = PrefsBean<String>('room');
   static final bed = PrefsBean<String>('bed');
-  static final themeToken = PrefsBean<String>("themeToken");
+  static final themeToken = PrefsBean<String>('themeToken');
 
   /// 用户信息
   static final lakeToken = PrefsBean<String>('lakeToken');
@@ -55,26 +55,26 @@ class CommonPreferences {
   static final isFirstLogin = PrefsBean<bool>('firstLogin', true);
 
   /// 愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
-  static final isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
-  static final isAprilFool = PrefsBean<bool>("aprilFool", false);
-  static final isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
-  static final isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
-  static final isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
-  static final isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
+  static final isAprilFoolGen = PrefsBean<bool>('aprilFoolGen', true);
+  static final isAprilFool = PrefsBean<bool>('aprilFool', false);
+  static final isAprilFoolGPA = PrefsBean<bool>('aprilFoolGpa', false);
+  static final isAprilFoolHead = PrefsBean<bool>('aprilFoolHead', false);
+  static final isAprilFoolLike = PrefsBean<bool>('aprilFoolLike', false);
+  static final isAprilFoolClass = PrefsBean<bool>('aprilFoolClass', false);
 
   /// 海棠节用->皮肤用
-  static final isSkinUsed = PrefsBean<bool>("skin", false);
-  static final isDarkMode = PrefsBean<bool>("isDarkMode", false);
-  static final skinProfile = PrefsBean<String>("skinProfile", "");
-  static final skinClass = PrefsBean<String>("skinClass", "");
-  static final skinMain = PrefsBean<String>("skinMain", "");
-  static final skinColorA = PrefsBean<int>("skinColorA", 1);
-  static final skinColorB = PrefsBean<int>("skinColorB", 1);
-  static final skinColorC = PrefsBean<int>("skinColorC", 1);
-  static final skinColorD = PrefsBean<int>("skinColorD", 1);
-  static final skinColorE = PrefsBean<int>("skinColorE", 1);
-  static final skinColorF = PrefsBean<int>("skinColorF", 1);
-  static final skinColorG = PrefsBean<int>("skinColorG", 1);
+  static final isSkinUsed = PrefsBean<bool>('skin', false);
+  static final isDarkMode = PrefsBean<bool>('isDarkMode', false);
+  static final skinProfile = PrefsBean<String>('skinProfile', '');
+  static final skinClass = PrefsBean<String>('skinClass', '');
+  static final skinMain = PrefsBean<String>('skinMain', '');
+  static final skinColorA = PrefsBean<int>('skinColorA', 1);
+  static final skinColorB = PrefsBean<int>('skinColorB', 1);
+  static final skinColorC = PrefsBean<int>('skinColorC', 1);
+  static final skinColorD = PrefsBean<int>('skinColorD', 1);
+  static final skinColorE = PrefsBean<int>('skinColorE', 1);
+  static final skinColorF = PrefsBean<int>('skinColorF', 1);
+  static final skinColorG = PrefsBean<int>('skinColorG', 1);
 
   /// 这里说明一下GPA和课程表的逻辑：
   /// 1. 进入主页时先从缓存中读取数据
@@ -84,6 +84,7 @@ class CommonPreferences {
   static final gpaData = PrefsBean<String>('gpaData');
   static final courseData = PrefsBean<String>('courseData');
   static final examData = PrefsBean<String>('examData');
+  static final customUpdatedAt = PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
   static final isBindTju = PrefsBean<bool>('bindtju');
   static final tjuuname = PrefsBean<String>('tjuuname');
   static final tjupasswd = PrefsBean<String>('tjupasswd');
@@ -120,7 +121,7 @@ class CommonPreferences {
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final otherWeekSchedule =
       PrefsBean<bool>('otherWeekSchedule', true); // 课表显示非本周课程
-  static final skinNow = PrefsBean<int>("skinNow", 0); // 当前皮肤编号
+  static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
 
   /// 自习室
   static final  loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
