@@ -32,6 +32,7 @@
 /build/
 /local.properties
 /android/app/build/
+/android/gradle.properties
 
 # Web related
 lib/generated_plugin_registrant.dart

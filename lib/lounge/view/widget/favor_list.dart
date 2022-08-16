@@ -34,11 +34,7 @@ class _LoungeFavorListState extends State<LoungeFavorList> {
       padding: EdgeInsets.symmetric(horizontal: 7.w),
       child: Text(
         widget.title,
-        style: TextStyle(
-          fontSize: 17.sp,
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).favorListTitle,
-        ),
+        style: TextUtil.base.PingFangSC.black2A.w400,
       ),
     );
 
@@ -199,17 +195,14 @@ class _FavourListCard extends StatelessWidget {
       child: itemContent,
     );
 
-    return Padding(
-      padding: EdgeInsets.all(8.5.w),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed(
-            LoungeRouter.plan,
-            arguments: room,
-          );
-        },
-        child: itemContent,
-      ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          LoungeRouter.plan,
+          arguments: room,
+        );
+      },
+      child: itemContent,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
@@ -75,7 +76,8 @@ class _UserPageState extends State<UserPage> {
                                       fontWeight: FontWeight.bold,
                                     )),
                                 SizedBox(width: 10),
-                                Text('MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
+                                Text(
+                                    'MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
                                     textAlign: TextAlign.center,
                                     style: FontManager.YaHeiRegular.copyWith(
                                       color: Colors.black,
@@ -124,8 +126,10 @@ class _UserPageState extends State<UserPage> {
                             height: 90.h,
                             child: Card(
                               elevation: 1,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 7),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -141,7 +145,9 @@ class _UserPageState extends State<UserPage> {
                                   SizedBox(height: 7.h),
                                   Text('消息中心',
                                       maxLines: 1,
-                                      style: TextUtil.base.w400.black2A.sp(12).medium),
+                                      style: TextUtil.base.w400.black2A
+                                          .sp(12)
+                                          .medium),
                                 ],
                               ),
                             ),
@@ -151,8 +157,10 @@ class _UserPageState extends State<UserPage> {
                             height: 90.h,
                             child: Card(
                               elevation: 1,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 7),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -168,7 +176,9 @@ class _UserPageState extends State<UserPage> {
                                   SizedBox(height: 7.h),
                                   Text('我的点赞',
                                       maxLines: 1,
-                                      style: TextUtil.base.w400.black2A.sp(12).medium),
+                                      style: TextUtil.base.w400.black2A
+                                          .sp(12)
+                                          .medium),
                                 ],
                               ),
                             ),
@@ -178,8 +188,10 @@ class _UserPageState extends State<UserPage> {
                             height: 90.h,
                             child: Card(
                               elevation: 1,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 7),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -195,13 +207,45 @@ class _UserPageState extends State<UserPage> {
                                   SizedBox(height: 7.h),
                                   Text('我的收藏',
                                       maxLines: 1,
-                                      style: TextUtil.base.w400.black2A.sp(12).medium),
+                                      style: TextUtil.base.w400.black2A
+                                          .sp(12)
+                                          .medium),
                                 ],
                               ),
                             ),
                           ),
                           Spacer(),
                         ],
+                      ),
+
+                      Container(
+                        height: 80,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        child: Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          child: InkWell(
+                            onTap: () => showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) =>
+                                    LogoutDialog()),
+                            splashFactory: InkRipple.splashFactory,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Row(
+                              children: <Widget>[
+                                SizedBox(width: 20),
+                                Image.asset('assets/images/logout.png',
+                                    width: 20),
+                                SizedBox(width: 10),
+                                SizedBox(width: 150, child: Text('logout')),
+                                Spacer()
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
 
                       // Container(

@@ -29,6 +29,23 @@ class ColorUtil {
   static const biliPink = Color(0xFFF97198);
   static const warning = Color(0xFFFFBC6B);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
+  static const gradientBlue = LinearGradient(
+      colors: [
+        Color(0xFF2C7EDF),
+        Color(0xFFA6CFFF),
+        // 用来挡下面圆角左右的空
+        Colors.white
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      // 在0.7停止同理
+      stops: [0, 0.53, 0.7]);
 
-  static const  List<Color> aprilFoolColor = [Color(0xFFF1B53B), Color(0xF033BB8F),Color(0xF0E1403A),Color(0xFF5B96F2),Color(0xFF6A63E1)];
+  static const List<Color> aprilFoolColor = [
+    Color(0xFFF1B53B),
+    Color(0xF033BB8F),
+    Color(0xF0E1403A),
+    Color(0xFF5B96F2),
+    Color(0xFF6A63E1)
+  ];
 }

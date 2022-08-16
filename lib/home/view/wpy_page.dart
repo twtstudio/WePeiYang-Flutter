@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -256,32 +257,26 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         ),
         SizedBox(
           height: 0.6.sh,
-          width: 1.sw - 60.w,
-          child: TabBarView(controller: _tc, children: [
-            Container(
-              width: 1.sw - 60.w,
-              height: 300.h,
-              child: GPAPreview(),
-            ),
-            Container(
-              width: 1.sw - 60.w,
-              height: 300.h,
-              child: WpyExamWidget(),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(8.w, 0, 0, 0),
-              width: 1.sw - 60.w,
-              height: 300.h,
-              decoration: BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.all(Radius.circular(30.sp)),
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/chouniuzi.jpg'),
-                      fit: BoxFit.cover)),
-              child: Text('臭牛子快点给我写完写不完我要鲨了你啊啊啊啊啊啊啊啊啊啊啊啊啊',
-                  style: TextUtil.base.white.w900.sp(60)),
-            ),
-          ]),
+          child: TabBarView(
+              controller: _tc,
+              physics: BouncingScrollPhysics(),
+              children: [
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: GPAPreview(),
+                ),
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: WpyExamWidget(),
+                ),
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: MainPageLoungeWidget(),
+                ),
+              ]),
         ),
       ],
     );
