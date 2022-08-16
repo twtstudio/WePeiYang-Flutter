@@ -103,29 +103,6 @@ class _CourseDisplayWidget extends StatelessWidget {
           );
         }
         var positionedList = <Widget>[];
-
-        // var inactiveList = getMergedInactiveCourses(provider, _dayNumber);
-        // // 先添加非本周课程
-        // inactiveList.forEach((pair) {
-        //   int start = pair.arrange.unitList.first;
-        //   int end = pair.arrange.unitList.last;
-        //   int day = pair.arrange.weekday;
-        //   double top = (start - 1) * (_singleCourseHeight + verStep);
-        //   double left = (day - 1) * (_cardWidth + horStep);
-        //   double height = (end - start + 1) * _singleCourseHeight +
-        //       (end - start) * verStep;
-        //   // 绕开"午休"栏
-        //   if (start > 4) top += _middleStep;
-        //   if (start <= 4 && end > 4) height += _middleStep;
-        //   positionedList.add(Positioned(
-        //     top: top - verStep / 2,
-        //     left: left - horStep / 2,
-        //     height: height + verStep,
-        //     width: _cardWidth + horStep,
-        //     child: QuietCourse(pair.first.name),
-        //   ));
-        // });
-
         var activeList = getMergedActiveCourses(provider, _dayNumber);
         var tempList = <Widget>[];
         // 添加本周课程

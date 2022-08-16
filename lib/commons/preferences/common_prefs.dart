@@ -119,8 +119,6 @@ class CommonPreferences {
   static final hideExam = PrefsBean<bool>('hideExam'); // 首页不显示考表
   static final showPosterGirl = PrefsBean<bool>('hidePosterGirl'); //首页不显示看板娘
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
-  static final otherWeekSchedule =
-      PrefsBean<bool>('otherWeekSchedule', true); // 课表显示非本周课程
   static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
 
   /// 自习室

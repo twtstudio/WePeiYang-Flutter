@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
@@ -42,25 +41,38 @@ import 'feedback/network/feedback_service.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
 
-/// 列一下各种东西的初始化：
-/// 1. run app 之前：
-/// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数之后
-/// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
-/// 2. App build 前后：
-/// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
-/// 3. 用户登录时（调用AuthService.login），此时用户已同意隐私权先
-/// [UmengSdk.setPageCollectionModeManual]开启埋点
-
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // 初始化环境变量
+
+    /// 初始化环境变量
     EnvConfig.init();
     PathUtil.init();
 
-    /// 程序中的同步（sync）错误也交给zone处理
+    /// 初始化sharePreference
+    await CommonPreferences.initPrefs();
+
+    /// 初始化Connectivity
+    await NetStatusListener.init();
+
+    /// 设置哪天微北洋全部变灰
+    var date = DateTime.now().toLocal();
+    (date.month == 5 && date.day == 12) || (date.month == 12 && date.day == 13)
+        ? runApp(ColorFiltered(
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+            child: WePeiYangApp()))
+        : runApp(WePeiYangApp());
+
+    /// 设置沉浸式状态栏
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+
+    /// 修改debugPrint
+    debugPrint = (message, {wrapWidth}) => print(message);
+
+    /// 程序中的同步（sync）错误交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
-      /// 生成错误信息
+      // 生成错误信息
       String text = TextTreeRenderer(
               wrapWidth: FlutterError.wrapWidth,
               wrapWidthProperties: FlutterError.wrapWidth,
@@ -69,29 +81,6 @@ void main() async {
           .trimRight();
       Zone.current.handleUncaughtError(text, null);
     };
-
-    // 初始化sharePreference
-    await CommonPreferences.initPrefs();
-    // 初始化Connectivity
-    await NetStatusListener.init();
-    // 修改debugPrint
-    debugPrint = (message, {wrapWidth}) {
-      print(message);
-    };
-
-    // 设置哪天微北洋全部变灰
-    var date = DateTime.now().toLocal();
-    (date.month == 5 && date.day == 12) || (date.month == 12 && date.day == 13)
-        ? runApp(ColorFiltered(
-            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
-            child: WePeiYangApp()))
-        : runApp(WePeiYangApp());
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.white,
-      ));
-    }
   }, (Object error, StackTrace stack) {
     /// 这里是处理所有 unhandled sync & async error 的地方
     Logger.reportError(error, stack);
@@ -100,6 +89,18 @@ void main() async {
     /// 覆盖zone中的所有[print]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
+}
+
+final _messageChannel = MethodChannel('com.twt.service/message');
+final _pushChannel = MethodChannel('com.twt.service/push');
+
+class IntentEvent {
+  static const FeedbackPostPage = 1;
+  static const FeedbackSummaryPage = 2;
+  static const WBYMailBox = 3;
+  static const SchedulePage = 4;
+  static const UpdateDialog = 5;
+  static const NoSuchEvent = -1;
 }
 
 class WePeiYangApp extends StatefulWidget {
@@ -112,18 +113,6 @@ class WePeiYangApp extends StatefulWidget {
 
   @override
   WePeiYangAppState createState() => WePeiYangAppState();
-}
-
-final messageChannel = MethodChannel('com.twt.service/message');
-final pushChannel = MethodChannel('com.twt.service/push');
-
-class IntentEvent {
-  static const FeedbackPostPage = 1;
-  static const FeedbackSummaryPage = 2;
-  static const WBYMailBox = 3;
-  static const SchedulePage = 4;
-  static const UpdateDialog = 5;
-  static const NoSuchEvent = -1;
 }
 
 class WePeiYangAppState extends State<WePeiYangApp>
@@ -147,7 +136,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
-      if (CommonPreferences.token != "") {
+      if (CommonPreferences.token != '') {
         FeedbackService.getToken(forceRefresh: true);
       }
     });
@@ -162,7 +151,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   checkEventList() async {
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
-    await messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+    await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
       debugPrint('resume -----------$eventMap--------- resume');
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
@@ -227,7 +216,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
-            pushChannel
+            _pushChannel
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'refreshFeedbackMessageCount':
@@ -321,9 +310,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoLogin(context);
     });
-    // TODO 合并
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
-        .copyWith(systemNavigationBarColor: Colors.white));
   }
 
   @override

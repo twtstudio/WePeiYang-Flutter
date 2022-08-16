@@ -37,7 +37,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   TabController _tc;
 
   List<CardBean> cards;
-  var md = "";
+  var md = '';
   dynamic result;
 
   Future<String> _loadFromAssets() async {
@@ -62,34 +62,34 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     cards = [
       CardBean(
           Image.asset(
-            "assets/svg_pics/lake_butt_icons/daily.png",
+            'assets/svg_pics/lake_butt_icons/daily.png',
             width: 24.w,
           ),
           '课程表',
-          "Exam",
+          'Schedule',
           ScheduleRouter.course),
       CardBean(
           Image.asset(
-            "assets/svg_pics/lake_butt_icons/wiki.png",
+            'assets/svg_pics/lake_butt_icons/wiki.png',
             width: 24.w,
           ),
-          "北洋维基",
+          '北洋维基',
           'Wiki',
           'https://wiki.tjubot.cn/'),
-      CardBean(Icon(Icons.timeline, size: 25), 'GPA', "GPA", GPARouter.gpa),
+      CardBean(Icon(Icons.timeline, size: 25), 'GPA', 'GPA', GPARouter.gpa),
       CardBean(
           Image.asset(
-            "assets/svg_pics/lake_butt_icons/self_study.png",
+            'assets/svg_pics/lake_butt_icons/self_study.png',
             width: 24.w,
           ),
           S.current.lounge,
-          "Study",
+          'Study',
           LoungeRouter.main),
-      CardBean(Icon(Icons.domain, size: 25), '楼宇牌', "BuildingCard",
+      CardBean(Icon(Icons.domain, size: 25), '楼宇牌', 'BuildingCard',
           ReportRouter.pass),
-      CardBean(Icon(Icons.report, size: 25), S.current.report, "Health",
+      CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
           ReportRouter.main),
-      CardBean(Icon(Icons.refresh, size: 25), "重开模拟器", "RestartGame",
+      CardBean(Icon(Icons.refresh, size: 25), '重开模拟器', 'RestartGame',
           HomeRouter.restartGame),
     ];
     if (DateTime.now().month == 4 && DateTime.now().day == 1) {
@@ -101,7 +101,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 width: 30,
               ),
               _APRIL_FOOL_LABEL,
-              "fool"));
+              'fool'));
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -319,9 +319,9 @@ class SliverCardsWidget extends StatelessWidget {
                     barrierDismissible: false,
                     builder: (BuildContext context) {
                       return AprilFoolDialog(
-                        content: "要体验愚人节模式吗？",
-                        confirmText: "好耶",
-                        cancelText: "坏耶",
+                        content: '要体验愚人节模式吗？',
+                        confirmText: '好耶',
+                        cancelText: '坏耶',
                         confirmFun: () {
                           CommonPreferences.isAprilFool.value = true;
                           CommonPreferences.isAprilFoolLike.value = true;

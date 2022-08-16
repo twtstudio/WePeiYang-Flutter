@@ -31,50 +31,6 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
   return list;
 }
 
-/// 获取合并后的*非本周*课程，每小节课最多一节课程（即没有重叠）
-/// 先按普通课程优先排序，再按高学分优先排序
-List<Pair<Course, int>> getMergedInactiveCourses(
-    CourseProvider provider, int dayNumber) {
-  List<Course> courses = provider.totalCourses;
-  courses.sort((a, b) {
-    // 普通课程优先
-    if (a.type == 1) return 1;
-    if (b.type == 1) return -1;
-
-    // 学分高优先，null(或不能解析成double的值)排最后
-    double? iA = double.tryParse(a.credit);
-    double? iB = double.tryParse(b.credit);
-    if (iA == null) return 1;
-    if (iB == null) return -1;
-    if (iA != iB) return iB.compareTo(iA);
-
-    return a.name.compareTo(b.name);
-  });
-  List<List<bool>> matrix = [];
-  List<Pair<Course, int>> result = [];
-  for (int i = 0; i < dayNumber; i++) matrix.add(List.filled(12, false));
-  courses.forEach((course) {
-    for (int index = 0; index < course.arrangeList.length; index++) {
-      var arrange = course.arrangeList[index];
-      if (judgeActiveInWeek(provider.selectedWeek, provider.weekCount, arrange))
-        continue;
-      bool flag = false;
-      for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
-        if (matrix[arrange.weekday - 1][i - 1]) {
-          flag = true;
-          break;
-        }
-      }
-      if (flag) continue;
-      for (int i = arrange.unitList.first; i <= arrange.unitList.last; i++) {
-        matrix[arrange.weekday - 1][i - 1] = true;
-      }
-      result.add(Pair<Course, int>(course, index));
-    }
-  });
-  return result;
-}
-
 /// 获取合并后的*本周*课程
 /// List<List<Pair<Course, int>>> 存储所有冲突课程，每个子List的第一个课程外显，其他位置的课程均与List[0]冲突
 List<List<Pair<Course, int>>> getMergedActiveCourses(
@@ -298,34 +254,6 @@ int getTotalHours(List<Course> courses) {
   });
   return totalHour;
 }
-
-// List<Color> _skinColors = [
-//   Color(CommonPreferences.skinColorA.value),
-//   Color(CommonPreferences.skinColorB.value),
-//   Color(CommonPreferences.skinColorC.value),
-//   Color(CommonPreferences.skinColorD.value),
-//   Color(CommonPreferences.skinColorE.value),
-//   Color(CommonPreferences.skinColorF.value)
-// ];
-//
-// final _today = DateTime.now().day;
-//
-// /// 根据课程名生成对应颜色
-// Color generateColor(String courseName) {
-//   int hashCode = courseName.hashCode + _today; // 加点随机元素，以防一学期都是一个颜色
-//   if (CommonPreferences.isAprilFoolClass.value)
-//     return ColorUtil
-//         .aprilFoolColor[Random().nextInt(ColorUtil.aprilFoolColor.length)];
-//   else if (CommonPreferences.isSkinUsed.value) {
-//     int idx = hashCode % _skinColors.length;
-//     if (idx == 4) idx--;
-//     return _skinColors[idx];
-//   } else {
-//     int idx = hashCode % FavorColors.scheduleColor.length;
-//     if (idx == 4) idx--; // 1435
-//     return FavorColors.scheduleColor[idx];
-//   }
-// }
 
 /// 防止首页今日课程、课程表课程名称过长
 String formatText(String text) {

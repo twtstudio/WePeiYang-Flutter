@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TextUtil {
+  TextUtil._();
+
   static late TextStyle base;
 
   static init(BuildContext context) {
