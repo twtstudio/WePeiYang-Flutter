@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -257,21 +258,41 @@ class _DetailPageState extends State<DetailPage>
             return Column(
               children: [
                 PostCard.detail(post),
-                SizedBox(
-                  height: 10,
+
+                Divider(
+                  height: 2,
+                  indent: 15,
+                  endIndent: 15,
+                  color: ColorUtil.grey229,
                 ),
+                const SizedBox(height: 15,),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          '回复 ' + post.commentCount.toString(),
-                          style:
-                              TextUtil.base.ProductSans.black2A.medium.sp(18),
-                        ),
+                      const SizedBox(
+                        width: 15,
                       ),
-                      SizedBox(width: 100),
+                      GestureDetector(
+                        onTap: (){
+                          order.value=1;
+                        },
+                        child: Text('时间正序',
+                            style: order.value == 1
+                                ? TextUtil.base.black2A.w700.sp(14).themeBlue
+                                : TextUtil.base.black2A.w500.sp(14)),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          order.value=0;
+                        },
+                        child: Text('时间倒序',
+                            style: order.value == 0
+                                ? TextUtil.base.black2A.w700.sp(14).themeBlue
+                                : TextUtil.base.black2A.w500.sp(14)),
+                      ),
+                      Spacer(),
                       ValueListenableBuilder(
                         valueListenable: onlyOwner,
                         builder: (context, value, _) {
@@ -285,70 +306,24 @@ class _DetailPageState extends State<DetailPage>
                                     decoration: BoxDecoration(
                                       color: ColorUtil.boldTag54,
                                       borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: ColorUtil.boldTag54, //边框颜色
-                                        width: 1, //宽度
-                                      ),
                                     ),
                                     child: Text('  只看楼主  ',
-                                        style: TextUtil.base.white.w500.sp(14)),
+                                        style: TextUtil.base.white.w400.sp(14)),
                                   )
                                 : Container(
                                     decoration: BoxDecoration(
                                       color: ColorUtil.whiteF8Color,
                                       borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: ColorUtil.boldTag54, //边框颜色
-                                        width: 1, //宽度
-                                      ),
                                     ),
                                     child: Text('  只看楼主  ',
                                         style:
-                                            TextUtil.base.black2A.w500.sp(14)),
+                                            TextUtil.base.black2A.w400.sp(14)),
                                   ),
                           );
                         },
                       ),
-                      Container(
-                        padding: EdgeInsets.only(right: 20),
-                        child: PopupMenuButton(
-                            shape: RacTangle(),
-                            offset: Offset(0, 0),
-                            child: Image.asset(
-                              'assets/images/lake_butt_icons/menu.png',
-                              width: 20,
-                            ),
-                            onSelected: (value) async {
-                              if (value == "时间正序") {
-                                order.value = 1;
-                              } else if (value == '时间倒序') {
-                                order.value = 0;
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return <PopupMenuItem<String>>[
-                                PopupMenuItem<String>(
-                                  value: '时间正序',
-                                  child: Center(
-                                    child: Text('    时间正序',
-                                        style: order.value == 1
-                                            ? TextUtil.base.black2A.w700.sp(14)
-                                            : TextUtil.base.black2A.w500
-                                                .sp(14)),
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: '时间倒序',
-                                  child: Center(
-                                    child: Text('    时间倒序',
-                                        style: order.value == 0
-                                            ? TextUtil.base.black2A.w700.sp(14)
-                                            : TextUtil.base.black2A.w500
-                                                .sp(14)),
-                                  ),
-                                ),
-                              ];
-                            }),
+                      const SizedBox(
+                        width: 15,
                       ),
                     ]),
                 SizedBox(
@@ -624,74 +599,108 @@ class _DetailPageState extends State<DetailPage>
       body = Center(child: Text("error!"));
     }
 
-    var menuButton = PopupMenuButton(
-
-        ///改成了用PopupMenuButton的方式，方便偏移的处理
-        shape: RacTangle(),
-        offset: Offset(0, 20.w),
-        child: SvgPicture.asset(
-            'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-        onSelected: (value) async {
-          if (value == "举报") {
-            Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
-          } else if (value == '删除') {
-            bool confirm = await _showDeleteConfirmDialog('删除');
-            if (confirm) {
-              FeedbackService.deletePost(
-                id: widget.post.id,
-                onSuccess: () {
-                  context
-                      .read<LakeModel>()
-                      .lakeAreas[context
-                          .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab]
-                          .id]
-                      .refreshController
-                      .requestRefresh();
-                  ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.of(context).pop(post);
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            }
-          }
-        },
-        itemBuilder: (context) {
-          return <PopupMenuItem<String>>[
-            if (!(widget.post.isOwner ?? false))
-              PopupMenuItem<String>(
-                value: '举报',
-                child: Center(
-                  child:
-                      new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
-                ),
-              ),
-            if (widget.post.isOwner ?? false)
-              PopupMenuItem<String>(
-                value: '删除',
-                child: Center(
-                  child:
-                      new Text('删除', style: TextUtil.base.black2A.w500.sp(14)),
-                ),
-              ),
-          ];
-        });
-    var shareButton = IconButton(
-        icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
+    var menuButton = IconButton(
+        icon: SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+          width: 25,
+          color: Colors.black,
+        ),
         onPressed: () {
-          if (!_refreshController.isLoading && !_refreshController.isRefresh) {
-            String weCo =
-                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-            ClipboardData data = ClipboardData(text: weCo);
-            Clipboard.setData(data);
-            CommonPreferences.feedbackLastWeCo.value = post.id.toString();
-            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-          }
+          showCupertinoModalPopup(
+            context: context,
+            builder: (context) {
+              return CupertinoActionSheet(
+                actions: <Widget>[
+                  //分享按钮
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      if (!_refreshController.isLoading &&
+                          !_refreshController.isRefresh) {
+                        String weCo =
+                            '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                        ClipboardData data = ClipboardData(text: weCo);
+                        Clipboard.setData(data);
+                        CommonPreferences.feedbackLastWeCo.value =
+                            post.id.toString();
+                        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '分享',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                  (widget.post.isOwner == false)
+                      ? CupertinoActionSheetAction(
+                          onPressed: () {
+                            Navigator.pushNamed(context, FeedbackRouter.report,
+                                arguments:
+                                    ReportPageArgs(widget.post.id, true));
+                          },
+                          child: Text(
+                            '举报',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          ))
+                      : CupertinoActionSheetAction(
+                          onPressed: () async {
+                            bool confirm = await _showDeleteConfirmDialog('删除');
+                            if (confirm) {
+                              FeedbackService.deletePost(
+                                id: widget.post.id,
+                                onSuccess: () {
+                                  context
+                                      .read<LakeModel>()
+                                      .lakeAreas[context
+                                          .read<LakeModel>()
+                                          .tabList[context
+                                              .read<LakeModel>()
+                                              .currentTab]
+                                          .id]
+                                      .refreshController
+                                      .requestRefresh();
+                                  ToastProvider.success(
+                                      S.current.feedback_delete_success);
+                                  Navigator.of(context).pop(post);
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
+                                },
+                              );
+                            }
+                          },
+                          child: Text(
+                            '删除',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          )),
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '收藏',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  //取消按钮
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    '取消',
+                    style: TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                  ),
+                ),
+              );
+            },
+          );
         });
-
     var manageButton = IconButton(
         icon: Icon(Icons.admin_panel_settings,
             size: 23, color: ColorUtil.black2AColor),
@@ -702,9 +711,12 @@ class _DetailPageState extends State<DetailPage>
       titleSpacing: 0,
       backgroundColor: CommonPreferences.isSkinUsed.value
           ? Color(CommonPreferences.skinColorB.value)
-          : ColorUtil.greyF7F8Color,
+          : Colors.white,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
+        icon: Image.asset(
+          "assets/images/lake_butt_icons/back.png",
+          color: ColorUtil.mainColor,
+        ),
         onPressed: () => Navigator.pop(context, post),
       ),
       actions: [
@@ -712,7 +724,7 @@ class _DetailPageState extends State<DetailPage>
                 CommonPreferences.isSchAdmin.value) ??
             false)
           manageButton,
-        shareButton,
+        //shareButton,
         menuButton,
         SizedBox(width: 10)
       ],
@@ -722,7 +734,7 @@ class _DetailPageState extends State<DetailPage>
           width: double.infinity,
           height: kToolbarHeight,
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             child: Text(
               post.type == 1 ? '校务提问：实名' : '冒泡',
               style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
@@ -742,7 +754,7 @@ class _DetailPageState extends State<DetailPage>
       child: Scaffold(
         backgroundColor: CommonPreferences.isSkinUsed.value
             ? Color(CommonPreferences.skinColorB.value)
-            : ColorUtil.backgroundColor,
+            : Colors.white,
         appBar: appBar,
         body: body,
       ),

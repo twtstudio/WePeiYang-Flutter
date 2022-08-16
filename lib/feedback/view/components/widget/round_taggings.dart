@@ -312,7 +312,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                       Text(
                         '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
                         style:
-                            TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
+                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (CommonPreferences.isSuper.value ||

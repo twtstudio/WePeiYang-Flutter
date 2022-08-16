@@ -207,7 +207,8 @@ class _NCommentCardState extends State<NCommentCard>
           offset: Offset(0, 0),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-            width: 16,
+            width: 18,
+            color: Colors.black,
           ),
           onSelected: (value) async {
             if (value == '分享') {
