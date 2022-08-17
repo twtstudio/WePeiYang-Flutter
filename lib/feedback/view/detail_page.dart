@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +25,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
-import 'components/widget/pop_menu_shape.dart';
 import 'lake_home_page/lake_notifier.dart';
 
 enum DetailPageStatus {
@@ -265,67 +263,67 @@ class _DetailPageState extends State<DetailPage>
                   endIndent: 15,
                   color: ColorUtil.grey229,
                 ),
-                const SizedBox(height: 15,),
-                Row(
-                    children: [
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          order.value=1;
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(children: [
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      order.value = 1;
+                    },
+                    child: Text('时间正序',
+                        style: order.value == 1
+                            ? TextUtil.base.black2A.w700.sp(14).themeBlue
+                            : TextUtil.base.black2A.w500.sp(14)),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      order.value = 0;
+                    },
+                    child: Text('时间倒序',
+                        style: order.value == 0
+                            ? TextUtil.base.black2A.w700.sp(14).themeBlue
+                            : TextUtil.base.black2A.w500.sp(14)),
+                  ),
+                  Spacer(),
+                  ValueListenableBuilder(
+                    valueListenable: onlyOwner,
+                    builder: (context, value, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          onlyOwner.value = 1 - onlyOwner.value;
+                          _refreshController.requestRefresh();
                         },
-                        child: Text('时间正序',
-                            style: order.value == 1
-                                ? TextUtil.base.black2A.w700.sp(14).themeBlue
-                                : TextUtil.base.black2A.w500.sp(14)),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          order.value=0;
-                        },
-                        child: Text('时间倒序',
-                            style: order.value == 0
-                                ? TextUtil.base.black2A.w700.sp(14).themeBlue
-                                : TextUtil.base.black2A.w500.sp(14)),
-                      ),
-                      Spacer(),
-                      ValueListenableBuilder(
-                        valueListenable: onlyOwner,
-                        builder: (context, value, _) {
-                          return GestureDetector(
-                            onTap: () {
-                              onlyOwner.value = 1 - onlyOwner.value;
-                              _refreshController.requestRefresh();
-                            },
-                            child: value == 1
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorUtil.boldTag54,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text('  只看楼主  ',
-                                        style: TextUtil.base.white.w400.sp(14)),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorUtil.whiteF8Color,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text('  只看楼主  ',
-                                        style:
-                                            TextUtil.base.black2A.w400.sp(14)),
-                                  ),
-                          );
-                        },
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                    ]),
+                        child: value == 1
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  color: ColorUtil.boldTag54,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text('  只看楼主  ',
+                                    style: TextUtil.base.white.w400.sp(14)),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: ColorUtil.whiteF8Color,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text('  只看楼主  ',
+                                    style: TextUtil.base.black2A.w400.sp(14)),
+                              ),
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                ]),
                 SizedBox(
                   height: 10,
                 ),

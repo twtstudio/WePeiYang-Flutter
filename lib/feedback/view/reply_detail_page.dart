@@ -157,15 +157,23 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemCount: floors != null ? floors.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return NCommentCard(
-            comment: floor,
-            uid: uid,
-            ancestorUId: floor.postId,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: true,
-            // 这里不好传我就先置0了
-            type: 0,
+          return Column(
+            children: [
+              NCommentCard(
+                comment: floor,
+                uid: uid,
+                ancestorUId: floor.postId,
+                commentFloor: index + 1,
+                isSubFloor: false,
+                isFullView: true,
+                // 这里不好传我就先置0了
+                type: 0,
+              ),
+              Container(
+                  width: WePeiYangApp.screenWidth - 60,
+                  height: 1,
+                  color: Colors.black12)
+            ],
           );
         }
         index--;
@@ -184,10 +192,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               // 这里不好传我就先置0了
               type: 0,
             ),
-            Container(
-                width: WePeiYangApp.screenWidth - 60,
-                height: 1,
-                color: Colors.black12)
+
           ],
         );
       },

@@ -45,15 +45,17 @@ class NCommentCard extends StatefulWidget {
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard({this.ancestorName,
-    this.ancestorUId,
-    this.comment,
-    this.uid,
-    this.commentFloor,
-    this.likeSuccessCallback,
-    this.dislikeSuccessCallback,
-    this.isSubFloor,
-    this.isFullView, this.type});
+  NCommentCard(
+      {this.ancestorName,
+      this.ancestorUId,
+      this.comment,
+      this.uid,
+      this.commentFloor,
+      this.likeSuccessCallback,
+      this.dislikeSuccessCallback,
+      this.isSubFloor,
+      this.isFullView,
+      this.type});
 }
 
 class _NCommentCardState extends State<NCommentCard>
@@ -62,8 +64,8 @@ class _NCommentCardState extends State<NCommentCard>
 
   //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
-  bool _picFullView = false,
-      _isDeleted = false;
+  bool _picFullView = false, _isDeleted = false;
+
   Future<bool> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
         context: context,
@@ -73,13 +75,9 @@ class _NCommentCardState extends State<NCommentCard>
               content: Text('您确定要$quote这条评论吗？'),
               cancelText: "取消",
               confirmTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC
-                  .sp(16)
-                  .w400,
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC
-                  .sp(16)
-                  .w600,
+                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
               confirmText: quote == '摧毁' ? 'BOOM' : "确认",
               cancelFun: () {
                 Navigator.of(context).pop();
@@ -93,9 +91,8 @@ class _NCommentCardState extends State<NCommentCard>
   @override
   Widget build(BuildContext context) {
     var topWidget = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ProfileImageWithDetailedPopup(widget.type, widget.comment.nickname, widget.comment.uid),
-        SizedBox(width: 4),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -108,30 +105,30 @@ class _NCommentCardState extends State<NCommentCard>
                     widget.comment.nickname ?? "匿名用户",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
-                    style: TextUtil.base.black2A.w400.NotoSansSC.sp(14),
+                    style: TextUtil.base.w400.bold.NotoSansSC.sp(14).black2A,
                   ),
                   if (widget.comment.isOwner != null)
                     CommentIdentificationContainer(
                         widget.comment.isOwner
                             ? '我的评论'
                             : widget.comment.uid == widget.uid
-                            ? widget.isSubFloor &&
-                            widget.comment.nickname ==
-                                widget.ancestorName
-                            ? '楼主 层主'
-                            : '楼主'
-                            : widget.isSubFloor &&
-                            widget.comment.nickname ==
-                                widget.ancestorName
-                            ? '层主'
-                            : '',
+                                ? widget.isSubFloor &&
+                                        widget.comment.nickname ==
+                                            widget.ancestorName
+                                    ? '楼主 层主'
+                                    : '楼主'
+                                : widget.isSubFloor &&
+                                        widget.comment.nickname ==
+                                            widget.ancestorName
+                                    ? '层主'
+                                    : '',
                         true),
                   //回复自己那条时出现
                   if (widget.comment.replyToName != '' &&
                       widget.comment.replyTo != widget.ancestorUId)
                     widget.comment.isOwner &&
-                        widget.comment.replyToName ==
-                            widget.comment.nickname
+                            widget.comment.replyToName ==
+                                widget.comment.nickname
                         ? CommentIdentificationContainer('回复我', true)
                         : SizedBox(),
                   //后面有东西时出现
@@ -145,7 +142,7 @@ class _NCommentCardState extends State<NCommentCard>
                         SizedBox(width: 2),
                         Text(
                           widget.comment.replyToName ?? "",
-                          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(12),
+                          style: TextUtil.base.w700.NotoSansSC.sp(14).black2A,
                         ),
                         SizedBox(width: 2)
                       ],
@@ -158,45 +155,31 @@ class _NCommentCardState extends State<NCommentCard>
                     CommentIdentificationContainer(
                         widget.isSubFloor
                             ? widget.comment.replyToName == 'Owner' &&
-                            (widget.ancestorName != 'Owner' ||
-                                (widget.ancestorName == 'Owner' &&
-                                    widget.comment.replyTo !=
-                                        widget.ancestorUId))
-                            ? widget.comment.replyToName ==
-                            widget.ancestorName &&
-                            widget.comment.replyTo !=
-                                widget.ancestorUId
-                            ? '楼主 层主'
-                            : '楼主'
-                            : widget.comment.replyToName ==
-                            widget.ancestorName &&
-                            widget.comment.replyTo !=
-                                widget.ancestorUId
-                            ? '层主'
-                            : ''
+                                    (widget.ancestorName != 'Owner' ||
+                                        (widget.ancestorName == 'Owner' &&
+                                            widget.comment.replyTo !=
+                                                widget.ancestorUId))
+                                ? widget.comment.replyToName ==
+                                            widget.ancestorName &&
+                                        widget.comment.replyTo !=
+                                            widget.ancestorUId
+                                    ? '楼主 层主'
+                                    : '楼主'
+                                : widget.comment.replyToName ==
+                                            widget.ancestorName &&
+                                        widget.comment.replyTo !=
+                                            widget.ancestorUId
+                                    ? '层主'
+                                    : ''
                             : '',
                         false),
-                  if (widget.isSubFloor &&
-                      widget.comment.replyTo != widget.ancestorUId)
-                    CommentIdentificationContainer(
-                        '回复ID：' + widget.comment.replyTo.toString(), false),
+                  // if (widget.isSubFloor &&
+                  //     widget.comment.replyTo != widget.ancestorUId)
+                  //   CommentIdentificationContainer(
+                  //       '回复ID：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
-              Text(
-                DateTime
-                    .now()
-                    .difference(widget.comment.createAt)
-                    .inHours >= 11
-                    ? widget.comment.createAt
-                    .toLocal()
-                    .toIso8601String()
-                    .replaceRange(10, 11, ' ')
-                    .substring(0, 19)
-                    : DateTime.now()
-                    .difference(widget.comment.createAt)
-                    .dayHourMinuteSecondFormatted(),
-                style: TextUtil.base.ProductSans.grey97.regular.sp(10),
-              ),
+
             ],
           ),
         ),
@@ -213,8 +196,7 @@ class _NCommentCardState extends State<NCommentCard>
           onSelected: (value) async {
             if (value == '分享') {
               String weCo =
-                  '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget
-                  .comment.postId}\n【${widget.comment.content}】';
+                  '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.comment.postId}\n【${widget.comment.content}】';
               ClipboardData data = ClipboardData(text: weCo);
               Clipboard.setData(data);
               CommonPreferences.feedbackLastWeCo.value =
@@ -272,27 +254,27 @@ class _NCommentCardState extends State<NCommentCard>
               ),
               widget.comment.isOwner
                   ? PopupMenuItem<String>(
-                value: '删除',
-                child: Center(
-                  child: Text(
-                    '删除',
-                    style:
-                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ),
-              )
+                      value: '删除',
+                      child: Center(
+                        child: Text(
+                          '删除',
+                          style:
+                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                        ),
+                      ),
+                    )
                   : PopupMenuItem<String>(
-                value: '举报',
-                child: Center(
-                  child: Text(
-                    '举报',
-                    style:
-                    TextUtil.base.black2A.regular.NotoSansSC.sp(12),
-                  ),
-                ),
-              ),
+                      value: '举报',
+                      child: Center(
+                        child: Text(
+                          '举报',
+                          style:
+                              TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                        ),
+                      ),
+                    ),
               if ((CommonPreferences.isSuper.value ||
-                  CommonPreferences.isStuAdmin.value) ??
+                      CommonPreferences.isStuAdmin.value) ??
                   false)
                 PopupMenuItem<String>(
                   value: '删评',
@@ -300,7 +282,7 @@ class _NCommentCardState extends State<NCommentCard>
                     child: Text(
                       '删评',
                       style:
-                      TextUtil.base.dangerousRed.regular.NotoSansSC.sp(12),
+                          TextUtil.base.dangerousRed.regular.NotoSansSC.sp(12),
                     ),
                   ),
                 ),
@@ -313,13 +295,13 @@ class _NCommentCardState extends State<NCommentCard>
     var commentContent = widget.comment.content == ''
         ? SizedBox()
         : ExpandableText(
-      text: widget.comment.content,
-      maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-      style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
-      expand: false,
-      buttonIsShown: true,
-      isHTML: false,
-    );
+            text: widget.comment.content,
+            maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
+            style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
+            expand: false,
+            buttonIsShown: true,
+            isHTML: false,
+          );
 
     var commentImage = Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -336,91 +318,89 @@ class _NCommentCardState extends State<NCommentCard>
               },
               child: _picFullView
                   ? InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, FeedbackRouter.imageView,
-                      arguments: {
-                        "urlList": [widget.comment.imageUrl],
-                        "urlListLength": 1,
-                        "indexNow": 0
-                      });
-                },
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: WePeiYangApp.screenWidth * 2),
-                  child: Image.network(
-                    picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        height: 40,
-                        width: double.infinity,
-                        padding: EdgeInsets.all(4),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes !=
-                                null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes
-                                : null,
-                          ),
-                        ),
-                      );
-                    },
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      return Text(
-                        '💔[图片加载失败]' +
-                            widget.comment.imageUrl.replaceRange(
-                                10,
-                                widget.comment.imageUrl.length - 6,
-                                '...'),
-                        style: TextUtil.base.grey6C.w400.sp(12),
-                      );
-                    },
-                  ),
-                ),
-              )
-                  : Row(
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(
-                          picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                          width: 70,
-                          height: 64,
-                          fit: BoxFit.cover,
-                          loadingBuilder:
-                              (BuildContext context, Widget child,
+                      onTap: () {
+                        Navigator.pushNamed(context, FeedbackRouter.imageView,
+                            arguments: {
+                              "urlList": [widget.comment.imageUrl],
+                              "urlListLength": 1,
+                              "indexNow": 0
+                            });
+                      },
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: WePeiYangApp.screenWidth * 2),
+                        child: Image.network(
+                          picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                          loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent loadingProgress) {
                             if (loadingProgress == null) return child;
                             return Container(
                               height: 40,
-                              width: 40,
+                              width: double.infinity,
                               padding: EdgeInsets.all(4),
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                    null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
-                                    : null,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
                               ),
                             );
                           },
-                          errorBuilder: (BuildContext context,
-                              Object exception, StackTrace stackTrace) {
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
                             return Text(
-                              '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                              '💔[图片加载失败]' +
                                   widget.comment.imageUrl.replaceRange(
                                       10,
                                       widget.comment.imageUrl.length - 6,
                                       '...'),
                               style: TextUtil.base.grey6C.w400.sp(12),
                             );
-                          })),
-                  Spacer()
-                ],
-              )),
+                          },
+                        ),
+                      ),
+                    )
+                  : Row(
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                            child: Image.network(
+                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                                width: 70,
+                                height: 64,
+                                fit: BoxFit.cover, loadingBuilder:
+                                    (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 40,
+                                width: 40,
+                                padding: EdgeInsets.all(4),
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes
+                                      : null,
+                                ),
+                              );
+                            }, errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                              return Text(
+                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
+                                    widget.comment.imageUrl.replaceRange(
+                                        10,
+                                        widget.comment.imageUrl.length - 6,
+                                        '...'),
+                                style: TextUtil.base.grey6C.w400.sp(12),
+                              );
+                            })),
+                        Spacer()
+                      ],
+                    )),
         ));
 
     var replyButton = IconButton(
@@ -431,9 +411,7 @@ class _NCommentCardState extends State<NCommentCard>
         Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldOpenAndReplyTo(widget.comment.id);
         FocusScope.of(context).requestFocus(
-            Provider
-                .of<NewFloorProvider>(context, listen: false)
-                .focusNode);
+            Provider.of<NewFloorProvider>(context, listen: false).focusNode);
       },
       padding: EdgeInsets.zero,
       color: ColorUtil.boldLakeTextColor,
@@ -461,9 +439,9 @@ class _NCommentCardState extends State<NCommentCard>
           childCount: widget.isFullView
               ? widget.comment.subFloorCnt
               : widget.comment.subFloorCnt > 4
-              ? 4
-              : min(widget.comment.subFloorCnt,
-              widget.comment.subFloors.length),
+                  ? 4
+                  : min(widget.comment.subFloorCnt,
+                      widget.comment.subFloors.length),
           findChildIndexCallback: (key) {
             final ValueKey<String> valueKey = key;
             return widget.comment.subFloors
@@ -475,24 +453,24 @@ class _NCommentCardState extends State<NCommentCard>
 
     var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount,
         onLikePressed: (isLiked, count, success, failure) async {
-          await FeedbackService.commentHitLike(
-            id: widget.comment.id,
-            isLike: widget.comment.isLike,
-            onSuccess: () {
-              widget.comment.isLike = !widget.comment.isLike;
-              widget.comment.likeCount = count;
-              if (widget.comment.isLike && widget.comment.isDis) {
-                widget.comment.isDis = !widget.comment.isDis;
-                setState(() {});
-              }
-              success.call();
-            },
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-              failure.call();
-            },
-          );
-        }, isLike: widget.comment.isLike ?? false);
+      await FeedbackService.commentHitLike(
+        id: widget.comment.id,
+        isLike: widget.comment.isLike,
+        onSuccess: () {
+          widget.comment.isLike = !widget.comment.isLike;
+          widget.comment.likeCount = count;
+          if (widget.comment.isLike && widget.comment.isDis) {
+            widget.comment.isDis = !widget.comment.isDis;
+            setState(() {});
+          }
+          success.call();
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+          failure.call();
+        },
+      );
+    }, isLike: widget.comment.isLike ?? false);
 
     var dislikeWidget = DislikeWidget(
       size: 15.w,
@@ -525,127 +503,145 @@ class _NCommentCardState extends State<NCommentCard>
         Spacer(),
         Padding(
           padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
-          child: Text('ID: ' + widget.comment.id.toString(),
-              style: TextUtil.base.NotoSansSC.w500.grey6C.sp(9)),
+          child: Text(
+              DateTime
+                  .now()
+                  .difference(widget.comment.createAt)
+                  .inHours >= 11
+                  ? widget.comment.createAt
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .substring(0, 19)
+                  : DateTime.now()
+                  .difference(widget.comment.createAt)
+                  .dayHourMinuteSecondFormatted(),
+              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+          ),
         ),
         replyButton,
       ],
     );
 
-    var mainBody = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 4),
-        topWidget,
-        SizedBox(height: 6),
-        commentContent,
-        if (widget.comment.imageUrl != '') commentImage,
-        _picFullView == true
-            ? TextButton(
-            style: ButtonStyle(
-                alignment: Alignment.topRight,
-                padding: MaterialStateProperty.all(EdgeInsets.zero)),
-            onPressed: () {
-              setState(() {
-                _picFullView = false;
-              });
-            },
-            child: Row(
-              children: [
-                Spacer(),
-                Text('收起',
-                    style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
-              ],
-            ))
-            : SizedBox(height: 8),
-        bottomWidget,
-        SizedBox(height: 4)
-      ],
-    );
+    var mainBody = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(
+        width: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+        height: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+        child: ProfileImageWithDetailedPopup(
+            widget.type, widget.comment.nickname, widget.comment.uid),
+      ),
+      SizedBox(width: 10.w),
+      Expanded(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 4),
+            topWidget,
+            SizedBox(height: 6),
+            commentContent,
+            if (widget.comment.imageUrl != '') commentImage,
+            _picFullView == true
+                ? TextButton(
+                    style: ButtonStyle(
+                        alignment: Alignment.topRight,
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                    onPressed: () {
+                      setState(() {
+                        _picFullView = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text('收起',
+                            style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
+                      ],
+                    ))
+                : SizedBox(height: 8),
+            SizedBox(height: 2),
+            bottomWidget,
+            SizedBox(height: 4)
+          ],
+        ),
+      )
+    ]);
 
     return _isDeleted
         ? SizedBox(height: 1)
         : Column(
-      children: [
-        ClipCopy(
-          copy: widget.comment.content,
-          toast: '复制评论成功',
-          // 这个padding其实起到的是margin的效果，因为Ink没有margin属性
-          child: Padding(
-            padding:
-            const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-            // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
-            child: Container(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: CommonPreferences.isSkinUsed.value
-                    ? Color(CommonPreferences.skinColorE.value)
-                    : widget.isFullView && widget.isSubFloor
-                    ? Colors.transparent
-                    : Colors.white,
-                boxShadow: [
-                  widget.isFullView && widget.isSubFloor
-                      ? BoxShadow(color: Colors.transparent)
-                      : BoxShadow(
-                      blurRadius: 1.6,
-                      color: Colors.black12,
-                      offset: Offset(0, 0),
-                      spreadRadius: -1),
-                ],
+            children: [
+              ClipCopy(
+                copy: widget.comment.content,
+                toast: '复制评论成功',
+                // 这个padding其实起到的是margin的效果，因为Ink没有margin属性
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
+                  // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: CommonPreferences.isSkinUsed.value
+                          ? Color(CommonPreferences.skinColorE.value)
+                          : widget.isFullView && widget.isSubFloor
+                              ? Colors.transparent
+                              : Colors.white,
+                      ///阴影
+                      // boxShadow: [
+                      //   widget.isFullView && widget.isSubFloor
+                      //       ? BoxShadow(color: Colors.transparent)
+                      //       : BoxShadow(
+                      //           blurRadius: 1.6,
+                      //           color: Colors.black12,
+                      //           offset: Offset(0, 0),
+                      //           spreadRadius: -1),
+                      // ],
+                    ),
+                    child: mainBody,
+                  ),
+                ),
               ),
-              child: mainBody,
-            ),
-          ),
-        ),
-        if (!widget.isSubFloor && !widget.isFullView && subFloor != null)
-          Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  subFloor,
-                  if (widget.comment.subFloorCnt > 0)
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.commentDetail,
-                          arguments: ReplyDetailPageArgs(
-                              widget.comment, widget.uid),
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                                left: 20.0, top: 4, bottom: 6),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
-                              color: Color(0xffebebeb),
+              if (!widget.isSubFloor && !widget.isFullView && subFloor != null)
+                Padding(
+                    padding: EdgeInsets.only(left: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        subFloor,
+                        if (widget.comment.subFloorCnt > 0)
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                FeedbackRouter.commentDetail,
+                                arguments: ReplyDetailPageArgs(
+                                    widget.comment, widget.uid),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(70, 0, 0, 0),
+                                  child: Text(
+                                      widget.comment.subFloorCnt > 2
+                                          ? '查看全部 ' +
+                                              widget.comment.subFloorCnt
+                                                  .toString() +
+                                              ' 条回复 >'
+                                          : '查看回复详情 >',
+                                      style: TextUtil.base.NotoSansSC.w400
+                                          .sp(14).themeBlue
+                                          ),
+                                ),
+                                Spacer()
+                              ],
                             ),
-                            child: Text(
-                                widget.comment.subFloorCnt > 2
-                                    ? '查看全部 ' +
-                                    widget.comment.subFloorCnt
-                                        .toString() +
-                                    ' 条回复 >'
-                                    : '查看回复详情 >',
-                                style: TextUtil.base.ProductSans.w400
-                                    .sp(14)
-                                    .grey6C),
-                          ),
-                          Spacer()
-                        ],
-                      ),
-                    )
-                ],
-              )),
-      ],
-    );
+                          )
+                      ],
+                    )),
+            ],
+          );
   }
 }

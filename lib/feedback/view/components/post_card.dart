@@ -354,7 +354,6 @@ class _PostCardState extends State<PostCard> {
                         if (widget.type == PostCardType.detail) createTimeDetail,
                       ],
                     ),
-
                   ],
                 ),
               ),
@@ -363,7 +362,7 @@ class _PostCardState extends State<PostCard> {
               GestureDetector(
                 onLongPress: () {
                   return Clipboard.setData(ClipboardData(
-                      text: '#MP' + post.id.toString().padLeft(6, '0')))
+                          text: '#MP' + post.id.toString().padLeft(6, '0')))
                       .whenComplete(
                           () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
                 },

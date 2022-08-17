@@ -27,13 +27,16 @@ class CommentIdentificationContainer extends StatelessWidget {
     return text == ''
         ? SizedBox()
         : Container(
-            margin: EdgeInsets.only(left: 2, top: 1),
-            padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
+            margin: EdgeInsets.only(left: 10, top: 3),
+            padding: EdgeInsets.fromLTRB(4, 2, 4, 3),
             child: Text(this.text,
-                style: TextUtil.base.NotoSansSC.w700.whiteFD.sp(8)),
+                style: TextUtil.base.w400.NotoSansSC.sp(8).themeBlue),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
+              border: Border.all(
+                color: const Color(0xFF2C7EDF),
+              ),
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
             ),
           );
   }
@@ -239,7 +242,7 @@ class TagShowWidget extends StatelessWidget {
               constraints: BoxConstraints(maxWidth: width - 30),
               child: Text(
                 tag,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
+                style: TextUtil.base.NotoSansSC.w400.sp(14).themeBlue,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -249,7 +252,7 @@ class TagShowWidget extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1080),
-          color: Color(0xffeaeaea),
+
         ),
       ),
     );
@@ -386,19 +389,16 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
           ],
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 4),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          child: SvgPicture.network(
-            '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-            width:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            height:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            fit: BoxFit.contain,
-            placeholderBuilder: defaultPlaceholderBuilder,
-          ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        child: SvgPicture.network(
+          '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+          width:
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+          height:
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+          fit: BoxFit.contain,
+          placeholderBuilder: defaultPlaceholderBuilder,
         ),
       ),
     );
