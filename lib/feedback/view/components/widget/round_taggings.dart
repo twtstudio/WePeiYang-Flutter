@@ -27,13 +27,16 @@ class CommentIdentificationContainer extends StatelessWidget {
     return text == ''
         ? SizedBox()
         : Container(
-            margin: EdgeInsets.only(left: 2, top: 1),
-            padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
+            margin: EdgeInsets.only(left: 10, top: 3),
+            padding: EdgeInsets.fromLTRB(4, 2, 4, 3),
             child: Text(this.text,
-                style: TextUtil.base.NotoSansSC.w700.whiteFD.sp(8)),
+                style: TextUtil.base.w400.NotoSansSC.sp(8).blue2C),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
+              border: Border.all(
+                color: const Color(0xFF2C7EDF),
+              ),
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
             ),
           );
   }
@@ -212,46 +215,44 @@ class TagShowWidget extends StatelessWidget {
         height: 20,
         child: (tag != null && tag != "")
             ? Row(
-                children: [
-                  Container(
-                    height: 14,
-                    width: 14,
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-                    padding: EdgeInsets.symmetric(vertical: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: type == 0
-                          ? Color(0xffeaeaea)
-                          : type == 1
-                              ? ColorUtil.mainColor
-                              : Colors.white,
-                    ),
-                    child: SvgPicture.asset(
-                      type == 0
-                          ? "assets/svg_pics/lake_butt_icons/districts.svg"
-                          : type == 1
-                              ? "assets/svg_pics/lake_butt_icons/flag.svg"
-                              : "assets/svg_pics/lake_butt_icons/hashtag.svg",
-                    ),
-                  ),
-                  SizedBox(width: type == 0 ? 0 : 2),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: width - 30),
-                    child: Text(
-                      tag ?? "",
-                      style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  SizedBox(width: 8)
-                ],
-              )
-            : SizedBox(),
+          children: [
+            Container(
+              height: 14,
+              width: 14,
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+              padding: EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: type == 0
+                    ? Color(0xffeaeaea)
+                    : type == 1
+                        ? ColorUtil.mainColor
+                        : Colors.white,
+              ),
+              child: SvgPicture.asset(
+                type == 0
+                    ? "assets/svg_pics/lake_butt_icons/districts.svg"
+                    : type == 1
+                        ? "assets/svg_pics/lake_butt_icons/flag.svg"
+                        : "assets/svg_pics/lake_butt_icons/hashtag.svg",
+              ),
+            ),
+            SizedBox(width: type == 0 ? 0 : 2),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: width - 30),
+              child: Text(
+                tag ?? '',
+                style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(width: 8)
+          ],
+        ) : SizedBox(),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1080),
-          color: (tag != null && tag != "") ? Color(0xffeaeaea) : Colors.white,
         ),
       ),
     );
@@ -314,7 +315,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                       Text(
                         '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
                         style:
-                            TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
+                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (CommonPreferences.isSuper.value ||
@@ -391,19 +392,16 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
           ],
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 4),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          child: SvgPicture.network(
-            '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-            width:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            height:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            fit: BoxFit.contain,
-            placeholderBuilder: defaultPlaceholderBuilder,
-          ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        child: SvgPicture.network(
+          '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
+          width:
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+          height:
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+          fit: BoxFit.contain,
+          placeholderBuilder: defaultPlaceholderBuilder,
         ),
       ),
     );

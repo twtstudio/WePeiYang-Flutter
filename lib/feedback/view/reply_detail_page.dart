@@ -9,9 +9,9 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -102,15 +102,16 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
     _getComment(
-        onResult: (comments) {
-          setState(() {
-            floors = comments;
-          });
-        },
-        onFail: () {
-          ToastProvider.error('获取回复失败');
-        },
-        page: 0);
+      onResult: (comments) {
+        setState(() {
+          floors = comments;
+        });
+      },
+      onFail: () {
+        ToastProvider.error('获取回复失败');
+      },
+      page: 0,
+    );
   }
 
   Future<bool> _getComment(
@@ -157,15 +158,24 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemCount: floors != null ? floors.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return NCommentCard(
-            comment: floor,
-            uid: uid,
-            ancestorUId: floor.postId,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: true,
-            // 这里不好传我就先置0了
-            type: 0,
+          return Column(
+            children: [
+              NCommentCard(
+                comment: floor,
+                uid: uid,
+                ancestorUId: floor.postId,
+                commentFloor: index + 1,
+                isSubFloor: false,
+                isFullView: true,
+                // 这里不好传我就先置0了
+                type: 0,
+              ),
+              Container(
+                width: WePeiYangApp.screenWidth - 60,
+                height: 1,
+                color: Colors.black12,
+              )
+            ],
           );
         }
         index--;
@@ -184,10 +194,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               // 这里不好传我就先置0了
               type: 0,
             ),
-            Container(
-                width: WePeiYangApp.screenWidth - 60,
-                height: 1,
-                color: Colors.black12)
           ],
         );
       },
@@ -265,15 +271,15 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                       .images
                                       .length ==
                                   0)
-                              IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/lake_butt_icons/paste.png',
-                                    width: 24,
-                                    height: 24,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  onPressed: () => launchKey.currentState
-                                      .getClipboardData()),
+                                IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/lake_butt_icons/paste.png',
+                                      width: 24,
+                                      height: 24,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onPressed: () => launchKey.currentState
+                                        .getClipboardData()),
                               IconButton(
                                   icon: Image.asset(
                                     'assets/images/lake_butt_icons/x.png',
@@ -282,7 +288,11 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                     fit: BoxFit.fitWidth,
                                   ),
                                   onPressed: () {
-                                    if (launchKey.currentState.textEditingController.text.isNotEmpty) {
+                                    if (launchKey
+                                        .currentState
+                                        .textEditingController
+                                        .text
+                                        .isNotEmpty) {
                                       launchKey
                                           .currentState.textEditingController
                                           .clear();
@@ -291,7 +301,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                             .commentLengthIndicator = '清空成功';
                                       });
                                     } else {
-                                      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+                                      Provider.of<NewFloorProvider>(context,
+                                              listen: false)
+                                          .clearAndClose();
                                     }
                                   }),
                               Spacer(),

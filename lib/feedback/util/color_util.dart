@@ -30,6 +30,7 @@ class ColorUtil {
   static const biliPink = Color(0xFFF97198);
   static const warning = Color(0xFFFFBC6B);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
+  static const grey229 = Color.fromARGB(255, 229, 229, 229);
   static const gradientBlue = LinearGradient(
       colors: [
         Color(0xFF2C7EDF),
@@ -40,7 +41,8 @@ class ColorUtil {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       // 在0.7停止同理
-      stops: [0, 0.53, 0.7]);
+      stops: [0, 0.53, 0.7],
+  );
 
   static const List<Color> aprilFoolColor = [
     Color(0xFFF1B53B),
