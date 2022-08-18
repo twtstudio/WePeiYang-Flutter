@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -31,7 +31,7 @@ class WeekSelectWidget extends StatelessWidget {
         var current = provider.currentWeek;
         if (current == 1) current++;
 
-        double offset = WePeiYangApp.screenWidth / 4 - _canvasWidth - 25;
+        double offset = 0.25.sw - _canvasWidth.w - 25.w;
         if (offset < 0) offset = 0;
         return ListView.builder(
             itemCount: provider.weekCount,
@@ -49,13 +49,13 @@ class WeekSelectWidget extends StatelessWidget {
 
                     /// 波纹效果蒙版，加上material使inkwell能在list中显示出来
                     SizedBox(
-                      height: _canvasHeight + 20,
-                      width: _canvasWidth + 25,
+                      height: _canvasHeight + 20.w,
+                      width: _canvasWidth + 25.w,
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           radius: 5000,
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(5.r),
                           splashColor: Color.fromRGBO(246, 246, 246, 0.5),
                           highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
@@ -77,7 +77,7 @@ class WeekSelectWidget extends StatelessWidget {
               context.select<CourseDisplayProvider, bool>((p) => p.shrink);
           return AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: shrink ? 0 : 90,
+            height: shrink ? 0 : 90.h,
             child: shrink ? Container() : listView,
           );
         },
@@ -89,8 +89,8 @@ class WeekSelectWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: _canvasHeight + 20,
-          width: _canvasWidth + 25,
+          height: _canvasHeight + 20.h,
+          width: _canvasWidth + 25.w,
           alignment: Alignment.center,
           child: CustomPaint(
             painter: _WeekSelectPainter(
@@ -100,7 +100,7 @@ class WeekSelectWidget extends StatelessWidget {
             size: Size(_canvasWidth, _canvasHeight),
           ),
         ),
-        SizedBox(height: 3),
+        SizedBox(height: 3.h),
         Text('WEEK ${i + 1}',
             style: FontManager.Aspira.copyWith(
                 color: (provider.selectedWeek == i + 1)

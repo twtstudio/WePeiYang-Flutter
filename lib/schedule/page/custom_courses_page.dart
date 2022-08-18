@@ -1,12 +1,11 @@
 // @dart = 2.12
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -20,30 +19,30 @@ class CustomCoursesPage extends StatelessWidget {
       children: [
         Positioned.fill(child: ColoredBox(color: Colors.white)),
         Positioned(
-          left: WePeiYangApp.screenWidth - 481,
-          top: WePeiYangApp.screenHeight * 0.65,
-          height: 512,
-          width: 434,
+          left: 1.sw - 481.w,
+          top: 0.65.sh,
+          height: 512.h,
+          width: 434.w,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10000),
             child: ColoredBox(color: Color.fromRGBO(199, 216, 235, 0.1)),
           ),
         ),
         Positioned(
-          left: WePeiYangApp.screenWidth * 0.5,
-          top: WePeiYangApp.screenHeight * 0.5,
-          height: 434,
-          width: 434,
+          left: 0.5.sw,
+          top: 0.5.sh,
+          height: 434.h,
+          width: 434.w,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10000),
             child: ColoredBox(color: Color.fromRGBO(44, 126, 223, 0.15)),
           ),
         ),
         Positioned(
-          left: WePeiYangApp.screenWidth * 0.5,
-          top: WePeiYangApp.screenHeight * 0.25,
-          height: 436,
-          width: 436,
+          left: 0.5.sw,
+          top: 0.25.sh,
+          height: 436.h,
+          width: 436.w,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10000),
             child: ColoredBox(color: Color.fromRGBO(141, 171, 217, 0.2)),
@@ -68,17 +67,17 @@ class CustomCoursesPage extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(),
-                  padding: const EdgeInsets.fromLTRB(10, 9, 8, 8),
+                  padding: EdgeInsets.fromLTRB(10.w, 9.h, 8.w, 8.h),
                   child: Image.asset(
                     'assets/images/schedule/back.png',
-                    height: 20,
-                    width: 20,
+                    height: 20.r,
+                    width: 20.r,
                   ),
                 ),
               ),
             ),
             titleSpacing: 0,
-            leadingWidth: 40,
+            leadingWidth: 40.w,
             title: Text('我的自定义课程',
                 style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
           ),
@@ -98,11 +97,11 @@ class CustomCoursesPage extends StatelessWidget {
 
   Widget _item(BuildContext context, Course course, int index) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
@@ -121,15 +120,15 @@ class CustomCoursesPage extends StatelessWidget {
                       EditDetailPageArgs(index, course.name, course.credit));
             },
             splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 25.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(course.name,
                       style: TextUtil.base.PingFangSC.bold.black2A.sp(16)),
-                  SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   ...course.arrangeList.map((arrange) {
                     var type = '每周';
                     if (arrange.weekList.length > 1) {
@@ -139,7 +138,7 @@ class CustomCoursesPage extends StatelessWidget {
                       if (even && !odd) type = '双周';
                     }
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -147,11 +146,11 @@ class CustomCoursesPage extends StatelessWidget {
                               '第${arrange.weekList.first}-${arrange.weekList.last}周 ${_weekDays[arrange.weekday]}',
                               style: TextUtil.base.PingFangSC.normal.black2A
                                   .sp(12)),
-                          SizedBox(width: 5),
+                          SizedBox(width: 5.w),
                           Text(_timeRange(arrange.unitList),
                               style:
                                   TextUtil.base.PingFangSC.w900.black00.sp(14)),
-                          SizedBox(width: 5),
+                          SizedBox(width: 5.w),
                           Text(type,
                               style: TextUtil.base.PingFangSC.normal.black2A
                                   .sp(12)),

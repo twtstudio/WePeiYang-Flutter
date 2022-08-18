@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -40,11 +41,11 @@ class _ExamPageState extends State<ExamPage> {
       brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
-          child: Icon(Icons.arrow_back, color: _color, size: 32),
+          child: Icon(Icons.arrow_back, color: _color, size: 32.r),
           onTap: () => Navigator.pop(context)),
       actions: [
         IconButton(
-          icon: Icon(Icons.autorenew, color: _color, size: 28),
+          icon: Icon(Icons.autorenew, color: _color, size: 28.r),
           onPressed: () {
             if (CommonPreferences.isBindTju.value) {
               context.read<ExamProvider>().refreshExam(
@@ -63,14 +64,14 @@ class _ExamPageState extends State<ExamPage> {
             }
           },
         ),
-        SizedBox(width: 10),
+        SizedBox(width: 10.w),
       ],
     );
 
     return Scaffold(
       appBar: appBar,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Consumer<ExamProvider>(
           builder: (context, provider, _) {
             List<Widget> unfinished = provider.unfinished.isEmpty
@@ -96,21 +97,21 @@ class _ExamPageState extends State<ExamPage> {
             return ListView(
               physics: BouncingScrollPhysics(),
               children: [
-                SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 Text('未完成',
                     style: FontManager.YaQiHei.copyWith(
                         fontSize: 16,
                         color: _color,
                         fontWeight: FontWeight.bold)),
-                SizedBox(height: 5),
+                SizedBox(height: 5.h),
                 ...unfinished,
-                SizedBox(height: 15),
+                SizedBox(height: 15.h),
                 Text('已完成',
                     style: FontManager.YaQiHei.copyWith(
                         fontSize: 16,
                         color: _color,
                         fontWeight: FontWeight.bold)),
-                SizedBox(height: 5),
+                SizedBox(height: 5.h),
                 ...finished,
               ],
             );
@@ -147,9 +148,9 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
   var seat = exam.seat;
   if (seat != '地点未安排') seat = '座位' + seat;
   return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 4, 14, 4),
+    padding: EdgeInsets.fromLTRB(0, 4.h, 14.w, 4.h),
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(10.r),
       child: Container(
         decoration: BoxDecoration(
           color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
@@ -192,7 +193,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
               );
             }
           },
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           splashFactory: InkRipple.splashFactory,
           child: Stack(
             children: [
@@ -203,13 +204,13 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                         : Colors.white),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(name,
                           style: FontManager.YaQiHei.copyWith(fontSize: 20)),
-                      SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       Row(
                         children: [
                           Spacer(),
@@ -222,11 +223,11 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Icon(Icons.location_on_outlined,
-                              size: 17,
+                              size: 17.r,
                               color: finished
                                   ? Color.fromRGBO(205, 206, 210, 1)
                                   : Colors.white),
-                          SizedBox(width: 3),
+                          SizedBox(width: 3.w),
                           Text('${exam.location}-$seat',
                               overflow: TextOverflow.ellipsis,
                               style: FontManager.YaHeiLight.copyWith(
@@ -243,7 +244,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
               ),
               Positioned(
                 right: 0,
-                bottom: 1,
+                bottom: 1.h,
                 child: Text(remain,
                     style: FontManager.Bauhaus.copyWith(
                         height: 0,

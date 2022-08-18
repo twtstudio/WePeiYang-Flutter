@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 /// 课程表每个item之间的垂直、水平间距
 const double verStep = 6;
@@ -19,7 +20,7 @@ const double horStep = 6;
 
 int get _dayNumber => CommonPreferences.dayNumber.value;
 
-double get _width => WePeiYangApp.screenWidth - 15 * 2;
+double get _width => 1.sw - 15 * 2.w;
 
 double get _cardWidth => (_width - (_dayNumber - 1) * horStep) / _dayNumber;
 
@@ -28,11 +29,11 @@ class CourseDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+      padding: EdgeInsets.fromLTRB(15.w, 5.h, 15.w, 0.h),
       child: Column(
         children: [
           _WeekDisplayWidget(),
-          SizedBox(height: 6),
+          SizedBox(height: 6.h),
           _CourseDisplayWidget(),
         ],
       ),
@@ -63,7 +64,7 @@ class _WeekDisplayWidget extends StatelessWidget {
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
   Widget _getCard(String date, bool deep, Color titleColor) => Container(
-        height: 28,
+        height: 28.h,
         width: _cardWidth,
         decoration: BoxDecoration(
             color: deep
@@ -71,7 +72,7 @@ class _WeekDisplayWidget extends StatelessWidget {
                     ? ColorUtil.aprilFoolColor[Random().nextInt(4)]
                     : Color.fromRGBO(255, 255, 255, 1)
                 : Color.fromRGBO(246, 246, 246, 0.2),
-            borderRadius: BorderRadius.circular(5)),
+            borderRadius: BorderRadius.circular(5.r)),
         child: Center(
           child: Text(date,
               style: FontManager.Aspira.copyWith(
@@ -86,10 +87,10 @@ class _WeekDisplayWidget extends StatelessWidget {
 
 class _CourseDisplayWidget extends StatelessWidget {
   /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
-  static const double _singleCourseHeight = 65;
+  static double _singleCourseHeight = 65.h;
 
   /// "午休"提示栏的高度
-  static const double _middleStep = 40;
+  static double _middleStep = 40.h;
 
   @override
   Widget build(BuildContext context) {
@@ -175,14 +176,14 @@ class _CourseDisplayWidget extends StatelessWidget {
         left: 0,
         top: 4 * (_singleCourseHeight + verStep),
         height: _middleStep,
-        width: WePeiYangApp.screenWidth - 30,
+        width: 1.sw - 30.w,
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
-          margin: EdgeInsets.symmetric(vertical: 5),
+          margin: EdgeInsets.symmetric(vertical: 5.h),
           child: Text("LUNCH BREAK",
               style: FontManager.YaQiHei.copyWith(
                 color: Color.fromRGBO(255, 255, 255, 1),

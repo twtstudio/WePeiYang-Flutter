@@ -4,10 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 
+import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -17,7 +16,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_d
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
-
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -268,7 +266,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    // border: Border.all(),
                     boxShadow: [
                       BoxShadow(
                         offset: Offset(0, 4),

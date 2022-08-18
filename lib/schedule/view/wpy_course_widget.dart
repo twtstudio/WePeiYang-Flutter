@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -19,7 +20,7 @@ class TodayCoursesWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
           child: Container(
-            height: 270,
+            height: 270.h,
             alignment: Alignment.center,
             child: Text('暂无课程'),
           ),
@@ -61,29 +62,29 @@ class TodayCoursesWidget extends StatelessWidget {
     todayPairs.sort(
         (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
     return SizedBox(
-      height: 270,
+      height: 270.h,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: EdgeInsets.symmetric(horizontal: 30.w),
         itemCount: todayPairs.length,
         itemBuilder: (context, i) {
           return Container(
-            height: 80,
-            width: 330,
-            margin: const EdgeInsets.symmetric(vertical: 5),
+            height: 80.h,
+            width: 330.w,
+            margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
               color: Colors.black12,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
                 onTap: () =>
                     Navigator.pushNamed(context, ScheduleRouter.course),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
                 splashColor: Colors.black26,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(35, 0, 25, 0),
+                  padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(
                     children: [
                       Column(
@@ -96,7 +97,7 @@ class TodayCoursesWidget extends StatelessWidget {
                                 .sp(14)
                                 .customColor(Colors.white54),
                           ),
-                          SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             todayPairs[i].first.name,
                             style: TextUtil.base.PingFangSC.white.bold.sp(14),
@@ -105,7 +106,7 @@ class TodayCoursesWidget extends StatelessWidget {
                       ),
                       Spacer(),
                       Image.asset('assets/images/schedule/circle.png',
-                          width: 50, height: 50),
+                          width: 50.r, height: 50.r),
                     ],
                   ),
                 ),

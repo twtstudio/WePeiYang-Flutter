@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -103,7 +104,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
       widget: WbyDialogLayout(
         bottomPadding: true,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,13 +112,13 @@ class _EditDetailPageState extends State<EditDetailPage> {
               Center(
                 child: Image.asset(
                   'assets/images/schedule/notify.png',
-                  height: 30,
-                  width: 30,
+                  height: 30.h,
+                  width: 30.w,
                 ),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: 25.h),
               Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
-              SizedBox(height: 30),
+              SizedBox(height: 30.h),
               WbyDialogStandardTwoButton(
                 first: () {
                   SmartDialog.dismiss();
@@ -182,30 +183,30 @@ class _EditDetailPageState extends State<EditDetailPage> {
               },
               child: Container(
                 decoration: BoxDecoration(),
-                padding: const EdgeInsets.fromLTRB(10, 9, 8, 8),
+                padding: EdgeInsets.fromLTRB(10.w, 9.h, 8.w, 8.h),
                 child: Image.asset(
                   'assets/images/schedule/back.png',
-                  height: 20,
-                  width: 20,
+                  height: 20.r,
+                  width: 20.r,
                 ),
               ),
             ),
           ),
           titleSpacing: 0,
-          leadingWidth: 40,
+          leadingWidth: 40.w,
           title:
               Text('课程详情', style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
           actions: [
             Center(
               child: Container(
-                height: 35,
-                width: 60,
+                height: 35.h,
+                width: 60.w,
                 child: ElevatedButton(
                   onPressed: () => _saveAndQuit(context),
                   style: ElevatedButton.styleFrom(
                     primary: mainColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                   child: Text('保存',
@@ -213,7 +214,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 ),
               ),
             ),
-            SizedBox(width: 15),
+            SizedBox(width: 15.w),
           ],
         ),
         body: Column(
@@ -223,10 +224,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
               child: Theme(
                 data: ThemeData(accentColor: Colors.white),
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,
                   children: [
-                    SizedBox(height: 5),
+                    SizedBox(height: 5.h),
                     CardWidget(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -257,10 +258,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
                     CardWidget(
                       onTap: () {
                         context.read<EditProvider>().add();
-                        Future.delayed(Duration(milliseconds: 100), () {
+                        Future.delayed(const Duration(milliseconds: 100), () {
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 200),
+                            duration: const Duration(milliseconds: 200),
                             curve: Curves.linear,
                           );
                         });
@@ -269,7 +270,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.add_circle, color: mainColor),
-                          SizedBox(width: 5),
+                          SizedBox(width: 5.w),
                           Text('新增时段',
                               style: TextUtil.base.PingFangSC.medium
                                   .customColor(mainColor)
@@ -277,7 +278,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
@@ -293,14 +294,14 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 splashFactory: InkRipple.splashFactory,
                 child: Container(
                   width: double.infinity,
-                  height: 50,
+                  height: 50.h,
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset('assets/images/schedule/dust_bin.png',
-                          height: 18, width: 18),
-                      SizedBox(width: 5),
+                          height: 18.r, width: 18.r),
+                      SizedBox(width: 5.w),
                       Text('删除',
                           style: TextUtil.base.PingFangSC.medium.white.sp(14)),
                     ],

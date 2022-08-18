@@ -199,6 +199,7 @@ class PushManager extends ChangeNotifier {
     try {
       return _pushChannel.invokeMethod<String>(
         "getIntentUri",
+        // ignore: invalid_use_of_protected_member
         intent.toMap(),
       );
     } catch (e) {

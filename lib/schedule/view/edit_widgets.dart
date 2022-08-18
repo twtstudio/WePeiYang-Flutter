@@ -1,14 +1,14 @@
 // @dart = 2.12
 import 'dart:math' show min;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPicker;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show TextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 
@@ -27,20 +27,14 @@ class TimeFrameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var pvd = context.read<EditProvider>();
-
     var unitList = pvd.arrangeList[index].unitList;
-
     var unitText = unitList.every((e) => e == 0)
         ? '点击选择'
         : '第${unitList.first}-${unitList.last}节';
-
     var weekList = pvd.arrangeList[index].weekList;
-
     var weekText =
         weekList.isEmpty ? '点击选择' : '第${weekList.first}-${weekList.last}周';
-
     var weekType = '';
-
     if (weekList.isEmpty || weekList.length == 1) {
       // pass
     } else if (weekList[1] - weekList[0] == 1) {
@@ -74,7 +68,7 @@ class TimeFrameWidget extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(5),
+                  padding: EdgeInsets.all(5.r),
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
@@ -93,7 +87,7 @@ class TimeFrameWidget extends StatelessWidget {
                     onTap: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
-                      if (top + 220 > WePeiYangApp.screenHeight) {
+                      if (top + 220 > 1.sh) {
                         var jumpPos = min(parentController.offset + 220,
                             parentController.position.maxScrollExtent);
                         var jumpDis = jumpPos - parentController.offset;
@@ -114,10 +108,10 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48,
+                      height: 48.h,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.only(right: 8.w),
                       child: Text('${weekType}${weekDay}${weekText}',
                           style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
                     ),
@@ -135,7 +129,7 @@ class TimeFrameWidget extends StatelessWidget {
                     onTap: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
-                      if (top + 150 > WePeiYangApp.screenHeight) {
+                      if (top + 150 > 1.sh) {
                         var jumpPos = min(parentController.offset + 150,
                             parentController.position.maxScrollExtent);
                         var jumpDis = jumpPos - parentController.offset;
@@ -153,10 +147,10 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48,
+                      height: 48.h,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.only(right: 8.w),
                       child: Text(unitText,
                           style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
                     ),
@@ -199,10 +193,10 @@ class CardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (onTap != null) {
       return Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 2),
@@ -217,9 +211,9 @@ class CardWidget extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.r),
               child: Center(child: child),
             ),
           ),
@@ -227,11 +221,11 @@ class CardWidget extends StatelessWidget {
       );
     }
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 2),
@@ -366,18 +360,18 @@ class UnitPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: WePeiYangApp.screenWidth * 0.66,
-        height: 150,
-        margin: EdgeInsets.only(top: _top + 10),
+        width: 0.66.sw,
+        height: 150.h,
+        margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
             child: Container(
-              width: WePeiYangApp.screenWidth * 0.5,
-              padding: const EdgeInsets.all(5),
-              margin: EdgeInsets.only(right: WePeiYangApp.screenWidth * 0.05),
+              width: 0.5.sw,
+              padding: EdgeInsets.all(5.r),
+              margin: EdgeInsets.only(right: 0.05.sw),
               child: Row(children: children),
             ),
           ),
@@ -516,21 +510,21 @@ class WeekPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: WePeiYangApp.screenWidth * 0.8,
-        height: 220,
-        margin: EdgeInsets.only(top: _top + 10),
+        width: 0.8.sw,
+        height: 220.h,
+        margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                height: 150,
-                width: WePeiYangApp.screenWidth * 0.65,
-                padding: const EdgeInsets.all(10),
-                margin: EdgeInsets.only(right: WePeiYangApp.screenWidth * 0.05),
+                height: 150.h,
+                width: 0.65.sw,
+                padding: EdgeInsets.all(10.r),
+                margin: EdgeInsets.only(right: 0.05.sw),
                 child: Row(children: children),
               ),
               Row(
@@ -551,7 +545,7 @@ class WeekPicker extends Dialog {
                                 ? Color.fromRGBO(44, 126, 223, 1)
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),
                           child: Text(_weekTypes[index],
