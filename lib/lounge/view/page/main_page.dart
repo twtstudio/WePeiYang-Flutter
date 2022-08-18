@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/building_grid_view.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/campus_text_button.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/favor_list.dart';
-import 'package:we_pei_yang_flutter/lounge/view/widget/search_bar.dart';
 
 class MainPageState extends ChangeNotifier {
   final RefreshController _refreshController;
@@ -43,7 +42,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   @override
   void initState() {
     super.initState();
@@ -54,45 +52,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
-  void dispose() {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: const Size(390, 844),
-      orientation: Orientation.portrait,
-    );
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: const Size(360, 690),
-      orientation: Orientation.portrait,
-    );
-
     final listView = ListView(
       children: [
-        Padding(
-          padding: EdgeInsets.only(right: 20.w),
-          child: const CampusTextButton(),
-        ),
-        // changeTheme,
-        Padding(
-          padding: EdgeInsets.only(right: 20.w),
-          child: const SearchBar(),
-        ),
+        LoungeFavorList('我的收藏'),
+        Row(children: [CampusTextButton(), Spacer()]),
         Padding(
           padding: EdgeInsets.only(right: 20.w),
           child: const BuildingGridViewWidget(),
         ),
-        const LoungeFavorList('我的收藏'),
       ],
     );
 

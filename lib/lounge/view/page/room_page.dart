@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
@@ -202,24 +203,13 @@ class _FavorButton extends StatelessWidget {
         context.read<RoomFavour>().changeFavor(room);
       },
       child: Builder(builder: (context) {
-        final unFavorStyle = TextStyle(
-          color: Theme.of(context).favorButtonUnfavor,
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w900,
-        );
-
-        final favorStyle = unFavorStyle.copyWith(
-          color: Theme.of(context).favorButtonFavor,
-        );
-
         final isFavor = context.select(
           (RoomFavour data) => data.favourList.containsKey(room.id),
         );
-
         if (isFavor) {
-          return Text('已收藏', style: favorStyle);
+          return Text('已收藏', style: TextUtil.base.blue2C.w400.sp(14));
         } else {
-          return Text('收藏', style: unFavorStyle);
+          return Text('收藏', style: TextUtil.base.blue2C.w400.sp(14));
         }
       }),
     );

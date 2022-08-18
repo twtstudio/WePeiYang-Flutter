@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/building.dart';
@@ -9,8 +10,6 @@ import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart'
 import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
-
 class BuildingGridViewWidget extends LoadStateListener<BuildingData> {
   const BuildingGridViewWidget({Key? key}) : super(key: key);
 
@@ -44,7 +43,7 @@ class BuildingGridViewWidget extends LoadStateListener<BuildingData> {
   @override
   Widget success(BuildContext context, data) {
     if (data.buildings.isEmpty) {
-      return const Text('no data');
+      return const Text('暂无数据');
     }
 
     final wjlBuildings = BuildingGrid(data.wjl);
@@ -73,8 +72,8 @@ class BuildingGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        childAspectRatio: 1.05,
+        crossAxisCount: 5,
+        childAspectRatio: 0.7,
       ),
       itemCount: list.length,
       itemBuilder: (context, index) {
@@ -93,31 +92,15 @@ class _BuildingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget buildingName = Text(
       building.name + "教",
-      style: TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).buildingName,
-      ),
+      style: TextUtil.base.Swis.blue2C.w400.sp(10),
     );
 
-    buildingName = Padding(
-      padding: EdgeInsets.fromLTRB(0, 6.w, 0, 0),
-      child: buildingName,
-    );
+    final buildingImage = Container(
+        width: 54.w,
+        child: Image.asset(Images.building));
 
-    final buildingImage = Image.asset(
-      Images.building,
-      width: 38.33.w,
-      fit: BoxFit.fitWidth,
-      color: Theme.of(context).buildingIcon,
-    );
-
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.transparent),
-        elevation: MaterialStateProperty.all(0),
-      ),
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         if (building.areas.length > 1) {
           Navigator.pushNamed(
             context,

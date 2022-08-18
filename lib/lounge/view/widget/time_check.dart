@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
@@ -16,8 +18,8 @@ class TimeCheckWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget timeCheckerIcon = Builder(
       builder: (context) {
-        return InkWell(
-          onTap: () {
+        return TextButton(
+          onPressed: () {
             // add itnl
             // await initializeDateFormatting();
             showModalBottomSheet(
@@ -25,25 +27,26 @@ class TimeCheckWidget extends StatelessWidget {
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(7.w),
-                  topRight: Radius.circular(7.w),
+                  topLeft: Radius.circular(20.w),
+                  topRight: Radius.circular(20.w),
                 ),
               ),
               builder: (_) => const _BottomDatePicker(),
             );
           },
-          child: Icon(
-            Icons.date_range_rounded,
-            size: 26.w,
-            color: Theme.of(context).baseIconColor,
+          child: Image.asset(
+            'assets/images/lounge_icons/schedule.png',
           ),
         );
       },
     );
 
-    timeCheckerIcon = SizedBox(
-      width: 50.w,
-      child: timeCheckerIcon,
+    timeCheckerIcon = Padding(
+      padding: EdgeInsets.only(right: 8.w),
+      child: SizedBox(
+        width: 43.w,
+        child: timeCheckerIcon,
+      ),
     );
 
     return timeCheckerIcon;
@@ -128,11 +131,7 @@ class __LoungeTableCalenderState extends State<_LoungeTableCalender>
   Widget dowBuilder(_, DateTime date) => Center(
         child: Text(
           dateTimeToNum(date),
-          style: TextStyle(
-            color: Theme.of(context).calenderBaseText,
-            fontSize: 13.sp,
-            // fontWeight: FontWeight.bold,
-          ),
+          style: TextUtil.base.PingFangSC.bold.black2A.sp(16),
         ),
       );
 
@@ -153,42 +152,32 @@ class __LoungeTableCalenderState extends State<_LoungeTableCalender>
       formatButtonVisible: false,
       leftChevronIcon: Icon(
         Icons.chevron_left,
-        color: Theme.of(context).calenderBaseText,
-        size: 17.w,
+        color: ColorUtil.black2AColor,
+        size: 30.w,
       ),
       rightChevronIcon: Icon(
         Icons.chevron_right,
-        color: Theme.of(context).calenderBaseText,
-        size: 17.w,
+        color: ColorUtil.black2AColor,
+        size: 30.w,
       ),
       titleTextFormatter: (dateTime, _) {
-        return '${dateTime.year}年 ${dateTime.month}月';
+        return '${dateTime.year}年${dateTime.month}月';
       },
-      titleTextStyle: TextStyle(
-        color: Theme.of(context).calenderBaseText,
-        fontSize: 14.sp,
-        // fontWeight: FontWeight.bold,
-      ),
+      titleTextStyle: TextUtil.base.PingFangSC.w400.black2A.sp(16),
     );
 
     final calenderStyle = CalendarStyle(
       outsideDaysVisible: true,
-      defaultTextStyle: TextStyle(
-        fontSize: 13.sp,
-        color: Theme.of(context).calenderBaseText,
-      ),
+      defaultTextStyle: TextUtil.base.PingFangSC.w400.black2A.sp(16),
       outsideTextStyle: TextStyle(
-        fontSize: 13.sp,
+        fontSize: 16.sp,
         color: Theme.of(context).calenderOutsideText,
       ),
       selectedDecoration: BoxDecoration(
         color: Theme.of(context).calenderSelectBackground,
         shape: BoxShape.circle,
       ),
-      selectedTextStyle: TextStyle(
-        color: Theme.of(context).calenderSelectText,
-        fontSize: 13.sp,
-      ),
+      selectedTextStyle: TextUtil.base.PingFangSC.w400.blue2C.sp(16),
       todayDecoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).calenderTodayBorder,
@@ -197,9 +186,8 @@ class __LoungeTableCalenderState extends State<_LoungeTableCalender>
         shape: BoxShape.circle,
       ),
       todayTextStyle: TextStyle(
-        fontSize: 12.sp,
+        fontSize: 16.sp,
         color: Theme.of(context).calenderTodayText,
-        fontWeight: FontWeight.bold,
       ),
     );
 
@@ -302,12 +290,9 @@ class _TimeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Text(
       title,
-      style: TextStyle(
-        fontSize: 12.sp,
-        color: isChecked
-            ? Theme.of(context).calenderTimeTableSelectText
-            : Theme.of(context).calenderTimeTableText,
-      ),
+      style: isChecked
+          ? TextUtil.base.PingFangSC.w400.blue2C.sp(12)
+          : TextUtil.base.PingFangSC.w400.black2A.sp(12),
     );
 
     final button = TextButton(
@@ -315,20 +300,17 @@ class _TimeItem extends StatelessWidget {
       style: ButtonStyle(
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19.w),
+            borderRadius: BorderRadius.circular(20.w),
           ),
         ),
         side: MaterialStateProperty.all(
           BorderSide(
-            color: Theme.of(context).calenderTimeTableBorder,
+            color: isChecked
+                ? Theme.of(context).calenderTimeTableBorder
+                : ColorUtil.grey97Color,
             width: 0.5.w,
           ),
         ),
-        backgroundColor: isChecked
-            ? MaterialStateProperty.all(
-                Theme.of(context).calenderTimeTableSelectBackground,
-              )
-            : null,
       ),
       child: Center(child: text),
     );
@@ -355,13 +337,15 @@ class _OkButton extends StatelessWidget {
         const Spacer(),
         TextButton(
           onPressed: () => Navigator.pop(context),
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.w)),
+            ),
+            backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
+          ),
           child: Text(
             '确定',
-            style: TextStyle(
-              color: Theme.of(context).calenderOkButton,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextUtil.base.w400.PingFangSC.white.sp(14),
           ),
         ),
         SizedBox(width: 19.w),

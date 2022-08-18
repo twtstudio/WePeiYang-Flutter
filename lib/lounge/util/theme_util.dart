@@ -1,5 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 extension LoungeColorsExt on ThemeData {
   Color get baseBackgroundColor => loungeBackgroundColor;
@@ -57,12 +58,11 @@ extension LoungeCalenderColors on ThemeData {
   Color get calenderBaseText => loungePrimaryColor;
   Color get calenderOutsideText => loungeGray2;
   Color get calenderSelectText => loungeWhite4;
-  Color get calenderSelectBackground => loungePrimaryColor;
-  Color get calenderTodayBorder => loungePrimaryColor;
+  Color get calenderSelectBackground => loungeBlue.withOpacity(0.1);
+  Color get calenderTodayBorder => loungeBlue;
   Color get calenderTodayText => loungePrimaryColor;
   Color get calenderTimeTableSelectText => loungeWhite4;
-  Color get calenderTimeTableSelectBackground => loungePrimaryColor;
-  Color get calenderTimeTableBorder => loungePrimaryColor;
+  Color get calenderTimeTableBorder => loungeBlue;
   Color get calenderTimeTableText => loungePrimaryColor;
   Color get calenderOkButton => loungePrimaryColor;
 }
@@ -119,6 +119,7 @@ const loungeGray8 = Color(0xff363c54);
 const loungeGray9 = Color(0xff7a7d89);
 const loungePurple = Color(0xff303c66);
 const loungePurple2 = Color(0xff3d486c);
+const loungeBlue = ColorUtil.blue2CColor;
 
 const List<Color> roomPlanItems = [
   Color.fromRGBO(114, 117, 136, 1), // #727588

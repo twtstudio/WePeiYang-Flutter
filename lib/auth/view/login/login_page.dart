@@ -57,7 +57,7 @@ class LoginHomeWidget extends StatelessWidget {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(16)
                             .w400
-                            .themeBlue)),
+                            .blue2C)),
                     /*Text(S.current.login,
                         style: FontManager.YaHeiRegular.copyWith(
                             color: Colors.white, fontSize: 13)),*/
@@ -89,7 +89,7 @@ class LoginHomeWidget extends StatelessWidget {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(16)
                             .w400
-                            .themeBlue)),
+                            .blue2C)),
                     style: ButtonStyle(
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {

@@ -1,6 +1,4 @@
 // @dart = 2.12
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +10,6 @@ import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/room_favor_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/room_state.dart';
 
 class LoungeFavorList extends StatefulWidget {
@@ -34,7 +31,7 @@ class _LoungeFavorListState extends State<LoungeFavorList> {
       padding: EdgeInsets.symmetric(horizontal: 7.w),
       child: Text(
         widget.title,
-        style: TextUtil.base.PingFangSC.black2A.w400,
+        style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
       ),
     );
 
@@ -73,6 +70,8 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
   @override
   Widget success(BuildContext context, RoomFavour data) {
     late Widget body;
+    context.select((RoomFavour data) => data.favourList.length);
+    final favours = context.read<RoomFavour>().favourList.values;
     if (data.favourList.isEmpty) {
       body = SizedBox(
         height: 80.w,
@@ -85,7 +84,7 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
         ),
       );
     } else {
-      body = _FavorList();
+      body = _FavorList(favours);
     }
 
     return body;
@@ -94,6 +93,8 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
   @override
   Widget error(BuildContext context, RoomFavour data) {
     late Widget body;
+    context.select((RoomFavour data) => data.favourList.length);
+    final favours = context.read<RoomFavour>().favourList.values;
     if (data.favourList.isEmpty) {
       body = SizedBox(
         height: 80.w,
@@ -106,7 +107,7 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
         ),
       );
     } else {
-      body = _FavorList();
+      body = _FavorList(favours);
     }
 
     return body;
@@ -115,12 +116,12 @@ class _FavourWidget extends LoadStateListener<RoomFavour> {
 
 /// 收藏列表
 class _FavorList extends StatelessWidget {
-  const _FavorList({Key? key}) : super(key: key);
+  final Iterable<Classroom> favours;
+
+  const _FavorList(this.favours, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    context.select((RoomFavour data) => data.favourList.length);
-    final favours = context.read<RoomFavour>().favourList.values;
 
     Widget body = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,25 +153,17 @@ class _FavourListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final roomState = RoomState(room);
-    final iconColors = Theme.of(context).favorRoomIconColors;
-    final color = iconColors[Random().nextInt(iconColors.length)];
 
     Widget itemContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          Images.building,
-          height: 24.w,
-          color: color,
+          Images.collectedBuilding,
+          height: 62.w,
         ),
-        SizedBox(height: 12.w),
         Text(
           DataFactory.getRoomTitle(room),
-          style: TextStyle(
-            color: Theme.of(context).favorListTitle,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextUtil.base.Swis.w400.orange6B.sp(10),
         ),
         SizedBox(height: 9.w),
         roomState,
@@ -178,19 +171,7 @@ class _FavourListCard extends StatelessWidget {
     );
 
     itemContent = Container(
-      width: 82.w,
-      height: 120.w,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).favorRoomItemShadow,
-            blurRadius: 7.w,
-          )
-        ],
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(8.w),
-        color: Theme.of(context).favorCardBackground,
-      ),
+      width: 70.w,
       alignment: Alignment.center,
       child: itemContent,
     );

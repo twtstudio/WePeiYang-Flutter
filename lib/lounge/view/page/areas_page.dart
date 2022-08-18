@@ -25,7 +25,6 @@ class AreasPage extends StatelessWidget {
         Image.asset(
           Images.building,
           height: 17.w,
-          color: Theme.of(context).areaIconColor,
         ),
         const SizedBox(width: 7),
         Text(

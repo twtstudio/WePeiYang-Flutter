@@ -54,14 +54,15 @@ extension TextStyleAttr on TextStyle {
   TextStyle get black2A => this.copyWith(color: const Color(0xFF2A2A2A));
   TextStyle get green1B => this.copyWith(color: const Color(0xFF1B7457));
   TextStyle get yellowD9 => this.copyWith(color: const Color(0xFFD9621F));
+  TextStyle get orange6B => this.copyWith(color: const Color(0xFFFFBC6B));
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
-  TextStyle get themeBlue => this.copyWith(color: const Color(0xFF2C7EDF));
-  TextStyle get mainText => this.copyWith(color: const Color(0xFF2A2A2A));
+  TextStyle get blue2C => this.copyWith(color: const Color(0xFF2C7EDF));
   TextStyle get transParent => this.copyWith(color: const Color(0x00000000));
 
   /// 字体
   TextStyle get Aspira => this.copyWith(fontFamily: 'Aspira');
   TextStyle get PingFangSC => this;
+  TextStyle get Swis => this.copyWith(fontFamily: 'Aspira');
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
 

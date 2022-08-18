@@ -187,8 +187,6 @@ class RoomFavour extends LoadStateChangeNotifier with LoungeDataStateMixin {
       });
     }
 
-    ;
-
     // 如果同步成功了，则直接在本地删除
     // 如果没有同步成功，则在本地保留删除记录，刷新数据时同步
     await LoungeLoginApi.delete(room.id)

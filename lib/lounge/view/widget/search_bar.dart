@@ -5,8 +5,8 @@ import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+class LoungeSearchBar extends StatelessWidget {
+  const LoungeSearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

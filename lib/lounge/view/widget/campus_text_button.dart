@@ -1,61 +1,36 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 
 class CampusTextButton extends StatelessWidget {
   const CampusTextButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final directionImage = Image.asset(
+    final directionImage = SvgPicture.asset(
       Images.direction,
-      width: 15.w,
+      width: 10.w,
     );
 
-    final textButton = Builder(
-      builder: (context) {
-        return TextButton(
-          onPressed: () => context.read<LoungeConfig>().changeCampus(),
-          child: Text(
-            context.watch<LoungeConfig>().campus.name,
-            style: TextStyle(
-              color: Theme.of(context).campusButtonText,
-              fontSize: 17.sp,
-              fontWeight: FontWeight.bold,
+    return SizedBox(
+      width: 90.w,
+      child: Builder(
+        builder: (context) {
+          return TextButton.icon(
+            onPressed: () => context.read<LoungeConfig>().changeCampus(),
+            icon: Text(
+              context.watch<LoungeConfig>().campus.name,
+              style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
             ),
-          ),
-        );
-      },
-    );
-
-    // TODO: ???
-    final dateTime = Builder(
-      builder: (context) {
-        final dateTime = DateFormat('yyyy-MM-dd').format(
-          context.select((LoungeConfig provider) => provider.dateTime),
-        );
-        return Text(
-          dateTime,
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: Theme.of(context).dataUpdateTime,
-          ),
-        );
-      },
-    );
-
-    return Row(
-      children: [
-        directionImage,
-        textButton,
-        const Spacer(),
-        dateTime,
-      ],
+            label: directionImage,
+          );
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -255,37 +256,39 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               ]),
         ),
         SizedBox(
-          height: 0.5.sh,
-          width: 1.sw - 60.w,
-          child: TabBarView(controller: _tc, children: [
-            Container(
-              width: 1.sw - 70.w,
-              height: 250.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                // border: Border.all(),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0, 4),
-                    blurRadius: 10,
-                    color: Colors.black.withOpacity(0.05),
+          height: 0.7.sh,
+          child: TabBarView(
+              controller: _tc,
+              physics: BouncingScrollPhysics(),
+              children: [
+                Container(
+                  width: 1.sw - 70.w,
+                  height: 250.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    // border: Border.all(),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 10,
+                        color: Colors.black.withOpacity(0.05),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: GPAPreview(),
-            ),
-            Container(
-              width: 1.sw - 60.w,
-              height: 300.h,
-              child: WpyExamWidget(),
-            ),
-            Container(
-              width: 1.sw - 60.w,
-              height: 300.h,
-              child: MainPageLoungeWidget(),
-            ),
-          ]),
+                  child: GPAPreview(),
+                ),
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: WpyExamWidget(),
+                ),
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: MainPageLoungeWidget(),
+                ),
+              ]),
         ),
       ],
     );

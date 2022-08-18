@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/lounge/model/area.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
-import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/room_state.dart';
@@ -168,12 +167,6 @@ class _PathTitle extends StatelessWidget {
 
     return Row(
       children: [
-        Image.asset(
-          Images.building,
-          height: 17.w,
-          color: Theme.of(context).classroomIcon,
-        ),
-        SizedBox(width: 7.w),
         Text(
           area.id != '-1'
               ? area.building + '教学楼' + area.id + '区'

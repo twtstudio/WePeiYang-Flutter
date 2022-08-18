@@ -119,7 +119,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "我已阅读并同意",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .mainText)),
+                                  .black2A)),
                           GestureDetector(
                             onTap: () => showDialog(
                                 context: context,
@@ -136,7 +136,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "与",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .mainText)),
+                                  .black2A)),
                           GestureDetector(
                             onTap: () => showDialog(
                                 context: context,
@@ -274,7 +274,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               child: Text.rich(TextSpan(
                   text: "登录",
                   style:
-                      TextUtil.base.normal.NotoSansSC.w400.sp(16).themeBlue)),
+                      TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
               style: ButtonStyle(
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
@@ -401,7 +401,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 0 ? code.substring(0, 1) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
               Container(
@@ -414,7 +414,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 1 ? code.substring(1, 2) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
               Container(
@@ -427,7 +427,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 2 ? code.substring(2, 3) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
               Container(
@@ -440,7 +440,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 3 ? code.substring(3, 4) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
               Container(
@@ -453,7 +453,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 4 ? code.substring(4, 5) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
               Container(
@@ -466,7 +466,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 ),
                 child: Text(
                   code.length > 5 ? code.substring(5, 6) : "",
-                  style: TextUtil.base.normal.NotoSansSC.themeBlue.sp(16),
+                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
                 ),
               ),
             ]),
@@ -501,7 +501,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               child: Text.rich(TextSpan(
                   text: "登录",
                   style:
-                      TextUtil.base.normal.NotoSansSC.w400.sp(16).themeBlue)),
+                      TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
               style: ButtonStyle(
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
