@@ -1,6 +1,6 @@
 // @dart = 2.12
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
