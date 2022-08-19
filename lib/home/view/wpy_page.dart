@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -248,7 +249,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'GPA Curves')),
                 Align(
-                    alignment: Alignment.centerLeft, child: Tab(text: 'Exam Detail')),
+                    alignment: Alignment.centerLeft,
+                    child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Study Room'))

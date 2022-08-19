@@ -323,7 +323,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             padding: EdgeInsets.fromLTRB(15.w, 6.h, 5.w, 0),
                             child: Text('默认排序',
                                 style: context.read<LakeModel>().sortSeq != 0
-                                    ? TextUtil.base.themeBlue.w400.sp(14)
+                                    ? TextUtil.base.blue2C.w400.sp(14)
                                     : TextUtil.base.black2A.w400.sp(14)),
                           ),
                         ),
@@ -339,7 +339,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             child: Text('最新发帖',
                                 style: context.read<LakeModel>().sortSeq != 0
                                     ? TextUtil.base.black2A.w400.sp(14)
-                                    : TextUtil.base.themeBlue.w400.sp(14)),
+                                    : TextUtil.base.blue2C.w400.sp(14)),
                           ),
                         ),
                       ]);
