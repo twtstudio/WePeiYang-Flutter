@@ -246,9 +246,9 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'GPA Curve')),
+                    child: Tab(text: 'GPA Curves')),
                 Align(
-                    alignment: Alignment.centerLeft, child: Tab(text: 'Exam')),
+                    alignment: Alignment.centerLeft, child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Study Room'))

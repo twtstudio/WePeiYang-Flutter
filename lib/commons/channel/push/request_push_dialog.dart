@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 class RequestPushDialog extends StatelessWidget {
   const RequestPushDialog({Key? key}) : super(key: key);

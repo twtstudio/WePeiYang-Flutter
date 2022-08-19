@@ -83,7 +83,7 @@ class _ActivityCardState extends State<ActivityCard> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.0),
           child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
               child: Stack(
                 children: [
                   Image.network(
@@ -93,7 +93,7 @@ class _ActivityCardState extends State<ActivityCard> {
                           .image,
                       fit: BoxFit.cover,
                       width: WePeiYangApp.screenWidth - 28,
-                      height: 128),
+                      height: 0.32 * WePeiYangApp.screenWidth),
                   Positioned(
                       bottom: 4,
                       right: 8,
@@ -108,12 +108,12 @@ class _ActivityCardState extends State<ActivityCard> {
     }
 
     return Container(
-      height: 140,
+      height: 0.32 * WePeiYangApp.screenWidth,
       padding: EdgeInsets.fromLTRB(13, 12, 13, 0),
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget child) {
         return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
             clipBehavior: Clip.hardEdge,
             child: Stack(
               children: [

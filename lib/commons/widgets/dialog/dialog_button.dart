@@ -1,6 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 enum ButtonType { light, dark, blue }
 

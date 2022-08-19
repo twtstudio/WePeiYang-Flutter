@@ -7,8 +7,8 @@ import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.da
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 // 下载安装apk时的dialog
 class UpdateMessageDialog extends StatelessWidget {
