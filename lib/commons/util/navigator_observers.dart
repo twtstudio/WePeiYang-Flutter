@@ -36,7 +36,7 @@ class PageStackObserver extends NavigatorObserver {
     if (route.settings.name != null) {
       pageStack.add(route.settings.name!);
     }
-    print("pageStack:didPush ${pageStack.toString()}");
+    print("pageStack: didPush ${pageStack.toString()}");
   }
 
   @override
@@ -44,7 +44,7 @@ class PageStackObserver extends NavigatorObserver {
     if (route.settings.name != null) {
       pageStack.remove(route.settings.name);
     }
-    print("pageStack:didPop ${pageStack.toString()}");
+    print("pageStack: didPop ${pageStack.toString()}");
   }
 
   @override
@@ -53,7 +53,7 @@ class PageStackObserver extends NavigatorObserver {
     if (route.settings.name != null) {
       pageStack.remove(route.settings.name);
     }
-    print("pageStack:didStartUserGesture ${pageStack.toString()}");
+    print("pageStack: didStartUserGesture ${pageStack.toString()}");
   }
 
   @override
@@ -64,7 +64,7 @@ class PageStackObserver extends NavigatorObserver {
     if (newRoute?.settings.name != null) {
       pageStack.add(newRoute!.settings.name!);
     }
-    print("pageStack:didReplace ${pageStack.toString()}");
+    print("pageStack: didReplace ${pageStack.toString()}");
   }
 
   @override
@@ -72,6 +72,6 @@ class PageStackObserver extends NavigatorObserver {
     if (route.settings.name != null) {
       pageStack.remove(route.settings.name);
     }
-    print("pageStack:didRemove ${pageStack.toString()}");
+    print("pageStack: didRemove ${pageStack.toString()}");
   }
 }

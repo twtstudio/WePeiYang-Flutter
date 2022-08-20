@@ -117,7 +117,6 @@ class CommonPreferences {
   static final dayNumber = PrefsBean<int>('dayNumber', 7); // 每周显示天数
   static final hideGPA = PrefsBean<bool>('hideGPA'); // 首页不显示GPA
   static final hideExam = PrefsBean<bool>('hideExam'); // 首页不显示考表
-  static final showPosterGirl = PrefsBean<bool>('hidePosterGirl'); //首页不显示看板娘
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
 

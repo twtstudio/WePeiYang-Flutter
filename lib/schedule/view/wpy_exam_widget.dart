@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -27,30 +28,30 @@ class WpyExamWidget extends StatelessWidget {
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: Container(
-          height: 430,
+          height: 430.h,
           alignment: Alignment.center,
           child: Text(msg),
         ),
       );
     }
     return SizedBox(
-      height: 430,
+      height: 430.h,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(top: 35),
+        padding: EdgeInsets.only(top: 35.r),
         itemCount: provider.unscheduled.length,
         itemBuilder: (context, i) {
           var exam = provider.unscheduled[i];
           var seat = exam.seat;
           if (seat != '地点未安排') seat = '座位' + seat;
           return Container(
-            height: 80,
-            width: 330,
-            margin: const EdgeInsets.symmetric(vertical: 7.5),
+            height: 80.h,
+            width: 330.w,
+            margin: EdgeInsets.symmetric(vertical: 7.5.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
               boxShadow: [
                 BoxShadow(
                   offset: Offset(0, 4),
@@ -63,11 +64,11 @@ class WpyExamWidget extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15.r),
                 splashFactory: InkRipple.splashFactory,
                 splashColor: Color.fromRGBO(228, 232, 234, 1.0),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: Row(
                     children: [
                       Column(
@@ -78,12 +79,12 @@ class WpyExamWidget extends StatelessWidget {
                             exam.name,
                             style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
                           ),
-                          SizedBox(height: 5),
+                          SizedBox(height: 5.h),
                           Row(
                             children: [
                               Image.asset('assets/images/schedule/location.png',
-                                  width: 13, height: 13),
-                              SizedBox(width: 8),
+                                  width: 13.r, height: 13.r),
+                              SizedBox(width: 8.w),
                               Text(
                                 '${exam.location}-$seat',
                                 style: TextUtil.base.PingFangSC.normal.black2A
@@ -103,7 +104,7 @@ class WpyExamWidget extends StatelessWidget {
                                 .sp(12)
                                 .customColor(Color(0xFF2C7EDF)),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             exam.date,
                             style: TextUtil.base.PingFangSC.normal

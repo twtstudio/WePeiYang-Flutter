@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ProfileDialog extends StatelessWidget {
@@ -33,11 +32,9 @@ class ProfileDialog extends StatelessWidget {
               child: Text(
                   S.current.feedback_delete_question_content +
                       ': ${post.title}',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.normal.noLine
+                      .sp(15)
+                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -46,15 +43,8 @@ class ProfileDialog extends StatelessWidget {
                   onTap: onCancel,
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(
-                      S.current.feedback_cancel,
-                      style: FontManager.YaQiHei.copyWith(
-                        color: ColorUtil.boldTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
+                    child: Text(S.current.feedback_cancel,
+                        style: TextUtil.base.bold.blue303C.noLine.sp(15)),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -62,15 +52,8 @@ class ProfileDialog extends StatelessWidget {
                   onTap: onConfirm,
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(
-                      S.current.feedback_ok,
-                      style: FontManager.YaQiHei.copyWith(
-                        color: ColorUtil.boldTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
+                    child: Text(S.current.feedback_ok,
+                        style: TextUtil.base.bold.blue303C.noLine.sp(15)),
                   ),
                 ),
               ],

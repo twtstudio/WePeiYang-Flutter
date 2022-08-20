@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../feedback_router.dart';
@@ -37,10 +38,10 @@ class _HotCardState extends State<HotCard> {
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 24),
-      SizedBox(width: 3),
+          width: 20.w),
+      SizedBox(width: 4.w),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 94)
+          width: 80.w)
     ]);
 
     return Container(
@@ -100,7 +101,7 @@ class _HotCardState extends State<HotCard> {
                                     child: Text(
                                       data.hotTagsList[index].name,
                                       style: TextUtil.base.w400.NotoSansSC
-                                          .sp(16)
+                                          .sp(14)
                                           .black2A,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -114,7 +115,7 @@ class _HotCardState extends State<HotCard> {
                                             .toString() ??
                                         '0',
                                     style: TextUtil.base.w400.NotoSansSC
-                                        .sp(14)
+                                        .sp(12)
                                         .black2A,
                                   ),
                                 ),

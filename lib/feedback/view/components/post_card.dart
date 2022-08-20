@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -265,8 +264,7 @@ class _PostCardState extends State<PostCard> {
                 widget.type == PostCardType.simple
                     ? const ['', '卫津路', '北洋园'][post.campus]
                     : const ['', '卫', '北'][post.campus],
-                style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 10, color: ColorUtil.mainColor)),
+                style: TextUtil.base.regular.mainColor.sp(10)),
           )
         : SizedBox();
 
@@ -443,8 +441,22 @@ class _PostCardState extends State<PostCard> {
                   )),
       ]);
     }
-
-
+    var createTime = Text(
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
+      textAlign: TextAlign.right,
+      style: TextUtil.base.black2A.bold.ProductSans.sp(12),
+    );
+    var createTimeDetail = Text(
+      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
+      textAlign: TextAlign.right,
+      style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
+    );
+    var middleWidget =
+        Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
+    var view = Text(
+      post.visitCount == null ? '0次浏览' : post.visitCount.toString() + "次浏览",
+      style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
+    );
     var mainWidget = (tap) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -563,7 +575,6 @@ class _PostCardState extends State<PostCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        visitWidget,
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
             width: 11.67.w),
         SizedBox(
@@ -686,7 +697,7 @@ class _PostCardState extends State<PostCard> {
         bottomList.addAll([
           ...commentAndLike,
           Spacer(),
-          createTime,
+          view,
         ]);
         imagesWidget = [];
         break;
@@ -772,7 +783,13 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
-                if (widget.type == PostCardType.detail) visitWidget
+                if (widget.type == PostCardType.detail)
+                  Row(
+                    children: [
+                      Spacer(),
+                      view,
+                    ],
+                  ),
               ],
             ),
             decoration: decoration,

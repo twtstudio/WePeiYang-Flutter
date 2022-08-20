@@ -5,13 +5,10 @@ import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
+
 
 import 'change_nickname_dialog.dart';
 
@@ -30,14 +27,6 @@ class ProfileHeader extends StatelessWidget {
       slivers: [
         SliverAppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              color: ColorUtil.bold42TextColor,
-              size: 20.w,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
           title: Text(
             "我的湖底",
             style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
@@ -51,7 +40,7 @@ class ProfileHeader extends StatelessWidget {
               Column(
                 children: [
                   SizedBox(
-                    height: 90.h,
+                    height: 130.h,
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.only(
@@ -59,13 +48,13 @@ class ProfileHeader extends StatelessWidget {
                         topRight: Radius.circular(20.r)),
                     child: Container(
                       color: Colors.white,
-                      height: 100.h,
+                      height: 63.h,
                     ),
                   ),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                padding: EdgeInsets.fromLTRB(4, 80, 4, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -78,11 +67,13 @@ class ProfileHeader extends StatelessWidget {
                                   fit: BoxFit.contain),
                             )
                           : BoxDecoration(),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB((_width - 80) / 6, 20,
-                            (_width - 80) / 15, (_width - 80) / 6),
-                        child: UserAvatarImage(
-                            size: (_width - 80) / 3, iconColor: Colors.white),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 15.w),
+                          UserAvatarImage(
+                              size: (_width - 80) / 3, iconColor: Colors.white),
+                          SizedBox(width: 15.w),
+                        ],
                       ),
                     ),
                     // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
@@ -168,70 +159,30 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(right: 10),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.mailbox),
-        onLongPress: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return LakeDialogWidget(
-                title: '一键已读：',
-                titleTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
-                content: Text('这将清除所有的消息提醒'),
-                cancelText: "取消",
-                confirmTextStyle:
-                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
-                cancelTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-                confirmText: "确认",
-                cancelFun: () {
-                  Navigator.pop(context);
-                },
-                confirmFun: () async {
-                  await context.read<MessageProvider>().setAllMessageRead();
-                  Navigator.pop(context);
-                },
-                confirmButtonColor: ColorUtil.selectionButtonColor,
-              );
-            }),
-        child: Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, AuthRouter.mailbox),
-              child: Icon(
-                Icons.email_outlined,
-                size: 28,
-                color: Color.fromRGBO(255, 255, 255, 1),
-              ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, AuthRouter.mailbox),
+            child: Icon(
+              Icons.email_outlined,
+              size: 28,
+              color: Color.fromRGBO(255, 255, 255, 1),
             ),
-            SizedBox(width: 15),
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, AuthRouter.setting,
-                      arguments: SettingPageArgs(false))
-                  .then((value) => this.setState(() {})),
-              child: Image.asset(
-                'assets/images/setting.png',
-                width: 24,
-                height: 24,
-                color: Color.fromRGBO(255, 255, 255, 1),
-              ),
+          ),
+          SizedBox(width: 15),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(
+              context,
+              AuthRouter.userInfo,
+            ).then((value) => this.setState(() {})),
+            child: Image.asset(
+              'assets/images/setting.png',
+              width: 24,
+              height: 24,
+              color: Color.fromRGBO(255, 255, 255, 1),
             ),
-          ],
-        ),
-
-        // SizedBox(
-        //   height: 45,
-        //   width: 45,
-        //   child: Center(
-        //     child: FeedbackBadgeWidget(
-        //       child: SvgPicture.asset(
-        //         'assets/svg_pics/lake_butt_icons/bell.svg',
-        //         width: 16.w,
-        //       ),
-        //     ),
-        //   ),
-        // ),
+          ),
+        ],
       ),
     );
   }

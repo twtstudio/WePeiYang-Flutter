@@ -1,14 +1,11 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
-
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -18,7 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_d
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
-
+import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -174,7 +171,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                           duration: Duration(milliseconds: 800),
                           curve: Curves.easeIn,
                           height: MediaQuery.of(context).size.height,
-                          margin: EdgeInsets.only(top: 30.h),
+                          margin: EdgeInsets.only(top: 20.h),
                           padding: EdgeInsets.only(top: 50.h),
                           decoration: BoxDecoration(
                               color: Color(0xFFF1F4FB),
@@ -248,9 +245,10 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'GPA Curve')),
+                    child: Tab(text: 'GPA Curves')),
                 Align(
-                    alignment: Alignment.centerLeft, child: Tab(text: 'Exam')),
+                    alignment: Alignment.centerLeft,
+                    child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Study Room'))
@@ -268,7 +266,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    // border: Border.all(),
                     boxShadow: [
                       BoxShadow(
                         offset: Offset(0, 4),
@@ -312,7 +309,7 @@ class SliverCardsWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (cards[i].label == 'Wiki') {
+        if (cards[i].label == '北洋维基') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {

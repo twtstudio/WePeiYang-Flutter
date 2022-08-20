@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class FindPwWidget extends StatelessWidget {
@@ -29,10 +29,9 @@ class FindPwWidget extends StatelessWidget {
           Spacer(flex: 1),
           Center(
             child: Text(S.current.find_password_title,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
+                style: TextUtil.base.bold
+                    .sp(16)
+                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
           ),
           SizedBox(height: 40),
           SizedBox(
@@ -42,8 +41,7 @@ class FindPwWidget extends StatelessWidget {
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
               child: Text(S.current.has_bind_phone,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
@@ -69,8 +67,7 @@ class FindPwWidget extends StatelessWidget {
                   barrierDismissible: true,
                   builder: (BuildContext context) => FindPwDialog()),
               child: Text(S.current.has_not_bind_phone,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
@@ -129,8 +126,9 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
-      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = TextUtil.base.regular
+      .sp(13)
+      .customColor(Color.fromRGBO(201, 204, 209, 1));
 
   @override
   Widget build(BuildContext context) {
@@ -154,10 +152,9 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           children: [
             Center(
               child: Text(S.current.find_password_title,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(98, 103, 123, 1),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16)),
+                  style: TextUtil.base.bold
+                      .sp(16)
+                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
             ),
             SizedBox(height: 40),
             ConstrainedBox(
@@ -216,10 +213,10 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                               return ElevatedButton(
                                 onPressed: () {},
                                 child: Text('$time秒后重试',
-                                    style: FontManager.YaHeiRegular.copyWith(
-                                        color: Color.fromRGBO(98, 103, 123, 1),
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold)),
+                                    style: TextUtil.base.bold
+                                        .sp(13)
+                                        .customColor(
+                                            Color.fromRGBO(98, 103, 123, 1))),
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
@@ -236,8 +233,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: FontManager.YaHeiRegular.copyWith(
-                                    color: Colors.white, fontSize: 13)),
+                                style: TextUtil.base.regular.white.sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:

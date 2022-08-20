@@ -20,8 +20,6 @@ class LoungeConfig extends ChangeNotifier {
     _timeRange = timeRange;
     _dateTime = dateTime;
 
-    // debugPrint(timeRange.toString());
-    debugPrint(dateTime.toString());
     notifyListeners();
   }
 

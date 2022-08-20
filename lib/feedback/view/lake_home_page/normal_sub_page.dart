@@ -15,6 +15,9 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
@@ -297,80 +300,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                       context, HomeRouter.notice),
                                 ),
                           Spacer(),
-                          Container(
-                            height: double.infinity,
-                            width: 90,
-                            padding: EdgeInsets.symmetric(vertical: 1.5),
-                            margin: EdgeInsets.all(3),
-                            decoration: BoxDecoration(
-                              color: ColorUtil.greyF7F8Color,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                            ),
-                            child: Stack(
-                              children: [
-                                AnimatedContainer(
-                                  duration: Duration(milliseconds: 500),
-                                  curve: Curves.easeInOutCubic,
-                                  margin: EdgeInsets.only(
-                                      left:
-                                          context.read<LakeModel>().sortSeq != 0
-                                              ? 2
-                                              : 40),
-                                  width: 46,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      color: Color.fromARGB(125, 54, 60, 84)),
-                                ),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                1;
-                                            listToTop();
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text('默认',
-                                              style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
-                                                  ? TextUtil.base.white.w900
-                                                      .sp(12)
-                                                  : TextUtil.base.black2A.w500
-                                                      .sp(12)),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                0;
-                                            listToTop();
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text('最新',
-                                              style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
-                                                  ? TextUtil.base.black2A.w500
-                                                      .sp(12)
-                                                  : TextUtil.base.white.w900
-                                                      .sp(12)),
-                                        ),
-                                      ),
-                                    ]),
-                              ],
-                            ),
-                          ),
                           SizedBox(width: 2)
                         ]),
                   );
@@ -380,6 +309,42 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0 &&
                     context.read<FestivalProvider>().festivalList.length > 0)
                   return ActivityCard();
+                ind--;
+                if (ind == 0)
+                  return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              context.read<LakeModel>().sortSeq = 1;
+                              listToTop();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(15.w, 6.h, 5.w, 0),
+                            child: Text('默认排序',
+                                style: context.read<LakeModel>().sortSeq != 0
+                                    ? TextUtil.base.blue2C.w400.sp(14)
+                                    : TextUtil.base.black2A.w400.sp(14)),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              context.read<LakeModel>().sortSeq = 0;
+                              listToTop();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5.w, 6.h, 10.w, 0),
+                            child: Text('最新发帖',
+                                style: context.read<LakeModel>().sortSeq != 0
+                                    ? TextUtil.base.black2A.w400.sp(14)
+                                    : TextUtil.base.blue2C.w400.sp(14)),
+                          ),
+                        ),
+                      ]);
                 ind--;
                 final post = context
                     .read<LakeModel>()

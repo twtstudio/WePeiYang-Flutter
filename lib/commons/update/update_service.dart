@@ -1,5 +1,4 @@
 // @dart = 2.12
-import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
@@ -17,7 +16,6 @@ class UpdateService with AsyncTimer {
     try {
       var code = UpdateUtil.apkType == ApkType.release ? 1 : 0;
       var response = await updateDio.get("${BASEURL}check/$code");
-      debugPrint(response.data.toString());
       return VersionData.fromJson(response.data).data;
     } catch (error, stack) {
       Logger.reportError(error, stack);

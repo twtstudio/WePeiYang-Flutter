@@ -118,7 +118,7 @@ class MPWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text('#MP' + this.text,
-        style: TextUtil.base.ProductSans.w400.mainColor.sp(12));
+        style: TextUtil.base.ProductSans.w400.grey97.sp(12));
   }
 }
 

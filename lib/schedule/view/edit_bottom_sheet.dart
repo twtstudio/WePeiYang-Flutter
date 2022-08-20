@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -106,7 +106,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   /// 删除非最后一个frame时，稍微移动一下，可以在setState后动画滑动
                   await _scrollController.animateTo(
                     _scrollController.offset + 1,
-                    duration: Duration(milliseconds: 10),
+                    duration: const Duration(milliseconds: 10),
                     curve: Curves.linear,
                   );
                 } else {
@@ -117,7 +117,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   if (offset > 0) offset = 0;
                   await _scrollController.animateTo(
                     _scrollController.offset + offset,
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     curve: Curves.linear,
                   );
                 }
@@ -152,25 +152,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     inputFormatter: [LengthLimitingTextInputFormatter(20)],
                   ),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 GestureDetector(
                   onTap: () {
-                    // TODO(cj): 之后删
-                    if (serial == 'abc') {
-                      var courses =
-                          context.read<CourseProvider>().customCourses;
-                      if (courses.isEmpty) return;
-                      var course = courses.first;
-                      context.read<EditProvider>().load(course);
-                      ToastProvider.success('导入课程成功');
-                      setState(() {
-                        _inputSerial.value = false;
-                        name = course.name;
-                        credit = course.credit;
-                      });
-                      return;
-                    }
-
                     CustomCourseService.getClassBySerial(serial).then((course) {
                       if (course == null) return;
                       context.read<EditProvider>().load(course);
@@ -183,7 +167,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(5),
+                    padding: EdgeInsets.all(5.r),
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
@@ -203,7 +187,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.add_circle, color: mainColor),
-              SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text('输入逻辑班号导入课程',
                   style: TextUtil.base.PingFangSC.medium
                       .customColor(mainColor)
@@ -221,17 +205,20 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         return true;
       },
       child: Container(
-        height: WePeiYangApp.screenHeight * 0.6,
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        height: 647.h,
+        padding: EdgeInsets.symmetric(vertical: 10.h),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          image: DecorationImage(
+            image: AssetImage('assets/images/schedule/sheet_bg.png'),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
           children: [
             Row(
               children: [
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Text('新建课程',
                     style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
                 Spacer(),
@@ -242,13 +229,13 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   style: ElevatedButton.styleFrom(
                     primary: mainColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                   child: Text('保存',
                       style: TextUtil.base.PingFangSC.regular.white.sp(12)),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
               ],
             ),
             Expanded(
@@ -256,9 +243,9 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                 data: ThemeData(accentColor: Colors.white),
                 child: ListView(
                   controller: _scrollController,
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w),
                   children: [
-                    SizedBox(height: 5),
+                    SizedBox(height: 5.h),
                     inputSerialWidget,
                     CardWidget(
                       child: Column(
@@ -290,10 +277,10 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     CardWidget(
                       onTap: () {
                         context.read<EditProvider>().add();
-                        Future.delayed(Duration(milliseconds: 100), () {
+                        Future.delayed(const Duration(milliseconds: 100), () {
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 200),
+                            duration: const Duration(milliseconds: 200),
                             curve: Curves.linear,
                           );
                         });
@@ -302,7 +289,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.add_circle, color: mainColor),
-                          SizedBox(width: 5),
+                          SizedBox(width: 5.w),
                           Text('新增时段',
                               style: TextUtil.base.PingFangSC.medium
                                   .customColor(mainColor)

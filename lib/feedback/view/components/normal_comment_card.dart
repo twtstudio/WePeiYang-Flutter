@@ -443,7 +443,6 @@ class _NCommentCardState extends State<NCommentCard>
           child: InkWell(
               onTap: () {
                 setState(() {
-                  print(picBaseUrl + 'origin/' + widget.comment.imageUrl);
                   _picFullView = true;
                 });
               },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -24,49 +24,41 @@ class _RatingCardState extends State<RatingCard> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: FontManager.YaHeiRegular,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          children: [
-            Text(
-              S.current.feedback_please_rating,
-              style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.boldTextColor,
-              ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        children: [
+          Text(S.current.feedback_please_rating, style: TextUtil.base.blue303C),
+          Expanded(
+            child: RatingBar.builder(
+              onRatingUpdate: onRatingChanged,
+              allowHalfRating: true,
+              itemBuilder: (BuildContext context, int index) {
+                return Icon(
+                  Icons.star,
+                  color: ColorUtil.mainColor,
+                );
+              },
+              initialRating: initialRating.toDouble() / 2,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 2),
+              glow: false,
             ),
-            Expanded(
-              child: RatingBar.builder(
-                onRatingUpdate: onRatingChanged,
-                allowHalfRating: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Icon(
-                    Icons.star,
-                    color: ColorUtil.mainColor,
-                  );
-                },
-                initialRating: initialRating.toDouble() / 2,
-                itemCount: 5,
-                itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                glow: false,
-              ),
-            ),
-          ],
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 5,
-                color: Color.fromARGB(64, 236, 237, 239),
-                offset: Offset(0, 0),
-                spreadRadius: 3),
-          ],
-        ),
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          ),
+        ],
       ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              blurRadius: 5,
+              color: Color.fromARGB(64, 236, 237, 239),
+              offset: Offset(0, 0),
+              spreadRadius: 3),
+        ],
+      ),
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
     );
   }
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -48,22 +48,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 14.5,
-        color: Color.fromRGBO(98, 103, 122, 1),
-        fontWeight: FontWeight.bold);
-    final hintStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 13,
-        color: Color.fromRGBO(205, 206, 212, 1),
-        fontWeight: FontWeight.w400);
+    var titleStyle = TextUtil.base.bold
+        .sp(14.5)
+        .customColor(Color.fromRGBO(98, 103, 122, 1));
+    var hintStyle =
+        TextUtil.base.w400.sp(13).customColor(Color.fromRGBO(205, 206, 212, 1));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           title: Text(S.current.reset_password,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(16)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -182,8 +178,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: GestureDetector(
                 child: Text(S.current.forget_password,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12, decoration: TextDecoration.underline)),
+                    style: TextUtil.base.regular.underLine.sp(12)),
                 onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
               ),
             ),
@@ -194,8 +189,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 child: ElevatedButton(
                   onPressed: _reset,
                   child: Text(S.current.reset_ok,
-                      style: FontManager.YaHeiRegular.copyWith(
-                          color: Colors.white, fontSize: 13)),
+                      style: TextUtil.base.regular.white.sp(13)),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(5),
                     overlayColor:

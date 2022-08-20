@@ -32,7 +32,6 @@ class _FestivalPageState extends WbyWebViewState {
 
   @override
   Future<String> getInitialUrl(BuildContext context) async {
-    print(CommonPreferences.token.value);
     return args.url
         .replaceAll('<token>', '${CommonPreferences.token.value}')
         .replaceAll('<laketoken>', '${CommonPreferences.lakeToken.value}');

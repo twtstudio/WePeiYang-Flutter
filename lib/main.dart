@@ -9,37 +9,38 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
-import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show NetStatusListener;
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
-import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/schedule_providers.dart';
-import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
-
+import 'auth/network/auth_service.dart';
+import 'auth/view/message/message_router.dart';
+import 'auth/view/message/message_service.dart';
+import 'commons/channel/download/path_util.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
+import 'commons/local/local_model.dart';
+import 'commons/network/wpy_dio.dart' show NetStatusListener;
+import 'commons/preferences/common_prefs.dart';
+import 'commons/update/update_manager.dart';
+import 'commons/util/logger.dart';
+import 'commons/util/navigator_observers.dart';
+import 'commons/util/router_manager.dart';
 import 'commons/util/text_util.dart';
+import 'feedback/model/feedback_providers.dart';
+import 'feedback/network/post.dart';
 import 'feedback/network/feedback_service.dart';
+import 'generated/l10n.dart';
+import 'gpa/model/gpa_notifier.dart';
 import 'lounge/lounge_providers.dart';
 import 'lounge/server/hive_manager.dart';
+import 'message/model/message_provider.dart';
+import 'schedule/model/course_provider.dart';
+import 'schedule/model/exam_provider.dart';
+import 'schedule/schedule_providers.dart';
+import 'urgent_report/report_server.dart';
+
+/// 应用入口
+final _entry = WePeiYangApp();
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
@@ -56,12 +57,18 @@ void main() async {
     await NetStatusListener.init();
 
     /// 设置哪天微北洋全部变灰
-    var date = DateTime.now().toLocal();
-    (date.month == 5 && date.day == 12) || (date.month == 12 && date.day == 13)
-        ? runApp(ColorFiltered(
-            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
-            child: WePeiYangApp()))
-        : runApp(WePeiYangApp());
+    var now = DateTime.now().toLocal();
+    if ((now.month == 5 && now.day == 12) ||
+        (now.month == 12 && now.day == 13)) {
+      runApp(
+        ColorFiltered(
+          colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+          child: _entry,
+        ),
+      );
+    } else {
+      runApp(_entry);
+    }
 
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(
@@ -152,7 +159,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   checkEventList() async {
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
     await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
-      debugPrint('resume -----------$eventMap--------- resume');
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           Navigator.pushNamed(

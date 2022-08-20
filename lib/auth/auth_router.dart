@@ -19,7 +19,6 @@ import 'package:we_pei_yang_flutter/auth/view/settings/theme_change_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/user/user_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
 
 import 'view/message/user_mails_page.dart';
@@ -47,7 +46,6 @@ class AuthRouter {
   static String avatarCrop = 'info/avatar_crop';
 
   /// 个人页 & 设置页
-  static String user = 'home/user';
   static String setting = 'setting/home';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
@@ -66,7 +64,8 @@ class AuthRouter {
     register1: (_) => RegisterPageOne(),
     register2: (arg) {
       var map = arg as Map;
-      return RegisterPageTwo(map['userNum'], map['nickname'],map['idNum'], map['email']);
+      return RegisterPageTwo(
+          map['userNum'], map['nickname'], map['idNum'], map['email']);
     },
     register3: (arg) {
       var map = arg as Map;
@@ -85,8 +84,7 @@ class AuthRouter {
     resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
     avatarCrop: (_) => AvatarCropPage(),
-    user: (_) => UserPage(),
-    setting: (args) => SettingPage(args),
+    setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     themeSetting: (_) => ThemeChangePage(),

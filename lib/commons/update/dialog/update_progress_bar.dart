@@ -86,8 +86,6 @@ class _GradientLinearProgressPainter extends CustomPainter{
           LinearGradient(colors: colors, stops: stops).createShader(rect);
       p.color = Colors.amber;
       canvas.drawLine(start, valueEnd, p);
-      debugPrint("$start,$valueEnd");
-      debugPrint("$size");
     }
   }
 

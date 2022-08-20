@@ -358,7 +358,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               decoration: BoxDecoration(
                   color: CommonPreferences.isSkinUsed.value
                       ? Color(CommonPreferences.skinColorA.value)
-                      : ColorUtil.backgroundColor),
+                      : Colors.white),
               child: Stack(
                 children: [
                   Selector<LakeModel, List<WPYTab>>(

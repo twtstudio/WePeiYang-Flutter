@@ -766,10 +766,19 @@ class _DetailPageState extends State<DetailPage>
               content: Text('您确定要$quote这条冒泡吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600,
               confirmText: "确认",
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF2C7EDF),
+                    Color(0xFFA6CFFF),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  // 在0.7停止同理
+                  stops: [0,0.99]),
               cancelFun: () {
                 Navigator.of(context).pop();
               },

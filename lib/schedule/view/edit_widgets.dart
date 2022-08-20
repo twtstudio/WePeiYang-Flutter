@@ -1,16 +1,18 @@
 // @dart = 2.12
 import 'dart:math' show min;
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPicker;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show TextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
+
+final _ITEM_HEIGHT = 48.h;
 
 class TimeFrameWidget extends StatelessWidget {
   final int index;
@@ -27,20 +29,14 @@ class TimeFrameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var pvd = context.read<EditProvider>();
-
     var unitList = pvd.arrangeList[index].unitList;
-
     var unitText = unitList.every((e) => e == 0)
         ? '点击选择'
         : '第${unitList.first}-${unitList.last}节';
-
     var weekList = pvd.arrangeList[index].weekList;
-
     var weekText =
         weekList.isEmpty ? '点击选择' : '第${weekList.first}-${weekList.last}周';
-
     var weekType = '';
-
     if (weekList.isEmpty || weekList.length == 1) {
       // pass
     } else if (weekList[1] - weekList[0] == 1) {
@@ -61,7 +57,7 @@ class TimeFrameWidget extends StatelessWidget {
           Row(
             children: [
               Text('time frame ${index + 1}',
-                  style: TextUtil.base.Aspira.medium.black2A.sp(16)),
+                  style: TextUtil.base.Swis.medium.black2A.sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
               GestureDetector(
@@ -74,7 +70,7 @@ class TimeFrameWidget extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(5),
+                  padding: EdgeInsets.all(5.r),
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
@@ -91,13 +87,19 @@ class TimeFrameWidget extends StatelessWidget {
                 child: Builder(builder: (context) {
                   return GestureDetector(
                     onTap: () {
+                      // 先找到点击位置的y坐标（记为top）
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
-                      if (top + 220 > WePeiYangApp.screenHeight) {
+                      // 弹出的选择框高度为220，如果超出屏幕高度，则让外部ListView向上jump
+                      if (top + 220 > 1.sh) {
+                        // 计算jump的目标位置
                         var jumpPos = min(parentController.offset + 220,
                             parentController.position.maxScrollExtent);
+                        // 计算jump了多少距离
                         var jumpDis = jumpPos - parentController.offset;
                         top -= jumpDis;
+                        // 额外减去5作为距离屏幕底部的padding
+                        top -= 5;
                         parentController.jumpTo(jumpPos);
                       }
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -114,10 +116,10 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48,
+                      height: _ITEM_HEIGHT,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.only(right: 8.w),
                       child: Text('${weekType}${weekDay}${weekText}',
                           style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
                     ),
@@ -135,7 +137,7 @@ class TimeFrameWidget extends StatelessWidget {
                     onTap: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
-                      if (top + 150 > WePeiYangApp.screenHeight) {
+                      if (top + 150 > 1.sh) {
                         var jumpPos = min(parentController.offset + 150,
                             parentController.position.maxScrollExtent);
                         var jumpDis = jumpPos - parentController.offset;
@@ -153,10 +155,10 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48,
+                      height: _ITEM_HEIGHT,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.only(right: 8.w),
                       child: Text(unitText,
                           style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
                     ),
@@ -185,62 +187,6 @@ class TimeFrameWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CardWidget extends StatelessWidget {
-  final Widget child;
-  final GestureTapCallback? onTap;
-
-  CardWidget({required this.child, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    if (onTap != null) {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 2),
-              blurRadius: 10,
-              color: Colors.black.withOpacity(0.06),
-            ),
-          ],
-        ),
-        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Center(child: child),
-            ),
-          ),
-        ),
-      );
-    }
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 2),
-            blurRadius: 10,
-            color: Colors.black.withOpacity(0.08),
-          ),
-        ],
-      ),
-      child: Center(child: child),
     );
   }
 }
@@ -280,28 +226,88 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (title != null)
-          Text('$title：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
-        Expanded(
-          child: TextField(
-            focusNode: focusNode,
-            controller: _controller,
-            onChanged: onChanged,
-            keyboardType: keyboardType,
-            inputFormatters: inputFormatter,
-            textAlign: TextAlign.end,
-            style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-            cursorColor: Color.fromRGBO(44, 126, 223, 1),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
-              border: InputBorder.none,
+    return SizedBox(
+      height: _ITEM_HEIGHT,
+      child: Row(
+        children: [
+          if (title != null)
+            Text('$title：',
+                style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+          Expanded(
+            child: TextField(
+              focusNode: focusNode,
+              controller: _controller,
+              onChanged: onChanged,
+              keyboardType: keyboardType,
+              inputFormatters: inputFormatter,
+              textAlign: TextAlign.end,
+              style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
+              cursorColor: Color.fromRGBO(44, 126, 223, 1),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CardWidget extends StatelessWidget {
+  final Widget child;
+  final GestureTapCallback? onTap;
+
+  CardWidget({required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    if (onTap != null) {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 5.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 2),
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.06),
+            ),
+          ],
+        ),
+        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashFactory: InkRipple.splashFactory,
+            borderRadius: BorderRadius.circular(10.r),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
+              child: Center(child: child),
             ),
           ),
         ),
-      ],
+      );
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 2),
+            blurRadius: 10,
+            color: Colors.black.withOpacity(0.08),
+          ),
+        ],
+      ),
+      child: Center(child: child),
     );
   }
 }
@@ -366,18 +372,18 @@ class UnitPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: WePeiYangApp.screenWidth * 0.66,
-        height: 150,
-        margin: EdgeInsets.only(top: _top + 10),
+        width: 0.66.sw,
+        height: 150.h,
+        margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
             child: Container(
-              width: WePeiYangApp.screenWidth * 0.5,
-              padding: const EdgeInsets.all(5),
-              margin: EdgeInsets.only(right: WePeiYangApp.screenWidth * 0.05),
+              width: 0.5.sw,
+              padding: EdgeInsets.all(5.r),
+              margin: EdgeInsets.only(right: 0.05.sw),
               child: Row(children: children),
             ),
           ),
@@ -516,21 +522,21 @@ class WeekPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: WePeiYangApp.screenWidth * 0.8,
-        height: 220,
-        margin: EdgeInsets.only(top: _top + 10),
+        width: 0.8.sw,
+        height: 220.h,
+        margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                height: 150,
-                width: WePeiYangApp.screenWidth * 0.65,
-                padding: const EdgeInsets.all(10),
-                margin: EdgeInsets.only(right: WePeiYangApp.screenWidth * 0.05),
+                height: 150.h,
+                width: 0.65.sw,
+                padding: EdgeInsets.all(10.r),
+                margin: EdgeInsets.only(right: 0.05.sw),
                 child: Row(children: children),
               ),
               Row(
@@ -551,7 +557,7 @@ class WeekPicker extends Dialog {
                                 ? Color.fromRGBO(44, 126, 223, 1)
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),
                           child: Text(_weekTypes[index],

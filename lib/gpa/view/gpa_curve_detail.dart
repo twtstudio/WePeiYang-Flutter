@@ -3,13 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
-
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
 /// 构建wpy_page中的gpa部分
@@ -59,10 +58,8 @@ class GPAPreview extends StatelessWidget {
 /// wpy_page中显示数值信息
 class _GPAIntro extends StatelessWidget {
   static final _textStyle =
-      FontManager.YaHeiLight.copyWith(color: Color(0xffcdcdd3), fontSize: 14);
-
-  static final _numStyle = FontManager.Montserrat.copyWith(
-      color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22);
+      TextUtil.base.w300.sp(14).customColor(Color(0xffcdcdd3));
+  static final _numStyle = TextUtil.base.Swis.bold.black2A.sp(22);
 
   @override
   Widget build(BuildContext context) {
@@ -243,12 +240,11 @@ class _GPACurveState extends State<GPACurve>
                                       child: Center(
                                         child: Text(
                                             '${curveData[_newTaped - 1]}',
-                                            style:
-                                                FontManager.Montserrat.copyWith(
-                                                    fontSize: 16,
-                                                    color: widget.isPreview
-                                                        ? _popupTextPreview
-                                                        : _popupTextColor)),
+                                            style: TextUtil.base.Swis.regular
+                                                .sp(16)
+                                                .customColor(widget.isPreview
+                                                    ? _popupTextPreview
+                                                    : _popupTextColor)),
                                       ),
                                     ),
                                   ),

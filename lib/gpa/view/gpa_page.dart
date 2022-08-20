@@ -15,7 +15,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
@@ -84,34 +83,34 @@ class _GPAPageState extends State<GPAPage> {
         backgroundColor: widget._gpaColors[0],
         body: Container(
           decoration:
-          // CommonPreferences.isSkinUsed.value
-          //     ? BoxDecoration(
-          //         gradient: new LinearGradient(
-          //             begin: Alignment.topCenter,
-          //             end: Alignment.bottomCenter,
-          //             stops: [
-          //               0,
-          //               0.8
-          //             ],
-          //             colors: [
-          //               widget._gpaColors[0],
-          //               widget._gpaColors[3],
-          //             ]),
-          //       )
-          //     :
-          BoxDecoration(
-                  gradient: new LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [
-                        0,
-                        0.8
-                      ],
-                      colors: [
-                        widget._gpaColors[0],
-                        widget._gpaColors[2],
-                      ]),
-                ),
+              // CommonPreferences.isSkinUsed.value
+              //     ? BoxDecoration(
+              //         gradient: new LinearGradient(
+              //             begin: Alignment.topCenter,
+              //             end: Alignment.bottomCenter,
+              //             stops: [
+              //               0,
+              //               0.8
+              //             ],
+              //             colors: [
+              //               widget._gpaColors[0],
+              //               widget._gpaColors[3],
+              //             ]),
+              //       )
+              //     :
+              BoxDecoration(
+            gradient: new LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [
+                  0,
+                  0.8
+                ],
+                colors: [
+                  widget._gpaColors[0],
+                  widget._gpaColors[2],
+                ]),
+          ),
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data: ThemeData(accentColor: Colors.white),
@@ -272,8 +271,9 @@ class _RadarChartState extends State<RadarChartWidget> {
               padding: const EdgeInsets.only(left: 20),
               child: Text(
                   "Radar & Rose chart is not available with semesters of less than three courses.",
-                  style: FontManager.Texta.copyWith(
-                      color: widget.gpaColors[2], fontSize: 13)),
+                  style: TextUtil.base.Swis
+                      .sp(13)
+                      .customColor(widget.gpaColors[2])),
             )
           ],
         ),
@@ -403,8 +403,7 @@ class _RadarChartPainter extends CustomPainter {
       var textPainter = TextPainter(
           text: TextSpan(
               text: _formatText(courses[i].name),
-              style: FontManager.YaHeiLight.copyWith(
-                  fontSize: 9, color: gpaColors[1])),
+              style: TextUtil.base.w300.sp(9).customColor(gpaColors[1])),
           maxLines: 3,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
@@ -474,10 +473,8 @@ class GPAStatsWidget extends StatelessWidget {
   final TextStyle _numStyle;
 
   GPAStatsWidget(List<Color> gpaColors)
-      : _textStyle = FontManager.Aspira.copyWith(
-            color: gpaColors[2], fontWeight: FontWeight.bold, fontSize: 13),
-        _numStyle = FontManager.Montserrat.copyWith(
-            color: gpaColors[1], fontWeight: FontWeight.bold, fontSize: 24);
+      : _textStyle = TextUtil.base.Swis.bold.sp(13).customColor(gpaColors[2]),
+        _numStyle = TextUtil.base.Swis.bold.sp(24).customColor(gpaColors[1]);
 
   @override
   Widget build(BuildContext context) {
@@ -606,23 +603,20 @@ class CourseListWidget extends StatelessWidget {
                                               alignment: Alignment.centerLeft,
                                               child: Text(
                                                   _formatText(courses[i].name),
-                                                  style: FontManager
-                                                          .YaHeiRegular
-                                                      .copyWith(
-                                                          fontSize: 14,
-                                                          color:
-                                                              _gpaColors[1])),
+                                                  style: TextUtil.base.regular
+                                                      .sp(14)
+                                                      .customColor(
+                                                          _gpaColors[1])),
                                             ),
                                             SizedBox(height: 2),
                                             Container(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
                                                   "${courses[i].classType} / ${courses[i].credit} 学分",
-                                                  style: FontManager.YaHeiLight
-                                                      .copyWith(
-                                                          fontSize: 11,
-                                                          color:
-                                                              _gpaColors[1])),
+                                                  style: TextUtil.base.w300
+                                                      .sp(11)
+                                                      .customColor(
+                                                          _gpaColors[1])),
                                             )
                                           ],
                                         ),
@@ -630,11 +624,9 @@ class CourseListWidget extends StatelessWidget {
                                       SizedBox(width: 10),
                                       Text(
                                           '${courses[i].score == 0.0 ? courses[i].rawScore : courses[i].score.round()}',
-                                          style:
-                                              FontManager.Montserrat.copyWith(
-                                                  fontSize: 26,
-                                                  color: _gpaColors[1],
-                                                  fontWeight: FontWeight.bold)),
+                                          style: TextUtil.base.Swis.bold
+                                              .sp(26)
+                                              .customColor(_gpaColors[1])),
                                       SizedBox(width: 18)
                                     ],
                                   ),
@@ -660,18 +652,17 @@ class CourseListWidget extends StatelessWidget {
                 return RichText(
                     text: TextSpan(
                         text: 'ORDERED\tBY\t',
-                        style: FontManager.Texta.copyWith(
-                            fontSize: 14,
-                            letterSpacing: 4,
-                            color: _gpaColors[2]),
+                        style: TextUtil.base.Swis
+                            .sp(14)
+                            .customColor(_gpaColors[2])
+                            .space(letterSpacing: 4),
                         children: <TextSpan>[
                       TextSpan(
                           text: sortType,
-                          style: FontManager.Texta.copyWith(
-                              fontSize: 14,
-                              letterSpacing: 4,
-                              color: _gpaColors[1],
-                              fontWeight: FontWeight.bold))
+                          style: TextUtil.base.Swis.bold
+                              .sp(14)
+                              .customColor(_gpaColors[1])
+                              .space(letterSpacing: 4))
                     ]));
               },
             )),

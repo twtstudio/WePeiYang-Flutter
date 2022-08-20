@@ -4,7 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LakePrivacyDialog extends Dialog {
@@ -28,17 +27,18 @@ class LakePrivacyDialog extends Dialog {
           Expanded(
             child: DefaultTextStyle(
               textAlign: TextAlign.start,
-              style: FontManager.YaHeiRegular.copyWith(
-                  color: textColor, fontSize: 13),
+              style: TextUtil.base.regular.sp(13).customColor(textColor),
               child: ListView(physics: BouncingScrollPhysics(), children: [
                 Container(
                     alignment: Alignment.topCenter,
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
                     child: Text("求实论坛社区规范",
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor, fontSize: 18))),
+                        style: TextUtil.base.regular
+                            .sp(18)
+                            .customColor(textColor))),
                 Text("更新时间：2022-03-03\n" + "生效日期：2022-03-03\n"),
-                Text("求实论坛致力于提供一个由用户和学校共同创造的高质量问答社区。为了保护用户合法权益，营造一个多元、向上、真实的社区氛围，求实论坛团队根据法律法规，包括但不限于《中华人民共和国网络安全法》、《互联网信息服务管理办法》、《互联网直播服务管理规定》、《互联网危险物品信息发布管理规定》、《网络短视频内容审核标准细则》、《网络信息内容生态治理规定》等相关内容的规定，并结合普通高等学校相关管理规定。对用户发布的信息和用户行为，进行合规审核和管理。为了保障您的使用体验，您应当在使用求实论坛提供的服务前完整、充分阅读本规范。\n"),
+                Text(
+                    "求实论坛致力于提供一个由用户和学校共同创造的高质量问答社区。为了保护用户合法权益，营造一个多元、向上、真实的社区氛围，求实论坛团队根据法律法规，包括但不限于《中华人民共和国网络安全法》、《互联网信息服务管理办法》、《互联网直播服务管理规定》、《互联网危险物品信息发布管理规定》、《网络短视频内容审核标准细则》、《网络信息内容生态治理规定》等相关内容的规定，并结合普通高等学校相关管理规定。对用户发布的信息和用户行为，进行合规审核和管理。为了保障您的使用体验，您应当在使用求实论坛提供的服务前完整、充分阅读本规范。\n"),
                 Text(
                   "一．定义\n",
                   style: TextStyle(fontSize: 20),
@@ -55,49 +55,64 @@ class LakePrivacyDialog extends Dialog {
                 RichText(
                     text: TextSpan(
                         text: "1.违反法律法规：发布违反国家",
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor, fontSize: 13),
+                        style:
+                            TextUtil.base.regular.sp(13).customColor(textColor),
                         children: [
-                          TextSpan(text: "相关法律法规",style: TextUtil.base.normal.NotoSansSC
-                        .sp(14)
-                        .w400
-                        .textButtonBlue ,recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              String url = 'https://link.zhihu.com/?target=http://www.cac.gov.cn/2016-06/25/c_1119109085.htm';
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                ToastProvider.error('请检查网络状态');
-                              }
-                            },),
-                          TextSpan(text: "及"),
-                          TextSpan(text:"「七条底线」", style: TextUtil.base.normal.NotoSansSC
-                              .sp(14)
-                              .w400
-                              .textButtonBlue, recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              String url = 'https://link.zhihu.com/?target=http://www.isc.org.cn/zxzx/xhdt/listinfo-27187.html';
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                ToastProvider.error('请检查网络状态');
-                              }
-                            },),
-                          TextSpan(text: "、"),
-                          TextSpan(text: "「九不准」",style: TextUtil.base.normal.NotoSansSC
-                              .sp(14)
-                              .w400
-                              .textButtonBlue,recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              String url = 'https://link.zhihu.com/?target=http://www.cac.gov.cn/2000-09/30/c_126193701.htm';
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                ToastProvider.error('请检查网络状态');
-                              }
-                            },),
-                          TextSpan(text:"管理规定的信息，主要表现为：\n"),
-                        ])),
+                      TextSpan(
+                        text: "相关法律法规",
+                        style: TextUtil.base.normal.NotoSansSC
+                            .sp(14)
+                            .w400
+                            .textButtonBlue,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            String url =
+                                'https://link.zhihu.com/?target=http://www.cac.gov.cn/2016-06/25/c_1119109085.htm';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              ToastProvider.error('请检查网络状态');
+                            }
+                          },
+                      ),
+                      TextSpan(text: "及"),
+                      TextSpan(
+                        text: "「七条底线」",
+                        style: TextUtil.base.normal.NotoSansSC
+                            .sp(14)
+                            .w400
+                            .textButtonBlue,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            String url =
+                                'https://link.zhihu.com/?target=http://www.isc.org.cn/zxzx/xhdt/listinfo-27187.html';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              ToastProvider.error('请检查网络状态');
+                            }
+                          },
+                      ),
+                      TextSpan(text: "、"),
+                      TextSpan(
+                        text: "「九不准」",
+                        style: TextUtil.base.normal.NotoSansSC
+                            .sp(14)
+                            .w400
+                            .textButtonBlue,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            String url =
+                                'https://link.zhihu.com/?target=http://www.cac.gov.cn/2000-09/30/c_126193701.htm';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              ToastProvider.error('请检查网络状态');
+                            }
+                          },
+                      ),
+                      TextSpan(text: "管理规定的信息，主要表现为：\n"),
+                    ])),
                 Text("•反对宪法所确定的基本原则。\n"
                     "•危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一。\n"
                     "•损害国家荣誉和利益。\n"
@@ -135,16 +150,15 @@ class LakePrivacyDialog extends Dialog {
                 RichText(
                     text: TextSpan(
                         text: " ￮发布大量包含 SEO 推广链接、产品、品牌等内容获取",
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor, fontSize: 13),
+                        style:
+                            TextUtil.base.regular.sp(13).customColor(textColor),
                         children: [
-                          TextSpan(
-                            text: "搜索引擎",
-                          ),
-                          TextSpan(text: "中的不正当曝光。\n"),
-                        ])),
-                    Text(
-                    "•购买或出售帐号之间虚假地互动，发布干扰社区秩序的推广内容及相关交易。包括但不限于以下几种形式：\n"
+                      TextSpan(
+                        text: "搜索引擎",
+                      ),
+                      TextSpan(text: "中的不正当曝光。\n"),
+                    ])),
+                Text("•购买或出售帐号之间虚假地互动，发布干扰社区秩序的推广内容及相关交易。包括但不限于以下几种形式：\n"
                     " ￮购买机器注册帐号，或人工操控帐号的关注，伪造在社区内的影响力；\n"
                     " ￮购买机器注册帐号，或人工操控帐号点击赞同，谋求回答的不正当曝光；\n"
                     " ￮使用机器、恶意程序手段或人为有组织性地操控帐号进行点赞、回答等扰乱秩序的行为。\n"
@@ -161,17 +175,16 @@ class LakePrivacyDialog extends Dialog {
                     text: TextSpan(
                         text: "4.恶意行为：滥用产品功能，进行影响用户体验，危及平台安全及损害他人权益的行为。主要表现为：\n"
                             "•",
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor, fontSize: 13),
+                        style:
+                            TextUtil.base.regular.sp(13).customColor(textColor),
                         children: [
-                          TextSpan(
-                            text: "恶意编辑",
-                          ),
-                          TextSpan(text: "，指清空或删除有效内容，添加无关信息，破坏内容结构等降低公共编辑内容质量的编辑。\n"),
-                        ])),
-
-                    Text(
-                    "•冒充他人，通过头像、用户名等个人信息暗示自己与他人或机构相等同或有关联。\n"
+                      TextSpan(
+                        text: "恶意编辑",
+                      ),
+                      TextSpan(
+                          text: "，指清空或删除有效内容，添加无关信息，破坏内容结构等降低公共编辑内容质量的编辑。\n"),
+                    ])),
+                Text("•冒充他人，通过头像、用户名等个人信息暗示自己与他人或机构相等同或有关联。\n"
                     "•重复发布干扰正常用户体验的内容。包括但不限于以下几种形式：\n"
                     " ￮重复的回答内容多次发布在不同问题下；\n"
                     " ￮频繁发布难以辨识涵义影响阅读体验的字符、数字等无意义乱码；\n"
@@ -193,24 +206,32 @@ class LakePrivacyDialog extends Dialog {
                 RichText(
                     text: TextSpan(
                         text: "2.违规用户将受",
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor, fontSize: 13),
+                        style:
+                            TextUtil.base.regular.sp(13).customColor(textColor),
                         children: [
                       TextSpan(
                         text: "禁言1天/禁言3天/禁言7天/14天/30天或永久封禁",
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(text: "的禁言处罚，禁言即禁止发帖和评论，其他微北洋功能不受此限制影响。\n"),
-                          TextSpan(text: "3.在禁言期间有另一内容被删除，处罚时间累加计算，即处罚时间在最后一次期满时间基础上计算。\n"
+                      TextSpan(
+                          text:
+                              "3.在禁言期间有另一内容被删除，处罚时间累加计算，即处罚时间在最后一次期满时间基础上计算。\n"
                               "4.屡次违反求实论坛规范、超出一定累计封禁次数的用户，社区管理团队有权"),
-                          TextSpan(text:"永久封禁",style: TextStyle(fontWeight: FontWeight.w700)),
-                          TextSpan(text: "该用户。\n"),
-                          TextSpan(text: "5.严重违反求实论坛规范，大量发布违规信息的用户，社区管理团队有权"),
-                          TextSpan(text:"永久封禁",style: TextStyle(fontWeight: FontWeight.w700)),
-                          TextSpan(text: "该用户。\n"),
-                          TextSpan(text: "6.当用户出现以下行为时，将会受到"),
-                          TextSpan(text:"加重处罚",style: TextStyle(fontWeight: FontWeight.w700)),
-                          TextSpan(text: "：\n"),
+                      TextSpan(
+                          text: "永久封禁",
+                          style: TextStyle(fontWeight: FontWeight.w700)),
+                      TextSpan(text: "该用户。\n"),
+                      TextSpan(text: "5.严重违反求实论坛规范，大量发布违规信息的用户，社区管理团队有权"),
+                      TextSpan(
+                          text: "永久封禁",
+                          style: TextStyle(fontWeight: FontWeight.w700)),
+                      TextSpan(text: "该用户。\n"),
+                      TextSpan(text: "6.当用户出现以下行为时，将会受到"),
+                      TextSpan(
+                          text: "加重处罚",
+                          style: TextStyle(fontWeight: FontWeight.w700)),
+                      TextSpan(text: "：\n"),
                     ])),
                 Text(" •含有本规范所述多个违规行为；\n"
                     " •通过作弊手段注册、使用的帐号；\n"
@@ -252,11 +273,9 @@ class LakePrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text(S.current.ok,
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(98, 103, 123, 1),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+              style: TextUtil.base.bold.noLine
+                  .sp(16)
+                  .customColor(Color.fromRGBO(98, 103, 123, 1))),
         ),
       );
     } else {
@@ -271,12 +290,7 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+              child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
             ),
           ),
           GestureDetector(
@@ -288,11 +302,9 @@ class LakePrivacyDialog extends Dialog {
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
               child: Text('同意',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Color.fromRGBO(98, 103, 123, 1),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.bold.noLine
+                      .sp(16)
+                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
             ),
           ),
         ],

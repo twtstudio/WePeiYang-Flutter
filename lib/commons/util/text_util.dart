@@ -48,6 +48,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get greyB2 => this.copyWith(color: const Color(0xFFB2B6BB));
   TextStyle get grey97 => this.copyWith(color: const Color(0xFF979797));
   TextStyle get grey6C => this.copyWith(color: const Color(0xFF6C6C6C));
+  TextStyle get blue303C => this.copyWith(color: const Color(0xFF303C66));
   TextStyle get blue363C => this.copyWith(color: const Color(0xFF363C54));
   TextStyle get black00 => this.copyWith(color: const Color(0xFF000000));
   TextStyle get black4E => this.copyWith(color: const Color(0xFF4E4E4E));
@@ -60,16 +61,18 @@ extension TextStyleAttr on TextStyle {
   TextStyle get transParent => this.copyWith(color: const Color(0x00000000));
 
   /// 字体
-  TextStyle get Aspira => this.copyWith(fontFamily: 'Aspira');
+  TextStyle get Swis => this.copyWith(fontFamily: 'Swis');
+  TextStyle get NotoSansSC => this;
   TextStyle get PingFangSC => this;
-  TextStyle get Swis => this.copyWith(fontFamily: 'Aspira');
-  TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
+  TextStyle get Bauhaus => this.copyWith(fontFamily: 'Bauhaus');
 
-  /// 删除线,上划线,下划线
+  /// 装饰
   TextStyle get lineThrough => this.copyWith(decoration: TextDecoration.lineThrough);
   TextStyle get overLine => this.copyWith(decoration: TextDecoration.overline);
   TextStyle get underLine => this.copyWith(decoration: TextDecoration.underline);
+  TextStyle get noLine => this.copyWith(decoration: TextDecoration.none);
+  TextStyle get italic => this.copyWith(fontStyle: FontStyle.italic);
 
   /// 以下为非枚举属性
   TextStyle sp(double s) => this.copyWith(fontSize: s.sp);

@@ -34,7 +34,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
             if (text.isEmpty) {
               Navigator.pop(context);
             } else {
-              debugPrint('search text $text');
               context.read<SearchPageProvider>().search();
             }
           },

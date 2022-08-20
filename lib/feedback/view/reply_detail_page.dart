@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -386,15 +385,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
-              value: '举报',
-              child: new Text(
-                '举报',
-                style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 13,
-                  color: ColorUtil.boldTextColor,
-                ),
-              ),
-            ),
+                value: '举报',
+                child:
+                    Text('举报', style: TextUtil.base.regular.blue303C.sp(13))),
           ],
         ).then((value) {
           if (value == "举报") {

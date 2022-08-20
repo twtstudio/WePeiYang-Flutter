@@ -1,6 +1,5 @@
 // @dart = 2.12
 
-import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -49,7 +48,6 @@ class LoungeLoginApi {
   /// 收藏教室
   static Future<bool> collect(String id,DateTime time) async {
     try {
-      debugPrint('collect $id at $time');
       await loginDio.post(
         'addCollection',
         queryParameters: {'classroom_id': id},

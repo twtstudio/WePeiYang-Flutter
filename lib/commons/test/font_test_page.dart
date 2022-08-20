@@ -7,90 +7,128 @@ class FontTestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("字体测试页面"),
-      ),
-      body: ListView(
-        children: [
-          TextButton(
-              onPressed: () {
-                WbyFontLoader.initFonts();
-              },
-              child: Text("点击下载字体")),
-          fontTest(),
-        ],
+    return Center(
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(
+                onPressed: () {
+                  WbyFontLoader.initFonts(test: true);
+                },
+                child: Text("点击下载字体")),
+            ...fontTests,
+          ],
+        ),
       ),
     );
   }
 
-  Column fontTest() {
-    return Column(
-      children: [
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w100,
-          ),
+  List<Widget> get fontTests {
+    return [
+      Text(
+        "个人信息更改w100",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w100,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w200,
-          ),
+      ),
+      Text(
+        "个人信息更改w200",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w200,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w300,
-          ),
+      ),
+      Text(
+        "个人信息更改w300",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w300,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w400,
-          ),
+      ),
+      Text(
+        "个人信息更改w400",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w400,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w500,
-          ),
+      ),
+      Text(
+        "个人信息更改w500",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w500,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w600,
-          ),
+      ),
+      Text(
+        "个人信息更改w600",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w600,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w700,
-          ),
+      ),
+      Text(
+        "个人信息更改w700",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w700,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w800,
-          ),
+      ),
+      Text(
+        "个人信息更改w800",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w800,
         ),
-        Text(
-          "个人信息更改",
-          style: TextStyle(
-            fontFamily: WbyFontLoader.NotoSerifSC,
-            fontWeight: FontWeight.w900,
-          ),
+      ),
+      Text(
+        "个人信息更改w900",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w900,
         ),
-      ],
-    );
+      ),
+      Text(
+        "个人信息更改w900",
+        style: TextStyle(
+          fontFamily: 'NotoSerifSC',
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+      Text(
+        "ABCDEFGabcdefg-w500-normal",
+        style: TextStyle(
+          fontFamily: 'Gilroy',
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+      Text(
+        "ABCDEFGabcdefg-w500-italic",
+        style: TextStyle(
+          fontFamily: 'Gilroy',
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+      Text(
+        "ABCDEFGabcdefg-w900-normal",
+        style: TextStyle(
+          fontFamily: 'Gilroy',
+          fontWeight: FontWeight.w900,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+      Text(
+        "ABCDEFGabcdefg-w900-italic",
+        style: TextStyle(
+          fontFamily: 'Gilroy',
+          fontWeight: FontWeight.w900,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    ];
   }
 }

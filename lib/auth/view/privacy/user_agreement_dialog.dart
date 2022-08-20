@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class UserAgreementDialog extends Dialog {
   final ValueNotifier check;
@@ -23,17 +23,14 @@ class UserAgreementDialog extends Dialog {
           Expanded(
             child: DefaultTextStyle(
               textAlign: TextAlign.start,
-              style: FontManager.YaHeiRegular.copyWith(
-                  color: textColor, fontSize: 13),
+              style: TextUtil.base.regular.sp(13).customColor(textColor),
               child: ListView(physics: BouncingScrollPhysics(), children: [
                 Container(
                     alignment: Alignment.topCenter,
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
                     child: Text('微北洋用户协议',
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold))),
+                        style:
+                            TextUtil.base.bold.sp(13).customColor(textColor))),
                 Text("更新日期：2022年03月19日\n" + "生效日期：2021年08月13日\n"),
                 BoldText("一．引言"),
                 Text("微北洋产品和服务的提供者为天津大学（以下简称“我们”）。"
@@ -48,8 +45,8 @@ class UserAgreementDialog extends Dialog {
                     "并取代、合并之前的当事人之间关于上述事项的讨论和协议。\n"),
                 Text(
                     "本协议将对用户使用本产品的行为产生法律约束力，您已承诺和保证有权利和能力订立本协议。用户开始使用本产品将视为已经接受本协议，"
-                        "请认真阅读并理解本协议中各种条款，包括免除和限制我们的免责条款和对用户的权利限制"
-                        "（未成年人审阅时应由法定监护人陪同），如果您不能接受本协议中的全部条款，请勿开始使用本产品。\n"),
+                    "请认真阅读并理解本协议中各种条款，包括免除和限制我们的免责条款和对用户的权利限制"
+                    "（未成年人审阅时应由法定监护人陪同），如果您不能接受本协议中的全部条款，请勿开始使用本产品。\n"),
                 Text("如果你发现任何违规行为或内容，可以通过天外天微信公众号、用户社群、"
                     "开发者邮箱等渠道发起投诉。我们收到投诉后，将对相关投诉进行审核。"
                     "如违反规则，我们可能对帐号或内容停止提供服务。对于违反规则的用户，"
@@ -116,13 +113,13 @@ class UserAgreementDialog extends Dialog {
                 BoldText("4. 遵守法律"),
                 Text(
                     "您同意遵守《中华人民共和国合同法》、《中华人民共和国著作权法》及其实施条例、《全国人民代表大会常务委员会关于维护互联网安全的决定》（“人大安全决定”）、"
-                        "《中华人民共和国保守国家秘密法》、《中华人民共和国电信条例》（“电信条例“）、《中华人民共和国计算机信息系统安全保护条例》、"
-                        "《中华人民共和国计算机信息网络国际联网管理暂行规定》及其实施办法、《计算机信息系统国际联网保密管理规定》、《互联网信息服务管理办法》、"
-                        "《计算机信息网络国际联网安全保护管理办法》、《互联网电子公告服务管理规定》（“电子公告规定”）、《中华人民共和国网络安全法》、"
-                        "、《中华人民共和国密码法》等相关中国法律法规的任何及所有的规定，并对以任何方式使用您的密码和您的账号使用本服务的任何行为及其结果承担全部责任。"
-                        "如违反《人大安全决定》有可能构成犯罪，被追究刑事责任。《电子公告规定》则有明文规定，上网用户使用电子公告服务系统对所发布的信息负责。"
-                        "《电信条例》也强调，使用电信网络传输信息的内容及其后果由电信用户负责。在任何情况下，如果本产品有理由认为您的任何行为，"
-                        "包括但不限于您的任何言论和其它行为违反或可能违反上述法律和法规的任何规定，本产品可在任何时候不经任何事先通知终止向您提供服务。\n"),
+                    "《中华人民共和国保守国家秘密法》、《中华人民共和国电信条例》（“电信条例“）、《中华人民共和国计算机信息系统安全保护条例》、"
+                    "《中华人民共和国计算机信息网络国际联网管理暂行规定》及其实施办法、《计算机信息系统国际联网保密管理规定》、《互联网信息服务管理办法》、"
+                    "《计算机信息网络国际联网安全保护管理办法》、《互联网电子公告服务管理规定》（“电子公告规定”）、《中华人民共和国网络安全法》、"
+                    "、《中华人民共和国密码法》等相关中国法律法规的任何及所有的规定，并对以任何方式使用您的密码和您的账号使用本服务的任何行为及其结果承担全部责任。"
+                    "如违反《人大安全决定》有可能构成犯罪，被追究刑事责任。《电子公告规定》则有明文规定，上网用户使用电子公告服务系统对所发布的信息负责。"
+                    "《电信条例》也强调，使用电信网络传输信息的内容及其后果由电信用户负责。在任何情况下，如果本产品有理由认为您的任何行为，"
+                    "包括但不限于您的任何言论和其它行为违反或可能违反上述法律和法规的任何规定，本产品可在任何时候不经任何事先通知终止向您提供服务。\n"),
                 BoldText("三、联系我们"),
                 BoldText("开发者名称：天津大学"),
                 Text("微北洋用户社区1(QQ群)：738068756\n"
@@ -147,11 +144,9 @@ class UserAgreementDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text('确定',
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(98, 103, 123, 1),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+              style: TextUtil.base.bold.noLine
+                  .sp(16)
+                  .customColor(Color.fromRGBO(98, 103, 123, 1))),
         ),
       );
     } else {
@@ -166,12 +161,7 @@ class UserAgreementDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+              child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
             ),
           ),
           GestureDetector(
@@ -183,11 +173,9 @@ class UserAgreementDialog extends Dialog {
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
               child: Text('同意',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Color.fromRGBO(98, 103, 123, 1),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.bold.noLine
+                      .sp(16)
+                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
             ),
           ),
         ],

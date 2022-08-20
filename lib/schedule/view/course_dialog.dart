@@ -1,9 +1,9 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -22,41 +22,25 @@ class CourseDialog extends Dialog {
 
   CourseDialog(this._pairs);
 
-  final _nameStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 20,
-      color: Colors.white,
-      decoration: TextDecoration.none,
-      fontWeight: FontWeight.bold);
-
-  final _teacherStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 12, color: Colors.white, decoration: TextDecoration.none);
-
-  final _hintNameStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 10,
-      color: Colors.white,
-      decoration: TextDecoration.none,
-      letterSpacing: 1);
-
-  final _hintValueStyle = FontManager.Montserrat.copyWith(
-      fontSize: 9,
-      color: Colors.white,
-      letterSpacing: 0.5,
-      decoration: TextDecoration.none);
-
-  final _width = WePeiYangApp.screenWidth - 120;
+  final _nameStyle = TextUtil.base.bold.white.noLine.sp(20);
+  final _teacherStyle = TextUtil.base.regular.white.noLine.sp(12);
+  final _hintNameStyle = TextUtil.base.regular.white.noLine.sp(10).space(letterSpacing: 1);
+  final _hintValueStyle =
+      TextUtil.base.Swis.white.noLine.sp(9).space(letterSpacing: 0.5);
+  final _width = 1.sw - 120.w;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        height: 330,
+        height: 330.h,
         child: _pairs.length == 1
             ? _getSingleCard(context, _pairs[0])
             : Theme(
                 data: ThemeData(accentColor: Colors.white),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    padding: EdgeInsets.symmetric(horizontal: 40.w),
                     itemCount: _pairs.length,
                     itemBuilder: (context, i) =>
                         _getSingleCard(context, _pairs[i])),
@@ -72,7 +56,7 @@ class CourseDialog extends Dialog {
       teacher += str;
     });
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: 20.w),
       width: _width,
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -80,7 +64,7 @@ class CourseDialog extends Dialog {
             fit: BoxFit.cover,
             alignment: Alignment.centerRight,
           ),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -103,20 +87,20 @@ class CourseDialog extends Dialog {
       child: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 35, 20, 35),
+          padding: EdgeInsets.fromLTRB(20.w, 35.h, 20.w, 35.h),
           child: Stack(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(pair.first.name, style: _nameStyle),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(teacher, style: _teacherStyle),
                   Spacer(),
                   _getRow1(pair),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _getRow2(pair),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _getRow3(pair),
                 ],
               ),
@@ -133,9 +117,9 @@ class CourseDialog extends Dialog {
                     },
                     child: Container(
                       decoration: BoxDecoration(),
-                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 0),
                       child: Image.asset('assets/images/schedule/card_edit.png',
-                          height: 16, width: 16),
+                          height: 16.h, width: 16.w),
                     ),
                   ),
                 ),
@@ -155,20 +139,20 @@ class CourseDialog extends Dialog {
                 padding: const EdgeInsets.only(left: 1),
                 child: Text('ID', style: _hintNameStyle),
               ),
-              SizedBox(height: 3),
+              SizedBox(height: 3.h),
               Text(pair.first.courseId, style: _hintValueStyle)
             ],
           ),
-          SizedBox(width: 18),
+          SizedBox(width: 18.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(S.current.class_id, style: _hintNameStyle),
-              SizedBox(height: 3),
+              SizedBox(height: 3.h),
               Text(pair.first.classId, style: _hintValueStyle)
             ],
           ),
-          SizedBox(width: 18),
+          SizedBox(width: 18.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -191,21 +175,21 @@ class CourseDialog extends Dialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(S.current.arrange_room, style: _hintNameStyle),
-              SizedBox(height: 3),
+              SizedBox(height: 3.h),
               Text(replaceBuildingWord(pair.arrange.location),
                   style: _hintValueStyle)
             ],
           ),
-          SizedBox(width: 18),
+          SizedBox(width: 18.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(S.current.arrange_week, style: _hintNameStyle),
-              SizedBox(height: 3),
+              SizedBox(height: 3.h),
               Text(pair.first.weeks, style: _hintValueStyle)
             ],
           ),
-          SizedBox(width: 28),
+          SizedBox(width: 28.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -225,7 +209,7 @@ class CourseDialog extends Dialog {
         children: [
           Text(S.current.time,
               style: _hintNameStyle.copyWith(letterSpacing: 3)),
-          SizedBox(height: 3),
+          SizedBox(height: 3.h),
           Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle)
         ],
       );

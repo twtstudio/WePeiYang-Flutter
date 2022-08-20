@@ -45,7 +45,6 @@ class SearchPageProvider with ChangeNotifier {
 
   SearchPageProvider._(this.controller, this.focusNode, this._context) {
     controller.addListener(() {
-      // debugPrint('controller.text ${controller.text} lastText $lastText');
       if (controller.text != _lastText) {
         // '' -> 'a'
         if (_lastText.isEmpty && controller.text.isNotEmpty) {
@@ -75,7 +74,6 @@ class SearchPageProvider with ChangeNotifier {
   void search([String? query]) async {
     focusNode.unfocus();
     query ??= controller.text;
-    debugPrint('search $query');
     if (_historyList.contains(query)) {
       _historyList.remove(query);
     }
@@ -104,7 +102,6 @@ class SearchPageProvider with ChangeNotifier {
         _pageState = _PageState.result;
       }
     } catch (e) {
-      debugPrint('$e');
       if (_searchResultList.isEmpty) {
         _pageState = _PageState.error;
       } else {

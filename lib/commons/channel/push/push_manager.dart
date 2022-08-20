@@ -1,6 +1,6 @@
 // @dart = 2.12
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -67,7 +67,6 @@ class PushManager extends ChangeNotifier {
   // 在用户同意隐私协议后，开启个推
   Future<void> initGeTuiSdk() async {
     try {
-      debugPrint("initGeTuiSdk---");
       final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
       switch (result) {
         case 'open push service success':
@@ -84,7 +83,6 @@ class PushManager extends ChangeNotifier {
           break;
       }
     } on PlatformException catch (e) {
-      debugPrint("$e");
       switch (e.code) {
         case "OPEN_PUSH_SERVICE_ERROR":
           break;
@@ -103,7 +101,6 @@ class PushManager extends ChangeNotifier {
       }
     } catch (e) {
       // TODO
-      debugPrint("$e");
     }
   }
 
@@ -199,6 +196,7 @@ class PushManager extends ChangeNotifier {
     try {
       return _pushChannel.invokeMethod<String>(
         "getIntentUri",
+        // ignore: invalid_use_of_protected_member
         intent.toMap(),
       );
     } catch (e) {
