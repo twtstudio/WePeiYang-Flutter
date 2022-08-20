@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -25,7 +26,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     if (userNum == "")
       ToastProvider.error("学号不能为空");
     else if (nickname == "")
-      ToastProvider.error("用户名不能为空");
+      ToastProvider.error("昵称不能为空");
     else if (idNum == "")
       ToastProvider.error("身份证号不能为空");
     else {
@@ -365,12 +366,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       AuthService.checkInfo2(widget.idNum, widget.email, phone,
           onSuccess: () {
             _phoneFocus.unfocus();
-            _codeFocus1.unfocus();
-            _codeFocus2.unfocus();
-            _codeFocus3.unfocus();
-            _codeFocus4.unfocus();
-            _codeFocus5.unfocus();
-            _codeFocus6.unfocus();
             Navigator.pushNamed(context, AuthRouter.register3, arguments: {
               'userNum': widget.userNum,
               'nickname': widget.nickname,
@@ -386,12 +381,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   }
 
   final FocusNode _phoneFocus = FocusNode();
-  final FocusNode _codeFocus1 = FocusNode();
-  final FocusNode _codeFocus2 = FocusNode();
-  final FocusNode _codeFocus3 = FocusNode();
-  final FocusNode _codeFocus4 = FocusNode();
-  final FocusNode _codeFocus5 = FocusNode();
-  final FocusNode _codeFocus6 = FocusNode();
   //6个密码框
   final TextEditingController codeController1 = TextEditingController();
   final TextEditingController codeController2 = TextEditingController();
@@ -695,9 +684,23 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (!checkNotifier.value)
       ToastProvider.error("请同意用户协议与隐私政策并继续");
     else {
-      AuthService.register(widget.userNum, widget.nickname, widget.phone,
-          widget.code, password1, widget.email, widget.idNum,
+      AuthService.register(
+          widget.userNum,
+          widget.nickname,
+          widget.phone,
+          widget.code,
+          password1,
+          widget.email,
+          widget.idNum,
           onSuccess: () {
+            FeedbackService.getTokenByPw(
+                widget.userNum, password1, onSuccess: () {
+              FeedbackService.changeNickname(
+                  nickName: widget.nickname,
+                  onSuccess: () {},
+                  onFailure: (e) => ToastProvider.error(e.error.toString()));
+            },
+                onFailure: (e) => ToastProvider.error(e.error.toString()));
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
                 context, AuthRouter.login, (route) => false);
@@ -708,12 +711,6 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
 
   final FocusNode _pw1Focus = FocusNode();
   final FocusNode _pw2Focus = FocusNode();
-
-  // static final _normalStyle = FontManager.YaHeiRegular.copyWith(
-  //     color: Color.fromRGBO(79, 88, 107, 1), fontSize: 11);
-  //
-  // static final _highlightStyle = FontManager.YaHeiRegular.copyWith(
-  //     fontSize: 11, color: Colors.blue, decoration: TextDecoration.underline);
 
   @override
   Widget build(BuildContext context) {
@@ -969,4 +966,3 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     );
   }
 }
-

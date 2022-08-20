@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
@@ -122,13 +121,30 @@ class FeedbackService with AsyncTimer {
               response.data['data']['user']['is_user'];
         }
         if (onResult != null) onResult(response.data['data']['token']);
-      } else {
-        ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
       if (!forceRefresh) {
         getToken(forceRefresh: true);
       } else if (onFailure != null) onFailure(e);
+    }
+  }
+
+  static getTokenByPw(
+    String user,
+    String passwd, {
+    OnSuccess onSuccess,
+    OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('auth/passwd', queryParameters: {
+        'user': user,
+        'password': passwd,
+      });
+      if (response.data['data']['token'] != null)
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+      onSuccess();
+    } on DioError catch (e) {
+      if (onFailure != null) onFailure(e);
     }
   }
 
