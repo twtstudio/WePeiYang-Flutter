@@ -456,7 +456,7 @@ class _UserPageState extends State<UserPage> {
                                 GestureDetector(
                                   onTap: () => Navigator.pushNamed(
                                           context, AuthRouter.setting,
-                                          arguments: SettingPageArgs(false))
+                                          arguments: SettingPage())
                                       .then((value) => this.setState(() {})),
                                   child: Image.asset(
                                     'assets/images/setting.png',

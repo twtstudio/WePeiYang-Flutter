@@ -15,17 +15,8 @@ class TodayCoursesWidget extends StatelessWidget {
       var nightMode =
           context.select<CourseDisplayProvider, bool>((p) => p.nightMode);
       var todayPairs = _getTodayPairs(provider, nightMode);
+      if (todayPairs.length == 0) return Container();
 
-      if (todayPairs.length == 0) {
-        return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
-          child: Container(
-            height: 270.h,
-            alignment: Alignment.center,
-            child: Text('暂无课程'),
-          ),
-        );
-      }
       return _detail(context, todayPairs, nightMode);
     });
   }
@@ -37,12 +28,11 @@ class TodayCoursesWidget extends StatelessWidget {
     if (isOneDayBeforeTermStart) return [];
     List<Pair<Course, int>> todayPairs = [];
     int today = DateTime.now().weekday;
-    bool readNightMode = nightMode;
-    if (DateTime.now().hour < 21) readNightMode = false;
+    if (DateTime.now().hour < 21) nightMode = false;
     bool flag;
     provider.totalCourses.forEach((course) {
       for (int i = 0; i < course.arrangeList.length; i++) {
-        if (readNightMode) {
+        if (nightMode) {
           flag = judgeActiveTomorrow(provider.currentWeek, today,
               provider.weekCount, course.arrangeList[i]);
         } else {
@@ -61,8 +51,10 @@ class TodayCoursesWidget extends StatelessWidget {
     /// 给本日课程排序
     todayPairs.sort(
         (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
+    var height = todayPairs.length * 90.h;
+    if (todayPairs.length > 3) height = 270.h;
     return SizedBox(
-      height: 270.h,
+      height: height,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),

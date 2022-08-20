@@ -210,7 +210,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.bold.white.sp(13)),
+                      style: TextUtil.base.PingFangSC.bold.white.sp(12)),
                 ),
               ),
             ),

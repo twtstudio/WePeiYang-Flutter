@@ -171,7 +171,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                           duration: Duration(milliseconds: 800),
                           curve: Curves.easeIn,
                           height: MediaQuery.of(context).size.height,
-                          margin: EdgeInsets.only(top: 30.h),
+                          margin: EdgeInsets.only(top: 20.h),
                           padding: EdgeInsets.only(top: 50.h),
                           decoration: BoxDecoration(
                               color: Color(0xFFF1F4FB),

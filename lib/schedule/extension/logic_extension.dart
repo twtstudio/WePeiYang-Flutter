@@ -195,7 +195,7 @@ bool judgeActiveInDay(int week, int day, int weekCount, Arrange arrange) =>
 bool judgeActiveTomorrow(int week, int day, int weekCount, Arrange arrange) {
   int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
   if (week + offset > weekCount) return false; // 防止数组越界
-  return (arrange.weekday == ((day + 1) % 7))
+  return (arrange.weekday == (day % 7 + 1))
       ? _getWeekStatus(weekCount, arrange)[week + offset]
       : false;
 }

@@ -86,7 +86,7 @@ class AuthRouter {
     userInfo: (_) => UserInfoPage(),
     avatarCrop: (_) => AvatarCropPage(),
     user: (_) => UserPage(),
-    setting: (args) => SettingPage(args),
+    setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     themeSetting: (_) => ThemeChangePage(),
