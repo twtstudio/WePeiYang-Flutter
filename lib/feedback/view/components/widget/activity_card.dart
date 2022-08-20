@@ -80,36 +80,32 @@ class _ActivityCardState extends State<ActivityCard> {
                                 .festivalList[index]
                                 .title));
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1.0),
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-              child: Stack(
-                children: [
-                  Image.network(
-                      context
-                          .read<FestivalProvider>()
-                          .festivalList[index]
-                          .image,
-                      fit: BoxFit.cover,
-                      width: WePeiYangApp.screenWidth - 28,
-                      height: 0.32 * WePeiYangApp.screenWidth),
-                  Positioned(
-                      bottom: 4,
-                      right: 8,
-                      child: TextPod(context
-                          .read<FestivalProvider>()
-                          .festivalList[index]
-                          .title)),
-                ],
-              )),
-        ),
+        child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            child: Stack(
+              children: [
+                Image.network(
+                    context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .image,
+                    fit: BoxFit.cover,
+                    width: WePeiYangApp.screenWidth - 28,
+                    height: 0.32 * WePeiYangApp.screenWidth),
+                Positioned(
+                    bottom: 4,
+                    right: 8,
+                    child: TextPod(context
+                        .read<FestivalProvider>()
+                        .festivalList[index]
+                        .title)),
+              ],
+            )),
       );
     }
 
     return Container(
       height: 0.32 * WePeiYangApp.screenWidth,
-      padding: EdgeInsets.fromLTRB(13, 12, 13, 0),
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget child) {
         return ClipRRect(

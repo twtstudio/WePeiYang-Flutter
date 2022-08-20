@@ -19,7 +19,6 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/message/feedback_badge_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../search_result_page.dart';
@@ -169,7 +168,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
         height: 30.w,
-        margin: EdgeInsets.only(right: 14),
+        margin: EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -236,15 +235,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         isScrollable: true,
                         physics: BouncingScrollPhysics(),
                         controller: context.read<LakeModel>().tabController,
-                        labelColor: ColorUtil.black2AColor,
-                        labelStyle:
-                            TextUtil.base.black2A.w600.NotoSansSC.sp(18),
-                        unselectedLabelColor: ColorUtil.lightTextColor,
+                        labelColor: ColorUtil.blue2CColor,
+                        labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
+                        unselectedLabelColor: ColorUtil.black2AColor,
                         unselectedLabelStyle:
-                            TextUtil.base.greyB2.w600.NotoSansSC.sp(18),
+                            TextUtil.base.w400.NotoSansSC.sp(18),
                         indicator: CustomIndicator(
                             borderSide: BorderSide(
-                                color: ColorUtil.mainColor, width: 2)),
+                                color: ColorUtil.blue2CColor, width: 2)),
                         tabs: List<Widget>.generate(
                             tabList.length,
                             (index) => DaTab(
@@ -276,142 +274,160 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           ? Color(CommonPreferences.skinColorA.value)
           : Colors.white,
       body: SafeArea(
-        child: NestedScrollView(
-            controller: context.read<LakeModel>().nController,
-            physics: BouncingScrollPhysics(),
-            floatHeaderSlivers: false,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              scroll = false;
-              return <Widget>[
-                SliverAppBar(
-                  toolbarHeight: 48,
-                  backgroundColor: CommonPreferences.isSkinUsed.value
-                      ? Color(CommonPreferences.skinColorA.value)
-                      : Colors.white,
-                  titleSpacing: 0,
-                  leading: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () =>
-                        Navigator.pushNamed(context, FeedbackRouter.profile),
-                    child: Center(
-                      child: FeedbackBadgeWidget(
-                        child: ImageIcon(
-                            AssetImage("assets/images/lake_butt_icons/box.png"),
-                            size: 23,
-                            color: ColorUtil.boldTag54),
-                      ),
-                    ),
-                  ),
-                  title: searchBar,
-                  actions: [
-                    Hero(
-                      tag: "addNewPost",
-                      child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          child: Container(
-                            height: 24,
-                            width: 24,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    "assets/images/lake_butt_icons/add_post.png"),
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            if (tabList.isNotEmpty) {
-                              initializeRefresh = true;
-                              Navigator.pushNamed(
-                                  context, FeedbackRouter.newPost,
-                                  arguments: NewPostArgs(false, '', 0, ''));
-                            }
-                          }),
-                    ),
-                    SizedBox(width: 15)
-                  ],
-                ),
-                SliverPersistentHeader(
-                  floating: true,
-                  pinned: true,
-                  delegate: HomeHeaderDelegate(
-                    child: Container(
-                      color: CommonPreferences.isSkinUsed.value
+        child: Stack(
+          children: [
+            NestedScrollView(
+                controller: context.read<LakeModel>().nController,
+                physics: BouncingScrollPhysics(),
+                floatHeaderSlivers: false,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  scroll = false;
+                  return <Widget>[
+                    SliverAppBar(
+                      toolbarHeight: 48,
+                      backgroundColor: CommonPreferences.isSkinUsed.value
                           ? Color(CommonPreferences.skinColorA.value)
                           : Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(width: 4),
-                          expanded,
-                          SizedBox(width: 17)
-                        ],
+                      titleSpacing: 0,
+                      title: searchBar,
+                      // actions: [
+                      //   Hero(
+                      //     tag: "addNewPost",
+                      //     child: InkWell(
+                      //         splashColor: Colors.transparent,
+                      //         highlightColor: Colors.transparent,
+                      //         child: Container(
+                      //           height: 24,
+                      //           width: 24,
+                      //           decoration: BoxDecoration(
+                      //             image: DecorationImage(
+                      //               image: AssetImage(
+                      //                   "assets/images/lake_butt_icons/add_post.png"),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         onTap: () {
+                      //           if (tabList.isNotEmpty) {
+                      //             initializeRefresh = true;
+                      //             Navigator.pushNamed(
+                      //                 context, FeedbackRouter.newPost,
+                      //                 arguments: NewPostArgs(false, '', 0, ''));
+                      //           }
+                      //         }),
+                      //   ),
+                      //   SizedBox(width: 15)
+                      // ],
+                    ),
+                    SliverPersistentHeader(
+                      floating: true,
+                      pinned: true,
+                      delegate: HomeHeaderDelegate(
+                        child: Container(
+                          color: CommonPreferences.isSkinUsed.value
+                              ? Color(CommonPreferences.skinColorA.value)
+                              : Colors.white,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(width: 4),
+                              expanded,
+                              SizedBox(width: 17)
+                            ],
+                          ),
+                        ),
                       ),
                     ),
+                  ];
+                },
+                body: Container(
+                  decoration: BoxDecoration(
+                      color: CommonPreferences.isSkinUsed.value
+                          ? Color(CommonPreferences.skinColorA.value)
+                          : Colors.white),
+                  child: Stack(
+                    children: [
+                      Selector<LakeModel, List<WPYTab>>(
+                          selector: (BuildContext context, LakeModel lakeModel) {
+                        return lakeModel.tabList;
+                      }, builder: (_, tabs, __) {
+                        if (!context.read<LakeModel>().tabControllerLoaded) {
+                          context.read<LakeModel>().tabController = TabController(
+                              length: tabs.length, vsync: this)
+                            ..addListener(() {
+                              if (context
+                                      .read<LakeModel>()
+                                      .tabController
+                                      .index
+                                      .toDouble() ==
+                                  context
+                                      .read<LakeModel>()
+                                      .tabController
+                                      .animation
+                                      .value) {
+                                WPYTab tab =
+                                    context.read<LakeModel>().lakeAreas[1].tab;
+                                if (context.read<LakeModel>().tabController.index !=
+                                        tabList.indexOf(tab) &&
+                                    canSee) _onFeedbackTapped();
+                                _onFeedbackOpen();
+                                context.read<LakeModel>().currentTab =
+                                    context.read<LakeModel>().tabController.index;
+                              }
+                            });
+                        }
+                        int cacheNum = 0;
+                        return ExtendedTabBarView(
+                            cacheExtent: cacheNum,
+                            controller: context.read<LakeModel>().tabController,
+                            children: List<Widget>.generate(
+                                tabs == null ? 1 : tabs.length,
+                                (i) => NSubPage(
+                                      index: tabList[i].id,
+                                    )));
+                      }),
+                      Visibility(
+                        child: InkWell(
+                            onTap: () {
+                              if (canSee) _onFeedbackTapped();
+                            },
+                            child: FbTagsWrap(key: fbKey)),
+                        maintainState: true,
+                        visible: canSee,
+                      ),
+                    ],
                   ),
-                ),
-              ];
-            },
-            body: Container(
-              decoration: BoxDecoration(
-                  color: CommonPreferences.isSkinUsed.value
-                      ? Color(CommonPreferences.skinColorA.value)
-                      : Colors.white),
-              child: Stack(
-                children: [
-                  Selector<LakeModel, List<WPYTab>>(
-                      selector: (BuildContext context, LakeModel lakeModel) {
-                    return lakeModel.tabList;
-                  }, builder: (_, tabs, __) {
-                    if (!context.read<LakeModel>().tabControllerLoaded) {
-                      context.read<LakeModel>().tabController = TabController(
-                          length: tabs.length, vsync: this)
-                        ..addListener(() {
-                          if (context
-                                  .read<LakeModel>()
-                                  .tabController
-                                  .index
-                                  .toDouble() ==
-                              context
-                                  .read<LakeModel>()
-                                  .tabController
-                                  .animation
-                                  .value) {
-                            WPYTab tab =
-                                context.read<LakeModel>().lakeAreas[1].tab;
-                            if (context.read<LakeModel>().tabController.index !=
-                                    tabList.indexOf(tab) &&
-                                canSee) _onFeedbackTapped();
-                            _onFeedbackOpen();
-                            context.read<LakeModel>().currentTab =
-                                context.read<LakeModel>().tabController.index;
-                          }
-                        });
-                    }
-                    int cacheNum = 0;
-                    return ExtendedTabBarView(
-                        cacheExtent: cacheNum,
-                        controller: context.read<LakeModel>().tabController,
-                        children: List<Widget>.generate(
-                            tabs == null ? 1 : tabs.length,
-                            (i) => NSubPage(
-                                  index: tabList[i].id,
-                                )));
-                  }),
-                  Visibility(
-                    child: InkWell(
-                        onTap: () {
-                          if (canSee) _onFeedbackTapped();
-                        },
-                        child: FbTagsWrap(key: fbKey)),
-                    maintainState: true,
-                    visible: canSee,
-                  ),
-                ],
+                )),
+            Positioned(
+              bottom: 20.h,
+              right: 20.w,
+              child: Hero(
+                tag: "addNewPost",
+                child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    child: Container(
+                      height: 62.r,
+                      width: 62.r,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                              "assets/images/add_post.png"),
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      if (tabList.isNotEmpty) {
+                        initializeRefresh = true;
+                        Navigator.pushNamed(
+                            context, FeedbackRouter.newPost,
+                            arguments: NewPostArgs(false, '', 0, ''));
+                      }
+                    }),
               ),
-            )),
+            ),
+          ],
+        ),
       ),
     );
   }

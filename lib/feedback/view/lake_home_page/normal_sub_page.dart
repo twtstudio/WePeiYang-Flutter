@@ -229,7 +229,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        color: Colors.white),
+                        color: ColorUtil.blue2CColor.withAlpha(12)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,13 +243,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                         CrossAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
-                                        "assets/svg_pics/lake_butt_icons/notice.svg",
+                                        "assets/svg_pics/lake_butt_icons/la_ba.svg",
                                         width: 20,
                                       ),
                                       SizedBox(width: 6),
                                       SizedBox(
                                           height: 20,
-                                          width: WePeiYangApp.screenWidth - 170,
+                                          width: WePeiYangApp.screenWidth - 83,
                                           child: context
                                                       .read<NoticeProvider>()
                                                       .noticeList
@@ -266,19 +266,19 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                         .noticeList
                                                         .length,
                                                     (index) => Text(
-                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 16 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
+                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
                                                         style: TextUtil
                                                             .base
-                                                            .mainColor
-                                                            .w800
+                                                            .blue2C
+                                                            .w400
                                                             .NotoSansSC
                                                             .sp(15)),
                                                   ),
                                                 )
                                               : Text(
-                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 16 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                                  style: TextUtil.base.mainColor
-                                                      .w800.NotoSansSC
+                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                  style: TextUtil.base.blue2C
+                                                      .w400.NotoSansSC
                                                       .sp(15))),
                                     ],
                                   ),
@@ -287,11 +287,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                 )
                               : InkWell(
                                   child: SizedBox(
-                                    width: WePeiYangApp.screenWidth * 0.56,
+                                    width: WePeiYangApp.screenWidth - 83,
                                     child: Text(
                                       '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
                                       style: TextUtil
-                                          .base.grey6C.w600.NotoSansSC
+                                          .base.blue2C.w600.NotoSansSC
                                           .sp(16),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -299,16 +299,19 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   onTap: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
-                          Spacer(),
-                          SizedBox(width: 2)
+                          Spacer()
                         ]),
                   );
                 ind--;
                 if (index == 0 && ind == 0) return HotCard();
-                if (index == 0) ind--;
+                if (index != 0 && ind == 0) return SizedBox(height: 10.h);
+                ind--;
                 if (ind == 0 &&
                     context.read<FestivalProvider>().festivalList.length > 0)
-                  return ActivityCard();
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 0),
+                    child: ActivityCard(),
+                  );
                 ind--;
                 if (ind == 0)
                   return Row(
@@ -322,10 +325,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             });
                           },
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(15.w, 6.h, 5.w, 0),
+                            padding: EdgeInsets.fromLTRB(15.w, 14.h, 5.w, 6.h),
                             child: Text('默认排序',
                                 style: context.read<LakeModel>().sortSeq != 0
-                                    ? TextUtil.base.blue2C.w400.sp(14)
+                                    ? TextUtil.base.blue2C.w600.sp(14)
                                     : TextUtil.base.black2A.w400.sp(14)),
                           ),
                         ),
@@ -337,11 +340,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             });
                           },
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(5.w, 6.h, 10.w, 0),
+                            padding: EdgeInsets.fromLTRB(5.w, 14.h, 10.w, 6.h),
                             child: Text('最新发帖',
                                 style: context.read<LakeModel>().sortSeq != 0
                                     ? TextUtil.base.black2A.w400.sp(14)
-                                    : TextUtil.base.blue2C.w400.sp(14)),
+                                    : TextUtil.base.blue2C.w600.sp(14)),
                           ),
                         ),
                       ]);

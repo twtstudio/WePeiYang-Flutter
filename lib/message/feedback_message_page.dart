@@ -1432,7 +1432,7 @@ class CustomIndicator extends Decoration {
     assert(rect != null);
     assert(textDirection != null);
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
-    double wantWidth = left ? 30 : 14;
+    double wantWidth = left ? 30 : 32;
     double cw = (indicator.left + indicator.right) / 2;
 
     return Rect.fromLTWH(
