@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -26,7 +27,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     if (userNum == "")
       ToastProvider.error("学号不能为空");
     else if (nickname == "")
-      ToastProvider.error("用户名不能为空");
+      ToastProvider.error("昵称不能为空");
     else {
       AuthService.checkInfo1(userNum, nickname,
           onSuccess: () {
@@ -109,7 +110,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                   FilteringTextInputFormatter.allow(RegExp('[a-zA-Z]|[0-9]'))
                 ],
                 decoration: InputDecoration(
-                    hintText: S.current.user_name,
+                    hintText: '昵称',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: Color.fromRGBO(235, 238, 243, 1),
@@ -325,7 +326,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         fillColor: Color.fromRGBO(235, 238, 243, 1),
                         isCollapsed: true,
                         contentPadding:
-                            const EdgeInsets.fromLTRB(15, 18, 0, 18),
+                        const EdgeInsets.fromLTRB(15, 18, 0, 18),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none)),
@@ -338,55 +339,55 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     width: width / 2 - 20,
                     child: isPress
                         ? StreamBuilder<int>(
-                            stream: Stream.periodic(
-                                    Duration(seconds: 1), (time) => time + 1)
-                                .take(60),
-                            builder: (context, snap) {
-                              var time = 60 - (snap.data ?? 0);
-                              if (time == 0)
-                                WidgetsBinding.instance.addPostFrameCallback(
+                        stream: Stream.periodic(
+                            Duration(seconds: 1), (time) => time + 1)
+                            .take(60),
+                        builder: (context, snap) {
+                          var time = 60 - (snap.data ?? 0);
+                          if (time == 0)
+                            WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
-                              return ElevatedButton(
-                                onPressed: () {},
-                                child: Text('$time秒后重试',
-                                    style: FontManager.YaHeiRegular.copyWith(
-                                        color: Color.fromRGBO(98, 103, 123, 1),
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold)),
-                                style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(5),
-                                  overlayColor: MaterialStateProperty.all(
-                                      Colors.grey[300]),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.grey[300]),
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30))),
-                                ),
-                              );
-                            })
-                        : ElevatedButton(
-                            onPressed: _fetchCaptcha,
-                            child: Text(S.current.fetch_captcha,
+                          return ElevatedButton(
+                            onPressed: () {},
+                            child: Text('$time秒后重试',
                                 style: FontManager.YaHeiRegular.copyWith(
-                                    color: Colors.white, fontSize: 13)),
+                                    color: Color.fromRGBO(98, 103, 123, 1),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
-                              overlayColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (states) {
-                                if (states.contains(MaterialState.pressed))
-                                  return Color.fromRGBO(103, 110, 150, 1);
-                                return Color.fromRGBO(53, 59, 84, 1);
-                              }),
+                              overlayColor: MaterialStateProperty.all(
+                                  Colors.grey[300]),
                               backgroundColor: MaterialStateProperty.all(
-                                  Color.fromRGBO(53, 59, 84, 1)),
+                                  Colors.grey[300]),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
+                                      borderRadius:
+                                      BorderRadius.circular(30))),
                             ),
-                          )),
+                          );
+                        })
+                        : ElevatedButton(
+                      onPressed: _fetchCaptcha,
+                      child: Text(S.current.fetch_captcha,
+                          style: FontManager.YaHeiRegular.copyWith(
+                              color: Colors.white, fontSize: 13)),
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(5),
+                        overlayColor:
+                        MaterialStateProperty.resolveWith<Color>(
+                                (states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Color.fromRGBO(103, 110, 150, 1);
+                              return Color.fromRGBO(53, 59, 84, 1);
+                            }),
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromRGBO(53, 59, 84, 1)),
+                        shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30))),
+                      ),
+                    )),
               ],
             ),
           ),
@@ -411,7 +412,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                 child: GestureDetector(
                   onTap: _toNextPage,
                   child:
-                      Image(image: AssetImage('assets/images/arrow_round.png')),
+                  Image(image: AssetImage('assets/images/arrow_round.png')),
                 ),
               ),
             ],
@@ -452,9 +453,23 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (!checkNotifier.value)
       ToastProvider.error("请同意用户协议与隐私政策并继续");
     else {
-      AuthService.register(widget.userNum, widget.nickname, widget.phone,
-          widget.code, password1, widget.email, widget.idNum,
+      AuthService.register(
+          widget.userNum,
+          widget.nickname,
+          widget.phone,
+          widget.code,
+          password1,
+          widget.email,
+          widget.idNum,
           onSuccess: () {
+            FeedbackService.getTokenByPw(
+                widget.userNum, password1, onSuccess: () {
+              FeedbackService.changeNickname(
+                  nickName: widget.nickname,
+                  onSuccess: () {},
+                  onFailure: (e) => ToastProvider.error(e.error.toString()));
+            },
+                onFailure: (e) => ToastProvider.error(e.error.toString()));
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
                 context, AuthRouter.login, (route) => false);
@@ -572,20 +587,22 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 ),
                 Text(S.current.register_hint1, style: _normalStyle),
                 GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) =>
-                          UserAgreementDialog(check: checkNotifier)),
+                  onTap: () =>
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) =>
+                              UserAgreementDialog(check: checkNotifier)),
                   child: Text('《用户协议》', style: _highlightStyle),
                 ),
                 Text('与', style: _normalStyle),
                 GestureDetector(
-                  onTap: () => showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (context) =>
-                          PrivacyDialog(check: checkNotifier)),
+                  onTap: () =>
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) =>
+                              PrivacyDialog(check: checkNotifier)),
                   child: Text('《隐私政策》', style: _highlightStyle),
                 ),
               ],
@@ -612,7 +629,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                 child: GestureDetector(
                   onTap: _submit,
                   child:
-                      Image(image: AssetImage('assets/images/arrow_round.png')),
+                  Image(image: AssetImage('assets/images/arrow_round.png')),
                 ),
               ),
             ],

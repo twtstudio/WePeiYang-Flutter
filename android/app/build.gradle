@@ -195,11 +195,11 @@ android {
             // 输出调试信息
             buildConfigField("Boolean", "LOG_OUTPUT", "true")
 
-            def environment = "DEVELOP"
+            def environment = "RELEASE"
             if (project.hasProperty('dart-defines')) {
                 def dartEnvironmentVariables = getDartDefines()
-                if (dartEnvironmentVariables.ENVIRONMENT == "RELEASE") {
-                    environment = "RELEASE"
+                if (dartEnvironmentVariables.ENVIRONMENT == "DEVELOP") {
+                    environment = "DEVELOP"
                 }
             }
 
