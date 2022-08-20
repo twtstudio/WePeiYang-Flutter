@@ -49,7 +49,6 @@ class LoungeLoginApi {
   /// 收藏教室
   static Future<bool> collect(String id,DateTime time) async {
     try {
-      debugPrint('collect $id at $time');
       await loginDio.post(
         'addCollection',
         queryParameters: {'classroom_id': id},

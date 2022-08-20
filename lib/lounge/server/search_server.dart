@@ -19,9 +19,6 @@ List<Query> formatQuery(String text) {
         }
       }
     }
-    // for (var query in queries) {
-    //   debugPrint(query.toString());
-    // }
   }
 
   //combine same type query
@@ -44,10 +41,6 @@ List<Query> formatQuery(String text) {
       combineQueries.add(combineQuery);
       queries.clear();
       queries.addAll(combineQueries);
-
-      // for (var query in combineQueries) {
-      //   debugPrint('combineQuery: $query');
-      // }
     }
   }
 
@@ -116,17 +109,9 @@ List<Query> formatQuery(String text) {
       }
     }
 
-    // for (var query in combineQueries) {
-    //   debugPrint(query.toString());
-    // }
     queries.clear();
     queries.addAll(combineQueries);
   }
-
-  // for (var query in resultQueries) {
-  //   debugPrint(query.toString());
-  // }
-
   return queries;
 }
 
@@ -202,7 +187,6 @@ extension QueryTypeExt on QueryType {
         querySplit['a'] = query;
         break;
     }
-    // debugPrint(querySplit.toString());
 
     final Map<String, List<String>> resultQuery = {};
 
@@ -221,7 +205,6 @@ extension QueryTypeExt on QueryType {
       resultQuery['c'] = splitByLength(c, 3);
     }
 
-    // debugPrint(resultQuery.toString());
     return resultQuery;
   }
 
@@ -230,7 +213,6 @@ extension QueryTypeExt on QueryType {
     for (var i = 0; i < query.length; i += length) {
       final next = i + length - 1 < query.length ? i + length : query.length;
       final bi = query.substring(i, next);
-      // debugPrint(bi);
       list.add(bi);
     }
     return list;
@@ -345,7 +327,6 @@ Stream<SearchResult> querySearch(
         final bList = buildings.values.where((b) => _includeBuilding(b, bName));
         final aList = <Area>[];
         final cList = <Classroom>[];
-
         for (var b in bList) {
           for (var a in b.areas.values) {
             if (_includeArea(a, aName)) {
@@ -353,7 +334,6 @@ Stream<SearchResult> querySearch(
             }
           }
         }
-
         for (var a in aList) {
           for (var room in a.classrooms.values) {
             if (_includeRoom(room, cName)) {
@@ -362,8 +342,8 @@ Stream<SearchResult> querySearch(
           }
         }
         yield SearchResult(cList, format);
-
         break;
+
       case QueryType.bc:
         final bList = buildings.values.where((b) => _includeBuilding(b, bName));
         final cList = <Classroom>[];
@@ -377,8 +357,8 @@ Stream<SearchResult> querySearch(
           }
         }
         yield SearchResult(cList, format);
-
         break;
+
       case QueryType.ac:
         final aList = <Area>[];
         final cList = <Classroom>[];
@@ -398,6 +378,7 @@ Stream<SearchResult> querySearch(
         }
         yield SearchResult(cList, format);
         break;
+
       case QueryType.ba:
         final bList = buildings.values.where((b) => _includeBuilding(b, bName));
         final aList = <Area>[];
@@ -409,8 +390,8 @@ Stream<SearchResult> querySearch(
           }
         }
         yield SearchResult(aList, format);
-
         break;
+
       case QueryType.b:
         final bList = buildings.values
             .where(
@@ -418,8 +399,8 @@ Stream<SearchResult> querySearch(
             )
             .toList();
         yield SearchResult(bList, format);
-
         break;
+
       case QueryType.c:
         final cList = <Classroom>[];
         for (var b in buildings.values) {
@@ -432,8 +413,8 @@ Stream<SearchResult> querySearch(
           }
         }
         yield SearchResult(cList, format);
-
         break;
+
       case QueryType.a:
         final aList = <Area>[];
         for (var b in buildings.values) {
@@ -444,7 +425,6 @@ Stream<SearchResult> querySearch(
           }
         }
         yield SearchResult(aList, format);
-
         break;
     }
   }
@@ -474,7 +454,6 @@ class SearchResult {
 
   factory SearchResult(dynamic _data, Query _query) {
     late SearchResultType type;
-    // debugPrint(_data.runtimeType.toString());
     switch (_data.runtimeType.toString()) {
       case 'List<Classroom>':
         type = SearchResultType.room;

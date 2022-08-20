@@ -17,7 +17,6 @@ class UpdateService with AsyncTimer {
     try {
       var code = UpdateUtil.apkType == ApkType.release ? 1 : 0;
       var response = await updateDio.get("${BASEURL}check/$code");
-      debugPrint(response.data.toString());
       return VersionData.fromJson(response.data).data;
     } catch (error, stack) {
       Logger.reportError(error, stack);

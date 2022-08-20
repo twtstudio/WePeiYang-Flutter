@@ -22,7 +22,6 @@ class UpdateProgressDialog extends StatelessWidget {
 
     final progressBar = Selector<UpdateManager, double>(
       builder: (_, progress, __) {
-        debugPrint('show _progress : $progress');
         final progressHeight = 2.0;
         if (progress == 0) {
           return Loading();

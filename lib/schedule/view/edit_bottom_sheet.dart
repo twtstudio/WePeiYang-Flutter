@@ -205,10 +205,13 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         return true;
       },
       child: Container(
-        height: 0.6.sh,
+        height: 647.h,
         padding: EdgeInsets.symmetric(vertical: 10.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          image: DecorationImage(
+            image: AssetImage('assets/images/schedule/sheet_bg.png'),
+            fit: BoxFit.cover,
+          ),
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(

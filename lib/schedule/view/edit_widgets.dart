@@ -12,6 +12,8 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 
+final _ITEM_HEIGHT = 48.h;
+
 class TimeFrameWidget extends StatelessWidget {
   final int index;
   final bool canDelete;
@@ -85,13 +87,19 @@ class TimeFrameWidget extends StatelessWidget {
                 child: Builder(builder: (context) {
                   return GestureDetector(
                     onTap: () {
+                      // 先找到点击位置的y坐标（记为top）
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
+                      // 弹出的选择框高度为220，如果超出屏幕高度，则让外部ListView向上jump
                       if (top + 220 > 1.sh) {
+                        // 计算jump的目标位置
                         var jumpPos = min(parentController.offset + 220,
                             parentController.position.maxScrollExtent);
+                        // 计算jump了多少距离
                         var jumpDis = jumpPos - parentController.offset;
                         top -= jumpDis;
+                        // 额外减去5作为距离屏幕底部的padding
+                        top -= 5;
                         parentController.jumpTo(jumpPos);
                       }
                       FocusScope.of(context).requestFocus(FocusNode());
@@ -108,7 +116,7 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48.h,
+                      height: _ITEM_HEIGHT,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
                       padding: EdgeInsets.only(right: 8.w),
@@ -147,7 +155,7 @@ class TimeFrameWidget extends StatelessWidget {
                       ).then((_) => pvd.notify());
                     },
                     child: Container(
-                      height: 48.h,
+                      height: _ITEM_HEIGHT,
                       alignment: Alignment.centerRight,
                       decoration: const BoxDecoration(),
                       padding: EdgeInsets.only(right: 8.w),
@@ -179,62 +187,6 @@ class TimeFrameWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CardWidget extends StatelessWidget {
-  final Widget child;
-  final GestureTapCallback? onTap;
-
-  CardWidget({required this.child, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    if (onTap != null) {
-      return Container(
-        margin: EdgeInsets.symmetric(vertical: 5.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.r),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 2),
-              blurRadius: 10,
-              color: Colors.black.withOpacity(0.06),
-            ),
-          ],
-        ),
-        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            splashFactory: InkRipple.splashFactory,
-            borderRadius: BorderRadius.circular(10.r),
-            child: Padding(
-              padding: EdgeInsets.all(12.r),
-              child: Center(child: child),
-            ),
-          ),
-        ),
-      );
-    }
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5.h),
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 2),
-            blurRadius: 10,
-            color: Colors.black.withOpacity(0.08),
-          ),
-        ],
-      ),
-      child: Center(child: child),
     );
   }
 }
@@ -274,28 +226,88 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (title != null)
-          Text('$title：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
-        Expanded(
-          child: TextField(
-            focusNode: focusNode,
-            controller: _controller,
-            onChanged: onChanged,
-            keyboardType: keyboardType,
-            inputFormatters: inputFormatter,
-            textAlign: TextAlign.end,
-            style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-            cursorColor: Color.fromRGBO(44, 126, 223, 1),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
-              border: InputBorder.none,
+    return SizedBox(
+      height: _ITEM_HEIGHT,
+      child: Row(
+        children: [
+          if (title != null)
+            Text('$title：',
+                style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+          Expanded(
+            child: TextField(
+              focusNode: focusNode,
+              controller: _controller,
+              onChanged: onChanged,
+              keyboardType: keyboardType,
+              inputFormatters: inputFormatter,
+              textAlign: TextAlign.end,
+              style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
+              cursorColor: Color.fromRGBO(44, 126, 223, 1),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CardWidget extends StatelessWidget {
+  final Widget child;
+  final GestureTapCallback? onTap;
+
+  CardWidget({required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    if (onTap != null) {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 5.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 2),
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.06),
+            ),
+          ],
+        ),
+        // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashFactory: InkRipple.splashFactory,
+            borderRadius: BorderRadius.circular(10.r),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
+              child: Center(child: child),
             ),
           ),
         ),
-      ],
+      );
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 2),
+            blurRadius: 10,
+            color: Colors.black.withOpacity(0.08),
+          ),
+        ],
+      ),
+      child: Center(child: child),
     );
   }
 }

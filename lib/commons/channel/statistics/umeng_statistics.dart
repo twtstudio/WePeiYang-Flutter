@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class UmengCommonSdk {
   static const MethodChannel _channel =
@@ -36,9 +37,5 @@ class UmengCommonSdk {
     _channel.invokeMethod('onProfileSignOff').catchError(printError);
   }
 
-  static void printError(dynamic e){
-    print("UmengCommonSdk error: ");
-    print("$e");
-    print("------------------------");
-  }
+  static void printError(e, s)=> Logger.reportError(e, s);
 }

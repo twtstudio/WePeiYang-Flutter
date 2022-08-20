@@ -55,62 +55,11 @@ class _CoursePageState extends State<CoursePage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
+        Image.asset(
+          "assets/images/schedule/home_bg.jpg",
           width: 1.sw,
           height: 1.sh,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(44, 126, 223, 1),
-                Color.fromRGBO(166, 207, 255, 1),
-                Color.fromRGBO(166, 207, 255, 1),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          left: 1.sw - 518.w,
-          top: -42.h,
-          height: 500.h,
-          width: 500.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: Container(
-              color: Color.fromRGBO(44, 126, 223, 0.5),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 1.sw - 481.w,
-          top: 0.65.sh,
-          height: 512.h,
-          width: 434.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: Container(
-              color: Color.fromRGBO(199, 213, 235, 1),
-            ),
-          ),
-        ),
-        Positioned(
-          left: 37.w,
-          top: 0.5.sh,
-          height: 436.h,
-          width: 436.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: Container(
-              color: Color.fromRGBO(129, 187, 255, 0.5),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-            child: Container(color: Colors.transparent),
-          ),
+          fit: BoxFit.cover,
         ),
         Scaffold(
           appBar: _CourseAppBar(),
@@ -233,13 +182,12 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           pvd.init();
           showModalBottomSheet(
             context: context,
-            elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             ),
             isDismissible: false,
             enableDrag: false,
-            isScrollControlled: false,
+            isScrollControlled: true,
             builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),
           );
         },

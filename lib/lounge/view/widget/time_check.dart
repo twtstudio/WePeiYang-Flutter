@@ -58,8 +58,6 @@ class _BottomDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('build _BottomDatePicker');
-
     const tableCalendar = _LoungeTableCalender();
 
     const tableClassTimes = _TableClassTimes();
@@ -244,8 +242,6 @@ class _TableClassTimesState extends State<_TableClassTimes> {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('build _TableClassTimesState');
-
     Widget tableClassTimes = GridView.count(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,

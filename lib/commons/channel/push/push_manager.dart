@@ -67,7 +67,6 @@ class PushManager extends ChangeNotifier {
   // 在用户同意隐私协议后，开启个推
   Future<void> initGeTuiSdk() async {
     try {
-      debugPrint("initGeTuiSdk---");
       final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
       switch (result) {
         case 'open push service success':
@@ -84,7 +83,6 @@ class PushManager extends ChangeNotifier {
           break;
       }
     } on PlatformException catch (e) {
-      debugPrint("$e");
       switch (e.code) {
         case "OPEN_PUSH_SERVICE_ERROR":
           break;
@@ -103,7 +101,6 @@ class PushManager extends ChangeNotifier {
       }
     } catch (e) {
       // TODO
-      debugPrint("$e");
     }
   }
 

@@ -276,7 +276,6 @@ class UpdateManager extends UpdateStatusListener {
 
     for (var file in apkDir.listSync()) {
       final name = file.path.split(Platform.pathSeparator).last;
-      debugPrint('current file: ' + name);
 
       // 如果下载的文件是apk，则将不是新版本的删除
       if (name.endsWith('.apk')) {

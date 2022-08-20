@@ -8,6 +8,8 @@ typedef FailedCallback = void Function(
     DownloadTask task, double progress, String reason);
 typedef SuccessCallback = void Function(DownloadTask task);
 typedef AllSuccessCallback = void Function(List<String>);
+// 参数为任务成功&失败的数量
+typedef AllCompleteCallback = void Function(int success, int failed);
 
 class DownloadListener {
   final String listenerId;
@@ -18,7 +20,10 @@ class DownloadListener {
   final FailedCallback failed;
   final SuccessCallback success;
   final AllSuccessCallback? allSuccess;
+  final AllCompleteCallback? allComplete;
+  // 储存下载成功&失败的taskId
   final Set<String> downloadList = Set();
+  final Set<String> failedList = Set();
 
   DownloadListener._(
     this.listenerId,
@@ -29,6 +34,7 @@ class DownloadListener {
     this.failed,
     this.success,
     this.allSuccess,
+    this.allComplete,
   );
 
   factory DownloadListener({
@@ -39,6 +45,7 @@ class DownloadListener {
     required FailedCallback failed,
     required SuccessCallback success,
     AllSuccessCallback? allSuccess,
+    AllCompleteCallback? allComplete,
   }) {
     final id = "${DateTime.now().millisecondsSinceEpoch}+${list.length}";
 
@@ -50,16 +57,8 @@ class DownloadListener {
       list,
     );
 
-    return DownloadListener._(
-      id,
-      tasks,
-      pending,
-      running,
-      paused,
-      failed,
-      success,
-      allSuccess,
-    );
+    return DownloadListener._(id, tasks, pending, running, paused, failed,
+        success, allSuccess, allComplete);
   }
 
   @override

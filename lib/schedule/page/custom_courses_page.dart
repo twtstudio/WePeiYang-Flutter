@@ -17,42 +17,11 @@ class CustomCoursesPage extends StatelessWidget {
     var customCourses = context.watch<CourseProvider>().customCourses;
     return Stack(
       children: [
-        Positioned.fill(child: ColoredBox(color: Colors.white)),
-        Positioned(
-          left: 1.sw - 481.w,
-          top: 0.65.sh,
-          height: 512.h,
-          width: 434.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: ColoredBox(color: Color.fromRGBO(199, 216, 235, 0.1)),
-          ),
-        ),
-        Positioned(
-          left: 0.5.sw,
-          top: 0.5.sh,
-          height: 434.h,
-          width: 434.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: ColoredBox(color: Color.fromRGBO(44, 126, 223, 0.15)),
-          ),
-        ),
-        Positioned(
-          left: 0.5.sw,
-          top: 0.25.sh,
-          height: 436.h,
-          width: 436.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10000),
-            child: ColoredBox(color: Color.fromRGBO(141, 171, 217, 0.2)),
-          ),
-        ),
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-            child: Container(color: Colors.transparent),
-          ),
+        Image.asset(
+          "assets/images/schedule/custom_courses_bg.png",
+          width: 1.sw,
+          height: 1.sh,
+          fit: BoxFit.cover,
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
