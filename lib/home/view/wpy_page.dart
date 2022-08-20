@@ -312,7 +312,7 @@ class SliverCardsWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (cards[i].label == 'Wiki') {
+        if (cards[i].label == '北洋维基') {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {
