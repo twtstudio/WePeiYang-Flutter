@@ -34,16 +34,16 @@ class ColorUtil {
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
   static const grey229 = Color.fromARGB(255, 229, 229, 229);
   static const gradientBlue = LinearGradient(
-      colors: [
-        Color(0xFF2C7EDF),
-        Color(0xFFA6CFFF),
-        // 用来挡下面圆角左右的空
-        Colors.white
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      // 在0.7停止同理
-      stops: [0, 0.53, 0.7],
+    colors: [
+      Color(0xFF2C7EDF),
+      Color(0xFFA6CFFF),
+      // 用来挡下面圆角左右的空
+      Colors.white
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    // 在0.7停止同理
+    stops: [0, 0.53, 0.7],
   );
 
   static const List<Color> aprilFoolColor = [

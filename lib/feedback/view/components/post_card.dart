@@ -325,54 +325,56 @@ class _PostCardState extends State<PostCard> {
     );
     List<Widget> rowList = [];
 
-    rowList.add(Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //if (widget.type == PostCardType.detail) SizedBox(height: 8.w),
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            if (widget.type == PostCardType.detail)
-              ProfileImageWithDetailedPopup(post.type, post.nickname, post.uid),
-            if (widget.type == PostCardType.detail)
-              Container(
-                margin: EdgeInsets.only(left: 8.w),
-                width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          post.nickname == '' ? '没名字的微友' : post.nickname,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
-                        ),
-                        if (widget.type == PostCardType.detail) createTimeDetail,
-                      ],
-                    ),
-                  ],
+    rowList.add(
+      Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //if (widget.type == PostCardType.detail) SizedBox(height: 8.w),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ProfileImageWithDetailedPopup(
+                    post.type, post.nickname, post.uid),
+                Container(
+                  margin: EdgeInsets.only(left: 8.w),
+                  width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            post.nickname == '' ? '没名字的微友' : post.nickname,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
+                          ),
+                        ],
+                      ),
+                      createTimeDetail,
+                    ],
+                  ),
                 ),
-              ),
-            if (widget.type == PostCardType.detail) Spacer(),
-            if (widget.type == PostCardType.detail)
-              GestureDetector(
-                onLongPress: () {
-                  return Clipboard.setData(ClipboardData(
-                          text: '#MP' + post.id.toString().padLeft(6, '0')))
-                      .whenComplete(
-                          () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
-                },
-                child: Text(
-                  '#MP' + post.id.toString().padLeft(6, '0'),
-                  style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+                Spacer(),
+                GestureDetector(
+                  onLongPress: () {
+                    return Clipboard.setData(ClipboardData(
+                            text: '#MP' + post.id.toString().padLeft(6, '0')))
+                        .whenComplete(
+                            () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
+                  },
+                  child: Text(
+                    '#MP' + post.id.toString().padLeft(6, '0'),
+                    style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+                  ),
                 ),
-              ),
-          ]),
-          SizedBox(height: 8.w),
-          if (widget.type == PostCardType.detail)
+              ],
+            ),
+            SizedBox(height: 8.w),
             Row(
               children: [
                 if (post.eTag != '' && post.eTag != null)
@@ -409,12 +411,12 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
-          if (widget.type == PostCardType.detail) SizedBox(height: 6.w),
-          content,
-          if (widget.type == PostCardType.simple) SizedBox(height: 2.w),
-        ],
+            SizedBox(height: 6.w),
+            content, SizedBox(height: 2.w),
+          ],
+        ),
       ),
-    ));
+    );
 
     if (widget.type == PostCardType.simple &&
         (post.imageUrls?.isNotEmpty ?? false)) {
@@ -441,18 +443,6 @@ class _PostCardState extends State<PostCard> {
                   )),
       ]);
     }
-    var createTime = Text(
-      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
-      textAlign: TextAlign.right,
-      style: TextUtil.base.black2A.bold.ProductSans.sp(12),
-    );
-    var createTimeDetail = Text(
-      DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
-      textAlign: TextAlign.right,
-      style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
-    );
-    var middleWidget =
-        Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
     var view = Text(
       post.visitCount == null ? '0次浏览' : post.visitCount.toString() + "次浏览",
       style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
@@ -461,7 +451,9 @@ class _PostCardState extends State<PostCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start),
+            Row(
+                children: rowList,
+                crossAxisAlignment: CrossAxisAlignment.start),
           ],
         );
 
@@ -514,60 +506,61 @@ class _PostCardState extends State<PostCard> {
         //这里的各种detail和simple的区分只是为了方便在调试帖子详情页面的时候让外面的页面不崩溃
 
         if (tag != '' && widget.type == PostCardType.detail)
-              TagShowWidget(
-                  tag,
-                  widget.type == PostCardType.simple
-                      ? WePeiYangApp.screenWidth -
-                          (post.campus > 0 ? 50.w : 0) -
-                          (widget.post.imageUrls.isEmpty ? 140.w : 240.w)
-                      : (WePeiYangApp.screenWidth - 24.w) / 2 -
-                          (post.campus > 0 ? 100.w : 60.w),
-                  post.type,
-                  id,
-                  0,
-                  post.type),
+          TagShowWidget(
+              tag,
+              widget.type == PostCardType.simple
+                  ? WePeiYangApp.screenWidth -
+                      (post.campus > 0 ? 50.w : 0) -
+                      (widget.post.imageUrls.isEmpty ? 140.w : 240.w)
+                  : (WePeiYangApp.screenWidth - 24.w) / 2 -
+                      (post.campus > 0 ? 100.w : 60.w),
+              post.type,
+              id,
+              0,
+              post.type),
         if (tag != '' && widget.type == PostCardType.detail) SizedBox(width: 8),
-        if(widget.type == PostCardType.detail)
-        TagShowWidget(
-                getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
-            if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
-        if(widget.type == PostCardType.detail) campus,
-        if(widget.type == PostCardType.detail)
-          Spacer(),
+        if (widget.type == PostCardType.detail)
+          TagShowWidget(
+              getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
+        if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
+        if (widget.type == PostCardType.detail) campus,
+        if (widget.type == PostCardType.detail) Spacer(),
 
-        if(widget.type == PostCardType.simple)
-        SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
-            color: ColorUtil.mainColor, width: 14.6.w),
-        if(widget.type == PostCardType.simple)
-        SizedBox(
-          width: 2.w,
-        ),
-        if(widget.type == PostCardType.simple)
-        Text(
-          post.visitCount == null
-              ? '0  '
-              : post.visitCount < 1000
-                  ? post.visitCount.toString() +
-                      (post.visitCount < 100 ? '   ' : '  ')
-                  : post.visitCount < 10000
-                      ? (post.visitCount.toDouble() / 1000)
-                              .toStringAsFixed(1)
-                              .toString() +
-                          'k  '
-                      : (post.visitCount.toDouble() / 10000)
-                              .toStringAsFixed(1)
-                              .toString() +
-                          'w  ',
-          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
-        ),
-        if(widget.type == PostCardType.detail)
-          Text(post.visitCount.toString(),
-              style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
-            ),
-        if(widget.type == PostCardType.detail)
-        Text('次浏览',
-          style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
-        ),
+        if (widget.type == PostCardType.simple)
+          SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
+              color: ColorUtil.mainColor, width: 14.6.w),
+        if (widget.type == PostCardType.simple)
+          SizedBox(
+            width: 2.w,
+          ),
+        if (widget.type == PostCardType.simple)
+          Text(
+            post.visitCount == null
+                ? '0  '
+                : post.visitCount < 1000
+                    ? post.visitCount.toString() +
+                        (post.visitCount < 100 ? '   ' : '  ')
+                    : post.visitCount < 10000
+                        ? (post.visitCount.toDouble() / 1000)
+                                .toStringAsFixed(1)
+                                .toString() +
+                            'k  '
+                        : (post.visitCount.toDouble() / 10000)
+                                .toStringAsFixed(1)
+                                .toString() +
+                            'w  ',
+            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+          ),
+        if (widget.type == PostCardType.detail)
+          Text(
+            post.visitCount.toString(),
+            style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
+          ),
+        if (widget.type == PostCardType.detail)
+          Text(
+            '次浏览',
+            style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
+          ),
       ],
     );
 
@@ -783,13 +776,7 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
-                if (widget.type == PostCardType.detail)
-                  Row(
-                    children: [
-                      Spacer(),
-                      view,
-                    ],
-                  ),
+                if (widget.type == PostCardType.detail) visitWidget,
               ],
             ),
             decoration: decoration,

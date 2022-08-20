@@ -778,7 +778,7 @@ class _DetailPageState extends State<DetailPage>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   // 在0.7停止同理
-                  stops: [0,0.99]),
+                  stops: [0, 0.99]),
               cancelFun: () {
                 Navigator.of(context).pop();
               },

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
-import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -38,7 +37,7 @@ class ProfileHeader extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  SizedBox(height: 130.h),
+                  SizedBox(height: 140.h),
                   ClipRRect(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
@@ -108,28 +107,26 @@ class ProfileHeader extends StatelessWidget {
                               )
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(CommonPreferences.userNumber.value,
-                                    textAlign: TextAlign.start,
-                                    style: TextUtil
-                                        .base.ProductSans.black4E.w700
-                                        .sp(14)),
-                                SizedBox(
-                                  width: 20.w,
-                                ),
-                                Text(
-                                    "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
-                                    textAlign: TextAlign.start,
-                                    style: TextUtil
-                                        .base.ProductSans.black4E.w700
-                                        .sp(14)),
-                              ],
-                            ),
+                          SizedBox(height: 15.w),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(CommonPreferences.userNumber.value,
+                                  textAlign: TextAlign.start,
+                                  style: TextUtil
+                                      .base.ProductSans.black4E.w700
+                                      .sp(14)),
+                              SizedBox(
+                                width: 20.w,
+                              ),
+                              Text(
+                                  "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
+                                  textAlign: TextAlign.start,
+                                  style: TextUtil
+                                      .base.ProductSans.black4E.w700
+                                      .sp(14)),
+                            ],
                           ),
                         ],
                       ),
