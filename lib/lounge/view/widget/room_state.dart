@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/config_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/model/classroom.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
@@ -29,19 +31,13 @@ class RoomState extends StatelessWidget {
             width: 6.w,
             height: 6.w,
             decoration: const BoxDecoration(
-              color: Colors.lightGreen,
+              color: ColorUtil.green5CColor,
               shape: BoxShape.circle,
             ),
           );
 
-          stateText = Text(
-            '空闲',
-            style: TextStyle(
-              color: Colors.lightGreen,
-              fontSize: 9.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          );
+          stateText =
+              Text('空闲', style: TextUtil.base.PingFangSC.w400.green5C.sp(12));
         } else {
           stateDot = Container(
             width: 6.w,

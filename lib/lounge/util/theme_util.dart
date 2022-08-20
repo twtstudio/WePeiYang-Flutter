@@ -42,12 +42,12 @@ extension LoungeAreaPageColors on ThemeData {
 }
 
 extension LoungeRoomPageColors on ThemeData {
-  Color get coordinateBackground => loungeWhite2;
-  Color get coordinateText => loungeGray2;
-  Color get coordinateChosenBackground => loungePurple;
-  Color get coordinateChosenText => loungeBackgroundColor;
+  Color get coordinateBackground => Colors.white.withOpacity(0.2);
+  Color get coordinateText => ColorUtil.greyCAColor;
+  Color get coordinateChosenBackground => Colors.white;
+  Color get coordinateChosenText => loungeBlue;
   Color get roomTitle => loungePrimaryColor;
-  Color get roomConvertWeek => loungeGray1;
+  Color get roomConvertWeek => ColorUtil.greyCAColor;
   Color get favorButtonUnfavor => loungePrimaryColor;
   Color get favorButtonFavor => loungeGray3;
   Color get roomPlanItemText => loungeWhite3;

@@ -145,7 +145,7 @@ class DataFactory {
   }
 
   static String getRoomTitle(Classroom room) {
-    var title = '${room.bName}教 ';
+    var title = '${room.bName}教';
     if (room.aId != '-1') {
       title += room.aId;
     }

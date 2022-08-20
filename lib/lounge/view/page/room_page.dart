@@ -1,6 +1,4 @@
 // @dart = 2.12
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -150,11 +148,7 @@ class PageTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = Text(
       DataFactory.getRoomTitle(room),
-      style: TextStyle(
-        color: Theme.of(context).roomTitle,
-        fontSize: 25.sp,
-        fontWeight: FontWeight.bold,
-      ),
+      style: TextUtil.base.white.sp(20).Swis.w400,
     );
 
     final convertedWeek = Builder(builder: (context) {
@@ -179,7 +173,10 @@ class PageTitleWidget extends StatelessWidget {
           child: convertedWeek,
         ),
         const Spacer(),
-        _FavorButton(room),
+        Padding(
+          padding: EdgeInsets.only(right: 3.w),
+          child: _FavorButton(room),
+        ),
       ],
     );
   }
@@ -194,10 +191,15 @@ class _FavorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.transparent,
+        primary: Colors.white,
         onPrimary: Colors.transparent,
         onSurface: Colors.transparent,
         shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.r),
+        ),
+        minimumSize: Size(1, 1),
+        padding: EdgeInsets.fromLTRB(12.w, 3.w, 12.w, 3.w),
       ),
       onPressed: () {
         context.read<RoomFavour>().changeFavor(room);
@@ -209,7 +211,7 @@ class _FavorButton extends StatelessWidget {
         if (isFavor) {
           return Text('已收藏', style: TextUtil.base.blue2C.w400.sp(14));
         } else {
-          return Text('收藏', style: TextUtil.base.blue2C.w400.sp(14));
+          return Text('+ 收藏', style: TextUtil.base.blue2C.w400.sp(14));
         }
       }),
     );
@@ -219,8 +221,6 @@ class _FavorButton extends StatelessWidget {
 double get cardStep => 6.w;
 
 double get schedulePadding => 11.67.w;
-
-double get countTabWidth => 22.67.w;
 
 double get dateTabHeight => 28.27.w;
 
@@ -232,14 +232,13 @@ class ClassTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final wholeWidth = MediaQuery.of(context).size.width - schedulePadding * 2;
     final dayCount = CommonPreferences.dayNumber.value;
-    final cardWidth =
-        (wholeWidth - countTabWidth - dayCount * cardStep) / dayCount;
+    final cardWidth = (wholeWidth - dayCount * cardStep) / dayCount;
     final tabHeight = cardWidth * 136 / 96;
     final wholeHeight = tabHeight * 12 + cardStep * 12 + dateTabHeight;
 
     final weekBar = Positioned(
       top: 0,
-      left: cardStep + countTabWidth,
+      left: cardStep / 2,
       child: SizedBox(
         height: dateTabHeight,
         width: cardWidth * dayCount + cardStep * (dayCount - 1),
@@ -247,15 +246,9 @@ class ClassTableWidget extends StatelessWidget {
       ),
     );
 
-    final courseTab = Positioned(
-      top: cardStep + dateTabHeight,
-      left: 0,
-      child: CourseTabDisplayWidget(tabHeight, dayCount),
-    );
-
     final planGrid = Positioned(
       top: cardStep + dateTabHeight,
-      left: cardStep + countTabWidth,
+      left: cardStep / 2,
       child: CourseDisplayWidget(cardWidth, dayCount),
     );
 
@@ -263,91 +256,7 @@ class ClassTableWidget extends StatelessWidget {
       height: wholeHeight,
       width: wholeWidth,
       child: Stack(
-        children: [weekBar, planGrid, courseTab],
-      ),
-    );
-  }
-}
-
-class CourseTabDisplayWidget extends StatelessWidget {
-  final int dayCount;
-  final double tabHeight;
-
-  const CourseTabDisplayWidget(
-    this.tabHeight,
-    this.dayCount, {
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final timeRange = context.select((LoungeConfig config) => config.timeRange);
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: Time.rangeList.asMap().keys.map((step) {
-        var chosen = timeRange.contains(Time.rangeList[step]);
-
-        final courseTabs = [
-          CourseTab(
-            tabHeight,
-            chosen,
-            step * 2 + 1,
-          ),
-          SizedBox(height: cardStep),
-          CourseTab(
-            tabHeight,
-            chosen,
-            step * 2 + 2,
-          ),
-        ];
-
-        if (step != Time.rangeList.length - 1) {
-          courseTabs.add(SizedBox(height: cardStep));
-        }
-
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: courseTabs,
-        );
-      }).toList(),
-    );
-  }
-}
-
-class CourseTab extends StatelessWidget {
-  final double height;
-  final bool chosen;
-  final int step;
-
-  const CourseTab(this.height, this.chosen, this.step, {Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final backgroundColor =
-        chosen ? theme.coordinateChosenBackground : theme.coordinateBackground;
-
-    final textColor =
-        chosen ? theme.coordinateChosenText : theme.coordinateText;
-
-    return Container(
-      height: height,
-      width: countTabWidth,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        '$step',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 12.w,
-          fontWeight: FontWeight.bold,
-        ),
+        children: [weekBar, planGrid],
       ),
     );
   }
@@ -389,7 +298,7 @@ class WeekDisplayWidget extends StatelessWidget {
             '${date.month}/${date.day}',
             style: TextStyle(
               color: textColor,
-              fontSize: 10.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -445,10 +354,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
 
     return SizedBox(
       height: singleCourseHeight * 12 + cardStep * 11,
-      width: MediaQuery.of(context).size.width -
-          schedulePadding * 2 -
-          countTabWidth -
-          cardStep,
+      width: MediaQuery.of(context).size.width - schedulePadding * 2 - cardStep,
       child: super.build(context),
     );
   }
@@ -461,7 +367,6 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
     int dayCount,
   ) {
     List<Widget> list = [];
-    final colors = Theme.of(context).roomPlanItemColors;
     var d = 1;
     for (var wd in Time.week.getRange(0, dayCount)) {
       var index = 1;
@@ -485,7 +390,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.w),
               shape: BoxShape.rectangle,
-              color: colors[Random().nextInt(colors.length)],
+              color: Colors.white.withOpacity(0.15),
             ),
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 9.w),
@@ -493,7 +398,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
               '课程占用',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 9.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).roomPlanItemText,
               ),

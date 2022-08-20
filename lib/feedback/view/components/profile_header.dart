@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-
 import 'change_nickname_dialog.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -39,9 +38,7 @@ class ProfileHeader extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  SizedBox(
-                    height: 130.h,
-                  ),
+                  SizedBox(height: 130.h),
                   ClipRRect(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),

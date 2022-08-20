@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/time_check.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/load_state_notifier.dart';
@@ -12,11 +11,13 @@ import 'package:we_pei_yang_flutter/main.dart';
 class LoungeBasePage extends StatefulWidget {
   final Widget body;
   final EdgeInsets padding;
+  final bool isOutside;
 
   const LoungeBasePage({
     Key? key,
     required this.body,
     this.padding = EdgeInsets.zero,
+    this.isOutside = false,
   }) : super(key: key);
 
   @override
@@ -52,10 +53,13 @@ class _LoungeBasePageState extends State<LoungeBasePage>
               Navigator.pop(context);
             }
           },
-          child: Image.asset('assets/images/lounge_icons/pop.png', width: 20.w,),
+          child: Image.asset(
+            'assets/images/lounge_icons/pop.png',
+            width: 20.w,
+          ),
         ),
       ),
-      backgroundColor: ColorUtil.blue2CColor,
+      backgroundColor: Colors.transparent,
       actions: const [_ErrorAlert(), TimeCheckWidget()],
     );
 
@@ -75,12 +79,17 @@ class _LoungeBasePageState extends State<LoungeBasePage>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromRGBO(44, 126, 223, 1),
-                  Colors.white,
-                  Colors.white,
-                  Colors.white,
-                ],
+                colors: widget.isOutside
+                    ? [
+                        Color.fromRGBO(44, 126, 223, 1),
+                        Color.fromRGBO(166, 207, 255, 1),
+                        Color.fromRGBO(166, 207, 255, 1),
+                        Color.fromRGBO(166, 207, 255, 1),
+                      ]
+                    : [
+                        Color.fromRGBO(44, 126, 223, 1),
+                        Color.fromRGBO(166, 207, 255, 1),
+                      ],
               ),
             ),
           ),

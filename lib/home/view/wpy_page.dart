@@ -75,14 +75,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           'Wiki',
           'https://wiki.tjubot.cn/'),
       CardBean(Icon(Icons.timeline, size: 25), 'GPA', 'GPA', GPARouter.gpa),
-      CardBean(
-          Image.asset(
-            'assets/svg_pics/lake_butt_icons/self_study.png',
-            width: 24.w,
-          ),
-          S.current.lounge,
-          'Study',
-          LoungeRouter.main),
       CardBean(Icon(Icons.domain, size: 25), '楼宇牌', 'BuildingCard',
           ReportRouter.pass),
       CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',

@@ -12,7 +12,7 @@ abstract class DioAbstract {
   Map<String, String>? headers;
   List<InterceptorsWrapper> interceptors = [];
   ResponseType responseType = ResponseType.json;
-  bool responseBody = false;
+  bool responseBody = true;
 
   late Dio _dio;
 

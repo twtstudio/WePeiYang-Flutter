@@ -19,6 +19,7 @@ class ColorUtil {
   static const whiteFDFE = Color.fromARGB(255, 253, 253, 254);
   static const grey97Color = Color(0xFF979797);
   static const greyEAColor = Color(0xFFEAEAEA);
+  static const green5CColor = Color(0xFF5CB85C);
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const black2AColor = Color(0xFF2A2A2A);
   static const greyF7F8Color = Color(0xFFF7F7F8);
@@ -27,6 +28,7 @@ class ColorUtil {
   static const greyB2B6Color = Color(0xFFB2B6BB);
   static const blue363CColor = Color(0xFF363C54);
   static const blue2CColor = Color(0xFF2C7EDF);
+  static const blueA6Color = Color(0xFFA6CFFF);
   static const biliPink = Color(0xFFF97198);
   static const warning = Color(0xFFFFBC6B);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);

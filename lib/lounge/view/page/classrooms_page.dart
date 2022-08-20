@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
@@ -99,7 +100,7 @@ class ClassroomsPage extends StatelessWidget {
     );
 
     return LoungeBasePage(
-      // padding: EdgeInsets.symmetric(horizontal: 23.w),
+      isOutside: true,
       body: body,
     );
   }
@@ -130,19 +131,24 @@ class BuildingFloors extends StatelessWidget {
     );
 
     floorListView = ListView(
-      physics: const BouncingScrollPhysics(),
       children: [
-        SizedBox(height: 27.w),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 21.w),
+          padding: EdgeInsets.fromLTRB(0, 20.h, 0, 50.h),
           child: const _PathTitle(),
         ),
-        SizedBox(height: 16.w),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 13.w),
-          child: floorListView,
+        ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
+          ),
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
+              child: floorListView,
+            ),
+          ),
         ),
-        SizedBox(height: 30.w),
       ],
     );
 
@@ -165,16 +171,13 @@ class _PathTitle extends StatelessWidget {
     final area = context.select((_ClassroomsPageData data) => data.area);
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           area.id != '-1'
               ? area.building + '教学楼' + area.id + '区'
               : area.building + '教学楼',
-          style: TextStyle(
-            color: Theme.of(context).classroomTitle,
-            fontWeight: FontWeight.bold,
-            fontSize: 17.sp,
-          ),
+          style: TextUtil.base.white.sp(20).Swis.w400.space(letterSpacing: 5),
         )
       ],
     );
@@ -219,14 +222,16 @@ class FloorWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 6.w),
-          child: Text(
-            floor + "F",
-            style: TextStyle(
-              color: Theme.of(context).classroomFloor,
-              fontWeight: FontWeight.bold,
-              fontSize: 13.sp,
-            ),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Row(
+            children: [
+              Image.asset('assets/images/lounge_icons/point.png', width: 6.w),
+              SizedBox(width: 6.w),
+              Text(
+                floor + "F",
+                style: TextUtil.base.PingFangSC.w400.black2A.sp(16),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 10.w),
@@ -256,11 +261,7 @@ class _RoomItem extends StatelessWidget {
           classroom.aId == '-1'
               ? classroom.name
               : classroom.aId + classroom.name,
-          style: TextStyle(
-            color: Theme.of(context).classroomItemName,
-            fontWeight: FontWeight.bold,
-            fontSize: 12.sp,
-          ),
+          style: TextUtil.base.black2A.w400.PingFangSC.sp(14),
         ),
         SizedBox(height: 5.w),
         roomState,

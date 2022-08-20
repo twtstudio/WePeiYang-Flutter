@@ -2,11 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/model/area.dart';
-import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 import 'package:we_pei_yang_flutter/lounge/lounge_router.dart';
-import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
 import 'package:provider/provider.dart';
 
@@ -20,25 +19,14 @@ class AreasPage extends StatelessWidget {
     final building = context.read<BuildingData>().buildings[bId]!;
 
     final pageTitle = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(width: 1),
-        Image.asset(
-          Images.building,
-          height: 17.w,
-        ),
-        const SizedBox(width: 7),
         Text(
           building.name + '教学楼',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 17.sp,
-            color: Theme.of(context).areaTitle,
-          ),
-        ),
+          style: TextUtil.base.white.sp(20).Swis.w400.space(letterSpacing: 5),
+        )
       ],
     );
-
-    final areaColors = Theme.of(context).areaItemColors;
 
     final areasGridView = GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
@@ -47,12 +35,11 @@ class AreasPage extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 20.w,
         mainAxisSpacing: 20.w,
-        childAspectRatio: 9 / 8,
+        childAspectRatio: 5 / 4,
       ),
       itemCount: building.areas.values.length,
       itemBuilder: (context, index) => _AreaItem(
         index,
-        areaColors[index % areaColors.length],
         building.areas.values.toList()[index],
       ),
     );
@@ -73,12 +60,10 @@ class AreasPage extends StatelessWidget {
 
 class _AreaItem extends StatelessWidget {
   final int index;
-  final Color color;
   final Area area;
 
   const _AreaItem(
     this.index,
-    this.color,
     this.area, {
     Key? key,
   }) : super(key: key);
@@ -93,22 +78,25 @@ class _AreaItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final areaName = Text(
-      area.id + '区',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).areaText,
-        fontSize: 14.sp,
-      ),
+    final areaName = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset('assets/images/lounge_icons/point.png', width: 6.w),
+        SizedBox(width: 6.w),
+        Text(
+          area.id + '区',
+          style: TextUtil.base.Swis.bold.sp(16).black2A.space(letterSpacing: 5),
+        ),
+      ],
     );
 
     return InkWell(
       onTap: () => pushToClassroomsPage(context),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.w),
+          borderRadius: BorderRadius.circular(20.w),
           shape: BoxShape.rectangle,
-          color: color,
+          color: Color.fromRGBO(213, 229, 249, 1),
         ),
         alignment: Alignment.center,
         child: areaName,
