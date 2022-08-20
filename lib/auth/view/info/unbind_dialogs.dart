@@ -7,18 +7,15 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-final _hintStyle = FontManager.YaQiHei.copyWith(
-    fontSize: 15,
-    color: Color.fromRGBO(98, 103, 123, 1),
-    fontWeight: FontWeight.bold,
-    decoration: TextDecoration.none);
+final _hintStyle = TextUtil.base.bold.noLine
+    .sp(15)
+    .customColor(Color.fromRGBO(98, 103, 123, 1));
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
@@ -46,11 +43,9 @@ class TjuUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.tju_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 11,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -102,11 +97,9 @@ class PhoneUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.phone_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 11,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -158,11 +151,9 @@ class EmailUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.email_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(79, 88, 107, 1),
-                      fontSize: 11,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -223,11 +214,9 @@ class LogoffDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
                   textAlign: TextAlign.center,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Color.fromRGBO(255, 0, 0, 1.0),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.w900.noLine
+                      .sp(18)
+                      .customColor(Color.fromRGBO(255, 0, 0, 1))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -236,7 +225,8 @@ class LogoffDialog extends Dialog {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: TextUtil.base.w900.mainColor.sp(20)),
+                    child: Text(S.current.cancel,
+                        style: TextUtil.base.w900.mainColor.sp(20)),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -244,7 +234,8 @@ class LogoffDialog extends Dialog {
                   onTap: _logoff,
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: TextUtil.base.w400.dangerousRed.sp(15)),
+                    child: Text(S.current.ok,
+                        style: TextUtil.base.w400.dangerousRed.sp(15)),
                   ),
                 )
               ],

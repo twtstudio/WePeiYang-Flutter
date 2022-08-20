@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
@@ -112,8 +112,9 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -121,15 +122,15 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
           Text(S.current.wrong + "！",
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(79, 88, 107, 1),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17))
+              style: TextUtil.base.bold
+                  .sp(17)
+                  .customColor(Color.fromRGBO(79, 88, 107, 1)))
         ]),
         SizedBox(height: 8),
         Text(widget.reason,
-            style: FontManager.YaHeiRegular.copyWith(
-                color: Color.fromRGBO(79, 88, 107, 1), fontSize: 12)),
+            style: TextUtil.base.regular
+                .sp(12)
+                .customColor(Color.fromRGBO(79, 88, 107, 1))),
         SizedBox(height: 18),
         ConstrainedBox(
           constraints: BoxConstraints(
@@ -221,8 +222,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.login,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

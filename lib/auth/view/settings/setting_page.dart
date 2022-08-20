@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
@@ -26,16 +26,13 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static final titleTextStyle = FontManager.YaHeiBold.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(177, 180, 186, 1),
-      fontWeight: FontWeight.bold);
-  static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(98, 103, 122, 1),
-      fontWeight: FontWeight.bold);
-  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
+  static final titleTextStyle =
+      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(177, 180, 186, 1));
+  static final mainTextStyle =
+      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
+  static final hintTextStyle = TextUtil.base.regular
+      .sp(10)
+      .customColor(Color.fromRGBO(205, 206, 212, 1));
   static final arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
 
@@ -47,10 +44,9 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.setting,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(16)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class AgreementAndPrivacyDialog extends Dialog {
   final String result;
@@ -32,8 +32,7 @@ class AgreementAndPrivacyDialog extends Dialog {
             Expanded(
               child: DefaultTextStyle(
                 textAlign: TextAlign.start,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: textColor, fontSize: 13),
+                style: TextUtil.base.regular.sp(13).customColor(textColor),
                 child: Markdown(
                   controller: ScrollController(),
                   selectable: true,
@@ -61,12 +60,7 @@ class AgreementAndPrivacyDialog extends Dialog {
           child: Container(
             decoration: BoxDecoration(), // 加个这个扩大点击事件范围
             padding: const EdgeInsets.all(16),
-            child: Text('拒绝',
-                style: FontManager.YaQiHei.copyWith(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none)),
+            child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
           ),
         ),
         GestureDetector(
@@ -78,11 +72,9 @@ class AgreementAndPrivacyDialog extends Dialog {
             decoration: BoxDecoration(), // 加个这个扩大点击事件范围
             padding: const EdgeInsets.all(16),
             child: Text('同意',
-                style: FontManager.YaQiHei.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none)),
+                style: TextUtil.base.bold.noLine
+                    .sp(16)
+                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
           ),
         ),
       ],

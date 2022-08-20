@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 
 class PrivacyDialog extends Dialog {
   final ValueNotifier check;
@@ -23,17 +23,15 @@ class PrivacyDialog extends Dialog {
           Expanded(
             child: DefaultTextStyle(
               textAlign: TextAlign.start,
-              style: FontManager.YaHeiRegular.copyWith(
-                  color: textColor, fontSize: 13),
+              style: TextUtil.base.regular.sp(13).customColor(textColor),
               child: ListView(physics: BouncingScrollPhysics(), children: [
                 Container(
                     alignment: Alignment.topCenter,
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
-                    child: Text('微北洋用户隐私政策',
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: textColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold))),
+                    child: Text(
+                      '微北洋用户隐私政策',
+                      style: TextUtil.base.bold.sp(18).customColor(textColor),
+                    )),
                 Text("更新日期：2022年03月19日\n" + "生效日期：2021年08月13日\n"),
                 BoldText("一、隐私政策"),
                 Text("请您在开始使用我们的产品微北洋（以下简称“本产品”）之前请务必仔细阅读并理解《隐私政策》（以下简称“本政策”）。"
@@ -109,11 +107,9 @@ class PrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text('确定',
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(98, 103, 123, 1),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none)),
+              style: TextUtil.base.bold.noLine
+                  .sp(16)
+                  .customColor(Color.fromRGBO(98, 103, 123, 1))),
         ),
       );
     } else {
@@ -128,12 +124,7 @@ class PrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+              child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
             ),
           ),
           GestureDetector(
@@ -145,11 +136,9 @@ class PrivacyDialog extends Dialog {
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
               child: Text('同意',
-                  style: FontManager.YaQiHei.copyWith(
-                      color: Color.fromRGBO(98, 103, 123, 1),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+                  style: TextUtil.base.bold.noLine
+                      .sp(16)
+                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
             ),
           ),
         ],

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
@@ -102,12 +102,10 @@ class WeekSelectWidget extends StatelessWidget {
         ),
         SizedBox(height: 3.h),
         Text('WEEK ${i + 1}',
-            style: FontManager.Aspira.copyWith(
-                color: (provider.selectedWeek == i + 1)
+            style: TextUtil.base.Swis.w900.sp(10).customColor(
+                (provider.selectedWeek == i + 1)
                     ? Color.fromRGBO(255, 255, 255, 1)
-                    : Color.fromRGBO(255, 255, 255, 0.4),
-                fontSize: 10,
-                fontWeight: FontWeight.w900))
+                    : Color.fromRGBO(255, 255, 255, 0.4)))
       ],
     );
   }

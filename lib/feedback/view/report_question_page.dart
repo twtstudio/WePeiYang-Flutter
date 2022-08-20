@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
@@ -59,30 +58,30 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
     );
 
     var reportButton = Container(
-      padding: EdgeInsets.only(right: 26),
+        padding: EdgeInsets.only(right: 26),
         child: ElevatedButton(
-      onPressed: () {
-        if (textInput == '') {
-          ToastProvider.error("请输入详细说明");
-          return;
-        }
-        FeedbackService.report(
-            id: widget.args.id,
-            floorId: widget.args.floorId ?? '',
-            isQuestion: widget.args.isQuestion,
-            reason: textInput,
-            onSuccess: () {
-              ToastProvider.success(S.current.feedback_report_success);
-              Navigator.pop(context);
-            },
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-            });
-      },
-      child: Text(S.current.feedback_report,
-          style: TextUtil.base.NotoSansSC.white.w600.sp(18)),
-      style: buttonStyle,
-    ));
+          onPressed: () {
+            if (textInput == '') {
+              ToastProvider.error("请输入详细说明");
+              return;
+            }
+            FeedbackService.report(
+                id: widget.args.id,
+                floorId: widget.args.floorId ?? '',
+                isQuestion: widget.args.isQuestion,
+                reason: textInput,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_report_success);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                });
+          },
+          child: Text(S.current.feedback_report,
+              style: TextUtil.base.NotoSansSC.white.w600.sp(18)),
+          style: buttonStyle,
+        ));
 
     return Scaffold(
       appBar: appBar,
@@ -129,10 +128,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 maxLines: 15,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.done,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: ColorUtil.boldTextColor,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14),
+                style: TextUtil.base.normal.blue303C.sp(14),
                 decoration: InputDecoration.collapsed(
                   hintText: '请填写举报理由，如“色情暴力”“政治敏感”等',
                   hintStyle: TextUtil.base.regular.NotoSansSC.black2A.sp(16),
@@ -152,20 +148,17 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //先与上面对齐
-              SizedBox(width: 25,),
+              SizedBox(width: 25),
               TextButton(
                   style: ButtonStyle(
-                    minimumSize:
-                    MaterialStateProperty.all(Size(1, 1)),
-                    padding:
-                    MaterialStateProperty.all(EdgeInsets.zero),
+                    minimumSize: MaterialStateProperty.all(Size(1, 1)),
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
                   ),
                   onPressed: () {
                     showDialog(
                         context: context,
                         barrierDismissible: true,
-                        builder: (BuildContext context) =>
-                            LakePrivacyDialog());
+                        builder: (BuildContext context) => LakePrivacyDialog());
                   },
                   child: Text(
                     '查看《求实论坛社区规范》',

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -22,27 +22,11 @@ class CourseDialog extends Dialog {
 
   CourseDialog(this._pairs);
 
-  final _nameStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 20,
-      color: Colors.white,
-      decoration: TextDecoration.none,
-      fontWeight: FontWeight.bold);
-
-  final _teacherStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 12, color: Colors.white, decoration: TextDecoration.none);
-
-  final _hintNameStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 10,
-      color: Colors.white,
-      decoration: TextDecoration.none,
-      letterSpacing: 1);
-
-  final _hintValueStyle = FontManager.Montserrat.copyWith(
-      fontSize: 9,
-      color: Colors.white,
-      letterSpacing: 0.5,
-      decoration: TextDecoration.none);
-
+  final _nameStyle = TextUtil.base.bold.white.noLine.sp(20);
+  final _teacherStyle = TextUtil.base.regular.white.noLine.sp(12);
+  final _hintNameStyle = TextUtil.base.regular.white.noLine.sp(10).space(letterSpacing: 1);
+  final _hintValueStyle =
+      TextUtil.base.Swis.white.noLine.sp(9).space(letterSpacing: 0.5);
   final _width = 1.sw - 120.w;
 
   @override

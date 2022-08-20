@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -161,14 +161,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           },
           child: SizedBox(
             width: double.infinity,
-            child: Text(
-              title,
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ColorUtil.boldTextColor,
-              ),
-            ),
+            child: Text(title, style: TextUtil.base.bold.blue303C.sp(16)),
           ),
         ),
         actions: [
@@ -179,14 +172,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '跟帖',
-                      style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: ColorUtil.boldTextColor,
-                      ),
-                    ),
+                    Text('跟帖', style: TextUtil.base.bold.blue303C.sp(12)),
                     SizedBox(width: 4),
                     Container(
                         height: 24,
@@ -239,12 +225,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ));
         } else {
           body = Center(
-            child: Text(
-              S.current.feedback_no_post,
-              style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.lightTextColor,
-              ),
-            ),
+            child: Text(S.current.feedback_no_post,
+                style: TextUtil.base.regular
+                    .customColor(Color.fromARGB(255, 145, 145, 145))),
           );
         }
         break;

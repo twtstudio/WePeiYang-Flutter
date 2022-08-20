@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -370,11 +369,10 @@ class _ThemeChangePageState extends State<ThemeChangePage>
     return Scaffold(
         appBar: AppBar(
           title: Text('主题皮肤',
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  height: 1.2,
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(16)
+                  .h(1.2)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: false,

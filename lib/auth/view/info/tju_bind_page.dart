@@ -6,8 +6,8 @@ import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
@@ -101,16 +101,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
 
   Widget _detail(BuildContext context) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
     if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
         Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
-            style: FontManager.YaHeiRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Color.fromRGBO(79, 88, 107, 1))),
+            style: TextUtil.base.bold
+                .sp(15)
+                .customColor(Color.fromRGBO(79, 88, 107, 1))),
         SizedBox(height: 60),
         SizedBox(
           height: 50,
@@ -122,8 +122,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.white, fontSize: 13)),
+                style: TextUtil.base.regular.white.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -133,8 +132,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
               }),
               backgroundColor:
                   MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
             ),
           ),
         ),
@@ -149,8 +149,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: Text(
               S.current.tju_bind_hint,
               textAlign: TextAlign.center,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+              style: TextUtil.base.regular
+                  .sp(10)
+                  .customColor(Color.fromRGBO(98, 103, 124, 1)),
             ),
           ),
           SizedBox(height: 20),
@@ -268,8 +269,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
@@ -289,15 +289,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
           Text(
             '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
             '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+            style: TextUtil.base.regular
+                .sp(10)
+                .customColor(Color.fromRGBO(98, 103, 124, 1)),
           ),
           Row(
             children: [
               Text(
                 '办公网网址为 ',
-                style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+                style: TextUtil.base.regular
+                    .sp(10)
+                    .customColor(Color.fromRGBO(98, 103, 124, 1)),
               ),
               GestureDetector(
                 onTap: () async {
@@ -308,13 +310,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     ToastProvider.error('请检查网络状态');
                   }
                 },
-                child: Text(
-                  'classes.tju.edu.cn',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 10,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline),
-                ),
+                child: Text('classes.tju.edu.cn',
+                    style: TextUtil.base.regular.blue363C.underLine.sp(10)),
               ),
             ],
           ),
@@ -348,10 +345,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
                   child: Text(S.current.tju_bind,
-                      style: FontManager.YaQiHei.copyWith(
-                          color: Color.fromRGBO(48, 60, 102, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28)),
+                      style: TextUtil.base.bold
+                          .sp(28)
+                          .customColor(Color.fromRGBO(48, 60, 102, 1))),
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),

@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -14,22 +14,17 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
-    final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 14,
-        color: Color.fromRGBO(98, 103, 122, 1),
-        fontWeight: FontWeight.bold);
-    final hintTextStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 11,
-        color: Color.fromRGBO(205, 206, 212, 1),
-        fontWeight: FontWeight.w600);
+    var mainTextStyle =
+        TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
+    var hintTextStyle =
+        TextUtil.base.w600.sp(11).customColor(Color.fromRGBO(205, 206, 212, 1));
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.reset_user_info,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(16)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -184,7 +179,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               child: InkWell(
                 onTap: () {
                   Navigator.pushNamed(context, FeedbackRouter.profile)
-                        .then((_) => this.setState(() {}));
+                      .then((_) => this.setState(() {}));
                 },
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(9)),
                 splashFactory: InkRipple.splashFactory,

@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -78,8 +78,7 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有未完成的考试哦',
-                            style: FontManager.YaHeiLight.copyWith(
-                                color: Colors.grey[400], fontSize: 12)))
+                            style: TextUtil.base.w300.greyA6.sp(12)))
                   ]
                 : provider.unfinished
                     .map((e) => examCard(context, e, false))
@@ -88,8 +87,7 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有已完成的考试哦',
-                            style: FontManager.YaHeiLight.copyWith(
-                                color: Colors.grey[400], fontSize: 12)))
+                            style: TextUtil.base.w300.greyA6.sp(12)))
                   ]
                 : provider.finished
                     .map((e) => examCard(context, e, true))
@@ -99,18 +97,12 @@ class _ExamPageState extends State<ExamPage> {
               children: [
                 SizedBox(height: 10.h),
                 Text('未完成',
-                    style: FontManager.YaQiHei.copyWith(
-                        fontSize: 16,
-                        color: _color,
-                        fontWeight: FontWeight.bold)),
+                    style: TextUtil.base.bold.sp(16).customColor(_color)),
                 SizedBox(height: 5.h),
                 ...unfinished,
                 SizedBox(height: 15.h),
                 Text('已完成',
-                    style: FontManager.YaQiHei.copyWith(
-                        fontSize: 16,
-                        color: _color,
-                        fontWeight: FontWeight.bold)),
+                    style: TextUtil.base.bold.sp(16).customColor(_color)),
                 SizedBox(height: 5.h),
                 ...finished,
               ],
@@ -208,8 +200,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name,
-                          style: FontManager.YaQiHei.copyWith(fontSize: 20)),
+                      Text(name, style: TextUtil.base.sp(20)),
                       SizedBox(height: 10.h),
                       Row(
                         children: [
@@ -230,8 +221,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                           SizedBox(width: 3.w),
                           Text('${exam.location}-$seat',
                               overflow: TextOverflow.ellipsis,
-                              style: FontManager.YaHeiLight.copyWith(
-                                  fontSize: 14)),
+                              style: TextUtil.base.w300.sp(14)),
                           Spacer(),
                           Text(exam.date,
                               style: TextStyle(
@@ -246,12 +236,10 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                 right: 0,
                 bottom: 1.h,
                 child: Text(remain,
-                    style: FontManager.Bauhaus.copyWith(
-                        height: 0,
-                        fontSize: 55,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.4))),
+                    style: TextUtil.base.Bauhaus.bold.italic
+                        .h(0)
+                        .sp(55)
+                        .customColor(Colors.white38)),
               ),
             ],
           ),

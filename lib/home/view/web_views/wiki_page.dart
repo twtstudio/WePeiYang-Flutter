@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 // ignore: must_be_immutable
@@ -20,10 +20,9 @@ class WikiPage extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
             title: Text(S.current.wiki,
-                style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 16,
-                    color: Color.fromRGBO(36, 43, 69, 1),
-                    fontWeight: FontWeight.bold)),
+                style: TextUtil.base.bold
+                    .sp(16)
+                    .customColor(Color.fromRGBO(36, 43, 69, 1))),
             elevation: 0,
             brightness: Brightness.light,
             centerTitle: true,

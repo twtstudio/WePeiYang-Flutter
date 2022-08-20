@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -22,8 +22,7 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
     if (index == 0 && FavorColors.gpaType.value == target) suffix = "(已选)";
     if (index == 1 && FavorColors.scheduleType.value == target) suffix = "(已选)";
     return Text(text + suffix,
-        style: FontManager.Aspira.copyWith(
-            color: color, fontSize: 14, fontWeight: FontWeight.bold));
+        style: TextUtil.base.Swis.bold.sp(14).customColor(color));
   }
 
   ///判断活动皮肤用
@@ -35,10 +34,8 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleTextStyle = FontManager.YaHeiBold.copyWith(
-        fontSize: 14,
-        color: Color.fromRGBO(177, 180, 186, 1),
-        fontWeight: FontWeight.bold);
+    var titleTextStyle =
+        TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(177, 180, 186, 1));
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -58,17 +55,15 @@ class _ColorSettingPageState extends State<ColorSettingPage> {
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
             child: Text(S.current.setting_color,
-                style: FontManager.YaQiHei.copyWith(
-                    color: Color.fromRGBO(48, 60, 102, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28)),
+                style: TextUtil.base.bold
+                    .sp(28)
+                    .customColor(Color.fromRGBO(48, 60, 102, 1))),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_color_hint,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.grey, fontSize: 11)),
+                style: TextUtil.base.regular.greyA6.sp(11)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 5),

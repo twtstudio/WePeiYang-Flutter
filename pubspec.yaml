@@ -91,27 +91,14 @@ flutter:
     - privacy/
 
   fonts:
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat-Alternates-Bold.ttf
-
-    - family: Aspira
-      fonts:
-        - asset: assets/fonts/ASPIRA WIDE W01 BOLD.ttf
-
-    - family: Texta
-      fonts:
-        - asset: assets/fonts/Texta Narrow W00 Thin.ttf
-
-    - family: Gilroy
-      fonts:
-        - asset: assets/fonts/Gilroy-HeavyItalic-8.otf
-          style: italic
-
     - family: Bauhaus
       fonts:
         - asset: assets/fonts/Bauhaus-Bold-Italic_6276.ttf
           style: italic
+
+    - family: Swis
+      fonts:
+        - asset: assets/fonts/Swis721-Blk-BT-Black-2.ttf
 
     - family: ProductSans
       fonts:

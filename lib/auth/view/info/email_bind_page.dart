@@ -4,8 +4,8 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class EmailBindPage extends StatefulWidget {
@@ -30,17 +30,19 @@ class _EmailBindPageState extends State<EmailBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
     if (CommonPreferences.email.value != "")
       return Column(children: [
         SizedBox(height: 60),
-        Text("${S.current.bind_email}: ",
-            textAlign: TextAlign.center,
-            style: FontManager.YaHeiRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Color.fromRGBO(79, 88, 107, 1))),
+        Text(
+          "${S.current.bind_email}: ",
+          textAlign: TextAlign.center,
+          style: TextUtil.base.bold
+              .sp(15)
+              .customColor(Color.fromRGBO(79, 88, 107, 1)),
+        ),
         SizedBox(height: 5),
         Text(CommonPreferences.email.value,
             textAlign: TextAlign.center,
@@ -59,8 +61,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     builder: (BuildContext context) => EmailUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.white, fontSize: 13)),
+                style: TextUtil.base.regular.white.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -70,8 +71,9 @@ class _EmailBindPageState extends State<EmailBindPage> {
               }),
               backgroundColor:
                   MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
             ),
           ),
         ),
@@ -81,9 +83,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 55,
-            ),
+            constraints: BoxConstraints(maxHeight: 55),
             child: TextField(
               decoration: InputDecoration(
                   hintText: S.current.email2,
@@ -107,8 +107,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
@@ -152,10 +151,9 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 30),
                 child: Text(S.current.email_bind,
-                    style: FontManager.YaQiHei.copyWith(
-                        color: Color.fromRGBO(48, 60, 102, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28)),
+                    style: TextUtil.base.bold
+                        .sp(28)
+                        .customColor(Color.fromRGBO(48, 60, 102, 1))),
               ),
               Column(
                 children: [
@@ -165,10 +163,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                         (CommonPreferences.email.value != "")
                             ? S.current.is_bind
                             : S.current.not_bind,
-                        style: FontManager.YaHeiRegular.copyWith(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold)),
+                        style: TextUtil.base.bold.greyA6.sp(12)),
                   ),
                 ],
               ),

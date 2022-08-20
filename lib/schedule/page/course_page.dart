@@ -9,8 +9,8 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -231,21 +231,16 @@ class _TitleWidget extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 5.h),
       child: Row(
         children: [
-          Text('Schedule',
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900)),
+          Text('Schedule', style: TextUtil.base.w900.white.sp(18)),
           Padding(
             padding: EdgeInsets.only(left: 8.w, top: 4.h),
             child: Builder(builder: (context) {
               var currentWeek =
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
-                  style: FontManager.Texta.copyWith(
-                      color: Color.fromRGBO(202, 202, 202, 1),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold));
+                  style: TextUtil.base.Swis.bold
+                      .sp(12)
+                      .customColor(Color.fromRGBO(202, 202, 202, 1)));
             }),
           ),
           Builder(builder: (context) {
@@ -296,10 +291,7 @@ class _HoursCounterWidget extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 8.h),
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
-                  style: FontManager.Aspira.copyWith(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold))),
+                  style: TextUtil.base.Swis.bold.white.sp(12))),
           Stack(
             alignment: Alignment.centerLeft,
             children: [

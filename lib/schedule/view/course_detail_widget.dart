@@ -6,13 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 /// 课程表每个item之间的垂直、水平间距
 const double verStep = 6;
@@ -75,12 +74,9 @@ class _WeekDisplayWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.r)),
         child: Center(
           child: Text(date,
-              style: FontManager.Aspira.copyWith(
-                  color: deep
-                      ? Color.fromRGBO(44, 126, 223, 1)
-                      : Color.fromRGBO(202, 202, 202, 1),
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.Swis.bold.sp(10).customColor(deep
+                  ? Color.fromRGBO(44, 126, 223, 1)
+                  : Color.fromRGBO(202, 202, 202, 1))),
         ),
       );
 }
@@ -119,8 +115,8 @@ class _CourseDisplayWidget extends StatelessWidget {
           int day = activeList[i][0].arrange.weekday;
           double top = (start - 1) * (_singleCourseHeight + verStep);
           double left = (day - 1) * (_cardWidth + horStep);
-          double height = (end - start + 1) * _singleCourseHeight +
-              (end - start) * verStep;
+          double height =
+              (end - start + 1) * _singleCourseHeight + (end - start) * verStep;
           // 绕开"午休"栏
           if (start > 4) top += _middleStep;
           if (start <= 4 && end > 4) height += _middleStep;
@@ -184,12 +180,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
           ),
           margin: EdgeInsets.symmetric(vertical: 5.h),
-          child: Text("LUNCH BREAK",
-              style: FontManager.YaQiHei.copyWith(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-              )),
+          child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
         ),
       ),
     );

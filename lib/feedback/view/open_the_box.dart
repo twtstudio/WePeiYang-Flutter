@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class OpenBox extends StatefulWidget {
@@ -36,10 +35,9 @@ class _OpenBoxState extends State<OpenBox> {
     return Scaffold(
         appBar: AppBar(
           title: Text("开盒",
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 17,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(17)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,

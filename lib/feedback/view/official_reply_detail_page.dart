@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -154,7 +153,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        if(CommonPreferences.lakeUid.value.toString() != post.uid.toString())
+        if (CommonPreferences.lakeUid.value.toString() != post.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
           launchKey.currentState.send(true);
@@ -318,16 +317,10 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           shape: RacTangle(),
           items: <PopupMenuItem<String>>[
-            new PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: '举报',
               child: Center(
-                child: new Text(
-                  '举报',
-                  style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 13,
-                    color: ColorUtil.boldTextColor,
-                  ),
-                ),
+                child: Text('举报', style: TextUtil.base.regular.blue303C.sp(13)),
               ),
             ),
           ],

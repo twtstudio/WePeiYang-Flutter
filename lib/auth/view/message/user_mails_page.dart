@@ -6,7 +6,6 @@ import 'package:simple_url_preview/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -27,10 +26,9 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
       backgroundColor: Color(0xfff7f7f8),
       appBar: AppBar(
           title: Text(S.current.message,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base.bold
+                  .sp(16)
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -171,8 +169,9 @@ class MailPage extends StatelessWidget {
       backgroundColor: Color(0xfff7f7f8),
       appBar: AppBar(
         title: Text('通知',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 16, color: Color.fromRGBO(36, 43, 69, 1))),
+            style: TextUtil.base.regular
+                .sp(16)
+                .customColor(Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
         brightness: Brightness.light,
         centerTitle: true,
@@ -309,7 +308,8 @@ class _TextMailContent extends StatelessWidget {
                     children: [
                       Text(
                         data.title,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ],
                   ),
@@ -322,7 +322,8 @@ class _TextMailContent extends StatelessWidget {
             ),
             if (data.url != null && data.url != '')
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -333,7 +334,8 @@ class _TextMailContent extends StatelessWidget {
                     InkWell(
                       child: Text(
                         '阅读原文',
-                        style: TextUtil.base.textButtonBlue.w400.NotoSansSC.sp(14),
+                        style:
+                            TextUtil.base.textButtonBlue.w400.NotoSansSC.sp(14),
                       ),
                       onTap: () async {
                         var url = data.url.startsWith('http')
@@ -350,20 +352,22 @@ class _TextMailContent extends StatelessWidget {
                                         .sp(26)
                                         .w600,
                                     content: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(' 你即将离开微北洋，去往：'),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 6),
+                                          padding:
+                                              const EdgeInsets.only(left: 6),
                                           child: Text(url,
                                               style: url.startsWith(
-                                                  'https://b23.tv/') ||
-                                                  url.startsWith(
-                                                      'https://www.bilibili.com/')
+                                                          'https://b23.tv/') ||
+                                                      url.startsWith(
+                                                          'https://www.bilibili.com/')
                                                   ? TextUtil.base.biliPink.w600
-                                                  .h(1.6)
+                                                      .h(1.6)
                                                   : TextUtil.base.black2A.w600
-                                                  .h(1.6)),
+                                                      .h(1.6)),
                                         ),
                                         SimpleUrlPreview(
                                           url: url,
@@ -372,24 +376,26 @@ class _TextMailContent extends StatelessWidget {
                                           imageLoaderColor: Colors.black12,
                                           previewHeight: 130,
                                           previewContainerPadding:
-                                          EdgeInsets.symmetric(vertical: 10),
+                                              EdgeInsets.symmetric(
+                                                  vertical: 10),
                                           onTap: () async {
                                             await launch(url);
                                             Navigator.pop(context);
                                           },
                                           titleStyle: url.startsWith(
-                                              'https://b23.tv/') ||
-                                              url.startsWith(
-                                                  'https://www.bilibili.com/')
+                                                      'https://b23.tv/') ||
+                                                  url.startsWith(
+                                                      'https://www.bilibili.com/')
                                               ? TextUtil.base.biliPink.w600
-                                              .h(1.6)
-                                              .sp(14)
+                                                  .h(1.6)
+                                                  .sp(14)
                                               : TextUtil.base.black2A.w600
-                                              .h(1.6)
-                                              .sp(24),
+                                                  .h(1.6)
+                                                  .sp(24),
                                           siteNameStyle: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context).primaryColor,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                           ),
                                         ),
                                       ],
@@ -400,11 +406,11 @@ class _TextMailContent extends StatelessWidget {
                                         .sp(16)
                                         .w600,
                                     confirmButtonColor:
-                                    url.startsWith('https://b23.tv/') ||
-                                        url.startsWith(
-                                            'https://www.bilibili.com/')
-                                        ? ColorUtil.biliPink
-                                        : ColorUtil.selectionButtonColor,
+                                        url.startsWith('https://b23.tv/') ||
+                                                url.startsWith(
+                                                    'https://www.bilibili.com/')
+                                            ? ColorUtil.biliPink
+                                            : ColorUtil.selectionButtonColor,
                                     cancelTextStyle: TextUtil
                                         .base.normal.black2A.NotoSansSC
                                         .sp(16)

@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
@@ -72,30 +71,20 @@ class _UserPageState extends State<UserPage> {
                             children: [
                               Text(CommonPreferences.nickname.value,
                                   textAlign: TextAlign.left,
-                                  style: FontManager.YaHeiRegular.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  )),
+                                  style: TextUtil.base.bold.white.sp(18)),
                               SizedBox(height: 15),
-                              Row(children: <Widget>[
-                                Text(CommonPreferences.userNumber.value,
-                                    textAlign: TextAlign.center,
-                                    style: FontManager.YaHeiRegular.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                                SizedBox(width: 10),
-                                Text(
-                                    'MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
-                                    textAlign: TextAlign.center,
-                                    style: FontManager.YaHeiRegular.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              ]),
+                              Row(
+                                children: <Widget>[
+                                  Text(CommonPreferences.userNumber.value,
+                                      textAlign: TextAlign.center,
+                                      style: TextUtil.base.bold.black2A.sp(12)),
+                                  SizedBox(width: 10),
+                                  Text(
+                                      'MPID: ${CommonPreferences.lakeUid.value.padLeft(6, '0')}',
+                                      textAlign: TextAlign.center,
+                                      style: TextUtil.base.bold.black2A.sp(12)),
+                                ],
+                              ),
                             ],
                           ),
                         ],
@@ -121,14 +110,10 @@ class _UserPageState extends State<UserPage> {
                             child: Row(
                               children: <Widget>[
                                 Spacer(),
-                                SizedBox(
-                                  width: 30.w,
-                                )
+                                SizedBox(width: 30.w)
                               ],
                             )),
                       SizedBox(height: 20.h),
-                      //NavigationWidget(),
-
                       Row(
                         children: [
                           Spacer(),

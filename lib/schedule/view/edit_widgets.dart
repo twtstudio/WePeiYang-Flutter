@@ -57,7 +57,7 @@ class TimeFrameWidget extends StatelessWidget {
           Row(
             children: [
               Text('time frame ${index + 1}',
-                  style: TextUtil.base.Aspira.medium.black2A.sp(16)),
+                  style: TextUtil.base.Swis.medium.black2A.sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
               GestureDetector(
