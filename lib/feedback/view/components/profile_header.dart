@@ -27,14 +27,6 @@ class ProfileHeader extends StatelessWidget {
       slivers: [
         SliverAppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              color: ColorUtil.bold42TextColor,
-              size: 20.w,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
           title: Text(
             "我的湖底",
             style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
