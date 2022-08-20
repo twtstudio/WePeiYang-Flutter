@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+
 import 'change_nickname_dialog.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -170,9 +171,10 @@ class _FeedbackMailboxState extends State<FeedbackMailbox> {
           ),
           SizedBox(width: 15),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AuthRouter.setting,
-                    arguments: SettingPage())
-                .then((value) => this.setState(() {})),
+            onTap: () => Navigator.pushNamed(
+              context,
+              AuthRouter.userInfo,
+            ).then((value) => this.setState(() {})),
             child: Image.asset(
               'assets/images/setting.png',
               width: 24,

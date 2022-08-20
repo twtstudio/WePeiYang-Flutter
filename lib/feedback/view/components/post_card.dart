@@ -437,7 +437,10 @@ class _PostCardState extends State<PostCard> {
     );
     var middleWidget =
         Row(children: rowList, crossAxisAlignment: CrossAxisAlignment.start);
-
+    var view = Text(
+      post.visitCount == null ? '0次浏览' : post.visitCount.toString() + "次浏览",
+      style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
+    );
     var mainWidget = (tap) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -476,7 +479,7 @@ class _PostCardState extends State<PostCard> {
                 if (widget.type == PostCardType.detail) createTimeDetail,
               ],
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 8.h),
             middleWidget,
           ],
         );
@@ -523,40 +526,10 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           );
 
-    var visitWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
-            color: ColorUtil.mainColor, width: 14.6.w),
-        SizedBox(
-          width: 2.w,
-        ),
-        Text(
-          post.visitCount == null
-              ? '0  '
-              : post.visitCount < 1000
-                  ? post.visitCount.toString() +
-                      (post.visitCount < 100 ? '   ' : '  ')
-                  : post.visitCount < 10000
-                      ? (post.visitCount.toDouble() / 1000)
-                              .toStringAsFixed(1)
-                              .toString() +
-                          'k  '
-                      : (post.visitCount.toDouble() / 10000)
-                              .toStringAsFixed(1)
-                              .toString() +
-                          'w  ',
-          style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
-        ),
-      ],
-    );
-
     var commentAndWatchedWidget = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        visitWidget,
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
             width: 11.67.w),
         SizedBox(
@@ -679,7 +652,7 @@ class _PostCardState extends State<PostCard> {
         bottomList.addAll([
           ...commentAndLike,
           Spacer(),
-          createTime,
+          view,
         ]);
         imagesWidget = [];
         break;
@@ -765,7 +738,13 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(height: 8.w),
                 ...imagesWidget,
                 if (widget.type != PostCardType.detail) bottomWidget,
-                if (widget.type == PostCardType.detail) visitWidget
+                if (widget.type == PostCardType.detail)
+                  Row(
+                    children: [
+                      Spacer(),
+                      view,
+                    ],
+                  ),
               ],
             ),
             decoration: decoration,

@@ -115,7 +115,7 @@ class MPWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text('#MP' + this.text,
-        style: TextUtil.base.ProductSans.w400.mainColor.sp(12));
+        style: TextUtil.base.ProductSans.w400.grey97.sp(12));
   }
 }
 
@@ -240,7 +240,7 @@ class TagShowWidget extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: width - 30),
                     child: Text(
                       tag ?? "",
-                      style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
+                      style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),

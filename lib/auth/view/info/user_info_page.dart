@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/environment/config.dart';
+import '../../../commons/test/test_router.dart';
+import '../../../commons/update/update_manager.dart';
+import '../privacy/privacy_dialog.dart';
+import '../privacy/user_agreement_dialog.dart';
+import '../settings/setting_page.dart';
+import '../user/logout_dialog.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -12,6 +21,11 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
+  final textStyle = FontManager.YaHeiRegular.copyWith(
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+      color: Color.fromRGBO(98, 103, 122, 1));
+
   @override
   Widget build(BuildContext context) {
     var mainTextStyle =
@@ -21,10 +35,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
     const arrow = Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
     return Scaffold(
       appBar: AppBar(
-          title: Text(S.current.reset_user_info,
-              style: TextUtil.base.bold
-                  .sp(16)
-                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
+          title: Text(S.current.setting,
+              style: FontManager.YaHeiRegular.copyWith(
+                  fontSize: 16,
+                  color: Color.fromRGBO(36, 43, 69, 1),
+                  fontWeight: FontWeight.bold)),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -36,7 +51,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Card(
               margin: const EdgeInsets.fromLTRB(20, 30, 20, 5),
@@ -170,24 +185,23 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ],
               )),
           Card(
-            margin: const EdgeInsets.fromLTRB(20, 15, 20, 5),
+            margin: const EdgeInsets.fromLTRB(20, 0, 20, 5),
             elevation: 0,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
             child: SizedBox(
               height: 70,
               child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, FeedbackRouter.profile)
-                      .then((_) => this.setState(() {}));
-                },
+                onTap: () => Navigator.pushNamed(context, AuthRouter.setting,
+                        arguments: SettingPageArgs(false))
+                    .then((value) => this.setState(() {})),
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(9)),
                 splashFactory: InkRipple.splashFactory,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: <Widget>[
-                      Text('更改求实论坛相关', style: mainTextStyle),
+                      Text('应用设置', style: mainTextStyle),
                       Spacer(),
                       arrow,
                       SizedBox(width: 11)
