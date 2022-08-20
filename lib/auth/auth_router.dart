@@ -84,7 +84,7 @@ class AuthRouter {
     resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
     avatarCrop: (_) => AvatarCropPage(),
-    setting: (args) => SettingPage(args),
+    setting: (_) => SettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     themeSetting: (_) => ThemeChangePage(),

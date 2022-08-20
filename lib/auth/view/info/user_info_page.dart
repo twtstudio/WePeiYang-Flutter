@@ -4,16 +4,15 @@ import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-
 import '../../../commons/environment/config.dart';
 import '../../../commons/test/test_router.dart';
 import '../../../commons/update/update_manager.dart';
+import '../../../commons/util/text_util.dart';
 import '../privacy/privacy_dialog.dart';
 import '../privacy/user_agreement_dialog.dart';
-import '../settings/setting_page.dart';
 import '../user/logout_dialog.dart';
+
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -21,10 +20,7 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  final textStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 13,
-      fontWeight: FontWeight.bold,
-      color: Color.fromRGBO(98, 103, 122, 1));
+  final textStyle = TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +32,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.setting,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
+              style: TextUtil.base
+                  .sp(18).bold
+                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
           brightness: Brightness.light,
           centerTitle: true,
@@ -192,9 +187,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
             child: SizedBox(
               height: 70,
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, AuthRouter.setting,
-                        arguments: SettingPageArgs(false))
-                    .then((value) => this.setState(() {})),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  AuthRouter.setting,
+                ).then((value) => this.setState(() {})),
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(9)),
                 splashFactory: InkRipple.splashFactory,
                 child: Padding(
@@ -313,6 +309,173 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
               )),
+          Container(
+            height: 80,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 5),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(
+                        context, AuthRouter.userInfo)
+                    .then((value) => this.setState(() {})),
+                splashFactory: InkRipple.splashFactory,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(width: 20),
+                    Image.asset(
+                        'assets/images/modify_info_icon.png',
+                        width: 20),
+                    SizedBox(width: 10),
+                    SizedBox(
+                        width: 150,
+                        child: Text(S.current.reset_user_info,
+                            style: textStyle)),
+                    Spacer(),
+                    arrow,
+                    SizedBox(width: 22)
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 80,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 5),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: InkWell(
+                onLongPress: () {
+                  if (EnvConfig.isTest) {
+                    Navigator.pushNamed(
+                        context, TestRouter.mainPage);
+                  }
+                },
+                onTap: () => Navigator.pushNamed(
+                    context, AuthRouter.aboutTwt),
+                splashFactory: InkRipple.splashFactory,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(width: 20),
+                    Image.asset('assets/images/twt.png', width: 20),
+                    SizedBox(width: 10),
+                    SizedBox(
+                        width: 150,
+                        child: Text(S.current.about_twt,
+                            style: textStyle)),
+                    Spacer(),
+                    arrow,
+                    SizedBox(width: 22),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 80,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 5),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: InkWell(
+                onTap: () {
+                  context
+                      .read<UpdateManager>()
+                      .checkUpdate(auto: false);
+                },
+                splashFactory: InkRipple.splashFactory,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(width: 20),
+                    Icon(Icons.update,
+                        color: Color.fromRGBO(98, 103, 122, 1),
+                        size: 20),
+                    SizedBox(width: 10),
+                    Text(S.current.check_new, style: textStyle),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 26),
+                      child: Text(
+                        "${S.current.current_version}: ${EnvConfig.VERSION}",
+                        style: textStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 80,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 5),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: InkWell(
+                onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) =>
+                        LogoutDialog()),
+                splashFactory: InkRipple.splashFactory,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(width: 20),
+                    Image.asset('assets/images/logout.png',
+                        width: 20),
+                    SizedBox(width: 10),
+                    SizedBox(
+                        width: 150,
+                        child: Text(S.current.logout,
+                            style: textStyle)),
+                    Spacer()
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => UserAgreementDialog()),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(),
+                  child: Text('《用户协议》',
+                      style:textStyle),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => PrivacyDialog()),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(),
+                  child: Text('《隐私政策》',
+                      style: textStyle),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
