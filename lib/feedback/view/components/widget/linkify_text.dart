@@ -28,7 +28,7 @@ class _LinkTextState extends State<LinkText> {
         maxLines: widget.maxLine ?? 100,
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
-        textStyle: widget.style,
+        textStyle: widget.style.NotoSansSC.w400.sp(14),
         linkStyle: widget.style.linkBlue.w500, onTap: (link) async {
       //粗暴地解决了，但是肯定不是个长久之计
       if (link.value.startsWith('#MP') &&

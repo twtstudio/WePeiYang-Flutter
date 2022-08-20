@@ -233,7 +233,7 @@ class _PostCardState extends State<PostCard> {
       post.title,
       maxLines: widget.type == PostCardType.detail ? 3 : 1,
       overflow: TextOverflow.ellipsis,
-      style: TextUtil.base.w400.NotoSansSC.sp(16).black00,
+      style: TextUtil.base.w400.NotoSansSC.sp(16).black00.bold,
     );
 
     var tag = post.type != 1
@@ -307,7 +307,7 @@ class _PostCardState extends State<PostCard> {
             text: post.content,
             maxLines: widget.type == PostCardType.detail ? 8 : 2,
             style: TextUtil.base.NotoSansSC.w400
-                .sp(16)
+                .sp(14)
                 .black2A
                 .h(widget.type == PostCardType.detail ? 1.6 : 1.4),
             expand: false,
@@ -338,6 +338,7 @@ class _PostCardState extends State<PostCard> {
               ProfileImageWithDetailedPopup(post.type, post.nickname, post.uid),
             if (widget.type == PostCardType.detail)
               Container(
+                margin: EdgeInsets.only(left: 8.w),
                 width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

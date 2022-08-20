@@ -401,6 +401,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           children: column),
     );
     Widget card = ClipCopy(
+      id: widget.comment.id,
       copy: widget.comment.content,
       toast: '复制评论成功',
       child: Container(

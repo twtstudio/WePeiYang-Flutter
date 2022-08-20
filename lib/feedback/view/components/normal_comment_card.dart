@@ -1,9 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -11,11 +12,8 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -23,8 +21,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 typedef LikeCallback = void Function(bool, int);
@@ -90,6 +86,135 @@ class _NCommentCardState extends State<NCommentCard>
 
   @override
   Widget build(BuildContext context) {
+    var commentMenuButton = GestureDetector(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(12.w, 8.w, 8.w, 12.w),
+          child: SvgPicture.asset(
+            'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+            width: 18.w,
+            color: Colors.black,
+          ),
+        ),
+        onTap: () {
+          showCupertinoModalPopup(
+            context: context,
+            builder: (context) {
+              return CupertinoActionSheet(
+                actions: <Widget>[
+                  // 分享按钮
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      String weCo =
+                          '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.comment.postId}\n【${widget.comment.content}】';
+                      ClipboardData data = ClipboardData(text: weCo);
+                      Clipboard.setData(data);
+                      CommonPreferences.feedbackLastWeCo.value =
+                          widget.ancestorUId.toString();
+                      ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                    },
+                    child: Text(
+                      '分享',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      ClipboardData data =
+                          ClipboardData(text: widget.comment.content);
+                      Clipboard.setData(data);
+                      ToastProvider.success('复制成功');
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '复制',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                  widget.comment.isOwner
+                      ? CupertinoActionSheetAction(
+                          onPressed: () async {
+                            bool confirm = await _showDeleteConfirmDialog('删除');
+                            if (confirm) {
+                              FeedbackService.deleteFloor(
+                                id: widget.comment.id,
+                                onSuccess: () {
+                                  ToastProvider.success(
+                                      S.current.feedback_delete_success);
+                                  setState(() {
+                                    _isDeleted = true;
+                                  });
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
+                                },
+                              );
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            '删除',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          ),
+                        )
+                      : CupertinoActionSheetAction(
+                          onPressed: () {
+                            Navigator.pushNamed(context, FeedbackRouter.report,
+                                arguments: ReportPageArgs(
+                                    widget.ancestorUId, false,
+                                    floorId: widget.comment.id));
+                          },
+                          child: Text(
+                            '举报',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          ),
+                        ),
+                  if ((CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value) ??
+                      false)
+                    CupertinoActionSheetAction(
+                      onPressed: () async {
+                        bool confirm = await _showDeleteConfirmDialog('摧毁');
+                        if (confirm) {
+                          FeedbackService.adminDeleteReply(
+                            floorId: widget.comment.id,
+                            onSuccess: () {
+                              ToastProvider.success(
+                                  S.current.feedback_delete_success);
+                              setState(() {
+                                _isDeleted = true;
+                              });
+                            },
+                            onFailure: (e) {
+                              ToastProvider.error(e.error.toString());
+                            },
+                          );
+                        }
+                      },
+                      child: Text(
+                        '删评',
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  // 取消按钮
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    '取消',
+                    style: TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                  ),
+                ),
+              );
+            },
+          );
+        });
+
     var topWidget = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,11 +304,12 @@ class _NCommentCardState extends State<NCommentCard>
                   //       '回复ID：' + widget.comment.replyTo.toString(), false),
                 ],
               ),
-
             ],
           ),
         ),
-        SizedBox(width: 4),
+        SizedBox(width: 22.w),
+
+        /*
         PopupMenuButton(
           padding: EdgeInsets.zero,
           shape: RacTangle(),
@@ -288,19 +414,24 @@ class _NCommentCardState extends State<NCommentCard>
                 ),
             ];
           },
-        ),
+        ),*/
       ],
     );
 
     var commentContent = widget.comment.content == ''
         ? SizedBox()
-        : ExpandableText(
-            text: widget.comment.content,
-            maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-            style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
-            expand: false,
-            buttonIsShown: true,
-            isHTML: false,
+        : ClipCopy(
+            id: widget.comment.id,
+            copy: widget.comment.content,
+            toast: '复制评论成功',
+            child: ExpandableText(
+              text: widget.comment.content,
+              maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
+              style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
+              expand: false,
+              buttonIsShown: true,
+              isHTML: false,
+            ),
           );
 
     var commentImage = Padding(
@@ -403,20 +534,6 @@ class _NCommentCardState extends State<NCommentCard>
                     )),
         ));
 
-    var replyButton = IconButton(
-      icon: SvgPicture.asset('assets/svg_pics/lake_butt_icons/reply.svg'),
-      iconSize: 16,
-      constraints: BoxConstraints(),
-      onPressed: () {
-        Provider.of<NewFloorProvider>(context, listen: false)
-            .inputFieldOpenAndReplyTo(widget.comment.id);
-        FocusScope.of(context).requestFocus(
-            Provider.of<NewFloorProvider>(context, listen: false).focusNode);
-      },
-      padding: EdgeInsets.zero,
-      color: ColorUtil.boldLakeTextColor,
-    );
-
     var subFloor;
     if (widget.comment.subFloors != null && !widget.isSubFloor) {
       subFloor = ListView.custom(
@@ -504,22 +621,18 @@ class _NCommentCardState extends State<NCommentCard>
         Padding(
           padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
           child: Text(
-              DateTime
-                  .now()
-                  .difference(widget.comment.createAt)
-                  .inHours >= 11
-                  ? widget.comment.createAt
-                  .toLocal()
-                  .toIso8601String()
-                  .replaceRange(10, 11, ' ')
-                  .substring(0, 19)
-                  : DateTime.now()
-                  .difference(widget.comment.createAt)
-                  .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+            DateTime.now().difference(widget.comment.createAt).inHours >= 11
+                ? widget.comment.createAt
+                    .toLocal()
+                    .toIso8601String()
+                    .replaceRange(10, 11, ' ')
+                    .substring(0, 19)
+                : DateTime.now()
+                    .difference(widget.comment.createAt)
+                    .dayHourMinuteSecondFormatted(),
+            style: TextUtil.base.ProductSans.grey97.regular.sp(12),
           ),
         ),
-        replyButton,
       ],
     );
 
@@ -569,78 +682,71 @@ class _NCommentCardState extends State<NCommentCard>
 
     return _isDeleted
         ? SizedBox(height: 1)
-        : Column(
+        : Stack(
             children: [
-              ClipCopy(
-                copy: widget.comment.content,
-                toast: '复制评论成功',
-                // 这个padding其实起到的是margin的效果，因为Ink没有margin属性
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
-                  // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: CommonPreferences.isSkinUsed.value
-                          ? Color(CommonPreferences.skinColorE.value)
-                          : widget.isFullView && widget.isSubFloor
-                              ? Colors.transparent
-                              : Colors.white,
-                      ///阴影
-                      // boxShadow: [
-                      //   widget.isFullView && widget.isSubFloor
-                      //       ? BoxShadow(color: Colors.transparent)
-                      //       : BoxShadow(
-                      //           blurRadius: 1.6,
-                      //           color: Colors.black12,
-                      //           offset: Offset(0, 0),
-                      //           spreadRadius: -1),
-                      // ],
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 14.w, 8.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: CommonPreferences.isSkinUsed.value
+                            ? Color(CommonPreferences.skinColorE.value)
+                            : widget.isFullView && widget.isSubFloor
+                                ? Colors.transparent
+                                : Colors.white,
+                      ),
+                      child: mainBody,
                     ),
-                    child: mainBody,
                   ),
-                ),
-              ),
-              if (!widget.isSubFloor && !widget.isFullView && subFloor != null)
-                Padding(
-                    padding: EdgeInsets.only(left: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        subFloor,
-                        if (widget.comment.subFloorCnt > 0)
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.commentDetail,
-                                arguments: ReplyDetailPageArgs(
-                                    widget.comment, widget.uid),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(70, 0, 0, 0),
-                                  child: Text(
-                                      widget.comment.subFloorCnt > 2
-                                          ? '查看全部 ' +
-                                              widget.comment.subFloorCnt
-                                                  .toString() +
-                                              ' 条回复 >'
-                                          : '查看回复详情 >',
-                                      style: TextUtil.base.NotoSansSC.w400
-                                          .sp(14).blue2C
-                                          ),
+                  if (!widget.isSubFloor &&
+                      !widget.isFullView &&
+                      subFloor != null)
+                    Padding(
+                        padding: EdgeInsets.only(left: 40),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            subFloor,
+                            if (widget.comment.subFloorCnt > 0)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    FeedbackRouter.commentDetail,
+                                    arguments: ReplyDetailPageArgs(
+                                        widget.comment, widget.uid),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding:  EdgeInsets.fromLTRB(
+                                          58.w, 0, 0, 0),
+                                      // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
+                                      child: Text(
+                                          widget.comment.subFloorCnt > 2
+                                              ? '查看全部 ' +
+                                                  widget.comment.subFloorCnt
+                                                      .toString() +
+                                                  ' 条回复 >'
+                                              : '查看回复详情 >',
+                                          style: TextUtil.base.NotoSansSC.w400
+                                              .sp(14)
+                                              .blue2C),
+                                    ),
+                                    Spacer()
+                                  ],
                                 ),
-                                Spacer()
-                              ],
-                            ),
-                          )
-                      ],
-                    )),
+                              )
+                          ],
+                        )),
+                ],
+              ),
+              Positioned(top: 8.w, right: 4.w, child: commentMenuButton)
             ],
           );
   }

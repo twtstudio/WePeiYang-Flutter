@@ -397,9 +397,9 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
         child: SvgPicture.network(
           '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
           width:
-              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 32,
           height:
-              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 32,
           fit: BoxFit.contain,
           placeholderBuilder: defaultPlaceholderBuilder,
         ),

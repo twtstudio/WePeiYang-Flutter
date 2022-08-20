@@ -4,9 +4,9 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -343,15 +343,29 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   Widget get _codeWidget {
     final size = MediaQuery.of(context).size;
     double width = size.width;
+    var builder = (index) {
+      return Container(
+        alignment: AlignmentDirectional.center,
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 255, 0.4),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          code.length > index ? code.substring(index, index + 1) : '',
+          style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
+        ),
+      );
+    };
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text.rich(TextSpan(
             text: "手机号",
             style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
-        const SizedBox(
-          height: 16,
-        ),
+        SizedBox(height: 16),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
@@ -390,86 +404,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         SizedBox(height: 20),
         Stack(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 0 ? code.substring(0, 1) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 1 ? code.substring(1, 2) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 2 ? code.substring(2, 3) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 3 ? code.substring(3, 4) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 4 ? code.substring(4, 5) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.center,
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.4),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  code.length > 5 ? code.substring(5, 6) : "",
-                  style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                ),
-              ),
-            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(6, builder),
+            ),
             TextField(
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -486,13 +424,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 11,
-          //这里的数值调整是为了两个界面的登录按钮对齐
-        ),
+        SizedBox(height: 11), // 这里的数值调整是为了两个界面的登录按钮对齐
         SizedBox(
             height: 48,
-            //这样的地方改了，便于屏幕适配
+            // 这样的地方改了，便于屏幕适配
             width: width - 60,
             child: ElevatedButton(
               onPressed: () {
