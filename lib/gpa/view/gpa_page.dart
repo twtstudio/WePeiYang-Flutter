@@ -6,6 +6,8 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 
@@ -136,77 +138,79 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    var leading = Align(
+      alignment: Alignment.centerRight,
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          decoration: BoxDecoration(),
+          padding: EdgeInsets.fromLTRB(0, 8.h, 8.w, 8.h),
+          child: SvgPicture.asset(
+            "assets/svg_pics/lake_butt_icons/back.svg",
+            width: 18.r,
+            height: 18.r,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+
     return AppBar(
       backgroundColor: gpaColors[0],
       elevation: 0,
       brightness: FavorColors.gpaType.value == 'light'
           ? Brightness.light
           : Brightness.dark,
-      leading: Row(
-        children: [
-          SizedBox(
-            width: 16.6.w,
-          ),
-          GestureDetector(
-              child: SvgPicture.asset(
-                "assets/svg_pics/lake_butt_icons/back.svg",
-                color: gpaColors[1],
-                width: 20.w,
-                height: 20.h,
-                fit: BoxFit.fitWidth,
-              ),
-              onTap: () => Navigator.pop(context)),
-        ],
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('HELLO, ${CommonPreferences.nickname.value}',
-              style: TextUtil.base.white.w900.sp(22)),
-        ],
-      ),
+      leading: leading,
+      leadingWidth: 40.w,
+      title: Text('HELLO, ${CommonPreferences.nickname.value}',
+          style: TextUtil.base.white.w900.sp(18)),
+      titleSpacing: 0,
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 18),
-          child: GestureDetector(
-              child: SvgPicture.asset(
-                "assets/svg_pics/lake_butt_icons/refreash.svg",
-                color: gpaColors[1],
-                width: 28.w,
-                height: 28.h,
-              ),
-              onTap: () {
-                if (CommonPreferences.isAprilFoolGPA.value) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AprilFoolDialog(
-                          content: "不满绩的你一样完美",
-                          confirmText: "返回真实绩点",
-                          cancelText: "保留满绩",
-                          confirmFun: () {
-                            CommonPreferences.isAprilFoolGPA.value = false;
-                            Navigator.pop(context);
-                            Navigator.popAndPushNamed(context, HomeRouter.home);
-                          },
-                        );
-                      });
-                }
-                Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-                    hint: true,
-                    onFailure: (e) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) => TjuRebindDialog(
-                            reason:
-                                e is WpyDioError ? e.error.toString() : null),
-                      );
-                    });
-              }),
+        GestureDetector(
+          child: SvgPicture.asset(
+            "assets/svg_pics/lake_butt_icons/refreash.svg",
+            color: gpaColors[1],
+            width: 28.w,
+            height: 28.h,
+          ),
+          onTap: () {
+            if (CommonPreferences.isAprilFoolGPA.value) {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AprilFoolDialog(
+                      content: "不满绩的你一样完美",
+                      confirmText: "返回真实绩点",
+                      cancelText: "保留满绩",
+                      confirmFun: () {
+                        CommonPreferences.isAprilFoolGPA.value = false;
+                        Navigator.pop(context);
+                        Navigator.popAndPushNamed(context, HomeRouter.home);
+                      },
+                    );
+                  });
+            }
+            if (!CommonPreferences.isBindTju.value) {
+              ToastProvider.error("请绑定办公网");
+              Navigator.pushNamed(context, AuthRouter.tjuBind);
+              return;
+            }
+            Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+              hint: true,
+              onFailure: (e) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => TjuRebindDialog(
+                      reason: e is WpyDioError ? e.error.toString() : null),
+                );
+              },
+            );
+          },
         ),
+        SizedBox(width: 18.w),
       ],
     );
   }

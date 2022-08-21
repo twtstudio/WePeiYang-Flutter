@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/auth/view/login/register_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_done_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/color_setting_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/language_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/theme_change_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
@@ -47,6 +48,7 @@ class AuthRouter {
 
   /// 个人页 & 设置页
   static String setting = 'setting/home';
+  static String generalSetting = 'setting/general_setting';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
   static String colorSetting = 'setting/color_setting';
@@ -85,6 +87,7 @@ class AuthRouter {
     userInfo: (_) => UserInfoPage(),
     avatarCrop: (_) => AvatarCropPage(),
     setting: (_) => SettingPage(),
+    generalSetting: (_) => GeneralSettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     themeSetting: (_) => ThemeChangePage(),

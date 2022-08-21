@@ -93,17 +93,17 @@ flutter:
   fonts:
     - family: Bauhaus
       fonts:
-        - asset: assets/fonts/Bauhaus-Bold-Italic_6276.ttf
+        - asset: assets/fonts/en/Bauhaus-Bold-Italic_6276.ttf
           style: italic
 
     - family: Swis
       fonts:
-        - asset: assets/fonts/Swis721-Blk-BT-Black-2.ttf
+        - asset: assets/fonts/en/Swis721-Blk-BT-Black-2.ttf
 
     - family: ProductSans
       fonts:
-        - asset: assets/fonts/ProductSans-Bold.ttf
-        - asset: assets/fonts/ProductSans-Regular.ttf
+        - asset: assets/fonts/en/ProductSans-Bold.ttf
+        - asset: assets/fonts/en/ProductSans-Regular.ttf
 
 flutter_intl:
   enabled: true

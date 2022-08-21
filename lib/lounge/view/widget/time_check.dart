@@ -43,10 +43,7 @@ class TimeCheckWidget extends StatelessWidget {
 
     timeCheckerIcon = Padding(
       padding: EdgeInsets.only(right: 8.w),
-      child: SizedBox(
-        width: 43.w,
-        child: timeCheckerIcon,
-      ),
+      child: SizedBox(width: 43.w, child: timeCheckerIcon),
     );
 
     return timeCheckerIcon;

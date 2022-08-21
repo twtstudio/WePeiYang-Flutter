@@ -203,9 +203,7 @@ class _NucPassportPageState extends State<NucPassportPage> {
                         style: TextUtil.base.white.sp(18).w700),
                     Text('请在核酸检测时出示，请勿截图',
                         style: TextUtil.base.white.sp(18).w700),
-                    SizedBox(
-                      height: 20.w,
-                    )
+                    SizedBox(height: 20.w)
                   ],
                 ),
               ),

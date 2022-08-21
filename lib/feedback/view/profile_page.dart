@@ -165,9 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
       postListShow = Column(
         children: [
           postLists,
-          SizedBox(
-            height: 20.w,
-          )
+          SizedBox(height: 20.w)
         ],
       );
     }
@@ -300,9 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //           highlightColor: Colors.transparent,
 //           child: Column(
 //             children: [
-//               SizedBox(
-//                 height: 2,
-//               ),
+//               SizedBox(height: 2),
 //               Text(
 //                 widget.text,
 //                 style: FontManager.YaHeiRegular.copyWith(

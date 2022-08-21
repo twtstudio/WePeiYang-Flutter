@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'auth/view/message/message_service.dart';
@@ -143,6 +144,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
+      WbyFontLoader.initFonts();
       if (CommonPreferences.token != '') {
         FeedbackService.getToken(forceRefresh: true);
       }

@@ -151,9 +151,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 30,
-                      )
+                      const SizedBox(height: 30)
                     ],
                   )),
             ),
@@ -492,9 +490,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 setState(() {});
               },
             ),
-            const SizedBox(
-              width: 10,
-            ),
+            const SizedBox(width: 10),
           ],
         ),
       ],

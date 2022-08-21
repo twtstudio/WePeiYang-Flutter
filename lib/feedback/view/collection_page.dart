@@ -140,9 +140,7 @@ class _CollectionPageState extends State<CollectionPage> {
       favListShow = Column(
         children: [
           favLists,
-          SizedBox(
-            height: 20.w,
-          )
+          SizedBox(height: 20.w)
         ],
       );
     }

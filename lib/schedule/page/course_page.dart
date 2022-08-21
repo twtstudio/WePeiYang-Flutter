@@ -97,9 +97,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var leading = Align(
       alignment: Alignment.centerRight,
       child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
+        onTap: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.fromLTRB(0, 8.h, 8.w, 8.h),
@@ -211,10 +209,8 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
       leading: leading,
       leadingWidth: 40.w,
       actions: actions,
-      title: Text(
-        "HELLO, ${CommonPreferences.nickname.value}",
-        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
-      ),
+      title: Text("HELLO, ${CommonPreferences.nickname.value}",
+          style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
     );
   }

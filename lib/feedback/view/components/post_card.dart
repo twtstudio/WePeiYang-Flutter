@@ -530,9 +530,7 @@ class _PostCardState extends State<PostCard> {
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
               color: ColorUtil.mainColor, width: 14.6.w),
         if (widget.type == PostCardType.simple)
-          SizedBox(
-            width: 2.w,
-          ),
+          SizedBox(width: 2.w),
         if (widget.type == PostCardType.simple)
           Text(
             post.visitCount == null
@@ -570,9 +568,7 @@ class _PostCardState extends State<PostCard> {
       children: [
         SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
             width: 11.67.w),
-        SizedBox(
-          width: 3.w,
-        ),
+        SizedBox(width: 3.w),
         Text(
           post.commentCount.toString() +
               (post.commentCount < 100 ? '   ' : ' '),
@@ -789,9 +785,7 @@ class _PostCardState extends State<PostCard> {
           )
         : Row(
             children: [
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10),
               ...commentAndLike,
             ],
           );

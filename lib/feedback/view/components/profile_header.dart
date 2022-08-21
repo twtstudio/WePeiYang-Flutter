@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-
 import 'change_nickname_dialog.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -30,7 +30,27 @@ class ProfileHeader extends StatelessWidget {
             style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
           ),
           centerTitle: true,
-          actions: [FeedbackMailbox()],
+          actions: [
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, AuthRouter.mailbox),
+              child: Icon(
+                Icons.email_outlined,
+                size: 28,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 15),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, AuthRouter.setting),
+              child: Image.asset(
+                'assets/images/setting.png',
+                width: 24,
+                height: 24,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 10),
+          ],
         ),
         SliverToBoxAdapter(
           child: Stack(
@@ -42,10 +62,7 @@ class ProfileHeader extends StatelessWidget {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
                         topRight: Radius.circular(20.r)),
-                    child: Container(
-                      color: Colors.white,
-                      height: 63.h,
-                    ),
+                    child: Container(color: Colors.white, height: 63.h),
                   ),
                 ],
               ),
@@ -114,17 +131,13 @@ class ProfileHeader extends StatelessWidget {
                             children: [
                               Text(CommonPreferences.userNumber.value,
                                   textAlign: TextAlign.start,
-                                  style: TextUtil
-                                      .base.ProductSans.black4E.w700
+                                  style: TextUtil.base.ProductSans.black4E.w700
                                       .sp(14)),
-                              SizedBox(
-                                width: 20.w,
-                              ),
+                              SizedBox(width: 20.w),
                               Text(
                                   "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                   textAlign: TextAlign.start,
-                                  style: TextUtil
-                                      .base.ProductSans.black4E.w700
+                                  style: TextUtil.base.ProductSans.black4E.w700
                                       .sp(14)),
                             ],
                           ),
@@ -139,45 +152,6 @@ class ProfileHeader extends StatelessWidget {
         ),
         child,
       ],
-    );
-  }
-}
-
-class FeedbackMailbox extends StatefulWidget {
-  @override
-  _FeedbackMailboxState createState() => _FeedbackMailboxState();
-}
-
-class _FeedbackMailboxState extends State<FeedbackMailbox> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(right: 10),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AuthRouter.mailbox),
-            child: Icon(
-              Icons.email_outlined,
-              size: 28,
-              color: Color.fromRGBO(255, 255, 255, 1),
-            ),
-          ),
-          SizedBox(width: 15),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(
-              context,
-              AuthRouter.userInfo,
-            ).then((value) => this.setState(() {})),
-            child: Image.asset(
-              'assets/images/setting.png',
-              width: 24,
-              height: 24,
-              color: Color.fromRGBO(255, 255, 255, 1),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

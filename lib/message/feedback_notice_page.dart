@@ -82,9 +82,7 @@ class FeedbackNoticePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         title,
-        SizedBox(
-          height: 8.w,
-        ),
+        SizedBox(height: 8.w),
         content
       ],
     );

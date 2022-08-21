@@ -63,8 +63,8 @@ extension TextStyleAttr on TextStyle {
 
   /// 字体
   TextStyle get Swis => this.copyWith(fontFamily: 'Swis');
-  TextStyle get NotoSansSC => this;
-  TextStyle get PingFangSC => this;
+  TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
+  TextStyle get PingFangSC => this.copyWith(fontFamily: 'PingFangSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
   TextStyle get Bauhaus => this.copyWith(fontFamily: 'Bauhaus');
 

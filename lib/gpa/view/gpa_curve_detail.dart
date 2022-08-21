@@ -22,9 +22,7 @@ class GPAPreview extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Column(children: <Widget>[
         //_CurveText(),
-        SizedBox(
-          height: 45.h,
-        ),
+        SizedBox(height: 45.h),
         _GPAIntro(),
         GPACurve(FavorColors.gpaColor, isPreview: true),
       ]),

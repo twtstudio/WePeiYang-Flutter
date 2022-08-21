@@ -84,9 +84,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
               ])),
             ),
-            SizedBox(
-              height: 62,
-            ),
+            SizedBox(height: 62),
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),

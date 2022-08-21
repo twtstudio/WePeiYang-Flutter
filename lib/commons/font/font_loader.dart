@@ -1,15 +1,23 @@
 // @dart = 2.12
-
 import 'dart:io';
-
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
-// TODO: 只实现了基础功能
 class WbyFontLoader {
-  static void initFonts({bool test = false}) {
-    List<DownloadTask> tasks = [];
+  static void initFonts({bool test = false, bool hint = false}) {
+    List<DownloadTask> tasks = [
+      DownloadTask(
+        url:
+            "https://github.com/twtstudio/WePeiYang-Flutter/blob/newWPY/assets/fonts/zh/NotoSansSC-Medium.otf?raw=true",
+        type: DownloadType.font,
+      ),
+      DownloadTask(
+        url:
+            "https://github.com/twtstudio/WePeiYang-Flutter/blob/newWPY/assets/fonts/zh/PingFangSC-SemiBold.ttf?raw=true",
+        type: DownloadType.font,
+      ),
+    ];
 
     if (test) {
       tasks = [
@@ -28,6 +36,7 @@ class WbyFontLoader {
       ];
     }
 
+    if (hint) ToastProvider.running('下载字体文件中...');
     DownloadManager.getInstance().downloads(
       tasks,
       download_running: (fileName, progress) {
@@ -44,10 +53,10 @@ class WbyFontLoader {
         await loadFontFromList(list, fontFamily: family);
       },
       all_success: (paths) async {
-        ToastProvider.success("加载字体成功");
+        if (hint) ToastProvider.success("加载字体成功");
       },
       all_complete: (successNum, failedNum) {
-        if (failedNum != 0) {
+        if (hint && failedNum != 0) {
           ToastProvider.error("$successNum种字体加载成功，$failedNum种字体加载失败");
         }
       },

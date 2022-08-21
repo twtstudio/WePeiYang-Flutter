@@ -101,9 +101,7 @@ class LakeDialogWidget extends Dialog {
     if (confirmText.isNotEmpty && confirmText.isNotEmpty)
       widgets.add(_buildBottomOnline());
     if (confirmText.isNotEmpty && confirmText.isNotEmpty)
-      widgets.add(SizedBox(
-        width: 30.w,
-      ));
+      widgets.add(SizedBox(width: 30.w));
     if (confirmText.isNotEmpty) widgets.add(_buildBottomPositiveButton());
 
     return Flex(

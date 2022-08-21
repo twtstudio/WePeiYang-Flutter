@@ -30,7 +30,7 @@ class UserAgreementDialog extends Dialog {
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
                     child: Text('微北洋用户协议',
                         style:
-                            TextUtil.base.bold.sp(13).customColor(textColor))),
+                            TextUtil.base.bold.sp(18).customColor(textColor))),
                 Text("更新日期：2022年03月19日\n" + "生效日期：2021年08月13日\n"),
                 BoldText("一．引言"),
                 Text("微北洋产品和服务的提供者为天津大学（以下简称“我们”）。"
