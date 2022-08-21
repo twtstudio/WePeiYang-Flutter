@@ -70,14 +70,14 @@ class _NewPostPageState extends State<NewPostPage> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(58),
+        preferredSize: Size.fromHeight(50.h),
         child: TitleInputField(),
       ),
       backgroundColor: Colors.transparent,
     );
 
     return Scaffold(
-        backgroundColor: ColorUtil.backgroundColor,
+        backgroundColor: Colors.white,
         appBar: appBar,
         body: ListView(
             shrinkWrap: true,
@@ -85,13 +85,6 @@ class _NewPostPageState extends State<NewPostPage> {
             padding: const EdgeInsets.only(left: 20),
             children: [
               Container(
-                  decoration: widget.args.isFollowing
-                      ? BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          shape: BoxShape.rectangle,
-                        )
-                      : BoxDecoration(),
                   margin: widget.args.isFollowing
                       ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
                       : EdgeInsets.zero,
@@ -108,24 +101,10 @@ class _NewPostPageState extends State<NewPostPage> {
                                     .black2A)
                             : LakeSelector(),
                         SizedBox(height: 6),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: widget.args.isFollowing
-                              ? Text('${widget.args.tagName}'.substring(3),
-                                  style: TextUtil.base.NotoSansSC.w500
-                                      .sp(14)
-                                      .black2A)
-                              : departmentTagView(postTypeNotifier),
-                        ),
                       ])),
               Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    shape: BoxShape.rectangle,
-                  ),
                   margin: const EdgeInsets.only(right: 20, top: 4),
-                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 22),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -141,7 +120,14 @@ class _NewPostPageState extends State<NewPostPage> {
                                 args: widget.args),
                           ],
                         ),
-                      ]))
+                      ])),
+              Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: widget.args.isFollowing
+                    ? Text('${widget.args.tagName}'.substring(3),
+                        style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                    : departmentTagView(postTypeNotifier),
+              ),
             ]));
   }
 }
@@ -172,21 +158,12 @@ class _LakeSelectorState extends State<LakeSelector> {
         : status == LakePageStatus.loading
             ? Container(
                 height: 60,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16)),
                 child: Center(
                   child: Loading(),
                 ),
               )
             : status == LakePageStatus.idle
-                ? Container(
-                    padding: EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.horizontal(left: Radius.circular(16)),
-                      color: Colors.white,
-                    ),
+                ? SizedBox(
                     height: 60,
                     width: double.infinity,
                     child: Stack(
@@ -214,50 +191,38 @@ class _LakeSelectorState extends State<LakeSelector> {
                                               .read<NewPostProvider>()
                                               .department = null;
                                         },
-                                        child: SizedBox(
-                                          height: 58,
-                                          width: 100,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(tabList[index + 1].name,
-                                                    style: type ==
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 25.w),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(tabList[index + 1].shortname,
+                                                  style: type ==
+                                                          tabList[index + 1].id
+                                                      ? TextUtil
+                                                          .base.NotoSansSC.w400
+                                                          .sp(15)
+                                                          .blue2C
+                                                      : TextUtil.base.w400
+                                                          .sp(15)
+                                                          .black2A),
+                                              Container(
+                                                margin: EdgeInsets.only(top: 2),
+                                                decoration: BoxDecoration(
+                                                    color: type ==
                                                             tabList[index + 1]
                                                                 .id
-                                                        ? TextUtil.base
-                                                            .NotoSansSC.w600
-                                                            .sp(18)
-                                                            .black2A
-                                                        : TextUtil.base.w400
-                                                            .sp(18)
-                                                            .greyA6),
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 2),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      border: Border.all(
-                                                          color: type ==
-                                                                  tabList[index +
-                                                                          1]
-                                                                      .id
-                                                              ? ColorUtil
-                                                                  .mainColor
-                                                              : Colors.white,
-                                                          width: 1),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  16))),
-                                                  width: 24,
-                                                  height: 3,
-                                                ),
-                                              ],
-                                            ),
+                                                        ? ColorUtil.blue2CColor
+                                                        : Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                16))),
+                                                width: 28,
+                                                height: 2,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       );
@@ -268,41 +233,24 @@ class _LakeSelectorState extends State<LakeSelector> {
                         ),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: ShaderMask(
-                            shaderCallback: (rect) {
-                              return LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.center,
-                                colors: [
-                                  Colors.transparent,
-                                  ColorUtil.backgroundColor
-                                ],
-                              ).createShader(
-                                  Rect.fromLTRB(0, 0, rect.width, rect.height));
+                          child: InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              controller.offset <= 100 * (tabList.length - 2)
+                                  ? controller.animateTo(
+                                      controller.offset + 100,
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.fastOutSlowIn)
+                                  : controller.animateTo(
+                                      100 * (tabList.length - 2).toDouble(),
+                                      duration: Duration(milliseconds: 800),
+                                      curve: Curves.slowMiddle);
                             },
-                            blendMode: BlendMode.dstIn,
-                            child: InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                controller.offset <= 100 * (tabList.length - 2)
-                                    ? controller.animateTo(
-                                        controller.offset + 100,
-                                        duration: Duration(milliseconds: 400),
-                                        curve: Curves.fastOutSlowIn)
-                                    : controller.animateTo(
-                                        100 * (tabList.length - 2).toDouble(),
-                                        duration: Duration(milliseconds: 800),
-                                        curve: Curves.slowMiddle);
-                              },
-                              child: Container(
-                                height: 90,
-                                width: 70,
-                                child: Icon(Icons.arrow_forward_ios_sharp,
-                                    color: Color.fromRGBO(98, 103, 124, 1.0),
-                                    size: 25),
-                                color: ColorUtil.backgroundColor,
-                              ),
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 15.w),
+                              child: Icon(Icons.arrow_forward_ios_sharp,
+                                  color: ColorUtil.black2AColor, size: 10.h),
                             ),
                           ),
                         ),
@@ -409,11 +357,11 @@ class SubmitButton extends StatelessWidget {
       tag: "addNewPost",
       child: ElevatedButton(
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(1),
-          backgroundColor: MaterialStateProperty.all(ColorUtil.mainColor),
+          elevation: MaterialStateProperty.all(0),
+          backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
             ),
           ),
         ),
@@ -499,11 +447,12 @@ class _CampusSelectorState extends State<CampusSelector> {
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
+                color: ColorUtil.blue2CColor,
               ),
               SizedBox(width: 10),
               Text(
                 texts[value],
-                style: TextUtil.base.sp(14).w400.NotoSansSC.normal,
+                style: TextUtil.base.sp(14).w400.NotoSansSC.normal.blue2C,
               ),
               SizedBox(width: 18),
             ],
@@ -600,21 +549,24 @@ class _TitleInputFieldState extends State<TitleInputField> {
     Widget textCounter = ValueListenableBuilder(
       valueListenable: titleCounter,
       builder: (_, String value, __) {
-        return Text(value, style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
+        return Text(value, style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C);
       },
     );
 
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        shape: BoxShape.rectangle,
-      ),
-      margin: const EdgeInsets.fromLTRB(20, 5, 20, 15),
-      padding: const EdgeInsets.fromLTRB(22, 15, 22, 14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [inputField, SizedBox(width: 3), textCounter],
+      margin: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+      padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [inputField, SizedBox(width: 3), textCounter],
+          ),
+          Container(
+              margin: EdgeInsets.only(top: 16.h),
+              color: ColorUtil.greyEAColor,
+              height: 1.h)
+        ],
       ),
     );
   }
@@ -658,7 +610,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
-        hintText: '${S.current.feedback_detail}...',
+        hintText: '请添加正文',
       ),
       onChanged: (text) {
         contentCounter.value = '${text.characters.length}/1000';
