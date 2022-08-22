@@ -105,5 +105,13 @@ flutter:
         - asset: assets/fonts/en/ProductSans-Bold.ttf
         - asset: assets/fonts/en/ProductSans-Regular.ttf
 
+#    - family: NotoSansSC
+#      fonts:
+#        - asset: assets/fonts/zh/NotoSansSC-Medium.otf
+#
+#    - family: PingFangSC
+#      fonts:
+#        - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf
+
 flutter_intl:
   enabled: true

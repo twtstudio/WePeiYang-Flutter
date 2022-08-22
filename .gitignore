@@ -38,7 +38,7 @@
 lib/generated_plugin_registrant.dart
 
 # l10n generated files
-lib/generated/
+/lib/generated/
 
 # Symbolication related
 app.*.symbols

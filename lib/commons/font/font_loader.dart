@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.da
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class WbyFontLoader {
-  static void initFonts({bool test = false, bool hint = false}) {
+  static void initFonts({bool hint = false}) {
     List<DownloadTask> tasks = [
       DownloadTask(
         url:
@@ -18,23 +18,6 @@ class WbyFontLoader {
         type: DownloadType.font,
       ),
     ];
-
-    if (test) {
-      tasks = [
-        DownloadTask(
-          url: "https://239what475.github.io/Gilroy-HeavyItalic-8.otf",
-          type: DownloadType.font,
-        ),
-        DownloadTask(
-          url: "https://239what475.github.io/NotoSerifSC-Regular.otf",
-          type: DownloadType.font,
-        ),
-        DownloadTask(
-          url: "https://239what475.github.io/NotoSerifSC-Black.otf",
-          type: DownloadType.font,
-        ),
-      ];
-    }
 
     if (hint) ToastProvider.running('下载字体文件中...');
     DownloadManager.getInstance().downloads(

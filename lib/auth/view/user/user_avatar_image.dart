@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class UserAvatarImage extends StatelessWidget {
@@ -15,11 +16,11 @@ class UserAvatarImage extends StatelessWidget {
     return avatar == ''
         ? Icon(Icons.account_circle_rounded, size: size, color: iconColor)
         : ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            child: SizedBox(
-                width: size,
-                height: size,
-                child: Image.network('https://api.twt.edu.cn' + avatar),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: Image.network(
+              'https://api.twt.edu.cn' + avatar,
+              width: size,
+              height: size,
             ),
           );
   }
