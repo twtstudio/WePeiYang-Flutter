@@ -138,8 +138,10 @@ GPABean _data2GPABean(String data, bool isMaster) {
         ifAbsent: () => [gpaCourse],
       );
     }
-    List<GPAStat> stats =
-        semesterMap.values.map((courses) => _calculateStat(courses)).toList();
+    List<GPAStat> stats = [];
+    semesterMap.forEach((term, courses) {
+      stats.add(_calculateStat(term, courses));
+    });
 
     return GPABean(total, stats);
   } catch (e) {
@@ -168,8 +170,10 @@ GPACourse? _data2GPACourse(Map<String, String> data) {
       data['score'] ?? '', credit, gpa);
 }
 
-/// 计算每学期的总加权/绩点/学分
-GPAStat _calculateStat(List<GPACourse> courses) {
+/// 计算每学期的总加权/绩点/学分，此处term格式为`2021-20221`
+GPAStat _calculateStat(String term, List<GPACourse> courses) {
+  term = term.split('-').last; // `20221`
+  term = '${term[4]}H${term[2]}${term[3]}'; // `1H22`
   var totalCredit = 0.0;
   var totalScore = 0.0;
   var totalGPA = 0.0;
@@ -189,5 +193,5 @@ GPAStat _calculateStat(List<GPACourse> courses) {
     totalGPA = double.parse((totalGPA / totalCredit).toStringAsFixed(2));
   }
 
-  return GPAStat(totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
+  return GPAStat(term, totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
 }

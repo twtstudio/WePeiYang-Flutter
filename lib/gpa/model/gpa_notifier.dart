@@ -64,6 +64,9 @@ class GPANotifier with ChangeNotifier {
     return doubles;
   }
 
+  /// 获取所有学期名
+  List<String> get terms => _gpaStats.map((e) => e.term).toList();
+
   /// 获取当前学年的course detail
   List<GPACourse> get courses {
     if (_gpaStats.length == 0) return [];
