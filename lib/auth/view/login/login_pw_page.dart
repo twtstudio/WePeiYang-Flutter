@@ -200,7 +200,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   width: 1.0,
                 ),
               ),
-              hintText: "学号/手机号/邮箱/用户名",
+              hintText: "学号/手机号/邮箱",
               hintStyle: TextUtil.base.normal.sp(14).w400.white,
               isCollapsed: true,
               contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),

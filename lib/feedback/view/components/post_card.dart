@@ -85,7 +85,9 @@ class _PostCardState extends State<PostCard> {
             ? picBaseUrl + 'origin/' + post.imageUrls[0]
             : picBaseUrl + 'thumb/' + post.imageUrls[0],
         width: double.infinity,
-        fit: BoxFit.cover,
+        //fit: BoxFit.none,
+        fit: (widget.type == PostCardType.detail) ? BoxFit.cover : BoxFit.fitWidth,
+        //如果是detail，使用 cover 否则，则为simple,使用 fitWidth
         alignment: Alignment.topCenter,
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
@@ -178,8 +180,8 @@ class _PostCardState extends State<PostCard> {
         future: completer.future,
         builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
           return Container(
-            width: 97,
-            height: 76,
+            width: 350.w,
+            height: 197.w,
             child: snapshot.hasData
                 ? snapshot.data.height / snapshot.data.width > 2.0
                     ? longImageOuterLook
@@ -418,31 +420,6 @@ class _PostCardState extends State<PostCard> {
       ),
     );
 
-    if (widget.type == PostCardType.simple &&
-        (post.imageUrls?.isNotEmpty ?? false)) {
-      rowList.addAll([
-        SizedBox(width: 10),
-        ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            child: post.imageUrls.length == 1
-                ? longPicOutsideLook
-                : Image.network(
-                    picBaseUrl + 'thumb/' + post.imageUrls[0],
-                    width: 97,
-                    height: 76,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                          width: 97,
-                          height: 76,
-                          padding: EdgeInsets.all(20),
-                          child: Loading());
-                    },
-                  )),
-      ]);
-    }
     var view = Text(
       post.visitCount == null ? '0次浏览' : post.visitCount.toString() + "次浏览",
       style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
@@ -688,7 +665,30 @@ class _PostCardState extends State<PostCard> {
           Spacer(),
           view,
         ]);
-        imagesWidget = [];
+        if (post.imageUrls.length > 1) {
+          var imageList = Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              post.imageUrls.length,
+                  (index) => _image(index, context),
+            ),
+          );
+          imagesWidget.addAll([
+            //这里的 imageList 是多图模式的list列表，大小经过计算
+            imageList,
+            //这里的 SizedBox 为了单图模式与底部的点赞评论组件有空隙
+            SizedBox(height: 12.h),
+          ]);
+        } else if (post.imageUrls.length == 1) {
+          imagesWidget.addAll([
+              ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: longPicOutsideLook,
+              ),
+              //这里的 SizedBox 为了单图模式与底部的点赞评论组件有空隙
+              SizedBox(height: 12.h,),
+            ]);
+        }
         break;
       case PostCardType.detail:
         bottomList.addAll([
@@ -809,20 +809,16 @@ class _PostCardState extends State<PostCard> {
                   ? picBaseUrl + 'origin/' + post.imageUrls[index]
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
-              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
-                  8.w,
-              height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length *
-                  0.8,
+              width: (WePeiYangApp.screenWidth -  46.w) / post.imageUrls.length - 4.w,
+              height: (WePeiYangApp.screenWidth - 46.w) /
+                  post.imageUrls.length - 4.w,
               loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
             return SizedBox(
-              width: (WePeiYangApp.screenWidth - 64.w) / post.imageUrls.length -
-                  8.w,
-              height: (WePeiYangApp.screenWidth - 64.w) /
-                  post.imageUrls.length *
-                  0.8,
+              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length - 4.w,
+              height: (WePeiYangApp.screenWidth - 46.w) /
+                  post.imageUrls.length - 4.w,
               child: Center(
                 child: Container(
                   height: 40,

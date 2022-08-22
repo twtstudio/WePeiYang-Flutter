@@ -146,7 +146,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     children: [
                       Text.rich(
                         TextSpan(
-                          text: "用户名",
+                          text: '昵称',
                           style:
                               TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
                         ),
@@ -161,10 +161,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                           cursorColor: Colors.white,
                           textInputAction: TextInputAction.next,
                           focusNode: _nicknameFocus,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp('[a-zA-Z]|[0-9]'))
-                          ],
                           decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -178,7 +174,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                 width: 1.0,
                               ),
                             ),
-                            hintText: "请输入用户名",
+                            hintText: "请输入昵称",
                             //S.current.user_name,
                             hintStyle: TextUtil.base.normal.sp(14).w400.white,
                             isCollapsed: true,
