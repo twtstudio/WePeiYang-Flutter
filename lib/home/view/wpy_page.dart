@@ -15,7 +15,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_d
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
-import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -112,11 +111,11 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       systemNavigationBarColor: Colors.white,
     ));
     _sc.addListener(() {
-      if (_sc.offset > 200 + 24.h && showSchedule == true)
+      if (_sc.position.maxScrollExtent - _sc.offset < 180.h && showSchedule == true)
         setState(() {
           showSchedule = false;
         });
-      if (_sc.offset < 200 + 20.h && showSchedule == false)
+      if (_sc.position.maxScrollExtent - _sc.offset > 184.h && showSchedule == false)
         setState(() {
           showSchedule = true;
         });
@@ -151,8 +150,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 child: ClipRRect(
                   borderRadius: useRound
                       ? BorderRadius.only(
-                          topLeft: Radius.circular(20.r),
-                          topRight: Radius.circular(20.r))
+                          topLeft: Radius.circular(40.r),
+                          topRight: Radius.circular(40.r))
                       : BorderRadius.zero,
                   child: ListView(
                     physics: BouncingScrollPhysics(),
@@ -166,7 +165,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                           margin: EdgeInsets.only(top: 20.h),
                           padding: EdgeInsets.only(top: 50.h),
                           decoration: BoxDecoration(
-                              color: Color(0xFFF1F4FB),
+                              color: Color(0xEAFFFFFF),
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(40.r),
                                   topRight: Radius.circular(40.r))),
@@ -237,13 +236,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'GPA Curves')),
+                    child: Tab(text: 'Study Room')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Study Room'))
+                    child: Tab(text: 'GPA Curves')),
               ]),
         ),
         SizedBox(
@@ -253,20 +252,9 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               physics: BouncingScrollPhysics(),
               children: [
                 Container(
-                  width: 1.sw - 70.w,
-                  height: 250.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 4),
-                        blurRadius: 10,
-                        color: Colors.black.withOpacity(0.05),
-                      ),
-                    ],
-                  ),
-                  child: GPAPreview(),
+                  width: 1.sw - 60.w,
+                  height: 300.h,
+                  child: MainPageLoungeWidget(),
                 ),
                 Container(
                   width: 1.sw - 60.w,
@@ -276,7 +264,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
-                  child: MainPageLoungeWidget(),
+                  child: GPAPreview(),
                 ),
               ]),
         ),
