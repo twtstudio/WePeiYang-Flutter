@@ -8,13 +8,11 @@ class WbyFontLoader {
   static void initFonts({bool hint = false}) {
     List<DownloadTask> tasks = [
       DownloadTask(
-        url:
-            "https://github.com/twtstudio/WePeiYang-Flutter/blob/newWPY/assets/fonts/zh/NotoSansSC-Medium.otf?raw=true",
+        url: 'https://upgrade.twt.edu.cn/font/noto',
         type: DownloadType.font,
       ),
       DownloadTask(
-        url:
-            "https://github.com/twtstudio/WePeiYang-Flutter/blob/newWPY/assets/fonts/zh/PingFangSC-SemiBold.ttf?raw=true",
+        url: 'https://upgrade.twt.edu.cn/font/ping',
         type: DownloadType.font,
       ),
     ];
@@ -36,11 +34,11 @@ class WbyFontLoader {
         await loadFontFromList(list, fontFamily: family);
       },
       all_success: (paths) async {
-        if (hint) ToastProvider.success("加载字体成功");
+        if (hint) ToastProvider.success('加载字体成功');
       },
       all_complete: (successNum, failedNum) {
         if (hint && failedNum != 0) {
-          ToastProvider.error("$successNum种字体加载成功，$failedNum种字体加载失败");
+          ToastProvider.error('$successNum种字体加载成功，$failedNum种字体加载失败');
         }
       },
     );
