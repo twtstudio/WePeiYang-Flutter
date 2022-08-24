@@ -324,6 +324,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
+      padding: EdgeInsets.all(30),
       child: Center(
         child: Image(
             fit: BoxFit.contain,

@@ -96,9 +96,9 @@ extension LoungeSearchPageColors on ThemeData {
 }
 
 extension LoadingDotsColors on ThemeData {
-  Color get dotOneColor => const Color(0xff57616c);
-  Color get dotTwoColor => const Color(0xff9eaab6);
-  Color get dotThreeColor => const Color(0xff57616c);
+  Color get dotOneColor => const Color(0xFF3884DE);
+  Color get dotTwoColor => const Color(0xFF8DBBF1);
+  Color get dotThreeColor => const Color(0xFF156ACE);
 }
 
 const loungeBackgroundColor = Color(0xfff7f7f8);
