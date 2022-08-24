@@ -137,13 +137,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget build(BuildContext context) {
     Widget appBar = AppBar(
         titleSpacing: 0,
-        centerTitle: false,
         elevation: 0,
+        centerTitle: true,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
+          icon: Image.asset(
+            "assets/images/lake_butt_icons/back.png",
             color: ColorUtil.mainColor,
+            width: 12,
           ),
           onPressed: () {
             Navigator.pop(context, true);
@@ -159,10 +160,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   duration: Duration(milliseconds: 600),
                   curve: Curves.easeInOut);
           },
-          child: SizedBox(
-            width: double.infinity,
-            child: Text(title, style: TextUtil.base.bold.blue303C.sp(16)),
-          ),
+          child: Center(
+              child: Text(title, style: TextUtil.base.bold.black2A.sp(16)),
+            ),
         ),
         actions: [
           if (lakeType != 0)
@@ -187,7 +187,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   Navigator.pushNamed(context, FeedbackRouter.newPost,
                       arguments: NewPostArgs(true, tagId, lakeType, title));
                 }),
-          SizedBox(width: 14)
+          if(lakeType !=0) SizedBox(width: 14),
+          if(lakeType == 0) SizedBox(width: 40,),
         ]);
 
     Widget body;
