@@ -149,6 +149,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     onChanged: (text) => serial = text,
                     hintText: '请输入逻辑班号',
                     focusNode: _focusNode,
+                    keyboardType: TextInputType.number,
                     inputFormatter: [LengthLimitingTextInputFormatter(20)],
                   ),
                 ),

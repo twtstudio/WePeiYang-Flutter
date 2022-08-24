@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'dart:convert';
 
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -8,7 +9,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 
 class CustomCourseDio extends DioAbstract {
   @override
-  String baseUrl = 'http://101.42.225.75:8081//';
+  String baseUrl = EnvConfig.CUSTOM_CLASS;
 
   @override
   List<InterceptorsWrapper> interceptors = [
