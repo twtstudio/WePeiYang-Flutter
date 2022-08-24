@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_sh
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 enum PostCardType { simple, detail, outSide }
@@ -86,7 +87,9 @@ class _PostCardState extends State<PostCard> {
             : picBaseUrl + 'thumb/' + post.imageUrls[0],
         width: double.infinity,
         //fit: BoxFit.none,
-        fit: (widget.type == PostCardType.detail) ? BoxFit.cover : BoxFit.fitWidth,
+        fit: (widget.type == PostCardType.detail)
+            ? BoxFit.cover
+            : BoxFit.fitWidth,
         //如果是detail，使用 cover 否则，则为simple,使用 fitWidth
         alignment: Alignment.topCenter,
       );
@@ -341,19 +344,39 @@ class _PostCardState extends State<PostCard> {
                     post.type, post.nickname, post.uid),
                 Container(
                   margin: EdgeInsets.only(left: 8.w),
-                  width: (WePeiYangApp.screenWidth - 24.w) / 2 - 70.w,
+                  width: (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Row(
                         children: [
-                          Text(
-                            post.nickname == '' ? '没名字的微友' : post.nickname,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextUtil.base.w500.NotoSansSC.sp(14).black2A,
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: (WePeiYangApp.screenWidth - 24.w) / 2 -
+                                    110.w,
+                                child: Text(
+                                  post.nickname == ''
+                                      ? '没名字的微友'
+                                      : post.nickname,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextUtil.base.w500.NotoSansSC
+                                      .sp(14)
+                                      .black2A,
+                                ),
+                              ),
+                            ],
+                          ),
+                          LevelUtil(
+                            width: 20,
+                            height: 10,
+                            style: TextUtil.base.white.bold.sp(6),
+                            level: post.level.toString(),
+                            endColor: Color(0xFFFFBC6B),
+                            strColor: Color(0xFFFF7C0E),
                           ),
                         ],
                       ),
@@ -506,8 +529,7 @@ class _PostCardState extends State<PostCard> {
         if (widget.type == PostCardType.simple)
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
               color: ColorUtil.mainColor, width: 14.6.w),
-        if (widget.type == PostCardType.simple)
-          SizedBox(width: 2.w),
+        if (widget.type == PostCardType.simple) SizedBox(width: 2.w),
         if (widget.type == PostCardType.simple)
           Text(
             post.visitCount == null
@@ -670,7 +692,7 @@ class _PostCardState extends State<PostCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(
               post.imageUrls.length,
-                  (index) => _image(index, context),
+              (index) => _image(index, context),
             ),
           );
           imagesWidget.addAll([
@@ -681,13 +703,15 @@ class _PostCardState extends State<PostCard> {
           ]);
         } else if (post.imageUrls.length == 1) {
           imagesWidget.addAll([
-              ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  child: longPicOutsideLook,
-              ),
-              //这里的 SizedBox 为了单图模式与底部的点赞评论组件有空隙
-              SizedBox(height: 12.h,),
-            ]);
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: longPicOutsideLook,
+            ),
+            //这里的 SizedBox 为了单图模式与底部的点赞评论组件有空隙
+            SizedBox(
+              height: 12.h,
+            ),
+          ]);
         }
         break;
       case PostCardType.detail:
@@ -809,16 +833,19 @@ class _PostCardState extends State<PostCard> {
                   ? picBaseUrl + 'origin/' + post.imageUrls[index]
                   : picBaseUrl + 'thumb/' + post.imageUrls[index],
               fit: BoxFit.cover,
-              width: (WePeiYangApp.screenWidth -  46.w) / post.imageUrls.length - 4.w,
-              height: (WePeiYangApp.screenWidth - 46.w) /
-                  post.imageUrls.length - 4.w,
-              loadingBuilder: (BuildContext context, Widget child,
+              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
+                  4.w,
+              height:
+                  (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
+                      4.w, loadingBuilder: (BuildContext context, Widget child,
                   ImageChunkEvent loadingProgress) {
             if (loadingProgress == null) return child;
             return SizedBox(
-              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length - 4.w,
-              height: (WePeiYangApp.screenWidth - 46.w) /
-                  post.imageUrls.length - 4.w,
+              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
+                  4.w,
+              height:
+                  (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
+                      4.w,
               child: Center(
                 child: Container(
                   height: 40,

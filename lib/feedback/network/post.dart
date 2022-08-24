@@ -33,6 +33,7 @@ class Post {
     this.visitCount,
     this.eTag,
     this.nickname,
+    this.level,
   });
 
   int id;
@@ -56,6 +57,7 @@ class Post {
   List<String> imageUrls;
   Department department;
   int visitCount;
+  int level;
   String eTag;
   String nickname;
 
@@ -93,6 +95,7 @@ class Post {
         visitCount: json["visit_count"],
         eTag: json["e_tag"],
         nickname: json["nickname"],
+        level: json["user_info"]["level"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -119,6 +122,7 @@ class Post {
         "visit_count": visitCount,
         "e_tag": eTag,
         "nickname": nickname,
+        "level": level
       };
 
   Post.nullExceptId(int questionId) {

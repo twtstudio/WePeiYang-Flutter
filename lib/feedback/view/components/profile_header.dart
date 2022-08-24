@@ -8,14 +8,20 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'change_nickname_dialog.dart';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
   final Widget child;
   final String date;
 
-  const ProfileHeader({this.child, this.date});
+  const ProfileHeader({Key key, this.date, this.child}) : super(key: key);
 
+  @override
+  State<ProfileHeader> createState() => ProfileHeaderState();
+}
+
+class ProfileHeaderState extends State<ProfileHeader> {
   @override
   Widget build(BuildContext context) {
     double _width = ScreenUtil.defaultSize.width;
@@ -41,7 +47,8 @@ class ProfileHeader extends StatelessWidget {
             ),
             SizedBox(width: 15),
             GestureDetector(
-              onTap: () => Navigator.pushNamed(context, AuthRouter.setting),
+              onTap: () => Navigator.pushNamed(context, AuthRouter.setting)
+                  .then((_) => this.setState(() {})),
               child: Image.asset(
                 'assets/images/setting.png',
                 width: 24,
@@ -83,8 +90,16 @@ class ProfileHeader extends StatelessWidget {
                       child: Row(
                         children: [
                           SizedBox(width: 15.w),
-                          UserAvatarImage(
-                              size: (_width - 80) / 3, iconColor: Colors.white),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                      context, AuthRouter.avatarCrop)
+                                  .then((_) => this.setState(() {}));
+                            },
+                            child: UserAvatarImage(
+                                size: (_width - 80) / 3,
+                                iconColor: Colors.white),
+                          ),
                           SizedBox(width: 15.w),
                         ],
                       ),
@@ -107,6 +122,14 @@ class ProfileHeader extends StatelessWidget {
                                       style: TextUtil
                                           .base.ProductSans.white.w700
                                           .sp(20))),
+                              LevelUtil(
+                                width: 40,
+                                height: 20,
+                                style: TextUtil.base.white.bold.sp(12),
+                                level: CommonPreferences.level.value.toString(),
+                                endColor: Color(0xFFFFBC6B),
+                                strColor: Color(0xFFFF7C0E),
+                              ),
                               InkWell(
                                 onTap: () => showDialog(
                                     context: context,
@@ -121,8 +144,21 @@ class ProfileHeader extends StatelessWidget {
                                     color: ColorUtil.mainColor,
                                   ),
                                 ),
-                              )
+                              ),
                             ],
+                          ),
+                          LevelProgress(
+                            value:
+
+                                ///算百分比
+                                CommonPreferences.curLevelPoint.value
+                                        .toDouble() /
+                                    (CommonPreferences.curLevelPoint.value +
+                                            CommonPreferences
+                                                .nextLevelPoint.value)
+                                        .toDouble(),
+                            endColor: Color(0xFFFFBC6B),
+                            strColor: Color(0xFFFF7C0E),
                           ),
                           SizedBox(height: 15.w),
                           Row(
@@ -150,7 +186,7 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
         ),
-        child,
+        widget.child,
       ],
     );
   }

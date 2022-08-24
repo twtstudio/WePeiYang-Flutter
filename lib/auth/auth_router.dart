@@ -47,6 +47,7 @@ class AuthRouter {
   static String avatarCrop = 'info/avatar_crop';
 
   /// 个人页 & 设置页
+  static String user = 'home/user';
   static String setting = 'setting/home';
   static String generalSetting = 'setting/general_setting';
   static String languageSetting = 'setting/language_setting';
@@ -66,8 +67,7 @@ class AuthRouter {
     register1: (_) => RegisterPageOne(),
     register2: (arg) {
       var map = arg as Map;
-      return RegisterPageTwo(
-          map['userNum'], map['nickname'], map['idNum'], map['email']);
+      return RegisterPageTwo(map['userNum'], map['nickname'],map['idNum'], map['email']);
     },
     register3: (arg) {
       var map = arg as Map;

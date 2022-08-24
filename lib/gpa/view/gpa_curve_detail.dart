@@ -17,6 +17,16 @@ class GPAPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
     if (hideGPA) return Container();
+    var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
+    if (stats.isEmpty)
+      return
+
+          ///去掉周围padding的懒方法
+          Column(
+        children: [
+          Image.asset("assets/images/schedule_empty.png"),
+        ],
+      );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
@@ -162,6 +172,7 @@ class _GPACurveState extends State<GPACurve>
 
   @override
   Widget build(BuildContext context) {
+    var terms = context.select<GPANotifier, List<String>>((p) => p.terms);
     return LayoutBuilder(builder: (context, constraints) {
       var notifier = context.watch<GPANotifier>();
       if (notifier.statsData.isEmpty) return SizedBox(height: 10);
@@ -301,7 +312,7 @@ class _GPACurveState extends State<GPACurve>
                                     : Colors.white),
                             child: Center(
                               child: Text(
-                                index.toString() + "H20",
+                                terms[index],
                                 style: notifier.index == index
                                     ? TextUtil.base.white.bold.w700.sp(11)
                                     : TextUtil.base.greyA6.bold.w700.sp(11),

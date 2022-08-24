@@ -25,14 +25,20 @@ class WpyExamWidget extends StatelessWidget {
           : provider.unfinished.length == 0
               ? '目前没有考试哦'
               : '没有已安排时间的考试哦';
-      return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
-        child: Container(
-          height: 430.h,
-          alignment: Alignment.center,
-          child: Text(msg),
-        ),
-      );
+      return provider.unfinished.length == 0
+          ?
+          ///去掉周围padding的懒方法
+          Column(children: [
+              Image.asset("assets/images/schedule_empty.png"),
+            ])
+          : GestureDetector(
+              onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
+              child: Container(
+                height: 430.h,
+                alignment: Alignment.center,
+                child: Text(msg),
+              ),
+            );
     }
     return SizedBox(
       height: 430.h,

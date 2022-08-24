@@ -44,6 +44,15 @@ class CommonPreferences {
   static final isSchAdmin = PrefsBean<bool>('isSchAdmin', false);
   static final isStuAdmin = PrefsBean<bool>('isStuAdmin', false);
   static final isUser = PrefsBean<bool>('isUser', true);
+
+  ///等级系统
+  static final levelPoint = PrefsBean<int>('levelPoint');
+  static final levelName = PrefsBean<String>('levelName');
+  static final level = PrefsBean<int>('level');
+  static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
+  static final curLevelPoint = PrefsBean<int>('curLevelPoint');
+
+
   static final feedbackSearchHistory =
       PrefsBean<List<String>>('feedbackSearchHistory');
 

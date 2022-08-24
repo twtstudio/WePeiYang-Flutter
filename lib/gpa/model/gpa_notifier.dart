@@ -12,6 +12,8 @@ class GPANotifier with ChangeNotifier {
   /// 每学期的gpa数据
   List<GPAStat> _gpaStats = [];
 
+  List<GPAStat> get gpaStats => _gpaStats;
+
   /// 外部更新gpa总数据时调用
   set gpaStats(List<GPAStat> newList) {
     _gpaStats = newList;

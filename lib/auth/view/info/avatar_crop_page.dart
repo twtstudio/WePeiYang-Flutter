@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -38,6 +39,19 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     );
     if (croppedFile == null) return; // 取消裁剪图片的情况
     AuthService.uploadAvatar(croppedFile, onSuccess: () {
+      List<File> update =[croppedFile];
+      FeedbackService.postPic(
+          images: update,
+          onResult: (result) {
+            FeedbackService.uploadAvatars(result[0], onSuccess: () {
+              ToastProvider.success("头像上传成功");
+            }, onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
       setState(() {
         this.file = croppedFile;
       });

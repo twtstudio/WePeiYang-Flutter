@@ -6,12 +6,14 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+
+  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -65,6 +67,7 @@ class FeedbackPicPostDio extends DioAbstract {
 class FeedbackAdminPostDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
+
   // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
 
   @override
@@ -98,8 +101,8 @@ class FeedbackService with AsyncTimer {
       if (CommonPreferences.lakeToken.value != null &&
           CommonPreferences.lakeToken.value != "" &&
           !forceRefresh) {
-        response = await feedbackDio
-            .get('auth/${CommonPreferences.lakeToken.value}');
+        response =
+            await feedbackDio.get('auth/${CommonPreferences.lakeToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
           'token': CommonPreferences.token.value,
@@ -165,6 +168,21 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
+  }
+
+  static uploadAvatars(String avatar,
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('avatar', () async {
+      try {
+        var data = FormData.fromMap({
+          'avatar': avatar,
+        });
+        feedbackDio.post("user/avatar", formData: data);
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   static Future<void> postPic(
@@ -632,8 +650,16 @@ class FeedbackService with AsyncTimer {
           response.data['data']['user']['is_sch_admin'];
       CommonPreferences.isStuAdmin.value =
           response.data['data']['user']['is_stu_admin'];
-      CommonPreferences.isUser.value =
-          response.data['data']['user']['is_user'];
+      CommonPreferences.levelPoint.value =
+          response.data['data']['user']['level_point'];
+      CommonPreferences.level.value =
+          response.data['data']['user']['level_info']['level'];
+      CommonPreferences.nextLevelPoint.value =
+          response.data['data']['user']['level_info']['next_level_point'];
+      CommonPreferences.curLevelPoint.value =
+          response.data['data']['user']['level_info']['cur_level_point'];
+      CommonPreferences.levelName.value =
+          response.data['data']['user']['level_info']['level_name'];
       onSuccess?.call();
     } on DioError catch (e) {
       onFailure(e);
@@ -957,9 +983,9 @@ class FeedbackService with AsyncTimer {
 
   static adminChangeETag(
       {@required id,
-        @required value,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required value,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminChangeETag', () async {
       try {
         await feedbackAdminPostDio.post('post/etag',
@@ -1000,8 +1026,8 @@ class FeedbackService with AsyncTimer {
 
   static adminResetName(
       {@required id,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminResetName', () async {
       try {
         await feedbackAdminPostDio.post('user/nickname/reset',
@@ -1014,5 +1040,4 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
-
 }
