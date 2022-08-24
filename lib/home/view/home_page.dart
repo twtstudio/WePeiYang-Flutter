@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double width = WePeiYangApp.screenWidth / 3;
 
     var homePage = SizedBox(
-      height: 70.w,
+      height: 70.h,
       width: width,
       child: IconButton(
         splashRadius: 1,
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     var feedbackPage = SizedBox(
-      height: 70.w,
+      height: 70.h,
       width: width,
       child: IconButton(
         splashRadius: 1,
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     var selfPage = SizedBox(
-      height: 70.w,
+      height: 70.h,
       width: width,
       child: IconButton(
         splashRadius: 1,

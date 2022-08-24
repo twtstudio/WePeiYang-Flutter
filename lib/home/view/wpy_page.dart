@@ -111,11 +111,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       systemNavigationBarColor: Colors.white,
     ));
     _sc.addListener(() {
-      if (_sc.position.maxScrollExtent - _sc.offset < 180.h && showSchedule == true)
+      if (_sc.position.maxScrollExtent - _sc.offset < 30.h && showSchedule == true)
         setState(() {
           showSchedule = false;
         });
-      if (_sc.position.maxScrollExtent - _sc.offset > 184.h && showSchedule == false)
+      if (_sc.position.maxScrollExtent - _sc.offset > 34.h &&
+          showSchedule == false)
         setState(() {
           showSchedule = true;
         });
@@ -153,24 +154,26 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                           topLeft: Radius.circular(40.r),
                           topRight: Radius.circular(40.r))
                       : BorderRadius.zero,
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
-                    controller: _sc,
-                    children: <Widget>[
-                      TodayCoursesWidget(),
-                      AnimatedContainer(
-                          duration: Duration(milliseconds: 800),
-                          curve: Curves.easeIn,
-                          height: MediaQuery.of(context).size.height,
-                          margin: EdgeInsets.only(top: 20.h),
-                          padding: EdgeInsets.only(top: 50.h),
-                          decoration: BoxDecoration(
-                              color: Color(0xEAFFFFFF),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40.r),
-                                  topRight: Radius.circular(40.r))),
-                          child: _functionCardsView()),
-                    ],
+                  child: ScrollConfiguration(
+                    behavior: WPYScrollBehavior(),
+                    child: ListView(
+                      controller: _sc,
+                      children: <Widget>[
+                        TodayCoursesWidget(),
+                        AnimatedContainer(
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.easeIn,
+                            height: MediaQuery.of(context).size.height - 160.h,
+                            margin: EdgeInsets.only(top: 20.h),
+                            padding: EdgeInsets.only(top: 40.h),
+                            decoration: BoxDecoration(
+                                color: Color(0xEAFFFFFF),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40.r),
+                                    topRight: Radius.circular(40.r))),
+                            child: _functionCardsView()),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -221,7 +224,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       children: [
         /// 功能跳转卡片
         SliverCardsWidget(cards),
-        SizedBox(height: 30.w),
+        SizedBox(height: 10.w),
         Padding(
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
           child: TabBar(
@@ -246,7 +249,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               ]),
         ),
         SizedBox(
-          height: 0.7.sh,
+          height: MediaQuery.of(context).size.height - 362.h,
           child: TabBarView(
               controller: _tc,
               physics: BouncingScrollPhysics(),
@@ -333,7 +336,7 @@ class SliverCardsWidget extends StatelessWidget {
     );
 
     return SizedBox(
-      height: 100,
+      height: 100.h,
       width: double.infinity,
       child: cardList,
     );
@@ -409,7 +412,7 @@ class WPYScrollBehavior extends ScrollBehavior {
     return GlowingOverscrollIndicator(
       child: child,
       showLeading: false,
-      showTrailing: true,
+      showTrailing: false,
       axisDirection: AxisDirection.down,
       color: ColorUtil.mainColor,
     );
