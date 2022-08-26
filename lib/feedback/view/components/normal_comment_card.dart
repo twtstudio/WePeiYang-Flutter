@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:we_pei_yang_flutter/commons/common_widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -459,37 +460,9 @@ class _NCommentCardState extends State<NCommentCard>
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                             maxHeight: WePeiYangApp.screenWidth * 2),
-                        child: Image.network(
+                        child: WpyPic(
                           picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              height: 40,
-                              width: double.infinity,
-                              padding: EdgeInsets.all(4),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes
-                                      : null,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (BuildContext context, Object exception,
-                              StackTrace stackTrace) {
-                            return Text(
-                              '💔[图片加载失败]' +
-                                  widget.comment.imageUrl.replaceRange(
-                                      10,
-                                      widget.comment.imageUrl.length - 6,
-                                      '...'),
-                              style: TextUtil.base.grey6C.w400.sp(12),
-                            );
-                          },
+                          withHolder: true,
                         ),
                       ),
                     )
@@ -497,37 +470,13 @@ class _NCommentCardState extends State<NCommentCard>
                       children: [
                         ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(4)),
-                            child: Image.network(
-                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                                width: 70,
-                                height: 64,
-                                fit: BoxFit.cover, loadingBuilder:
-                                    (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                height: 40,
-                                width: 40,
-                                padding: EdgeInsets.all(4),
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes
-                                      : null,
-                                ),
-                              );
-                            }, errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                              return Text(
-                                '💔[加载失败，可尝试点击继续加载原图]\n    ' +
-                                    widget.comment.imageUrl.replaceRange(
-                                        10,
-                                        widget.comment.imageUrl.length - 6,
-                                        '...'),
-                                style: TextUtil.base.grey6C.w400.sp(12),
-                              );
-                            })),
+                            child: WpyPic(
+                              picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                              width: 70,
+                              height: 64,
+                              fit: BoxFit.cover,
+                              withHolder: true,
+                            )),
                         Spacer()
                       ],
                     )),
@@ -541,7 +490,7 @@ class _NCommentCardState extends State<NCommentCard>
         shrinkWrap: true,
         controller: _sc,
         childrenDelegate: SliverChildBuilderDelegate(
-              (context, index) {
+          (context, index) {
             return NCommentCard(
               uid: widget.uid,
               ancestorName: widget.comment.nickname,
@@ -723,8 +672,8 @@ class _NCommentCardState extends State<NCommentCard>
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding:  EdgeInsets.fromLTRB(
-                                          58.w, 0, 0, 0),
+                                      padding:
+                                          EdgeInsets.fromLTRB(58.w, 0, 0, 0),
                                       // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
                                       child: Text(
                                           widget.comment.subFloorCnt > 2

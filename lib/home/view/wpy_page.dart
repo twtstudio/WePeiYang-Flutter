@@ -115,7 +115,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         setState(() {
           showSchedule = false;
         });
-      if (_sc.position.maxScrollExtent - _sc.offset > 34.h &&
+      if (_sc.position.maxScrollExtent - _sc.offset > 30.1.h &&
           showSchedule == false)
         setState(() {
           showSchedule = true;
