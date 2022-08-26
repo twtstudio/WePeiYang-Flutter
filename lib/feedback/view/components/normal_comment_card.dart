@@ -534,14 +534,9 @@ class _NCommentCardState extends State<NCommentCard>
                     // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
                     child: Container(
                       padding: EdgeInsets.fromLTRB(16.w, 8.h, 14.w, 8.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: CommonPreferences.isSkinUsed.value
-                            ? Color(CommonPreferences.skinColorE.value)
-                            : widget.isFullView && widget.isSubFloor
-                                ? Colors.transparent
-                                : Colors.white,
-                      ),
+                      color: CommonPreferences.isSkinUsed.value
+                          ? Color(CommonPreferences.skinColorE.value)
+                          : Colors.transparent,
                       child: mainBody,
                     ),
                   ),

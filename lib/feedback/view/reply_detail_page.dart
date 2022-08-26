@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
@@ -170,7 +171,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                 type: 0,
               ),
               Container(
-                width: WePeiYangApp.screenWidth - 60,
+                width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
                 color: Colors.black12,
               )

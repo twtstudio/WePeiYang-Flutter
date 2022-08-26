@@ -356,7 +356,7 @@ class _PostCardState extends State<PostCard> {
                             constraints: BoxConstraints(
                               maxWidth:
                                   (WePeiYangApp.screenWidth - 24.w) / 2 -
-                                      20.w,
+                                      40.w,
                             ),
                             child: Text(
                               post.nickname == ''
