@@ -91,7 +91,8 @@ class _PostCardState extends State<PostCard> {
             ? BoxFit.cover
             : BoxFit.fitWidth,
         //如果是detail，使用 cover 否则，则为simple,使用 fitWidth
-        alignment: Alignment.topCenter,
+        alignment: (widget.type == PostCardType.detail)
+            ? Alignment.topCenter : Alignment.center,
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
       image.image
@@ -348,37 +349,32 @@ class _PostCardState extends State<PostCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      (WePeiYangApp.screenWidth - 24.w) / 2 -
-                                          20.w,
-                                ),
-                                child: Text(
-                                  post.nickname == ''
-                                      ? '没名字的微友'
-                                      : post.nickname,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextUtil.base.w500.NotoSansSC
-                                      .sp(14)
-                                      .black2A,
-                                ),
-                              ),
-                            ],
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth:
+                                  (WePeiYangApp.screenWidth - 24.w) / 2 -
+                                      20.w,
+                            ),
+                            child: Text(
+                              post.nickname == ''
+                                  ? '没名字的微友'
+                                  : post.nickname,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextUtil.base.w500.NotoSansSC
+                                  .sp(14)
+                                  .black2A,
+                            ),
                           ),
+                          SizedBox(width: 4.w),
                           LevelUtil(
                             width: 20,
                             height: 10,
                             style: TextUtil.base.white.bold.sp(6),
                             level: post.level.toString(),
-                            endColor: Color(0xFFFFBC6B),
-                            strColor: Color(0xFFFF7C0E),
                           ),
                         ],
                       ),

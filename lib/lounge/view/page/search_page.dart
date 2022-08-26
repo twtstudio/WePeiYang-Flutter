@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/lounge/provider/building_data_provider.dart';
 import 'package:we_pei_yang_flutter/lounge/server/hive_manager.dart';
 import 'package:we_pei_yang_flutter/lounge/server/search_server.dart';
@@ -213,14 +215,7 @@ class __SearchHistoryPageState extends State<_SearchHistoryPage> {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 8.w),
-          child: Text(
-            '历史记录',
-            style: TextStyle(
-              color: Theme.of(context).searchHistoryTitle,
-              fontWeight: FontWeight.bold,
-              fontSize: 13.sp,
-            ),
-          ),
+          child: Text('历史记录', style: TextUtil.base.w600.blue2C.sp(13)),
         ),
         InkWell(
           onTap: () {
@@ -234,7 +229,7 @@ class __SearchHistoryPageState extends State<_SearchHistoryPage> {
               Images.crash,
               width: 12.w,
               fit: BoxFit.cover,
-              color: Theme.of(context).searchIcon,
+              color: ColorUtil.blue2CColor,
             ),
           ),
         ),

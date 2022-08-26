@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class WpyExamWidget extends StatelessWidget {
@@ -25,20 +26,18 @@ class WpyExamWidget extends StatelessWidget {
           : provider.unfinished.length == 0
               ? '目前没有考试哦'
               : '没有已安排时间的考试哦';
-      return provider.unfinished.length == 0
-          ?
-          ///去掉周围padding的懒方法
-          Column(children: [
-              Image.asset("assets/images/schedule_empty.png"),
-            ])
-          : GestureDetector(
-              onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
-              child: Container(
+      return GestureDetector(
+        onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
+        child: provider.unfinished.length == 0
+            ? Align(
+                alignment: Alignment.topCenter,
+                child: Image.asset("assets/images/schedule_empty.png"))
+            : Container(
                 height: 430.h,
                 alignment: Alignment.center,
                 child: Text(msg),
               ),
-            );
+      );
     }
     return SizedBox(
       height: 430.h,

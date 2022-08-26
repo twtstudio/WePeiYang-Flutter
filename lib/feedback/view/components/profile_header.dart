@@ -127,8 +127,6 @@ class ProfileHeaderState extends State<ProfileHeader> {
                                 height: 20,
                                 style: TextUtil.base.white.bold.sp(12),
                                 level: CommonPreferences.level.value.toString(),
-                                endColor: Color(0xFFFFBC6B),
-                                strColor: Color(0xFFFF7C0E),
                               ),
                               InkWell(
                                 onTap: () => showDialog(

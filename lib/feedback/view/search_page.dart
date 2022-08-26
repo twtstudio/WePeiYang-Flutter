@@ -77,12 +77,7 @@ class _SearchPageState extends State<SearchPage> {
       ],
     ));
 
-    const titleTextStyle = TextStyle(
-        fontSize: 17.0,
-        color: Color.fromRGBO(98, 103, 124, 1),
-        fontWeight: FontWeight.bold);
-
-    var searchHistoryIcon = Container(
+    var searchHistoryContainer = Container(
       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       alignment: Alignment.centerLeft,
       child: Row(
@@ -90,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: titleTextStyle,
+            style: TextUtil.base.blue2C.w600.sp(17),
           ),
           InkWell(
             child: Icon(Icons.delete, size: 16),
@@ -169,7 +164,7 @@ class _SearchPageState extends State<SearchPage> {
 
     var searchHistory = Padding(
       child: Column(
-        children: [searchHistoryIcon, searchHistoryList],
+        children: [searchHistoryContainer, searchHistoryList],
       ),
       padding: EdgeInsets.symmetric(horizontal: 10),
     );

@@ -18,24 +18,20 @@ class GPAPreview extends StatelessWidget {
     var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
     if (hideGPA) return Container();
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
-    if (stats.isEmpty)
-      return
-
-          ///去掉周围padding的懒方法
-          Column(
-        children: [
-          Image.asset("assets/images/schedule_empty.png"),
-        ],
-      );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
-      child: Column(children: <Widget>[
-        //_CurveText(),
-        SizedBox(height: 45.h),
-        _GPAIntro(),
-        GPACurve(FavorColors.gpaColor, isPreview: true),
-      ]),
+      child: stats.isEmpty
+          ? Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset("assets/images/schedule_empty.png"),
+            )
+          : Column(children: <Widget>[
+              //_CurveText(),
+              SizedBox(height: 45.h),
+              _GPAIntro(),
+              GPACurve(FavorColors.gpaColor, isPreview: true),
+            ]),
     );
   }
 }

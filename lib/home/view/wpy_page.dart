@@ -111,7 +111,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       systemNavigationBarColor: Colors.white,
     ));
     _sc.addListener(() {
-      if (_sc.position.maxScrollExtent - _sc.offset < 30.h && showSchedule == true)
+      if (_sc.position.maxScrollExtent - _sc.offset < 30.h &&
+          showSchedule == true)
         setState(() {
           showSchedule = false;
         });
@@ -189,8 +190,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       duration: Duration(milliseconds: 800),
                       curve: Curves.easeIn,
                       onEnd: () => setState(() => useRound = showSchedule),
-                      child: Text('HELLO, ${CommonPreferences.nickname.value}',
-                          style: TextUtil.base.white.w900.sp(22)),
+                      child: SizedBox(
+                        width: 1.sw - 60.w,
+                        child: Text(
+                            'HELLO, ${CommonPreferences.lakeNickname.value}',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextUtil.base.white.w900.sp(22)),
+                      ),
                     ),
                   ),
                 ),
@@ -206,8 +212,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       opacity: showSchedule ? 0 : 1,
                       duration: Duration(milliseconds: 800),
                       curve: Curves.easeIn,
-                      child: Text('HELLO, ${CommonPreferences.nickname.value}',
-                          style: TextUtil.base.black00.w900.sp(22)),
+                      child: SizedBox(
+                          width: 1.sw - 60.w,
+                          child: Text(
+                              'HELLO, ${CommonPreferences.lakeNickname.value}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextUtil.base.black00.w900.sp(22))),
                     ),
                   ),
                 ),
