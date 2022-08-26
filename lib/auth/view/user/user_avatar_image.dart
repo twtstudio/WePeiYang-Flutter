@@ -18,7 +18,7 @@ class UserAvatarImage extends StatelessWidget {
         : ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             child: Image.network(
-              'https://api.twt.edu.cn' + avatar,
+              'https://qnhdpic.twt.edu.cn/download/origin/' + avatar,
               width: size,
               height: size,
             ),

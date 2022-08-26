@@ -589,7 +589,9 @@ class _NCommentCardState extends State<NCommentCard>
         width: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
         height: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
         child: ProfileImageWithDetailedPopup(
-            widget.type, widget.comment.nickname, widget.comment.uid),
+            widget.type,
+            widget.comment.avatar ?? widget.comment.nickname,
+            widget.comment.uid),
       ),
       SizedBox(width: 10.w),
       Expanded(

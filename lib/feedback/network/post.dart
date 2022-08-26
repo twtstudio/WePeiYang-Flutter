@@ -34,6 +34,7 @@ class Post {
     this.eTag,
     this.nickname,
     this.level,
+    this.avatar
   });
 
   int id;
@@ -58,6 +59,7 @@ class Post {
   Department department;
   int visitCount;
   int level;
+  String avatar;
   String eTag;
   String nickname;
 
@@ -96,6 +98,7 @@ class Post {
         eTag: json["e_tag"],
         nickname: json["nickname"],
         level: json["user_info"]["level"],
+        avatar: json["user_info"]["avatar"]
       );
 
   Map<String, dynamic> toJson() => {
@@ -122,7 +125,8 @@ class Post {
         "visit_count": visitCount,
         "e_tag": eTag,
         "nickname": nickname,
-        "level": level
+        "level": level,
+        "avatar": avatar
       };
 
   Post.nullExceptId(int questionId) {
@@ -196,6 +200,8 @@ class Floor {
     this.isLike,
     this.isDis,
     this.isOwner,
+    this.avatar,
+    this.level,
   });
 
   int id;
@@ -215,8 +221,9 @@ class Floor {
   int rating;
   bool isLike;
   bool isDis;
+  String avatar;
   bool isOwner;
-
+  int level;
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
         id: json["id"],
         createAt: json["created_at"] == ""
@@ -240,6 +247,8 @@ class Floor {
         subFloorCnt: json["sub_floor_cnt"],
         isLike: json["is_like"],
         isDis: json["is_dis"],
+        avatar: json["user_info"]["avatar"],
+        level: json["user_info"]["level"],
         isOwner: json["is_owner"],
       );
 
@@ -263,6 +272,7 @@ class Floor {
         "is_like": isLike,
         "is_dis": isDis,
         "is_owner": isOwner,
+        "avatar":avatar
       };
 
   @override

@@ -280,9 +280,9 @@ class TextPod extends StatelessWidget {
 class ProfileImageWithDetailedPopup extends StatelessWidget {
   final int type;
   final int uid;
-  final String nickname;
+  final String avatar;
 
-  ProfileImageWithDetailedPopup(this.type, this.nickname, this.uid);
+  ProfileImageWithDetailedPopup(this.type, this.avatar, this.uid);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -313,7 +313,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                     children: [
                       SizedBox(height: 15),
                       Text(
-                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
+                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${avatar == '' ? '没名字的微友' : avatar}',
                         style:
                             TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
@@ -376,17 +376,43 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
               alignment: Alignment(0, -0.2),
               child: Padding(
                 padding: EdgeInsets.only(bottom: 130),
-                child: SvgPicture.network(
-                  '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-                  width: DateTime.now().month == 4 && DateTime.now().day == 1
-                      ? 36
-                      : 48,
-                  height: DateTime.now().month == 4 && DateTime.now().day == 1
-                      ? 36
-                      : 48,
-                  fit: BoxFit.contain,
-                  placeholderBuilder: defaultPlaceholderBuilder,
-                ),
+                child: avatar == ""
+                    ? SvgPicture.network(
+                        '${EnvConfig.QNHD}avatar/beam/20/${avatar}',
+                        width:
+                            DateTime.now().month == 4 && DateTime.now().day == 1
+                                ? 36
+                                : 48,
+                        height:
+                            DateTime.now().month == 4 && DateTime.now().day == 1
+                                ? 36
+                                : 48,
+                        fit: BoxFit.contain,
+                        placeholderBuilder: defaultPlaceholderBuilder,
+                      )
+                    : Image.network(
+                        'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                        width:
+                            DateTime.now().month == 4 && DateTime.now().day == 1
+                                ? 36
+                                : 48,
+                        height:
+                            DateTime.now().month == 4 && DateTime.now().day == 1
+                                ? 36
+                                : 48,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: FittedBox(
+                                fit: BoxFit.fitWidth, child: Loading()),
+                          );
+                        },
+                        // placeholderBuilder: defaultPlaceholderBuilder,
+                      ),
               ),
             ),
           ],
@@ -394,15 +420,38 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(15)),
-        child: SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-          width:
-              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 32,
-          height:
-              DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 32,
-          fit: BoxFit.contain,
-          placeholderBuilder: defaultPlaceholderBuilder,
-        ),
+        child: avatar == ""
+            ? SvgPicture.network(
+                '${EnvConfig.QNHD}avatar/beam/20/${avatar}',
+                width: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 32,
+                height: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 32,
+                fit: BoxFit.contain,
+                placeholderBuilder: defaultPlaceholderBuilder,
+              )
+            : Image.network(
+                'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                width: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 32,
+                height: DateTime.now().month == 4 && DateTime.now().day == 1
+                    ? 18
+                    : 32,
+                fit: BoxFit.contain,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
+                  );
+                },
+                // placeholderBuilder: defaultPlaceholderBuilder,
+              ),
       ),
     );
   }

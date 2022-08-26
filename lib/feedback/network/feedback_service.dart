@@ -648,6 +648,7 @@ class FeedbackService with AsyncTimer {
           response.data['data']['user']['is_super'];
       CommonPreferences.isSchAdmin.value =
           response.data['data']['user']['is_sch_admin'];
+      CommonPreferences.avatar.value = response.data['data']['user']['avatar'];
       CommonPreferences.isStuAdmin.value =
           response.data['data']['user']['is_stu_admin'];
       CommonPreferences.levelPoint.value =

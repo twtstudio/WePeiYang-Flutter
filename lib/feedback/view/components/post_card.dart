@@ -340,11 +340,10 @@ class _PostCardState extends State<PostCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProfileImageWithDetailedPopup(
-                    post.type, post.nickname, post.uid),
+                ProfileImageWithDetailedPopup(post.type, post.avatar, post.uid),
                 Container(
                   margin: EdgeInsets.only(left: 8.w),
-                  width: (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
+                  width: (WePeiYangApp.screenWidth - 24.w) / 2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,9 +353,12 @@ class _PostCardState extends State<PostCard> {
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              SizedBox(
-                                width: (WePeiYangApp.screenWidth - 24.w) / 2 -
-                                    110.w,
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      (WePeiYangApp.screenWidth - 24.w) / 2 -
+                                          20.w,
+                                ),
                                 child: Text(
                                   post.nickname == ''
                                       ? '没名字的微友'

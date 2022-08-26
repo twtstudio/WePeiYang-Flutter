@@ -118,7 +118,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
                                       CommonPreferences.lakeNickname.value,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
-                                      maxLines: 4,
+                                      maxLines: 1,
                                       style: TextUtil
                                           .base.ProductSans.white.w700
                                           .sp(20))),

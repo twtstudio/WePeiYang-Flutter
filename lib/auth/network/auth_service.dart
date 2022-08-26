@@ -461,7 +461,6 @@ class AuthService with AsyncTimer {
           ),
         });
         var response = await authDio.post("user/avatar", formData: data);
-        CommonPreferences.avatar.value = response.data['result'];
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);

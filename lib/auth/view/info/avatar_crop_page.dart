@@ -38,25 +38,21 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           lockAspectRatio: true),
     );
     if (croppedFile == null) return; // 取消裁剪图片的情况
-    AuthService.uploadAvatar(croppedFile, onSuccess: () {
-      List<File> update =[croppedFile];
-      FeedbackService.postPic(
-          images: update,
-          onResult: (result) {
-            FeedbackService.uploadAvatars(result[0], onSuccess: () {
-              ToastProvider.success("头像上传成功");
-            }, onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-            });
-          },
-          onFailure: (e) {
+    List<File> update =[croppedFile];
+    FeedbackService.postPic(
+        images: update,
+        onResult: (result) {
+          FeedbackService.uploadAvatars(result[0], onSuccess: () {
+            ToastProvider.success("头像上传成功");
+          }, onFailure: (e) {
             ToastProvider.error(e.error.toString());
           });
-      setState(() {
-        this.file = croppedFile;
-      });
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+    setState(() {
+      this.file = croppedFile;
     });
   }
 
