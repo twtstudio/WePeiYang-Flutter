@@ -112,8 +112,10 @@ class ProfileHeaderState extends State<ProfileHeader> {
                         children: [
                           Row(
                             children: [
-                              SizedBox(
-                                  width: WePeiYangApp.screenWidth / 3,
+                              ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: WePeiYangApp.screenWidth / 3,
+                                  ),
                                   child: Text(
                                       CommonPreferences.lakeNickname.value,
                                       textAlign: TextAlign.start,
@@ -122,6 +124,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
                                       style: TextUtil
                                           .base.ProductSans.white.w700
                                           .sp(20))),
+                              SizedBox(width: 4.w),
                               LevelUtil(
                                 width: 40,
                                 height: 20,
@@ -145,6 +148,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 4.h),
                           LevelProgress(
                             value:
 

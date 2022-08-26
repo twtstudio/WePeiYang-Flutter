@@ -484,7 +484,7 @@ class _NCommentCardState extends State<NCommentCard>
         child: ProfileImageWithDetailedPopup(
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
-            widget.comment.uid),
+            widget.comment.uid, widget.comment.nickname),
       ),
       SizedBox(width: 10.w),
       Expanded(

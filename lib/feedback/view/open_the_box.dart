@@ -55,7 +55,7 @@ class _OpenBoxState extends State<OpenBox> {
                       FeedbackService.superAdminOpenBox(
                           uid: widget.uid,
                           onResult: (re) => setState(() {
-                                detail = re ?? 'oh';
+                                detail = 'uid: ${widget.uid}\n$re' ?? 'ohshit';
                               }),
                           onFailure: (e) {
                             ToastProvider.error(e.message);

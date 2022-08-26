@@ -341,7 +341,7 @@ class _PostCardState extends State<PostCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProfileImageWithDetailedPopup(post.type, post.avatar, post.uid),
+                ProfileImageWithDetailedPopup(post.type, post.avatar, post.uid, post.nickname),
                 Container(
                   margin: EdgeInsets.only(left: 8.w),
                   width: (WePeiYangApp.screenWidth - 24.w) / 2,

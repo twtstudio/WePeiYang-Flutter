@@ -281,8 +281,9 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
   final int type;
   final int uid;
   final String avatar;
+  final String nickName;
 
-  ProfileImageWithDetailedPopup(this.type, this.avatar, this.uid);
+  ProfileImageWithDetailedPopup(this.type, this.avatar, this.uid, this.nickName);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -313,7 +314,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                     children: [
                       SizedBox(height: 15),
                       Text(
-                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${avatar == '' ? '没名字的微友' : avatar}',
+                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickName == '' ? '没名字的微友' : nickName}',
                         style:
                             TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(2),
                         overflow: TextOverflow.ellipsis,
