@@ -460,7 +460,7 @@ class AuthService with AsyncTimer {
             contentType: MediaType("image", "jpg"),
           ),
         });
-        var response = await authDio.post("user/avatar", formData: data);
+        await authDio.post("user/avatar", formData: data);
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);

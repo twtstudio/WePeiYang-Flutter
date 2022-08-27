@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class WpyExamWidget extends StatelessWidget {
