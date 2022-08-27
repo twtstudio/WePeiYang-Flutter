@@ -54,7 +54,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
-
     if (CommonPreferences.isFirstUse.value == true) setAsserts();
     cards = [
       CardBean(

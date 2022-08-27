@@ -29,7 +29,7 @@ class AppRouteAnalysis extends NavigatorObserver {
 }
 
 class PageStackObserver extends NavigatorObserver {
-  static var pageStack = <String>[];
+  static final pageStack = <String>[];
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {

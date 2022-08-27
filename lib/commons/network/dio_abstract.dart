@@ -12,7 +12,7 @@ abstract class DioAbstract {
   Map<String, String>? headers;
   List<InterceptorsWrapper> interceptors = [];
   ResponseType responseType = ResponseType.json;
-  bool responseBody = true;
+  static var logEnabled = true;
 
   late Dio _dio;
 
@@ -29,8 +29,10 @@ abstract class DioAbstract {
       ..options = options
       ..interceptors.add(NetCheckInterceptor())
       ..interceptors.addAll(interceptors)
-      ..interceptors.add(ErrorInterceptor())
-      ..interceptors.add(LogInterceptor(responseBody: responseBody));
+      ..interceptors.add(ErrorInterceptor());
+    if (logEnabled) {
+      _dio.interceptors.add(LogInterceptor(responseBody: true));
+    }
 
     // 不要删除！！！！
     // 配置 fiddler 代理

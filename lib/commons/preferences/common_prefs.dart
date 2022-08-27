@@ -7,12 +7,9 @@ class CommonPreferences {
   static late SharedPreferences sharedPref;
 
   /// 初始化sharedPrefs，在运行app前被调用
-  static Future<void> initPrefs() async {
+  static Future<void> init() async {
     sharedPref = await SharedPreferences.getInstance();
   }
-
-  /// 第一次登录
-  static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
 
   /// 天外天账号系统
   static final isLogin = PrefsBean<bool>('login');
@@ -37,7 +34,7 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
   static final themeToken = PrefsBean<String>('themeToken');
 
-  /// 用户信息
+  /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken');
   static final lakeUid = PrefsBean<String>('feedbackUid');
   static final isSuper = PrefsBean<bool>('isSuper', false);
@@ -97,7 +94,7 @@ class CommonPreferences {
   static final isBindTju = PrefsBean<bool>('bindtju');
   static final tjuuname = PrefsBean<String>('tjuuname');
   static final tjupasswd = PrefsBean<String>('tjupasswd');
-  ///
+
   /// 自定义课表
   static final customCourseToken = PrefsBean<String>('customCourseToken');
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
@@ -141,7 +138,7 @@ class CommonPreferences {
   static final updateTime = PrefsBean<String>('updateTime');
 
   /// 是否为初次使用此app
-  static final firstUse = PrefsBean<bool>('firstUse', true);
+  static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
 
   /// 是否使用账密登陆（false则为短信登陆）
   static final usePwLogin = PrefsBean<bool>('pwLogin', true);

@@ -20,13 +20,14 @@ import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
 import 'commons/local/local_model.dart';
-import 'commons/network/wpy_dio.dart' show NetStatusListener;
+import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
 import 'commons/update/update_manager.dart';
 import 'commons/util/logger.dart';
 import 'commons/util/navigator_observers.dart';
 import 'commons/util/router_manager.dart';
 import 'commons/util/text_util.dart';
+import 'commons/util/toast_provider.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/post.dart';
 import 'feedback/network/feedback_service.dart';
@@ -51,11 +52,15 @@ void main() async {
     EnvConfig.init();
     PathUtil.init();
 
-    /// 初始化sharePreference
-    await CommonPreferences.initPrefs();
+    /// 初始化sharedPreference
+    await CommonPreferences.init();
 
     /// 初始化Connectivity
     await NetStatusListener.init();
+    DioAbstract.logEnabled = true;
+
+    /// 初始化友盟
+    UmengCommonSdk.initCommon();
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
@@ -74,6 +79,10 @@ void main() async {
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+
+    /// 恢复截屏和亮度默认值
+    LocalSetting.changeBrightness(-1);
+    LocalSetting.changeSecurity(false);
 
     /// 修改debugPrint
     debugPrint = (message, {wrapWidth}) => print(message);
@@ -145,6 +154,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
+      TextUtil.init(baseContext);
+      ToastProvider.init(baseContext);
       if (CommonPreferences.token != '') {
         FeedbackService.getToken(forceRefresh: true);
       }
@@ -291,7 +302,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
-    TextUtil.init(context);
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
@@ -335,13 +345,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
-    // 初始化友盟
-    UmengCommonSdk.initCommon();
-
-    // 恢复截屏和亮度默认值
-    LocalSetting.changeBrightness(-1);
-    LocalSetting.changeSecurity(false);
-
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
     if (CommonPreferences.updateTime.value != "20220822") {
       CommonPreferences.updateTime.value = "20220822";
@@ -352,33 +355,27 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     }
 
     /// 读取gpa、考表、课程表的缓存
-    context.read<CourseProvider>().readPref();
-    context.read<ExamProvider>().readPref();
     context.read<GPANotifier>().readPref();
+    context.read<ExamProvider>().readPref();
+    context.read<CourseProvider>().readPref();
 
-    /// 如果存过账号密码，优先用账密刷新token
-    if (CommonPreferences.account.value != '' &&
-        CommonPreferences.password.value != '') {
-      Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          AuthService.pwLogin(
-              CommonPreferences.account.value, CommonPreferences.password.value,
-              onResult: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          }, onFailure: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, AuthRouter.login, (route) => false);
-          }));
-    } else if (CommonPreferences.isLogin.value &&
+    /// 如果登陆过，尝试刷新token
+    if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
-      /// 如果是短信登陆的，尝试用token刷新
-      Future.delayed(Duration(milliseconds: 500)).then(
+      Future.delayed(const Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
           onFailure: (_) {
+            if (CommonPreferences.account.value != '' &&
+                CommonPreferences.password.value != '') {
+              /// 如果存过账密，尝试用账密刷新token，无论成功与否均进入主页
+              AuthService.pwLogin(CommonPreferences.account.value,
+                  CommonPreferences.password.value,
+                  onResult: (_) {}, onFailure: (_) {});
+            }
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
@@ -386,7 +383,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       );
     } else {
       /// 没登陆过的话，多看一会的启动页再跳转到登录页
-      Future.delayed(Duration(seconds: 1)).then(
+      Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
   }
