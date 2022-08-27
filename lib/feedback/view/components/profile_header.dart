@@ -78,30 +78,28 @@ class ProfileHeaderState extends State<ProfileHeader> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      decoration: CommonPreferences.isAprilFoolHead.value
-                          ? BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/lake_butt_icons/jokers.png'),
-                                  fit: BoxFit.contain),
-                            )
-                          : BoxDecoration(),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 15.w),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                      context, AuthRouter.avatarCrop)
-                                  .then((_) => this.setState(() {}));
-                            },
-                            child: UserAvatarImage(
-                                size: (_width - 80) / 3,
-                                iconColor: Colors.white),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AuthRouter.avatarCrop)
+                            .then((_) => this.setState(() {}));
+                      },
+                      child: Container(
+                        decoration: CommonPreferences.isAprilFoolHead.value
+                            ? BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/lake_butt_icons/jokers.png'),
+                                    fit: BoxFit.contain),
+                              )
+                            : BoxDecoration(),
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: Hero(
+                          tag: 'avatar',
+                          child: UserAvatarImage(
+                            size: (_width - 80) / 3,
+                            iconColor: Colors.white,
                           ),
-                          SizedBox(width: 15.w),
-                        ],
+                        ),
                       ),
                     ),
                     // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),

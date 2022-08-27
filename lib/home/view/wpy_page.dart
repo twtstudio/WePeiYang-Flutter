@@ -161,7 +161,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       children: <Widget>[
                         TodayCoursesWidget(),
                         AnimatedContainer(
-                            duration: Duration(milliseconds: 800),
+                            duration: const Duration(milliseconds: 800),
                             curve: Curves.easeIn,
                             height: MediaQuery.of(context).size.height - 160.h,
                             margin: EdgeInsets.only(top: 20.h),
@@ -177,50 +177,24 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
-              SafeArea(
-                  child: Padding(
-                padding: EdgeInsets.only(left: 30.w, top: 10.h),
-                child: SizedBox(
-                  height: 60.h,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: AnimatedOpacity(
-                      opacity: showSchedule ? 1 : 0,
-                      duration: Duration(milliseconds: 800),
-                      curve: Curves.easeIn,
-                      onEnd: () => setState(() => useRound = showSchedule),
-                      child: SizedBox(
-                        width: 1.sw - 60.w,
-                        child: Text(
-                            'HELLO, ${CommonPreferences.lakeNickname.value}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextUtil.base.white.w900.sp(22)),
-                      ),
-                    ),
+              Container(
+                height: 60.h,
+                margin: EdgeInsets.only(left: 30.w, top: 10.h),
+                alignment: Alignment.centerLeft,
+                child: AnimatedDefaultTextStyle(
+                  style: showSchedule
+                      ? TextUtil.base.white.w900.sp(22)
+                      : TextUtil.base.black00.w900.sp(22),
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeIn,
+                  onEnd: () => setState(() => useRound = showSchedule),
+                  child: SizedBox(
+                    width: 1.sw - 60.w,
+                    child:
+                        Text('HELLO, ${CommonPreferences.lakeNickname.value}'),
                   ),
                 ),
-              )),
-              SafeArea(
-                  child: Padding(
-                padding: EdgeInsets.only(left: 30.w, top: 10.h),
-                child: SizedBox(
-                  height: 60.h,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: AnimatedOpacity(
-                      opacity: showSchedule ? 0 : 1,
-                      duration: Duration(milliseconds: 800),
-                      curve: Curves.easeIn,
-                      child: SizedBox(
-                          width: 1.sw - 60.w,
-                          child: Text(
-                              'HELLO, ${CommonPreferences.lakeNickname.value}',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.black00.w900.sp(22))),
-                    ),
-                  ),
-                ),
-              ))
+              ),
             ],
           ),
         ),
