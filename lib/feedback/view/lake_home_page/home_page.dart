@@ -13,7 +13,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/first_in_lake_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
@@ -59,17 +58,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   ///初次进入湖底的告示
-  firstInLake() {
-    final checkedNotifier = ValueNotifier(true);
-    if (CommonPreferences.isFirstLogin.value) {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return FirstInLakeDialog(checkedNotifier: checkedNotifier);
-          });
-    }
-  }
+  // firstInLake() {
+  //   final checkedNotifier = ValueNotifier(true);
+  //   if (CommonPreferences.isFirstLogin.value) {
+  //     showDialog(
+  //         context: context,
+  //         barrierDismissible: false,
+  //         builder: (BuildContext context) {
+  //           return FirstInLakeDialog(checkedNotifier: checkedNotifier);
+  //         });
+  //   }
+  // }
 
   initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(success: () {
@@ -87,9 +86,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      firstInLake();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   // firstInLake();
+    // });
     initPage();
     context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);

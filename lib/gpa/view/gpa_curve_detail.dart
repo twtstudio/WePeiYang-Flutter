@@ -22,9 +22,12 @@ class GPAPreview extends StatelessWidget {
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
       child: stats.isEmpty
-          ? Align(
-              alignment: Alignment.topCenter,
-              child: Image.asset("assets/images/schedule_empty.png"),
+          ? GestureDetector(
+              onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Image.asset("assets/images/schedule_empty.png"),
+              ),
             )
           : Column(children: <Widget>[
               //_CurveText(),

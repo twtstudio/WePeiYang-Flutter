@@ -36,7 +36,7 @@ class WpyExamWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(msg),
               ),
-      );
+            );
     }
     return SizedBox(
       height: 430.h,
