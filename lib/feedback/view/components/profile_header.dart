@@ -114,8 +114,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
                                   constraints: BoxConstraints(
                                     maxWidth: WePeiYangApp.screenWidth / 3,
                                   ),
-                                  child: Text(
-                                      CommonPreferences.lakeNickname.value,
+                                  child: Text(CommonPreferences.nickname.value,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,

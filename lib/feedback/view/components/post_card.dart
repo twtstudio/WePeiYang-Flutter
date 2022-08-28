@@ -92,7 +92,8 @@ class _PostCardState extends State<PostCard> {
             : BoxFit.fitWidth,
         //如果是detail，使用 cover 否则，则为simple,使用 fitWidth
         alignment: (widget.type == PostCardType.detail)
-            ? Alignment.topCenter : Alignment.center,
+            ? Alignment.topCenter
+            : Alignment.center,
       );
       Completer<ui.Image> completer = new Completer<ui.Image>();
       image.image
@@ -341,7 +342,8 @@ class _PostCardState extends State<PostCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProfileImageWithDetailedPopup(post.type, post.avatar, post.uid, post.nickname),
+                ProfileImageWithDetailedPopup(
+                    post.type, post.avatar, post.uid, post.nickname),
                 Container(
                   margin: EdgeInsets.only(left: 8.w),
                   width: (WePeiYangApp.screenWidth - 24.w) / 2,
@@ -355,18 +357,14 @@ class _PostCardState extends State<PostCard> {
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth:
-                                  (WePeiYangApp.screenWidth - 24.w) / 2 -
-                                      40.w,
+                                  (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
                             ),
                             child: Text(
-                              post.nickname == ''
-                                  ? '没名字的微友'
-                                  : post.nickname,
+                              post.nickname == '' ? '没名字的微友' : post.nickname,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.w500.NotoSansSC
-                                  .sp(14)
-                                  .black2A,
+                              style:
+                                  TextUtil.base.w500.NotoSansSC.sp(14).black2A,
                             ),
                           ),
                           SizedBox(width: 4.w),

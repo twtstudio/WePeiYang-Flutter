@@ -30,7 +30,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
     return LakeDialogWidget(
       title: '修改你的昵称',
       titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).black00,
-      confirmButtonColor: ColorUtil.blue363CColor,
+      confirmButtonColor: Color.fromRGBO(44, 126, 223, 1),
       confirmFun: () => FeedbackService.changeNickname(
           onSuccess: () {
             ToastProvider.success('修改成功喵');

@@ -19,6 +19,8 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 
+import '../../lounge/main_page_widget.dart';
+
 const _APRIL_FOOL_LABEL = '愚人节模式？';
 
 class WPYPage extends StatefulWidget {
@@ -190,8 +192,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   onEnd: () => setState(() => useRound = showSchedule),
                   child: SizedBox(
                     width: 1.sw - 60.w,
-                    child:
-                        Text('HELLO, ${CommonPreferences.lakeNickname.value}'),
+                    child: Text('HELLO, ${CommonPreferences.nickname.value}'),
                   ),
                 ),
               ),
