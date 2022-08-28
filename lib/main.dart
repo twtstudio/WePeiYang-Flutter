@@ -148,6 +148,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
+      ToastProvider.init(baseContext);
       if (CommonPreferences.token != '') {
         FeedbackService.getToken(forceRefresh: true);
       }
@@ -295,7 +296,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
     TextUtil.init(context);
-    ToastProvider.init(context);
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {

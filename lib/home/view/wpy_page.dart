@@ -183,8 +183,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
                   style: showSchedule
-                      ? TextUtil.base.white.w900.sp(22)
-                      : TextUtil.base.black00.w900.sp(22),
+                      ? TextUtil.base.white.w400.sp(22)
+                      : TextUtil.base.black00.w400.sp(22),
                   duration: const Duration(milliseconds: 800),
                   curve: Curves.easeIn,
                   onEnd: () => setState(() => useRound = showSchedule),
@@ -212,7 +212,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
           child: TabBar(
               controller: _tc,
-              labelStyle: TextUtil.base.w900.sp(14),
+              labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
               labelColor: Colors.black,
               unselectedLabelColor: ColorUtil.lightTextColor,

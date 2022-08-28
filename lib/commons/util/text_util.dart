@@ -9,6 +9,7 @@ class TextUtil {
 
   static init(BuildContext context) {
     base = Theme.of(context).textTheme.bodyText2 ?? TextStyle();
+    base = base.Swis;
   }
 }
 
