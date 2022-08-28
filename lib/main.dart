@@ -59,8 +59,6 @@ void main() async {
     await NetStatusListener.init();
     DioAbstract.logEnabled = true;
 
-    /// 初始化友盟
-    UmengCommonSdk.initCommon();
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
@@ -79,10 +77,6 @@ void main() async {
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
-
-    /// 恢复截屏和亮度默认值
-    LocalSetting.changeBrightness(-1);
-    LocalSetting.changeSecurity(false);
 
     /// 修改debugPrint
     debugPrint = (message, {wrapWidth}) => print(message);
@@ -154,8 +148,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
-      TextUtil.init(baseContext);
-      ToastProvider.init(baseContext);
       if (CommonPreferences.token != '') {
         FeedbackService.getToken(forceRefresh: true);
       }
@@ -302,6 +294,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
+    TextUtil.init(context);
+    ToastProvider.init(context);
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
@@ -345,6 +339,13 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
+    /// 初始化友盟
+    UmengCommonSdk.initCommon();
+
+    /// 恢复截屏和亮度默认值
+    LocalSetting.changeBrightness(-1);
+    LocalSetting.changeSecurity(false);
+
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
     if (CommonPreferences.updateTime.value != "20220822") {
       CommonPreferences.updateTime.value = "20220822";

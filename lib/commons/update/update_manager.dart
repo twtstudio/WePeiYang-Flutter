@@ -37,7 +37,6 @@ class UpdateManager extends UpdateStatusListener {
   bool _auto = false;
 
   Future<void> checkUpdate({bool auto = true}) async {
-    // ToastProvider.running("$status");
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;

@@ -31,7 +31,7 @@ abstract class DioAbstract {
       ..interceptors.addAll(interceptors)
       ..interceptors.add(ErrorInterceptor());
     if (logEnabled) {
-      _dio.interceptors.add(LogInterceptor(responseBody: true));
+      _dio.interceptors.add(LogInterceptor(responseBody: false));
     }
 
     // 不要删除！！！！

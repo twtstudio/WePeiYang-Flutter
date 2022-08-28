@@ -145,7 +145,7 @@ class CommonPreferences {
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
-  static final lastCheckUpdateTime = PrefsBean('lastCheckUpdateTime');
+  static final lastCheckUpdateTime = PrefsBean<String>('lastCheckUpdateTime');
   static final canPush = PrefsBean<bool>('can_push', false);
 
   /// 清除天外天账号系统缓存

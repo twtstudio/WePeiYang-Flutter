@@ -7,13 +7,10 @@ class UpdateUtil {
   /// 今日是否还检查更新
   static bool get todayCheckAgain {
     final date = CommonPreferences.lastCheckUpdateTime.value;
+    if (date == '') return false;
     final todayNotAgain =
         DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
-    if (todayNotAgain) {
-      return false;
-    } else {
-      return true;
-    }
+    return !todayNotAgain;
   }
 
   /// 设置今日不再检查更新
