@@ -85,7 +85,7 @@ class _ETagWidgetState extends State<ETagWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(3, 0.4, 2.8, 2.0),
+      padding: EdgeInsets.fromLTRB(3.5, 2, 3.5, 2),
       margin: EdgeInsets.only(right: 5),
       child: Text(
         widget.full

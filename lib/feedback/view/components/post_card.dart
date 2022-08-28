@@ -397,12 +397,12 @@ class _PostCardState extends State<PostCard> {
                 ),
               ],
             ),
-            SizedBox(height: 8.w),
+            SizedBox(height: 13.w),
             Row(
               children: [
                 if (post.eTag != '' && post.eTag != null)
                   Center(
-                      child: ETagWidget(entry: widget.post.eTag, full: true)),
+                      child: ETagWidget(entry: widget.post.eTag, full: widget.type == PostCardType.detail)),
                 Expanded(
                   child: InkWell(
                     onLongPress: () {

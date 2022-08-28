@@ -188,6 +188,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       arguments: NewPostArgs(true, tagId, lakeType, title));
                 }),
           if(lakeType !=0) SizedBox(width: 14),
+
           if(lakeType == 0) SizedBox(width: 40,),
         ]);
 
