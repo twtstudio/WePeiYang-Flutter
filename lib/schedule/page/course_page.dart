@@ -209,7 +209,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
       leading: leading,
       leadingWidth: 40.w,
       actions: actions,
-      title: Text("HELLO, ${CommonPreferences.nickname.value}",
+      title: Text("HELLO, ${CommonPreferences.lakeNickname.value}",
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
     );

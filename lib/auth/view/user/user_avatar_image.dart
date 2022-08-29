@@ -14,7 +14,12 @@ class UserAvatarImage extends StatelessWidget {
   Widget build(BuildContext context) {
     var avatar = CommonPreferences.avatar.value;
     return avatar == ''
-        ? Icon(Icons.account_circle_rounded, size: size, color: iconColor)
+        //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
+        ? ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: Image.asset(
+              'assets/images/default_image.png',
+            ))
         : ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             child: Image.network(

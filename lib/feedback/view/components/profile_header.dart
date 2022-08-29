@@ -31,10 +31,6 @@ class ProfileHeaderState extends State<ProfileHeader> {
       slivers: [
         SliverAppBar(
           backgroundColor: Colors.transparent,
-          title: Text(
-            "我的湖底",
-            style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
-          ),
           centerTitle: true,
           actions: [
             GestureDetector(
@@ -64,12 +60,12 @@ class ProfileHeaderState extends State<ProfileHeader> {
             children: [
               Column(
                 children: [
-                  SizedBox(height: 140.h),
+                  SizedBox(height: 114.h),
                   ClipRRect(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
                         topRight: Radius.circular(20.r)),
-                    child: Container(color: Colors.white, height: 63.h),
+                    child: Container(color: Colors.white, height: 41.h),
                   ),
                 ],
               ),
@@ -102,32 +98,34 @@ class ProfileHeaderState extends State<ProfileHeader> {
                         ),
                       ),
                     ),
-                    // SizedBox(width: (ScreenUtil.defaultSize.width - 60) / 10),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //SizedBox(height: 30.w),
                           Row(
                             children: [
                               ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth: WePeiYangApp.screenWidth / 3,
                                   ),
-                                  child: Text(CommonPreferences.nickname.value,
+                                  child: Text(
+                                      CommonPreferences.lakeNickname.value,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextUtil
                                           .base.ProductSans.white.w700
                                           .sp(20))),
-                              SizedBox(width: 4.w),
+                              SizedBox(width: 10.w),
                               LevelUtil(
                                 width: 40,
                                 height: 20,
-                                style: TextUtil.base.white.bold.sp(12),
+                                style: TextUtil.base.white.w100.sp(12),
                                 level: CommonPreferences.level.value.toString(),
                               ),
+                              SizedBox(width: 5.w),
                               InkWell(
                                 onTap: () => showDialog(
                                     context: context,
@@ -145,34 +143,20 @@ class ProfileHeaderState extends State<ProfileHeader> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 4.h),
-                          LevelProgress(
-                            value:
-
-                                ///算百分比
-                                CommonPreferences.curLevelPoint.value
-                                        .toDouble() /
-                                    (CommonPreferences.curLevelPoint.value +
-                                            CommonPreferences
-                                                .nextLevelPoint.value)
-                                        .toDouble(),
-                            endColor: Color(0xFFFFBC6B),
-                            strColor: Color(0xFFFF7C0E),
-                          ),
-                          SizedBox(height: 15.w),
+                          SizedBox(height: 13.w),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(CommonPreferences.userNumber.value,
                                   textAlign: TextAlign.start,
-                                  style: TextUtil.base.ProductSans.black4E.w700
+                                  style: TextUtil.base.ProductSans.black4E.w900
                                       .sp(14)),
                               SizedBox(width: 20.w),
                               Text(
                                   "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                   textAlign: TextAlign.start,
-                                  style: TextUtil.base.ProductSans.black4E.w700
+                                  style: TextUtil.base.ProductSans.black4E.w900
                                       .sp(14)),
                             ],
                           ),

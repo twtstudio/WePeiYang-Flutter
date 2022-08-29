@@ -163,7 +163,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           : Brightness.dark,
       leading: leading,
       leadingWidth: 40.w,
-      title: Text('HELLO, ${CommonPreferences.nickname.value}',
+      title: Text('HELLO, ${CommonPreferences.lakeNickname.value}',
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
       actions: [

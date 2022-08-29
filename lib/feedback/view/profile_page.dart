@@ -158,15 +158,12 @@ class _ProfilePageState extends State<ProfilePage> {
     var postListShow;
     if (_postList.length.isZero) {
       postListShow = Container(
-          height: 200,
+          height: 430,
           alignment: Alignment.center,
           child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
     } else {
       postListShow = Column(
-        children: [
-          postLists,
-          SizedBox(height: 20.w)
-        ],
+        children: [postLists, SizedBox(height: 20.w)],
       );
     }
 //静态header，头像和资料以及appbar
