@@ -85,7 +85,7 @@ class _AreaItem extends StatelessWidget {
         SizedBox(width: 6.w),
         Text(
           area.id + '区',
-          style: TextUtil.base.Swis.bold.sp(16).black2A.space(letterSpacing: 5),
+          style: TextUtil.base.Swis.sp(16).black2A.space(letterSpacing: 5),
         ),
       ],
     );

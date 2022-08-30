@@ -90,8 +90,6 @@ class RoomFavour extends LoadStateChangeNotifier with LoungeDataStateMixin {
       return actions;
     }
 
-    ;
-
     List<SyncAction> getFavoursFailure(error, stack) {
       // 加载本地数据
       localData.forEach((key, entry) {

@@ -83,13 +83,14 @@ class _LoungeBasePageState extends State<LoungeBasePage>
                     ? [
                         Color.fromRGBO(44, 126, 223, 1),
                         Color.fromRGBO(166, 207, 255, 1),
-                        Color.fromRGBO(166, 207, 255, 1),
-                        Color.fromRGBO(166, 207, 255, 1),
+                        Colors.white,
+                        Colors.white,
                       ]
                     : [
                         Color.fromRGBO(44, 126, 223, 1),
                         Color.fromRGBO(166, 207, 255, 1),
                       ],
+                stops: widget.isOutside ? [0, 0.5, 0.5, 1] : null,
               ),
             ),
           ),

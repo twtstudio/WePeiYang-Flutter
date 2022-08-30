@@ -43,19 +43,13 @@ class RoomState extends StatelessWidget {
             width: 6.w,
             height: 6.w,
             decoration: const BoxDecoration(
-              color: Colors.red,
+              color: Color(0xFFD9534F),
               shape: BoxShape.circle,
             ),
           );
 
-          stateText = Text(
-            '占用',
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: 9.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          );
+          stateText =
+              Text('占用', style: TextUtil.base.PingFangSC.w400.redD9.sp(12));
         }
 
         return Row(

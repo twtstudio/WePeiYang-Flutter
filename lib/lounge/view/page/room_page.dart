@@ -368,6 +368,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
   ) {
     List<Widget> list = [];
     var d = 1;
+    var middleStep = 40.h;
     for (var wd in Time.week.getRange(0, dayCount)) {
       var index = 1;
       final dayPlan = plan[wd];
@@ -380,6 +381,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
         index = index + c.length;
         int end = index - 1;
         double top = (start == 1) ? 0 : (start - 1) * (courseHeight + cardStep);
+        if(start > 3) top += middleStep + cardStep;
         double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
         double height =
             (end - start + 1) * courseHeight + (end - start) * cardStep;
@@ -418,6 +420,22 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
       }
       d++;
     }
+    var lunch = Positioned(
+      left: 0,
+      top: 4 * (courseHeight + cardStep),
+      height: middleStep,
+      width: 1.sw - 30.w,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        margin: EdgeInsets.symmetric(vertical: 5.h),
+        child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+      ),
+    );
+    list.add(lunch);
     return list;
   }
 }
