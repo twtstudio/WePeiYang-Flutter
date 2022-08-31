@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -20,6 +21,7 @@ final _hintStyle = TextUtil.base.bold.noLine
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
     ToastProvider.success("解除绑定成功");
+    ClassesService.logout();
     CommonPreferences.clearTjuPrefs();
     Provider.of<GPANotifier>(context, listen: false).clear();
     Provider.of<CourseProvider>(context, listen: false).clear();

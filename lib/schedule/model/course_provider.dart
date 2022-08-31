@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
-import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
+import 'package:we_pei_yang_flutter/schedule/network/schdule_service.dart';
 
 class CourseProvider with ChangeNotifier {
   /// 学校课程
@@ -90,7 +90,7 @@ class CourseProvider with ChangeNotifier {
   /// 通过爬虫刷新数据，并通知小组件更新
   void refreshCourse({bool hint = false, OnFailure? onFailure}) {
     if (hint) ToastProvider.running("刷新数据中……");
-    fetchCourses(onResult: (courses) {
+    ScheduleService.fetchCourses(onResult: (courses) {
       if (hint) ToastProvider.success("刷新课程表数据成功");
       _schoolCourses = courses;
       notifyListeners();

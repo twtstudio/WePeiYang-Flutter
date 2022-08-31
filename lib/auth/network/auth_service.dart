@@ -24,8 +24,8 @@ class AuthDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.token.value;
-      options.headers['Cookie'] = CommonPreferences.captchaCookie.value;
+      // options.headers['token'] = CommonPreferences.token.value;
+      // options.headers['Cookie'] = CommonPreferences.captchaCookie.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['error_code'] ?? -1;
@@ -116,10 +116,10 @@ class AuthService with AsyncTimer {
       try {
         var response = await authDio
             .post("register/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        }
+        // var cookie = response.headers.map['set-cookie'];
+        // if (cookie != null) {
+        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
+        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -134,10 +134,10 @@ class AuthService with AsyncTimer {
       try {
         var response = await authDio
             .post("user/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        }
+        // var cookie = response.headers.map['set-cookie'];
+        // if (cookie != null) {
+        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
+        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -152,10 +152,10 @@ class AuthService with AsyncTimer {
       try {
         var response = await authDio
             .post("password/reset/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        }
+        // var cookie = response.headers.map['set-cookie'];
+        // if (cookie != null) {
+        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
+        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -170,10 +170,10 @@ class AuthService with AsyncTimer {
       try {
         var response = await authDio.post("password/reset/verify",
             queryParameters: {"phone": phone, "code": code});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        }
+        // var cookie = response.headers.map['set-cookie'];
+        // if (cookie != null) {
+        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
+        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -279,10 +279,10 @@ class AuthService with AsyncTimer {
       try {
         var response = await authDio
             .post("auth/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        }
+        // var cookie = response.headers.map['set-cookie'];
+        // if (cookie != null) {
+        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
+        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);

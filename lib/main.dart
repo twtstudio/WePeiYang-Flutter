@@ -47,7 +47,6 @@ final _entry = WePeiYangApp();
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
     /// 初始化环境变量
     EnvConfig.init();
     PathUtil.init();

@@ -50,7 +50,11 @@ extension AppDelegate {
     func geTuiSdkNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 //        log.info("[ GTSDK回调 ] 即将展示APNS通知", context: center)
 //        log.info("APNS通知", context: center)
-        completionHandler([.badge, .sound, .list, .banner])
+        if #available(iOS 14.0, *) {
+            completionHandler([.badge, .sound, .list, .banner])
+        } else {
+            completionHandler([.badge, .sound])
+        }
     }
     
     // [ GTSDK回调 ] 接收到APNS通知

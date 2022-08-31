@@ -1,10 +1,16 @@
+import 'dart:ffi';
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -27,12 +33,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
   TextEditingController nameController;
   TextEditingController pwController;
   TextEditingController codeController;
-  GlobalKey<CaptchaWidgetState> captchaKey;
+  final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
   CaptchaWidget captchaWidget;
 
   @override
   void initState() {
-    captchaKey = GlobalKey();
     captchaWidget = CaptchaWidget(captchaKey);
     codeController = TextEditingController();
     if (CommonPreferences.isBindTju.value) {
@@ -68,18 +73,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error(message);
       return;
     }
-    login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
-        onSuccess: () {
+    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      );
+      // Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+      //   onFailure: (e) => ToastProvider.error(e.error.toString()),
+      // );
       Provider.of<CourseProvider>(context, listen: false).refreshCourse(
         onFailure: (e) => ToastProvider.error(e.error.toString()),
       );
-      Provider.of<ExamProvider>(context, listen: false).refreshExam(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      );
+      // Provider.of<ExamProvider>(context, listen: false).refreshExam(
+      //   onFailure: (e) => ToastProvider.error(e.error.toString()),
+      // );
       setState(() {
         tjuuname = "";
         tjupasswd = "";
@@ -386,49 +390,46 @@ class _TjuBindPageState extends State<TjuBindPage> {
 }
 
 class CaptchaWidget extends StatefulWidget {
-  final Map<String, String> params = Map();
-
   CaptchaWidget(Key key) : super(key: key);
 
   @override
-  CaptchaWidgetState createState() => CaptchaWidgetState();
+  State<CaptchaWidget> createState() => CaptchaWidgetState();
 }
 
-var _index = 0;
-
 class CaptchaWidgetState extends State<CaptchaWidget> {
-  refresh() {
-    setState(() => _index++);
+  void refresh() async {
+    id += 0.001;
+    var res = await ClassesService.fetch(
+        "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
+        options: Options(responseType: ResponseType.bytes));
+    setState(() {
+      data = res.data;
+    });
+  }
+
+  Uint8List data;
+  double id = 0.001;
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
 
   @override
   void dispose() {
-    _index++;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getExecAndSession(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          Map map = snapshot.data;
-          widget.params.clear();
-          widget.params.addAll(map);
-          return InkWell(
-            onTap: refresh,
-            child: Image.network(
-                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$_index",
-                key: ValueKey(_index),
-                headers: {"Cookie": map['session']},
-                fit: BoxFit.fill),
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
+    return GestureDetector(
+        onTap: refresh,
+        child: data == null ? CupertinoActivityIndicator() : Image.memory(data)
+        // Image.network("https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=$_index",
+        //     key: ValueKey(_index),
+        //     // headers: {"Cookie": map['session']},
+        //     fit: BoxFit.fill),
+        );
   }
 }

@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
-import 'package:we_pei_yang_flutter/schedule/network/schedule_spider.dart';
+import 'package:we_pei_yang_flutter/schedule/network/schdule_service.dart';
 
 class ExamProvider with ChangeNotifier {
   /// 所有考试
@@ -86,7 +86,7 @@ class ExamProvider with ChangeNotifier {
   /// 通过爬虫刷新数据
   void refreshExam({bool hint = false, OnFailure? onFailure}) {
     if (hint) ToastProvider.running("刷新数据中……");
-    fetchExam(onResult: (exams) {
+    ScheduleService.fetchExam(onResult: (exams) {
       if (hint) ToastProvider.success("刷新考表数据成功");
       this.exams = exams;
       CommonPreferences.examData.value =

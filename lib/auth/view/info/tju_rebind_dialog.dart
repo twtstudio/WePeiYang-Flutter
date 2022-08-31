@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -86,8 +86,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
       ToastProvider.error(message);
       return;
     }
-    login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
-        onSuccess: () {
+    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
       Provider.of<GPANotifier>(context, listen: false).refreshGPA(
         onFailure: (e) => ToastProvider.error(e.error.toString()),

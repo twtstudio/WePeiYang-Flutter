@@ -13,9 +13,13 @@ class ErrorInterceptor extends InterceptorsWrapper {
       e.error = "响应超时";
     else if (e.type == DioErrorType.response && e.response?.statusCode == 500)
       e.error = "服务器发生了未知错误";
-    else if (e.type == DioErrorType.response && e.response?.statusCode == 401)
-      e.error = "密码或验证码输入错误";
-    else if (e.type == DioErrorType.response && e.response?.statusCode == 302)
+    else if (e.type == DioErrorType.response && e.response?.statusCode == 401) {
+      if ((e.response?.data.toString().contains("验证码错误") ?? false) ||
+          (e.response?.data.toString().contains("Mismatch") ?? false))
+        e.error = "验证码输入错误";
+      else
+        e.error = "密码输入错误";
+    } else if (e.type == DioErrorType.response && e.response?.statusCode == 302)
       e.error = "办公网绑定失效，请重新绑定";
 
     /// 除了以上列出的错误之外，其他的所有错误给一个统一的名称，防止让用户看到奇奇怪怪的错误代码
