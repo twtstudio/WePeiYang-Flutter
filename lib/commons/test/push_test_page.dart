@@ -120,7 +120,8 @@ class _PushTestPageState extends State<PushTestPage> {
         onPressed: () async {
           final intent = await manager.getIntentUri(FeedbackSummaryIntent());
           setState(() {
-            summaryIntent = "twtstudio://weipeiyang.app/feedback\n" + (intent ?? 'null');
+            summaryIntent =
+                "twtstudio://weipeiyang.app/feedback\n" + (intent ?? 'null');
           });
         },
         child: const Text('点击获取校务总结页面跳转'),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -84,6 +85,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // WbyFontLoader.initFonts();
       context.read<PushManager>().initGeTuiSdk();
       context.read<UpdateManager>().checkUpdate();
+      AuthService.updateCid(context, onResult: (cid) {
+        print('---------------------------------$cid');
+      }, onFailure: (_) {
+        ToastProvider.error('noooooooooooo');
+      });
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {
         CommonPreferences.reportTime.value = DateTime.now().toString();
@@ -163,7 +169,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
-        color: Color.fromRGBO(255, 255, 255, 0.95),
+        color: Color.fromRGBO(255, 255, 255, 1),
         boxShadow: [
           BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
         ],
@@ -212,6 +218,4 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 }

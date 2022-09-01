@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:convert' show utf8, base64Encode;
-import 'package:flutter/material.dart' show Navigator, required;
+import 'package:flutter/material.dart' show BuildContext, Navigator, required;
 import 'package:http_parser/http_parser.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
@@ -24,7 +26,7 @@ class AuthDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      // options.headers['token'] = CommonPreferences.token.value;
+      options.headers['token'] = CommonPreferences.token.value;
       // options.headers['Cookie'] = CommonPreferences.captchaCookie.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
@@ -96,7 +98,7 @@ class AuthDio extends DioAbstract {
         case 50003:
         case 50004:
         case 50010:
-          error = "发生未知错误，请重新尝试";
+          error = "发生未知错误，请重新尝试 $code";
       }
       if (error == "")
         return handler.next(response);
@@ -475,6 +477,22 @@ class AuthService with AsyncTimer {
       try {
         await authDio.post("auth/logoff");
         onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  /// 获取cid
+  static updateCid(BuildContext context,
+      {@required OnResult<String> onResult, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('updateCid', () async {
+      try {
+        final manager = context.read<PushManager>();
+        final cid = await manager.getCid();
+        await authDio.post("notification/cid",
+            formData: FormData.fromMap({'cid': cid}));
+        onResult(cid);
       } on DioError catch (e) {
         onFailure(e);
       }
