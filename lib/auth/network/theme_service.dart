@@ -1,9 +1,12 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' show Color, required;
+import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/skin_utils.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class ThemeDio extends DioAbstract {
@@ -138,5 +141,21 @@ class ThemeService with AsyncTimer {
         onFailure(e);
       }
     });
+  }
+
+  static Future<List<BannerPic>> getBanner() async {
+    try {
+      var response = await themeDio.get('banner');
+      var result = response.data['result'];
+      // return result.map((e) => BannerPic.fromJson(e)).toList();
+      var list = <BannerPic>[];
+      result.forEach((e) {
+        list.add(BannerPic.fromJson(e));
+      });
+      return list;
+    } catch (e, stack) {
+      Logger.reportError(e, stack);
+      return [];
+    }
   }
 }

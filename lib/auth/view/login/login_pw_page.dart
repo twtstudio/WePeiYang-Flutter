@@ -20,9 +20,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
     if (CommonPreferences.usePwLogin.value) {
       _passwordFocus.unfocus();
       if (account == "" || password == "")
-        ToastProvider.error("账号密码不能为空");
+        ToastProvider.error('账号密码不能为空');
       else if (!checkNotifier.value)
-        ToastProvider.error("请同意用户协议与隐私政策并继续");
+        ToastProvider.error('请同意用户协议与隐私政策并继续');
       else
         AuthService.pwLogin(account, password,
             onResult: (result) {
@@ -36,11 +36,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             onFailure: (e) => ToastProvider.error(e.error.toString()));
     } else {
       if (account == "") {
-        ToastProvider.error("手机号码不能为空");
+        ToastProvider.error('手机号码不能为空');
       } else if (code == "") {
-        ToastProvider.error("短信验证码不能为空");
+        ToastProvider.error('短信验证码不能为空');
       } else if (!checkNotifier.value)
-        ToastProvider.error("请同意用户协议与隐私政策并继续");
+        ToastProvider.error('请同意用户协议与隐私政策并继续');
       else
         AuthService.codeLogin(account, code,
             onResult: (result) {

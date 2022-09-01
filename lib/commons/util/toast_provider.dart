@@ -1,8 +1,11 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show AsyncTimer;
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 class ToastProvider with AsyncTimer {
   ToastProvider._();
@@ -57,27 +60,6 @@ class ToastProvider with AsyncTimer {
     });
   }
 
-  static error(String msg) {
-    AsyncTimer.runRepeatChecked(msg, () async {
-      print('ToastProvider error: $msg');
-      _fToast.showToast(
-        gravity: ToastGravity.BOTTOM,
-        toastDuration: const Duration(seconds: 2),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(53, 53, 53, 1),
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Text(
-            msg,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ),
-      );
-      await Future.delayed(const Duration(seconds: 2));
-    });
-  }
 
   /// 自定义 Toast
   /// [child] 显示内容
@@ -132,6 +114,35 @@ class ToastProvider with AsyncTimer {
         gravity: ToastGravity.BOTTOM,
       );
     }
+  }
+
+  /// 新版本的 error 调整了报错的底部弹窗的位置，还加入了图标
+  static void error(String msg) {
+    ToastProvider.custom(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(0xD9, 0x53, 0x4F, 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset('assets/svg_pics/lake_butt_icons/error_background.svg',width: 15),
+            SizedBox(width: 10),
+            Text(msg,style: TextUtil.base.NotoSansSC.bold.sp(12).redD9,),
+          ],
+        ),
+      ),
+      positionedToastBuilder: (context, child) {
+        return Positioned(
+          left: 16.0, // 左右填一样的值可以居中
+          right: 16.0,
+          bottom: 0.1.sh,
+          child: child,
+        );
+      },
+    );
   }
 
   /// 取消当前正在显示的 Toast

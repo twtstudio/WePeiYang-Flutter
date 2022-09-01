@@ -1,15 +1,21 @@
 import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
+import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -50,6 +56,79 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     setState(() {
       md = result.toString();
     });
+  }
+
+  ///此数组是假的 List 应该被删掉
+  List<String> waterGod = ['https://pic.imgdb.cn/item/630f543316f2c2beb1ce122f.jpg','https://pic.imgdb.cn/item/630f57e016f2c2beb1d01b51.jpg'];
+
+  Widget get activityDialog => FutureBuilder(
+    future: ThemeService.getBanner(),
+    builder: (context, AsyncSnapshot<List<BannerPic>> snapshot) {
+      if (snapshot.hasData) {
+        return Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: Container(
+              height: 0.75.sh,
+              width: 0.75.sw,
+              color: Colors.white,
+              child: Swiper(
+                autoplay: true,
+                autoplayDelay: 5000,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (snapshot.data.length == 0) return SizedBox();
+                  return GestureDetector(
+                    onTap: () {
+                      // 这里应该改为跳转到对应的网址，而不是目前的print index
+                      // 网址储存在 snapshot.data[index].url
+                      print(index);
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        WpyPic(
+                          //这里的 waterGod[index] 应该改为 snapshot.data[index].picUrl
+                          waterGod[index],
+                          withHolder: true,
+                        ),
+                        //这里的 Text 应该删去，目前只是为了便于调试显示网址
+                        Text(
+                          snapshot.data[index].picUrl,
+                          style: TextUtil.base.sp(30),
+                        ),
+                        Spacer(),
+                        Divider(
+                          indent: 15.w,
+                          endIndent: 15.w,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('确定',style: TextUtil.base.bold.NotoSansSC.black2A.sp(14),),
+                        ),
+                        SizedBox(height: 5.h,),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Loading();
+      }
+    },
+  );
+
+  void showHomeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => activityDialog,
+    );
   }
 
   @override
@@ -103,6 +182,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               return AgreementAndPrivacyDialog(md);
             });
       }
+      showHomeDialog();
     });
   }
 

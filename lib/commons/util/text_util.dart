@@ -62,6 +62,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
   TextStyle get blue2C => this.copyWith(color: const Color(0xFF2C7EDF));
   TextStyle get transParent => this.copyWith(color: const Color(0x00000000));
+  TextStyle get redD9 => this.copyWith(color: const Color(0xFFD9534F));
 
   /// 字体
   TextStyle get Swis => this.copyWith(fontFamily: 'Swis');
