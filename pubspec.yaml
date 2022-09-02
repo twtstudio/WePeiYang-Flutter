@@ -66,6 +66,7 @@ dependencies:
   share_plus: ^4.0.10+1
   gallery_saver: ^2.3.2
   uuid: 3.0.6
+  al_downloader: ^1.4.5
 
 dependency_overrides:
   meta: ^1.7.0
