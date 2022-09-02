@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_item.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_service.dart';
 
@@ -82,7 +82,7 @@ class Version {
   }
 
   String get soPath {
-    return PathUtil.filesDir.path +
+    return StorageUtil.filesDir.path +
         Platform.pathSeparator +
         DownloadType.hotfix.text +
         Platform.pathSeparator +

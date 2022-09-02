@@ -64,6 +64,8 @@ dependencies:
   # 升级到flutter 2.2.1后，checkbox自带shape属性
   circular_check_box: ^1.0.4
   share_plus: ^4.0.10+1
+  gallery_saver: ^2.3.2
+  uuid: 3.0.6
 
 dependency_overrides:
   meta: ^1.7.0

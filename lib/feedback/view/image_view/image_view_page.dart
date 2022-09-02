@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/size_extension.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
@@ -9,6 +10,7 @@ import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -37,8 +39,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
     isLongPic = obj['isLongPic'] ?? false;
     // 显示toolbar及透明遮罩
     ValueNotifier<bool> _showToolBar = ValueNotifier(true);
-    double _dragX = 0.0;
-    double _dragY = 0.0;
 
     return GestureDetector(
         onTap: () {
@@ -112,7 +112,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
                                     color: Colors.white,
                                     size: 30.h,
                                   ),
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    if (show) Navigator.pop(context);
+                                  },
                                 ),
                               )),
                           Align(
@@ -125,8 +127,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
                                     color: Colors.white,
                                     size: 30.h,
                                   ),
-                                  onPressed: () =>
-                                      showSaveImageBottomSheet(context),
+                                  onPressed: () {
+                                    if (show) showSaveImageBottomSheet(context);
+                                  },
                                 ),
                               ))
                         ],
@@ -138,68 +141,11 @@ class _ImageViewPageState extends State<ImageViewPage> {
         ));
   }
 
-  void showSaveImageBottomSheet(BuildContext context) {
-    Share.share('check out my website https://example.com');
+  void showSaveImageBottomSheet(BuildContext context) async {
+    final path = await StorageUtil.saveTempFileFromNetwork(
+        baseUrl + urlList[indexNow],
+        filename: urlList[indexNow]);
+    Share.shareFiles([path]);
     return;
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        // <-- SEE HERE
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25.0),
-        ),
-      ),
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text(
-                '保存图片',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              onTap: saveImgToAlbum,
-            ),
-            ListTile(
-              title: Text(
-                '分享图片到QQ',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              onTap: shareImageToQQ,
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void shareImageToQQ() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
-    final fileName = url.split("/").last;
-    ImageSave.saveImageFromUrl(
-      url,
-      fileName,
-      album: false,
-    ).then((path) async {
-      await ShareManager.shareImgToQQ(path);
-    }).then((_) {
-      ToastProvider.success("分享成功");
-    }, onError: (error, stack) {
-      Logger.reportError(error, stack);
-      ToastProvider.error("分享失败");
-    });
-  }
-
-  void saveImgToAlbum() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
-    final fileName = url.split("/").last;
-    ImageSave.saveImageFromUrl(
-      url,
-      fileName,
-      album: true,
-    ).then((_) {
-      ToastProvider.success("成功保存到相册");
-      Navigator.pop(context);
-    });
   }
 }

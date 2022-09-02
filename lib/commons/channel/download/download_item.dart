@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
 
-import 'path_util.dart';
+import '../../util/storage_util.dart';
 
 class DownloadTask {
   final String url;
@@ -109,5 +109,6 @@ enum DownloadType { apk, font, hotfix, other }
 extension DownloadTypeExt on DownloadType {
   String get text => ['apk', 'font', 'hotfix', 'other'][index];
 
-  String get path => PathUtil.downloadDir.path + Platform.pathSeparator + text;
+  String get path =>
+      StorageUtil.downloadDir.path + Platform.pathSeparator + text;
 }

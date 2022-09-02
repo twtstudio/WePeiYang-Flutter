@@ -1,7 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -35,7 +35,7 @@ class DownloadManager {
   }
 
   void _clearTemporaryFiles() {
-    for (final file in PathUtil.downloadDir.listSync(recursive: true)) {
+    for (final file in StorageUtil.downloadDir.listSync(recursive: true)) {
       if (file.path.endsWith(".temporary")) {
         try {
           file.deleteSync();

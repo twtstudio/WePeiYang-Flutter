@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'auth/view/message/message_service.dart';
-import 'commons/channel/download/path_util.dart';
+import 'commons/util/storage_util.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
@@ -47,9 +47,10 @@ final _entry = WePeiYangApp();
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
     /// 初始化环境变量
     EnvConfig.init();
-    PathUtil.init();
+    StorageUtil.init();
 
     /// 初始化sharedPreference
     await CommonPreferences.init();
@@ -57,7 +58,6 @@ void main() async {
     /// 初始化Connectivity
     await NetStatusListener.init();
     DioAbstract.logEnabled = true;
-
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
